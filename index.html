@@ -193,6 +193,9 @@
 					</li>
 				</ul>
 			</div>
+		</div>
+		<h2>Neues Makro anlegen</h2>
+		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
 					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
@@ -229,16 +232,40 @@
 					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdio.h</span>&gt;</span><br/>
 					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
 					<span class="add">@add(<span class="macro-name">define logging</span>)</span><br/>
-					<span class="in1"></span><span class="define">#define <span class="name">ASSERT_MEM</span>(<span class="var">PTR</span>) \</span><br/>
-					<span class="in2"></span><span class="define"><span class="keyword">if</span> (! (<span class="var">PTR</span>)) {\ </span><br/>
+					<span class="in1"></span><span
+						class="define">#define <span class="name">ASSERT</span>(<span class="var">COND</span>) \</span><br/>
+					<span class="in2"></span><span class="define"><span class="keyword">if</span> (! (<span class="var">COND</span>)) {\ </span><br/>
 					<span class="in3"></span><span class="define"><span class="fn">fprintf</span>(<span class="var">stderr</span>, \</span><br/>
-					<span class="in4"></span><span class="define"><span class="str">"%s:%d OUT OF MEM\n"</span>, \</span><br/>
+					<span class="in4"></span><span class="define"><span class="str">"%s:%d FAILED\n"</span>, \</span><br/>
 					<span class="in4"></span><span class="define">__FILE__, __LINE__ 
 						\</span><br/>
 					<span class="in3"></span>); \</span><br/>
 					<span class="in3"></span><span class="define"><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \</span><br/>
 					<span class="in2"></span><span class="define">}</span><br/>
 					<span class="end">@end(<span class="macro-name">define logging</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn Bedingung falsch ist, wird Fehlermeldung
+						ausgegeben
+					</li><li>
+						Und das Programm beendet
+					</li><li>
+						Datei und Zeile des Tests wird ausgegeben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">allocate macro on heap</span>)</span><br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">assert macro name</span>)</span>;<br/>
+					<span class="in1"></span><span class="type">int</span> <span class="var">nameLength</span> =<br/>
+  					<span class="in2"></span><span class="var">nameEnd</span> - <span class="var">nameBegin</span>;<br/>
+					<span class="in1"></span><span class="type">int</span> <span class="var">macroSize</span> = <span class="keyword">sizeof</span>(<span class="type">struct Macro</span>)<br/>
+   					<span class="in2"></span>+ <span class="var">nameLength</span> + 1;<br/>
+					<span class="in1"></span><span class="var">result</span> = <span class="var">malloc</span>(<span class="var">macroSize</span>);<br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">result</span>);<br/>
+					<span class="end">@end(<span class="macro-name">allocate macro on heap</span>)</span><br/>
 				</code></div>
 				<ul class="notes">
 					<li>
@@ -256,27 +283,130 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					<span class="add">@add(<span class="macro-name">allocate macro on heap</span>)</span><br/>
-					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">assert macro name</span>)</span>;<br/>
-					<span class="in1"></span><span class="type">int</span> <span class="var">nameLength</span> =<br/>
-  					<span class="in2"></span><span class="var">nameEnd</span> - <span class="var">nameBegin</span>;<br/>
-					<span class="in1"></span><span class="type">int</span> <span class="var">macroSize</span> = <span class="keyword">sizeof</span>(<span class="type">struct Macro</span>)<br/>
-   					<span class="in2"></span>+ <span class="var">nameLength</span> + 1;<br/>
-					<span class="in1"></span><span class="var">result</span> = <span class="var">malloc</span>(<span class="var">macroSize</span>);<br/>
-					<span class="in1"></span><span class="fn">ASSERT_MEM</span>(<span class="var">result</span>);<br/>
-					<span class="end">@end(<span class="macro-name">allocate macro on heap</span>)</span><br/>
+					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
+					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">string.h</span>&gt;</span><br/>
+					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
+					<span class="add">@add(<span class="macro-name">copy macro name</span>)</span><br/>
+					<span class="in1"></span><span class="fn">memcpy</span>(<br/>
+					<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">name</span>, <span class="var">nameBegin</span>,<br/>
+		 			<span class="in2"></span><span class="var">nameLength</span><br/>
+					<span class="in1"></span>);<br/>
+					<span class="in1"></span><span class="var">result</span>-&gt;<span class="var">name</span>[<span class="var">nameLength</span>] = <span class="str">'\0'<span>;<br/>
+					<span class="end">@end(<span class="macro-name">copy macro name</span>)</span><br/>
 				</code></div>
 				<ul class="notes">
 					<li>
-						Die Zeiger werden mit
-						<code class="keyword">NULL</code> initializiert
+						Der Name wird direkt in die das Makro kopiert
 					</li><li>
-						<code class="var">lastEntry</code> wird erst
-						initialisiert, wenn
-						<code class="var">firstEntry</code> gesetzt wird
+						Der Name wird mit einem Null-Byte abgeschlossen
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Makros freigeben</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">void</span> <span class="fn">freeMacro(<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="keyword">while</span> (<span class="var">macro</span>) {<br/>
+					<span class="in3"></span><span class="type">struct Macro *</span><span class="var">link</span> =<br/>
+					<span class="in4"></span><span class="var">macro</span>-&gt;<span class="var">link</span>;<br/>
+					<span class="in3"></span><span class="expand">@expand(<span class="expand-name">free macros entries</span>)</span>;<br/>
+					<span class="in3"></span><span class="fn">free</span>(<span class="var">macro</span>);<br/>
+					<span class="in3"></span><span class="var">macro</span> = <span class="var">link</span>;<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span
+							class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Mit einem Makro werden auch alle verketteten
+						Makros freigegeben
 					</li><li>
-						Der Name wird über zwei Zeiger übergeben, muss
-						also nicht mit einem Null-Byte terminiert sein
+						Die Freigabe der einzelnen Einträge wird später
+						definiert
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Unit Tests</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">perform unit tests</span>)</span><br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="expand-name">macro unit tests</span>)</span>;<br/>
+					<span class="end">@end(<span class="macro-name">perform unit tests</span>)</span><br/>
+					<br/>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct Macro *</span><span class="fn">allocTestMacro</span>(<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">name</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="fn">allocMacro</span>(<br/>
+					<span class="in3"></span><span class="var">name</span>, <span class="var">name</span> + <span class="fn">strlen</span>(<span class="var">name</span>)<br/>
+					<span class="in2"></span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Für Unit-Tests gibt es einen einfacheren
+						Konstruktor
+					</li><li>
+						Die Länge des Namens wird anhand des Null-Bytes
+						berechnet
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">void</span> <span class="fn">testMacroName</span>(<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">name</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> =<br/>
+					<span class="in3"></span><span class="fn">allocTestMacro</span>(<span class="var">name</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+	   				<span class="in3"></span><span class="fn">strcmp</span>(<span class="var">macro</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == 0<br/>
+  					<span class="in2"></span>);<br/>
+					<span class="in2"></span><span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						<code class="fn">testMacroName</code> prüft, ob
+						der Name korrekt in ein Makro kopiert wurde.
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span><span class="fn">testMacroName</span>(<span class="str">"abc"</span>);<br/>
+					<span class="in1"></span><span class="fn">testMacroName</span>(<span class="str">""</span>);<br/>
+					<span class="in1"></span><span class="fn">testMacroName</span>(<span class="str">"A c"</span>);<br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> =<br/>
+					<span class="in3"></span><span class="fn">allocTestMacro</span>(<span class="str">"ab"</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">macro</span>-&gt;<span class="var">link</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">macro</span>-&gt;<span class="var">firstEntry</span>);<br/>
+					<span class="in2"></span><span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Zum einen wird getestet, ob die Namen korrekt
+						kopiert werden
+					</li><li>
+						Zum anderen wird sichergestellt, dass die
+						Verweise <code class="keyword">NULL</code> sind
 					</li>
 				</ul>
 			</div>
