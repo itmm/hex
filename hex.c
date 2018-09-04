@@ -4,6 +4,11 @@
 		#include <stdio.h>
 		#include <string.h>
 
+		struct MacroEntry;
+		void freeMacroEntry(
+			struct MacroEntry *entry
+		);
+
 	// @expand(define logging);
 		#define ASSERT(COND) \
 			if (! (COND)) { \
@@ -30,10 +35,8 @@
 		) {
 			struct Macro *result = NULL;
 			// @expand(allocate macro on heap);
-				// @expand(assert macro name);
-					ASSERT(nameBegin);
-					ASSERT(nameBegin <= nameEnd);
-
+				ASSERT(nameBegin);
+				ASSERT(nameBegin <= nameEnd);
 				int nameLength =
 					nameEnd - nameBegin;
 				int macroSize = sizeof(struct Macro)
@@ -60,6 +63,8 @@
 				struct Macro *link =
 					macro->link;
 				// @expand(free macros entries);
+					freeMacroEntry(macro->firstEntry);
+
 				free(macro);
 				macro = link;
 			}
@@ -83,6 +88,57 @@
 					strcmp(macro->name, name) == 0
 				  );
 			freeMacro(macro);
+		}
+
+		struct MacroEntry {
+			struct MacroEntry *link;
+			struct Macro *macro;
+			const char *valueEnd;
+			char value[];
+		};
+
+		struct MacroEntry *allocMacroEntry(
+			struct Macro *macro,
+			const char *valueBegin,
+			const char *valueEnd
+		) {
+			struct MacroEntry *result = NULL;
+			// @expand(allocate entry on heap);
+				int valueLength = 0;
+				if (valueBegin) {
+					ASSERT(valueBegin <= valueEnd);
+					valueLength =
+						valueEnd - valueBegin;
+				}
+				int entrySize = valueLength +
+					sizeof(struct MacroEntry);
+				result = malloc(entrySize);
+				ASSERT(result);
+
+			result->link = NULL;
+			// @expand(copy entry value);
+				if (valueBegin) {
+					memcpy(
+						result->value, valueBegin,
+						valueLength
+					  );
+				}
+				result->valueEnd =
+					result->value + valueLength;
+				result->macro = macro;
+
+			return result;
+		}
+
+		void freeMacroEntry(
+			struct MacroEntry *entry
+		) {
+			while (entry) {
+				struct MacroEntry *link =
+					entry->link;
+				free(entry);
+				entry = link;
+			}
 		}
 
 int main(
