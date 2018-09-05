@@ -241,9 +241,7 @@
 					<span class="in2"></span><span class="define"><span class="keyword">if</span> (! (<span class="var">COND</span>)) {\ </span><br/>
 					<span class="in3"></span><span class="define"><span class="fn">fprintf</span>(<span class="var">stderr</span>, \</span><br/>
 					<span class="in4"></span><span class="define"><span class="str">"%s:%d FAILED\n"</span>, \</span><br/>
-					<span class="in4"></span><span class="define">__FILE__, __LINE__ 
-						\</span><br/>
-					<span class="in3"></span>); \</span><br/>
+					<span class="in4"></span><span class="define">__FILE__, __LINE__); \</span><br/>
 					<span class="in3"></span><span class="define"><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \</span><br/>
 					<span class="in2"></span><span class="define">}</span><br/>
 					<span class="end">@end(<span class="macro-name">define logging</span>)</span><br/>
@@ -528,6 +526,24 @@
 					</li>
 				</ul>
 			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct MacroEntry *</span><br/>
+					<span class="in1"></span><span class="fn">allocEmptyMacroEntry</span>() {<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="fn">allocMacroEntry</span>(<br/>
+					<span class="in3"></span><span class="keyword">NULL</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Für Tests ist es praktisch, leere Einträge
+						anzulegen
+					</li>
+				</ul>
+			</div>
 		</div>
 		<h2>Makro Einträge freigeben</h2>
 		<div class="slides">
@@ -577,6 +593,392 @@
 						Damit die Funktion im
 						<code class="fn">freeMacro</code> sichtbar ist,
 						wird sie in der Include-Sektion definiert
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Auf Attribute zugreifen</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">int</span> <span class="fn">getMacroEntryValueSize</span>(<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="keyword">if</span> (! <span class="var">entry</span>) {<br/>
+					<span class="in3"></span><span class="keyword">return</span> <span class="num">0</span>;<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="var">entry</span>-&gt;<span class="var">valueEnd</span> -<br/>
+  					<span class="in3"></span><span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Liefert die Anzahl der enthaltenen Bytes
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Unit Tests</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocEmptyMacroEntry</span>();<br/>
+					<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">link</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">macro</span>);<br/>
+					<br/>
+					<span class="in2"></span><span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein leerer Eintrag hat keinen Nachfolger
+					</li><li>
+						Und kein Makro
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocEmptyMacroEntry</span>();<br/>
+					<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in3"></span><span class="fn">getMacroEntryValueSize</span>(<br/>
+					<span class="in4"></span><span class="var">entry</span>) == <span class="num">0);</span><br/>
+					<br/>
+					<span class="in2"></span><span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein leerer Eintrag hat keine Bytes
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct MacroEntry *</span><br/>
+					<span class="in1"></span><span class="fn">allocTestMacroEntry(<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">value</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">end</span> = <span class="var">value</span> +<br/>
+					<span class="in3"></span><span class="fn">strlen</span>(<span class="var">value</span>);<br/>
+					<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="fn">allocMacroEntry</span>(<br/>
+					<span class="in3"></span><span class="keyword">NULL</span>, <span class="var">value</span>, <span class="var">end</span><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der Test-Konstruktor bekommt eine
+						Null-terminierte Zeichenkette als Argument
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocTestMacroEntry</span>(<span class="str">"abc"</span>);<br/>
+					<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in3"></span><span class="fn">getMacroEntryValueSize</span>(<br/>
+					<span class="in4"></span><span class="var">entry</span>) == <span class="num">3);</span><br/>
+					<br/>
+					<span class="in2"></span><span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein Eintrag hat die korrekte Anzahl an Bytes
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocTestMacroEntry</span>(<span class="str">"abc"</span>);<br/>
+					<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in3"></span><span class="fn">memcmp</span>(<span class="var">entry</span>-&gt;<span class="var">value</span>,<br/>
+					<span class="in4"></span><span class="str">"abc"</span>, <span class="num">3</span>) == <span class="num">0);</span><br/>
+					<br/>
+					<span class="in2"></span><span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Die Bytes eines Eintrags stimmen überein
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Einträge zu Makros hinzufügen</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">void</span> <span class="fn">addEntryToMacro</span>(<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span>,<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">assert add entry</span>);</span><br/>
+					<span class="in2"></span><span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span>) {<br/>
+					<span class="in3"></span><span class="expand">@expand(<span class="macro-name">append entry</span>);</span><br/>
+					<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+					<span class="in3"></span><span
+						class="expand">@expand(<span class="macro-name">set first entry</span>);</span><br/>
+					<span class="in2"></span>}<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein Eintrag wird entweder an das Ende der Liste
+						der Einträge angehängt
+					</li><li>
+						Oder als neuer Kopf der Liste gesetzt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">assert add entry</span>)</span><br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">link</span>);<br/>
+					<span class="end">@end(<span class="macro-name">assert add entry</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Makro darf nicht
+						<code class="keyword">NULL</code> sein
+					</li><li>
+						Eintrag darf nicht
+						<code class="keyword">NULL</code> sein
+					</li><li>
+						Eintrag darf noch nicht in einer anderen Liste
+						hängen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">append entry</span>)</span><br/>
+					<span class="in1"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">link</span> = <span class="var">entry</span>;<br/>
+					<span class="in1"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span> = <span class="var">entry</span>;<br/>
+					<span class="end">@end(<span class="macro-name">append entry</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Da es schon Einträge gibt, muss es bereits einen
+						letzten geben
+					</li><li>
+						Dessen neuer Nachfolger ist der neue Eintrag
+					</li><li>
+						Der neue Eintrag wird zum neuen letzten Eintrag
+					</li><li>
+						Der Nachfolger von
+						<code class="var">entry</code> ist bereits
+						<code class="keyword">NULL</code>
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">set first entry</span>)</span><br/>
+					<span class="in1"></span><span class="var">macro</span>-&gt;<span class="var">firstEntry</span> = <span class="var">entry</span>;<br/>
+					<span class="in1"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span> = <span class="var">entry</span>;<br/>
+					<span class="end">@end(<span class="macro-name">set first entry</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der erste Eintrag wird auch als letzter Eintrag
+						gesetzt
+					</li><li>
+						Der Nachfolger von
+						<code class="var">entry</code> ist bereits
+						<code class="keyword">NULL</code>
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> =<br/>
+					<span class="in3"></span><span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocEmptyMacroEntry</span>();<br/>
+					<span class="in2"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in3"></span><span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">entry</entry><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in2"></span><span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der erste Eintrag im Makro wird gesetzt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> =<br/>
+					<span class="in3"></span><span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocEmptyMacroEntry</span>();<br/>
+					<span class="in2"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in3"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span> == <span class="var">entry</entry><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in2"></span><span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der letzte Eintrag im Makro wird gesetzt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">first</span>;<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">second</span>;<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">add two entries</span>);</span><br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">check first of 2</span>);</span><br/>
+					<span class="in2"></span><span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Zwei Einträge werden an ein Makro angehängt
+					</li><li>
+						Der erste Eintrag muss gesetzt bleiben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">add two entries</span>)</span><br/>
+					<span class="in1"></span><span class="var">macro</span> = <span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+					<span class="in1"></span><span class="var">first</span> = <span class="fn">allocEmptyMacroEntry</span>();<br/>
+					<span class="in1"></span><span class="var">second</span> = <span class="fn">allocEmptyMacroEntry</span>();<br/>
+					<br/>
+					<span class="in1"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">first</span>);<br/>
+					<span class="in1"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">second</span>);<br/>
+
+					<span class="end">@end(<span class="macro-name">add two entries</span>)</span><br/>
+					<br/>
+					<span class="add">@add(<span class="macro-name">check first of 2</span>)</span><br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">first</span>);<br/>
+					<span class="end">@end(<span
+							class="macro-name">check first of 2</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Zwei Einträge werden an ein Makro angehängt
+					</li><li>
+						Der erste Eintrag muss gesetzt bleiben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">macro unit tests</span>)</span><br/>
+					<span class="in1"></span>{<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">first</span>;<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">second</span>;<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">add two entries</span>);</span><br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in3"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span> == <span class="var">second</span><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in2"></span><span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">macro unit tests</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Zwei Einträge werden an ein Makro angehängt
+					</li><li>
+						Der letzte Eintrag muss gesetzt werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">void</span> <span class="fn">addBytesToMacro</span>(<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">value</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">valueEnd</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in3"></span><span class="fn">allocMacroEntry</span>(<br/>
+					<span class="in4"></span><span class="keyword">NULL</span>, <span class="var">value</span>, <span class="var">valueEnd</span><br/>
+					<span class="in3"></span>);<br/>
+					<span class="in2"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Für die Daten wird ein neuer Eintrag angelegt
+					</li><li>
+						Dieser wird an das Makro angehängt
+					</li>
+				</ul>
+			</div>
+
+
+
+
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">void</span> <span class="fn">addMacroToMacro</span>(<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span>,<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">child</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
 					</li>
 				</ul>
 			</div>

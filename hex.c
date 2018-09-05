@@ -130,6 +130,13 @@
 			return result;
 		}
 
+		struct MacroEntry *
+		allocEmptyMacroEntry() {
+			return allocMacroEntry(
+				NULL, NULL, NULL
+			);
+		}
+
 		void freeMacroEntry(
 			struct MacroEntry *entry
 		) {
@@ -139,6 +146,61 @@
 				free(entry);
 				entry = link;
 			}
+		}
+
+		int getMacroEntryValueSize(
+			struct MacroEntry *entry
+		) {
+			if (! entry) {
+				return 0;
+			}
+			return entry->valueEnd -
+				entry->value;
+		}
+
+		struct MacroEntry *
+		allocTestMacroEntry(
+			const char *value
+		) {
+			const char *end = value +
+				strlen(value);
+
+			return allocMacroEntry(
+				NULL, value, end
+			);
+		}
+
+		void addEntryToMacro(
+			struct Macro *macro,
+			struct MacroEntry *entry
+		) {
+			// @expand(assert add entry);
+				ASSERT(macro);
+				ASSERT(entry);
+				ASSERT(! entry->link);
+
+			if (macro->firstEntry) {
+				// @expand(append entry);
+					macro->lastEntry->link = entry;
+					macro->lastEntry = entry;
+
+			} else {
+				// @expand(set first entry);
+					macro->firstEntry = entry;
+					macro->lastEntry = entry;
+			}
+		}
+
+		void addBytesToMacro(
+			struct Macro *macro,
+			const char *value,
+			const char *valueEnd
+		) {
+			struct MacroEntry *entry =
+				allocMacroEntry(
+						NULL, value, valueEnd
+						);
+			addEntryToMacro(macro, entry);
 		}
 
 int main(
@@ -158,6 +220,104 @@ int main(
 				ASSERT(! macro->firstEntry);
 				freeMacro(macro);
 			}
+			{
+				struct MacroEntry *entry =
+					allocEmptyMacroEntry();
+				ASSERT(entry);
+				ASSERT(! entry->link);
+				ASSERT(! entry->macro);
+				freeMacroEntry(entry);
+			}
+			{
+				struct MacroEntry *entry =
+					allocEmptyMacroEntry();
+
+				ASSERT(entry);
+				ASSERT(
+						getMacroEntryValueSize(
+							entry) == 0);
+
+				freeMacroEntry(entry);
+			}
+			{
+				struct MacroEntry *entry =
+					allocTestMacroEntry("abc");
+
+				ASSERT(entry);
+				ASSERT(
+						getMacroEntryValueSize(
+							entry) == 3);
+
+				freeMacroEntry(entry);
+			}
+			{
+				struct MacroEntry *entry =
+					allocTestMacroEntry("abc");
+
+				ASSERT(entry);
+				ASSERT(
+						memcmp(entry->value,
+							"abc", 3) == 0);
+
+				freeMacroEntry(entry);
+			}
+			{
+				struct Macro *macro =
+					allocTestMacro("");
+				struct MacroEntry *entry =
+					allocEmptyMacroEntry();
+				addEntryToMacro(macro, entry);
+				ASSERT(
+						macro->firstEntry == entry
+					  );
+				freeMacro(macro);
+			}
+			{
+				struct Macro *macro =
+					allocTestMacro("");
+				struct MacroEntry *entry =
+					allocEmptyMacroEntry();
+				addEntryToMacro(macro, entry);
+				ASSERT(
+						macro->lastEntry == entry
+					  );
+				freeMacro(macro);
+			}
+			{
+				struct Macro *macro = NULL;
+				struct MacroEntry *first;
+				struct MacroEntry *second;
+				// @expand(add two entries);
+					macro = allocTestMacro("");
+					first = allocEmptyMacroEntry();
+					second = allocEmptyMacroEntry();
+
+					addEntryToMacro(macro, first);
+					addEntryToMacro(macro, second);
+
+				// @expand(check first of 2);
+					ASSERT(macro->firstEntry == first);
+
+				freeMacro(macro);
+			}
+			{
+				struct Macro *macro = NULL;
+				struct MacroEntry *first;
+				struct MacroEntry *second;
+				// @expand(add two entries);
+					macro = allocTestMacro("");
+					first = allocEmptyMacroEntry();
+					second = allocEmptyMacroEntry();
+
+					addEntryToMacro(macro, first);
+					addEntryToMacro(macro, second);
+
+				ASSERT(
+						macro->lastEntry == second
+					  );
+				freeMacro(macro);
+			}
+
 
 	// @expand(process arguments);
 	// @expand(process HTML file);
