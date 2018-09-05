@@ -203,6 +203,18 @@
 			addEntryToMacro(macro, entry);
 		}
 
+		// @expand(define cycle check);
+		void addMacroToMacro(
+			struct Macro *macro,
+			struct Macro *child
+		) {
+			ASSERT(macro);
+			ASSERT(child);
+			// @expand(avoid macro cycles);
+			// @expand(reuse last entry);
+			// @expand(add macro entry);
+		}
+
 int main(
 	int argc,
 	const char **argv

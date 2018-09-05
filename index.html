@@ -963,19 +963,55 @@
 					</li>
 				</ul>
 			</div>
-
-
-
-
 			<div class="row">
 				<div class="slide code"><code>
 					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">define cycle check</span>)</span><br/>
 					<span class="in1"></span><span class="type">void</span> <span class="fn">addMacroToMacro</span>(<br/>
 					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span>,<br/>
 					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">child</span><br/>
 					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);</span><br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);</span><br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">avoid macro cycles</span>);</span><br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">reuse last entry</span>);</span><br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">add macro entry</span>);</span><br/>
 					<span class="in1"></span>}<br/>
 					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Bevor ein Makro hinzugefügt werden kann, muss
+						sichergestellt werden, dass kein Zykel entsteht
+					</li><li>
+						Ein Zykel liegt vor, wenn
+						<code class="var">macro</code> gleich
+						<code class="var">child</code> ist
+					</li><li>
+						Oder bereits direkt oder indirekt zu
+						<code class="var">child</code> hinzugefügt wurde
+					</li><li>
+						Falls der letzte Eintrag noch kein Makro hat,
+						wird dieser Eintrag verwendet
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
+					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdbool.h</span>&gt;</span><br/>
+					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
+					<span class="add">@add(<span class="macro-name">define cycle check</span>)</span><br/>
+					<span class="in1"></span><span class="type">bool</span> <span class="fn">isMacroInMacro</span>(<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">needle</span>,<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">haystack</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">needle</span>);</span><br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">haystack</span>);</span><br/>
+					<span class="in2"></span><span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">chaystack</span>) {</span><br/>
+
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define cycle check</span>)</span><br/>
 				</code></div>
 				<ul class="notes">
 					<li>
