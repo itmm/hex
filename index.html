@@ -1427,5 +1427,169 @@
 				</ul>
 			</div>
 		</div>
+		<h2>Macro-Collection</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="define">#define <span class="name">MACRO_SLOTS</span> 128</span><br/>
+					<br/>
+					<span class="in1"></span><span class="type">struct MacroMap</span> {<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macros</span><span class="type">[</span><br/>
+					<span class="in3"></span><span class="type">MACRO_SLOTS</span><br/>
+					<span class="in2"></span><span class="type">]</span>;<br/>
+					<span class="in1"></span>};<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Eine Kollektion von Makros ist ein Array von
+						Makro-Ketten
+					</li><li>
+						Alle Felder müssen mit
+						<code class="keyword">NULL</code> initialisiert
+						werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">void</span> <span class="fn">clearMacroMap</span>(<br/>
+					<span class="in2"></span><span class="type">struct MacroMap *</span><span class="var">map</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="type">struct Macro **</span><span class="var">cur</span> = <span class="var">map</span>-&gt;<span class="var">macros</span>;<br/>
+					<span class="in2"></span><span class="type">struct Macro **</span><span class="var">end</span> =<br/>
+					<span class="in3"></span><span class="var">cur</span> + <span class="var">MACRO_SLOTS</span>;<br/>
+					<span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+					<span class="in3"></span><span class="fn">freeMacro</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="keyword">NULL</span>;<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Um den Speicher freizugeben, wird jeder Slot
+						gelöscht
+					</li><li>
+						und auf <code class="keyword">NULL</code>
+						gesetzt um wieder verwendet zu werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">int</span> <span class="fn">calcHash</span>(<span class="type">const char *</span><span class="var">begin</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>) {<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
+					<span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span> = <span class="num">0xf1e2d3c4</span>;<br/>
+					<span class="in2"></span><span class="keyword">while</span> (*<span class="var">begin</span> &amp;&amp; <span class="var">begin</span> != <span class="var">end</span>) {<br/>
+					<span class="in3"></span><span class="var">hash</span> ^= *<span class="var">begin</span>++;<br/>
+					<span class="in3"></span><span class="var">hash</span> = (<span class="var">hash</span> &lt;&lt; 3) |<br/>
+					<span class="in4"></span>(<span class="var">hash</span> &gt;&gt; 29);<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span> % <span class="var">MACRO_SLOTS</span>;<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der Hash wird über den Namen des Makros erstellt
+					</li><li>
+						Der Name kann entweder durch ein Null-Byte
+						abgeschlossen werden
+					</li><li>
+						Oder ein Ende wird direkt angegeben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct Macro *</span><span class="fn">allocMacroInMap</span>(<br/>
+					<span class="in2"></span><span class="type">struct MacroMap *</span><span class="var">map</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> =<br/>
+					<span class="in3"></span><span class="fn">allocMacro</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">insert in slot</span>)</span>;<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="var">macro</span>;<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein neues Makro wird erstellt
+					</li><li>
+						Und in der Hash-Map abgelegt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">insert in slot</span>)</span><br/>
+					<span class="in1"></span><span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
+					<span class="in1"></span><span class="var">macro</span>-&gt;<span class="var">link</span> = <span class="var">map</span>-&gt;<span class="var">macros</span>[<span class="var">hash</span>];<br/>
+					<span class="in1"></span><span class="var">map</span>-&gt;<span class="var">macros</span>[<span class="var">hash</span>] = <span class="var">macro</span>;
+					<span class="end">@end(<span class="macro-name">insert in slot</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Makros werden im Slot eingefügt
+					</li><li>
+						Neue Makros überlagern alte Slots mit gleichem
+						Namen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct Macro *</span><span class="fn">findMacroInMap</span>(<br/>
+					<span class="in2"></span><span class="type">struct MacroMap *</span><span class="var">map</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
+					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> = <span class="fn">NULL</span>;<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">find macro in slot</span>)</span>;<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="var">macro</span>;<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Liefert das erste Makro mit dem übergebenen
+						Namen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">find macro in slot</span>)</span><br/>
+					<span class="in1"></span><span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
+					<span class="in1"></span><span class="var">macro</span> = <span class="var">map</span>-&gt;<span class="var">macros</span>[<span class="var">hash</span>];<br/>
+					<span class="in1"></span><span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">a</span> = <span class="var">begin</span>;<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">b</span> = <span class="var">macro</span>-&gt;<span class="var">name</span>;<br/>
+					<span class="in2"></span><span class="keyword">while</span> (<span class="var">a</span> != <span class="var">end</span>) {<br/>
+					<span class="in3"></span><span class="keyword">if</span> (*<span class="var">a</span>++ != *<span class="var">b</span>++) { <span class="keyword">break</span>; }<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in2"></span><span class="keyword">if</span> (<span class="var">a</span> == <span class="var">end</span> &amp;&amp; ! *<span class="var">b</span>) {<br/>
+					<span class="in3"></span><span class="keyword">return</span> <span class="var">macro</span>; }<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">find macro in slot</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Im passenden Hash-Slot werden die Namen der
+						Makros verglichen
+					</li>
+				</ul>
+			</div>
+		</div>
 	</body>
 </html>

@@ -1427,5 +1427,169 @@
 				</ul>
 			</div>
 		</div>
+		<h2>Macro-Collection</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					a{define macro}n{}
+					1{}<span class="define">#define <span class="name">MACRO_SLOTS</span> 128</span>n{}
+					n{}
+					1{}t{struct MacroMap} {n{}
+					2{}t{struct Macro *}v{macros}t{[}n{}
+					3{}t{MACRO_SLOTS}n{}
+					2{}t{]};n{}
+					1{}};n{}
+					x{define macro}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Eine Kollektion von Makros ist ein Array von
+						Makro-Ketten
+					</li><li>
+						Alle Felder müssen mit
+						<code class="keyword">NULL</code> initialisiert
+						werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{define macro}n{}
+					1{}t{void} f{clearMacroMap}(n{}
+					2{}t{struct MacroMap *}v{map}n{}
+					1{}) {n{}
+					2{}t{struct Macro **}v{cur} = v{map}-&gt;v{macros};n{}
+					2{}t{struct Macro **}v{end} =n{}
+					3{}v{cur} + v{MACRO_SLOTS};n{}
+					2{}k{for} (; v{cur} &lt; v{end}; ++v{cur}) {n{}
+					3{}f{freeMacro}(*v{cur}); *v{cur} = k{NULL};n{}
+					2{}}n{}
+					1{}}n{}
+					x{define macro}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Um den Speicher freizugeben, wird jeder Slot
+						gelöscht
+					</li><li>
+						und auf <code class="keyword">NULL</code>
+						gesetzt um wieder verwendet zu werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{define macro}n{}
+					1{}t{int} f{calcHash}(t{const char *}v{begin},n{}
+					2{}t{const char *}v{end}) {n{}
+					2{}f{ASSERT}(v{begin});n{}
+					2{}t{unsigned} v{hash} = n{0xf1e2d3c4};n{}
+					2{}k{while} (*v{begin} &amp;&amp; v{begin} != v{end}) {n{}
+					3{}v{hash} ^= *v{begin}++;n{}
+					3{}v{hash} = (v{hash} &lt;&lt; 3) |n{}
+					4{}(v{hash} &gt;&gt; 29);n{}
+					2{}}n{}
+					2{}k{return} v{hash} % v{MACRO_SLOTS};n{}
+					1{}}n{}
+					x{define macro}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der Hash wird über den Namen des Makros erstellt
+					</li><li>
+						Der Name kann entweder durch ein Null-Byte
+						abgeschlossen werden
+					</li><li>
+						Oder ein Ende wird direkt angegeben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{define macro}n{}
+					1{}t{struct Macro *}f{allocMacroInMap}(n{}
+					2{}t{struct MacroMap *}v{map},n{}
+					2{}t{const char *}v{begin},n{}
+					2{}t{const char *}v{end}n{}
+					1{}) {n{}
+					2{}f{ASSERT}(v{map});n{}
+					2{}t{struct Macro *}v{macro} =n{}
+					3{}f{allocMacro}(v{begin}, v{end});n{}
+					2{}e{insert in slot};n{}
+					2{}k{return} v{macro};n{}
+					1{}}n{}
+					x{define macro}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein neues Makro wird erstellt
+					</li><li>
+						Und in der Hash-Map abgelegt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{insert in slot}n{}
+					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});n{}
+					1{}v{macro}-&gt;v{link} = v{map}-&gt;v{macros}[v{hash}];n{}
+					1{}v{map}-&gt;v{macros}[v{hash}] = v{macro};
+					x{insert in slot}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Makros werden im Slot eingefügt
+					</li><li>
+						Neue Makros überlagern alte Slots mit gleichem
+						Namen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{define macro}n{}
+					1{}t{struct Macro *}f{findMacroInMap}(n{}
+					2{}t{struct MacroMap *}v{map},n{}
+					2{}t{const char *}v{begin},n{}
+					2{}t{const char *}v{end}n{}
+					1{}) {n{}
+					2{}f{ASSERT}(v{map});n{}
+					2{}t{struct Macro *}v{macro} = f{NULL};n{}
+					2{}e{find macro in slot};n{}
+					2{}k{return} v{macro};n{}
+					1{}}n{}
+					x{define macro}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Liefert das erste Makro mit dem übergebenen
+						Namen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{find macro in slot}n{}
+					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});n{}
+					1{}v{macro} = v{map}-&gt;v{macros}[v{hash}];n{}
+					1{}k{for} (; v{macro}; v{macro} = v{macro}-&gt;v{link}) {n{}
+					2{}t{const char *}v{a} = v{begin};n{}
+					2{}t{const char *}v{b} = v{macro}-&gt;v{name};n{}
+					2{}k{while} (v{a} != v{end}) {n{}
+					3{}k{if} (*v{a}++ != *v{b}++) { k{break}; }n{}
+					2{}}n{}
+					2{}k{if} (v{a} == v{end} &amp;&amp; ! *v{b}) {n{}
+					3{}k{return} v{macro}; }n{}
+					1{}}n{}
+					x{find macro in slot}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Im passenden Hash-Slot werden die Namen der
+						Makros verglichen
+					</li>
+				</ul>
+			</div>
+		</div>
 	</body>
 </html>

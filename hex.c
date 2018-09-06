@@ -355,6 +355,78 @@
 			);
 		}
 
+
+		#define MACRO_SLOTS 128
+
+		struct MacroMap {
+			struct Macro *macros[
+				MACRO_SLOTS
+			];
+		};
+
+		void clearMacroMap(
+			struct MacroMap *map
+		) {
+			struct Macro **cur = map->macros;
+			struct Macro **end =
+				cur + MACRO_SLOTS;
+			for (; cur < end; ++cur) {
+				freeMacro(*cur); *cur = NULL;
+			}
+		}
+
+		int calcHash(const char *begin,
+			const char *end) {
+			ASSERT(begin);
+			unsigned hash = 0xf1e2d3c4;
+			while (*begin && begin != end) {
+				hash ^= *begin++;
+				hash = (hash << 3) |
+					(hash >> 29);
+			}
+			return hash % MACRO_SLOTS;
+		}
+
+		struct Macro *allocMacroInMap(
+			struct MacroMap *map,
+			const char *begin,
+			const char *end
+		) {
+			ASSERT(map);
+			struct Macro *macro =
+				allocMacro(begin, end);
+			// @expand(insert in slot);
+				int hash = calcHash(begin, end);
+				macro->link = map->macros[hash];
+				map->macros[hash] = macro; 
+
+			return macro;
+		}
+
+		struct Macro *findMacroInMap(
+			struct MacroMap *map,
+			const char *begin,
+			const char *end
+		) {
+			ASSERT(map);
+			struct Macro *macro = NULL;
+			// @expand(find macro in slot);
+				int hash = calcHash(begin, end);
+				macro = map->macros[hash];
+				for (; macro; macro = macro->link) {
+					const char *a = begin;
+					const char *b = macro->name;
+					while (a != end) {
+						if (*a++ != *b++) { break; }
+					}
+					if (a == end && ! *b) {
+						return macro; }
+				}
+
+			return macro;
+		}
+
+
 int main(
 	int argc,
 	const char **argv
