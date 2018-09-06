@@ -1156,6 +1156,8 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Der Test Consumer fügt die übergegebenen Daten im
+						Buffer des Kontexts ein
 					</li>
 				</ul>
 			</div>
@@ -1165,13 +1167,17 @@
 					<span class="in1"></span><span class="type">struct TestConsumerContext *</span><span class="var">ctx</span> =<br/>
 					<span class="in2"></span><span class="var">context</span>;<br/>
 					<span class="in1"></span><span class="type">int</span> <span class="var">length</span> = <span class="var">end</span> - <span class="var">begin</span>;<br/>
-					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">ctx</span>-&gt;<span class="var">current</span> + <span class="var">length</span> &lt;= <span class="var">ctx</span>-&gt;<span class="var">end</span>);</br>
-					<span class="in1"></span><span class="fn">memcpy</span>(<span class="var">ctx</span>-&gt;<span class="var">current</span>, <span class="var">begin</span>, <span class="var">length</span>);</br>
-					<span class="in1"></span><span class="var">ctx</span>-&gt;<span class="var">current</span> += <span class="var">length</span>;</br>
+					<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+					<span class="in2"></span><span class="var">ctx</span>-&gt;<span class="var">current</span> + <span class="var">length</span> &lt;= <span class="var">ctx</span>-&gt;<span class="var">end</span><br/>
+					<span class="in1"></span>);<br/>
+					<span class="in1"></span><span class="fn">memcpy</span>(<span class="var">ctx</span>-&gt;<span class="var">current</span>, <span class="var">begin</span>, <span class="var">length</span>);<br/>
+					<span class="in1"></span><span class="var">ctx</span>-&gt;<span class="var">current</span> += <span class="var">length</span>;<br/>
 					<span class="end">@end(<span class="macro-name">add to test consumer</span>)</span>
 				</code></div>
 				<ul class="notes">
 					<li>
+						Wenn genügend Platz im Buffer ist, werden die
+						Bytes hineinkopiert
 					</li>
 				</ul>
 			</div>
@@ -1192,23 +1198,30 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Der Buffer wird direkt in der Struktur angelegt
+					</li><li>
+						Die Strukturen können nur auf dem Heap angelegt
+						werden
 					</li>
 				</ul>
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
 					<span class="add">@add(<span class="macro-name">init test consumer</span>)</span><br/>
-					<span class="in1"></span>
-					<span class="var">context</span>-&gt;<span class="var">current</span> =
+					<span class="in1"></span><span class="var">context</span>-&gt;<span class="var">current</span> =
 					<span class="var">context</span>-&gt;<span class="var">buffer</span>;<br/>
-					<span class="in1"></span>
-					<span class="var">context</span>-&gt;<span class="var">end</span> =
-					<span class="var">context</span>-&gt;<span class="var">buffer</span> +
-					<span class="var">size</span>;<br/>
+					<span class="in1"></span><span class="var">context</span>-&gt;<span class="var">end</span> =<br/>
+					<span class="in2"></span><span class="var">context</span>-&gt;<span class="var">buffer</span> + <span class="var">size</span>;<br/>
 					<span class="end">@end(<span class="macro-name">init test consumer</span>)</span>
 				</code></div>
 				<ul class="notes">
 					<li>
+						Zum schnellen Zugriff wird ein Zeiger auf das
+						aktuelle Ende und das Ende des Buffers
+						abgelegt
+					</li><li>
+						Die Größe des Buffers kann beim Einfügen nicht
+						überschritten werden
 					</li>
 				</ul>
 			</div>
@@ -1230,6 +1243,8 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Diese Hilfsfunktion prüft ob die Serialisierung
+						eines Makros der Erwartung entspricht
 					</li>
 				</ul>
 			</div>
@@ -1238,12 +1253,17 @@
 					<span class="add">@add(<span class="macro-name">serialize test macro</span>)</span><br/>
 					<span class="in1"></span><span class="fn">serializeMacro</span>(<span class="var">macro</span>,<br/>
 					<span class="in2"></span><span class="var">testConsumer</span>, <span class="var">context</span>);<br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">context</span>-&gt;<span class="var">current</span> -<br/>
+					<span class="in2"></span><span class="var">context</span>-&gt;<span class="var">buffer</span> == <span class="var">size</span>);<br/>
 					<span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">memcmp</span>(<span class="var">expected</span>,<br/>
 					<span class="in2"></span><span class="var">context</span>-&gt;<span class="var">buffer</span>, <span class="var">size</span>) == 0);<br/>
 					<span class="end">@end(<span class="macro-name">serialize test macro</span>)</span>
 				</code></div>
 				<ul class="notes">
 					<li>
+						Serialisiert das Makro
+					</li><li>
+						Der Buffer muss die erwarteten Werte enthalten
 					</li>
 				</ul>
 			</div>
@@ -1263,6 +1283,8 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Zu Testzwecken kann eine Null-terminierte
+						Zeichenkette hinzugefügt werden
 					</li>
 				</ul>
 			</div>

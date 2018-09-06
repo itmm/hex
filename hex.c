@@ -306,6 +306,8 @@
 				allocTestConsumerContext(size);
 			serializeMacro(macro,
 				testConsumer, context);
+			ASSERT(context->current -
+					context->buffer == size);
 			ASSERT(memcmp(expected,
 				context->buffer, size) == 0);
 			free(context);

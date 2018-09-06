@@ -1156,6 +1156,8 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Der Test Consumer fügt die übergegebenen Daten im
+						Buffer des Kontexts ein
 					</li>
 				</ul>
 			</div>
@@ -1165,13 +1167,17 @@
 					1{}t{struct TestConsumerContext *}v{ctx} =n{}
 					2{}v{context};n{}
 					1{}t{int} v{length} = v{end} - v{begin};n{}
-					1{}f{ASSERT}(v{ctx}-&gt;v{current} + v{length} &lt;= v{ctx}-&gt;v{end});</br>
-					1{}f{memcpy}(v{ctx}-&gt;v{current}, v{begin}, v{length});</br>
-					1{}v{ctx}-&gt;v{current} += v{length};</br>
+					1{}f{ASSERT}(n{}
+					2{}v{ctx}-&gt;v{current} + v{length} &lt;= v{ctx}-&gt;v{end}n{}
+					1{});n{}
+					1{}f{memcpy}(v{ctx}-&gt;v{current}, v{begin}, v{length});n{}
+					1{}v{ctx}-&gt;v{current} += v{length};n{}
 					x{add to test consumer}
 				</code></div>
 				<ul class="notes">
 					<li>
+						Wenn genügend Platz im Buffer ist, werden die
+						Bytes hineinkopiert
 					</li>
 				</ul>
 			</div>
@@ -1192,23 +1198,30 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Der Buffer wird direkt in der Struktur angelegt
+					</li><li>
+						Die Strukturen können nur auf dem Heap angelegt
+						werden
 					</li>
 				</ul>
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
 					a{init test consumer}n{}
-					1{}
-					v{context}-&gt;v{current} =
+					1{}v{context}-&gt;v{current} =
 					v{context}-&gt;v{buffer};n{}
-					1{}
-					v{context}-&gt;v{end} =
-					v{context}-&gt;v{buffer} +
-					v{size};n{}
+					1{}v{context}-&gt;v{end} =n{}
+					2{}v{context}-&gt;v{buffer} + v{size};n{}
 					x{init test consumer}
 				</code></div>
 				<ul class="notes">
 					<li>
+						Zum schnellen Zugriff wird ein Zeiger auf das
+						aktuelle Ende und das Ende des Buffers
+						abgelegt
+					</li><li>
+						Die Größe des Buffers kann beim Einfügen nicht
+						überschritten werden
 					</li>
 				</ul>
 			</div>
@@ -1230,6 +1243,8 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Diese Hilfsfunktion prüft ob die Serialisierung
+						eines Makros der Erwartung entspricht
 					</li>
 				</ul>
 			</div>
@@ -1238,12 +1253,17 @@
 					a{serialize test macro}n{}
 					1{}f{serializeMacro}(v{macro},n{}
 					2{}v{testConsumer}, v{context});n{}
+					1{}f{ASSERT}(v{context}-&gt;v{current} -n{}
+					2{}v{context}-&gt;v{buffer} == v{size});n{}
 					1{}f{ASSERT}(f{memcmp}(v{expected},n{}
 					2{}v{context}-&gt;v{buffer}, v{size}) == 0);n{}
 					x{serialize test macro}
 				</code></div>
 				<ul class="notes">
 					<li>
+						Serialisiert das Makro
+					</li><li>
+						Der Buffer muss die erwarteten Werte enthalten
 					</li>
 				</ul>
 			</div>
@@ -1263,6 +1283,8 @@
 				</code></div>
 				<ul class="notes">
 					<li>
+						Zu Testzwecken kann eine Null-terminierte
+						Zeichenkette hinzugefügt werden
 					</li>
 				</ul>
 			</div>
