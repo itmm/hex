@@ -310,7 +310,16 @@
 				context->buffer, size) == 0);
 			free(context);
 		}
-	
+
+		void addStringToMacro(
+			struct Macro *macro,
+			const char *str
+		) {
+			int size = strlen(str);
+			addBytesToMacro(
+				macro, str, str + size
+			);
+		}
 
 int main(
 	int argc,
@@ -425,6 +434,26 @@ int main(
 						macro->lastEntry == second
 					  );
 				freeMacro(macro);
+			}
+			{
+				struct Macro *macro =
+					allocTestMacro("");
+				addStringToMacro(macro, "abc");
+				addStringToMacro(macro, "def");
+				testMacro(macro, "abcdef");
+				freeMacro(macro);
+			}
+			{
+				struct Macro *a =
+					allocTestMacro("");
+				struct Macro *b =
+					allocTestMacro("");
+				addStringToMacro(a, "abc");
+				addMacroToMacro(b, a);
+				addStringToMacro(b, "def");
+				addMacroToMacro(b, a);
+				testMacro(b, "abcdefabc");
+				freeMacro(a); freeMacro(b);
 			}
 
 
