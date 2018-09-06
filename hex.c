@@ -212,7 +212,53 @@
 			ASSERT(child);
 			// @expand(avoid macro cycles);
 			// @expand(reuse last entry);
+				if (macro->firstEntry &&
+					! macro->lastEntry->macro
+				) {
+					macro->lastEntry->macro = child;
+					return;
+				}
+
 			// @expand(add macro entry);
+				struct MacroEntry *entry =
+					allocMacroEntry(
+						child, NULL, NULL
+					);
+				addEntryToMacro(macro, entry);
+
+		}
+
+		typedef void Consumer(
+			const char *begin,
+			const char *end,
+			void *context
+		);
+
+		void serializeMacro(
+			struct Macro *macro,
+			Consumer consumer,
+			void *context
+		) {
+			ASSERT(macro);
+			ASSERT(consumer);
+			// @expand(iterate entries);
+				struct MacroEntry *entry =
+					macro->firstEntry;
+				for (; entry; entry = entry->link) {
+					if (getMacroEntryValueSize(entry)) {
+						consumer(
+							entry->value,
+							entry->valueEnd,
+							context
+						);
+					}
+
+					if (entry->macro) {
+						serializeMacro(entry->macro,
+							consumer, context
+						);
+					}
+				}
 		}
 
 int main(

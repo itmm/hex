@@ -998,6 +998,138 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">reuse last entry</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> &amp;&amp;<br/>
+					<span class="in2"></span>! <span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">macro</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">macro</span> = <span class="var">child</span>;<br/>
+					<span class="in2"></span><span class="keyword">return</span>;<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">reuse last entry</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn das Makro-Attribut im letzten Eintrag noch
+						nicht benutzt wird, kann dieses verwendet werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">add macro entry</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in2"></span><span class="fn">allocMacroEntry</span>(<br/>
+					<span class="in3"></span><span class="var">child</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in1"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+					<span class="end">@end(<span class="macro-name">add macro entry</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Sonst muss ein neuer Eintrag mit dem Makro
+						angelegt werden
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Makros serialisieren</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">typedef</span> <span class="type">void</span> <span class="type">Consumer</span>(<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+					<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>,<br/>
+					<span class="in2"></span><span class="type">void *</span><span class="var">context</span><br/>
+					<span class="in1"></span>);<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						<span class="type">Callback</span> Instanzen
+						werden als Callbacks verwendet, um Byte-Folgen
+						zu konsumieren
+					</li><li>
+						Ein freier Kontext-Parameter wird mit übergeben
+					</li><li>
+						Damit lassen sich objekt-ähnliche Strukturen
+						realisieren
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
+					<span class="in1"></span><span class="type">void</span> <span class="fn">serializeMacro</span>(<br/>
+  					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro,</span><br/>
+  					<span class="in2"></span><span class="type">Consumer</span> <span class="var">consumer</span>,<br/>
+  					<span class="in2"></span><span class="type">void *</span> <span class="var">context</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);</span><br/>
+					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">consumer</span>);</span><br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">iterate entries</span>);</span><br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">define macro</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Jeder Eintrag wird nacheinander bearbeitet
+					</li><li>
+						Makros in Einträgen werden rekursiv ausgegeben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">iterate entries</span>)</span><br/>
+  					<span class="in1"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+  					<span class="in2"></span><span class="var">macro</span>-&gt;<span class="var">firstEntry</span>;<br/>
+					<span class="in1"></span><span class="keyword">for</span> (; <span class="var">entry</span>; <span class="var">entry</span> = <span class="var">entry</span>-&gt;<span class="var">link</span>) {<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">serialize bytes</span>);</span><br/>
+					<span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>-&gt;<span class="var">macro</span>) {</span><br/>
+					<span class="in3"></span><span class="fn">serializeMacro</span>(<span class="var">entry</span>-&gt;<span class="var">macro</span>,<br/>
+ 					<span class="in4"></span><span class="var">consumer</span>, <span class="var">context</span><br/>
+					<span class="in3"></span>);<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">iterate entries</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Für jeden Eintrag werden zuerst die Bytes
+						ausgegeben
+					</li><li>
+						Dann wird rekursiv das Makro ausgegeben, falls
+						vorhanden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">serialize bytes</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">if</span> (<span class="fn">getMacroEntryValueSize</span>(<span class="var">entry</span>)) {<br/>
+					<span class="in2"></span><span class="var">consumer</span>(<br/>
+	   				<span class="in3"></span><span class="var">entry</span>-&gt;<span class="var">value</span>,<br/>
+					<span class="in3"></span><span class="var">entry</span>-&gt;<span class="var">valueEnd</span>,<br/>
+					<span class="in3"></span><span class="var">context</span><br/>
+					<span class="in2"></span>);<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span
+							class="macro-name">serialize bytes</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn es Bytes in dem Eintrag gibt, wird der
+						<code class="var">consumer</code> mit ihnen
+						aufgerufen
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>Zykel im Makro-Graph finden</h2>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
 					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
 					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdbool.h</span>&gt;</span><br/>
 					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
