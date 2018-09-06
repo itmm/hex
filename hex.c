@@ -261,6 +261,57 @@
 				}
 		}
 
+		struct TestConsumerContext {
+			char *current;
+			const char *end;
+			char buffer[];
+		};
+
+		void testConsumer (
+			const char *begin,
+			const char *end,
+			void *context
+		) {
+			ASSERT(begin);
+			ASSERT(begin <= end);
+			ASSERT(context);
+			// @expand(add to test consumer);
+				struct TestConsumerContext *ctx =
+					context;
+				int length = end - begin;
+				ASSERT(ctx->current + length <= ctx->end);
+				memcpy(ctx->current, begin, length);
+				ctx->current += length;
+		}
+
+		struct TestConsumerContext *
+		allocTestConsumerContext(int size) {
+			ASSERT(size >= 0);
+			struct TestConsumerContext *
+				context = malloc(size + sizeof(
+							struct TestConsumerContext));
+			ASSERT(context);
+			// @expand(init test consumer);
+				 context->current = context->buffer;
+				 context->end = context->buffer + size;
+
+			return context;
+		}
+
+		void testMacro(struct Macro *macro,
+			const char *expected
+		) {
+			int size = strlen(expected);
+			struct TestConsumerContext *context =
+				allocTestConsumerContext(size);
+			serializeMacro(macro,
+				testConsumer, context);
+			ASSERT(memcmp(expected,
+				context->buffer, size) == 0);
+			free(context);
+		}
+	
+
 int main(
 	int argc,
 	const char **argv
