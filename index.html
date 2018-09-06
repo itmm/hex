@@ -1334,9 +1334,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-				<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
-				<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdbool.h</span>&gt;</span><br/>
+					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
+					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdbool.h</span>&gt;</span><br/>
 					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Boolesche Datenwerte werden benötigt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
 					<span class="add">@add(<span class="macro-name">define cycle check</span>)</span><br/>
 					<span class="in1"></span><span class="type">bool</span> <span class="fn">isMacroInMacro</span>(<br/>
 					<span class="in2"></span><span class="type">struct Macro *</span><span class="var">needle</span>,<br/>
@@ -1344,12 +1353,76 @@
 					<span class="in1"></span>) {<br/>
 					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">needle</span>);<br/>
 					<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">haystack</span>);<br/>
-					<span class="in2"></span><span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">chaystack</span>) {<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">check cycle macro</span>)</span>;<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">check cycle entries</span>)</span>;<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="keyword">false</span>;<br/>
 					<span class="in1"></span>}<br/>
-					<span class="end">@end(<span class="macro-name">define cycle check</span>)</span><br/>
+					<span class="end">@end(<span class="macro-name">define cycle check</span>)</span>
 				</code></div>
 				<ul class="notes">
 					<li>
+						Wenn das Makro das gesuchte ist, dann wurde ein
+						Zykel gefunden
+					</li><li>
+						Danach wird über alle Einträge gesucht
+					</li><li>
+						Wenn das Makro dort nicht gefunden wurde, dann
+						ist es nicht enthalten
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">avoid macro cycles</span>)</span><br/>
+					<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="fn">isMacroInMacro</span>(<br/>
+					<span class="in2"></span><span class="var">macro</span>, <span class="var">child</span><br/>
+					<span class="in1"></span>));<br/>
+					<span class="end">@end(<span class="macro-name">avoid macro cycles</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein Makro darf nur hinzugefügt werden, wenn es
+						den Container nict bereits enthält
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">check cycle macro</span>)</span><br/>
+					<span class="in1"></span><span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">haystack</span>) {<br/>
+					<span class="in2"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">check cycle macro</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn der Container selbst das gesuchte Makro ist,
+						liefert die Funktion
+						<code class="keyword">true</code> zurück
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">check cycle entries</span>)</span><br/>
+					<span class="in1"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
+					<span class="in2"></span><span class="var">haystack</span>-&gt;<span class="var">firstEntry</span>;<br/>
+					<span class="in1"></span><span class="keyword">for</span> (; <span class="var">entry</span>; <span class="var">entry</span> = <span class="var">entry</span>-><span class="var">link</span>) {<br/>
+					<span class="in2"></span><span class="keyword">if</span> (! <span class="var">entry</span>-&gt;<span class="var">macro</span>) { <span class="keyword">continue</span>; }<br/>
+					<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isMacroInMacro</span>(<br/>
+					<span class="in3"></span><span class="var">needle</span>, <span class="var">entry</span>-&gt;<span class="var">macro</span><br/>
+					<span class="in2"></span>)) {<br/>
+					<span class="in3"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+					<span class="in2"></span>}<br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">check cycle entries</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Alle Makros in den Einträgen werden rekursiv
+						untersucht
+					</li><li>
+						Damit wird der ganze Graph durchsucht
 					</li>
 				</ul>
 			</div>

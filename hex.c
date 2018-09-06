@@ -9,6 +9,8 @@
 			struct MacroEntry *entry
 		);
 
+		#include <stdbool.h>
+
 	// @expand(define logging);
 		#define ASSERT(COND) \
 			if (! (COND)) { \
@@ -204,6 +206,32 @@
 		}
 
 		// @expand(define cycle check);
+			bool isMacroInMacro(
+				struct Macro *needle,
+				struct Macro *haystack
+			) {
+				ASSERT(needle);
+				ASSERT(haystack);
+				// @expand(check cycle macro);
+					if (needle == haystack) {
+						return true;
+					}
+
+				// @expand(check cycle entries);
+					struct MacroEntry *entry =
+						haystack->firstEntry;
+					for (; entry; entry = entry->link) {
+						if (! entry->macro) { continue; }
+						if (isMacroInMacro(
+							needle, entry->macro
+						)) {
+							return true;
+						}
+					}
+
+				return false;
+			}
+
 		void addMacroToMacro(
 			struct Macro *macro,
 			struct Macro *child
@@ -211,6 +239,10 @@
 			ASSERT(macro);
 			ASSERT(child);
 			// @expand(avoid macro cycles);
+				ASSERT(! isMacroInMacro(
+					macro, child
+				));
+
 			// @expand(reuse last entry);
 				if (macro->firstEntry &&
 					! macro->lastEntry->macro

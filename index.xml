@@ -1334,9 +1334,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-				a{includes}n{}
-				1{}i{stdbool.h}n{}
+					a{includes}n{}
+					1{}i{stdbool.h}n{}
 					x{includes}n{}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Boolesche Datenwerte werden benötigt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
 					a{define cycle check}n{}
 					1{}t{bool} f{isMacroInMacro}(n{}
 					2{}t{struct Macro *}v{needle},n{}
@@ -1344,12 +1353,76 @@
 					1{}) {n{}
 					2{}f{ASSERT}(v{needle});n{}
 					2{}f{ASSERT}(v{haystack});n{}
-					2{}k{if} (v{needle} == v{chaystack}) {n{}
+					2{}e{check cycle macro};n{}
+					2{}e{check cycle entries};n{}
+					2{}k{return} k{false};n{}
 					1{}}n{}
-					x{define cycle check}n{}
+					x{define cycle check}
 				</code></div>
 				<ul class="notes">
 					<li>
+						Wenn das Makro das gesuchte ist, dann wurde ein
+						Zykel gefunden
+					</li><li>
+						Danach wird über alle Einträge gesucht
+					</li><li>
+						Wenn das Makro dort nicht gefunden wurde, dann
+						ist es nicht enthalten
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{avoid macro cycles}n{}
+					1{}f{ASSERT}(! f{isMacroInMacro}(n{}
+					2{}v{macro}, v{child}n{}
+					1{}));n{}
+					x{avoid macro cycles}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Ein Makro darf nur hinzugefügt werden, wenn es
+						den Container nict bereits enthält
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{check cycle macro}n{}
+					1{}k{if} (v{needle} == v{haystack}) {n{}
+					2{}k{return} k{true};n{}
+					1{}}n{}
+					x{check cycle macro}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn der Container selbst das gesuchte Makro ist,
+						liefert die Funktion
+						<code class="keyword">true</code> zurück
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{check cycle entries}n{}
+					1{}t{struct MacroEntry *}v{entry} =n{}
+					2{}v{haystack}-&gt;v{firstEntry};n{}
+					1{}k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {n{}
+					2{}k{if} (! v{entry}-&gt;v{macro}) { k{continue}; }n{}
+					2{}k{if} (f{isMacroInMacro}(n{}
+					3{}v{needle}, v{entry}-&gt;v{macro}n{}
+					2{})) {n{}
+					3{}k{return} k{true};n{}
+					2{}}n{}
+					1{}}n{}
+					x{check cycle entries}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Alle Makros in den Einträgen werden rekursiv
+						untersucht
+					</li><li>
+						Damit wird der ganze Graph durchsucht
 					</li>
 				</ul>
 			</div>
