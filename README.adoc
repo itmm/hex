@@ -1,0 +1,20 @@
+HEX
+===
+
+`hex` ist eine Slideshow, die den Sourcecode enthält, um aus einem
+XML-Dokument sowohl eine Slideshow (in HTML), als auch ein ausführbares
+Programm zu erstellen.
+
+Klingt alles ein wenig nach Münchhausen? Ist es auch ;o)
+
+Der einfachste Zugang ist vermutlich über die
+https://itmm.github.io/hex/[Slideshow].
+
+Gerne sammmle ich Kommentare und arbeite sie ein.
+
+Die wichtigste offene Frage ist: Wie viel Code sollte maximal auf eine
+Folie kommen.
+Ist es zu viel, so wird die Folie unübersichtlich.
+Ist es zu wenig, verteilt sich Funktionalität auf zu viele Folien.
+Und es wird auch wieder unübersichtlich.
+
