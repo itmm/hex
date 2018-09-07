@@ -1649,5 +1649,169 @@
 				</ul>
 			</div>
 		</div>
+		<h1>Read Input Files</h1>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					a{read source file}b{}
+					1{}{b{}
+					2{}e{additional read vars};b{}
+					2{}t{int} v{last} = f{fgetc}(v{input});b{}
+					2{}t{int} v{ch} = f{fgetc}(v{input});b{}
+					2{}k{while} (v{ch} != v{EOF}) {b{}
+					3{}e{process current char};b{}
+					3{}v{last} = v{ch}; v{ch} = f{fgetc}(v{input});b{}
+					2{}}b{}
+					1{}}b{}
+					x{read source file}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Neben dem aktuellen Zeichen wird auch das letzte
+						Zeichen aufgehoben
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{process current char}b{}
+					1{}k{switch} (v{ch}) {b{}
+					2{}k{case} s{'{'}:b{}
+					3{}e{process open brace};b{}
+					3{}k{break};b{}
+					2{}k{case} '}':b{}
+					3{}e{process close brace};b{}
+					3{}k{break};b{}
+					2{}k{default}:b{}
+					3{}e{process other char};b{}
+					1{}}b{}
+					x{process current char}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Beim Parsen kommt es nur auf das Öffnen und
+						Schließen von Mengenklammern an
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{additional read vars}b{}
+					1{}t{struct Macro *} v{macro} = k{NULL};b{}
+					x{additional read vars}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wir unterscheiden, ob wir in einem Code-Block
+						sind, oder außerhalb
+					</li><li>
+						In einem Code sind wir sogar in einem Makro,
+						dessen Inhalt gelesen wird
+					</li><li>
+						Am Anfang sind wir außerhalb eines Code-Blocks
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{additional read vars}b{}
+					1{}t{char} v{openCh} = s{'\0'};b{}
+					x{additional read vars}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der Befehl vor einer öffnenden Mengenklammer
+						wird in dieser Variable zwischengespeichert
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{additional read vars}b{}
+					1{}t{char} v{name}t{[128]};b{}
+					1{}t{char *}v{nameCur} = k{NULL};b{}
+					1{}t{const char *}v{nameEnd} = v{name} +b{}
+					2{}k{sizeof}(v{name});b{}
+					x{additional read vars}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn <code class="var">nameCur</code> gesetzt
+						ist, dann wird ein Name in Buffer gelesen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{process close brace} {b{}
+					1{}k{if} (v{nameCur}) {b{}
+					2{}e{process macro name};b{}
+					2{}v{nameCur} = k{NULL};b{}
+					1{}}b{}
+					} x{process close brace}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Bei einer schließenden Mengenklammer wird der
+						Makro-Name ausgewertet
+					</li><li>
+						Danach wird der Namenszeiger zurückgesetzt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{process other char} {b{}
+					1{}k{if} (v{nameCur}) {b{}
+					2{}f{ASSERT}(v{nameCur} &lt; v{nameEnd});b{}
+					2{}*v{nameCur}++ = v{ch};b{}
+					2{}k{break};b{}
+					1{}}b{}
+					} x{process other char}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn ein Name geparst wird, dann der Namensbuffer
+						entsprechend erweitert
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{process other char} {b{}
+					1{}k{if} (v{macro}) {b{}
+					2{}f{putchar}(v{last});b{}
+					1{}}b{}
+					} x{process other char}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn es ein aktuelles Makro gibt, dann müssen
+						sonstige Zeichen dort angefügt werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{process open brace} {b{}
+					1{}k{if} (! v{macro}) {b{}
+					2{}k{if} (v{last} == s{'a'}) {b{}
+					3{}v{openCh} = v{last};b{}
+					3{}v{nameCur} = v{name};b{}
+					2{}}b{}
+					1{}}b{}
+					} x{process open brace}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Wenn außerhalb eines Makros die Folge `a`,`{`
+						gelesen wird, dann beginnt ein `@add` Fragment
+					</li><li>
+						Es folgt der Name des Makros bis zum nächsten
+						`}`
+					</li>
+				</ul>
+			</div>
+		</div>
 	</body>
 </html>

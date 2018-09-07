@@ -568,6 +568,61 @@ int main(
 		FILE *input = stdin;
 
 	// @expand(process source file);
+		{
+			// @expand(additional read vars);
+				struct Macro *macro = NULL;
+				char openCh = '\0';
+				char name[128];
+				char *nameCur = NULL;
+				const char *nameEnd = name +
+					sizeof(name);
+
+			int last = fgetc(input);
+			int ch = fgetc(input);
+			while (ch != EOF) {
+				// @expand(process current char);
+					switch (ch) {
+						case '{':
+							// @expand(process open brace);
+							{
+								if (! macro) {
+									if (last == 'a') {
+										openCh = last;
+										nameCur = name;
+									}
+								}
+							}
+							break;
+						case '}':
+							// @expand(process close brace);
+							{
+								if (nameCur) {
+									// @expand(process macro name);
+									nameCur = NULL;
+								}
+							}
+							break;
+						default:
+							// @expand(process other char)
+							{
+								if (nameCur) {
+									ASSERT(nameCur < nameEnd);
+									*nameCur++ = ch;
+									break;
+								}
+							}
+							{
+								if (macro) {
+									putchar(last);
+								}
+							}
+							;
+					}
+
+				last = ch; ch = fgetc(input);
+			}
+		}
+
 	// @expand(write HTML file);
 	// @expand(serialize fragments);
 	// @expand(compile program);

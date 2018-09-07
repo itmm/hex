@@ -3,7 +3,7 @@ CFLAGS += -Wall -std=c99
 .PHONY: all clean
 
 all: index.html hex
-	./hex
+	./hex <index.xml
 
 hex: hex.c
 
