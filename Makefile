@@ -14,7 +14,7 @@ index.html: index.xml
 		-e 's/3{}/<span class="in3"><\/span>/g' \
 		-e 's/4{}/<span class="in4"><\/span>/g' \
 		-e 's/4{}/<span class="in4"><\/span>/g' \
-		-e 's/n{}/<br\/>/g' \
+		-e 's/b{}/<br\/>/g' \
 		-e 's/f{\([^}]*\)}/<span class="fn">\1<\/span>/g' \
 		-e 's/v{\([^}]*\)}/<span class="var">\1<\/span>/g' \
 		-e 's/s{\([^}]*\)}/<span class="str">\1<\/span>/g' \

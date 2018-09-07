@@ -79,18 +79,35 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					e{global elements}n{}
-					n{}
-					t{int} f{main}(n{}
-					1{}t{int} v{argc},n{}
-					1{}t{const char **}v{argv}n{}
-					) {n{}
-					1{}e{perform unit-tests};n{}
-					1{}e{process arguments};n{}
-					1{}e{process HTML file};n{}
-					1{}e{serialize fragments};n{}
-					1{}e{compile program};n{}
-					}
+					a{MAIN}b{}
+					1{}e{global elements}b{}
+					1{}t{int} f{main}(b{}
+					2{}t{int} v{argc}, t{const char **}v{argv}b{}
+					1{}) {b{}
+					2{}e{main body}b{}
+					1{}}b{}
+					x{MAIN}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Das Hauptprogramm besteht aus der
+						<code lang="fn">main</code>-Funktion
+					</li><li>
+						Zusätzlich müssen Objekte im globalen Scope
+						definiert werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{main body}b{}
+					1{}e{perform unit-tests};b{}
+					1{}e{process arguments};b{}
+					1{}e{read source file};b{}
+					1{}e{write HTML file};b{}
+					1{}e{serialize fragments};b{}
+					1{}e{compile program};b{}
+					e{main body}
 				</code></div>
 				<ul class="notes">
 					<li>
@@ -130,15 +147,12 @@
 					</li>
 				</ul>
 			</div>
-		</div>
-		<h1>Makros</h1>
-		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{global elements}n{}
-					1{}e{includes};n{}
-					1{}e{define logging};n{}
-					1{}e{define macro};n{}
+					a{global elements}b{}
+					1{}e{includes};b{}
+					1{}e{define logging};b{}
+					1{}e{forward declarations};b{}
 					x{global elements}
 				</code></div>
 				<ul class="notes">
@@ -148,23 +162,71 @@
 					</li><li>
 						Auch müssen Macros für das Logging vor den
 						Funktionen definiert werden, die sie verwenden
-					</li><li>
-						Makros sind global sichtbare Strukturen.
-						Und das daraus resultiernde Programm übersetzt
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h1>Minimale Vorbereitung für das Parsen</h1>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					a{includes}b{}
+					1{}i{stdio.h}b{}
+					x{includes}b{}
+					b{}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Standard File-Funktionen werden vom Programm
+						benötigt
 					</li>
 				</ul>
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct MacroEntry};n{}
-					n{}
-					1{}t{struct Macro} {n{}
-					2{}t{struct Macro *}v{link};n{}
-					2{}t{struct MacroEntry *}v{firstEntry};n{}
-					2{}t{struct MacroEntry *}v{lastEntry};n{}
-					2{}t{char }v{name}t{[]};n{}
-					1{}};n{}
+					a{process arguments}b{}
+					1{}t{FILE *}v{input} = v{stdin};b{}
+					x{process arguments}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der Source-Code für die Slideware muss aus einer
+						Datei geladen werden
+					</li><li>
+						Der Name kann über die Kommandozeile gesetzt
+						werden
+					</li><li>
+						Aber bis das implementiert ist, nehmen wird
+						eine sinnvolle Vorgabe
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h1>Makros</h1>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					a{global elements}b{}
+					1{}e{define macro};b{}
+					x{global elements}
+				</code></div>
+				<ul class="notes">
+					<li>
+						Makros sind global sichtbare Strukturen
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					a{define macro}b{}
+					1{}t{struct MacroEntry};b{}
+					b{}
+					1{}t{struct Macro} {b{}
+					2{}t{struct Macro *}v{link};b{}
+					2{}t{struct MacroEntry *}v{firstEntry};b{}
+					2{}t{struct MacroEntry *}v{lastEntry};b{}
+					2{}t{char }v{name}t{[]};b{}
+					1{}};b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -185,8 +247,8 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{includes}n{}
-					1{}i{stdlib.h}n{}
+					a{includes}b{}
+					1{}i{stdlib.h}b{}
 					x{includes}
 				</code></div>
 				<ul class="notes">
@@ -201,18 +263,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct Macro *}f{allocMacro}(n{}
-					2{}t{const char *}v{nameBegin},n{}
-					2{}t{const char *}v{nameEnd}n{}
-					1{}) {n{}
-					2{}t{struct Macro *}v{result} = k{NULL};n{}
-					2{}e{allocate macro on heap};n{}
-					2{}v{result}-&gt;v{link} = k{NULL};n{}
-					2{}v{result}-&gt;v{firstEntry} = k{NULL};n{}
-					2{}e{copy macro name};n{}
-					2{}k{return} v{result};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct Macro *}f{allocMacro}(b{}
+					2{}t{const char *}v{nameBegin},b{}
+					2{}t{const char *}v{nameEnd}b{}
+					1{}) {b{}
+					2{}t{struct Macro *}v{result} = k{NULL};b{}
+					2{}e{allocate macro on heap};b{}
+					2{}v{result}-&gt;v{link} = k{NULL};b{}
+					2{}v{result}-&gt;v{firstEntry} = k{NULL};b{}
+					2{}e{copy macro name};b{}
+					2{}k{return} v{result};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -231,18 +293,14 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{includes}n{}
-					1{}i{stdio.h}n{}
-					x{includes}n{}
-					n{}
-					a{define logging}n{}
-					1{}<span class="define">#define <span class="name">ASSERT</span>(v{COND}) \</span>n{}
-					2{}<span class="define">k{if} (! (v{COND})) {\ </span>n{}
-					3{}<span class="define">f{fprintf}(v{stderr}, \</span>n{}
-					4{}<span class="define">s{"%s:%d FAILED\n"}, \</span>n{}
-					4{}<span class="define">__FILE__, __LINE__); \</span>n{}
-					3{}<span class="define">f{exit}(v{EXIT_FAILURE}); \</span>n{}
-					2{}<span class="define">}</span>n{}
+					a{define logging}b{}
+					1{}<span class="define">#define <span class="name">ASSERT</span>(v{COND}) \</span>b{}
+					2{}<span class="define">k{if} (! (v{COND})) {\ </span>b{}
+					3{}<span class="define">f{fprintf}(v{stderr}, \</span>b{}
+					4{}<span class="define">s{"%s:%d FAILED\n"}, \</span>b{}
+					4{}<span class="define">__FILE__, __LINE__); \</span>b{}
+					3{}<span class="define">f{exit}(v{EXIT_FAILURE}); \</span>b{}
+					2{}<span class="define">}</span>b{}
 					x{define logging}
 				</code></div>
 				<ul class="notes">
@@ -258,15 +316,15 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{allocate macro on heap}n{}
-					1{}f{ASSERT}(v{nameBegin});n{}
-					1{}f{ASSERT}(v{nameBegin} &lt;= v{nameEnd});n{}
-					1{}t{int} v{nameLength} =n{}
-  					2{}v{nameEnd} - v{nameBegin};n{}
-					1{}t{int} v{macroSize} = k{sizeof}(t{struct Macro})n{}
-   					2{}+ v{nameLength} + 1;n{}
-					1{}v{result} = v{malloc}(v{macroSize});n{}
-					1{}f{ASSERT}(v{result});n{}
+					a{allocate macro on heap}b{}
+					1{}f{ASSERT}(v{nameBegin});b{}
+					1{}f{ASSERT}(v{nameBegin} &lt;= v{nameEnd});b{}
+					1{}t{int} v{nameLength} =b{}
+  					2{}v{nameEnd} - v{nameBegin};b{}
+					1{}t{int} v{macroSize} = k{sizeof}(t{struct Macro})b{}
+   					2{}+ v{nameLength} + 1;b{}
+					1{}v{result} = v{malloc}(v{macroSize});b{}
+					1{}f{ASSERT}(v{result});b{}
 					x{allocate macro on heap}
 				</code></div>
 				<ul class="notes">
@@ -285,16 +343,16 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{includes}n{}
-					1{}i{string.h}n{}
-					x{includes}n{}
-					n{}
-					a{copy macro name}n{}
-					1{}f{memcpy}(n{}
-					2{}v{result}-&gt;v{name}, v{nameBegin},n{}
-		 			2{}v{nameLength}n{}
-					1{});n{}
-					1{}v{result}-&gt;v{name}[v{nameLength}] = s{'\0'};n{}
+					a{includes}b{}
+					1{}i{string.h}b{}
+					x{includes}b{}
+					b{}
+					a{copy macro name}b{}
+					1{}f{memcpy}(b{}
+					2{}v{result}-&gt;v{name}, v{nameBegin},b{}
+		 			2{}v{nameLength}b{}
+					1{});b{}
+					1{}v{result}-&gt;v{name}[v{nameLength}] = s{'\0'};b{}
 					x{copy macro name}
 				</code></div>
 				<ul class="notes">
@@ -310,18 +368,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}k{void} f{freeMacro}(n{}
-					2{}t{struct Macro *}v{macro}n{}
-					1{}) {n{}
-					2{}k{while} (v{macro}) {n{}
-					3{}t{struct Macro *}v{link} =n{}
-					4{}v{macro}-&gt;v{link};n{}
-					3{}e{free macros entries};n{}
-					3{}f{free}(v{macro});n{}
-					3{}v{macro} = v{link};n{}
-					2{}}n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}k{void} f{freeMacro}(b{}
+					2{}t{struct Macro *}v{macro}b{}
+					1{}) {b{}
+					2{}k{while} (v{macro}) {b{}
+					3{}t{struct Macro *}v{link} =b{}
+					4{}v{macro}-&gt;v{link};b{}
+					3{}e{free macros entries};b{}
+					3{}f{free}(v{macro});b{}
+					3{}v{macro} = v{link};b{}
+					2{}}b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -339,18 +397,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{perform unit tests}n{}
-					1{}e{macro unit tests};n{}
-					x{perform unit tests}n{}
-					n{}
-					a{define macro}n{}
-					1{}t{struct Macro *}f{allocTestMacro}(n{}
-					2{}t{const char *}v{name}n{}
-					1{}) {n{}
-					2{}k{return} f{allocMacro}(n{}
-					3{}v{name}, v{name} + f{strlen}(v{name})n{}
-					2{});n{}
-					1{}}n{}
+					a{perform unit tests}b{}
+					1{}e{macro unit tests};b{}
+					x{perform unit tests}b{}
+					b{}
+					a{define macro}b{}
+					1{}t{struct Macro *}f{allocTestMacro}(b{}
+					2{}t{const char *}v{name}b{}
+					1{}) {b{}
+					2{}k{return} f{allocMacro}(b{}
+					3{}v{name}, v{name} + f{strlen}(v{name})b{}
+					2{});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -365,18 +423,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}k{void} f{testMacroName}(n{}
-					2{}t{const char *}v{name}n{}
-					1{}) {n{}
-					2{}t{struct Macro *}v{macro} =n{}
-					3{}f{allocTestMacro}(v{name});n{}
-					2{}f{ASSERT}(v{macro});n{}
-					2{}f{ASSERT}(n{}
-	   				3{}f{strcmp}(v{macro}-&gt;v{name}, v{name}) == 0n{}
-  					2{});n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}k{void} f{testMacroName}(b{}
+					2{}t{const char *}v{name}b{}
+					1{}) {b{}
+					2{}t{struct Macro *}v{macro} =b{}
+					3{}f{allocTestMacro}(v{name});b{}
+					2{}f{ASSERT}(v{macro});b{}
+					2{}f{ASSERT}(b{}
+	   				3{}f{strcmp}(v{macro}-&gt;v{name}, v{name}) == 0b{}
+  					2{});b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -388,18 +446,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}f{testMacroName}(s{"abc"});n{}
-					1{}f{testMacroName}(s{""});n{}
-					1{}f{testMacroName}(s{"A c"});n{}
-					1{}{n{}
-					2{}t{struct Macro *}v{macro} =n{}
-					3{}f{allocTestMacro}(s{"ab"});n{}
-					2{}f{ASSERT}(v{macro});n{}
-					2{}f{ASSERT}(! v{macro}-&gt;v{link});n{}
-					2{}f{ASSERT}(! v{macro}-&gt;v{firstEntry});n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}f{testMacroName}(s{"abc"});b{}
+					1{}f{testMacroName}(s{""});b{}
+					1{}f{testMacroName}(s{"A c"});b{}
+					1{}{b{}
+					2{}t{struct Macro *}v{macro} =b{}
+					3{}f{allocTestMacro}(s{"ab"});b{}
+					2{}f{ASSERT}(v{macro});b{}
+					2{}f{ASSERT}(! v{macro}-&gt;v{link});b{}
+					2{}f{ASSERT}(! v{macro}-&gt;v{firstEntry});b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -417,14 +475,14 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct MacroEntry} {n{}
-					2{}t{struct MacroEntry *}v{link};n{}
-					2{}t{struct Macro *}v{macro};n{}
-					2{}t{const char *}v{valueEnd};n{}
-					2{}t{char }v{value}t{[]};n{}
-					1{}};n{}
-					x{define macro}n{}
+					a{define macro}b{}
+					1{}t{struct MacroEntry} {b{}
+					2{}t{struct MacroEntry *}v{link};b{}
+					2{}t{struct Macro *}v{macro};b{}
+					2{}t{const char *}v{valueEnd};b{}
+					2{}t{char }v{value}t{[]};b{}
+					1{}};b{}
+					x{define macro}b{}
 				</code></div>
 				<ul class="notes">
 					<li>
@@ -449,18 +507,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct MacroEntry *}f{allocMacroEntry}(n{}
-					2{}t{struct Macro *}v{macro},n{}
-					2{}t{const char *}v{valueBegin},n{}
-					2{}t{const char *}v{valueEnd}n{}
-					1{}) {n{}
-					2{}t{struct MacroEntry *}v{result} = k{NULL};n{}
-					2{}e{allocate entry on heap};n{}
-					2{}v{result}-&gt;v{link} = k{NULL};n{}
-					2{}e{copy entry values};n{}
-					2{}k{return} v{result};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct MacroEntry *}f{allocMacroEntry}(b{}
+					2{}t{struct Macro *}v{macro},b{}
+					2{}t{const char *}v{valueBegin},b{}
+					2{}t{const char *}v{valueEnd}b{}
+					1{}) {b{}
+					2{}t{struct MacroEntry *}v{result} = k{NULL};b{}
+					2{}e{allocate entry on heap};b{}
+					2{}v{result}-&gt;v{link} = k{NULL};b{}
+					2{}e{copy entry values};b{}
+					2{}k{return} v{result};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -480,17 +538,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{allocate entry on heap}n{}
-					1{}t{int} v{valueLength} = 0;n{}
-					1{}k{if} (v{valueBegin}) {n{}
-					2{}f{ASSERT}(v{valueBegin} &lt;= v{valueEnd});n{}
-					2{}v{valueLength} =n{}
-	   				3{}v{valueEnd} - v{valueBegin};n{}
-					1{}}n{}
-					1{}t{int} v{entrySize} = v{valueLength} +n{}
-					2{}k{sizeof}(t{struct MacroEntry});n{}
-					1{}v{result} = v{malloc}(v{entrySize});n{}
-					1{}f{ASSERT}(v{result});n{}
+					a{allocate entry on heap}b{}
+					1{}t{int} v{valueLength} = 0;b{}
+					1{}k{if} (v{valueBegin}) {b{}
+					2{}f{ASSERT}(v{valueBegin} &lt;= v{valueEnd});b{}
+					2{}v{valueLength} =b{}
+	   				3{}v{valueEnd} - v{valueBegin};b{}
+					1{}}b{}
+					1{}t{int} v{entrySize} = v{valueLength} +b{}
+					2{}k{sizeof}(t{struct MacroEntry});b{}
+					1{}v{result} = v{malloc}(v{entrySize});b{}
+					1{}f{ASSERT}(v{result});b{}
 					x{allocate entry on heap}
 				</code></div>
 				<ul class="notes">
@@ -505,16 +563,16 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{copy entry values}n{}
-					1{}k{if} (v{valueBegin}) {n{}
-					2{}f{memcpy}(n{}
-					3{}v{result}-&gt;v{value}, v{valueBegin},n{}
-		 			3{}v{valueLength}n{}
-					2{});n{}
-					1{}}n{}
-					1{}v{result}-&gt;v{valueEnd} =n{}
-					2{}v{result}-&gt;v{value} + v{valueLength};n{}
-					1{}v{result}-&gt;v{macro} = v{macro};n{}
+					a{copy entry values}b{}
+					1{}k{if} (v{valueBegin}) {b{}
+					2{}f{memcpy}(b{}
+					3{}v{result}-&gt;v{value}, v{valueBegin},b{}
+		 			3{}v{valueLength}b{}
+					2{});b{}
+					1{}}b{}
+					1{}v{result}-&gt;v{valueEnd} =b{}
+					2{}v{result}-&gt;v{value} + v{valueLength};b{}
+					1{}v{result}-&gt;v{macro} = v{macro};b{}
 					x{copy entry values}
 				</code></div>
 				<ul class="notes">
@@ -526,13 +584,13 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct MacroEntry *}n{}
-					1{}f{allocEmptyMacroEntry}() {n{}
-					2{}k{return} f{allocMacroEntry}(n{}
-					3{}k{NULL}, k{NULL}, k{NULL}n{}
-					2{});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct MacroEntry *}b{}
+					1{}f{allocEmptyMacroEntry}() {b{}
+					2{}k{return} f{allocMacroEntry}(b{}
+					3{}k{NULL}, k{NULL}, k{NULL}b{}
+					2{});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -547,17 +605,17 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}k{void} f{freeMacroEntry}(n{}
-					2{}t{struct MacroEntry *}v{entry}n{}
-					1{}) {n{}
-					2{}k{while} (v{entry}) {n{}
-					3{}t{struct MacroEntry *}v{link} =n{}
-					4{}v{entry}-&gt;v{link};n{}
-					3{}f{free}(v{entry});n{}
-					3{}v{entry} = v{link};n{}
-					2{}}n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}k{void} f{freeMacroEntry}(b{}
+					2{}t{struct MacroEntry *}v{entry}b{}
+					1{}) {b{}
+					2{}k{while} (v{entry}) {b{}
+					3{}t{struct MacroEntry *}v{link} =b{}
+					4{}v{entry}-&gt;v{link};b{}
+					3{}f{free}(v{entry});b{}
+					3{}v{entry} = v{link};b{}
+					2{}}b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -572,15 +630,15 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{includes}n{}
-					1{}t{struct MacroEntry};n{}
-					1{}k{void} f{freeMacroEntry}(n{}
-					2{}t{struct MacroEntry *}v{entry}n{}
-					1{});n{}
-					x{includes}n{}
-					n{}
-					a{free macros entries}n{}
-					1{}f{freeMacroEntry}(v{macro}-&gt;v{firstEntry});n{}
+					a{forward declarations}b{}
+					1{}t{struct MacroEntry};b{}
+					1{}k{void} f{freeMacroEntry}(b{}
+					2{}t{struct MacroEntry *}v{entry}b{}
+					1{});b{}
+					x{forward declarations}b{}
+					b{}
+					a{free macros entries}b{}
+					1{}f{freeMacroEntry}(v{macro}-&gt;v{firstEntry});b{}
 					x{free macros entries}
 				</code></div>
 				<ul class="notes">
@@ -599,16 +657,16 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}k{int} f{getMacroEntryValueSize}(n{}
-					2{}t{struct MacroEntry *}v{entry}n{}
-					1{}) {n{}
-					2{}k{if} (! v{entry}) {n{}
-					3{}k{return} n{0};n{}
-					2{}}n{}
-					2{}k{return} v{entry}-&gt;v{valueEnd} -n{}
-  					3{}v{entry}-&gt;v{value};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}k{int} f{getMacroEntryValueSize}(b{}
+					2{}t{struct MacroEntry *}v{entry}b{}
+					1{}) {b{}
+					2{}k{if} (! v{entry}) {b{}
+					3{}k{return} n{0};b{}
+					2{}}b{}
+					2{}k{return} v{entry}-&gt;v{valueEnd} -b{}
+  					3{}v{entry}-&gt;v{value};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -622,17 +680,17 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocEmptyMacroEntry}();n{}
-					n{}
-					2{}f{ASSERT}(v{entry});n{}
-					2{}f{ASSERT}(! v{entry}-&gt;v{link});n{}
-					2{}f{ASSERT}(! v{entry}-&gt;v{macro});n{}
-					n{}
-					2{}f{freeMacroEntry}(v{entry});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocEmptyMacroEntry}();b{}
+					b{}
+					2{}f{ASSERT}(v{entry});b{}
+					2{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
+					2{}f{ASSERT}(! v{entry}-&gt;v{macro});b{}
+					b{}
+					2{}f{freeMacroEntry}(v{entry});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -645,18 +703,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocEmptyMacroEntry}();n{}
-					n{}
-					2{}f{ASSERT}(v{entry});n{}
-					2{}f{ASSERT}(n{}
-					3{}f{getMacroEntryValueSize}(n{}
-					4{}v{entry}) == n{0);}n{}
-					n{}
-					2{}f{freeMacroEntry}(v{entry});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocEmptyMacroEntry}();b{}
+					b{}
+					2{}f{ASSERT}(v{entry});b{}
+					2{}f{ASSERT}(b{}
+					3{}f{getMacroEntryValueSize}(b{}
+					4{}v{entry}) == n{0);}b{}
+					b{}
+					2{}f{freeMacroEntry}(v{entry});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -667,18 +725,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct MacroEntry *}n{}
-					1{}f{allocTestMacroEntry}(n{}
-					2{}t{const char *}v{value}n{}
-					1{}) {n{}
-					2{}t{const char *}v{end} = v{value} +n{}
-					3{}f{strlen}(v{value});n{}
-					n{}
-					2{}k{return} f{allocMacroEntry}(n{}
-					3{}k{NULL}, v{value}, v{end}n{}
-					2{});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct MacroEntry *}b{}
+					1{}f{allocTestMacroEntry}(b{}
+					2{}t{const char *}v{value}b{}
+					1{}) {b{}
+					2{}t{const char *}v{end} = v{value} +b{}
+					3{}f{strlen}(v{value});b{}
+					b{}
+					2{}k{return} f{allocMacroEntry}(b{}
+					3{}k{NULL}, v{value}, v{end}b{}
+					2{});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -690,18 +748,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocTestMacroEntry}(s{"abc"});n{}
-					n{}
-					2{}f{ASSERT}(v{entry});n{}
-					2{}f{ASSERT}(n{}
-					3{}f{getMacroEntryValueSize}(n{}
-					4{}v{entry}) == n{3);}n{}
-					n{}
-					2{}f{freeMacroEntry}(v{entry});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocTestMacroEntry}(s{"abc"});b{}
+					b{}
+					2{}f{ASSERT}(v{entry});b{}
+					2{}f{ASSERT}(b{}
+					3{}f{getMacroEntryValueSize}(b{}
+					4{}v{entry}) == n{3);}b{}
+					b{}
+					2{}f{freeMacroEntry}(v{entry});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -712,18 +770,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocTestMacroEntry}(s{"abc"});n{}
-					n{}
-					2{}f{ASSERT}(v{entry});n{}
-					2{}f{ASSERT}(n{}
-					3{}f{memcmp}(v{entry}-&gt;v{value},n{}
-					4{}s{"abc"}, n{3}) == n{0);}n{}
-					n{}
-					2{}f{freeMacroEntry}(v{entry});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocTestMacroEntry}(s{"abc"});b{}
+					b{}
+					2{}f{ASSERT}(v{entry});b{}
+					2{}f{ASSERT}(b{}
+					3{}f{memcmp}(v{entry}-&gt;v{value},b{}
+					4{}s{"abc"}, n{3}) == n{0);}b{}
+					b{}
+					2{}f{freeMacroEntry}(v{entry});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -737,18 +795,18 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{addEntryToMacro}(n{}
-					2{}t{struct Macro *}v{macro},n{}
-					2{}t{struct MacroEntry *}v{entry}n{}
-					1{}) {n{}
-					2{}e{assert add entry};n{}
-					2{}k{if} (v{macro}-&gt;v{firstEntry}) {n{}
-					3{}e{append entry};n{}
-					2{}} k{else} {n{}
-					3{}e{set first entry};n{}
-					2{}}n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{addEntryToMacro}(b{}
+					2{}t{struct Macro *}v{macro},b{}
+					2{}t{struct MacroEntry *}v{entry}b{}
+					1{}) {b{}
+					2{}e{assert add entry};b{}
+					2{}k{if} (v{macro}-&gt;v{firstEntry}) {b{}
+					3{}e{append entry};b{}
+					2{}} k{else} {b{}
+					3{}e{set first entry};b{}
+					2{}}b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -762,10 +820,10 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{assert add entry}n{}
-					1{}f{ASSERT}(v{macro});n{}
-					1{}f{ASSERT}(v{entry});n{}
-					1{}f{ASSERT}(! v{entry}-&gt;v{link});n{}
+					a{assert add entry}b{}
+					1{}f{ASSERT}(v{macro});b{}
+					1{}f{ASSERT}(v{entry});b{}
+					1{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
 					x{assert add entry}
 				</code></div>
 				<ul class="notes">
@@ -783,9 +841,9 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{append entry}n{}
-					1{}v{macro}-&gt;v{lastEntry}-&gt;v{link} = v{entry};n{}
-					1{}v{macro}-&gt;v{lastEntry} = v{entry};n{}
+					a{append entry}b{}
+					1{}v{macro}-&gt;v{lastEntry}-&gt;v{link} = v{entry};b{}
+					1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
 					x{append entry}
 				</code></div>
 				<ul class="notes">
@@ -805,9 +863,9 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{set first entry}n{}
-					1{}v{macro}-&gt;v{firstEntry} = v{entry};n{}
-					1{}v{macro}-&gt;v{lastEntry} = v{entry};n{}
+					a{set first entry}b{}
+					1{}v{macro}-&gt;v{firstEntry} = v{entry};b{}
+					1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
 					x{set first entry}
 				</code></div>
 				<ul class="notes">
@@ -823,19 +881,19 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct Macro *}v{macro} =n{}
-					3{}f{allocTestMacro}(s{""});n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocEmptyMacroEntry}();n{}
-					2{}f{addEntryToMacro}(v{macro}, v{entry});n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct Macro *}v{macro} =b{}
+					3{}f{allocTestMacro}(s{""});b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocEmptyMacroEntry}();b{}
+					2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
 
-					2{}f{ASSERT}(n{}
-					3{}v{macro}-&gt;v{firstEntry} == v{entry}n{}
-					2{});n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					2{}f{ASSERT}(b{}
+					3{}v{macro}-&gt;v{firstEntry} == v{entry}b{}
+					2{});b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -846,19 +904,19 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct Macro *}v{macro} =n{}
-					3{}f{allocTestMacro}(s{""});n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocEmptyMacroEntry}();n{}
-					2{}f{addEntryToMacro}(v{macro}, v{entry});n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct Macro *}v{macro} =b{}
+					3{}f{allocTestMacro}(s{""});b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocEmptyMacroEntry}();b{}
+					2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
 
-					2{}f{ASSERT}(n{}
-					3{}v{macro}-&gt;v{lastEntry} == v{entry}n{}
-					2{});n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					2{}f{ASSERT}(b{}
+					3{}v{macro}-&gt;v{lastEntry} == v{entry}b{}
+					2{});b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -869,15 +927,15 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct Macro *}v{macro} = k{NULL};n{}
-					2{}t{struct MacroEntry *}v{first};n{}
-					2{}t{struct MacroEntry *}v{second};n{}
-					2{}e{add two entries};n{}
-					2{}e{check first of 2};n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct Macro *}v{macro} = k{NULL};b{}
+					2{}t{struct MacroEntry *}v{first};b{}
+					2{}t{struct MacroEntry *}v{second};b{}
+					2{}e{add two entries};b{}
+					2{}e{check first of 2};b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -890,18 +948,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{add two entries}n{}
-					1{}v{macro} = f{allocTestMacro}(s{""});n{}
-					1{}v{first} = f{allocEmptyMacroEntry}();n{}
-					1{}v{second} = f{allocEmptyMacroEntry}();n{}
-					n{}
-					1{}f{addEntryToMacro}(v{macro}, v{first});n{}
-					1{}f{addEntryToMacro}(v{macro}, v{second});n{}
+					a{add two entries}b{}
+					1{}v{macro} = f{allocTestMacro}(s{""});b{}
+					1{}v{first} = f{allocEmptyMacroEntry}();b{}
+					1{}v{second} = f{allocEmptyMacroEntry}();b{}
+					b{}
+					1{}f{addEntryToMacro}(v{macro}, v{first});b{}
+					1{}f{addEntryToMacro}(v{macro}, v{second});b{}
 
-					x{add two entries}n{}
-					n{}
-					a{check first of 2}n{}
-					1{}f{ASSERT}(v{macro}-&gt;v{firstEntry} == v{first});n{}
+					x{add two entries}b{}
+					b{}
+					a{check first of 2}b{}
+					1{}f{ASSERT}(v{macro}-&gt;v{firstEntry} == v{first});b{}
 					e{check first of 2}
 				</code></div>
 				<ul class="notes">
@@ -914,17 +972,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct Macro *}v{macro} = k{NULL};n{}
-					2{}t{struct MacroEntry *}v{first};n{}
-					2{}t{struct MacroEntry *}v{second};n{}
-					2{}e{add two entries};n{}
-					2{}f{ASSERT}(n{}
-					3{}v{macro}-&gt;v{lastEntry} == v{second}n{}
-					2{});n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct Macro *}v{macro} = k{NULL};b{}
+					2{}t{struct MacroEntry *}v{first};b{}
+					2{}t{struct MacroEntry *}v{second};b{}
+					2{}e{add two entries};b{}
+					2{}f{ASSERT}(b{}
+					3{}v{macro}-&gt;v{lastEntry} == v{second}b{}
+					2{});b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -937,18 +995,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{addBytesToMacro}(n{}
-					2{}t{struct Macro *}v{macro},n{}
-					2{}t{const char *}v{value},n{}
-					2{}t{const char *}v{valueEnd}n{}
-					1{}) {n{}
-					2{}t{struct MacroEntry *}v{entry} =n{}
-					3{}f{allocMacroEntry}(n{}
-					4{}k{NULL}, v{value}, v{valueEnd}n{}
-					3{});n{}
-					2{}f{addEntryToMacro}(v{macro}, v{entry});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{addBytesToMacro}(b{}
+					2{}t{struct Macro *}v{macro},b{}
+					2{}t{const char *}v{value},b{}
+					2{}t{const char *}v{valueEnd}b{}
+					1{}) {b{}
+					2{}t{struct MacroEntry *}v{entry} =b{}
+					3{}f{allocMacroEntry}(b{}
+					4{}k{NULL}, v{value}, v{valueEnd}b{}
+					3{});b{}
+					2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -961,18 +1019,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}e{define cycle check}n{}
-					1{}t{void} f{addMacroToMacro}(n{}
-					2{}t{struct Macro *}v{macro},n{}
-					2{}t{struct Macro *}v{child}n{}
-					1{}) {n{}
-					2{}f{ASSERT}(v{macro});n{}
-					2{}f{ASSERT}(v{child});n{}
-					2{}e{avoid macro cycles};n{}
-					2{}e{reuse last entry};n{}
-					2{}e{add macro entry});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}e{define cycle check}b{}
+					1{}t{void} f{addMacroToMacro}(b{}
+					2{}t{struct Macro *}v{macro},b{}
+					2{}t{struct Macro *}v{child}b{}
+					1{}) {b{}
+					2{}f{ASSERT}(v{macro});b{}
+					2{}f{ASSERT}(v{child});b{}
+					2{}e{avoid macro cycles};b{}
+					2{}e{reuse last entry};b{}
+					2{}e{add macro entry});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -994,13 +1052,13 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{reuse last entry}n{}
-					1{}k{if} (v{macro}-&gt;v{firstEntry} &amp;&amp;n{}
-					2{}! v{macro}-&gt;v{lastEntry}-&gt;v{macro}n{}
-					1{}) {n{}
-					2{}v{macro}-&gt;v{lastEntry}-&gt;v{macro} = v{child};n{}
-					2{}k{return};n{}
-					1{}}n{}
+					a{reuse last entry}b{}
+					1{}k{if} (v{macro}-&gt;v{firstEntry} &amp;&amp;b{}
+					2{}! v{macro}-&gt;v{lastEntry}-&gt;v{macro}b{}
+					1{}) {b{}
+					2{}v{macro}-&gt;v{lastEntry}-&gt;v{macro} = v{child};b{}
+					2{}k{return};b{}
+					1{}}b{}
 					x{reuse last entry}
 				</code></div>
 				<ul class="notes">
@@ -1012,12 +1070,12 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{add macro entry}n{}
-					1{}t{struct MacroEntry *}v{entry} =n{}
-					2{}f{allocMacroEntry}(n{}
-					3{}v{child}, k{NULL}, k{NULL}n{}
-					2{});n{}
-					1{}f{addEntryToMacro}(v{macro}, v{entry});n{}
+					a{add macro entry}b{}
+					1{}t{struct MacroEntry *}v{entry} =b{}
+					2{}f{allocMacroEntry}(b{}
+					3{}v{child}, k{NULL}, k{NULL}b{}
+					2{});b{}
+					1{}f{addEntryToMacro}(v{macro}, v{entry});b{}
 					x{add macro entry}
 				</code></div>
 				<ul class="notes">
@@ -1032,12 +1090,12 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}k{typedef} t{void} t{Consumer}(n{}
-					2{}t{const char *}v{begin},n{}
-					2{}t{const char *}v{end},n{}
-					2{}t{void *}v{context}n{}
-					1{});n{}
+					a{define macro}b{}
+					1{}k{typedef} t{void} t{Consumer}(b{}
+					2{}t{const char *}v{begin},b{}
+					2{}t{const char *}v{end},b{}
+					2{}t{void *}v{context}b{}
+					1{});b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1055,16 +1113,16 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{serializeMacro}(n{}
-  					2{}t{struct Macro *}v{macro,}n{}
-  					2{}t{Consumer} v{consumer},n{}
-  					2{}t{void *} v{context}n{}
-					1{}) {n{}
-					2{}f{ASSERT}(v{macro});n{}
-					2{}f{ASSERT}(v{consumer});n{}
-					2{}e{iterate entries};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{serializeMacro}(b{}
+  					2{}t{struct Macro *}v{macro,}b{}
+  					2{}t{Consumer} v{consumer},b{}
+  					2{}t{void *} v{context}b{}
+					1{}) {b{}
+					2{}f{ASSERT}(v{macro});b{}
+					2{}f{ASSERT}(v{consumer});b{}
+					2{}e{iterate entries};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1077,17 +1135,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{iterate entries}n{}
-  					1{}t{struct MacroEntry *}v{entry} =n{}
-  					2{}v{macro}-&gt;v{firstEntry};n{}
-					1{}k{for} (; v{entry}; v{entry} = v{entry}-&gt;v{link}) {n{}
-					2{}e{serialize bytes};n{}
-					2{}k{if} (v{entry}-&gt;v{macro}) {n{}
-					3{}f{serializeMacro}(v{entry}-&gt;v{macro},n{}
- 					4{}v{consumer}, v{context}n{}
-					3{});n{}
-					2{}}n{}
-					1{}}n{}
+					a{iterate entries}b{}
+  					1{}t{struct MacroEntry *}v{entry} =b{}
+  					2{}v{macro}-&gt;v{firstEntry};b{}
+					1{}k{for} (; v{entry}; v{entry} = v{entry}-&gt;v{link}) {b{}
+					2{}e{serialize bytes};b{}
+					2{}k{if} (v{entry}-&gt;v{macro}) {b{}
+					3{}f{serializeMacro}(v{entry}-&gt;v{macro},b{}
+ 					4{}v{consumer}, v{context}b{}
+					3{});b{}
+					2{}}b{}
+					1{}}b{}
 					x{iterate entries}
 				</code></div>
 				<ul class="notes">
@@ -1102,14 +1160,14 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{serialize bytes}n{}
-					1{}k{if} (f{getMacroEntryValueSize}(v{entry})) {n{}
-					2{}v{consumer}(n{}
-	   				3{}v{entry}-&gt;v{value},n{}
-					3{}v{entry}-&gt;v{valueEnd},n{}
-					3{}v{context}n{}
-					2{});n{}
-					1{}}n{}
+					a{serialize bytes}b{}
+					1{}k{if} (f{getMacroEntryValueSize}(v{entry})) {b{}
+					2{}v{consumer}(b{}
+	   				3{}v{entry}-&gt;v{value},b{}
+					3{}v{entry}-&gt;v{valueEnd},b{}
+					3{}v{context}b{}
+					2{});b{}
+					1{}}b{}
 					x{serialize bytes}
 				</code></div>
 				<ul class="notes">
@@ -1122,12 +1180,12 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct TestConsumerContext} {n{}
-					2{}t{char *}v{current};n{}
-					2{}t{const char *}v{end};n{}
-					2{}t{char }v{buffer}t{[]};n{}
-					1{}};n{}
+					a{define macro}b{}
+					1{}t{struct TestConsumerContext} {b{}
+					2{}t{char *}v{current};b{}
+					2{}t{const char *}v{end};b{}
+					2{}t{char }v{buffer}t{[]};b{}
+					1{}};b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1141,17 +1199,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{testConsumer} (n{}
-					2{}t{const char *}v{begin},n{}
-					2{}t{const char *}v{end},n{}
-					2{}t{void *}v{context}n{}
-					1{}) {n{}
-					2{}f{ASSERT}(v{begin});n{}
-					2{}f{ASSERT}(v{begin} &lt;= v{end});n{}
-					2{}f{ASSERT}(v{context});n{}
-					2{}e{add to test consumer};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{testConsumer} (b{}
+					2{}t{const char *}v{begin},b{}
+					2{}t{const char *}v{end},b{}
+					2{}t{void *}v{context}b{}
+					1{}) {b{}
+					2{}f{ASSERT}(v{begin});b{}
+					2{}f{ASSERT}(v{begin} &lt;= v{end});b{}
+					2{}f{ASSERT}(v{context});b{}
+					2{}e{add to test consumer};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1163,15 +1221,15 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{add to test consumer}n{}
-					1{}t{struct TestConsumerContext *}v{ctx} =n{}
-					2{}v{context};n{}
-					1{}t{int} v{length} = v{end} - v{begin};n{}
-					1{}f{ASSERT}(n{}
-					2{}v{ctx}-&gt;v{current} + v{length} &lt;= v{ctx}-&gt;v{end}n{}
-					1{});n{}
-					1{}f{memcpy}(v{ctx}-&gt;v{current}, v{begin}, v{length});n{}
-					1{}v{ctx}-&gt;v{current} += v{length};n{}
+					a{add to test consumer}b{}
+					1{}t{struct TestConsumerContext *}v{ctx} =b{}
+					2{}v{context};b{}
+					1{}t{int} v{length} = v{end} - v{begin};b{}
+					1{}f{ASSERT}(b{}
+					2{}v{ctx}-&gt;v{current} + v{length} &lt;= v{ctx}-&gt;v{end}b{}
+					1{});b{}
+					1{}f{memcpy}(v{ctx}-&gt;v{current}, v{begin}, v{length});b{}
+					1{}v{ctx}-&gt;v{current} += v{length};b{}
 					x{add to test consumer}
 				</code></div>
 				<ul class="notes">
@@ -1183,17 +1241,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct TestConsumerContext *}n{}
-					1{}f{allocTestConsumerContext}(t{int} v{size}) {n{}
-					2{}f{ASSERT}(v{size} &gt;= 0);n{}
-					2{}t{struct TestConsumerContext *}n{}
-					2{}v{context} = f{malloc}(v{size} + k{sizeof}(n{}
-					3{}t{struct TestConsumerContext}));n{}
-					2{}f{ASSERT}(v{context});n{}
-					2{}e{init test consumer};n{}
-					2{}k{return} v{context};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct TestConsumerContext *}b{}
+					1{}f{allocTestConsumerContext}(t{int} v{size}) {b{}
+					2{}f{ASSERT}(v{size} &gt;= 0);b{}
+					2{}t{struct TestConsumerContext *}b{}
+					2{}v{context} = f{malloc}(v{size} + k{sizeof}(b{}
+					3{}t{struct TestConsumerContext}));b{}
+					2{}f{ASSERT}(v{context});b{}
+					2{}e{init test consumer};b{}
+					2{}k{return} v{context};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1207,11 +1265,11 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{init test consumer}n{}
+					a{init test consumer}b{}
 					1{}v{context}-&gt;v{current} =
-					v{context}-&gt;v{buffer};n{}
-					1{}v{context}-&gt;v{end} =n{}
-					2{}v{context}-&gt;v{buffer} + v{size};n{}
+					v{context}-&gt;v{buffer};b{}
+					1{}v{context}-&gt;v{end} =b{}
+					2{}v{context}-&gt;v{buffer} + v{size};b{}
 					x{init test consumer}
 				</code></div>
 				<ul class="notes">
@@ -1227,18 +1285,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{testMacro}(t{struct Macro *}n{}
-					2{}v{macro}, t{const char *}v{expected}n{}
-					1{}) {n{}
-					2{}t{int} v{size} = f{strlen}(v{expected});n{}
-					2{}t{struct TestConsumerContext *}n{}
-					2{}v{context} =n{}
-					3{}f{allocTestConsumerContext}(n{}
-					4{}v{size});n{}
-					2{}e{serialize test macro};n{}
-					2{}f{free}(v{context});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{testMacro}(t{struct Macro *}b{}
+					2{}v{macro}, t{const char *}v{expected}b{}
+					1{}) {b{}
+					2{}t{int} v{size} = f{strlen}(v{expected});b{}
+					2{}t{struct TestConsumerContext *}b{}
+					2{}v{context} =b{}
+					3{}f{allocTestConsumerContext}(b{}
+					4{}v{size});b{}
+					2{}e{serialize test macro};b{}
+					2{}f{free}(v{context});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1250,13 +1308,13 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{serialize test macro}n{}
-					1{}f{serializeMacro}(v{macro},n{}
-					2{}v{testConsumer}, v{context});n{}
-					1{}f{ASSERT}(v{context}-&gt;v{current} -n{}
-					2{}v{context}-&gt;v{buffer} == v{size});n{}
-					1{}f{ASSERT}(f{memcmp}(v{expected},n{}
-					2{}v{context}-&gt;v{buffer}, v{size}) == 0);n{}
+					a{serialize test macro}b{}
+					1{}f{serializeMacro}(v{macro},b{}
+					2{}v{testConsumer}, v{context});b{}
+					1{}f{ASSERT}(v{context}-&gt;v{current} -b{}
+					2{}v{context}-&gt;v{buffer} == v{size});b{}
+					1{}f{ASSERT}(f{memcmp}(v{expected},b{}
+					2{}v{context}-&gt;v{buffer}, v{size}) == 0);b{}
 					x{serialize test macro}
 				</code></div>
 				<ul class="notes">
@@ -1269,16 +1327,16 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{addStringToMacro}(n{}
-					2{}t{struct Macro *}v{macro},n{}
-					2{}t{const char *}v{str}n{}
-					1{}) {n{}
-					2{}t{int} v{size} = f{strlen}(v{str});n{}
-					2{}f{addBytesToMacro}(n{}
-					3{}v{macro}, v{str}, v{str} + v{size}n{}
-					2{});n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{addStringToMacro}(b{}
+					2{}t{struct Macro *}v{macro},b{}
+					2{}t{const char *}v{str}b{}
+					1{}) {b{}
+					2{}t{int} v{size} = f{strlen}(v{str});b{}
+					2{}f{addBytesToMacro}(b{}
+					3{}v{macro}, v{str}, v{str} + v{size}b{}
+					2{});b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1290,15 +1348,15 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests}n{}
-					1{}{n{}
-					2{}t{struct Macro *}v{macro} =n{}
-					3{}f{allocTestMacro}(s{""});n{}
-					2{}f{addStringToMacro}(v{macro}, s{"abc"});n{}
-					2{}f{addStringToMacro}(v{macro}, s{"def"});n{}
-					2{}f{testMacro}(v{macro}, s{"abcdef"});n{}
-					2{}f{freeMacro}(v{macro});n{}
-					1{}}n{}
+					a{macro unit tests}b{}
+					1{}{b{}
+					2{}t{struct Macro *}v{macro} =b{}
+					3{}f{allocTestMacro}(s{""});b{}
+					2{}f{addStringToMacro}(v{macro}, s{"abc"});b{}
+					2{}f{addStringToMacro}(v{macro}, s{"def"});b{}
+					2{}f{testMacro}(v{macro}, s{"abcdef"});b{}
+					2{}f{freeMacro}(v{macro});b{}
+					1{}}b{}
 					x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -1310,17 +1368,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{macro unit tests} {n{}
-					1{}t{struct Macro *}v{a} =n{}
-					2{}f{allocTestMacro}(s{""});n{}
-					1{}t{struct Macro *}v{b} =n{}
-					2{}f{allocTestMacro}(s{""});n{}
-					1{}f{addStringToMacro}(v{a}, s{"abc"});n{}
-					1{}f{addMacroToMacro}(v{b}, v{a});n{}
-					1{}f{addStringToMacro}(v{b}, s{"def"});n{}
-					1{}f{addMacroToMacro}(v{b}, v{a});n{}
-					1{}f{testMacro}(v{b}, s{"abcdefabc"});n{}
-					1{}f{freeMacro}(v{a}); f{freeMacro}(v{b});n{}
+					a{macro unit tests} {b{}
+					1{}t{struct Macro *}v{a} =b{}
+					2{}f{allocTestMacro}(s{""});b{}
+					1{}t{struct Macro *}v{b} =b{}
+					2{}f{allocTestMacro}(s{""});b{}
+					1{}f{addStringToMacro}(v{a}, s{"abc"});b{}
+					1{}f{addMacroToMacro}(v{b}, v{a});b{}
+					1{}f{addStringToMacro}(v{b}, s{"def"});b{}
+					1{}f{addMacroToMacro}(v{b}, v{a});b{}
+					1{}f{testMacro}(v{b}, s{"abcdefabc"});b{}
+					1{}f{freeMacro}(v{a}); f{freeMacro}(v{b});b{}
 					} x{macro unit tests}
 				</code></div>
 				<ul class="notes">
@@ -1334,9 +1392,9 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{includes}n{}
-					1{}i{stdbool.h}n{}
-					x{includes}n{}
+					a{includes}b{}
+					1{}i{stdbool.h}b{}
+					x{includes}b{}
 				</code></div>
 				<ul class="notes">
 					<li>
@@ -1346,17 +1404,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define cycle check}n{}
-					1{}t{bool} f{isMacroInMacro}(n{}
-					2{}t{struct Macro *}v{needle},n{}
-					2{}t{struct Macro *}v{haystack}n{}
-					1{}) {n{}
-					2{}f{ASSERT}(v{needle});n{}
-					2{}f{ASSERT}(v{haystack});n{}
-					2{}e{check cycle macro};n{}
-					2{}e{check cycle entries};n{}
-					2{}k{return} k{false};n{}
-					1{}}n{}
+					a{define cycle check}b{}
+					1{}t{bool} f{isMacroInMacro}(b{}
+					2{}t{struct Macro *}v{needle},b{}
+					2{}t{struct Macro *}v{haystack}b{}
+					1{}) {b{}
+					2{}f{ASSERT}(v{needle});b{}
+					2{}f{ASSERT}(v{haystack});b{}
+					2{}e{check cycle macro};b{}
+					2{}e{check cycle entries};b{}
+					2{}k{return} k{false};b{}
+					1{}}b{}
 					x{define cycle check}
 				</code></div>
 				<ul class="notes">
@@ -1373,10 +1431,10 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{avoid macro cycles}n{}
-					1{}f{ASSERT}(! f{isMacroInMacro}(n{}
-					2{}v{macro}, v{child}n{}
-					1{}));n{}
+					a{avoid macro cycles}b{}
+					1{}f{ASSERT}(! f{isMacroInMacro}(b{}
+					2{}v{macro}, v{child}b{}
+					1{}));b{}
 					x{avoid macro cycles}
 				</code></div>
 				<ul class="notes">
@@ -1388,10 +1446,10 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{check cycle macro}n{}
-					1{}k{if} (v{needle} == v{haystack}) {n{}
-					2{}k{return} k{true};n{}
-					1{}}n{}
+					a{check cycle macro}b{}
+					1{}k{if} (v{needle} == v{haystack}) {b{}
+					2{}k{return} k{true};b{}
+					1{}}b{}
 					x{check cycle macro}
 				</code></div>
 				<ul class="notes">
@@ -1404,17 +1462,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{check cycle entries}n{}
-					1{}t{struct MacroEntry *}v{entry} =n{}
-					2{}v{haystack}-&gt;v{firstEntry};n{}
-					1{}k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {n{}
-					2{}k{if} (! v{entry}-&gt;v{macro}) { k{continue}; }n{}
-					2{}k{if} (f{isMacroInMacro}(n{}
-					3{}v{needle}, v{entry}-&gt;v{macro}n{}
-					2{})) {n{}
-					3{}k{return} k{true};n{}
-					2{}}n{}
-					1{}}n{}
+					a{check cycle entries}b{}
+					1{}t{struct MacroEntry *}v{entry} =b{}
+					2{}v{haystack}-&gt;v{firstEntry};b{}
+					1{}k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {b{}
+					2{}k{if} (! v{entry}-&gt;v{macro}) { k{continue}; }b{}
+					2{}k{if} (f{isMacroInMacro}(b{}
+					3{}v{needle}, v{entry}-&gt;v{macro}b{}
+					2{})) {b{}
+					3{}k{return} k{true};b{}
+					2{}}b{}
+					1{}}b{}
 					x{check cycle entries}
 				</code></div>
 				<ul class="notes">
@@ -1431,14 +1489,14 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}<span class="define">#define <span class="name">MACRO_SLOTS</span> 128</span>n{}
-					n{}
-					1{}t{struct MacroMap} {n{}
-					2{}t{struct Macro *}v{macros}t{[}n{}
-					3{}t{MACRO_SLOTS}n{}
-					2{}t{]};n{}
-					1{}};n{}
+					a{define macro}b{}
+					1{}<span class="define">#define <span class="name">MACRO_SLOTS</span> 128</span>b{}
+					b{}
+					1{}t{struct MacroMap} {b{}
+					2{}t{struct Macro *}v{macros}t{[}b{}
+					3{}t{MACRO_SLOTS}b{}
+					2{}t{]};b{}
+					1{}};b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1454,17 +1512,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{void} f{clearMacroMap}(n{}
-					2{}t{struct MacroMap *}v{map}n{}
-					1{}) {n{}
-					2{}t{struct Macro **}v{cur} = v{map}-&gt;v{macros};n{}
-					2{}t{struct Macro **}v{end} =n{}
-					3{}v{cur} + v{MACRO_SLOTS};n{}
-					2{}k{for} (; v{cur} &lt; v{end}; ++v{cur}) {n{}
-					3{}f{freeMacro}(*v{cur}); *v{cur} = k{NULL};n{}
-					2{}}n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{void} f{clearMacroMap}(b{}
+					2{}t{struct MacroMap *}v{map}b{}
+					1{}) {b{}
+					2{}t{struct Macro **}v{cur} = v{map}-&gt;v{macros};b{}
+					2{}t{struct Macro **}v{end} =b{}
+					3{}v{cur} + v{MACRO_SLOTS};b{}
+					2{}k{for} (; v{cur} &lt; v{end}; ++v{cur}) {b{}
+					3{}f{freeMacro}(*v{cur}); *v{cur} = k{NULL};b{}
+					2{}}b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1479,18 +1537,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{int} f{calcHash}(t{const char *}v{begin},n{}
-					2{}t{const char *}v{end}) {n{}
-					2{}f{ASSERT}(v{begin});n{}
-					2{}t{unsigned} v{hash} = n{0xf1e2d3c4};n{}
-					2{}k{while} (*v{begin} &amp;&amp; v{begin} != v{end}) {n{}
-					3{}v{hash} ^= *v{begin}++;n{}
-					3{}v{hash} = (v{hash} &lt;&lt; 3) |n{}
-					4{}(v{hash} &gt;&gt; 29);n{}
-					2{}}n{}
-					2{}k{return} v{hash} % v{MACRO_SLOTS};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{int} f{calcHash}(t{const char *}v{begin},b{}
+					2{}t{const char *}v{end}) {b{}
+					2{}f{ASSERT}(v{begin});b{}
+					2{}t{unsigned} v{hash} = n{0xf1e2d3c4};b{}
+					2{}k{while} (*v{begin} &amp;&amp; v{begin} != v{end}) {b{}
+					3{}v{hash} ^= *v{begin}++;b{}
+					3{}v{hash} = (v{hash} &lt;&lt; 3) |b{}
+					4{}(v{hash} &gt;&gt; 29);b{}
+					2{}}b{}
+					2{}k{return} v{hash} % v{MACRO_SLOTS};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1506,18 +1564,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct Macro *}f{allocMacroInMap}(n{}
-					2{}t{struct MacroMap *}v{map},n{}
-					2{}t{const char *}v{begin},n{}
-					2{}t{const char *}v{end}n{}
-					1{}) {n{}
-					2{}f{ASSERT}(v{map});n{}
-					2{}t{struct Macro *}v{macro} =n{}
-					3{}f{allocMacro}(v{begin}, v{end});n{}
-					2{}e{insert in slot};n{}
-					2{}k{return} v{macro};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct Macro *}f{allocMacroInMap}(b{}
+					2{}t{struct MacroMap *}v{map},b{}
+					2{}t{const char *}v{begin},b{}
+					2{}t{const char *}v{end}b{}
+					1{}) {b{}
+					2{}f{ASSERT}(v{map});b{}
+					2{}t{struct Macro *}v{macro} =b{}
+					3{}f{allocMacro}(v{begin}, v{end});b{}
+					2{}e{insert in slot};b{}
+					2{}k{return} v{macro};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1530,9 +1588,9 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{insert in slot}n{}
-					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});n{}
-					1{}v{macro}-&gt;v{link} = v{map}-&gt;v{macros}[v{hash}];n{}
+					a{insert in slot}b{}
+					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
+					1{}v{macro}-&gt;v{link} = v{map}-&gt;v{macros}[v{hash}];b{}
 					1{}v{map}-&gt;v{macros}[v{hash}] = v{macro};
 					x{insert in slot}
 				</code></div>
@@ -1547,17 +1605,17 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{define macro}n{}
-					1{}t{struct Macro *}f{findMacroInMap}(n{}
-					2{}t{struct MacroMap *}v{map},n{}
-					2{}t{const char *}v{begin},n{}
-					2{}t{const char *}v{end}n{}
-					1{}) {n{}
-					2{}f{ASSERT}(v{map});n{}
-					2{}t{struct Macro *}v{macro} = f{NULL};n{}
-					2{}e{find macro in slot};n{}
-					2{}k{return} v{macro};n{}
-					1{}}n{}
+					a{define macro}b{}
+					1{}t{struct Macro *}f{findMacroInMap}(b{}
+					2{}t{struct MacroMap *}v{map},b{}
+					2{}t{const char *}v{begin},b{}
+					2{}t{const char *}v{end}b{}
+					1{}) {b{}
+					2{}f{ASSERT}(v{map});b{}
+					2{}t{struct Macro *}v{macro} = f{NULL};b{}
+					2{}e{find macro in slot};b{}
+					2{}k{return} v{macro};b{}
+					1{}}b{}
 					x{define macro}
 				</code></div>
 				<ul class="notes">
@@ -1569,18 +1627,18 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					a{find macro in slot}n{}
-					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});n{}
-					1{}v{macro} = v{map}-&gt;v{macros}[v{hash}];n{}
-					1{}k{for} (; v{macro}; v{macro} = v{macro}-&gt;v{link}) {n{}
-					2{}t{const char *}v{a} = v{begin};n{}
-					2{}t{const char *}v{b} = v{macro}-&gt;v{name};n{}
-					2{}k{while} (v{a} != v{end}) {n{}
-					3{}k{if} (*v{a}++ != *v{b}++) { k{break}; }n{}
-					2{}}n{}
-					2{}k{if} (v{a} == v{end} &amp;&amp; ! *v{b}) {n{}
-					3{}k{return} v{macro}; }n{}
-					1{}}n{}
+					a{find macro in slot}b{}
+					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
+					1{}v{macro} = v{map}-&gt;v{macros}[v{hash}];b{}
+					1{}k{for} (; v{macro}; v{macro} = v{macro}-&gt;v{link}) {b{}
+					2{}t{const char *}v{a} = v{begin};b{}
+					2{}t{const char *}v{b} = v{macro}-&gt;v{name};b{}
+					2{}k{while} (v{a} != v{end}) {b{}
+					3{}k{if} (*v{a}++ != *v{b}++) { k{break}; }b{}
+					2{}}b{}
+					2{}k{if} (v{a} == v{end} &amp;&amp; ! *v{b}) {b{}
+					3{}k{return} v{macro}; }b{}
+					1{}}b{}
 					x{find macro in slot}
 				</code></div>
 				<ul class="notes">

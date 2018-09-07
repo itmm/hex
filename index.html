@@ -79,18 +79,35 @@
 		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
-					<span class="expand">@expand(<span class="macro-name">global elements</span>)</span><br/>
-					<br/>
-					<span class="type">int</span> <span class="fn">main</span>(<br/>
-					<span class="in1"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
-					<span class="in1"></span><span class="type">const char **</span><span class="var">argv</span><br/>
-					) {<br/>
+					<span class="add">@add(<span class="macro-name">MAIN</span>)</span><br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">global elements</span>)</span><br/>
+					<span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
+					<span class="in2"></span><span class="type">int</span> <span class="var">argc</span>, <span class="type">const char **</span><span class="var">argv</span><br/>
+					<span class="in1"></span>) {<br/>
+					<span class="in2"></span><span class="expand">@expand(<span class="macro-name">main body</span>)</span><br/>
+					<span class="in1"></span>}<br/>
+					<span class="end">@end(<span class="macro-name">MAIN</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Das Hauptprogramm besteht aus der
+						<code lang="fn">main</code>-Funktion
+					</li><li>
+						Zusätzlich müssen Objekte im globalen Scope
+						definiert werden
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">main body</span>)</span><br/>
 					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">perform unit-tests</span>)</span>;<br/>
 					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">process arguments</span>)</span>;<br/>
-					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">process HTML file</span>)</span>;<br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">read source file</span>)</span>;<br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write HTML file</span>)</span>;<br/>
 					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">serialize fragments</span>)</span>;<br/>
 					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">compile program</span>)</span>;<br/>
-					}
+					<span class="expand">@expand(<span class="macro-name">main body</span>)</span>
 				</code></div>
 				<ul class="notes">
 					<li>
@@ -130,15 +147,12 @@
 					</li>
 				</ul>
 			</div>
-		</div>
-		<h1>Makros</h1>
-		<div class="slides">
 			<div class="row">
 				<div class="slide code"><code>
 					<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
 					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">includes</span>)</span>;<br/>
 					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">define logging</span>)</span>;<br/>
-					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">define macro</span>)</span>;<br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">forward declarations</span>)</span>;<br/>
 					<span class="end">@end(<span class="macro-name">global elements</span>)</span>
 				</code></div>
 				<ul class="notes">
@@ -148,9 +162,57 @@
 					</li><li>
 						Auch müssen Macros für das Logging vor den
 						Funktionen definiert werden, die sie verwenden
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h1>Minimale Vorbereitung für das Parsen</h1>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
+					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdio.h</span>&gt;</span><br/>
+					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
+					<br/>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Standard File-Funktionen werden vom Programm
+						benötigt
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">process arguments</span>)</span><br/>
+					<span class="in1"></span><span class="type">FILE *</span><span class="var">input</span> = <span class="var">stdin</span>;<br/>
+					<span class="end">@end(<span class="macro-name">process arguments</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Der Source-Code für die Slideware muss aus einer
+						Datei geladen werden
 					</li><li>
-						Makros sind global sichtbare Strukturen.
-						Und das daraus resultiernde Programm übersetzt
+						Der Name kann über die Kommandozeile gesetzt
+						werden
+					</li><li>
+						Aber bis das implementiert ist, nehmen wird
+						eine sinnvolle Vorgabe
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h1>Makros</h1>
+		<div class="slides">
+			<div class="row">
+				<div class="slide code"><code>
+					<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
+					<span class="in1"></span><span class="expand">@expand(<span class="macro-name">define macro</span>)</span>;<br/>
+					<span class="end">@end(<span class="macro-name">global elements</span>)</span>
+				</code></div>
+				<ul class="notes">
+					<li>
+						Makros sind global sichtbare Strukturen
 					</li>
 				</ul>
 			</div>
@@ -231,10 +293,6 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
-					<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdio.h</span>&gt;</span><br/>
-					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
-					<br/>
 					<span class="add">@add(<span class="macro-name">define logging</span>)</span><br/>
 					<span class="in1"></span><span class="define">#define <span class="name">ASSERT</span>(<span class="var">COND</span>) \</span><br/>
 					<span class="in2"></span><span class="define"><span class="keyword">if</span> (! (<span class="var">COND</span>)) {\ </span><br/>
@@ -572,12 +630,12 @@
 			</div>
 			<div class="row">
 				<div class="slide code"><code>
-					<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
+					<span class="add">@add(<span class="macro-name">forward declarations</span>)</span><br/>
 					<span class="in1"></span><span class="type">struct MacroEntry</span>;<br/>
 					<span class="in1"></span><span class="keyword">void</span> <span class="fn">freeMacroEntry</span>(<br/>
 					<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span><br/>
 					<span class="in1"></span>);<br/>
-					<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
+					<span class="end">@end(<span class="macro-name">forward declarations</span>)</span><br/>
 					<br/>
 					<span class="add">@add(<span class="macro-name">free macros entries</span>)</span><br/>
 					<span class="in1"></span><span class="fn">freeMacroEntry</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span>);<br/>

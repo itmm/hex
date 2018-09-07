@@ -3,12 +3,6 @@
 		#include <stdlib.h>
 		#include <stdio.h>
 		#include <string.h>
-
-		struct MacroEntry;
-		void freeMacroEntry(
-			struct MacroEntry *entry
-		);
-
 		#include <stdbool.h>
 
 	// @expand(define logging);
@@ -21,6 +15,13 @@
 				exit(EXIT_FAILURE); \
 			}
 
+	// @expand(forward declarations)
+		struct MacroEntry;
+		void freeMacroEntry(
+			struct MacroEntry *entry
+		);
+
+	
 	// @expand(define macro);
 		struct MacroEntry;
 
@@ -564,7 +565,10 @@ int main(
 
 
 	// @expand(process arguments);
-	// @expand(process HTML file);
+		FILE *input = stdin;
+
+	// @expand(process source file);
+	// @expand(write HTML file);
 	// @expand(serialize fragments);
 	// @expand(compile program);
 }
