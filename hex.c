@@ -427,6 +427,104 @@
 			return macro;
 		}
 
+		struct Macro *getMacroInMap(
+			struct MacroMap *map,
+			const char *begin,
+			const char *end
+		) {
+			struct Macro *macro = NULL;
+			// @expand(get macro find);
+				macro = findMacroInMap(
+					map, begin, end
+				);
+				if (macro) {
+					return macro;
+				}
+
+			// @expand(get macro alloc);
+				macro = allocMacroInMap(
+					map, begin, end
+				);
+
+			return macro;
+		}
+
+	// @expand(define buffer);
+		#define INIT_BUFFER_SIZE 16
+
+		struct Buffer {
+			char initial[INIT_BUFFER_SIZE];
+			char *buffer;
+			char *current;
+			const char *end;
+		};
+
+		void addToBuffer(
+			struct Buffer *buffer, char ch
+		) {
+			ASSERT(buffer);
+			// @expand(may initialize buffer)
+				if (! buffer->buffer) {
+					buffer->buffer =
+						buffer->initial;
+					buffer->current =
+						buffer->buffer;
+					buffer->end =
+						buffer->initial +
+							INIT_BUFFER_SIZE;
+				}
+
+			// @expand(assure buffer size)
+				if (
+					buffer->current >= buffer->end
+				) {
+					int size = buffer->current -
+						buffer->buffer;
+					int newSize = 2 * size;
+					// @expand(reallocate buffer);
+						char *newBuffer;
+						if (
+							buffer->buffer == buffer->initial
+						   ) {
+							newBuffer = malloc(newSize);
+							// @expand(copy initial buffer);
+
+						} else {
+							newBuffer = realloc(
+								buffer->buffer, newSize);
+						}
+						// @expand(adjust buffer pointers);
+							ASSERT(newBuffer);
+							buffer->buffer = newBuffer;
+							buffer->current = newBuffer + size;
+							buffer->end = newBuffer + newSize;
+				}
+
+			*buffer->current++ = ch;
+		}
+
+		void resetBuffer(
+			struct Buffer *buffer
+		) {
+			ASSERT(buffer);
+			buffer->current = buffer->buffer;
+		}
+
+		void eraseBuffer(
+			struct Buffer *buffer
+		) {
+			ASSERT(buffer);
+			// @expand(erase heap buffer);
+				if (buffer->buffer &&
+						buffer->buffer != buffer->initial
+				   ) {
+					free(buffer->buffer);
+					buffer->buffer = NULL;
+				}
+
+			buffer->current = buffer->buffer;
+		}
+
 
 int main(
 	int argc,
@@ -563,6 +661,8 @@ int main(
 				freeMacro(a); freeMacro(b);
 			}
 
+
+		// @expand(buffer unit tests);
 
 	// @expand(process arguments);
 		FILE *input = stdin;
