@@ -704,6 +704,9 @@ int main(
 		FILE *input = stdin;
 
 	// @expand(process source file);
+		// @expand(global source vars);
+			struct MacroMap macros = {};
+
 		{
 			// @expand(additional read vars);
 				struct Macro *macro = NULL;
@@ -728,13 +731,56 @@ int main(
 									}
 								}
 							}
+							{
+								if (macro) {
+									bool valid = false;
+									// @expand(check valid names);
+										static const char valids[] =
+										"12345bfvsntkxei";
+									if (strchr(valids, last)) {
+										valid = true;
+									}
+
+									if (valid) {
+										openCh = last;
+										nameCur = name;
+										break;
+									}
+								}
+							}
 							break;
 						case '}':
 							// @expand(process close brace);
 							{
+								bool processed = false;
 								if (nameCur) {
+									*nameCur = 0;
 									// @expand(process macro name);
-									nameCur = NULL;
+										if (openCh == 'a') {
+											ASSERT(! macro);
+											macro = getMacroInMap(
+													&macros, name, nameCur
+													);
+												processed = true;
+										}
+										if (openCh == 'x') {
+											ASSERT(macro);
+											// @expand(macro names must match);
+											macro = NULL;
+												processed = true;
+										}
+											if (! processed) {
+												ASSERT(macro);
+												last = fgetc(input);
+												ch = fgetc(input);
+
+												puts(name);
+												processed = true;
+											}
+
+
+
+											nameCur = NULL;
 								}
 							}
 							break;
