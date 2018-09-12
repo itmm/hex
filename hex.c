@@ -488,6 +488,10 @@
 						   ) {
 							newBuffer = malloc(newSize);
 							// @expand(copy initial buffer);
+								ASSERT(newBuffer);
+								memcpy(
+									newBuffer, buffer->buffer, size );
+
 
 						} else {
 							newBuffer = realloc(
@@ -519,12 +523,22 @@
 						buffer->buffer != buffer->initial
 				   ) {
 					free(buffer->buffer);
-					buffer->buffer = NULL;
+					buffer->buffer = buffer->initial;
 				}
 
 			buffer->current = buffer->buffer;
 		}
 
+	void addCharsToBuffer(
+			struct Buffer *buffer,
+			char ch, int count
+			) {
+		ASSERT(buffer);
+		ASSERT(count >= 0);
+		for (; count; --count) {
+			addToBuffer(buffer, ch);
+		}
+	}
 
 int main(
 	int argc,
@@ -661,6 +675,28 @@ int main(
 				freeMacro(a); freeMacro(b);
 			}
 
+			{
+				struct Buffer buffer = {};
+				addToBuffer(&buffer, 'x');
+				ASSERT(*buffer.buffer == 'x');
+				ASSERT(buffer.buffer + 1 ==
+						buffer.current);
+				ASSERT(buffer.buffer ==
+						buffer.initial);
+			}
+			{
+				struct Buffer buffer = {};
+				addCharsToBuffer(&buffer, 'x',
+						1000);
+				ASSERT(*buffer.buffer == 'x');
+				ASSERT(buffer.buffer + 1000 ==
+						buffer.current);
+				ASSERT(buffer.buffer !=
+						buffer.initial);
+				eraseBuffer(&buffer);
+				ASSERT(buffer.buffer ==
+						buffer.initial);
+			}
 
 		// @expand(buffer unit tests);
 
