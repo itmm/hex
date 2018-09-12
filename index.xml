@@ -1,2124 +1,2093 @@
 <!doctype html>
 <html lang="de">
-	<head>
-		<meta charset="utf-8">
-		<title>HTML Extractor</title>
-		<link rel="stylesheet" type="text/css"
-			href="slides/slides.css">
-	</head>
+		<head>
+			<meta charset="utf-8">
+			<title>HTML Extractor</title>
+			<link rel="stylesheet" type="text/css"
+				href="slides/slides.css">
+		</head>
 	<body>
 		<h1>HTML Extractor</h1>
+			<p>
+				Dieses Dokument enthält eine Präsentation, welche die
+				Entwicklung des <emph>HTML Extractors</emph>
+				(<code>hex</code>) beschreibt.
+				Sie enthält zusätzlich den gesamten Source-Code von
+				<code>hex</code>.
+			</p><p>
+				Es handelt sich um den Versuch eines neuen
+				Programmier-Konzeptes: des Slideware-Programming (SWP).
+				Viel Spass.
+			</p>
 
-		<p>
-			Dieses Dokument enthält eine Präsentation, welche die
-			Entwicklung des <emph>HTML Extractors</emph>
-			(<code>hex</code>) beschreibt.
-			Sie enthält zusätzlich den gesamten Source-Code von
-			<code>hex</code>.
-		</p><p>
-			Es handelt sich um den Versuch eines neuen
-			Programmier-Konzeptes: des Slideware-Programming (SWP).
-			Viel Spass.
-		</p>
-
-		<div class="slides">
-			<div class="row">
-				<div class="slide title">
-					<h1>HTML Extractor</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide title">
+						<h1>HTML Extractor</h1>
+					</div>
+					<ul class="notes">
+						<li>
+							<code>hex</code> extrahiert Source-Code aus
+							HTML-Präsentationen
+						</li><li>
+							In der Präsentation kann der Schritt für
+							Schritt eingeführt werden
+						</li><li>
+							Es ist die Aufgabe von <code>hex</code>,
+							daraus ein ausführbares Programm zu
+							generieren
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide title">
+						<h1>Slideware Programming (SWP)</h1>
+					</div>
+					<ul class="notes">
+						<li>
+							Aus dem Source-Code, der in einer
+							HTML-Präsentation enthalten ist, kann ein
+							ausführbares Programm generiert werden
+						</li><li>
+							Dabei wird das Programm schrittweise
+							aufgebaut
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide title">
+						<h1>SWP &ne; Literate Programming</h1>
+					</div>
+					<ul class="notes">
+						<li>
+							SWP beschreibt nicht nur ein fertiges
+							Programm,
+						</li><li>
+							Sondern wie das Programm aufgebaut wird
+						</li><li>
+							Zu jedem Zeitpunkt muss das bisher
+							beschriebene Programm ausführbar sein,
+						</li><li>
+							Wenn nicht definierte Makros zu nichts
+							expandieren.
+						</li><li>
+							So kann das Verständnis für ein Programm
+							schrittweise erarbeitet werden
+						</li>
+					</ul>
 				</div>
-				<ul class="notes">
-					<li>
-						<code>hex</code> extrahiert Source-Code aus
-						HTML-Präsentationen
-					</li><li>
-						In der Präsentation kann der Schritt für Schritt
-						eingeführt werden
-					</li><li>
-						Es ist die Aufgabe von <code>hex</code>, daraus
-						ein ausführbares Programm zu generieren
-					</li>
-				</ul>
 			</div>
-			<div class="row">
-				<div class="slide title">
-					<h1>Slideware Programming (SWP)</h1>
-				</div>
-				<ul class="notes">
-					<li>
-						Aus dem Source-Code, der in einer
-						HTML-Präsentation enthalten ist, kann ein
-						ausführbares Programm generiert werden
-					</li><li>
-						Dabei wird das Programm schrittweise aufgebaut
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide title">
-					<h1>SWP &ne; Literate Programming</h1>
-				</div>
-				<ul class="notes">
-					<li>
-						SWP beschreibt nicht nur ein fertiges Programm,
-					</li><li>
-						Sondern wie das Programm aufgebaut wird
-					</li><li>
-						Zu jedem Zeitpunkt muss das bisher beschriebene
-						Programm ausführbar sein,
-					</li><li>
-						Wenn nicht definierte Makros zu nichts
-						expandieren.
-					</li><li>
-						So kann das Verständnis für ein Programm
-						schrittweise erarbeitet werden
-					</li>
-				</ul>
-			</div>
-		</div>
 		<h1>Definition des Ablaufs</h1>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{MAIN}b{}
-					1{}e{global elements}b{}
-					1{}t{int} f{main}(b{}
-					2{}t{int} v{argc}, t{const char **}v{argv}b{}
-					1{}) {b{}
-					2{}e{main body}b{}
-					1{}}b{}
-					x{MAIN}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Das Hauptprogramm besteht aus der
-						<code lang="fn">main</code>-Funktion
-					</li><li>
-						Zusätzlich müssen Objekte im globalen Scope
-						definiert werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{main body}b{}
-					1{}e{perform unit-tests};b{}
-					1{}e{process arguments};b{}
-					1{}e{read source file};b{}
-					1{}e{write HTML file};b{}
-					1{}e{serialize fragments};b{}
-					1{}e{compile program};b{}
-					e{main body}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Bei jedem Start werden alle Unit-Tests
-						ausgeführt (um eine umfangreiche Testabdeckung
-						zu sichern)
-					</li><li>
-						Eventuell werden Parameter von der Kommandozeile
-						ausgewertet
-					</li><li>
-						Dann wird ein Parse-Graph aus Fragmenten
-						aufgebaut
-					</li><li>
-						Und das daraus resultiernde Programm übersetzt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide title">
-					<h1>Was macht <code class="expand">@expand</code>?</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						a{MAIN}b{}
+						1{}e{global elements}b{}
+						1{}t{int} f{main}(b{}
+						2{}t{int} v{argc}, t{const char **}v{argv}b{}
+						1{}) {b{}
+						2{}e{main body}b{}
+						1{}}b{}
+						x{MAIN}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Das Hauptprogramm besteht aus der
+							<code lang="fn">main</code>-Funktion
+						</li><li>
+							Zusätzlich müssen Objekte im globalen Scope
+							definiert werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{main body}b{}
+						1{}e{perform unit-tests};b{}
+						1{}e{process arguments};b{}
+						1{}e{read source file};b{}
+						1{}e{write HTML file};b{}
+						1{}e{serialize fragments};b{}
+						1{}e{compile program};b{}
+						e{main body}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Bei jedem Start werden alle Unit-Tests
+							ausgeführt (um eine umfangreiche
+							Testabdeckung zu sichern)
+						</li><li>
+							Eventuell werden Parameter von der
+							Kommandozeile ausgewertet
+						</li><li>
+							Dann wird ein Parse-Graph aus Fragmenten
+							aufgebaut
+						</li><li>
+							Und das daraus resultiernde Programm
+							übersetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide title">
+						<h1>Was macht <code class="expand">@expand</code>?</h1>
+					</div>
+					<ul class="notes">
+						<li>
+							<code class="expand">@expand</code>-Blöcke
+							beschreiben Makro-Aufrufe.
+						</li><li>
+							Der Wert des Makros mit dem Namen in Klammern
+							wird anstelle des Aufrufs im endgültigen
+							Programm gesetzt.
+						</li><li>
+							Diese Makros bilden ein zentrales Element von
+							<code>hex</code>.
+						</li><li>
+							Sie können mit <code
+								class="add">@add</code>-<code
+								class="end">@end</code>-Sequenzen
+							definiert oder erweitert werden.
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}e{includes};b{}
+						1{}e{define logging};b{}
+						1{}e{forward declarations};b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+							System-Dateien werden vor der Definition von
+							Strukturen und Funktionen eingebunden.
+						</li><li>
+							Auch müssen Macros für das Logging vor den
+							Funktionen definiert werden, die sie
+							verwenden
+						</li>
+					</ul>
 				</div>
-				<ul class="notes">
-					<li>
-						<code class="expand">@expand</code>-Blöcke
-						beschreiben Makro-Aufrufe.
-					</li><li>
-						Der Wert des Makros mit dem Namen in Klammern
-						wird anstelle des Aufrufs im endgültigen
-						Programm gesetzt.
-					</li><li>
-						Diese Makros bilden ein zentrales Element von
-						<code>hex</code>.
-					</li><li>
-						Sie können mit
-						<code class="add">@add</code>-<code class="end">@end</code>-Sequenzen
-						definiert oder erweitert werden.
-					</li>
-				</ul>
 			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{global elements}b{}
-					1{}e{includes};b{}
-					1{}e{define logging};b{}
-					1{}e{forward declarations};b{}
-					x{global elements}
-				</code></div>
-				<ul class="notes">
-					<li>
-						System-Dateien werden vor der Definition von
-						Strukturen und Funktionen eingebunden.
-					</li><li>
-						Auch müssen Macros für das Logging vor den
-						Funktionen definiert werden, die sie verwenden
-					</li>
-				</ul>
-			</div>
-		</div>
 		<h1>Minimale Vorbereitung für das Parsen</h1>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{includes}b{}
-					1{}i{stdio.h}b{}
-					x{includes}b{}
-					b{}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Standard File-Funktionen werden vom Programm
-						benötigt
-					</li>
-				</ul>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						a{includes}b{}
+						1{}i{stdio.h}b{}
+						x{includes}b{}
+						b{}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Standard File-Funktionen werden vom Programm
+							benötigt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process arguments}b{}
+						1{}t{FILE *}v{input} = v{stdin};b{}
+						x{process arguments}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Der Source-Code für die Slideware muss aus
+							einer Datei geladen werden
+						</li><li>
+							Der Name kann über die Kommandozeile gesetzt
+							werden
+						</li><li>
+							Aber bis das implementiert ist, nehmen wird
+							eine sinnvolle Vorgabe
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{process arguments}b{}
-					1{}t{FILE *}v{input} = v{stdin};b{}
-					x{process arguments}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Source-Code für die Slideware muss aus einer
-						Datei geladen werden
-					</li><li>
-						Der Name kann über die Kommandozeile gesetzt
-						werden
-					</li><li>
-						Aber bis das implementiert ist, nehmen wird
-						eine sinnvolle Vorgabe
-					</li>
-				</ul>
-			</div>
-		</div>
 		<h1>Makros</h1>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{global elements}b{}
-					1{}e{define macro};b{}
-					x{global elements}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Makros sind global sichtbare Strukturen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct MacroEntry};b{}
-					b{}
-					1{}t{struct Macro} {b{}
-					2{}t{struct Macro *}v{link};b{}
-					2{}t{struct MacroEntry *}v{firstEntry};b{}
-					2{}t{struct MacroEntry *}v{lastEntry};b{}
-					2{}t{char }v{name}t{[]};b{}
-					1{}};b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Die Makros werden in einfach verketteten Listen
-						gesammelt
-					</li><li>
-						Genauso werden die Einträge eines Makros in
-						einer einfach verketteten Liste organisiert
-					</li><li>
-						Um schnell Einträge einfügen zu können, gibt es
-						auch einen Verweis auf das letzte Element
-					</li><li>
-						Je nach Namen werden für ein Makro
-						unterschiedlich viele Bytes im Heap angefordert
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{includes}b{}
-					1{}i{stdlib.h}b{}
-					x{includes}
-				</code></div>
-				<ul class="notes">
-					<li>
-						<code class="include-name">stdlib.h</code> wird für die Definition
-						von <code class="keyword">NULL</code> benötigt
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Neues Makro anlegen</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct Macro *}f{allocMacro}(b{}
-					2{}t{const char *}v{nameBegin},b{}
-					2{}t{const char *}v{nameEnd}b{}
-					1{}) {b{}
-					2{}t{struct Macro *}v{result} = k{NULL};b{}
-					2{}e{allocate macro on heap};b{}
-					2{}v{result}-&gt;v{link} = k{NULL};b{}
-					2{}v{result}-&gt;v{firstEntry} = k{NULL};b{}
-					2{}e{copy macro name};b{}
-					2{}k{return} v{result};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Die Zeiger werden mit
-						<code class="keyword">NULL</code> initializiert
-					</li><li>
-						<code class="var">lastEntry</code> wird erst
-						initialisiert, wenn
-						<code class="var">firstEntry</code> gesetzt wird
-					</li><li>
-						Der Name wird über zwei Zeiger übergeben, muss
-						also nicht mit einem Null-Byte terminiert sein
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define logging}b{}
-					1{}<span class="define">#define <span class="name">ASSERT</span>(v{COND}) \</span>b{}
-					2{}<span class="define">k{if} (! (v{COND})) {\ </span>b{}
-					3{}<span class="define">f{fprintf}(v{stderr}, \</span>b{}
-					4{}<span class="define">s{"%s:%d FAILED\n"}, \</span>b{}
-					4{}<span class="define">__FILE__, __LINE__); \</span>b{}
-					3{}<span class="define">f{exit}(v{EXIT_FAILURE}); \</span>b{}
-					2{}<span class="define">}</span>b{}
-					x{define logging}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn Bedingung falsch ist, wird Fehlermeldung
-						ausgegeben
-					</li><li>
-						Und das Programm beendet
-					</li><li>
-						Datei und Zeile des Tests wird ausgegeben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{allocate macro on heap}b{}
-					1{}f{ASSERT}(v{nameBegin});b{}
-					1{}f{ASSERT}(v{nameBegin} &lt;= v{nameEnd});b{}
-					1{}t{int} v{nameLength} =b{}
-  					2{}v{nameEnd} - v{nameBegin};b{}
-					1{}t{int} v{macroSize} = k{sizeof}(t{struct Macro})b{}
-   					2{}+ v{nameLength} + 1;b{}
-					1{}v{result} = v{malloc}(v{macroSize});b{}
-					1{}f{ASSERT}(v{result});b{}
-					x{allocate macro on heap}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Die Zeiger werden mit
-						<code class="keyword">NULL</code> initializiert
-					</li><li>
-						<code class="var">lastEntry</code> wird erst
-						initialisiert, wenn
-						<code class="var">firstEntry</code> gesetzt wird
-					</li><li>
-						Der Name wird über zwei Zeiger übergeben, muss
-						also nicht mit einem Null-Byte terminiert sein
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{includes}b{}
-					1{}i{string.h}b{}
-					x{includes}b{}
-					b{}
-					a{copy macro name}b{}
-					1{}f{memcpy}(b{}
-					2{}v{result}-&gt;v{name}, v{nameBegin},b{}
-		 			2{}v{nameLength}b{}
-					1{});b{}
-					1{}v{result}-&gt;v{name}[v{nameLength}] = s{'\0'};b{}
-					x{copy macro name}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Name wird direkt in die das Makro kopiert
-					</li><li>
-						Der Name wird mit einem Null-Byte abgeschlossen
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Makros freigeben</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}k{void} f{freeMacro}(b{}
-					2{}t{struct Macro *}v{macro}b{}
-					1{}) {b{}
-					2{}k{while} (v{macro}) {b{}
-					3{}t{struct Macro *}v{link} =b{}
-					4{}v{macro}-&gt;v{link};b{}
-					3{}e{free macros entries};b{}
-					3{}f{free}(v{macro});b{}
-					3{}v{macro} = v{link};b{}
-					2{}}b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Mit einem Makro werden auch alle verketteten
-						Makros freigegeben
-					</li><li>
-						Die Freigabe der einzelnen Einträge wird später
-						definiert
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Unit Tests</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{perform unit tests}b{}
-					1{}e{macro unit tests};b{}
-					x{perform unit tests}b{}
-					b{}
-					a{define macro}b{}
-					1{}t{struct Macro *}f{allocTestMacro}(b{}
-					2{}t{const char *}v{name}b{}
-					1{}) {b{}
-					2{}k{return} f{allocMacro}(b{}
-					3{}v{name}, v{name} + f{strlen}(v{name})b{}
-					2{});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Für Unit-Tests gibt es einen einfacheren
-						Konstruktor
-					</li><li>
-						Die Länge des Namens wird anhand des Null-Bytes
-						berechnet
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}k{void} f{testMacroName}(b{}
-					2{}t{const char *}v{name}b{}
-					1{}) {b{}
-					2{}t{struct Macro *}v{macro} =b{}
-					3{}f{allocTestMacro}(v{name});b{}
-					2{}f{ASSERT}(v{macro});b{}
-					2{}f{ASSERT}(b{}
-	   				3{}f{strcmp}(v{macro}-&gt;v{name}, v{name}) == 0b{}
-  					2{});b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						<code class="fn">testMacroName</code> prüft, ob
-						der Name korrekt in ein Makro kopiert wurde.
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}f{testMacroName}(s{"abc"});b{}
-					1{}f{testMacroName}(s{""});b{}
-					1{}f{testMacroName}(s{"A c"});b{}
-					1{}{b{}
-					2{}t{struct Macro *}v{macro} =b{}
-					3{}f{allocTestMacro}(s{"ab"});b{}
-					2{}f{ASSERT}(v{macro});b{}
-					2{}f{ASSERT}(! v{macro}-&gt;v{link});b{}
-					2{}f{ASSERT}(! v{macro}-&gt;v{firstEntry});b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zum einen wird getestet, ob die Namen korrekt
-						kopiert werden
-					</li><li>
-						Zum anderen wird sichergestellt, dass die
-						Verweise <code class="keyword">NULL</code> sind
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Makro Einträge</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct MacroEntry} {b{}
-					2{}t{struct MacroEntry *}v{link};b{}
-					2{}t{struct Macro *}v{macro};b{}
-					2{}t{const char *}v{valueEnd};b{}
-					2{}t{char }v{value}t{[]};b{}
-					1{}};b{}
-					x{define macro}b{}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein Eintrag kann entweder auf ein anderes Makro
-						verweisen (wenn dieses an der aktuellen Stelle
-						expandiert werden soll)
-					</li><li>
-						Oder er enthält Bytes, die beim Expandieren
-						direkt expandiert werden
-					</li><li>
-						Die Länge des Byte-Arrays wird über einen Zeiger
-						angezeigt (damit auch Null-Bytes verwendet
-						werden können)
-					</li><li>
-						Wenn ein Eintrag sowohl Daten als auch ein Makro
-						enthält, so wird zuerst der Text ausgegeben
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Makro Eintrag anlegen</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct MacroEntry *}f{allocMacroEntry}(b{}
-					2{}t{struct Macro *}v{macro},b{}
-					2{}t{const char *}v{valueBegin},b{}
-					2{}t{const char *}v{valueEnd}b{}
-					1{}) {b{}
-					2{}t{struct MacroEntry *}v{result} = k{NULL};b{}
-					2{}e{allocate entry on heap};b{}
-					2{}v{result}-&gt;v{link} = k{NULL};b{}
-					2{}e{copy entry values};b{}
-					2{}k{return} v{result};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wie beim Macro werden die
-						<code class="var">link</code> Verweise auf
-						<code class="keyword">NULL</code> initialisiert
-					</li><li>
-						Sowohl <code class="var">macro</code> als auch
-						<code class="var">valueBegin</code> sind
-						optional
-					</li><li>
-						Die Größe des Eintrags hängt von der Größe der
-						Bytes ab, die kopiert werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{allocate entry on heap}b{}
-					1{}t{int} v{valueLength} = 0;b{}
-					1{}k{if} (v{valueBegin}) {b{}
-					2{}f{ASSERT}(v{valueBegin} &lt;= v{valueEnd});b{}
-					2{}v{valueLength} =b{}
-	   				3{}v{valueEnd} - v{valueBegin};b{}
-					1{}}b{}
-					1{}t{int} v{entrySize} = v{valueLength} +b{}
-					2{}k{sizeof}(t{struct MacroEntry});b{}
-					1{}v{result} = v{malloc}(v{entrySize});b{}
-					1{}f{ASSERT}(v{result});b{}
-					x{allocate entry on heap}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Die Größe der Struktur wird um die Anzahl der zu
-						kopierenden Bytes vergrößert
-					</li><li>
-						Wenn nicht genug Speicher vorhanden ist, dann
-						wird das Programm beendet
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{copy entry values}b{}
-					1{}k{if} (v{valueBegin}) {b{}
-					2{}f{memcpy}(b{}
-					3{}v{result}-&gt;v{value}, v{valueBegin},b{}
-		 			3{}v{valueLength}b{}
-					2{});b{}
-					1{}}b{}
-					1{}v{result}-&gt;v{valueEnd} =b{}
-					2{}v{result}-&gt;v{value} + v{valueLength};b{}
-					1{}v{result}-&gt;v{macro} = v{macro};b{}
-					x{copy entry values}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Die Bytes werden nur kopiert, wenn welche
-						übergeben wurden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct MacroEntry *}b{}
-					1{}f{allocEmptyMacroEntry}() {b{}
-					2{}k{return} f{allocMacroEntry}(b{}
-					3{}k{NULL}, k{NULL}, k{NULL}b{}
-					2{});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Für Tests ist es praktisch, leere Einträge
-						anzulegen
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Makro Einträge freigeben</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}k{void} f{freeMacroEntry}(b{}
-					2{}t{struct MacroEntry *}v{entry}b{}
-					1{}) {b{}
-					2{}k{while} (v{entry}) {b{}
-					3{}t{struct MacroEntry *}v{link} =b{}
-					4{}v{entry}-&gt;v{link};b{}
-					3{}f{free}(v{entry});b{}
-					3{}v{entry} = v{link};b{}
-					2{}}b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn ein Eintrag freigegeben wird, so werden
-						auch alle verlinkten Einträge freigegeben
-					</li><li>
-						Referenzierte Makros werden nicht mit
-						freigegeben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{forward declarations}b{}
-					1{}t{struct MacroEntry};b{}
-					1{}k{void} f{freeMacroEntry}(b{}
-					2{}t{struct MacroEntry *}v{entry}b{}
-					1{});b{}
-					x{forward declarations}b{}
-					b{}
-					a{free macros entries}b{}
-					1{}f{freeMacroEntry}(v{macro}-&gt;v{firstEntry});b{}
-					x{free macros entries}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn ein Makro freigegeben wird, so werden auch
-						die anhängenden Einträge freigegeben
-					</li><li>
-						Damit die Funktion im
-						<code class="fn">freeMacro</code> sichtbar ist,
-						wird sie in der Include-Sektion definiert
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Auf Attribute zugreifen</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}k{int} f{getMacroEntryValueSize}(b{}
-					2{}t{struct MacroEntry *}v{entry}b{}
-					1{}) {b{}
-					2{}k{if} (! v{entry}) {b{}
-					3{}k{return} n{0};b{}
-					2{}}b{}
-					2{}k{return} v{entry}-&gt;v{valueEnd} -b{}
-  					3{}v{entry}-&gt;v{value};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Liefert die Anzahl der enthaltenen Bytes
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Unit Tests</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocEmptyMacroEntry}();b{}
-					b{}
-					2{}f{ASSERT}(v{entry});b{}
-					2{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
-					2{}f{ASSERT}(! v{entry}-&gt;v{macro});b{}
-					b{}
-					2{}f{freeMacroEntry}(v{entry});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein leerer Eintrag hat keinen Nachfolger
-					</li><li>
-						Und kein Makro
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocEmptyMacroEntry}();b{}
-					b{}
-					2{}f{ASSERT}(v{entry});b{}
-					2{}f{ASSERT}(b{}
-					3{}f{getMacroEntryValueSize}(b{}
-					4{}v{entry}) == n{0);}b{}
-					b{}
-					2{}f{freeMacroEntry}(v{entry});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein leerer Eintrag hat keine Bytes
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct MacroEntry *}b{}
-					1{}f{allocTestMacroEntry}(b{}
-					2{}t{const char *}v{value}b{}
-					1{}) {b{}
-					2{}t{const char *}v{end} = v{value} +b{}
-					3{}f{strlen}(v{value});b{}
-					b{}
-					2{}k{return} f{allocMacroEntry}(b{}
-					3{}k{NULL}, v{value}, v{end}b{}
-					2{});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Test-Konstruktor bekommt eine
-						Null-terminierte Zeichenkette als Argument
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocTestMacroEntry}(s{"abc"});b{}
-					b{}
-					2{}f{ASSERT}(v{entry});b{}
-					2{}f{ASSERT}(b{}
-					3{}f{getMacroEntryValueSize}(b{}
-					4{}v{entry}) == n{3);}b{}
-					b{}
-					2{}f{freeMacroEntry}(v{entry});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein Eintrag hat die korrekte Anzahl an Bytes
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocTestMacroEntry}(s{"abc"});b{}
-					b{}
-					2{}f{ASSERT}(v{entry});b{}
-					2{}f{ASSERT}(b{}
-					3{}f{memcmp}(v{entry}-&gt;v{value},b{}
-					4{}s{"abc"}, n{3}) == n{0);}b{}
-					b{}
-					2{}f{freeMacroEntry}(v{entry});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Die Bytes eines Eintrags stimmen überein
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Einträge zu Makros hinzufügen</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{addEntryToMacro}(b{}
-					2{}t{struct Macro *}v{macro},b{}
-					2{}t{struct MacroEntry *}v{entry}b{}
-					1{}) {b{}
-					2{}e{assert add entry};b{}
-					2{}k{if} (v{macro}-&gt;v{firstEntry}) {b{}
-					3{}e{append entry};b{}
-					2{}} k{else} {b{}
-					3{}e{set first entry};b{}
-					2{}}b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein Eintrag wird entweder an das Ende der Liste
-						der Einträge angehängt
-					</li><li>
-						Oder als neuer Kopf der Liste gesetzt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{assert add entry}b{}
-					1{}f{ASSERT}(v{macro});b{}
-					1{}f{ASSERT}(v{entry});b{}
-					1{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
-					x{assert add entry}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Makro darf nicht
-						<code class="keyword">NULL</code> sein
-					</li><li>
-						Eintrag darf nicht
-						<code class="keyword">NULL</code> sein
-					</li><li>
-						Eintrag darf noch nicht in einer anderen Liste
-						hängen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{append entry}b{}
-					1{}v{macro}-&gt;v{lastEntry}-&gt;v{link} = v{entry};b{}
-					1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
-					x{append entry}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Da es schon Einträge gibt, muss es bereits einen
-						letzten geben
-					</li><li>
-						Dessen neuer Nachfolger ist der neue Eintrag
-					</li><li>
-						Der neue Eintrag wird zum neuen letzten Eintrag
-					</li><li>
-						Der Nachfolger von
-						<code class="var">entry</code> ist bereits
-						<code class="keyword">NULL</code>
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{set first entry}b{}
-					1{}v{macro}-&gt;v{firstEntry} = v{entry};b{}
-					1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
-					x{set first entry}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der erste Eintrag wird auch als letzter Eintrag
-						gesetzt
-					</li><li>
-						Der Nachfolger von
-						<code class="var">entry</code> ist bereits
-						<code class="keyword">NULL</code>
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct Macro *}v{macro} =b{}
-					3{}f{allocTestMacro}(s{""});b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocEmptyMacroEntry}();b{}
-					2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{global elements}b{}
+							1{}e{define macro};b{}
+							x{global elements}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Makros sind global sichtbare Strukturen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct MacroEntry};b{}
+							b{}
+							1{}t{struct Macro} {b{}
+							2{}t{struct Macro *}v{link};b{}
+							2{}t{struct MacroEntry *}v{firstEntry};b{}
+							2{}t{struct MacroEntry *}v{lastEntry};b{}
+							2{}t{char }v{name}t{[]};b{}
+							1{}};b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Die Makros werden in einfach verketteten
+								Listen gesammelt
+							</li><li>
+								Genauso werden die Einträge eines Makros
+								in einer einfach verketteten Liste
+								organisiert
+							</li><li>
+								Um schnell Einträge einfügen zu können,
+								gibt es auch einen Verweis auf das letzte
+								Element
+							</li><li>
+								Je nach Namen werden für ein Makro
+								unterschiedlich viele Bytes im Heap
+								angefordert
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{includes}b{}
+							1{}i{stdlib.h}b{}
+							x{includes}
+						</code></div>
+						<ul class="notes">
+							<li>
+								<code
+									class="include-name">stdlib.h</code>
+								wird für die Definition von
+								<code class="keyword">NULL</code>
+								benötigt
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Neues Makro anlegen</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct Macro *}f{allocMacro}(b{}
+							2{}t{const char *}v{nameBegin},b{}
+							2{}t{const char *}v{nameEnd}b{}
+							1{}) {b{}
+							2{}t{struct Macro *}v{result} = k{NULL};b{}
+							2{}e{allocate macro on heap};b{}
+							2{}v{result}-&gt;v{link} = k{NULL};b{}
+							2{}v{result}-&gt;v{firstEntry} = k{NULL};b{}
+							2{}e{copy macro name};b{}
+							2{}k{return} v{result};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Die Zeiger werden mit
+								<code class="keyword">NULL</code>
+								initializiert
+							</li><li>
+								<code class="var">lastEntry</code> wird
+								erst initialisiert, wenn
+								<code class="var">firstEntry</code>
+								gesetzt wird
+							</li><li>
+								Der Name wird über zwei Zeiger übergeben,
+								muss also nicht mit einem Null-Byte
+								terminiert sein
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define logging}b{}
+							1{}#define ASSERT(v{COND}) \b{}
+							2{}k{if} (! (v{COND})) { \b{}
+							3{}f{fprintf}(v{stderr}, \b{}
+							4{}s{"%s:%d FAILED\n"}, \b{}
+							4{}__FILE__, __LINE__); \b{}
+							3{}f{exit}(v{EXIT_FAILURE}); \b{}
+							2{}}b{}
+							x{define logging}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn Bedingung falsch ist, wird
+								Fehlermeldung ausgegeben
+							</li><li>
+								Und das Programm beendet
+							</li><li>
+								Datei und Zeile des Tests wird ausgegeben
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{allocate macro on heap}b{}
+							1{}f{ASSERT}(v{nameBegin});b{}
+							1{}f{ASSERT}(v{nameBegin} &lt;= v{nameEnd});b{}
+							1{}t{int} v{nameLength} =b{}
+							2{}v{nameEnd} - v{nameBegin};b{}
+							1{}t{int} v{macroSize} = k{sizeof}(t{struct Macro})b{}
+							2{}+ v{nameLength} + 1;b{}
+							1{}v{result} = v{malloc}(v{macroSize});b{}
+							1{}f{ASSERT}(v{result});b{}
+							x{allocate macro on heap}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Die Zeiger werden mit
+								<code class="keyword">NULL</code>
+								initializiert
+							</li><li>
+								<code class="var">lastEntry</code> wird
+								erst initialisiert, wenn
+								<code class="var">firstEntry</code>
+								gesetzt wird
+							</li><li>
+								Der Name wird über zwei Zeiger übergeben,
+								muss also nicht mit einem Null-Byte
+								terminiert sein
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{includes}b{}
+							1{}i{string.h}b{}
+							x{includes}b{}
+							b{}
+							a{copy macro name}b{}
+							1{}f{memcpy}(b{}
+							2{}v{result}-&gt;v{name}, v{nameBegin},b{}
+							2{}v{nameLength}b{}
+							1{});b{}
+							1{}v{result}-&gt;v{name}[v{nameLength}] = s{'\0'};b{}
+							x{copy macro name}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der Name wird direkt in die das Makro
+								kopiert
+							</li><li>
+								Der Name wird mit einem Null-Byte
+								abgeschlossen
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Makros freigeben</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}k{void} f{freeMacro}(b{}
+							2{}t{struct Macro *}v{macro}b{}
+							1{}) {b{}
+							2{}k{while} (v{macro}) {b{}
+							3{}t{struct Macro *}v{link} =b{}
+							4{}v{macro}-&gt;v{link};b{}
+							3{}e{free macros entries};b{}
+							3{}f{free}(v{macro});b{}
+							3{}v{macro} = v{link};b{}
+							2{}}b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Mit einem Makro werden auch alle
+								verketteten Makros freigegeben
+							</li><li>
+								Die Freigabe der einzelnen Einträge wird
+								später definiert
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Unit Tests</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{perform unit tests}b{}
+							1{}e{macro unit tests};b{}
+							x{perform unit tests}b{}
+							b{}
+							a{define macro}b{}
+							1{}t{struct Macro *}f{allocTestMacro}(b{}
+							2{}t{const char *}v{name}b{}
+							1{}) {b{}
+							2{}k{return} f{allocMacro}(b{}
+							3{}v{name}, v{name} + f{strlen}(v{name})b{}
+							2{});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Für Unit-Tests gibt es einen einfacheren
+								Konstruktor
+							</li><li>
+								Die Länge des Namens wird anhand des
+								Null-Bytes berechnet
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}k{void} f{testMacroName}(b{}
+							2{}t{const char *}v{name}b{}
+							1{}) {b{}
+							2{}t{struct Macro *}v{macro} =b{}
+							3{}f{allocTestMacro}(v{name});b{}
+							2{}f{ASSERT}(v{macro});b{}
+							2{}f{ASSERT}(b{}
+							3{}f{strcmp}(v{macro}-&gt;v{name}, v{name}) == 0b{}
+							2{});b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								<code class="fn">testMacroName</code>
+								prüft, ob der Name korrekt in ein Makro
+								kopiert wurde.
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}f{testMacroName}(s{"abc"});b{}
+							1{}f{testMacroName}(s{""});b{}
+							1{}f{testMacroName}(s{"A c"});b{}
+							1{}{b{}
+							2{}t{struct Macro *}v{macro} =b{}
+							3{}f{allocTestMacro}(s{"ab"});b{}
+							2{}f{ASSERT}(v{macro});b{}
+							2{}f{ASSERT}(! v{macro}-&gt;v{link});b{}
+							2{}f{ASSERT}(! v{macro}-&gt;v{firstEntry});b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zum einen wird getestet, ob die Namen
+								korrekt kopiert werden
+							</li><li>
+								Zum anderen wird sichergestellt, dass die
+								Verweise
+								<code class="keyword">NULL</code> sind
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Makro Einträge</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct MacroEntry} {b{}
+							2{}t{struct MacroEntry *}v{link};b{}
+							2{}t{struct Macro *}v{macro};b{}
+							2{}t{const char *}v{valueEnd};b{}
+							2{}t{char }v{value}t{[]};b{}
+							1{}};b{}
+							x{define macro}b{}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein Eintrag kann entweder auf ein anderes
+								Makro verweisen (wenn dieses an der
+								aktuellen Stelle expandiert werden soll)
+							</li><li>
+								Oder er enthält Bytes, die beim
+								Expandieren direkt expandiert werden
+							</li><li>
+								Die Länge des Byte-Arrays wird über einen
+								Zeiger angezeigt (damit auch Null-Bytes
+								verwendet werden können)
+							</li><li>
+								Wenn ein Eintrag sowohl Daten als auch
+								ein Makro enthält, so wird zuerst der
+								Text ausgegeben
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Makro Eintrag anlegen</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct MacroEntry *}f{allocMacroEntry}(b{}
+							2{}t{struct Macro *}v{macro},b{}
+							2{}t{const char *}v{valueBegin},b{}
+							2{}t{const char *}v{valueEnd}b{}
+							1{}) {b{}
+							2{}t{struct MacroEntry *}v{result} = k{NULL};b{}
+							2{}e{allocate entry on heap};b{}
+							2{}v{result}-&gt;v{link} = k{NULL};b{}
+							2{}e{copy entry values};b{}
+							2{}k{return} v{result};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wie beim Macro werden die
+								<code class="var">link</code> Verweise
+								auf <code class="keyword">NULL</code>
+								initialisiert
+							</li><li>
+								Sowohl <code class="var">macro</code> als
+								auch <code class="var">valueBegin</code>
+								sind optional
+							</li><li>
+								Die Größe des Eintrags hängt von der
+								Größe der Bytes ab, die kopiert werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{allocate entry on heap}b{}
+							1{}t{int} v{valueLength} = 0;b{}
+							1{}k{if} (v{valueBegin}) {b{}
+							2{}f{ASSERT}(v{valueBegin} &lt;= v{valueEnd});b{}
+							2{}v{valueLength} =b{}
+							3{}v{valueEnd} - v{valueBegin};b{}
+							1{}}b{}
+							1{}t{int} v{entrySize} = v{valueLength} +b{}
+							2{}k{sizeof}(t{struct MacroEntry});b{}
+							1{}v{result} = v{malloc}(v{entrySize});b{}
+							1{}f{ASSERT}(v{result});b{}
+							x{allocate entry on heap}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Die Größe der Struktur wird um die Anzahl
+								der zu kopierenden Bytes vergrößert
+							</li><li>
+								Wenn nicht genug Speicher vorhanden ist,
+								dann wird das Programm beendet
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{copy entry values}b{}
+							1{}k{if} (v{valueBegin}) {b{}
+							2{}f{memcpy}(b{}
+							3{}v{result}-&gt;v{value}, v{valueBegin},b{}
+							3{}v{valueLength}b{}
+							2{});b{}
+							1{}}b{}
+							1{}v{result}-&gt;v{valueEnd} =b{}
+							2{}v{result}-&gt;v{value} + v{valueLength};b{}
+							1{}v{result}-&gt;v{macro} = v{macro};b{}
+							x{copy entry values}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Die Bytes werden nur kopiert, wenn welche
+								übergeben wurden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct MacroEntry *}b{}
+							1{}f{allocEmptyMacroEntry}() {b{}
+							2{}k{return} f{allocMacroEntry}(b{}
+							3{}k{NULL}, k{NULL}, k{NULL}b{}
+							2{});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Für Tests ist es praktisch, leere
+								Einträge anzulegen
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Makro Einträge freigeben</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}k{void} f{freeMacroEntry}(b{}
+							2{}t{struct MacroEntry *}v{entry}b{}
+							1{}) {b{}
+							2{}k{while} (v{entry}) {b{}
+							3{}t{struct MacroEntry *}v{link} =b{}
+							4{}v{entry}-&gt;v{link};b{}
+							3{}f{free}(v{entry});b{}
+							3{}v{entry} = v{link};b{}
+							2{}}b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn ein Eintrag freigegeben wird, so
+								werden auch alle verlinkten Einträge
+								freigegeben
+							</li><li>
+								Referenzierte Makros werden nicht mit
+								freigegeben
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{forward declarations}b{}
+							1{}t{struct MacroEntry};b{}
+							1{}k{void} f{freeMacroEntry}(b{}
+							2{}t{struct MacroEntry *}v{entry}b{}
+							1{});b{}
+							x{forward declarations}b{}
+							b{}
+							a{free macros entries}b{}
+							1{}f{freeMacroEntry}(v{macro}-&gt;v{firstEntry});b{}
+							x{free macros entries}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn ein Makro freigegeben wird, so
+								werden auch die anhängenden Einträge
+								freigegeben
+							</li><li>
+								Damit die Funktion im
+								<code class="fn">freeMacro</code>
+								sichtbar ist, wird sie in der
+								Include-Sektion definiert
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Auf Attribute zugreifen</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}k{int} f{getMacroEntryValueSize}(b{}
+							2{}t{struct MacroEntry *}v{entry}b{}
+							1{}) {b{}
+							2{}k{if} (! v{entry}) {b{}
+							3{}k{return} n{0};b{}
+							2{}}b{}
+							2{}k{return} v{entry}-&gt;v{valueEnd} -b{}
+							3{}v{entry}-&gt;v{value};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Liefert die Anzahl der enthaltenen Bytes
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Unit Tests</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocEmptyMacroEntry}();b{}
+							b{}
+							2{}f{ASSERT}(v{entry});b{}
+							2{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
+							2{}f{ASSERT}(! v{entry}-&gt;v{macro});b{}
+							b{}
+							2{}f{freeMacroEntry}(v{entry});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein leerer Eintrag hat keinen Nachfolger
+							</li><li>
+								Und kein Makro
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocEmptyMacroEntry}();b{}
+							b{}
+							2{}f{ASSERT}(v{entry});b{}
+							2{}f{ASSERT}(b{}
+							3{}f{getMacroEntryValueSize}(b{}
+							4{}v{entry}) == n{0);}b{}
+							b{}
+							2{}f{freeMacroEntry}(v{entry});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein leerer Eintrag hat keine Bytes
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct MacroEntry *}b{}
+							1{}f{allocTestMacroEntry}(b{}
+							2{}t{const char *}v{value}b{}
+							1{}) {b{}
+							2{}t{const char *}v{end} = v{value} +b{}
+							3{}f{strlen}(v{value});b{}
+							b{}
+							2{}k{return} f{allocMacroEntry}(b{}
+							3{}k{NULL}, v{value}, v{end}b{}
+							2{});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der Test-Konstruktor bekommt eine
+								Null-terminierte Zeichenkette als
+								Argument
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocTestMacroEntry}(s{"abc"});b{}
+							b{}
+							2{}f{ASSERT}(v{entry});b{}
+							2{}f{ASSERT}(b{}
+							3{}f{getMacroEntryValueSize}(b{}
+							4{}v{entry}) == n{3);}b{}
+							b{}
+							2{}f{freeMacroEntry}(v{entry});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein Eintrag hat die korrekte Anzahl an
+								Bytes
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocTestMacroEntry}(s{"abc"});b{}
+							b{}
+							2{}f{ASSERT}(v{entry});b{}
+							2{}f{ASSERT}(b{}
+							3{}f{memcmp}(v{entry}-&gt;v{value},b{}
+							4{}s{"abc"}, n{3}) == n{0);}b{}
+							b{}
+							2{}f{freeMacroEntry}(v{entry});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Die Bytes eines Eintrags stimmen überein
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Einträge zu Makros hinzufügen</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{addEntryToMacro}(b{}
+							2{}t{struct Macro *}v{macro},b{}
+							2{}t{struct MacroEntry *}v{entry}b{}
+							1{}) {b{}
+							2{}e{assert add entry};b{}
+							2{}k{if} (v{macro}-&gt;v{firstEntry}) {b{}
+							3{}e{append entry};b{}
+							2{}} k{else} {b{}
+							3{}e{set first entry};b{}
+							2{}}b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein Eintrag wird entweder an das Ende der
+								Liste der Einträge angehängt
+							</li><li>
+								Oder als neuer Kopf der Liste gesetzt
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{assert add entry}b{}
+							1{}f{ASSERT}(v{macro});b{}
+							1{}f{ASSERT}(v{entry});b{}
+							1{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
+							x{assert add entry}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Makro darf nicht
+								<code class="keyword">NULL</code> sein
+							</li><li>
+								Eintrag darf nicht
+								<code class="keyword">NULL</code> sein
+							</li><li>
+								Eintrag darf noch nicht in einer anderen
+								Liste hängen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{append entry}b{}
+							1{}v{macro}-&gt;v{lastEntry}-&gt;v{link} = v{entry};b{}
+							1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
+							x{append entry}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Da es schon Einträge gibt, muss es
+								bereits einen letzten geben
+							</li><li>
+								Dessen neuer Nachfolger ist der neue
+								Eintrag
+							</li><li>
+								Der neue Eintrag wird zum neuen letzten
+								Eintrag
+							</li><li>
+								Der Nachfolger von
+								<code class="var">entry</code> ist
+								bereits <code class="keyword">NULL</code>
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{set first entry}b{}
+							1{}v{macro}-&gt;v{firstEntry} = v{entry};b{}
+							1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
+							x{set first entry}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der erste Eintrag wird auch als letzter
+								Eintrag gesetzt
+							</li><li>
+								Der Nachfolger von
+								<code class="var">entry</code> ist
+								bereits <code class="keyword">NULL</code>
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct Macro *}v{macro} =b{}
+							3{}f{allocTestMacro}(s{""});b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocEmptyMacroEntry}();b{}
+							2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
 
-					2{}f{ASSERT}(b{}
-					3{}v{macro}-&gt;v{firstEntry} == v{entry}b{}
-					2{});b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der erste Eintrag im Makro wird gesetzt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct Macro *}v{macro} =b{}
-					3{}f{allocTestMacro}(s{""});b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocEmptyMacroEntry}();b{}
-					2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
+							2{}f{ASSERT}(b{}
+							3{}v{macro}-&gt;v{firstEntry} == v{entry}b{}
+							2{});b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der erste Eintrag im Makro wird gesetzt
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct Macro *}v{macro} =b{}
+							3{}f{allocTestMacro}(s{""});b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocEmptyMacroEntry}();b{}
+							2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
 
-					2{}f{ASSERT}(b{}
-					3{}v{macro}-&gt;v{lastEntry} == v{entry}b{}
-					2{});b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der letzte Eintrag im Makro wird gesetzt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct Macro *}v{macro} = k{NULL};b{}
-					2{}t{struct MacroEntry *}v{first};b{}
-					2{}t{struct MacroEntry *}v{second};b{}
-					2{}e{add two entries};b{}
-					2{}e{check first of 2};b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zwei Einträge werden an ein Makro angehängt
-					</li><li>
-						Der erste Eintrag muss gesetzt bleiben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{add two entries}b{}
-					1{}v{macro} = f{allocTestMacro}(s{""});b{}
-					1{}v{first} = f{allocEmptyMacroEntry}();b{}
-					1{}v{second} = f{allocEmptyMacroEntry}();b{}
-					b{}
-					1{}f{addEntryToMacro}(v{macro}, v{first});b{}
-					1{}f{addEntryToMacro}(v{macro}, v{second});b{}
+							2{}f{ASSERT}(b{}
+							3{}v{macro}-&gt;v{lastEntry} == v{entry}b{}
+							2{});b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der letzte Eintrag im Makro wird gesetzt
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct Macro *}v{macro} = k{NULL};b{}
+							2{}t{struct MacroEntry *}v{first};b{}
+							2{}t{struct MacroEntry *}v{second};b{}
+							2{}e{add two entries};b{}
+							2{}e{check first of 2};b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zwei Einträge werden an ein Makro
+								angehängt
+							</li><li>
+								Der erste Eintrag muss gesetzt bleiben
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{add two entries}b{}
+							1{}v{macro} = f{allocTestMacro}(s{""});b{}
+							1{}v{first} = f{allocEmptyMacroEntry}();b{}
+							1{}v{second} = f{allocEmptyMacroEntry}();b{}
+							b{}
+							1{}f{addEntryToMacro}(v{macro}, v{first});b{}
+							1{}f{addEntryToMacro}(v{macro}, v{second});b{}
 
-					x{add two entries}b{}
-					b{}
-					a{check first of 2}b{}
-					1{}f{ASSERT}(v{macro}-&gt;v{firstEntry} == v{first});b{}
-					e{check first of 2}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zwei Einträge werden an ein Makro angehängt
-					</li><li>
-						Der erste Eintrag muss gesetzt bleiben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct Macro *}v{macro} = k{NULL};b{}
-					2{}t{struct MacroEntry *}v{first};b{}
-					2{}t{struct MacroEntry *}v{second};b{}
-					2{}e{add two entries};b{}
-					2{}f{ASSERT}(b{}
-					3{}v{macro}-&gt;v{lastEntry} == v{second}b{}
-					2{});b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zwei Einträge werden an ein Makro angehängt
-					</li><li>
-						Der letzte Eintrag muss gesetzt werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{addBytesToMacro}(b{}
-					2{}t{struct Macro *}v{macro},b{}
-					2{}t{const char *}v{value},b{}
-					2{}t{const char *}v{valueEnd}b{}
-					1{}) {b{}
-					2{}t{struct MacroEntry *}v{entry} =b{}
-					3{}f{allocMacroEntry}(b{}
-					4{}k{NULL}, v{value}, v{valueEnd}b{}
-					3{});b{}
-					2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Für die Daten wird ein neuer Eintrag angelegt
-					</li><li>
-						Dieser wird an das Makro angehängt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}e{define cycle check}b{}
-					1{}t{void} f{addMacroToMacro}(b{}
-					2{}t{struct Macro *}v{macro},b{}
-					2{}t{struct Macro *}v{child}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{macro});b{}
-					2{}f{ASSERT}(v{child});b{}
-					2{}e{avoid macro cycles};b{}
-					2{}e{reuse last entry};b{}
-					2{}e{add macro entry});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Bevor ein Makro hinzugefügt werden kann, muss
-						sichergestellt werden, dass kein Zykel entsteht
-					</li><li>
-						Ein Zykel liegt vor, wenn
-						<code class="var">macro</code> gleich
-						<code class="var">child</code> ist
-					</li><li>
-						Oder bereits direkt oder indirekt zu
-						<code class="var">child</code> hinzugefügt wurde
-					</li><li>
-						Falls der letzte Eintrag noch kein Makro hat,
-						wird dieser Eintrag verwendet
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{reuse last entry}b{}
-					1{}k{if} (v{macro}-&gt;v{firstEntry} &amp;&amp;b{}
-					2{}! v{macro}-&gt;v{lastEntry}-&gt;v{macro}b{}
-					1{}) {b{}
-					2{}v{macro}-&gt;v{lastEntry}-&gt;v{macro} = v{child};b{}
-					2{}k{return};b{}
-					1{}}b{}
-					x{reuse last entry}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn das Makro-Attribut im letzten Eintrag noch
-						nicht benutzt wird, kann dieses verwendet werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{add macro entry}b{}
-					1{}t{struct MacroEntry *}v{entry} =b{}
-					2{}f{allocMacroEntry}(b{}
-					3{}v{child}, k{NULL}, k{NULL}b{}
-					2{});b{}
-					1{}f{addEntryToMacro}(v{macro}, v{entry});b{}
-					x{add macro entry}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Sonst muss ein neuer Eintrag mit dem Makro
-						angelegt werden
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Makros serialisieren</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}k{typedef} t{void} t{Consumer}(b{}
-					2{}t{const char *}v{begin},b{}
-					2{}t{const char *}v{end},b{}
-					2{}t{void *}v{context}b{}
-					1{});b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						t{Callback} Instanzen
-						werden als Callbacks verwendet, um Byte-Folgen
-						zu konsumieren
-					</li><li>
-						Ein freier Kontext-Parameter wird mit übergeben
-					</li><li>
-						Damit lassen sich objekt-ähnliche Strukturen
-						realisieren
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{serializeMacro}(b{}
-  					2{}t{struct Macro *}v{macro,}b{}
-  					2{}t{Consumer} v{consumer},b{}
-  					2{}t{void *} v{context}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{macro});b{}
-					2{}f{ASSERT}(v{consumer});b{}
-					2{}e{iterate entries};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Jeder Eintrag wird nacheinander bearbeitet
-					</li><li>
-						Makros in Einträgen werden rekursiv ausgegeben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{iterate entries}b{}
-  					1{}t{struct MacroEntry *}v{entry} =b{}
-  					2{}v{macro}-&gt;v{firstEntry};b{}
-					1{}k{for} (; v{entry}; v{entry} = v{entry}-&gt;v{link}) {b{}
-					2{}e{serialize bytes};b{}
-					2{}k{if} (v{entry}-&gt;v{macro}) {b{}
-					3{}f{serializeMacro}(v{entry}-&gt;v{macro},b{}
- 					4{}v{consumer}, v{context}b{}
-					3{});b{}
-					2{}}b{}
-					1{}}b{}
-					x{iterate entries}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Für jeden Eintrag werden zuerst die Bytes
-						ausgegeben
-					</li><li>
-						Dann wird rekursiv das Makro ausgegeben, falls
-						vorhanden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{serialize bytes}b{}
-					1{}k{if} (f{getMacroEntryValueSize}(v{entry})) {b{}
-					2{}v{consumer}(b{}
-	   				3{}v{entry}-&gt;v{value},b{}
-					3{}v{entry}-&gt;v{valueEnd},b{}
-					3{}v{context}b{}
-					2{});b{}
-					1{}}b{}
-					x{serialize bytes}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn es Bytes in dem Eintrag gibt, wird der
-						<code class="var">consumer</code> mit ihnen
-						aufgerufen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct TestConsumerContext} {b{}
-					2{}t{char *}v{current};b{}
-					2{}t{const char *}v{end};b{}
-					2{}t{char }v{buffer}t{[]};b{}
-					1{}};b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zum Testen gibt es einen speziellen
-						<code class="type">Consumer</code>.
-					</li><li>
-						Dessen Kontext enthält einen Buffer.
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{testConsumer} (b{}
-					2{}t{const char *}v{begin},b{}
-					2{}t{const char *}v{end},b{}
-					2{}t{void *}v{context}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{begin});b{}
-					2{}f{ASSERT}(v{begin} &lt;= v{end});b{}
-					2{}f{ASSERT}(v{context});b{}
-					2{}e{add to test consumer};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Test Consumer fügt die übergegebenen Daten im
-						Buffer des Kontexts ein
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{add to test consumer}b{}
-					1{}t{struct TestConsumerContext *}v{ctx} =b{}
-					2{}v{context};b{}
-					1{}t{int} v{length} = v{end} - v{begin};b{}
-					1{}f{ASSERT}(b{}
-					2{}v{ctx}-&gt;v{current} + v{length} &lt;= v{ctx}-&gt;v{end}b{}
-					1{});b{}
-					1{}f{memcpy}(v{ctx}-&gt;v{current}, v{begin}, v{length});b{}
-					1{}v{ctx}-&gt;v{current} += v{length};b{}
-					x{add to test consumer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn genügend Platz im Buffer ist, werden die
-						Bytes hineinkopiert
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct TestConsumerContext *}b{}
-					1{}f{allocTestConsumerContext}(t{int} v{size}) {b{}
-					2{}f{ASSERT}(v{size} &gt;= 0);b{}
-					2{}t{struct TestConsumerContext *}b{}
-					2{}v{context} = f{malloc}(v{size} + k{sizeof}(b{}
-					3{}t{struct TestConsumerContext}));b{}
-					2{}f{ASSERT}(v{context});b{}
-					2{}e{init test consumer};b{}
-					2{}k{return} v{context};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Buffer wird direkt in der Struktur angelegt
-					</li><li>
-						Die Strukturen können nur auf dem Heap angelegt
-						werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{init test consumer}b{}
-					1{}v{context}-&gt;v{current} =
-					v{context}-&gt;v{buffer};b{}
-					1{}v{context}-&gt;v{end} =b{}
-					2{}v{context}-&gt;v{buffer} + v{size};b{}
-					x{init test consumer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zum schnellen Zugriff wird ein Zeiger auf das
-						aktuelle Ende und das Ende des Buffers
-						abgelegt
-					</li><li>
-						Die Größe des Buffers kann beim Einfügen nicht
-						überschritten werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{testMacro}(t{struct Macro *}b{}
-					2{}v{macro}, t{const char *}v{expected}b{}
-					1{}) {b{}
-					2{}t{int} v{size} = f{strlen}(v{expected});b{}
-					2{}t{struct TestConsumerContext *}b{}
-					2{}v{context} =b{}
-					3{}f{allocTestConsumerContext}(b{}
-					4{}v{size});b{}
-					2{}e{serialize test macro};b{}
-					2{}f{free}(v{context});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Diese Hilfsfunktion prüft ob die Serialisierung
-						eines Makros der Erwartung entspricht
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{serialize test macro}b{}
-					1{}f{serializeMacro}(v{macro},b{}
-					2{}v{testConsumer}, v{context});b{}
-					1{}f{ASSERT}(v{context}-&gt;v{current} -b{}
-					2{}v{context}-&gt;v{buffer} == v{size});b{}
-					1{}f{ASSERT}(f{memcmp}(v{expected},b{}
-					2{}v{context}-&gt;v{buffer}, v{size}) == 0);b{}
-					x{serialize test macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Serialisiert das Makro
-					</li><li>
-						Der Buffer muss die erwarteten Werte enthalten
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{addStringToMacro}(b{}
-					2{}t{struct Macro *}v{macro},b{}
-					2{}t{const char *}v{str}b{}
-					1{}) {b{}
-					2{}t{int} v{size} = f{strlen}(v{str});b{}
-					2{}f{addBytesToMacro}(b{}
-					3{}v{macro}, v{str}, v{str} + v{size}b{}
-					2{});b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Zu Testzwecken kann eine Null-terminierte
-						Zeichenkette hinzugefügt werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests}b{}
-					1{}{b{}
-					2{}t{struct Macro *}v{macro} =b{}
-					3{}f{allocTestMacro}(s{""});b{}
-					2{}f{addStringToMacro}(v{macro}, s{"abc"});b{}
-					2{}f{addStringToMacro}(v{macro}, s{"def"});b{}
-					2{}f{testMacro}(v{macro}, s{"abcdef"});b{}
-					2{}f{freeMacro}(v{macro});b{}
-					1{}}b{}
-					x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Prüft, ob zwei Strings richtig serialisiert
-						werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{macro unit tests} {b{}
-					1{}t{struct Macro *}v{a} =b{}
-					2{}f{allocTestMacro}(s{""});b{}
-					1{}t{struct Macro *}v{b} =b{}
-					2{}f{allocTestMacro}(s{""});b{}
-					1{}f{addStringToMacro}(v{a}, s{"abc"});b{}
-					1{}f{addMacroToMacro}(v{b}, v{a});b{}
-					1{}f{addStringToMacro}(v{b}, s{"def"});b{}
-					1{}f{addMacroToMacro}(v{b}, v{a});b{}
-					1{}f{testMacro}(v{b}, s{"abcdefabc"});b{}
-					1{}f{freeMacro}(v{a}); f{freeMacro}(v{b});b{}
-					} x{macro unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Prüft, ob Makros expandiert werden
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Zykel im Makro-Graph finden</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{includes}b{}
-					1{}i{stdbool.h}b{}
-					x{includes}b{}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Boolesche Datenwerte werden benötigt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define cycle check}b{}
-					1{}t{bool} f{isMacroInMacro}(b{}
-					2{}t{struct Macro *}v{needle},b{}
-					2{}t{struct Macro *}v{haystack}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{needle});b{}
-					2{}f{ASSERT}(v{haystack});b{}
-					2{}e{check cycle macro};b{}
-					2{}e{check cycle entries};b{}
-					2{}k{return} k{false};b{}
-					1{}}b{}
-					x{define cycle check}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn das Makro das gesuchte ist, dann wurde ein
-						Zykel gefunden
-					</li><li>
-						Danach wird über alle Einträge gesucht
-					</li><li>
-						Wenn das Makro dort nicht gefunden wurde, dann
-						ist es nicht enthalten
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{avoid macro cycles}b{}
-					1{}f{ASSERT}(! f{isMacroInMacro}(b{}
-					2{}v{macro}, v{child}b{}
-					1{}));b{}
-					x{avoid macro cycles}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein Makro darf nur hinzugefügt werden, wenn es
-						den Container nict bereits enthält
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{check cycle macro}b{}
-					1{}k{if} (v{needle} == v{haystack}) {b{}
-					2{}k{return} k{true};b{}
-					1{}}b{}
-					x{check cycle macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn der Container selbst das gesuchte Makro ist,
-						liefert die Funktion
-						<code class="keyword">true</code> zurück
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{check cycle entries}b{}
-					1{}t{struct MacroEntry *}v{entry} =b{}
-					2{}v{haystack}-&gt;v{firstEntry};b{}
-					1{}k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {b{}
-					2{}k{if} (! v{entry}-&gt;v{macro}) { k{continue}; }b{}
-					2{}k{if} (f{isMacroInMacro}(b{}
-					3{}v{needle}, v{entry}-&gt;v{macro}b{}
-					2{})) {b{}
-					3{}k{return} k{true};b{}
-					2{}}b{}
-					1{}}b{}
-					x{check cycle entries}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Alle Makros in den Einträgen werden rekursiv
-						untersucht
-					</li><li>
-						Damit wird der ganze Graph durchsucht
-					</li>
-				</ul>
-			</div>
-		</div>
-		<h2>Macro-Collection</h2>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}<span class="define">#define <span class="name">MACRO_SLOTS</span> 128</span>b{}
-					b{}
-					1{}t{struct MacroMap} {b{}
-					2{}t{struct Macro *}v{macros}t{[}b{}
-					3{}t{MACRO_SLOTS}b{}
-					2{}t{]};b{}
-					1{}};b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Eine Kollektion von Makros ist ein Array von
-						Makro-Ketten
-					</li><li>
-						Alle Felder müssen mit
-						<code class="keyword">NULL</code> initialisiert
-						werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{void} f{clearMacroMap}(b{}
-					2{}t{struct MacroMap *}v{map}b{}
-					1{}) {b{}
-					2{}t{struct Macro **}v{cur} = v{map}-&gt;v{macros};b{}
-					2{}t{struct Macro **}v{end} =b{}
-					3{}v{cur} + v{MACRO_SLOTS};b{}
-					2{}k{for} (; v{cur} &lt; v{end}; ++v{cur}) {b{}
-					3{}f{freeMacro}(*v{cur}); *v{cur} = k{NULL};b{}
-					2{}}b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Um den Speicher freizugeben, wird jeder Slot
-						gelöscht
-					</li><li>
-						und auf <code class="keyword">NULL</code>
-						gesetzt um wieder verwendet zu werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{int} f{calcHash}(t{const char *}v{begin},b{}
-					2{}t{const char *}v{end}) {b{}
-					2{}f{ASSERT}(v{begin});b{}
-					2{}t{unsigned} v{hash} = n{0xf1e2d3c4};b{}
-					2{}k{while} (*v{begin} &amp;&amp; v{begin} != v{end}) {b{}
-					3{}v{hash} ^= *v{begin}++;b{}
-					3{}v{hash} = (v{hash} &lt;&lt; 3) |b{}
-					4{}(v{hash} &gt;&gt; 29);b{}
-					2{}}b{}
-					2{}k{return} v{hash} % v{MACRO_SLOTS};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Hash wird über den Namen des Makros erstellt
-					</li><li>
-						Der Name kann entweder durch ein Null-Byte
-						abgeschlossen werden
-					</li><li>
-						Oder ein Ende wird direkt angegeben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct Macro *}f{allocMacroInMap}(b{}
-					2{}t{struct MacroMap *}v{map},b{}
-					2{}t{const char *}v{begin},b{}
-					2{}t{const char *}v{end}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{map});b{}
-					2{}t{struct Macro *}v{macro} =b{}
-					3{}f{allocMacro}(v{begin}, v{end});b{}
-					2{}e{insert in slot};b{}
-					2{}k{return} v{macro};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein neues Makro wird erstellt
-					</li><li>
-						Und in der Hash-Map abgelegt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{insert in slot}b{}
-					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
-					1{}v{macro}-&gt;v{link} = v{map}-&gt;v{macros}[v{hash}];b{}
-					1{}v{map}-&gt;v{macros}[v{hash}] = v{macro};
-					x{insert in slot}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Makros werden im Slot eingefügt
-					</li><li>
-						Neue Makros überlagern alte Slots mit gleichem
-						Namen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct Macro *}f{findMacroInMap}(b{}
-					2{}t{struct MacroMap *}v{map},b{}
-					2{}t{const char *}v{begin},b{}
-					2{}t{const char *}v{end}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{map});b{}
-					2{}t{struct Macro *}v{macro} = f{NULL};b{}
-					2{}e{find macro in slot};b{}
-					2{}k{return} v{macro};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Liefert das erste Makro mit dem übergebenen
-						Namen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{find macro in slot}b{}
-					1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
-					1{}v{macro} = v{map}-&gt;v{macros}[v{hash}];b{}
-					1{}k{for} (; v{macro}; v{macro} = v{macro}-&gt;v{link}) {b{}
-					2{}t{const char *}v{a} = v{begin};b{}
-					2{}t{const char *}v{b} = v{macro}-&gt;v{name};b{}
-					2{}k{while} (v{a} != v{end}) {b{}
-					3{}k{if} (*v{a}++ != *v{b}++) { k{break}; }b{}
-					2{}}b{}
-					2{}k{if} (v{a} == v{end} &amp;&amp; ! *v{b}) {b{}
-					3{}k{return} v{macro}; }b{}
-					1{}}b{}
-					x{find macro in slot}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Im passenden Hash-Slot werden die Namen der
-						Makros verglichen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define macro}b{}
-					1{}t{struct Macro *}f{getMacroInMap}(b{}
-					2{}t{struct MacroMap *}v{map},b{}
-					2{}t{const char *}v{begin},b{}
-					2{}t{const char *}v{end}b{}
-					1{}) {b{}
-					2{}t{struct Macro *}v{macro} = NULL;b{}
-					2{}e{get macro find};b{}
-					2{}e{get macro alloc};b{}
-					2{}k{return} v{macro};b{}
-					1{}}b{}
-					x{define macro}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Liefert Makro mit angegebenen Namen oder legt
-						ein neues Makro mit diesem Namen an
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{get macro find}b{}
-					1{}v{macro} = f{findMacroInMap}(b{}
-					2{}v{map}, v{begin}, v{end}b{}
-					1{});b{}
-					1{}k{if} (v{macro}) {b{}
-					0{}k{return} v{macro};b{}
-					1{}}b{}
-					x{get macro find}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn das Makro in der Kollektion vorhanden ist,
-						wird dieses verwendet
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{get macro alloc}b{}
-					1{}v{macro} = f{allocMacroInMap}(b{}
-					2{}v{map}, v{begin}, v{end}b{}
-					1{});b{}
-					x{get macro alloc}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Sonst wird ein neues Makro angelegt
-					</li>
-				</ul>
-			</div>
-		</div>
+							x{add two entries}b{}
+							b{}
+							a{check first of 2}b{}
+							1{}f{ASSERT}(v{macro}-&gt;v{firstEntry} == v{first});b{}
+							e{check first of 2}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zwei Einträge werden an ein Makro
+								angehängt
+							</li><li>
+								Der erste Eintrag muss gesetzt bleiben
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct Macro *}v{macro} = k{NULL};b{}
+							2{}t{struct MacroEntry *}v{first};b{}
+							2{}t{struct MacroEntry *}v{second};b{}
+							2{}e{add two entries};b{}
+							2{}f{ASSERT}(b{}
+							3{}v{macro}-&gt;v{lastEntry} == v{second}b{}
+							2{});b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zwei Einträge werden an ein Makro
+								angehängt
+							</li><li>
+								Der letzte Eintrag muss gesetzt werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{addBytesToMacro}(b{}
+							2{}t{struct Macro *}v{macro},b{}
+							2{}t{const char *}v{value},b{}
+							2{}t{const char *}v{valueEnd}b{}
+							1{}) {b{}
+							2{}t{struct MacroEntry *}v{entry} =b{}
+							3{}f{allocMacroEntry}(b{}
+							4{}k{NULL}, v{value}, v{valueEnd}b{}
+							3{});b{}
+							2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Für die Daten wird ein neuer Eintrag
+								angelegt
+							</li><li>
+								Dieser wird an das Makro angehängt
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}e{define cycle check}b{}
+							1{}t{void} f{addMacroToMacro}(b{}
+							2{}t{struct Macro *}v{macro},b{}
+							2{}t{struct Macro *}v{child}b{}
+							1{}) {b{}
+							2{}f{ASSERT}(v{macro});b{}
+							2{}f{ASSERT}(v{child});b{}
+							2{}e{avoid macro cycles};b{}
+							2{}e{reuse last entry};b{}
+							2{}e{add macro entry});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Bevor ein Makro hinzugefügt werden kann,
+								muss sichergestellt werden, dass kein
+								Zykel entsteht
+							</li><li>
+								Ein Zykel liegt vor, wenn
+								<code class="var">macro</code> gleich
+								<code class="var">child</code> ist
+							</li><li>
+								Oder bereits direkt oder indirekt zu
+								<code class="var">child</code>
+								hinzugefügt wurde
+							</li><li>
+								Falls der letzte Eintrag noch kein Makro
+								hat, wird dieser Eintrag verwendet
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{reuse last entry}b{}
+							1{}k{if} (v{macro}-&gt;v{firstEntry} &amp;&amp;b{}
+							2{}! v{macro}-&gt;v{lastEntry}-&gt;v{macro}b{}
+							1{}) {b{}
+							2{}v{macro}-&gt;v{lastEntry}-&gt;v{macro} = v{child};b{}
+							2{}k{return};b{}
+							1{}}b{}
+							x{reuse last entry}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn das Makro-Attribut im letzten
+								Eintrag noch nicht benutzt wird, kann
+								dieses verwendet werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{add macro entry}b{}
+							1{}t{struct MacroEntry *}v{entry} =b{}
+							2{}f{allocMacroEntry}(b{}
+							3{}v{child}, k{NULL}, k{NULL}b{}
+							2{});b{}
+							1{}f{addEntryToMacro}(v{macro}, v{entry});b{}
+							x{add macro entry}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Sonst muss ein neuer Eintrag mit dem
+								Makro angelegt werden
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Makros serialisieren</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}k{typedef} t{void} t{Consumer}(b{}
+							2{}t{const char *}v{begin},b{}
+							2{}t{const char *}v{end},b{}
+							2{}t{void *}v{context}b{}
+							1{});b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								<span class="type">Callback</span>
+								Instanzen werden als Callbacks verwendet,
+								um Byte-Folgen zu konsumieren
+							</li><li>
+								Ein freier Kontext-Parameter wird mit
+								übergeben
+							</li><li>
+								Damit lassen sich objekt-ähnliche
+								Strukturen realisieren
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{serializeMacro}(b{}
+							2{}t{struct Macro *}v{macro,}b{}
+							2{}t{Consumer} v{consumer},b{}
+							2{}t{void *} v{context}b{}
+							1{}) {b{}
+							2{}f{ASSERT}(v{macro});b{}
+							2{}f{ASSERT}(v{consumer});b{}
+							2{}e{iterate entries};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Jeder Eintrag wird nacheinander
+								bearbeitet
+							</li><li>
+								Makros in Einträgen werden rekursiv
+								ausgegeben
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{iterate entries}b{}
+							1{}t{struct MacroEntry *}v{entry} =b{}
+							2{}v{macro}-&gt;v{firstEntry};b{}
+							1{}k{for} (; v{entry}; v{entry} = v{entry}-&gt;v{link}) {b{}
+							2{}e{serialize bytes};b{}
+							2{}k{if} (v{entry}-&gt;v{macro}) {b{}
+							3{}f{serializeMacro}(v{entry}-&gt;v{macro},b{}
+							4{}v{consumer}, v{context}b{}
+							3{});b{}
+							2{}}b{}
+							1{}}b{}
+							x{iterate entries}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Für jeden Eintrag werden zuerst die Bytes
+								ausgegeben
+							</li><li>
+								Dann wird rekursiv das Makro ausgegeben,
+								falls vorhanden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{serialize bytes}b{}
+							1{}k{if} (f{getMacroEntryValueSize}(v{entry})) {b{}
+							2{}v{consumer}(b{}
+							3{}v{entry}-&gt;v{value},b{}
+							3{}v{entry}-&gt;v{valueEnd},b{}
+							3{}v{context}b{}
+							2{});b{}
+							1{}}b{}
+							x{serialize bytes}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn es Bytes in dem Eintrag gibt, wird
+								der <code class="var">consumer</code> mit
+								ihnen aufgerufen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct TestConsumerContext} {b{}
+							2{}t{char *}v{current};b{}
+							2{}t{const char *}v{end};b{}
+							2{}t{char }v{buffer}t{[]};b{}
+							1{}};b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zum Testen gibt es einen speziellen
+								<code class="type">Consumer</code>.
+							</li><li>
+								Dessen Kontext enthält einen Buffer.
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{testConsumer} (b{}
+							2{}t{const char *}v{begin},b{}
+							2{}t{const char *}v{end},b{}
+							2{}t{void *}v{context}b{}
+							1{}) {b{}
+							2{}f{ASSERT}(v{begin});b{}
+							2{}f{ASSERT}(v{begin} &lt;= v{end});b{}
+							2{}f{ASSERT}(v{context});b{}
+							2{}e{add to test consumer};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der Test Consumer fügt die übergegebenen
+								Daten im Buffer des Kontexts ein
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{add to test consumer}b{}
+							1{}t{struct TestConsumerContext *}v{ctx} =b{}
+							2{}v{context};b{}
+							1{}t{int} v{length} = v{end} - v{begin};b{}
+							1{}f{ASSERT}(b{}
+							2{}v{ctx}-&gt;v{current} + v{length} &lt;= v{ctx}-&gt;v{end}b{}
+							1{});b{}
+							1{}f{memcpy}(v{ctx}-&gt;v{current}, v{begin}, v{length});b{}
+							1{}v{ctx}-&gt;v{current} += v{length};b{}
+							x{add to test consumer}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn genügend Platz im Buffer ist, werden
+								die Bytes hineinkopiert
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct TestConsumerContext *}b{}
+							1{}f{allocTestConsumerContext}(t{int} v{size}) {b{}
+							2{}f{ASSERT}(v{size} &gt;= 0);b{}
+							2{}t{struct TestConsumerContext *}b{}
+							2{}v{context} = f{malloc}(v{size} + k{sizeof}(b{}
+							3{}t{struct TestConsumerContext}));b{}
+							2{}f{ASSERT}(v{context});b{}
+							2{}e{init test consumer};b{}
+							2{}k{return} v{context};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der Buffer wird direkt in der Struktur
+								angelegt
+							</li><li>
+								Die Strukturen können nur auf dem Heap
+								angelegt werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{init test consumer}b{}
+							1{}v{context}-&gt;v{current} =
+							v{context}-&gt;v{buffer};b{}
+							1{}v{context}-&gt;v{end} =b{}
+							2{}v{context}-&gt;v{buffer} + v{size};b{}
+							x{init test consumer}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zum schnellen Zugriff wird ein Zeiger auf
+								das aktuelle Ende und das Ende des
+								Buffers abgelegt
+							</li><li>
+								Die Größe des Buffers kann beim Einfügen
+								nicht überschritten werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{testMacro}(t{struct Macro *}b{}
+							2{}v{macro}, t{const char *}v{expected}b{}
+							1{}) {b{}
+							2{}t{int} v{size} = f{strlen}(v{expected});b{}
+							2{}t{struct TestConsumerContext *}b{}
+							2{}v{context} =b{}
+							3{}f{allocTestConsumerContext}(b{}
+							4{}v{size});b{}
+							2{}e{serialize test macro};b{}
+							2{}f{free}(v{context});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Diese Hilfsfunktion prüft ob die
+								Serialisierung eines Makros der Erwartung
+								entspricht
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{serialize test macro}b{}
+							1{}f{serializeMacro}(v{macro},b{}
+							2{}v{testConsumer}, v{context});b{}
+							1{}f{ASSERT}(v{context}-&gt;v{current} -b{}
+							2{}v{context}-&gt;v{buffer} == v{size});b{}
+							1{}f{ASSERT}(f{memcmp}(v{expected},b{}
+							2{}v{context}-&gt;v{buffer}, v{size}) == 0);b{}
+							x{serialize test macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Serialisiert das Makro
+							</li><li>
+								Der Buffer muss die erwarteten Werte
+								enthalten
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{addStringToMacro}(b{}
+							2{}t{struct Macro *}v{macro},b{}
+							2{}t{const char *}v{str}b{}
+							1{}) {b{}
+							2{}t{int} v{size} = f{strlen}(v{str});b{}
+							2{}f{addBytesToMacro}(b{}
+							3{}v{macro}, v{str}, v{str} + v{size}b{}
+							2{});b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Zu Testzwecken kann eine Null-terminierte
+								Zeichenkette hinzugefügt werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests}b{}
+							1{}{b{}
+							2{}t{struct Macro *}v{macro} =b{}
+							3{}f{allocTestMacro}(s{""});b{}
+							2{}f{addStringToMacro}(v{macro}, s{"abc"});b{}
+							2{}f{addStringToMacro}(v{macro}, s{"def"});b{}
+							2{}f{testMacro}(v{macro}, s{"abcdef"});b{}
+							2{}f{freeMacro}(v{macro});b{}
+							1{}}b{}
+							x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Prüft, ob zwei Strings richtig
+								serialisiert werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{macro unit tests} {b{}
+							1{}t{struct Macro *}v{a} =b{}
+							2{}f{allocTestMacro}(s{""});b{}
+							1{}t{struct Macro *}v{b} =b{}
+							2{}f{allocTestMacro}(s{""});b{}
+							1{}f{addStringToMacro}(v{a}, s{"abc"});b{}
+							1{}f{addMacroToMacro}(v{b}, v{a});b{}
+							1{}f{addStringToMacro}(v{b}, s{"def"});b{}
+							1{}f{addMacroToMacro}(v{b}, v{a});b{}
+							1{}f{testMacro}(v{b}, s{"abcdefabc"});b{}
+							1{}f{freeMacro}(v{a}); f{freeMacro}(v{b});b{}
+							} x{macro unit tests}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Prüft, ob Makros expandiert werden
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Zykel im Makro-Graph finden</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{includes}b{}
+							1{}i{stdbool.h}b{}
+							x{includes}b{}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Boolesche Datenwerte werden benötigt
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define cycle check}b{}
+							1{}t{bool} f{isMacroInMacro}(b{}
+							2{}t{struct Macro *}v{needle},b{}
+							2{}t{struct Macro *}v{haystack}b{}
+							1{}) {b{}
+							2{}f{ASSERT}(v{needle});b{}
+							2{}f{ASSERT}(v{haystack});b{}
+							2{}e{check cycle macro};b{}
+							2{}e{check cycle entries};b{}
+							2{}k{return} k{false};b{}
+							1{}}b{}
+							x{define cycle check}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn das Makro das gesuchte ist, dann
+								wurde ein Zykel gefunden
+							</li><li>
+								Danach wird über alle Einträge gesucht
+							</li><li>
+								Wenn das Makro dort nicht gefunden wurde,
+								dann ist es nicht enthalten
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{avoid macro cycles}b{}
+							1{}f{ASSERT}(! f{isMacroInMacro}(b{}
+							2{}v{macro}, v{child}b{}
+							1{}));b{}
+							x{avoid macro cycles}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein Makro darf nur hinzugefügt werden,
+								wenn es den Container nict bereits
+								enthält
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{check cycle macro}b{}
+							1{}k{if} (v{needle} == v{haystack}) {b{}
+							2{}k{return} k{true};b{}
+							1{}}b{}
+							x{check cycle macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn der Container selbst das gesuchte
+								Makro ist, liefert die Funktion
+								<code class="keyword">true</code> zurück
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{check cycle entries}b{}
+							1{}t{struct MacroEntry *}v{entry} =b{}
+							2{}v{haystack}-&gt;v{firstEntry};b{}
+							1{}k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {b{}
+							2{}k{if} (! v{entry}-&gt;v{macro}) { k{continue}; }b{}
+							2{}k{if} (f{isMacroInMacro}(b{}
+							3{}v{needle}, v{entry}-&gt;v{macro}b{}
+							2{})) {b{}
+							3{}k{return} k{true};b{}
+							2{}}b{}
+							1{}}b{}
+							x{check cycle entries}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Alle Makros in den Einträgen werden
+								rekursiv untersucht
+							</li><li>
+								Damit wird der ganze Graph durchsucht
+							</li>
+						</ul>
+					</div>
+				</div>
+			<h2>Makro-Kollektion</h2>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}#define MACRO_SLOTS 128b{}
+							b{}
+							1{}t{struct MacroMap} {b{}
+							2{}t{struct Macro *}v{macros}t{[}b{}
+							3{}t{MACRO_SLOTS}b{}
+							2{}t{]};b{}
+							1{}};b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Eine Kollektion von Makros ist ein Array
+								von Makro-Ketten
+							</li><li>
+								Alle Felder müssen mit
+								<code class="keyword">NULL</code>
+								initialisiert werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{void} f{clearMacroMap}(b{}
+							2{}t{struct MacroMap *}v{map}b{}
+							1{}) {b{}
+							2{}t{struct Macro **}v{cur} = v{map}-&gt;v{macros};b{}
+							2{}t{struct Macro **}v{end} =b{}
+							3{}v{cur} + v{MACRO_SLOTS};b{}
+							2{}k{for} (; v{cur} &lt; v{end}; ++v{cur}) {b{}
+							3{}f{freeMacro}(*v{cur}); *v{cur} = k{NULL};b{}
+							2{}}b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Um den Speicher freizugeben, wird jeder
+								Slot gelöscht
+							</li><li>
+								und auf <code class="keyword">NULL</code>
+								gesetzt um wieder verwendet zu werden
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{int} f{calcHash}(t{const char *}v{begin},b{}
+							2{}t{const char *}v{end}) {b{}
+							2{}f{ASSERT}(v{begin});b{}
+							2{}t{unsigned} v{hash} = n{0xf1e2d3c4};b{}
+							2{}k{while} (*v{begin} &amp;&amp; v{begin} != v{end}) {b{}
+							3{}v{hash} ^= *v{begin}++;b{}
+							3{}v{hash} = (v{hash} &lt;&lt; 3) |b{}
+							4{}(v{hash} &gt;&gt; 29);b{}
+							2{}}b{}
+							2{}k{return} v{hash} % v{MACRO_SLOTS};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Der Hash wird über den Namen des Makros
+								erstellt
+							</li><li>
+								Der Name kann entweder durch ein
+								Null-Byte abgeschlossen werden
+							</li><li>
+								Oder ein Ende wird direkt angegeben
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct Macro *}f{allocMacroInMap}(b{}
+							2{}t{struct MacroMap *}v{map},b{}
+							2{}t{const char *}v{begin},b{}
+							2{}t{const char *}v{end}b{}
+							1{}) {b{}
+							2{}f{ASSERT}(v{map});b{}
+							2{}t{struct Macro *}v{macro} =b{}
+							3{}f{allocMacro}(v{begin}, v{end});b{}
+							2{}e{insert in slot};b{}
+							2{}k{return} v{macro};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Ein neues Makro wird erstellt
+							</li><li>
+								Und in der Hash-Map abgelegt
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{insert in slot}b{}
+							1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
+							1{}v{macro}-&gt;v{link} = v{map}-&gt;v{macros}[v{hash}];b{}
+							1{}v{map}-&gt;v{macros}[v{hash}] = v{macro};
+							x{insert in slot}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Makros werden im Slot eingefügt
+							</li><li>
+								Neue Makros überlagern alte Slots mit
+								gleichem Namen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct Macro *}f{findMacroInMap}(b{}
+							2{}t{struct MacroMap *}v{map},b{}
+							2{}t{const char *}v{begin},b{}
+							2{}t{const char *}v{end}b{}
+							1{}) {b{}
+							2{}f{ASSERT}(v{map});b{}
+							2{}t{struct Macro *}v{macro} = f{NULL};b{}
+							2{}e{find macro in slot};b{}
+							2{}k{return} v{macro};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Liefert das erste Makro mit dem
+								übergebenen Namen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{find macro in slot}b{}
+							1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
+							1{}v{macro} = v{map}-&gt;v{macros}[v{hash}];b{}
+							1{}k{for} (; v{macro}; v{macro} = v{macro}-&gt;v{link}) {b{}
+							2{}t{const char *}v{a} = v{begin};b{}
+							2{}t{const char *}v{b} = v{macro}-&gt;v{name};b{}
+							2{}k{while} (v{a} != v{end}) {b{}
+							3{}k{if} (*v{a}++ != *v{b}++) { k{break}; }b{}
+							2{}}b{}
+							2{}k{if} (v{a} == v{end} &amp;&amp; ! *v{b}) {b{}
+							3{}k{return} v{macro}; }b{}
+							1{}}b{}
+							x{find macro in slot}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Im passenden Hash-Slot werden die Namen
+								der Makros verglichen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{define macro}b{}
+							1{}t{struct Macro *}f{getMacroInMap}(b{}
+							2{}t{struct MacroMap *}v{map},b{}
+							2{}t{const char *}v{begin},b{}
+							2{}t{const char *}v{end}b{}
+							1{}) {b{}
+							2{}t{struct Macro *}v{macro} = NULL;b{}
+							2{}e{get macro find};b{}
+							2{}e{get macro alloc};b{}
+							2{}k{return} v{macro};b{}
+							1{}}b{}
+							x{define macro}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Liefert Makro mit angegebenen Namen oder
+								legt ein neues Makro mit diesem Namen an
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{get macro find}b{}
+							1{}v{macro} = f{findMacroInMap}(b{}
+							2{}v{map}, v{begin}, v{end}b{}
+							1{});b{}
+							1{}k{if} (v{macro}) {b{}
+							0{}k{return} v{macro};b{}
+							1{}}b{}
+							x{get macro find}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Wenn das Makro in der Kollektion
+								vorhanden ist, wird dieses verwendet
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							a{get macro alloc}b{}
+							1{}v{macro} = f{allocMacroInMap}(b{}
+							2{}v{map}, v{begin}, v{end}b{}
+							1{});b{}
+							x{get macro alloc}
+						</code></div>
+						<ul class="notes">
+							<li>
+								Sonst wird ein neues Makro angelegt
+							</li>
+						</ul>
+					</div>
+				</div>
 		<h1>Buffer</h1>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{global elements}b{}
-					1{}e{define buffer};b{}
-					x{global elements}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Makros sind global sichtbare Strukturen
-					</li>
-				</ul>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}e{define buffer};b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Makros sind global sichtbare Strukturen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{perform unit tests}b{}
+						1{}e{buffer unit tests};b{}
+						x{perform unit tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Buffer haben ihre eigenen Unit Tests
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{define buffer}b{}
+						1{}#define INIT_BUFFER_SIZE 16b{}
+						b{}
+						1{}t{struct Buffer} {b{}
+						2{}t{char} v{initial}t{[INIT_BUFFER_SIZE]};b{}
+						2{}t{char *}v{buffer};b{}
+						2{}t{char *}v{current};b{}
+						2{}t{const char *}v{end};b{}
+						1{}};b{}
+						x{define buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Ein Buffer kann bis zu
+							<code>INIT_BUFFER_SIZE</code> bytes aufnehmen
+						</li><li>
+							Bei weiteren Bytes wird der Speicher im Heap
+							angelegt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{define buffer}b{}
+						1{}t{void} f{addToBuffer}(b{}
+						2{}t{struct Buffer *}v{buffer}, t{char} chb{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{buffer});b{}
+						2{}e{may initialize buffer}b{}
+						2{}e{assure buffer size}b{}
+						2{}*v{buffer}->v{current}++ = v{ch};b{}
+						1{}}b{}
+						x{define buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn die Struktur leer ist, muss sie auf den
+							interenen Buffer initialisiert werden
+						</li><li>
+							Zusätzlich muss sicher gestellt werden, dass
+							ein weiteres Byte angefügt werden kann
+						</li><li>
+							Dann wird das Byte angefügt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{may initialize buffer}b{}
+						1{}k{if} (! v{buffer}-&gt;v{buffer}) {b{}
+						2{}v{buffer}-&gt;v{buffer} =b{}
+						3{}v{buffer}-&gt;v{initial};b{}
+						2{}v{buffer}-&gt;v{current} =b{}
+						3{}v{buffer}-&gt;v{buffer};b{}
+						2{}v{buffer}-&gt;v{end} =b{}
+						3{}v{buffer}-&gt;v{initial} +b{}
+						4{}INIT_BUFFER_SIZE;b{}
+						1{}}b{}
+						x{may initialize buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn der interne Buffer nicht gesetzt ist,
+							wird er auf den enthaltenen Bereich gesetzt
+						</li><li>
+							Das stellt sicher, dass ein initialisierter
+							Buffer keinen Speicher im Heap belegt
+						</li><li>
+							Mit <code class="fn">eraseBuffer</code> kann
+							ggf. vorhandener Heap-Speicher freigegeben
+							werden
+						</li><li>
+							Und der Buffer trotzdem weiter benutzt werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{assure buffer size}b{}
+						1{}k{if} (b{}
+						2{}v{buffer}-&gt;v{current} &gt;= v{buffer}-&gt;v{end}b{}
+						1{}) {b{}
+						2{}t{int} v{size} = v{buffer}-&gt;v{current} -b{}
+						3{}v{buffer}-&gt;v{buffer};b{}
+						2{}t{int} v{newSize} = n{2} * v{size};b{}
+						2{}e{reallocate buffer};b{}
+						1{}}b{}
+						x{assure buffer size}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn der Buffer ausgeschöpft ist, dann wird
+							seine Größe verdoppelt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{reallocate buffer}b{}
+						1{}t{char *}v{newBuffer};b{}
+						1{}k{if} (b{}
+						2{}v{buffer}-&gt;v{buffer} == v{buffer}-&gt;v{initial}b{}
+						1{}) {b{}
+						2{}v{newBuffer} = f{malloc}(v{newSize});b{}
+						2{}e{copy initial buffer};b{}
+						1{}} k{else} {b{}
+						2{}v{newBuffer} = f{realloc}(b{}
+						3{}v{buffer}-&gt;v{buffer}, v{newSize});b{}
+						1{}}b{}
+						1{}e{adjust buffer pointers};b{}
+						x{reallocate buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn der initiale Buffer ausgeschöpft ist,
+							muss neuer Speicher angelegt und manuell
+							befüllt werden
+						</li><li>
+							Andernfalls kann der Speicherblock im Heap 
+							vergrößert werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{copy initial buffer}b{}
+						1{}f{ASSERT}(v{newBuffer});b{}
+						1{}f{memcpy}(b{}
+						2{}v{newBuffer}, v{buffer}-&gt;v{buffer}, v{size}
+						1{});b{}
+						x{copy initial buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Vom initialen Buffer werden die Werte direkt
+							kopiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{adjust buffer pointers}b{}
+						1{}f{ASSERT}(v{newBuffer});b{}
+						1{}v{buffer}-&gt;v{buffer} = v{newBuffer};b{}
+						1{}v{buffer}-&gt;v{current} = v{newBuffer} + v{size};b{}
+						1{}v{buffer}-&gt;v{end} = v{newBuffer} + v{newSize};b{}
+						x{adjust buffer pointers}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{define buffer}b{}
+						1{}t{void} f{resetBuffer}(b{}
+						2{}t{struct Buffer *}v{buffer}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{buffer});b{}
+						2{}v{buffer}-&gt;v{current} = v{buffer}-&gt;v{buffer};b{}
+						1{}}b{}
+						x{define buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Um einen Buffer wieder zu verwenden, der
+							<code class="var">current</code> muss auf
+							<code class="var">buffer</code> zurück
+							gesetzt werden
+						</li><li>
+							Das funktioniert auch, wenn der initiale
+							Buffer verwendet wird
+						</li><li>
+							Oder die Zeiger noch
+							<code class="keyword">NULL</code> sind
+						</li><li>
+							Es wird kein Speicher freigegeben
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{define buffer}b{}
+						1{}t{void} f{eraseBuffer}(b{}
+						2{}t{struct Buffer *}v{buffer}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{buffer});b{}
+						2{}e{erase heap buffer};b{}
+						2{}v{buffer}-&gt;v{current} = v{buffer}-&gt;v{buffer};b{}
+						1{}}b{}
+						x{define buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn ein Buffer auf dem Heap angelegt wurde,
+							wird dieser freigegeben
+						</li><li>
+							Zusätzlich wird der aktuelle Zeiger auf den
+							Anfang zurückgesetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{erease heap buffer}b{}
+						1{}k{if} (v{buffer}-&gt;v{buffer} &amp;&amp;b{}
+						2{}v{buffer}-&gt;v{buffer} != v{buffer}-&gt;v{initial}b{}
+						1{}) {b{}
+						2{}f{free}(v{buffer}-&gt;v{buffer});b{}
+						2{}v{buffer}-&gt;v{buffer} = k{NULL};b{}
+						1{}}b{}
+						x{erase buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn wir nicht den internen Buffer verwenden,
+							wird der Buffer freigegeben
+						</li><li>
+							Und der Buffer-Zeiger wird gelöscht
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{perform unit tests}b{}
-					1{}e{buffer unit tests};b{}
-					x{perform unit tests}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Buffer haben ihre eigenen Unit Tests
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define buffer}b{}
-					1{}#define INIT_BUFFER_SIZE 16b{}
-					b{}
-					1{}t{struct Buffer} {b{}
-					2{}t{char} v{initial}t{[INIT_BUFFER_SIZE]};b{}
-					2{}t{char *}v{buffer};b{}
-					2{}t{char *}v{current};b{}
-					2{}t{const char *}v{end};b{}
-					1{}};b{}
-					x{define buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Ein Buffer kann bis zu
-						<code>INIT_BUFFER_SIZE</code> bytes aufnehmen
-					</li><li>
-						Bei weiteren Bytes wird der Speicher im Heap
-						angelegt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define buffer}b{}
-					1{}t{void} f{addToBuffer}(b{}
-					2{}t{struct Buffer *}v{buffer}, t{char} chb{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{buffer});b{}
-					2{}e{may initialize buffer}b{}
-					2{}e{assure buffer size}b{}
-					2{}*v{buffer}->v{current}++ = v{ch};b{}
-					1{}}b{}
-					x{define buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn die Struktur leer ist, muss sie auf den
-						interenen Buffer initialisiert werden
-					</li><li>
-						Zusätzlich muss sicher gestellt werden, dass ein
-						weiteres Byte angefügt werden kann
-					</li><li>
-						Dann wird das Byte angefügt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{may initialize buffer}b{}
-					1{}k{if} (! v{buffer}-&gt;v{buffer}) {b{}
-					2{}v{buffer}-&gt;v{buffer} =b{}
-					3{}v{buffer}-&gt;v{initial};b{}
-					2{}v{buffer}-&gt;v{current} =b{}
-					3{}v{buffer}-&gt;v{buffer};b{}
-					2{}v{buffer}-&gt;v{end} =b{}
-					3{}v{buffer}-&gt;v{initial} +b{}
-					4{}INIT_BUFFER_SIZE;b{}
-					1{}}b{}
-					x{may initialize buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn der interne Buffer nicht gesetzt ist, wird
-						er auf den enthaltenen Bereich gesetzt
-					</li><li>
-						Das stellt sicher, dass ein initialisierter
-						Buffer keinen Speicher im Heap belegt
-					</li><li>
-						Mit <code class="fn">eraseBuffer</code> kann
-						ggf. vorhandener Heap-Speicher freigegeben werden
-					</li><li>
-						Und der Buffer trotzdem weiter benutzt werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{assure buffer size}b{}
-					1{}k{if} (b{}
-					2{}v{buffer}-&gt;v{current} &gt;= v{buffer}-&gt;v{end}b{}
-					1{}) {b{}
-					2{}t{int} v{size} = v{buffer}-&gt;v{current} -b{}
-					3{}v{buffer}-&gt;v{buffer};b{}
-					2{}t{int} v{newSize} = n{2} * v{size};b{}
-					2{}e{reallocate buffer};b{}
-					1{}}b{}
-					x{assure buffer size}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn der Buffer ausgeschöpft ist, dann wird seine
-						Größe verdoppelt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{reallocate buffer}b{}
-					1{}t{char *}v{newBuffer};b{}
-					1{}k{if} (b{}
-					2{}v{buffer}-&gt;v{buffer} == v{buffer}-&gt;v{initial}b{}
-					1{}) {b{}
-					2{}v{newBuffer} = f{malloc}(v{newSize});b{}
-					2{}e{copy initial buffer};b{}
-					1{}} k{else} {b{}
-					2{}v{newBuffer} = f{realloc}(b{}
-					3{}v{buffer}-&gt;v{buffer}, v{newSize});b{}
-					1{}}b{}
-					1{}e{adjust buffer pointers};b{}
-					x{reallocate buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn der initiale Buffer ausgeschöpft ist, muss
-						neuer Speicher angelegt und manuell befüllt
-						werden
-					</li><li>
-						Andernfalls kann der Speicherblock im Heap 
-						vergrößert werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{copy initial buffer}b{}
-					1{}f{ASSERT}(v{newBuffer});b{}
-					1{}f{memcpy}(b{}
-					2{}v{newBuffer}, v{buffer}-&gt;v{buffer}, v{size}
-					1{});b{}
-					x{copy initial buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Vom initialen Buffer werden die Werte direkt
-						kopiert
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{adjust buffer pointers}b{}
-					1{}f{ASSERT}(v{newBuffer});b{}
-					1{}v{buffer}-&gt;v{buffer} = v{newBuffer};b{}
-					1{}v{buffer}-&gt;v{current} = v{newBuffer} + v{size};b{}
-					1{}v{buffer}-&gt;v{end} = v{newBuffer} + v{newSize};b{}
-					x{adjust buffer pointers}
-				</code></div>
-				<ul class="notes">
-					<li>
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define buffer}b{}
-					1{}t{void} f{resetBuffer}(b{}
-					2{}t{struct Buffer *}v{buffer}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{buffer});b{}
-					2{}v{buffer}-&gt;v{current} = v{buffer}-&gt;v{buffer};b{}
-					1{}}b{}
-					x{define buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Um einen Buffer wieder zu verwenden, der
-						<code class="var">current</code> muss auf
-						<code class="var">buffer</code> zurück
-						gesetzt werden
-					</li><li>
-						Das funktioniert auch, wenn der initiale Buffer
-						verwendet wird
-					</li><li>
-						Oder die Zeiger noch
-						<code class="keyword">NULL</code> sind
-					</li><li>
-						Es wird kein Speicher freigegeben
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{define buffer}b{}
-					1{}t{void} f{eraseBuffer}(b{}
-					2{}t{struct Buffer *}v{buffer}b{}
-					1{}) {b{}
-					2{}f{ASSERT}(v{buffer});b{}
-					2{}e{erase heap buffer};b{}
-					2{}v{buffer}-&gt;v{current} = v{buffer}-&gt;v{buffer};b{}
-					1{}}b{}
-					x{define buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn ein Buffer auf dem Heap angelegt wurde,
-						wird dieser freigegeben
-					</li><li>
-						Zusätzlich wird der aktuelle Zeiger auf den
-						Anfang zurückgesetzt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{erease heap buffer}b{}
-					1{}k{if} (v{buffer}-&gt;v{buffer} &amp;&amp;b{}
-					2{}v{buffer}-&gt;v{buffer} != v{buffer}-&gt;v{initial}b{}
-					1{}) {b{}
-					2{}f{free}(v{buffer}-&gt;v{buffer});b{}
-					2{}v{buffer}-&gt;v{buffer} = k{NULL};b{}
-					1{}}b{}
-					x{erase buffer}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn wir nicht den internen Buffer verwenden,
-						wird der Buffer freigegeben
-					</li><li>
-						Und der Buffer-Zeiger wird gelöscht
-					</li>
-				</ul>
-			</div>
-		</div>
 		<h1>Input Dateien lesen</h1>
-		<div class="slides">
-			<div class="row">
-				<div class="slide code"><code>
-					a{read source file}b{}
-					1{}{b{}
-					2{}e{additional read vars};b{}
-					2{}t{int} v{last} = f{fgetc}(v{input});b{}
-					2{}t{int} v{ch} = f{fgetc}(v{input});b{}
-					2{}k{while} (v{ch} != v{EOF}) {b{}
-					3{}e{process current char};b{}
-					3{}v{last} = v{ch}; v{ch} = f{fgetc}(v{input});b{}
-					2{}}b{}
-					1{}}b{}
-					x{read source file}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Neben dem aktuellen Zeichen wird auch das letzte
-						Zeichen aufgehoben
-					</li>
-				</ul>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						a{read source file}b{}
+						1{}{b{}
+						2{}e{additional read vars};b{}
+						2{}t{int} v{last} = f{fgetc}(v{input});b{}
+						2{}t{int} v{ch} = f{fgetc}(v{input});b{}
+						2{}k{while} (v{ch} != v{EOF}) {b{}
+						3{}e{process current char};b{}
+						3{}v{last} = v{ch}; v{ch} = f{fgetc}(v{input});b{}
+						2{}}b{}
+						1{}}b{}
+						x{read source file}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Neben dem aktuellen Zeichen wird auch das
+							letzte Zeichen aufgehoben
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process current char}b{}
+						1{}k{switch} (v{ch}) {b{}
+						2{}k{case} s{'{'}:b{}
+						3{}e{process open brace};b{}
+						3{}k{break};b{}
+						2{}k{case} '}':b{}
+						3{}e{process close brace};b{}
+						3{}k{break};b{}
+						2{}k{default}:b{}
+						3{}e{process other char};b{}
+						1{}}b{}
+						x{process current char}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Beim Parsen kommt es nur auf das Öffnen und
+							Schließen von Mengenklammern an
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{additional read vars}b{}
+						1{}t{struct Macro *} v{macro} = k{NULL};b{}
+						x{additional read vars}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wir unterscheiden, ob wir in einem Code-Block
+							sind, oder außerhalb
+						</li><li>
+							In einem Code sind wir sogar in einem Makro,
+							dessen Inhalt gelesen wird
+						</li><li>
+							Am Anfang sind wir außerhalb eines
+							Code-Blocks
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{additional read vars}b{}
+						1{}t{char} v{openCh} = s{'\0'};b{}
+						x{additional read vars}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Der Befehl vor einer öffnenden Mengenklammer
+							wird in dieser Variable zwischengespeichert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{additional read vars}b{}
+						1{}t{char} v{name}t{[128]};b{}
+						1{}t{char *}v{nameCur} = k{NULL};b{}
+						1{}t{const char *}v{nameEnd} = v{name} +b{}
+						2{}k{sizeof}(v{name});b{}
+						x{additional read vars}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn <code class="var">nameCur</code> gesetzt
+							ist, dann wird ein Name in Buffer gelesen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process close brace} {b{}
+						1{}k{if} (v{nameCur}) {b{}
+						2{}e{process macro name};b{}
+						2{}v{nameCur} = k{NULL};b{}
+						1{}}b{}
+						} x{process close brace}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Bei einer schließenden Mengenklammer wird der
+							Makro-Name ausgewertet
+						</li><li>
+							Danach wird der Namenszeiger zurückgesetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process other char} {b{}
+						1{}k{if} (v{nameCur}) {b{}
+						2{}f{ASSERT}(v{nameCur} &lt; v{nameEnd});b{}
+						2{}*v{nameCur}++ = v{ch};b{}
+						2{}k{break};b{}
+						1{}}b{}
+						} x{process other char}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn ein Name geparst wird, dann der
+							Namensbuffer entsprechend erweitert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process other char} {b{}
+						1{}k{if} (v{macro}) {b{}
+						2{}f{putchar}(v{last});b{}
+						1{}}b{}
+						} x{process other char}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn es ein aktuelles Makro gibt, dann müssen
+							sonstige Zeichen dort angefügt werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process open brace} {b{}
+						1{}k{if} (! v{macro}) {b{}
+						2{}k{if} (v{last} == s{'a'}) {b{}
+						3{}v{openCh} = v{last};b{}
+						3{}v{nameCur} = v{name};b{}
+						2{}}b{}
+						1{}}b{}
+						} x{process open brace}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn außerhalb eines Makros die Folge
+							<code>a</code><code>{</code>
+							gelesen wird, dann beginnt ein 
+							<code class="add">@add</code> Fragment
+						</li><li>
+							Es folgt der Name des Makros bis zum nächsten
+							<code>}</code>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{process current char}b{}
-					1{}k{switch} (v{ch}) {b{}
-					2{}k{case} s{'{'}:b{}
-					3{}e{process open brace};b{}
-					3{}k{break};b{}
-					2{}k{case} '}':b{}
-					3{}e{process close brace};b{}
-					3{}k{break};b{}
-					2{}k{default}:b{}
-					3{}e{process other char};b{}
-					1{}}b{}
-					x{process current char}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Beim Parsen kommt es nur auf das Öffnen und
-						Schließen von Mengenklammern an
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{additional read vars}b{}
-					1{}t{struct Macro *} v{macro} = k{NULL};b{}
-					x{additional read vars}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wir unterscheiden, ob wir in einem Code-Block
-						sind, oder außerhalb
-					</li><li>
-						In einem Code sind wir sogar in einem Makro,
-						dessen Inhalt gelesen wird
-					</li><li>
-						Am Anfang sind wir außerhalb eines Code-Blocks
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{additional read vars}b{}
-					1{}t{char} v{openCh} = s{'\0'};b{}
-					x{additional read vars}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Der Befehl vor einer öffnenden Mengenklammer
-						wird in dieser Variable zwischengespeichert
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{additional read vars}b{}
-					1{}t{char} v{name}t{[128]};b{}
-					1{}t{char *}v{nameCur} = k{NULL};b{}
-					1{}t{const char *}v{nameEnd} = v{name} +b{}
-					2{}k{sizeof}(v{name});b{}
-					x{additional read vars}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn <code class="var">nameCur</code> gesetzt
-						ist, dann wird ein Name in Buffer gelesen
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{process close brace} {b{}
-					1{}k{if} (v{nameCur}) {b{}
-					2{}e{process macro name};b{}
-					2{}v{nameCur} = k{NULL};b{}
-					1{}}b{}
-					} x{process close brace}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Bei einer schließenden Mengenklammer wird der
-						Makro-Name ausgewertet
-					</li><li>
-						Danach wird der Namenszeiger zurückgesetzt
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{process other char} {b{}
-					1{}k{if} (v{nameCur}) {b{}
-					2{}f{ASSERT}(v{nameCur} &lt; v{nameEnd});b{}
-					2{}*v{nameCur}++ = v{ch};b{}
-					2{}k{break};b{}
-					1{}}b{}
-					} x{process other char}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn ein Name geparst wird, dann der Namensbuffer
-						entsprechend erweitert
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{process other char} {b{}
-					1{}k{if} (v{macro}) {b{}
-					2{}f{putchar}(v{last});b{}
-					1{}}b{}
-					} x{process other char}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn es ein aktuelles Makro gibt, dann müssen
-						sonstige Zeichen dort angefügt werden
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="slide code"><code>
-					a{process open brace} {b{}
-					1{}k{if} (! v{macro}) {b{}
-					2{}k{if} (v{last} == s{'a'}) {b{}
-					3{}v{openCh} = v{last};b{}
-					3{}v{nameCur} = v{name};b{}
-					2{}}b{}
-					1{}}b{}
-					} x{process open brace}
-				</code></div>
-				<ul class="notes">
-					<li>
-						Wenn außerhalb eines Makros die Folge
-						<code>a</code><code>{</code>
-						gelesen wird, dann beginnt ein 
-						<code class="add">@add</code> Fragment
-					</li><li>
-						Es folgt der Name des Makros bis zum nächsten
-						<code>}</code>
-					</li>
-				</ul>
-			</div>
-		</div>
 	</body>
 </html>
