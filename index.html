@@ -106,7 +106,7 @@
 						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write HTML file</span>)</span>;<br/>
 						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">serialize fragments</span>)</span>;<br/>
 						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">compile program</span>)</span>;<br/>
-						<span class="expand">@expand(<span class="macro-name">main body</span>)</span>
+						<span class="end">@end(<span class="macro-name">main body</span>)</span>
 					</code></div>
 					<ul class="notes">
 						<li>
@@ -172,8 +172,7 @@
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
 						<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdio.h</span>&gt;</span><br/>
-						<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
-						<br/>
+						<span class="end">@end(<span class="macro-name">includes</span>)</span>
 					</code></div>
 					<ul class="notes">
 						<li>
@@ -2124,6 +2123,8 @@
 						<span class="in2"></span>*<span class="var">nameCur</span> = <span class="str">'\0'</span>;<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">process macro name</span>)</span>;<br/>
 						<span class="in2"></span><span class="var">nameCur</span> = <span class="keyword">NULL</span>;<br/>
+						<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
+						<span class="in2"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>);<br/>
 						<span class="in1"></span>}<br/>
 						} <span class="end">@end(<span class="macro-name">process close brace</span>)</span>
 					</code></div>

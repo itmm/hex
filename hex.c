@@ -17,9 +17,7 @@
 
 	// @expand(forward declarations)
 		struct MacroEntry;
-		void freeMacroEntry(
-			struct MacroEntry *entry
-		);
+		void freeMacroEntry(struct MacroEntry *entry);
 
 	
 	// @expand(define macro);
@@ -40,31 +38,23 @@
 			// @expand(allocate macro on heap);
 				ASSERT(nameBegin);
 				ASSERT(nameBegin <= nameEnd);
-				int nameLength =
-					nameEnd - nameBegin;
-				int macroSize = sizeof(struct Macro)
-					+ nameLength + 1;
+				int nameLength = nameEnd - nameBegin;
+				int macroSize = sizeof(struct Macro) + nameLength + 1;
 				result = malloc(macroSize);
 				ASSERT(result);
 
 			result->link = NULL;
 			result->firstEntry = NULL;
 			//@expand(copy macro name);
-				memcpy(
-					result->name, nameBegin,
-					nameLength
-				);
+				memcpy(result->name, nameBegin, nameLength);
 				result->name[nameLength] = '\0';
 
 			return result;
 		}
 
-		void freeMacro(
-			struct Macro *macro
-		) {
+		void freeMacro(struct Macro *macro) {
 			while (macro) {
-				struct Macro *link =
-					macro->link;
+				struct Macro *link = macro->link;
 				// @expand(free macros entries);
 					freeMacroEntry(macro->firstEntry);
 
@@ -73,23 +63,14 @@
 			}
 		}
 
-		struct Macro *allocTestMacro(
-			const char *name
-		) {
-			return allocMacro(
-				name, name + strlen(name)
-			);
+		struct Macro *allocTestMacro(const char *name) {
+			return allocMacro(name, name + strlen(name));
 		}
 
-		void testMacroName(
-			const char *name
-		) {
-			struct Macro *macro =
-				allocTestMacro(name);
+		void testMacroName(const char *name) {
+			struct Macro *macro = allocTestMacro(name);
 			ASSERT(macro);
-			ASSERT(
-					strcmp(macro->name, name) == 0
-				  );
+			ASSERT(strcmp(macro->name, name) == 0);
 			freeMacro(macro);
 		}
 
@@ -102,32 +83,25 @@
 
 		struct MacroEntry *allocMacroEntry(
 			struct Macro *macro,
-			const char *valueBegin,
-			const char *valueEnd
+			const char *valueBegin, const char *valueEnd
 		) {
 			struct MacroEntry *result = NULL;
 			// @expand(allocate entry on heap);
 				int valueLength = 0;
 				if (valueBegin) {
 					ASSERT(valueBegin <= valueEnd);
-					valueLength =
-						valueEnd - valueBegin;
+					valueLength = valueEnd - valueBegin;
 				}
-				int entrySize = valueLength +
-					sizeof(struct MacroEntry);
+				int entrySize = valueLength + sizeof(struct MacroEntry);
 				result = malloc(entrySize);
 				ASSERT(result);
 
 			result->link = NULL;
 			// @expand(copy entry value);
 				if (valueBegin) {
-					memcpy(
-						result->value, valueBegin,
-						valueLength
-					  );
+					memcpy(result->value, valueBegin, valueLength);
 				}
-				result->valueEnd =
-					result->value + valueLength;
+				result->valueEnd = result->value + valueLength;
 				result->macro = macro;
 
 			return result;
@@ -135,42 +109,26 @@
 
 		struct MacroEntry *
 		allocEmptyMacroEntry() {
-			return allocMacroEntry(
-				NULL, NULL, NULL
-			);
+			return allocMacroEntry(NULL, NULL, NULL);
 		}
 
-		void freeMacroEntry(
-			struct MacroEntry *entry
-		) {
+		void freeMacroEntry(struct MacroEntry *entry) {
 			while (entry) {
-				struct MacroEntry *link =
-					entry->link;
+				struct MacroEntry *link = entry->link;
 				free(entry);
 				entry = link;
 			}
 		}
 
-		int getMacroEntryValueSize(
-			struct MacroEntry *entry
-		) {
-			if (! entry) {
-				return 0;
-			}
-			return entry->valueEnd -
-				entry->value;
+		int getMacroEntryValueSize(struct MacroEntry *entry) {
+			if (! entry) { return 0; }
+			return entry->valueEnd - entry->value;
 		}
 
-		struct MacroEntry *
-		allocTestMacroEntry(
-			const char *value
-		) {
-			const char *end = value +
-				strlen(value);
+		struct MacroEntry * allocTestMacroEntry(const char *value) {
+			const char *end = value + strlen(value);
 
-			return allocMacroEntry(
-				NULL, value, end
-			);
+			return allocMacroEntry(NULL, value, end);
 		}
 
 		void addEntryToMacro(
@@ -196,36 +154,28 @@
 
 		void addBytesToMacro(
 			struct Macro *macro,
-			const char *value,
-			const char *valueEnd
+			const char *value, const char *valueEnd
 		) {
-			struct MacroEntry *entry =
-				allocMacroEntry(
-						NULL, value, valueEnd
-						);
+			struct MacroEntry *entry = allocMacroEntry(
+				NULL, value, valueEnd
+			);
 			addEntryToMacro(macro, entry);
 		}
 
 		// @expand(define cycle check);
 			bool isMacroInMacro(
-				struct Macro *needle,
-				struct Macro *haystack
+				struct Macro *needle, struct Macro *haystack
 			) {
 				ASSERT(needle);
 				ASSERT(haystack);
 				// @expand(check cycle macro);
-					if (needle == haystack) {
-						return true;
-					}
+					if (needle == haystack) { return true; }
 
 				// @expand(check cycle entries);
-					struct MacroEntry *entry =
-						haystack->firstEntry;
+					struct MacroEntry *entry = haystack->firstEntry;
 					for (; entry; entry = entry->link) {
 						if (! entry->macro) { continue; }
-						if (isMacroInMacro(
-							needle, entry->macro
-						)) {
+						if (isMacroInMacro(needle, entry->macro)) {
 							return true;
 						}
 					}
@@ -233,63 +183,46 @@
 				return false;
 			}
 
-		void addMacroToMacro(
-			struct Macro *macro,
-			struct Macro *child
-		) {
+		void addMacroToMacro(struct Macro *macro, struct Macro *child) {
 			ASSERT(macro);
 			ASSERT(child);
 			// @expand(avoid macro cycles);
-				ASSERT(! isMacroInMacro(
-					macro, child
-				));
+				ASSERT(! isMacroInMacro(macro, child));
 
 			// @expand(reuse last entry);
-				if (macro->firstEntry &&
-					! macro->lastEntry->macro
-				) {
+				if (macro->firstEntry && ! macro->lastEntry->macro) {
 					macro->lastEntry->macro = child;
 					return;
 				}
 
 			// @expand(add macro entry);
-				struct MacroEntry *entry =
-					allocMacroEntry(
-						child, NULL, NULL
-					);
+				struct MacroEntry *entry = allocMacroEntry(
+					child, NULL, NULL
+				);
 				addEntryToMacro(macro, entry);
 
 		}
 
 		typedef void Consumer(
-			const char *begin,
-			const char *end,
-			void *context
+			const char *begin, const char *end, void *context
 		);
 
 		void serializeMacro(
-			struct Macro *macro,
-			Consumer consumer,
-			void *context
+			struct Macro *macro, Consumer consumer, void *context
 		) {
 			ASSERT(macro);
 			ASSERT(consumer);
 			// @expand(iterate entries);
-				struct MacroEntry *entry =
-					macro->firstEntry;
+				struct MacroEntry *entry = macro->firstEntry;
 				for (; entry; entry = entry->link) {
 					if (getMacroEntryValueSize(entry)) {
 						consumer(
-							entry->value,
-							entry->valueEnd,
-							context
+							entry->value, entry->valueEnd, context
 						);
 					}
 
 					if (entry->macro) {
-						serializeMacro(entry->macro,
-							consumer, context
-						);
+						serializeMacro(entry->macro, consumer, context);
 					}
 				}
 		}
@@ -301,24 +234,20 @@
 		};
 
 		void testConsumer (
-			const char *begin,
-			const char *end,
-			void *context
+			const char *begin, const char *end, void *context
 		) {
 			ASSERT(begin);
 			ASSERT(begin <= end);
 			ASSERT(context);
 			// @expand(add to test consumer);
-				struct TestConsumerContext *ctx =
-					context;
+				struct TestConsumerContext *ctx = context;
 				int length = end - begin;
 				ASSERT(ctx->current + length <= ctx->end);
 				memcpy(ctx->current, begin, length);
 				ctx->current += length;
 		}
 
-		struct TestConsumerContext *
-		allocTestConsumerContext(int size) {
+		struct TestConsumerContext *allocTestConsumerContext(int size) {
 			ASSERT(size >= 0);
 			struct TestConsumerContext *
 				context = malloc(size + sizeof(
@@ -331,71 +260,50 @@
 			return context;
 		}
 
-		void testMacro(struct Macro *macro,
-			const char *expected
-		) {
+		void testMacro(struct Macro *macro, const char *expected) {
 			int size = strlen(expected);
 			struct TestConsumerContext *context =
 				allocTestConsumerContext(size);
-			serializeMacro(macro,
-				testConsumer, context);
-			ASSERT(context->current -
-					context->buffer == size);
-			ASSERT(memcmp(expected,
-				context->buffer, size) == 0);
+			serializeMacro(macro, testConsumer, context);
+			ASSERT(context->current - context->buffer == size);
+			ASSERT(memcmp(expected, context->buffer, size) == 0);
 			free(context);
 		}
 
-		void addStringToMacro(
-			struct Macro *macro,
-			const char *str
-		) {
+		void addStringToMacro(struct Macro *macro, const char *str) {
 			int size = strlen(str);
-			addBytesToMacro(
-				macro, str, str + size
-			);
+			addBytesToMacro(macro, str, str + size);
 		}
-
 
 		#define MACRO_SLOTS 128
 
 		struct MacroMap {
-			struct Macro *macros[
-				MACRO_SLOTS
-			];
+			struct Macro *macros[MACRO_SLOTS];
 		};
 
-		void clearMacroMap(
-			struct MacroMap *map
-		) {
+		void clearMacroMap(struct MacroMap *map) {
 			struct Macro **cur = map->macros;
-			struct Macro **end =
-				cur + MACRO_SLOTS;
+			struct Macro **end = cur + MACRO_SLOTS;
 			for (; cur < end; ++cur) {
 				freeMacro(*cur); *cur = NULL;
 			}
 		}
 
-		int calcHash(const char *begin,
-			const char *end) {
+		int calcHash(const char *begin, const char *end) {
 			ASSERT(begin);
 			unsigned hash = 0xf1e2d3c4;
 			while (*begin && begin != end) {
 				hash ^= *begin++;
-				hash = (hash << 3) |
-					(hash >> 29);
+				hash = (hash << 3) | (hash >> 29);
 			}
 			return hash % MACRO_SLOTS;
 		}
 
 		struct Macro *allocMacroInMap(
-			struct MacroMap *map,
-			const char *begin,
-			const char *end
+			struct MacroMap *map, const char *begin, const char *end
 		) {
 			ASSERT(map);
-			struct Macro *macro =
-				allocMacro(begin, end);
+			struct Macro *macro = allocMacro(begin, end);
 			// @expand(insert in slot);
 				int hash = calcHash(begin, end);
 				macro->link = map->macros[hash];
@@ -405,9 +313,7 @@
 		}
 
 		struct Macro *findMacroInMap(
-			struct MacroMap *map,
-			const char *begin,
-			const char *end
+			struct MacroMap *map, const char *begin, const char *end
 		) {
 			ASSERT(map);
 			struct Macro *macro = NULL;
@@ -420,8 +326,7 @@
 					while (a != end) {
 						if (*a++ != *b++) { break; }
 					}
-					if (a == end && ! *b) {
-						return macro; }
+					if (a == end && ! *b) { return macro; }
 				}
 
 			return macro;
@@ -434,17 +339,11 @@
 		) {
 			struct Macro *macro = NULL;
 			// @expand(get macro find);
-				macro = findMacroInMap(
-					map, begin, end
-				);
-				if (macro) {
-					return macro;
-				}
+				macro = findMacroInMap(map, begin, end);
+				if (macro) { return macro; }
 
 			// @expand(get macro alloc);
-				macro = allocMacroInMap(
-					map, begin, end
-				);
+				macro = allocMacroInMap(map, begin, end);
 
 			return macro;
 		}
@@ -459,43 +358,31 @@
 			const char *end;
 		};
 
-		void addToBuffer(
-			struct Buffer *buffer, char ch
-		) {
+		void addToBuffer(struct Buffer *buffer, char ch) {
 			ASSERT(buffer);
 			// @expand(may initialize buffer)
 				if (! buffer->buffer) {
-					buffer->buffer =
-						buffer->initial;
-					buffer->current =
-						buffer->buffer;
-					buffer->end =
-						buffer->initial +
-							INIT_BUFFER_SIZE;
+					buffer->buffer = buffer->initial;
+					buffer->current = buffer->buffer;
+					buffer->end = buffer->initial + INIT_BUFFER_SIZE;
 				}
 
 			// @expand(assure buffer size)
-				if (
-					buffer->current >= buffer->end
-				) {
-					int size = buffer->current -
-						buffer->buffer;
+				if (buffer->current >= buffer->end) {
+					int size = buffer->current - buffer->buffer;
 					int newSize = 2 * size;
 					// @expand(reallocate buffer);
 						char *newBuffer;
-						if (
-							buffer->buffer == buffer->initial
-						   ) {
+						if (buffer->buffer == buffer->initial) {
 							newBuffer = malloc(newSize);
 							// @expand(copy initial buffer);
 								ASSERT(newBuffer);
-								memcpy(
-									newBuffer, buffer->buffer, size );
-
+								memcpy(newBuffer, buffer->buffer, size);
 
 						} else {
 							newBuffer = realloc(
-								buffer->buffer, newSize);
+								buffer->buffer, newSize
+							);
 						}
 						// @expand(adjust buffer pointers);
 							ASSERT(newBuffer);
@@ -507,21 +394,17 @@
 			*buffer->current++ = ch;
 		}
 
-		void resetBuffer(
-			struct Buffer *buffer
-		) {
+		void resetBuffer(struct Buffer *buffer) {
 			ASSERT(buffer);
 			buffer->current = buffer->buffer;
 		}
 
-		void eraseBuffer(
-			struct Buffer *buffer
-		) {
+		void eraseBuffer(struct Buffer *buffer) {
 			ASSERT(buffer);
 			// @expand(erase heap buffer);
-				if (buffer->buffer &&
-						buffer->buffer != buffer->initial
-				   ) {
+				if (
+					buffer->buffer && buffer->buffer != buffer->initial
+				) {
 					free(buffer->buffer);
 					buffer->buffer = buffer->initial;
 				}
@@ -529,98 +412,65 @@
 			buffer->current = buffer->buffer;
 		}
 
-	void addCharsToBuffer(
-			struct Buffer *buffer,
-			char ch, int count
-			) {
-		ASSERT(buffer);
-		ASSERT(count >= 0);
-		for (; count; --count) {
-			addToBuffer(buffer, ch);
+		void addCharsToBuffer(
+			struct Buffer *buffer, char ch, int count
+		) {
+			ASSERT(buffer);
+			ASSERT(count >= 0);
+			for (; count; --count) {
+				addToBuffer(buffer, ch);
+			}
 		}
-	}
 
-int main(
-	int argc,
-	const char **argv
-) {
+int main(int argc, const char **argv) {
 	// @expand(perform unit-tests);
 		// @expand(macro unit tests);
 			testMacroName("abc");
 			testMacroName("");
 			testMacroName("A c");
 			{
-				struct Macro *macro =
-					allocTestMacro("ab");
+				struct Macro *macro = allocTestMacro("ab");
 				ASSERT(macro);
 				ASSERT(! macro->link);
 				ASSERT(! macro->firstEntry);
 				freeMacro(macro);
-			}
-			{
-				struct MacroEntry *entry =
-					allocEmptyMacroEntry();
+			} {
+				struct MacroEntry *entry = allocEmptyMacroEntry();
 				ASSERT(entry);
 				ASSERT(! entry->link);
 				ASSERT(! entry->macro);
 				freeMacroEntry(entry);
-			}
-			{
-				struct MacroEntry *entry =
-					allocEmptyMacroEntry();
+			} {
+				struct MacroEntry *entry = allocEmptyMacroEntry();
 
 				ASSERT(entry);
-				ASSERT(
-						getMacroEntryValueSize(
-							entry) == 0);
-
+				ASSERT(getMacroEntryValueSize(entry) == 0);
 				freeMacroEntry(entry);
-			}
-			{
-				struct MacroEntry *entry =
-					allocTestMacroEntry("abc");
+			} {
+				struct MacroEntry *entry = allocTestMacroEntry("abc");
 
 				ASSERT(entry);
-				ASSERT(
-						getMacroEntryValueSize(
-							entry) == 3);
-
+				ASSERT(getMacroEntryValueSize(entry) == 3);
 				freeMacroEntry(entry);
-			}
-			{
-				struct MacroEntry *entry =
-					allocTestMacroEntry("abc");
+			} {
+				struct MacroEntry *entry = allocTestMacroEntry("abc");
 
 				ASSERT(entry);
-				ASSERT(
-						memcmp(entry->value,
-							"abc", 3) == 0);
-
+				ASSERT(memcmp(entry->value, "abc", 3) == 0);
 				freeMacroEntry(entry);
-			}
-			{
-				struct Macro *macro =
-					allocTestMacro("");
-				struct MacroEntry *entry =
-					allocEmptyMacroEntry();
+			} {
+				struct Macro *macro = allocTestMacro("");
+				struct MacroEntry *entry = allocEmptyMacroEntry();
 				addEntryToMacro(macro, entry);
-				ASSERT(
-						macro->firstEntry == entry
-					  );
+				ASSERT(macro->firstEntry == entry);
 				freeMacro(macro);
-			}
-			{
-				struct Macro *macro =
-					allocTestMacro("");
-				struct MacroEntry *entry =
-					allocEmptyMacroEntry();
+			} {
+				struct Macro *macro = allocTestMacro("");
+				struct MacroEntry *entry = allocEmptyMacroEntry();
 				addEntryToMacro(macro, entry);
-				ASSERT(
-						macro->lastEntry == entry
-					  );
+				ASSERT(macro->lastEntry == entry);
 				freeMacro(macro);
-			}
-			{
+			} {
 				struct Macro *macro = NULL;
 				struct MacroEntry *first;
 				struct MacroEntry *second;
@@ -636,8 +486,7 @@ int main(
 					ASSERT(macro->firstEntry == first);
 
 				freeMacro(macro);
-			}
-			{
+			} {
 				struct Macro *macro = NULL;
 				struct MacroEntry *first;
 				struct MacroEntry *second;
@@ -649,24 +498,17 @@ int main(
 					addEntryToMacro(macro, first);
 					addEntryToMacro(macro, second);
 
-				ASSERT(
-						macro->lastEntry == second
-					  );
+				ASSERT(macro->lastEntry == second);
 				freeMacro(macro);
-			}
-			{
-				struct Macro *macro =
-					allocTestMacro("");
+			} {
+				struct Macro *macro = allocTestMacro("");
 				addStringToMacro(macro, "abc");
 				addStringToMacro(macro, "def");
 				testMacro(macro, "abcdef");
 				freeMacro(macro);
-			}
-			{
-				struct Macro *a =
-					allocTestMacro("");
-				struct Macro *b =
-					allocTestMacro("");
+			} {
+				struct Macro *a = allocTestMacro("");
+				struct Macro *b = allocTestMacro("");
 				addStringToMacro(a, "abc");
 				addMacroToMacro(b, a);
 				addStringToMacro(b, "def");
@@ -675,30 +517,22 @@ int main(
 				freeMacro(a); freeMacro(b);
 			}
 
+		// @expand(buffer unit tests);
 			{
 				struct Buffer buffer = {};
 				addToBuffer(&buffer, 'x');
 				ASSERT(*buffer.buffer == 'x');
-				ASSERT(buffer.buffer + 1 ==
-						buffer.current);
-				ASSERT(buffer.buffer ==
-						buffer.initial);
-			}
-			{
+				ASSERT(buffer.buffer + 1 == buffer.current);
+				ASSERT(buffer.buffer == buffer.initial);
+			} {
 				struct Buffer buffer = {};
-				addCharsToBuffer(&buffer, 'x',
-						1000);
+				addCharsToBuffer(&buffer, 'x', 1000);
 				ASSERT(*buffer.buffer == 'x');
-				ASSERT(buffer.buffer + 1000 ==
-						buffer.current);
-				ASSERT(buffer.buffer !=
-						buffer.initial);
+				ASSERT(buffer.buffer + 1000 == buffer.current);
+				ASSERT(buffer.buffer != buffer.initial);
 				eraseBuffer(&buffer);
-				ASSERT(buffer.buffer ==
-						buffer.initial);
+				ASSERT(buffer.buffer == buffer.initial);
 			}
-
-		// @expand(buffer unit tests);
 
 	// @expand(process arguments);
 		FILE *input = stdin;
@@ -713,8 +547,7 @@ int main(
 				char openCh = '\0';
 				char name[128];
 				char *nameCur = NULL;
-				const char *nameEnd = name +
-					sizeof(name);
+				const char *nameEnd = name + sizeof(name);
 
 			int last = fgetc(input);
 			int ch = fgetc(input);
@@ -728,18 +561,19 @@ int main(
 									if (last == 'a') {
 										openCh = last;
 										nameCur = name;
+										break;
 									}
 								}
-							}
-							{
+							} {
 								if (macro) {
 									bool valid = false;
 									// @expand(check valid names);
 										static const char valids[] =
-										"12345bfvsntkxei";
-									if (strchr(valids, last)) {
-										valid = true;
-									}
+											"12345bfvsntkxei";
+
+										if (strchr(valids, last)) {
+											valid = true;
+										}
 
 									if (valid) {
 										openCh = last;
@@ -751,44 +585,46 @@ int main(
 
 							putchar(last);
 							break;
-						case '}':
+						case '}': {
+							bool processed = false;
 							// @expand(process close brace);
-							{
-								bool processed = false;
 								if (nameCur) {
 									*nameCur = 0;
 									// @expand(process macro name);
 										if (openCh == 'a') {
 											ASSERT(! macro);
 											macro = getMacroInMap(
-													&macros, name, nameCur
-													);
-												processed = true;
+												&macros, name, nameCur
+											);
+											processed = true;
 										}
 										if (openCh == 'x') {
 											ASSERT(macro);
 											// @expand(macro names must match);
 											macro = NULL;
-												processed = true;
+											processed = true;
 										}
-											if (! processed) {
-												ASSERT(macro);
+										if (openCh == 'e') {
+											printf("@expand(%s)", name);
+											processed = true;
+										}
+										if (! processed) {
+											ASSERT(macro);
 
-												printf("%s", name);
-												processed = true;
-											}
+											printf("%s", name);
+											processed = true;
+										}
 
-
-												last = ch;
-												ch = fgetc(input);
-
-											nameCur = NULL;
+										last = ch;
+										ch = fgetc(input);
+										nameCur = NULL;
 								}
 								if (! processed) {
 									putchar(last);
 								}
-							}
+
 							break;
+						}
 						default:
 							// @expand(process other char)
 							{
@@ -797,13 +633,11 @@ int main(
 									*nameCur++ = ch;
 									break;
 								}
-							}
-							{
+							} {
 								if (macro) {
 									putchar(last);
 								}
-							}
-							;
+							};
 					}
 
 				last = ch; ch = fgetc(input);
