@@ -1,11 +1,11 @@
 CFLAGS += -Wall -std=c99
 
-.PHONY: all clean
+.PHONY: all install clean
 
 all: index.html hex.c
 
 hex.c: index.xml
-	./hex <index.xml | sed \
+	hex <index.xml | sed \
 		-e 's/&lt;/</g' \
 		-e 's/&gt;/>/g' \
 		-e 's/&amp;/\&/g' \
@@ -15,6 +15,9 @@ hex.c: index.xml
 		>$@
 
 hex: hex.c
+
+install: hex
+	cp hex ~/bin
 
 index.html: index.xml 
 	sed	\
