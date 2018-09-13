@@ -2056,9 +2056,11 @@
 						2{}k{case} s{'{'}:b{}
 						3{}e{process open brace};b{}
 						3{}k{break};b{}
-						2{}k{case} '}':b{}
+						2{}k{case} '}': {b{}
+						3{}t{bool} v{processed} = k{false};b{}
 						3{}e{process close brace};b{}
 						3{}k{break};b{}
+						2{}}b{}
 						2{}k{default}:b{}
 						3{}e{process other char};b{}
 						1{}}b{}
@@ -2118,7 +2120,6 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process close brace} {b{}
-						1{}t{bool} v{processed} = k{false};b{}
 						1{}k{if} (v{nameCur}) {b{}
 						2{}*v{nameCur} = s{'\0'};b{}
 						2{}e{process macro name};b{}
@@ -2224,7 +2225,9 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process macro name}b{}
-						1{}k{if} (v{openCh} == s{'x'}) {b{}
+						1{}k{static} t{const char} v{valids}[] =b{}
+						2{}s{"12345bfvsntkxei"};b{}
+						1{}k{if} (f{strchr}(v{valids}, v{last})) {b{}
 						2{}f{ASSERT}(v{macro});b{}
 						2{}e{macro names must match};b{}
 						2{}v{macro} = k{NULL};b{}
@@ -2276,12 +2279,28 @@
 						a{process macro name}b{}
 						1{}k{if} (! v{processed}) {b{}
 						2{}f{ASSERT}(v{macro});b{}
-						2{}f{puts}(name);b{}
+						2{}f{printf}(s{"%s"}, v{name});b{}
 						2{}v{last} = f{fgetc}(v{input});b{}
 						2{}v{ch} = f{fgetc}(v{input});b{}
 						2{}v{processed} = k{true};b{}
 						1{}}b{}
 						x{process macro name}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process open brace}b{}
+						1{}f{putchar}(v{last});b{}
+						x{process open brace}b{}
+						b{}
+						a{process close brace}b{}
+						1{}k{if} (! v{processed}) {b{}
+						2{}f{putchar}(v{last});b{}
+						1{}}b{}
+						x{process close brace}
 					</code></div>
 					<ul class="notes">
 						<li>

@@ -2056,9 +2056,11 @@
 						<span class="in2"></span><span class="keyword">case</span> <span class="str">'{'</span>:<br/>
 						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">process open brace</span>)</span>;<br/>
 						<span class="in3"></span><span class="keyword">break</span>;<br/>
-						<span class="in2"></span><span class="keyword">case</span> '}':<br/>
+						<span class="in2"></span><span class="keyword">case</span> '}': {<br/>
+						<span class="in3"></span><span class="type">bool</span> <span class="var">processed</span> = <span class="keyword">false</span>;<br/>
 						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">process close brace</span>)</span>;<br/>
 						<span class="in3"></span><span class="keyword">break</span>;<br/>
+						<span class="in2"></span>}<br/>
 						<span class="in2"></span><span class="keyword">default</span>:<br/>
 						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">process other char</span>)</span>;<br/>
 						<span class="in1"></span>}<br/>
@@ -2118,7 +2120,6 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process close brace</span>)</span> {<br/>
-						<span class="in1"></span><span class="type">bool</span> <span class="var">processed</span> = <span class="keyword">false</span>;<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">nameCur</span>) {<br/>
 						<span class="in2"></span>*<span class="var">nameCur</span> = <span class="str">'\0'</span>;<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">process macro name</span>)</span>;<br/>
@@ -2224,7 +2225,9 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process macro name</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
+						<span class="in1"></span><span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
+						<span class="in2"></span><span class="str">"12345bfvsntkxei"</span>;<br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">macro names must match</span>)</span>;<br/>
 						<span class="in2"></span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
@@ -2276,12 +2279,28 @@
 						<span class="add">@add(<span class="macro-name">process macro name</span>)</span><br/>
 						<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
-						<span class="in2"></span><span class="fn">puts</span>(name);<br/>
+						<span class="in2"></span><span class="fn">printf</span>(<span class="str">"%s"</span>, <span class="var">name</span>);<br/>
 						<span class="in2"></span><span class="var">last</span> = <span class="fn">fgetc</span>(<span class="var">input</span>);<br/>
 						<span class="in2"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>);<br/>
 						<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process macro name</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">process open brace</span>)</span><br/>
+						<span class="in1"></span><span class="fn">putchar</span>(<span class="var">last</span>);<br/>
+						<span class="end">@end(<span class="macro-name">process open brace</span>)</span><br/>
+						<br/>
+						<span class="add">@add(<span class="macro-name">process close brace</span>)</span><br/>
+						<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
+						<span class="in2"></span><span class="fn">putchar</span>(<span class="var">last</span>);<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process close brace</span>)</span>
 					</code></div>
 					<ul class="notes">
 						<li>

@@ -748,6 +748,8 @@ int main(
 									}
 								}
 							}
+
+							putchar(last);
 							break;
 						case '}':
 							// @expand(process close brace);
@@ -771,16 +773,19 @@ int main(
 										}
 											if (! processed) {
 												ASSERT(macro);
-												last = fgetc(input);
-												ch = fgetc(input);
 
-												puts(name);
+												printf("%s", name);
 												processed = true;
 											}
 
 
+												last = ch;
+												ch = fgetc(input);
 
 											nameCur = NULL;
+								}
+								if (! processed) {
+									putchar(last);
 								}
 							}
 							break;
