@@ -171,7 +171,7 @@
 				<div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
-						<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdio.h</span>&gt;</span><br/>
+						<span class="in1"></span>#include &lt;stdio.h&gt;<br/>
 						<span class="end">@end(<span class="macro-name">includes</span>)</span>
 					</code></div>
 					<ul class="notes">
@@ -247,7 +247,7 @@
 					</div><div class="row">
 						<div class="slide code"><code>
 							<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
-							<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdlib.h</span>&gt;</span><br/>
+							<span class="in1"></span>#include &lt;stdlib.h&gt;<br/>
 							<span class="end">@end(<span class="macro-name">includes</span>)</span>
 						</code></div>
 						<ul class="notes">
@@ -349,7 +349,7 @@
 					</div><div class="row">
 						<div class="slide code"><code>
 							<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
-							<span class="in1"></span><span class="include">#include &lt;<span class="include-name">string.h</span>&gt;</span><br/>
+							<span class="in1"></span>#include &lt;string.h&gt;<br/>
 							<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
 							<br/>
 							<span class="add">@add(<span class="macro-name">copy macro name</span>)</span><br/>
@@ -892,7 +892,6 @@
 							<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
 							<span class="in3"></span><span class="fn">allocEmptyMacroEntry</span>();<br/>
 							<span class="in2"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
-
 							<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 							<span class="in3"></span><span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">entry</span><br/>
 							<span class="in2"></span>);<br/>
@@ -914,7 +913,6 @@
 							<span class="in2"></span><span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
 							<span class="in3"></span><span class="fn">allocEmptyMacroEntry</span>();<br/>
 							<span class="in2"></span><span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
-
 							<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 							<span class="in3"></span><span class="var">macro</span>-&gt;<span class="var">lastEntry</span> == <span class="var">entry</span><br/>
 							<span class="in2"></span>);<br/>
@@ -962,7 +960,7 @@
 							<br/>
 							<span class="add">@add(<span class="macro-name">check first of 2</span>)</span><br/>
 							<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">first</span>);<br/>
-							<span class="expand">@expand(<span class="macro-name">check first of 2</span>)</span>
+							<span class="end">@end(<span class="macro-name">check first of 2</span>)</span>
 						</code></div>
 						<ul class="notes">
 							<li>
@@ -1031,7 +1029,7 @@
 							<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
 							<span class="in2"></span><span class="expand">@expand(<span class="macro-name">avoid macro cycles</span>)</span>;<br/>
 							<span class="in2"></span><span class="expand">@expand(<span class="macro-name">reuse last entry</span>)</span>;<br/>
-							<span class="in2"></span><span class="expand">@expand(<span class="macro-name">add macro entry</span>)</span>);<br/>
+							<span class="in2"></span><span class="expand">@expand(<span class="macro-name">add macro entry</span>)</span>;<br/>
 							<span class="in1"></span>}<br/>
 							<span class="end">@end(<span class="macro-name">define macro</span>)</span>
 						</code></div>
@@ -1389,7 +1387,7 @@
 					<div class="row">
 						<div class="slide code"><code>
 							<span class="add">@add(<span class="macro-name">includes</span>)</span><br/>
-							<span class="in1"></span><span class="include">#include &lt;<span class="include-name">stdbool.h</span>&gt;</span><br/>
+							<span class="in1"></span>#include &lt;stdbool.h&gt;<br/>
 							<span class="end">@end(<span class="macro-name">includes</span>)</span><br/>
 						</code></div>
 						<ul class="notes">
@@ -1663,7 +1661,7 @@
 							<span class="in2"></span><span class="var">map</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
 							<span class="in1"></span>);<br/>
 							<span class="in1"></span><span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
-							0{}<span class="keyword">return</span> <span class="var">macro</span>;<br/>
+							<span class="in2"></span><span class="keyword">return</span> <span class="var">macro</span>;<br/>
 							<span class="in1"></span>}<br/>
 							<span class="end">@end(<span class="macro-name">get macro find</span>)</span>
 						</code></div>
@@ -1984,7 +1982,7 @@
 							<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
 							<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">count</span> &gt;= 0);<br/>
 							<span class="in2"></span><span class="keyword">for</span> (; <span class="var">count</span>; --<span class="var">count</span>) {<br/>
-							<span class="in3"></span><span class="fn">addToBuffer</span>(;<span class="var">buffer</span>, <span class="var">ch</span>);<br/>
+							<span class="in3"></span><span class="fn">addToBuffer</span>(<span class="var">buffer</span>, <span class="var">ch</span>);<br/>
 							<span class="in2"></span>}<br/>
 							<span class="in1"></span>}<br/>
 							<span class="end">@end(<span class="macro-name">define buffer</span>)</span>
@@ -2075,6 +2073,7 @@
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">additional read vars</span>)</span><br/>
 						<span class="in1"></span><span class="type">struct Macro *</span> <span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
+						<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
 						<span class="end">@end(<span class="macro-name">additional read vars</span>)</span>
 					</code></div>
 					<ul class="notes">
@@ -2156,7 +2155,7 @@
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process other char</span>)</span> {<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
-						<span class="in2"></span><span class="fn">putchar</span>(<span class="var">last</span>);<br/>
+						<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 						<span class="in1"></span>}<br/>
 						} <span class="end">@end(<span class="macro-name">process other char</span>)</span>
 					</code></div>
@@ -2201,7 +2200,6 @@
 							folgende Schritte sichtbar angelegt
 						</li>
 					</ul>
-				</div>
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process macro name</span>)</span><br/>
@@ -2226,11 +2224,10 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process macro name</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
-						<span class="in2"></span><span class="str">"12345bfvsntkxei"</span>;<br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">macro names must match</span>)</span>;<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">flush macro buffer</span>)</span>;<br/>
 						<span class="in2"></span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
 						<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 						<span class="in1"></span>}<br/>
@@ -2240,6 +2237,43 @@
 						<li>
 							Bei einem schließenden Makro wird das
 							aktuelle Makro unterbrochen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">process macro name</span>)</span><br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">flush macro buffer</span>)</span>;<br/>
+						<span class="in2"></span><span class="type">struct Macro *</span><span class="var">sub</span> =<br/>
+						<span class="in3"></span><span class="fn">getMacroInMap</span>(<br/>
+						<span class="in4"></span>&amp;<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span>);<br/>
+						<span class="in2"></span><span class="fn">addMacroToMacro</span>(<br/>
+						<span class="in3"></span><span class="var">macro</span>, <span class="var">sub</span>);<br/>
+						<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process macro name</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">flush macro buffer</span>)</span><br/>
+						<span class="in1"></span><span class="keyword">if</span> (<br/>
+						<span class="in2"></span><span class="var">buffer</span>.<span class="var">buffer</span> != <span class="var">buffer</span>.<span class="var">current</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">addBytesToMacro</span>(<br/>
+						<span class="in3"></span><span class="var">macro</span>, <span class="var">buffer</span>.<span class="var">buffer</span>,<br/>
+						<span class="in3"></span><span class="var">buffer</span>.<span class="var">current</span><br/>
+						<span class="in2"></span>);<br/>
+						<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">flush macro buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
 						</li>
 					</ul>
 				</div><div class="row">
@@ -2264,7 +2298,7 @@
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">check valid names</span>)</span><br/>
 						<span class="in1"></span><span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
-						<span class="in2"></span><span class="str">"12345bfvsntkxei"</span>;<br/>
+						<span class="in2"></span><span class="str">"12345bfvsntkxe"</span>;<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 						<span class="in2"></span><span class="var">valid</span> = <span class="keyword">true</span>;<br/>
 						<span class="in1"></span>}<br/>
@@ -2274,15 +2308,15 @@
 						<li>
 						</li>
 					</ul>
-				</div>
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process macro name</span>)</span><br/>
 						<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
-						<span class="in2"></span><span class="fn">printf</span>(<span class="str">"%s"</span>, <span class="var">name</span>);<br/>
-						<span class="in2"></span><span class="var">last</span> = <span class="fn">fgetc</span>(<span class="var">input</span>);<br/>
-						<span class="in2"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>);<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">c</span> = <span class="var">name</span>;<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">nameCur</span>; ++<span class="var">c</span>) {<br/>
+						<span class="in3"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
+						<span class="in2"></span>}<br/>
 						<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process macro name</span>)</span>
@@ -2294,12 +2328,12 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process open brace</span>)</span><br/>
-						<span class="in1"></span><span class="fn">putchar</span>(<span class="var">last</span>);<br/>
+						<span class="in1"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 						<span class="end">@end(<span class="macro-name">process open brace</span>)</span><br/>
 						<br/>
 						<span class="add">@add(<span class="macro-name">process close brace</span>)</span><br/>
 						<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
-						<span class="in2"></span><span class="fn">putchar</span>(<span class="var">last</span>);<br/>
+						<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process close brace</span>)</span>
 					</code></div>
@@ -2307,6 +2341,59 @@
 						<li>
 						</li>
 					</ul>
+				</div>
+			</div>
+		<h1>Serialize Fragments</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">define fragments</span>)</span><br/>
+						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">define fragments</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">sourceConsumer</span>(<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>,<br/>
+						<span class="in2"></span><span class="type">void *</span><span class="var">context</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">printf</span>(<br/>
+						<span class="in3"></span><span class="str">"%.*s"</span>,<br/>
+						<span class="in3"></span>(<span class="type">int</span>) (<span class="var">end</span> - <span class="var">begin</span>),<br/>
+						<span class="in3"></span><span class="var">begin</span><br/>
+						<span class="in2"></span>);<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">define fragmenst</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">serialize fragments</span>)</span> {<br/>
+						<span class="in1"></span><span class="type">const char</span> <span class="var">name</span><span class="type">[]</span> = <span class="str">"MAIN"</span>;<br/>
+						<span class="in1"></span><span class="type">struct Macro *</span> <span class="var">macro</span> =<br/>
+						<span class="in2"></span><span class="fn">getMacroInMap</span>(<br/>
+						<span class="in3"></span>&amp;<span class="var">macros</span>, <span class="var">name</span>,<br/>
+						<span class="in3"></span><span class="var">name</span> + <span class="keyword">sizeof</span>(<span class="var">name</span>) - 1<br/>
+						<span class="in2"></span>);<br/>
+						<span class="in1"></span><span class="fn">serializeMacro</span>(<br/>
+						<span class="in2"></span><span class="var">macro</span>, <span class="fn">sourceConsumer</span>, <span class="keyword">NULL</span><br/>
+						<span class="in1"></span>);<br/>
+						} <span class="end">@end(<span class="macro-name">serialize fragments</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div>
 			</div>
 	</body>
 </html>

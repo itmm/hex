@@ -2,8 +2,17 @@ CFLAGS += -Wall -std=c99
 
 .PHONY: all clean
 
-all: index.html hex
-	./hex <index.xml
+all: index.html hex.c
+
+hex.c: index.xml
+	./hex <index.xml | sed \
+		-e 's/&lt;/</g' \
+		-e 's/&gt;/>/g' \
+		-e 's/&amp;/\&/g' \
+		-e 's/b{//g' \
+		-e "s/case '''/case '{'/" \
+		-e 's/>>$$//' \
+		>$@
 
 hex: hex.c
 
@@ -24,8 +33,7 @@ index.html: index.xml
 		-e 's/a{\([^}]*\)}/<span class="add">@add(<span class="macro-name">\1<\/span>)<\/span>/g' \
 		-e 's/x{\([^}]*\)}/<span class="end">@end(<span class="macro-name">\1<\/span>)<\/span>/g' \
 		-e 's/e{\([^}]*\)}/<span class="expand">@expand(<span class="macro-name">\1<\/span>)<\/span>/g' \
-		-e 's/i{\([^}]*\)}/<span class="include">#include \&lt;<span class="include-name">\1<\/span>\&gt;<\/span>/g' \
 		$^ >$@
 
 clean:
-	rm -f hex
+	rm -f hex.c index.html

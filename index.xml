@@ -171,7 +171,7 @@
 				<div class="row">
 					<div class="slide code"><code>
 						a{includes}b{}
-						1{}i{stdio.h}b{}
+						1{}#include &lt;stdio.h&gt;b{}
 						x{includes}
 					</code></div>
 					<ul class="notes">
@@ -247,7 +247,7 @@
 					</div><div class="row">
 						<div class="slide code"><code>
 							a{includes}b{}
-							1{}i{stdlib.h}b{}
+							1{}#include &lt;stdlib.h&gt;b{}
 							x{includes}
 						</code></div>
 						<ul class="notes">
@@ -349,7 +349,7 @@
 					</div><div class="row">
 						<div class="slide code"><code>
 							a{includes}b{}
-							1{}i{string.h}b{}
+							1{}#include &lt;string.h&gt;b{}
 							x{includes}b{}
 							b{}
 							a{copy macro name}b{}
@@ -892,7 +892,6 @@
 							2{}t{struct MacroEntry *}v{entry} =b{}
 							3{}f{allocEmptyMacroEntry}();b{}
 							2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
-
 							2{}f{ASSERT}(b{}
 							3{}v{macro}-&gt;v{firstEntry} == v{entry}b{}
 							2{});b{}
@@ -914,7 +913,6 @@
 							2{}t{struct MacroEntry *}v{entry} =b{}
 							3{}f{allocEmptyMacroEntry}();b{}
 							2{}f{addEntryToMacro}(v{macro}, v{entry});b{}
-
 							2{}f{ASSERT}(b{}
 							3{}v{macro}-&gt;v{lastEntry} == v{entry}b{}
 							2{});b{}
@@ -962,7 +960,7 @@
 							b{}
 							a{check first of 2}b{}
 							1{}f{ASSERT}(v{macro}-&gt;v{firstEntry} == v{first});b{}
-							e{check first of 2}
+							x{check first of 2}
 						</code></div>
 						<ul class="notes">
 							<li>
@@ -1031,7 +1029,7 @@
 							2{}f{ASSERT}(v{child});b{}
 							2{}e{avoid macro cycles};b{}
 							2{}e{reuse last entry};b{}
-							2{}e{add macro entry});b{}
+							2{}e{add macro entry};b{}
 							1{}}b{}
 							x{define macro}
 						</code></div>
@@ -1389,7 +1387,7 @@
 					<div class="row">
 						<div class="slide code"><code>
 							a{includes}b{}
-							1{}i{stdbool.h}b{}
+							1{}#include &lt;stdbool.h&gt;b{}
 							x{includes}b{}
 						</code></div>
 						<ul class="notes">
@@ -1663,7 +1661,7 @@
 							2{}v{map}, v{begin}, v{end}b{}
 							1{});b{}
 							1{}k{if} (v{macro}) {b{}
-							0{}k{return} v{macro};b{}
+							2{}k{return} v{macro};b{}
 							1{}}b{}
 							x{get macro find}
 						</code></div>
@@ -1984,7 +1982,7 @@
 							2{}f{ASSERT}(v{buffer});b{}
 							2{}f{ASSERT}(v{count} &gt;= 0);b{}
 							2{}k{for} (; v{count}; --v{count}) {b{}
-							3{}f{addToBuffer}(;v{buffer}, v{ch});b{}
+							3{}f{addToBuffer}(v{buffer}, v{ch});b{}
 							2{}}b{}
 							1{}}b{}
 							x{define buffer}
@@ -2075,6 +2073,7 @@
 					<div class="slide code"><code>
 						a{additional read vars}b{}
 						1{}t{struct Macro *} v{macro} = k{NULL};b{}
+						1{}t{struct Buffer} v{buffer} = {};b{}
 						x{additional read vars}
 					</code></div>
 					<ul class="notes">
@@ -2156,7 +2155,7 @@
 					<div class="slide code"><code>
 						a{process other char} {b{}
 						1{}k{if} (v{macro}) {b{}
-						2{}f{putchar}(v{last});b{}
+						2{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
 						1{}}b{}
 						} x{process other char}
 					</code></div>
@@ -2201,7 +2200,6 @@
 							folgende Schritte sichtbar angelegt
 						</li>
 					</ul>
-				</div>
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process macro name}b{}
@@ -2226,11 +2224,10 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process macro name}b{}
-						1{}k{static} t{const char} v{valids}[] =b{}
-						2{}s{"12345bfvsntkxei"};b{}
-						1{}k{if} (f{strchr}(v{valids}, v{last})) {b{}
+						1{}k{if} (v{openCh} == s{'x'}) {b{}
 						2{}f{ASSERT}(v{macro});b{}
 						2{}e{macro names must match};b{}
+						2{}e{flush macro buffer};b{}
 						2{}v{macro} = k{NULL};b{}
 						2{}v{processed} = k{true};b{}
 						1{}}b{}
@@ -2240,6 +2237,43 @@
 						<li>
 							Bei einem schließenden Makro wird das
 							aktuelle Makro unterbrochen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process macro name}b{}
+						1{}k{if} (v{openCh} == s{'e'}) {b{}
+						2{}f{ASSERT}(v{macro});b{}
+						2{}e{flush macro buffer};b{}
+						2{}t{struct Macro *}v{sub} =b{}
+						3{}f{getMacroInMap}(b{}
+						4{}&amp;v{macros}, v{name}, v{nameCur});b{}
+						2{}f{addMacroToMacro}(b{}
+						3{}v{macro}, v{sub});b{}
+						2{}v{processed} = k{true};b{}
+						1{}}b{}
+						x{process macro name}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{flush macro buffer}b{}
+						1{}k{if} (b{}
+						2{}v{buffer}.v{buffer} != v{buffer}.v{current}b{}
+						1{}) {b{}
+						2{}f{addBytesToMacro}(b{}
+						3{}v{macro}, v{buffer}.v{buffer},b{}
+						3{}v{buffer}.v{current}b{}
+						2{});b{}
+						2{}f{resetBuffer}(&amp;v{buffer});b{}
+						1{}}b{}
+						x{flush macro buffer}
+					</code></div>
+					<ul class="notes">
+						<li>
 						</li>
 					</ul>
 				</div><div class="row">
@@ -2264,7 +2298,7 @@
 					<div class="slide code"><code>
 						a{check valid names}b{}
 						1{}k{static} t{const char} v{valids}[] =b{}
-						2{}s{"12345bfvsntkxei"};b{}
+						2{}s{"12345bfvsntkxe"};b{}
 						1{}k{if} (f{strchr}(v{valids}, v{last})) {b{}
 						2{}v{valid} = k{true};b{}
 						1{}}b{}
@@ -2274,15 +2308,15 @@
 						<li>
 						</li>
 					</ul>
-				</div>
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process macro name}b{}
 						1{}k{if} (! v{processed}) {b{}
 						2{}f{ASSERT}(v{macro});b{}
-						2{}f{printf}(s{"%s"}, v{name});b{}
-						2{}v{last} = f{fgetc}(v{input});b{}
-						2{}v{ch} = f{fgetc}(v{input});b{}
+						2{}t{const char *}v{c} = v{name};b{}
+						2{}k{for} (; v{c} != v{nameCur}; ++v{c}) {b{}
+						3{}f{addToBuffer}(&amp;v{buffer}, *v{c});b{}
+						2{}}b{}
 						2{}v{processed} = k{true};b{}
 						1{}}b{}
 						x{process macro name}
@@ -2294,12 +2328,12 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process open brace}b{}
-						1{}f{putchar}(v{last});b{}
+						1{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
 						x{process open brace}b{}
 						b{}
 						a{process close brace}b{}
 						1{}k{if} (! v{processed}) {b{}
-						2{}f{putchar}(v{last});b{}
+						2{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
 						1{}}b{}
 						x{process close brace}
 					</code></div>
@@ -2307,6 +2341,59 @@
 						<li>
 						</li>
 					</ul>
+				</div>
+			</div>
+		<h1>Serialize Fragments</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}e{define fragments}b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{define fragments}b{}
+						1{}t{void} f{sourceConsumer}(b{}
+						2{}t{const char *}v{begin},b{}
+						2{}t{const char *}v{end},b{}
+						2{}t{void *}v{context}b{}
+						1{}) {b{}
+						2{}f{printf}(b{}
+						3{}s{"%.*s"},b{}
+						3{}(t{int}) (v{end} - v{begin}),b{}
+						3{}v{begin}b{}
+						2{});b{}
+						1{}}b{}
+						x{define fragmenst}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{serialize fragments} {b{}
+						1{}t{const char} v{name}t{[]} = s{"MAIN"};b{}
+						1{}t{struct Macro *} v{macro} =b{}
+						2{}f{getMacroInMap}(b{}
+						3{}&amp;v{macros}, v{name},b{}
+						3{}v{name} + k{sizeof}(v{name}) - 1b{}
+						2{});b{}
+						1{}f{serializeMacro}(b{}
+						2{}v{macro}, f{sourceConsumer}, k{NULL}b{}
+						1{});b{}
+						} x{serialize fragments}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div>
 			</div>
 	</body>
 </html>
