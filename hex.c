@@ -577,14 +577,26 @@
 						if (*ec->prefix) {
 						if (*begin == ';') {
 						;
+						
+						memset(
+						ec->prefix, 0,
+						sizeof(ec->prefix)
+						);
+						;
 						} else {
 						;
 						}
+						break;
 						}
 						
 						if (*begin == '&') {
 						*ec->prefix = *begin;
+						break;
 						}
+						
+						ec->subConsumer(
+						begin, begin + 1, ec->subContext
+						);
 						;
 						}
 						}

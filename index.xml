@@ -2394,12 +2394,40 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process entity char}b{}
-						1{}t{if} (*v{ec}->v{prefix}) {b{}
+						1{}t{if} (*v{ec}-&gt;v{prefix}) {b{}
 						2{}t{if} (*v{begin} == s{';'}) {b{}
 						3{}e{expand current entity};b{}
+						3{}e{clear entity prefix};b{}
 						2{}} t{else} {b{}
 						3{}e{add char to entity};b{}
 						2{}}b{}
+						2{}break;b{}
+						1{}}b{}
+						x{process entity char}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{clear entity prefix}b{}
+						1{}f{memset}(b{}
+						2{}v{ec}-&gt;v{prefix}, 0,b{}
+						2{}k{sizeof}(v{ec}-&gt;v{prefix})b{}
+						1{});b{}
+						x{clear entity prefix}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process entity char}b{}
+						1{}t{if} (*v{begin} == s{'&amp;'}) {b{}
+						2{}*v{ec}-&gt;v{prefix} = *v{begin};b{}
+						2{}k{break};b{}
 						1{}}b{}
 						x{process entity char}
 					</code></div>
@@ -2410,9 +2438,9 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process entity char}b{}
-						1{}t{if} (*v{begin} == s{'&amp;'}) {b{}
-						2{}*v{ec}->v{prefix} = *v{begin};b{}
-						1{}}b{}
+						1{}v{ec}-&gt;v{subConsumer}(b{}
+						2{}v{begin}, v{begin} + 1, v{ec}-&gt;v{subContext}b{}
+						1{});b{}
 						x{process entity char}
 					</code></div>
 					<ul class="notes">
@@ -2447,7 +2475,7 @@
 						3{}v{begin}b{}
 						2{});b{}
 						1{}}b{}
-						x{define fragmenst}
+						x{define fragments}
 					</code></div>
 					<ul class="notes">
 						<li>
@@ -2466,6 +2494,28 @@
 						2{}v{macro}, f{sourceConsumer}, k{NULL}b{}
 						1{});b{}
 						} x{serialize fragments}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div>
+				</div><div class="row">
+				<div class="slide code"><code>
+						123456789012345678901234567890123456789012b{}
+						000000000111111111122222222223333333333444b{}
+						3b{}
+						4b{}
+						5b{}
+						6b{}
+						7b{}
+						8b{}
+						9b{}
+						10b{}
+						11b{}
+						12b{}
+						13b{}
+						14
 					</code></div>
 					<ul class="notes">
 						<li>
