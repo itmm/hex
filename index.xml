@@ -2050,7 +2050,7 @@
 					<div class="slide code"><code>
 						a{process current char}b{}
 						1{}k{switch} (v{ch}) {b{}
-						2{}k{case} s{'{'}:b{}
+						2{}k{case} '{':b{}
 						3{}e{process open brace};b{}
 						3{}k{break};b{}
 						2{}k{case} '}': {b{}
@@ -2328,11 +2328,13 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process open brace}b{}
-						1{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
+						1{}k{if} (v{macro}) {b{}
+						2{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
+						1{}}b{}
 						x{process open brace}b{}
 						b{}
 						a{process close brace}b{}
-						1{}k{if} (! v{processed}) {b{}
+						1{}k{if} (v{macro} &amp;&amp; ! v{processed}) {b{}
 						2{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
 						1{}}b{}
 						x{process close brace}

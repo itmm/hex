@@ -2050,7 +2050,7 @@
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process current char</span>)</span><br/>
 						<span class="in1"></span><span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
-						<span class="in2"></span><span class="keyword">case</span> <span class="str">'{'</span>:<br/>
+						<span class="in2"></span><span class="keyword">case</span> '{':<br/>
 						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">process open brace</span>)</span>;<br/>
 						<span class="in3"></span><span class="keyword">break</span>;<br/>
 						<span class="in2"></span><span class="keyword">case</span> '}': {<br/>
@@ -2328,11 +2328,13 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">process open brace</span>)</span><br/>
-						<span class="in1"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
+						<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process open brace</span>)</span><br/>
 						<br/>
 						<span class="add">@add(<span class="macro-name">process close brace</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">macro</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
 						<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process close brace</span>)</span>

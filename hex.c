@@ -627,7 +627,9 @@
 						}
 						}
 						} 
+						if (macro) {
 						addToBuffer(&buffer, last);
+						}
 						;
 						break;
 						case '}': {
@@ -697,7 +699,7 @@
 						ch = fgetc(input);
 						}
 						} 
-						if (! processed) {
+						if (macro && ! processed) {
 						addToBuffer(&buffer, last);
 						}
 						;

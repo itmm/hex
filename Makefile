@@ -9,9 +9,6 @@ hex.c: index.xml
 		-e 's/&lt;/</g' \
 		-e 's/&gt;/>/g' \
 		-e 's/&amp;/\&/g' \
-		-e 's/b{//g' \
-		-e "s/case '''/case '{'/" \
-		-e 's/>>$$//' \
 		>$@
 
 hex: hex.c
