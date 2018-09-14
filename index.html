@@ -1092,7 +1092,7 @@
 					<div class="row">
 						<div class="slide code"><code>
 							<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
-							<span class="in1"></span><span class="keyword">typedef</span> <span class="type">void</span> <span class="type">Consumer</span>(<br/>
+							<span class="in1"></span><span class="keyword">typedef</span> <span class="type">void</span> (* <span class="type">Consumer</span>)(<br/>
 							<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
 							<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>,<br/>
 							<span class="in2"></span><span class="type">void *</span><span class="var">context</span><br/>
@@ -2338,6 +2338,82 @@
 						<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process close brace</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div>
+			</div>
+		<h1>Entities auflösen</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">expand entities</span>)</span><br/>
+						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand entities</span>)</span><br/>
+						<span class="in1"></span><span class="type">struct EntityContext</span> {<br/>
+						<span class="in2"></span><span class="type">char</span> <span class="var">prefix</span><span class="type">[6]</span>;<br/>
+						<span class="in2"></span><span class="type">Consumer</span> <span class="var">subConsumer</span>;<br/>
+						<span class="in2"></span><span class="type">void *</span><span class="var">subContext</span>;<br/>
+						<span class="in1"></span>};<br/>
+						<span class="end">@end(<span class="macro-name">expand entities</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand entities</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">entityConsumer</span>(<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>,<br/>
+						<span class="in2"></span><span class="type">void *</span><span class="var">context</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="type">struct EntityContext *</span><span class="var">ec</span> =<br/>
+						<span class="in3"></span>(<span class="type">void *</span>) <span class="var">context</span>;<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; <span class="var">begin</span> &lt; <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
+						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">process entity char</span>)</span>;<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">expand entities</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">process entity char</span>)</span><br/>
+						<span class="in1"></span><span class="type">if</span> (*<span class="var">ec</span>-><span class="var">prefix</span>) {<br/>
+						<span class="in2"></span><span class="type">if</span> (*<span class="var">begin</span> == <span class="str">';'</span>) {<br/>
+						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">expand current entity</span>)</span>;<br/>
+						<span class="in2"></span>} <span class="type">else</span> {<br/>
+						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">add char to entity</span>)</span>;<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process entity char</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">process entity char</span>)</span><br/>
+						<span class="in1"></span><span class="type">if</span> (*<span class="var">begin</span> == <span class="str">'&amp;'</span>) {<br/>
+						<span class="in2"></span>*<span class="var">ec</span>-><span class="var">prefix</span> = *<span class="var">begin</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process entity char</span>)</span>
 					</code></div>
 					<ul class="notes">
 						<li>

@@ -1092,7 +1092,7 @@
 					<div class="row">
 						<div class="slide code"><code>
 							a{define macro}b{}
-							1{}k{typedef} t{void} t{Consumer}(b{}
+							1{}k{typedef} t{void} (* t{Consumer})(b{}
 							2{}t{const char *}v{begin},b{}
 							2{}t{const char *}v{end},b{}
 							2{}t{void *}v{context}b{}
@@ -2338,6 +2338,82 @@
 						2{}f{addToBuffer}(&amp;v{buffer}, v{last});b{}
 						1{}}b{}
 						x{process close brace}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div>
+			</div>
+		<h1>Entities auflösen</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}e{expand entities}b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand entities}b{}
+						1{}t{struct EntityContext} {b{}
+						2{}t{char} v{prefix}t{[6]};b{}
+						2{}t{Consumer} v{subConsumer};b{}
+						2{}t{void *}v{subContext};b{}
+						1{}};b{}
+						x{expand entities}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand entities}b{}
+						1{}t{void} f{entityConsumer}(b{}
+						2{}t{const char *}v{begin},b{}
+						2{}t{const char *}v{end},b{}
+						2{}t{void *}v{context}b{}
+						1{}) {b{}
+						2{}t{struct EntityContext *}v{ec} =b{}
+						3{}(t{void *}) v{context};b{}
+						2{}k{for} (; v{begin} &lt; v{end}; ++v{begin}) {b{}
+						3{}e{process entity char};b{}
+						2{}}b{}
+						1{}}b{}
+						x{expand entities}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process entity char}b{}
+						1{}t{if} (*v{ec}->v{prefix}) {b{}
+						2{}t{if} (*v{begin} == s{';'}) {b{}
+						3{}e{expand current entity};b{}
+						2{}} t{else} {b{}
+						3{}e{add char to entity};b{}
+						2{}}b{}
+						1{}}b{}
+						x{process entity char}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process entity char}b{}
+						1{}t{if} (*v{begin} == s{'&amp;'}) {b{}
+						2{}*v{ec}->v{prefix} = *v{begin};b{}
+						1{}}b{}
+						x{process entity char}
 					</code></div>
 					<ul class="notes">
 						<li>

@@ -265,7 +265,7 @@
 							;
 							}
 							
-							typedef void Consumer(
+							typedef void (* Consumer)(
 							const char *begin,
 							const char *end,
 							void *context
@@ -558,6 +558,38 @@
 							}
 							;
 							
+						
+						struct EntityContext {
+						char prefix[6];
+						Consumer subConsumer;
+						void *subContext;
+						};
+						
+						void entityConsumer(
+						const char *begin,
+						const char *end,
+						void *context
+						) {
+						struct EntityContext *ec =
+						(void *) context;
+						for (; begin < end; ++begin) {
+						
+						if (*ec->prefix) {
+						if (*begin == ';') {
+						;
+						} else {
+						;
+						}
+						}
+						
+						if (*begin == '&') {
+						*ec->prefix = *begin;
+						}
+						;
+						}
+						}
+						
+						
 						
 						void sourceConsumer(
 						const char *begin,
