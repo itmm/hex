@@ -172,12 +172,16 @@
 					<div class="slide code"><code>
 						a{includes}b{}
 						1{}#include &lt;stdio.h&gt;b{}
+						1{}#include &lt;stdlib.h&gt;b{}
 						x{includes}
 					</code></div>
 					<ul class="notes">
 						<li>
 							Standard File-Funktionen werden vom Programm
 							benötigt
+						</li><li>
+							Standard Bibliothek wird für dynamische
+							Speicherverwaltung benötigt
 						</li>
 					</ul>
 				</div><div class="row">
@@ -187,6 +191,35 @@
 						2{}t{struct Input *}v{link};b{}
 						2{}t{FILE *}v{file};b{}
 						1{}};b{}
+						b{}
+						1{}t{struct Input *}v{input} = k{NULL};b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Es gibt immer eine aktuelle Datei, die gerade
+							gelesen wird
+						</li><li>
+							Mitten während des Lesens können andere
+							Dateien eingelesen (inkludiert) werden
+						</li><li>
+							Daher gibt es einen Stapel offener Dateien
+						</li><li>
+							Aus der letzten wird gelesen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}t{void} f{pushFile} (t{FILE *}v{file}) {b{}
+						2{}t{struct Input *}v{i} =b{}
+						3{}f{malloc}(f{sizeof}(t{struct Input}));b{}
+						b{}
+						2{}e{check memory for input};b{}
+						2{}v{i}-&gt;v{link} = v{input};b{}
+						2{}v{i}-&gt;v{file} = v{file};b{}
+						2{}v{input} = v{i};b{}
+						1{}}b{}
 						x{global elements}
 					</code></div>
 					<ul class="notes">
@@ -196,7 +229,7 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{process arguments}b{}
-						1{}t{FILE *}v{input} = v{stdin};b{}
+						1{}f{pushFile}(v{stdin});b{}
 						x{process arguments}
 					</code></div>
 					<ul class="notes">
@@ -209,6 +242,41 @@
 						</li><li>
 							Aber bis das implementiert ist, nehmen wird
 							eine sinnvolle Vorgabe
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}t{int} f{nextCh}() {b{}
+						2{}t{int} v{ch} = k{EOF};b{}
+						2{}k{while} (v{input}) {b{}
+						3{}v{ch} = f{fgetc}(v{input}-&gt;v{file});b{}
+						3{}k{if} (v{ch} != k{EOF}) { k{break}; }b{}
+						3{}t{struct Input *}v{n} = v{input}-&gt;v{link};b{}
+						3{}f{fclose}(v{input}-&gt;v{file});b{}
+						3{}f{free}(v{input});b{}
+						3{}v{input} = v{n};b{}
+						2{}}b{}
+						2{}k{return} v{ch};b{}
+						1{}}b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}t{void} f{pushPath}(t{const char *}v{path}) {b{}
+						2{}t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});b{}
+						2{}e{check file for path};b{}
+						2{}f{pushFile}(v{f});b{}
+						1{}}b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
 						</li>
 					</ul>
 				</div>
@@ -1703,335 +1771,11 @@
 				<div class="slides">
 					<div class="row">
 						<div class="slide code"><code>
-							a{global elements}b{}
-							1{}e{define buffer};b{}
-							x{global elements}
+							i{buffer.xml}b{}
 						</code></div>
 						<ul class="notes">
 							<li>
 								Makros sind global sichtbare Strukturen
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{perform unit tests}b{}
-							1{}e{buffer unit tests};b{}
-							x{perform unit tests}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Buffer haben ihre eigenen Unit Tests
-							</li>
-						</ul>
-					</div>
-				</div>
-			<h2>Struktur</h2>
-				<div class="slides">
-					<div class="row">
-						<div class="slide code"><code>
-							a{define buffer}b{}
-							1{}#define INIT_BUFFER_SIZE 16b{}
-							b{}
-							1{}t{struct Buffer} {b{}
-							2{}t{char} v{initial}t{[INIT_BUFFER_SIZE]};b{}
-							2{}t{char *}v{buffer};b{}
-							2{}t{char *}v{current};b{}
-							2{}t{const char *}v{end};b{}
-							1{}};b{}
-							x{define buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Ein Buffer kann bis zu
-								<code>INIT_BUFFER_SIZE</code> bytes
-								aufnehmen
-							</li><li>
-								Bei weiteren Bytes wird der Speicher im
-								Heap angelegt
-							</li>
-						</ul>
-					</div>
-				</div>
-			<h2>Zeichen hinzufügen</h2>
-				<div>
-					<div class="row">
-						<div class="slide code"><code>
-							a{define buffer}b{}
-							1{}t{void} f{addToBuffer}(b{}
-							2{}t{struct Buffer *}v{buffer}, t{char} chb{}
-							1{}) {b{}
-							2{}f{ASSERT}(v{buffer});b{}
-							2{}e{may initialize buffer}b{}
-							2{}e{assure buffer size}b{}
-							2{}*v{buffer}->v{current}++ = v{ch};b{}
-							1{}}b{}
-							x{define buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Wenn die Struktur leer ist, muss sie auf
-								den interenen Buffer initialisiert
-								werden
-							</li><li>
-								Zusätzlich muss sicher gestellt werden,
-								dass ein weiteres Byte angefügt werden
-								kann
-							</li><li>
-								Dann wird das Byte angefügt
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{may initialize buffer}b{}
-							1{}k{if} (! v{buffer}-&gt;v{buffer}) {b{}
-							2{}v{buffer}-&gt;v{buffer} =b{}
-							3{}v{buffer}-&gt;v{initial};b{}
-							2{}v{buffer}-&gt;v{current} =b{}
-							3{}v{buffer}-&gt;v{buffer};b{}
-							2{}v{buffer}-&gt;v{end} =b{}
-							3{}v{buffer}-&gt;v{initial} +b{}
-							4{}INIT_BUFFER_SIZE;b{}
-							1{}}b{}
-							x{may initialize buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Wenn der interne Buffer nicht gesetzt
-								ist, wird er auf den enthaltenen Bereich
-								gesetzt
-							</li><li>
-								Das stellt sicher, dass ein
-								initialisierter Buffer keinen Speicher
-								im Heap belegt
-							</li><li>
-								Mit <code class="fn">eraseBuffer</code>
-								kann ggf. vorhandener Heap-Speicher
-								freigegeben werden
-							</li><li>
-								Und der Buffer trotzdem weiter benutzt
-								werden
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{assure buffer size}b{}
-							1{}k{if} (b{}
-							2{}v{buffer}-&gt;v{current} &gt;= v{buffer}-&gt;v{end}b{}
-							1{}) {b{}
-							2{}t{int} v{size} = v{buffer}-&gt;v{current} -b{}
-							3{}v{buffer}-&gt;v{buffer};b{}
-							2{}t{int} v{newSize} = n{2} * v{size};b{}
-							2{}e{reallocate buffer};b{}
-							1{}}b{}
-							x{assure buffer size}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Wenn der Buffer ausgeschöpft ist, dann
-								wird seine Größe verdoppelt
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{reallocate buffer}b{}
-							1{}t{char *}v{newBuffer};b{}
-							1{}k{if} (b{}
-							2{}v{buffer}-&gt;v{buffer} == v{buffer}-&gt;v{initial}b{}
-							1{}) {b{}
-							2{}v{newBuffer} = f{malloc}(v{newSize});b{}
-							2{}e{copy initial buffer};b{}
-							1{}} k{else} {b{}
-							2{}v{newBuffer} = f{realloc}(b{}
-							3{}v{buffer}-&gt;v{buffer}, v{newSize});b{}
-							1{}}b{}
-							1{}e{adjust buffer pointers};b{}
-							x{reallocate buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Wenn der initiale Buffer ausgeschöpft
-								ist, muss neuer Speicher angelegt und
-								manuell befüllt werden
-							</li><li>
-								Andernfalls kann der Speicherblock im
-								Heap vergrößert werden
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{copy initial buffer}b{}
-							1{}f{ASSERT}(v{newBuffer});b{}
-							1{}f{memcpy}(b{}
-							2{}v{newBuffer}, v{buffer}-&gt;v{buffer}, v{size}
-							1{});b{}
-							x{copy initial buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Vom initialen Buffer werden die Werte
-								direkt kopiert
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{adjust buffer pointers}b{}
-							1{}f{ASSERT}(v{newBuffer});b{}
-							1{}v{buffer}-&gt;v{buffer} = v{newBuffer};b{}
-							1{}v{buffer}-&gt;v{current} = v{newBuffer} + v{size};b{}
-							1{}v{buffer}-&gt;v{end} = v{newBuffer} + v{newSize};b{}
-							x{adjust buffer pointers}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Die Zeiger müssen an den neuen Speicher
-								angepaßt werden
-							</li>
-						</ul>
-					</div>
-				</div>
-			<h2>Buffer zurücksetzen</h2>
-				<div class="slides">
-					<div class="row">
-						<div class="slide code"><code>
-							a{define buffer}b{}
-							1{}t{void} f{resetBuffer}(b{}
-							2{}t{struct Buffer *}v{buffer}b{}
-							1{}) {b{}
-							2{}f{ASSERT}(v{buffer});b{}
-							2{}v{buffer}-&gt;v{current} = v{buffer}-&gt;v{buffer};b{}
-							1{}}b{}
-							x{define buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Um einen Buffer wieder zu verwenden, der
-								<code class="var">current</code> muss auf
-								<code class="var">buffer</code> zurück
-								gesetzt werden
-							</li><li>
-								Das funktioniert auch, wenn der initiale
-								Buffer verwendet wird
-							</li><li>
-								Oder die Zeiger noch
-								<code class="keyword">NULL</code> sind
-							</li><li>
-								Es wird kein Speicher freigegeben
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{define buffer}b{}
-							1{}t{void} f{eraseBuffer}(b{}
-							2{}t{struct Buffer *}v{buffer}b{}
-							1{}) {b{}
-							2{}f{ASSERT}(v{buffer});b{}
-							2{}e{erase heap buffer};b{}
-							2{}v{buffer}-&gt;v{current} = v{buffer}-&gt;v{buffer};b{}
-							1{}}b{}
-							x{define buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Wenn ein Buffer auf dem Heap angelegt
-								wurde, wird dieser freigegeben
-							</li><li>
-								Zusätzlich wird der aktuelle Zeiger auf
-								den Anfang zurückgesetzt
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{erase heap buffer}b{}
-							1{}k{if} (v{buffer}-&gt;v{buffer} &amp;&amp;b{}
-							2{}v{buffer}-&gt;v{buffer} != v{buffer}-&gt;v{initial}b{}
-							1{}) {b{}
-							2{}f{free}(v{buffer}-&gt;v{buffer});b{}
-							2{}v{buffer}-&gt;v{buffer} = v{buffer}-&gt;v{initial};b{}
-							1{}}b{}
-							x{erase heap buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Wenn wir nicht den internen Buffer
-								verwenden, wird der Buffer freigegeben
-							</li><li>
-								Und der Buffer-Zeiger wird gelöscht
-							</li>
-						</ul>
-					</div>
-				</div>
-			<h2>Unit Tests</h2>
-				<div class="slides">
-					<div class="row">
-						<div class="slide code"><code>
-							a{buffer unit tests} {b{}
-							1{}t{struct Buffer} v{buffer} = {};b{}
-							1{}f{addToBuffer}(&amp;v{buffer}, s{'x'});b{}
-							1{}f{ASSERT}(*v{buffer}.v{buffer} == s{'x'});b{}
-							1{}f{ASSERT}(v{buffer}.v{buffer} + 1 ==b{}
-							2{}v{buffer}.v{current});b{}
-							1{}f{ASSERT}(v{buffer}.v{buffer} ==b{}
-							2{}v{buffer}.v{initial});b{}
-							} x{buffer unit tests}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Die Struktur wird mit dem Hinzufügen
-								initialisiert
-							</li><li>
-								Danach ist ein Byte belegt
-							</li><li>
-								Und nur der initiale Buffer wird
-								verwendet
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{define buffer}b{}
-							1{}t{void} f{addCharsToBuffer}(b{}
-							2{}t{struct Buffer *}v{buffer},b{}
-							2{}t{char} v{ch}, t{int} v{count}b{}
-							1{}) {b{}
-							2{}f{ASSERT}(v{buffer});b{}
-							2{}f{ASSERT}(v{count} &gt;= 0);b{}
-							2{}k{for} (; v{count}; --v{count}) {b{}
-							3{}f{addToBuffer}(v{buffer}, v{ch});b{}
-							2{}}b{}
-							1{}}b{}
-							x{define buffer}
-						</code></div>
-						<ul class="notes">
-							<li>
-								Fügt mehrere Kopien eines Zeichens in den
-								Buffer ein
-							</li>
-						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
-							a{buffer unit tests} {b{}
-							1{}t{struct Buffer} v{buffer} = {};b{}
-							1{}f{addCharsToBuffer}(&amp;v{buffer}, s{'x'},b{}
-							2{}1000);b{}
-							1{}f{ASSERT}(*v{buffer}.v{buffer} == s{'x'});b{}
-							1{}f{ASSERT}(v{buffer}.v{buffer} + 1000 ==b{}
-							2{}v{buffer}.v{current});b{}
-							1{}f{ASSERT}(v{buffer}.v{buffer} !=b{}
-							2{}v{buffer}.v{initial});b{}
-							1{}f{eraseBuffer}(&amp;v{buffer});b{}
-							1{}f{ASSERT}(v{buffer}.v{buffer} ==b{}
-							2{}v{buffer}.v{initial});b{}
-							} x{buffer unit tests}
-						</code></div>
-						<ul class="notes">
-							<li>
-								In diesem Test werden 1.000 Zeichen
-								eingefügt
-							</li><li>
-								Dafür reicht der initiale Buffer nicht
-								aus
-							</li><li>
-								Aber der zusätzliche Speicher wird nach
-								dem Löschen freigegeben
 							</li>
 						</ul>
 					</div>
@@ -2044,11 +1788,11 @@
 						1{}e{global source vars};b{}
 						1{}{b{}
 						2{}e{additional read vars};b{}
-						2{}t{int} v{last} = f{fgetc}(v{input});b{}
-						2{}t{int} v{ch} = f{fgetc}(v{input});b{}
+						2{}t{int} v{last} = f{nextCh}();b{}
+						2{}t{int} v{ch} = f{nextCh}();b{}
 						2{}k{while} (v{ch} != v{EOF}) {b{}
 						3{}e{process current char};b{}
-						3{}v{last} = v{ch}; v{ch} = f{fgetc}(v{input});b{}
+						3{}v{last} = v{ch}; v{ch} = f{nextCh}();b{}
 						2{}}b{}
 						1{}}b{}
 						x{read source file}
@@ -2136,7 +1880,7 @@
 						2{}e{process macro name};b{}
 						2{}v{nameCur} = k{NULL};b{}
 						2{}v{last} = v{ch};b{}
-						2{}v{ch} = f{fgetc}(v{input});b{}
+						2{}v{ch} = f{nextCh}();b{}
 						1{}}b{}
 						} x{process close brace}
 					</code></div>
@@ -2182,7 +1926,7 @@
 					<div class="slide code"><code>
 						a{process open brace} {b{}
 						1{}k{if} (! v{macro}) {b{}
-						2{}k{if} (v{last} == s{'a'}) {b{}
+						2{}k{if} (v{last} == s{'a'} || v{last} == s{'i'}) {b{}
 						3{}v{openCh} = v{last};b{}
 						3{}v{nameCur} = v{name};b{}
 						3{}k{break};b{}
@@ -2197,7 +1941,13 @@
 							gelesen wird, dann beginnt ein 
 							<code class="add">@add</code> Fragment
 						</li><li>
-							Es folgt der Name des Makros bis zum nächsten
+							Falls ein <code>i</code><code>{</code>
+							gelesen wird, dann muss eine andere Datei
+							mit <code class="add">@include</code>
+							eingebunden werden
+						</li><li>
+							Es folgt der Name des Makros oder der Pfad
+							der Datei bis zum nächsten
 							<code>}</code>
 						</li>
 					</ul>
@@ -2250,6 +2000,23 @@
 						<li>
 							Bei einem schließenden Makro wird das
 							aktuelle Makro unterbrochen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process macro name}b{}
+						1{}k{if} (v{openCh} == s{'i'}) {b{}
+						2{}f{ASSERT}(! v{macro});b{}
+						2{}f{pushPath}(v{name});b{}
+						2{}v{processed} = k{true};b{}
+						1{}}b{}
+						x{process macro name}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn eine Datei eingebunden werden soll,
+							dann wird sie geöffnet und auf den Stapel
+							der offenen Dateien gelegt.
 						</li>
 					</ul>
 				</div><div class="row">

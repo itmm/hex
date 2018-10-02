@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="de">
+		<head>
+			<meta charset="utf-8">
+			<title>Buffer Struktur</title>
+			<link rel="stylesheet" type="text/css"
+				href="slides/slides.css">
+		</head>
+	<body>
+		<h1>Buffer</h1>
+				<div class="slides">
+					<div class="row">
+						<div class="slide code"><code>
+							<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
+							<span class="in1"></span><span class="expand">@expand(<span class="macro-name">define buffer</span>)</span>;<br/>
+							<span class="end">@end(<span class="macro-name">global elements</span>)</span>
+						</code></div>
+						<ul class="notes">
+							<li>
+								Buffer sind global sichtbare Strukturen
+							</li>
+						</ul>
+					</div><div class="row">
+						<div class="slide code"><code>
+							<span class="add">@add(<span class="macro-name">perform unit tests</span>)</span><br/>
+							<span class="in1"></span><span class="expand">@expand(<span class="macro-name">buffer unit tests</span>)</span>;<br/>
+							<span class="end">@end(<span class="macro-name">perform unit tests</span>)</span>
+						</code></div>
+						<ul class="notes">
+							<li>
+								Buffer haben ihre eigenen Unit Tests
+							</li>
+						</ul>
+					</div>
+				</div>
+		<h1>Struktur</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">define buffer</span>)</span><br/>
+						<span class="in1"></span>#define INIT_BUFFER_SIZE 16<br/>
+						<br/>
+						<span class="in1"></span><span class="type">struct Buffer</span> {<br/>
+						<span class="in2"></span><span class="type">char</span> <span class="var">initial</span><span class="type">[INIT_BUFFER_SIZE]</span>;<br/>
+						<span class="in2"></span><span class="type">char *</span><span class="var">buffer</span>;<br/>
+						<span class="in2"></span><span class="type">char *</span><span class="var">current</span>;<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>;<br/>
+						<span class="in1"></span>};<br/>
+						<span class="end">@end(<span class="macro-name">define buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Ein Buffer kann bis zu
+							<code>INIT_BUFFER_SIZE</code> Bytes
+							direkt aufnehmen
+						</li><li>
+							Bei weiteren Bytes wird der Speicher im
+							Heap angelegt
+						</li>
+					</ul>
+				</div>
+			</div>
+		<h1>Zeichen hinzufügen</h1>
+			<div>
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">define buffer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">addToBuffer</span>(<br/>
+						<span class="in2"></span><span class="type">struct Buffer *</span><span class="var">buffer</span>, <span class="type">char</span> ch<br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">may initialize buffer</span>)</span><br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">assure buffer size</span>)</span><br/>
+						<span class="in2"></span>*<span class="var">buffer</span>-><span class="var">current</span>++ = <span class="var">ch</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">define buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn die Struktur leer ist, muss sie auf
+							den interenen Buffer initialisiert
+							werden
+						</li><li>
+							Das ermöglicht die Initialisierung als
+							Literal
+						</li><li>
+							Zusätzlich muss sicher gestellt werden,
+							dass ein weiteres Byte angefügt werden
+							kann
+						</li><li>
+							Dann wird das Byte angefügt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">may initialize buffer</span>)</span><br/>
+						<span class="in1"></span><span class="keyword">if</span> (! <span class="var">buffer</span>-&gt;<span class="var">buffer</span>) {<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> =<br/>
+						<span class="in3"></span><span class="var">buffer</span>-&gt;<span class="var">initial</span>;<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> =<br/>
+						<span class="in3"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">end</span> =<br/>
+						<span class="in3"></span><span class="var">buffer</span>-&gt;<span class="var">initial</span> +<br/>
+						<span class="in4"></span>INIT_BUFFER_SIZE;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">may initialize buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn der interne Buffer nicht gesetzt
+							ist, wird er auf den enthaltenen Bereich
+							gesetzt
+						</li><li>
+							Das stellt sicher, dass ein
+							initialisierter Buffer keinen Speicher
+							im Heap belegt
+						</li><li>
+							Mit <code class="fn">eraseBuffer</code>
+							kann ggf. vorhandener Heap-Speicher
+							freigegeben werden
+						</li><li>
+							Und der Buffer trotzdem weiter benutzt
+							werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">assure buffer size</span>)</span><br/>
+						<span class="in1"></span><span class="keyword">if</span> (<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> &gt;= <span class="var">buffer</span>-&gt;<span class="var">end</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="type">int</span> <span class="var">size</span> = <span class="var">buffer</span>-&gt;<span class="var">current</span> -<br/>
+						<span class="in3"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
+						<span class="in2"></span><span class="type">int</span> <span class="var">newSize</span> = <span class="num">2</span> * <span class="var">size</span>;<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">reallocate buffer</span>)</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">assure buffer size</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn der Buffer ausgeschöpft ist, dann
+							wird seine Größe verdoppelt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">reallocate buffer</span>)</span><br/>
+						<span class="in1"></span><span class="type">char *</span><span class="var">newBuffer</span>;<br/>
+						<span class="in1"></span><span class="keyword">if</span> (<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> == <span class="var">buffer</span>-&gt;<span class="var">initial</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="var">newBuffer</span> = <span class="fn">malloc</span>(<span class="var">newSize</span>);<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">copy initial buffer</span>)</span>;<br/>
+						<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+						<span class="in2"></span><span class="var">newBuffer</span> = <span class="fn">realloc</span>(<br/>
+						<span class="in3"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span>, <span class="var">newSize</span>);<br/>
+						<span class="in1"></span>}<br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">adjust buffer pointers</span>)</span>;<br/>
+						<span class="end">@end(<span class="macro-name">reallocate buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn der initiale Buffer ausgeschöpft
+							ist, muss neuer Speicher angelegt und
+							manuell befüllt werden
+						</li><li>
+							Andernfalls kann der Speicherblock im
+							Heap vergrößert werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">copy initial buffer</span>)</span><br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">newBuffer</span>);<br/>
+						<span class="in1"></span><span class="fn">memcpy</span>(<br/>
+						<span class="in2"></span><span class="var">newBuffer</span>, <span class="var">buffer</span>-&gt;<span class="var">buffer</span>, <span class="var">size</span>
+						<span class="in1"></span>);<br/>
+						<span class="end">@end(<span class="macro-name">copy initial buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Vom initialen Buffer werden die Werte
+							direkt kopiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">adjust buffer pointers</span>)</span><br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">newBuffer</span>);<br/>
+						<span class="in1"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="var">newBuffer</span>;<br/>
+						<span class="in1"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="var">newBuffer</span> + <span class="var">size</span>;<br/>
+						<span class="in1"></span><span class="var">buffer</span>-&gt;<span class="var">end</span> = <span class="var">newBuffer</span> + <span class="var">newSize</span>;<br/>
+						<span class="end">@end(<span class="macro-name">adjust buffer pointers</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Die Zeiger müssen an den neuen Speicher
+							angepaßt werden
+						</li>
+					</ul>
+				</div>
+			</div>
+		<h1>Buffer zurücksetzen</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">define buffer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">resetBuffer</span>(<br/>
+						<span class="in2"></span><span class="type">struct Buffer *</span><span class="var">buffer</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">define buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Um einen Buffer wieder zu verwenden, der
+							<code class="var">current</code> muss auf
+							<code class="var">buffer</code> zurück
+							gesetzt werden
+						</li><li>
+							Das funktioniert auch, wenn der initiale
+							Buffer verwendet wird
+						</li><li>
+							Oder die Zeiger noch
+							<code class="keyword">NULL</code> sind
+						</li><li>
+							Es wird kein Speicher freigegeben
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">define buffer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">eraseBuffer</span>(<br/>
+						<span class="in2"></span><span class="type">struct Buffer *</span><span class="var">buffer</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">erase heap buffer</span>)</span>;<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">define buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn ein Buffer auf dem Heap angelegt
+							wurde, wird dieser freigegeben
+						</li><li>
+							Zusätzlich wird der aktuelle Zeiger auf
+							den Anfang zurückgesetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">erase heap buffer</span>)</span><br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">buffer</span> &amp;&amp;<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> != <span class="var">buffer</span>-&gt;<span class="var">initial</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">free</span>(<span class="var">buffer</span>-&gt;<span class="var">buffer</span>);<br/>
+						<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="var">buffer</span>-&gt;<span class="var">initial</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">erase heap buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn wir nicht den internen Buffer
+							verwenden, wird der Buffer freigegeben
+						</li><li>
+							Und der Buffer-Zeiger wird gelöscht
+						</li>
+					</ul>
+				</div>
+			</div>
+		<h1>Unit Tests</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">buffer unit tests</span>)</span> {<br/>
+						<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
+						<span class="in1"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="str">'x'</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(*<span class="var">buffer</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> + 1 ==<br/>
+						<span class="in2"></span><span class="var">buffer</span>.<span class="var">current</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> ==<br/>
+						<span class="in2"></span><span class="var">buffer</span>.<span class="var">initial</span>);<br/>
+						} <span class="end">@end(<span class="macro-name">buffer unit tests</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Die Struktur wird mit dem Hinzufügen
+							initialisiert
+						</li><li>
+							Danach ist ein Byte belegt
+						</li><li>
+							Und nur der initiale Buffer wird
+							verwendet
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">define buffer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">addCharsToBuffer</span>(<br/>
+						<span class="in2"></span><span class="type">struct Buffer *</span><span class="var">buffer</span>,<br/>
+						<span class="in2"></span><span class="type">char</span> <span class="var">ch</span>, <span class="type">int</span> <span class="var">count</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">count</span> &gt;= 0);<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; <span class="var">count</span>; --<span class="var">count</span>) {<br/>
+						<span class="in3"></span><span class="fn">addToBuffer</span>(<span class="var">buffer</span>, <span class="var">ch</span>);<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">define buffer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Fügt mehrere Kopien eines Zeichens in den
+							Buffer ein
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">buffer unit tests</span>)</span> {<br/>
+						<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
+						<span class="in1"></span><span class="fn">addCharsToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="str">'x'</span>,<br/>
+						<span class="in2"></span>1000);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(*<span class="var">buffer</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> + 1000 ==<br/>
+						<span class="in2"></span><span class="var">buffer</span>.<span class="var">current</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> !=<br/>
+						<span class="in2"></span><span class="var">buffer</span>.<span class="var">initial</span>);<br/>
+						<span class="in1"></span><span class="fn">eraseBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> ==<br/>
+						<span class="in2"></span><span class="var">buffer</span>.<span class="var">initial</span>);<br/>
+						} <span class="end">@end(<span class="macro-name">buffer unit tests</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							In diesem Test werden 1.000 Zeichen
+							eingefügt
+						</li><li>
+							Dafür reicht der initiale Buffer nicht
+							aus
+						</li><li>
+							Aber der zusätzliche Speicher wird nach
+							dem Löschen freigegeben
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

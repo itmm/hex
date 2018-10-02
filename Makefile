@@ -2,21 +2,24 @@ CFLAGS += -Wall -std=c99
 
 .PHONY: all install clean
 
-all: index.html hex.c
+SOURCES := $(wildcard *.xml)
+HTMLs := $(SOURCES:.xml=.html)
 
-hex.c: index.xml
-	hex <index.xml | sed \
+all: ${HTMLs} hx.c
+
+hx.c: ${SOURCES}
+	hx <index.xml | sed \
 		-e 's/&lt;/</g' \
 		-e 's/&gt;/>/g' \
 		-e 's/&amp;/\&/g' \
 		>$@
 
-hex: hex.c
+hx: hx.c
 
-install: hex
-	cp hex ~/bin
+install: hx
+	cp hx ~/bin
 
-index.html: index.xml 
+%.html: %.xml 
 	sed	\
 		-e 's/1{}/<span class="in1"><\/span>/g' \
 		-e 's/2{}/<span class="in2"><\/span>/g' \
@@ -33,7 +36,8 @@ index.html: index.xml
 		-e 's/a{\([^}]*\)}/<span class="add">@add(<span class="macro-name">\1<\/span>)<\/span>/g' \
 		-e 's/x{\([^}]*\)}/<span class="end">@end(<span class="macro-name">\1<\/span>)<\/span>/g' \
 		-e 's/e{\([^}]*\)}/<span class="expand">@expand(<span class="macro-name">\1<\/span>)<\/span>/g' \
+		-e 's/i{\([^}]*\)}/<span class="expand">@include(<span class="macro-name">\1<\/span>)<\/span>/g' \
 		$^ >$@
 
 clean:
-	rm -f hex.c index.html
+	rm -f hx.c ${HTMLs}

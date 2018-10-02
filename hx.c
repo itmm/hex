@@ -2,6 +2,7 @@
 						
 						
 						#include <stdio.h>
+						#include <stdlib.h>
 						
 							#include <stdlib.h>
 							
@@ -29,6 +30,37 @@
 						struct Input *link;
 						FILE *file;
 						};
+						
+						struct Input *input = NULL;
+						
+						void pushFile (FILE *file) {
+						struct Input *i =
+						malloc(sizeof(struct Input));
+						
+						;
+						i->link = input;
+						i->file = file;
+						input = i;
+						}
+						
+						int nextCh() {
+						int ch = EOF;
+						while (input) {
+						ch = fgetc(input->file);
+						if (ch != EOF) { break; }
+						struct Input *n = input->link;
+						fclose(input->file);
+						free(input);
+						input = n;
+						}
+						return ch;
+						}
+						
+						void pushPath(const char *path) {
+						FILE *f = fopen(path, "r");
+						;
+						pushFile(f);
+						}
 						
 							
 							struct MacroEntry;
@@ -470,98 +502,98 @@
 							;
 							
 							
-							#define INIT_BUFFER_SIZE 16
-							
-							struct Buffer {
-							char initial[INIT_BUFFER_SIZE];
-							char *buffer;
-							char *current;
-							const char *end;
-							};
-							
-							void addToBuffer(
-							struct Buffer *buffer, char ch
-							) {
-							ASSERT(buffer);
-							
-							if (! buffer->buffer) {
-							buffer->buffer =
-							buffer->initial;
-							buffer->current =
-							buffer->buffer;
-							buffer->end =
-							buffer->initial +
-							INIT_BUFFER_SIZE;
-							}
-							
-							
-							if (
-							buffer->current >= buffer->end
-							) {
-							int size = buffer->current -
-							buffer->buffer;
-							int newSize = 2 * size;
-							
-							char *newBuffer;
-							if (
-							buffer->buffer == buffer->initial
-							) {
-							newBuffer = malloc(newSize);
-							
-							ASSERT(newBuffer);
-							memcpy(
-							newBuffer, buffer->buffer, size
-							);
-							;
-							} else {
-							newBuffer = realloc(
-							buffer->buffer, newSize);
-							}
-							
-							ASSERT(newBuffer);
-							buffer->buffer = newBuffer;
-							buffer->current = newBuffer + size;
-							buffer->end = newBuffer + newSize;
-							;
-							;
-							}
-							
-							*buffer->current++ = ch;
-							}
-							
-							void resetBuffer(
-							struct Buffer *buffer
-							) {
-							ASSERT(buffer);
-							buffer->current = buffer->buffer;
-							}
-							
-							void eraseBuffer(
-							struct Buffer *buffer
-							) {
-							ASSERT(buffer);
-							
-							if (buffer->buffer &&
-							buffer->buffer != buffer->initial
-							) {
-							free(buffer->buffer);
-							buffer->buffer = buffer->initial;
-							}
-							;
-							buffer->current = buffer->buffer;
-							}
-							
-							void addCharsToBuffer(
-							struct Buffer *buffer,
-							char ch, int count
-							) {
-							ASSERT(buffer);
-							ASSERT(count >= 0);
-							for (; count; --count) {
-							addToBuffer(buffer, ch);
-							}
-							}
-							;
+						#define INIT_BUFFER_SIZE 16
+						
+						struct Buffer {
+						char initial[INIT_BUFFER_SIZE];
+						char *buffer;
+						char *current;
+						const char *end;
+						};
+						
+						void addToBuffer(
+						struct Buffer *buffer, char ch
+						) {
+						ASSERT(buffer);
+						
+						if (! buffer->buffer) {
+						buffer->buffer =
+						buffer->initial;
+						buffer->current =
+						buffer->buffer;
+						buffer->end =
+						buffer->initial +
+						INIT_BUFFER_SIZE;
+						}
+						
+						
+						if (
+						buffer->current >= buffer->end
+						) {
+						int size = buffer->current -
+						buffer->buffer;
+						int newSize = 2 * size;
+						
+						char *newBuffer;
+						if (
+						buffer->buffer == buffer->initial
+						) {
+						newBuffer = malloc(newSize);
+						
+						ASSERT(newBuffer);
+						memcpy(
+						newBuffer, buffer->buffer, size
+						);
+						;
+						} else {
+						newBuffer = realloc(
+						buffer->buffer, newSize);
+						}
+						
+						ASSERT(newBuffer);
+						buffer->buffer = newBuffer;
+						buffer->current = newBuffer + size;
+						buffer->end = newBuffer + newSize;
+						;
+						;
+						}
+						
+						*buffer->current++ = ch;
+						}
+						
+						void resetBuffer(
+						struct Buffer *buffer
+						) {
+						ASSERT(buffer);
+						buffer->current = buffer->buffer;
+						}
+						
+						void eraseBuffer(
+						struct Buffer *buffer
+						) {
+						ASSERT(buffer);
+						
+						if (buffer->buffer &&
+						buffer->buffer != buffer->initial
+						) {
+						free(buffer->buffer);
+						buffer->buffer = buffer->initial;
+						}
+						;
+						buffer->current = buffer->buffer;
+						}
+						
+						void addCharsToBuffer(
+						struct Buffer *buffer,
+						char ch, int count
+						) {
+						ASSERT(buffer);
+						ASSERT(count >= 0);
+						for (; count; --count) {
+						addToBuffer(buffer, ch);
+						}
+						}
+						;
 							
 						
 						struct EntityContext {
@@ -627,7 +659,7 @@
 						
 						;
 						
-						FILE *input = stdin;
+						pushFile(stdin);
 						;
 						
 						
@@ -645,15 +677,15 @@
 						const char *nameEnd = name +
 						sizeof(name);
 						;
-						int last = fgetc(input);
-						int ch = fgetc(input);
+						int last = nextCh();
+						int ch = nextCh();
 						while (ch != EOF) {
 						
 						switch (ch) {
 						case '{':
 						 {
 						if (! macro) {
-						if (last == 'a') {
+						if (last == 'a' || last == 'i') {
 						openCh = last;
 						nameCur = name;
 						break;
@@ -713,6 +745,12 @@
 						processed = true;
 						}
 						
+						if (openCh == 'i') {
+						ASSERT(! macro);
+						pushPath(name);
+						processed = true;
+						}
+						
 						if (openCh == 'e') {
 						ASSERT(macro);
 						
@@ -745,7 +783,7 @@
 						;
 						nameCur = NULL;
 						last = ch;
-						ch = fgetc(input);
+						ch = nextCh();
 						}
 						} 
 						if (macro && ! processed) {
@@ -768,7 +806,7 @@
 						} ;
 						}
 						;
-						last = ch; ch = fgetc(input);
+						last = ch; ch = nextCh();
 						}
 						}
 						;
