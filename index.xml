@@ -182,6 +182,19 @@
 					</ul>
 				</div><div class="row">
 					<div class="slide code"><code>
+						a{global elements}b{}
+						1{}t{struct Input} {b{}
+						2{}t{struct Input *}v{link};b{}
+						2{}t{FILE *}v{file};b{}
+						1{}};b{}
+						x{global elements}
+					</code></div>
+					<ul class="notes">
+						<li>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
 						a{process arguments}b{}
 						1{}t{FILE *}v{input} = v{stdin};b{}
 						x{process arguments}

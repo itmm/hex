@@ -25,6 +25,11 @@
 							);
 							;
 						
+						struct Input {
+						struct Input *link;
+						FILE *file;
+						};
+						
 							
 							struct MacroEntry;
 							
