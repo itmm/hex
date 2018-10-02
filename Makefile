@@ -1,6 +1,6 @@
 CFLAGS += -Wall -std=c99
 
-.PHONY: all install clean
+.PHONY: all install clean test
 
 SOURCES := $(wildcard *.xml)
 HTMLs := $(SOURCES:.xml=.html)
@@ -19,6 +19,9 @@ hx: hx.c
 
 install: hx
 	cp hx ~/bin
+
+test: hx
+	./hx </dev/null
 
 %.html: %.xml 
 	@echo "sed >$@"

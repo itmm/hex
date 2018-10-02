@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="de">
+		<head>
+			<meta charset="utf-8">
+			<title>Ausgaben konsumieren</title>
+			<link rel="stylesheet" type="text/css"
+				href="slides/slides.css">
+		</head>
+	<body>
+		<div class="slides">
+			<div class="row">
+				<div class="slide title">
+					<h1>Ausgaben konsumieren</h1>
+				</div>
+				<ul class="notes">
+					<li>
+						Diese Datei beschreibt eine generische Funktion
+						um zeichenweise Ausgaben zu konsumieren
+					</li><li>
+						Damit sind leichtere Tests möglich, da nicht so
+						viele temporären Dateien angelegt werden müssen
+					</li>
+				</ul>
+			</div>
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Diese Datei stellt globale Funktionen bereit
+							um ein abstraktes Interface zur Verfügung
+							zu stellen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">struct Consumer</span> {<br/>
+						<span class="in2"></span><span class="type">int</span> (* <span class="fn">put</span>)(<br/>
+						<span class="in3"></span><span class="type">struct Consumer *</span><span class="var">consumer</span>, <span class="type">int</span> <span class="var">ch</span><br/>
+						<span class="in2"></span>);<br/>
+						<span class="in1"></span>};<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Ein Consumer besteht nur aus einer Funktion,
+							die ein Zeichen entgegennimmt
+						</li><li>
+							Der Consumer ist trotzdem als
+							<code>struct</code> ausgeführt, damit nicht
+							immer ein Paar aus Funktionszeiger und
+							Kontext durchgereicht werden muss
+						</li><li>
+							Das Ende wird signalisiert durch das Senden
+							von <code>EOF</code>
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">putToConsumer</span>(<br/>
+						<span class="in2"></span><span class="type">struct Consumer *</span><span class="var">c</span>, <span class="type">int</span> <span class="var">ch</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">c</span>); <span class="fn">ASSERT</span>(<span class="var">c</span>-&gt;<span class="var">put</span>);<br/>
+						<span class="in2"></span><span class="var">c</span>-&gt;<span class="var">put</span>(<span class="var">c</span>, <span class="var">ch</span>);<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Diese Funktion vereinfacht den Aufruf des
+							Consumers.
+						</li>
+					</ul>
+				</div>
+			<div class="row">
+				<div class="slide title">
+					<h1>Beispiel: FileConsumer</h1>
+				</div>
+				<ul class="notes">
+					<li>
+						Ein einfacher Consumer schreibt die Daten
+						in eine Datei
+					</li>
+				</ul>
+			</div>
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">struct FileConsumer</span> {<br/>
+						<span class="in2"></span><span class="type">struct Consumer</span> <span class="var">consumer</span>;<br/>
+						<span class="in2"></span><span class="type">FILE *</span> <span class="var">file</span>;<br/>
+						<span class="in1"></span>};<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Neben der Consumer-Struktur muss die Datei
+							bekannt sein
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">int</span> <span class="fn">consumeInFile</span>(<br/>
+						<span class="in2"></span><span class="type">struct Consumer *</span><span class="var">c</span>, <span class="type">int</span> <span class="var">ch</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="type">struct FileConsumer *</span><span class="var">fc</span> = (<span class="type">void *</span>) <span class="var">c</span>;<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">fc</span>); <span class="fn">ASSERT</span>(<span class="var">fc</span>-&gt;<span class="var">file</span>);<br/>
+						<span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="keyword">EOF</span>) {<br/>
+						<span class="in3"></span><span class="var">ch</span> = <span class="fn">fputc</span>(<span class="var">ch</span>, <span class="var">fc</span>-&gt;<span class="var">file</span>);<br/>
+						<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+						<span class="in3"></span><span class="fn">fclose</span>(<span class="var">fc</span>-&gt;<span class="var">file</span>);<br/>
+						<span class="in3"></span><span class="var">fc</span>-&gt;<span class="var">file</span> = <span class="keyword">NULL</span>;<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Der Consumer wird auf den richtigen Typ
+							gecastet
+						</li><li>
+							Das setzt vorraus, dass er korrekt
+							initialisiert wurde
+						</li><li>
+							Wenn nicht das Ende erreicht ist, wird das
+							Zeichen in die Datei geschrieben
+						</li><li>
+							Andernfalls wird die Datei geschlossen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">setupFileConsumer</span>(<br/>
+						<span class="in2"></span><span class="type">struct FileConsumer *</span><span class="var">fc</span>, <span class="type">FILE *</span><span class="var">f</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">fc</span>); <span class="fn">ASSERT</span>(<span class="var">f</span>);<br/>
+						<span class="in2"></span><span class="var">fc</span>-&gt;<span class="var">file</span> = <span class="var">f</span>;<br/>
+						<span class="in2"></span><span class="var">fc</span>-&gt;<span class="var">consumer</span>.<span class="var">put</span> = <span class="fn">consumeInFile</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Die Struktur wird mit einer offenen Datei
+							initialisiert
+						</li>
+					</ul>
+				</div>
+			<div class="row">
+				<div class="slide title">
+					<h1>Beispiel: BufferConsumer</h1>
+				</div>
+				<ul class="notes">
+					<li>
+						Dieser Consumer speichert in einen Buffer
+					</li><li>
+						Er ist praktisch zum Unit-Testen
+					</li>
+				</ul>
+			</div>
+				<div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">struct BufferConsumer</span> {<br/>
+						<span class="in2"></span><span class="type">struct Consumer</span> <span class="var">consumer</span>;<br/>
+						<span class="in2"></span><span class="type">struct Buffer</span> <span class="var">buffer</span>;<br/>
+						<span class="in1"></span>};<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Neben der Consumer-Struktur muss Platz für
+							den Buffer vorhanden sein
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">int</span> <span class="fn">consumeInBuffer</span>(<br/>
+						<span class="in2"></span><span class="type">struct Consumer *</span><span class="var">c</span>, <span class="type">int</span> <span class="var">ch</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="type">struct BufferConsumer *</span><span class="var">bc</span> = (<span class="type">void *</span>) <span class="var">c</span>;<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">bc</span>);<br/>
+						<span class="in2"></span><span class="type">int</span> <span class="var">cr</span> = <span class="var">ch</span> != <span class="keyword">EOF</span> ? <span class="var">ch</span> : <span class="str">'\0'</span>;<br/>
+						<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">bc</span>-&gt;<span class="var">buffer</span>, <span class="var">cr</span>);<br/>
+						<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Der Consumer wird auf den richtigen Typ
+							gecastet
+						</li><li>
+							Das setzt vorraus, dass er korrekt
+							initialisiert wurde
+						</li><li>
+							Wenn nicht das Ende erreicht ist, wird das
+							Zeichen in den Buffer geschrieben
+						</li><li>
+							Wenn das Ende erreicht ist, wird ein
+							Nullbyte geschrieben, um den String zu
+							terminieren
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">expand consumer</span>)</span><br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">setupBufferConsumer</span>(<br/>
+						<span class="in2"></span><span class="type">struct BufferConsumer *</span><span class="var">bc</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">bc</span>);<br/>
+						<span class="in2"></span><span class="fn">memset</span>(<br/>
+						<span class="in3"></span>&amp;<span class="var">bc</span>-&gt;<span class="var">buffer</span>, 0,<br/>
+						<span class="in3"></span><span class="fn">sizeof</span>(<span class="var">bc</span>-&gt;<span class="var">buffer</span>)<br/>
+						<span class="in2"></span>);<br/>
+						<span class="in2"></span><span class="var">bc</span>-&gt;<span class="var">consumer</span>.<span class="var">put</span> = <span class="fn">consumeInBuffer</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">expand consumer</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Die Struktur wird mit einem leeren Buffer
+							initialisiert
+						</li>
+					</ul>
+				</div>
+			<div class="row">
+				<div class="slide title">
+					<h1>Unit Tests</h1>
+				</div>
+				<ul class="notes">
+					<li>
+						Testet den BufferConsumer als proof of concept
+					</li>
+				</ul>
+			</div>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">perform unit-tests</span>)</span> {<br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">consumer unit-tests</span>)</span><br/>
+						} <span class="end">@end(<span class="macro-name">perform unit-tests</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Die Unit-Tests werden in einem eigenen Makro
+							gesammelt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						<span class="add">@add(<span class="macro-name">consumer unit-tests</span>)</span> {<br/>
+						<span class="in1"></span><span class="type">struct BufferConsumer</span> <span class="var">bc</span>;<br/>
+						<span class="in1"></span><span class="fn">setupBufferConsumer</span>(&amp;<span class="var">bc</span>);<br/>
+						<span class="in1"></span><span class="type">struct Consumer *</span><span class="var">c</span> = &amp;<span class="var">bc</span>.<span class="var">consumer</span>;<br/>
+						<span class="in1"></span><span class="fn">putToConsumer</span>(<span class="var">c</span>, <span class="str">'a'</span>);<br/>
+						<span class="in1"></span><span class="fn">putToConsumer</span>(<span class="var">c</span>, <span class="str">'b'</span>);<br/>
+						<span class="in1"></span><span class="fn">putToConsumer</span>(<span class="var">c</span>, <span class="keyword">EOF</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+						<span class="in2"></span><span class="fn">strcmp</span>(<span class="str">"ab"</span>, <span class="var">bc</span>.<span class="var">buffer</span>.<span class="var">buffer</span>) == 0<br/>
+						<span class="in1"></span>);<br/>
+						} <span class="end">@end(<span class="macro-name">consumer unit-tests</span>)</span>
+					</code></div>
+					<ul class="notes">
+						<li>
+							Zwei Zeichen werden in den Buffer eingefügt
+						</li>
+					</ul>
+				</div>
+		</div>
+	</body>
+</html>

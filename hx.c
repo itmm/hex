@@ -596,6 +596,74 @@
 						;
 							
 						
+						struct Consumer {
+						int (* put)(
+						struct Consumer *consumer, int ch
+						);
+						};
+						
+						void putToConsumer(
+						struct Consumer *c, int ch
+						) {
+						ASSERT(c); ASSERT(c->put);
+						c->put(c, ch);
+						}
+						
+						struct FileConsumer {
+						struct Consumer consumer;
+						FILE * file;
+						};
+						
+						int consumeInFile(
+						struct Consumer *c, int ch
+						) {
+						struct FileConsumer *fc = (void *) c;
+						ASSERT(fc); ASSERT(fc->file);
+						if (ch != EOF) {
+						ch = fputc(ch, fc->file);
+						} else {
+						fclose(fc->file);
+						fc->file = NULL;
+						}
+						return ch;
+						}
+						
+						void setupFileConsumer(
+						struct FileConsumer *fc, FILE *f
+						) {
+						ASSERT(fc); ASSERT(f);
+						fc->file = f;
+						fc->consumer.put = consumeInFile;
+						}
+						
+						struct BufferConsumer {
+						struct Consumer consumer;
+						struct Buffer buffer;
+						};
+						
+						int consumeInBuffer(
+						struct Consumer *c, int ch
+						) {
+						struct BufferConsumer *bc = (void *) c;
+						ASSERT(bc);
+						int cr = ch != EOF ? ch : '\0';
+						addToBuffer(&bc->buffer, cr);
+						return ch;
+						}
+						
+						void setupBufferConsumer(
+						struct BufferConsumer *bc
+						) {
+						ASSERT(bc);
+						memset(
+						&bc->buffer, 0,
+						sizeof(bc->buffer)
+						);
+						bc->consumer.put = consumeInBuffer;
+						}
+						
+						
+						
 						struct EntityContext {
 						char prefix[6];
 						Consumer subConsumer;
@@ -657,7 +725,19 @@
 						int argc, const char **argv
 						) {
 						
-						;
+						 {
+						 {
+						struct BufferConsumer bc;
+						setupBufferConsumer(&bc);
+						struct Consumer *c = &bc.consumer;
+						putToConsumer(c, 'a');
+						putToConsumer(c, 'b');
+						putToConsumer(c, EOF);
+						ASSERT(
+						strcmp("ab", bc.buffer.buffer) == 0
+						);
+						} 
+						} ;
 						
 						pushFile(stdin);
 						;

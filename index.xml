@@ -309,6 +309,20 @@
 					</ul>
 				</div>
 			</div>
+		<h1>Consumer</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						i{consumer.xml}b{}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Consumer werden in einer eigenen Datei
+							definiert
+						</li>
+					</ul>
+				</div>
+			</div>
 		<h1>Input Dateien lesen</h1>
 			<div class="slides">
 				<div class="row">
@@ -658,102 +672,12 @@
 			<div class="slides">
 				<div class="row">
 					<div class="slide code"><code>
-						a{global elements}b{}
-						1{}e{expand entities}b{}
-						x{global elements}
+						i{entities.xml}
 					</code></div>
 					<ul class="notes">
 						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{expand entities}b{}
-						1{}t{struct EntityContext} {b{}
-						2{}t{char} v{prefix}t{[6]};b{}
-						2{}t{Consumer} v{subConsumer};b{}
-						2{}t{void *}v{subContext};b{}
-						1{}};b{}
-						x{expand entities}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{expand entities}b{}
-						1{}t{void} f{entityConsumer}(b{}
-						2{}t{const char *}v{begin},b{}
-						2{}t{const char *}v{end},b{}
-						2{}t{void *}v{context}b{}
-						1{}) {b{}
-						2{}t{struct EntityContext *}v{ec} =b{}
-						3{}(t{void *}) v{context};b{}
-						2{}k{for} (; v{begin} &lt; v{end}; ++v{begin}) {b{}
-						3{}e{process entity char};b{}
-						2{}}b{}
-						1{}}b{}
-						x{expand entities}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{process entity char}b{}
-						1{}t{if} (*v{ec}-&gt;v{prefix}) {b{}
-						2{}t{if} (*v{begin} == s{';'}) {b{}
-						3{}e{expand current entity};b{}
-						3{}e{clear entity prefix};b{}
-						2{}} t{else} {b{}
-						3{}e{add char to entity};b{}
-						2{}}b{}
-						2{}break;b{}
-						1{}}b{}
-						x{process entity char}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{clear entity prefix}b{}
-						1{}f{memset}(b{}
-						2{}v{ec}-&gt;v{prefix}, 0,b{}
-						2{}k{sizeof}(v{ec}-&gt;v{prefix})b{}
-						1{});b{}
-						x{clear entity prefix}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{process entity char}b{}
-						1{}t{if} (*v{begin} == s{'&amp;'}) {b{}
-						2{}*v{ec}-&gt;v{prefix} = *v{begin};b{}
-						2{}k{break};b{}
-						1{}}b{}
-						x{process entity char}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{process entity char}b{}
-						1{}v{ec}-&gt;v{subConsumer}(b{}
-						2{}v{begin}, v{begin} + 1, v{ec}-&gt;v{subContext}b{}
-						1{});b{}
-						x{process entity char}
-					</code></div>
-					<ul class="notes">
-						<li>
+							Entities werden in einer eigenen Datei
+							expandiert
 						</li>
 					</ul>
 				</div>
