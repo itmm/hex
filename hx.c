@@ -62,6 +62,168 @@
 						pushFile(f);
 						}
 						
+							
+						#define INIT_BUFFER_SIZE 16
+						
+						struct Buffer {
+						char initial[INIT_BUFFER_SIZE];
+						char *buffer;
+						char *current;
+						const char *end;
+						};
+						
+						void addToBuffer(
+						struct Buffer *buffer, char ch
+						) {
+						ASSERT(buffer);
+						
+						if (! buffer->buffer) {
+						buffer->buffer =
+						buffer->initial;
+						buffer->current =
+						buffer->buffer;
+						buffer->end =
+						buffer->initial +
+						INIT_BUFFER_SIZE;
+						}
+						
+						
+						if (
+						buffer->current >= buffer->end
+						) {
+						int size = buffer->current -
+						buffer->buffer;
+						int newSize = 2 * size;
+						
+						char *newBuffer;
+						if (
+						buffer->buffer == buffer->initial
+						) {
+						newBuffer = malloc(newSize);
+						
+						ASSERT(newBuffer);
+						memcpy(
+						newBuffer, buffer->buffer, size
+						);
+						;
+						} else {
+						newBuffer = realloc(
+						buffer->buffer, newSize);
+						}
+						
+						ASSERT(newBuffer);
+						buffer->buffer = newBuffer;
+						buffer->current = newBuffer + size;
+						buffer->end = newBuffer + newSize;
+						;
+						;
+						}
+						
+						*buffer->current++ = ch;
+						}
+						
+						void resetBuffer(
+						struct Buffer *buffer
+						) {
+						ASSERT(buffer);
+						buffer->current = buffer->buffer;
+						}
+						
+						void eraseBuffer(
+						struct Buffer *buffer
+						) {
+						ASSERT(buffer);
+						
+						if (buffer->buffer &&
+						buffer->buffer != buffer->initial
+						) {
+						free(buffer->buffer);
+						buffer->buffer = buffer->initial;
+						}
+						;
+						buffer->current = buffer->buffer;
+						}
+						
+						void addCharsToBuffer(
+						struct Buffer *buffer,
+						char ch, int count
+						) {
+						ASSERT(buffer);
+						ASSERT(count >= 0);
+						for (; count; --count) {
+						addToBuffer(buffer, ch);
+						}
+						}
+						;
+							
+						
+						struct Consumer {
+						int (* put)(
+						struct Consumer *consumer, int ch
+						);
+						};
+						
+						void putToConsumer(
+						struct Consumer *c, int ch
+						) {
+						ASSERT(c); ASSERT(c->put);
+						c->put(c, ch);
+						}
+						
+						struct FileConsumer {
+						struct Consumer consumer;
+						FILE * file;
+						};
+						
+						int consumeInFile(
+						struct Consumer *c, int ch
+						) {
+						struct FileConsumer *fc = (void *) c;
+						ASSERT(fc); ASSERT(fc->file);
+						if (ch != EOF) {
+						ch = fputc(ch, fc->file);
+						} else {
+						fclose(fc->file);
+						fc->file = NULL;
+						}
+						return ch;
+						}
+						
+						void setupFileConsumer(
+						struct FileConsumer *fc, FILE *f
+						) {
+						ASSERT(fc); ASSERT(f);
+						fc->file = f;
+						fc->consumer.put = consumeInFile;
+						}
+						
+						struct BufferConsumer {
+						struct Consumer consumer;
+						struct Buffer buffer;
+						};
+						
+						int consumeInBuffer(
+						struct Consumer *c, int ch
+						) {
+						struct BufferConsumer *bc = (void *) c;
+						ASSERT(bc);
+						int cr = ch != EOF ? ch : '\0';
+						addToBuffer(&bc->buffer, cr);
+						return ch;
+						}
+						
+						void setupBufferConsumer(
+						struct BufferConsumer *bc
+						) {
+						ASSERT(bc);
+						memset(
+						&bc->buffer, 0,
+						sizeof(bc->buffer)
+						);
+						bc->consumer.put = consumeInBuffer;
+						}
+						
+						
 						
 						struct MacroEntry;
 						
@@ -302,16 +464,9 @@
 						;
 						}
 						
-						typedef void (* Consumer)(
-						const char *begin,
-						const char *end,
-						void *context
-						);
-						
 						void serializeMacro(
 						struct Macro *macro,
-						Consumer consumer,
-						void * context
+						struct Consumer *consumer
 						) {
 						ASSERT(macro);
 						ASSERT(consumer);
@@ -321,81 +476,35 @@
 						for (; entry; entry = entry->link) {
 						
 						if (getMacroEntryValueSize(entry)) {
-						consumer(
-						entry->value,
-						entry->valueEnd,
-						context
-						);
+						const char *cur = entry->value;
+						const char *end = entry->valueEnd;
+						for (; cur < end; ++cur) {
+						putToConsumer(consumer, *cur);
+						}
 						}
 						;
 						if (entry->macro) {
-						serializeMacro(entry->macro,
-						consumer, context
+						serializeMacro(
+						entry->macro, consumer
 						);
 						}
 						}
 						;
-						}
-						
-						struct TestConsumerContext {
-						char *current;
-						const char *end;
-						char buffer[];
-						};
-						
-						void testConsumer (
-						const char *begin,
-						const char *end,
-						void *context
-						) {
-						ASSERT(begin);
-						ASSERT(begin <= end);
-						ASSERT(context);
-						
-						struct TestConsumerContext *ctx =
-						context;
-						int length = end - begin;
-						ASSERT(
-						ctx->current + length <= ctx->end
-						);
-						memcpy(ctx->current, begin, length);
-						ctx->current += length;
-						;
-						}
-						
-						struct TestConsumerContext *
-						allocTestConsumerContext(int size) {
-						ASSERT(size >= 0);
-						struct TestConsumerContext *
-						context = malloc(size + sizeof(
-						struct TestConsumerContext));
-						ASSERT(context);
-						
-						context->current =
-						context->buffer;
-						context->end =
-						context->buffer + size;
-						;
-						return context;
 						}
 						
 						void testMacro(struct Macro *
 						macro, const char *expected
 						) {
-						int size = strlen(expected);
-						struct TestConsumerContext *
-						context =
-						allocTestConsumerContext(
-						size);
+						struct BufferConsumer bc;
+						setupBufferConsumer(&bc);
 						
-						serializeMacro(macro,
-						testConsumer, context);
-						ASSERT(context->current -
-						context->buffer == size);
-						ASSERT(memcmp(expected,
-						context->buffer, size) == 0);
+						serializeMacro(macro, &bc.consumer);
+						putToConsumer(&bc.consumer, EOF);
+						ASSERT(strcmp(
+						expected, bc.buffer.buffer
+						) == 0);
 						;
-						free(context);
+						eraseBuffer(&bc.buffer);
 						}
 						
 						void addStringToMacro(
@@ -500,168 +609,6 @@
 						return macro;
 						}
 						;
-						
-							
-						#define INIT_BUFFER_SIZE 16
-						
-						struct Buffer {
-						char initial[INIT_BUFFER_SIZE];
-						char *buffer;
-						char *current;
-						const char *end;
-						};
-						
-						void addToBuffer(
-						struct Buffer *buffer, char ch
-						) {
-						ASSERT(buffer);
-						
-						if (! buffer->buffer) {
-						buffer->buffer =
-						buffer->initial;
-						buffer->current =
-						buffer->buffer;
-						buffer->end =
-						buffer->initial +
-						INIT_BUFFER_SIZE;
-						}
-						
-						
-						if (
-						buffer->current >= buffer->end
-						) {
-						int size = buffer->current -
-						buffer->buffer;
-						int newSize = 2 * size;
-						
-						char *newBuffer;
-						if (
-						buffer->buffer == buffer->initial
-						) {
-						newBuffer = malloc(newSize);
-						
-						ASSERT(newBuffer);
-						memcpy(
-						newBuffer, buffer->buffer, size
-						);
-						;
-						} else {
-						newBuffer = realloc(
-						buffer->buffer, newSize);
-						}
-						
-						ASSERT(newBuffer);
-						buffer->buffer = newBuffer;
-						buffer->current = newBuffer + size;
-						buffer->end = newBuffer + newSize;
-						;
-						;
-						}
-						
-						*buffer->current++ = ch;
-						}
-						
-						void resetBuffer(
-						struct Buffer *buffer
-						) {
-						ASSERT(buffer);
-						buffer->current = buffer->buffer;
-						}
-						
-						void eraseBuffer(
-						struct Buffer *buffer
-						) {
-						ASSERT(buffer);
-						
-						if (buffer->buffer &&
-						buffer->buffer != buffer->initial
-						) {
-						free(buffer->buffer);
-						buffer->buffer = buffer->initial;
-						}
-						;
-						buffer->current = buffer->buffer;
-						}
-						
-						void addCharsToBuffer(
-						struct Buffer *buffer,
-						char ch, int count
-						) {
-						ASSERT(buffer);
-						ASSERT(count >= 0);
-						for (; count; --count) {
-						addToBuffer(buffer, ch);
-						}
-						}
-						;
-							
-						
-						struct Consumer {
-						int (* put)(
-						struct Consumer *consumer, int ch
-						);
-						};
-						
-						void putToConsumer(
-						struct Consumer *c, int ch
-						) {
-						ASSERT(c); ASSERT(c->put);
-						c->put(c, ch);
-						}
-						
-						struct FileConsumer {
-						struct Consumer consumer;
-						FILE * file;
-						};
-						
-						int consumeInFile(
-						struct Consumer *c, int ch
-						) {
-						struct FileConsumer *fc = (void *) c;
-						ASSERT(fc); ASSERT(fc->file);
-						if (ch != EOF) {
-						ch = fputc(ch, fc->file);
-						} else {
-						fclose(fc->file);
-						fc->file = NULL;
-						}
-						return ch;
-						}
-						
-						void setupFileConsumer(
-						struct FileConsumer *fc, FILE *f
-						) {
-						ASSERT(fc); ASSERT(f);
-						fc->file = f;
-						fc->consumer.put = consumeInFile;
-						}
-						
-						struct BufferConsumer {
-						struct Consumer consumer;
-						struct Buffer buffer;
-						};
-						
-						int consumeInBuffer(
-						struct Consumer *c, int ch
-						) {
-						struct BufferConsumer *bc = (void *) c;
-						ASSERT(bc);
-						int cr = ch != EOF ? ch : '\0';
-						addToBuffer(&bc->buffer, cr);
-						return ch;
-						}
-						
-						void setupBufferConsumer(
-						struct BufferConsumer *bc
-						) {
-						ASSERT(bc);
-						memset(
-						&bc->buffer, 0,
-						sizeof(bc->buffer)
-						);
-						bc->consumer.put = consumeInBuffer;
-						}
-						
 						
 						
 						struct EntityConsumer {
@@ -799,20 +746,6 @@
 						ASSERT(strcmp(
 						expected, bc.buffer.buffer
 						) == 0);
-						}
-						
-						
-						
-						void sourceConsumer(
-						const char *begin,
-						const char *end,
-						void *context
-						) {
-						printf(
-						"%.*s",
-						(int) (end - begin),
-						begin
-						);
 						}
 						
 						
@@ -1006,13 +939,16 @@
 						;
 						 {
 						const char name[] = "MAIN";
-						struct Macro * macro =
-						getMacroInMap(
+						struct Macro * macro = getMacroInMap(
 						&macros, name,
 						name + sizeof(name) - 1
 						);
+						struct FileConsumer fc;
+						setupFileConsumer(&fc, stdout);
+						struct EntityConsumer ec;
+						setupEntityConsumer(&ec, &fc.consumer);
 						serializeMacro(
-						macro, sourceConsumer, NULL
+						macro, &ec.consumer
 						);
 						} ;
 						;

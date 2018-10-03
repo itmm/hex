@@ -899,33 +899,9 @@
 				<div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">typedef</span> <span class="type">void</span> (* <span class="type">Consumer</span>)(<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>,<br/>
-						<span class="in2"></span><span class="type">void *</span><span class="var">context</span><br/>
-						<span class="in1"></span>);<br/>
-						<span class="end">@end(<span class="macro-name">define macro</span>)</span>
-					</code></div>
-					<ul class="notes">
-						<li>
-							<span class="type">Callback</span>
-							Instanzen werden als Callbacks verwendet,
-							um Byte-Folgen zu konsumieren
-						</li><li>
-							Ein freier Kontext-Parameter wird mit
-							übergeben
-						</li><li>
-							Damit lassen sich objekt-ähnliche
-							Strukturen realisieren
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
 						<span class="in1"></span><span class="type">void</span> <span class="fn">serializeMacro</span>(<br/>
 						<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro,</span><br/>
-						<span class="in2"></span><span class="type">Consumer</span> <span class="var">consumer</span>,<br/>
-						<span class="in2"></span><span class="type">void *</span> <span class="var">context</span><br/>
+						<span class="in2"></span><span class="type">struct Consumer *</span><span class="var">consumer</span><br/>
 						<span class="in1"></span>) {<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">consumer</span>);<br/>
@@ -950,8 +926,8 @@
 						<span class="in1"></span><span class="keyword">for</span> (; <span class="var">entry</span>; <span class="var">entry</span> = <span class="var">entry</span>-&gt;<span class="var">link</span>) {<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">serialize bytes</span>)</span>;<br/>
 						<span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>-&gt;<span class="var">macro</span>) {<br/>
-						<span class="in3"></span><span class="fn">serializeMacro</span>(<span class="var">entry</span>-&gt;<span class="var">macro</span>,<br/>
-						<span class="in4"></span><span class="var">consumer</span>, <span class="var">context</span><br/>
+						<span class="in3"></span><span class="fn">serializeMacro</span>(<br/>
+						<span class="in4"></span><span class="var">entry</span>-&gt;<span class="var">macro</span>, <span class="var">consumer</span><br/>
 						<span class="in3"></span>);<br/>
 						<span class="in2"></span>}<br/>
 						<span class="in1"></span>}<br/>
@@ -970,11 +946,11 @@
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">serialize bytes</span>)</span><br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="fn">getMacroEntryValueSize</span>(<span class="var">entry</span>)) {<br/>
-						<span class="in2"></span><span class="var">consumer</span>(<br/>
-						<span class="in3"></span><span class="var">entry</span>-&gt;<span class="var">value</span>,<br/>
-						<span class="in3"></span><span class="var">entry</span>-&gt;<span class="var">valueEnd</span>,<br/>
-						<span class="in3"></span><span class="var">context</span><br/>
-						<span class="in2"></span>);<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">cur</span> = <span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
+						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span> = <span class="var">entry</span>-&gt;<span class="var">valueEnd</span>;<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+						<span class="in3"></span><span class="fn">putToConsumer</span>(<span class="var">consumer</span>, *<span class="var">cur</span>);<br/>
+						<span class="in2"></span>}<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">serialize bytes</span>)</span>
 					</code></div>
@@ -988,117 +964,13 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
-						<span class="in1"></span><span class="type">struct TestConsumerContext</span> {<br/>
-						<span class="in2"></span><span class="type">char *</span><span class="var">current</span>;<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>;<br/>
-						<span class="in2"></span><span class="type">char </span><span class="var">buffer</span><span class="type">[]</span>;<br/>
-						<span class="in1"></span>};<br/>
-						<span class="end">@end(<span class="macro-name">define macro</span>)</span>
-					</code></div>
-					<ul class="notes">
-						<li>
-							Zum Testen gibt es einen speziellen
-							<code class="type">Consumer</code>.
-						</li><li>
-							Dessen Kontext enthält einen Buffer.
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
-						<span class="in1"></span><span class="type">void</span> <span class="fn">testConsumer</span> (<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">end</span>,<br/>
-						<span class="in2"></span><span class="type">void *</span><span class="var">context</span><br/>
-						<span class="in1"></span>) {<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span> &lt;= <span class="var">end</span>);<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">context</span>);<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">add to test consumer</span>)</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">define macro</span>)</span>
-					</code></div>
-					<ul class="notes">
-						<li>
-							Der Test Consumer fügt die übergegebenen
-							Daten im Buffer des Kontexts ein
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						<span class="add">@add(<span class="macro-name">add to test consumer</span>)</span><br/>
-						<span class="in1"></span><span class="type">struct TestConsumerContext *</span><span class="var">ctx</span> =<br/>
-						<span class="in2"></span><span class="var">context</span>;<br/>
-						<span class="in1"></span><span class="type">int</span> <span class="var">length</span> = <span class="var">end</span> - <span class="var">begin</span>;<br/>
-						<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-						<span class="in2"></span><span class="var">ctx</span>-&gt;<span class="var">current</span> + <span class="var">length</span> &lt;= <span class="var">ctx</span>-&gt;<span class="var">end</span><br/>
-						<span class="in1"></span>);<br/>
-						<span class="in1"></span><span class="fn">memcpy</span>(<span class="var">ctx</span>-&gt;<span class="var">current</span>, <span class="var">begin</span>, <span class="var">length</span>);<br/>
-						<span class="in1"></span><span class="var">ctx</span>-&gt;<span class="var">current</span> += <span class="var">length</span>;<br/>
-						<span class="end">@end(<span class="macro-name">add to test consumer</span>)</span>
-					</code></div>
-					<ul class="notes">
-						<li>
-							Wenn genügend Platz im Buffer ist, werden
-							die Bytes hineinkopiert
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
-						<span class="in1"></span><span class="type">struct TestConsumerContext *</span><br/>
-						<span class="in1"></span><span class="fn">allocTestConsumerContext</span>(<span class="type">int</span> <span class="var">size</span>) {<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">size</span> &gt;= 0);<br/>
-						<span class="in2"></span><span class="type">struct TestConsumerContext *</span><br/>
-						<span class="in2"></span><span class="var">context</span> = <span class="fn">malloc</span>(<span class="var">size</span> + <span class="keyword">sizeof</span>(<br/>
-						<span class="in3"></span><span class="type">struct TestConsumerContext</span>));<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">context</span>);<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">init test consumer</span>)</span>;<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="var">context</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">define macro</span>)</span>
-					</code></div>
-					<ul class="notes">
-						<li>
-							Der Buffer wird direkt in der Struktur
-							angelegt
-						</li><li>
-							Die Strukturen können nur auf dem Heap
-							angelegt werden
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						<span class="add">@add(<span class="macro-name">init test consumer</span>)</span><br/>
-						<span class="in1"></span><span class="var">context</span>-&gt;<span class="var">current</span> =
-						<span class="var">context</span>-&gt;<span class="var">buffer</span>;<br/>
-						<span class="in1"></span><span class="var">context</span>-&gt;<span class="var">end</span> =<br/>
-						<span class="in2"></span><span class="var">context</span>-&gt;<span class="var">buffer</span> + <span class="var">size</span>;<br/>
-						<span class="end">@end(<span class="macro-name">init test consumer</span>)</span>
-					</code></div>
-					<ul class="notes">
-						<li>
-							Zum schnellen Zugriff wird ein Zeiger auf
-							das aktuelle Ende und das Ende des
-							Buffers abgelegt
-						</li><li>
-							Die Größe des Buffers kann beim Einfügen
-							nicht überschritten werden
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						<span class="add">@add(<span class="macro-name">define macro</span>)</span><br/>
 						<span class="in1"></span><span class="type">void</span> <span class="fn">testMacro</span>(<span class="type">struct Macro *</span><br/>
 						<span class="in2"></span><span class="var">macro</span>, <span class="type">const char *</span><span class="var">expected</span><br/>
 						<span class="in1"></span>) {<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">size</span> = <span class="fn">strlen</span>(<span class="var">expected</span>);<br/>
-						<span class="in2"></span><span class="type">struct TestConsumerContext *</span><br/>
-						<span class="in2"></span><span class="var">context</span> =<br/>
-						<span class="in3"></span><span class="fn">allocTestConsumerContext</span>(<br/>
-						<span class="in4"></span><span class="var">size</span>);<br/>
+						<span class="in2"></span><span class="type">struct BufferConsumer</span> <span class="var">bc</span>;<br/>
+						<span class="in2"></span><span class="fn">setupBufferConsumer</span>(&amp;<span class="var">bc</span>);<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">serialize test macro</span>)</span>;<br/>
-						<span class="in2"></span><span class="fn">free</span>(<span class="var">context</span>);<br/>
+						<span class="in2"></span><span class="fn">eraseBuffer</span>(&amp;<span class="var">bc</span>.<span class="var">buffer</span>);<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">define macro</span>)</span>
 					</code></div>
@@ -1112,12 +984,11 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						<span class="add">@add(<span class="macro-name">serialize test macro</span>)</span><br/>
-						<span class="in1"></span><span class="fn">serializeMacro</span>(<span class="var">macro</span>,<br/>
-						<span class="in2"></span><span class="var">testConsumer</span>, <span class="var">context</span>);<br/>
-						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">context</span>-&gt;<span class="var">current</span> -<br/>
-						<span class="in2"></span><span class="var">context</span>-&gt;<span class="var">buffer</span> == <span class="var">size</span>);<br/>
-						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">memcmp</span>(<span class="var">expected</span>,<br/>
-						<span class="in2"></span><span class="var">context</span>-&gt;<span class="var">buffer</span>, <span class="var">size</span>) == 0);<br/>
+						<span class="in1"></span><span class="fn">serializeMacro</span>(<span class="var">macro</span>, &amp;<span class="var">bc</span>.<span class="var">consumer</span>);<br/>
+						<span class="in1"></span><span class="fn">putToConsumer</span>(&amp;<span class="var">bc</span>.<span class="var">consumer</span>, <span class="keyword">EOF</span>);<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">strcmp</span>(<br/>
+						<span class="in2"></span><span class="var">expected</span>, <span class="var">bc</span>.<span class="var">buffer</span>.<span class="var">buffer</span><br/>
+						<span class="in1"></span>) == 0);<br/>
 						<span class="end">@end(<span class="macro-name">serialize test macro</span>)</span>
 					</code></div>
 					<ul class="notes">

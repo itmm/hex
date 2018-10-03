@@ -9,11 +9,7 @@ all: ${HTMLs} hx.c
 
 hx.c: ${SOURCES}
 	@echo "hx <index.xml"
-	@hx <index.xml | sed \
-		-e 's/&lt;/</g' \
-		-e 's/&gt;/>/g' \
-		-e 's/&amp;/\&/g' \
-		>$@
+	@hx <index.xml >$@
 
 hx: hx.c
 

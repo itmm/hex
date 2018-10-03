@@ -281,20 +281,6 @@
 					</ul>
 				</div>
 			</div>
-		<h1>Makros</h1>
-			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
-						i{macros.xml}
-					</code></div>
-					<ul class="notes">
-						<li>
-							Makros werden in einer eigenen Datei
-							definiert
-						</li>
-					</ul>
-				</div>
-			</div>
 		<h1>Buffer</h1>
 			<div class="slides">
 				<div class="row">
@@ -318,6 +304,20 @@
 					<ul class="notes">
 						<li>
 							Consumer werden in einer eigenen Datei
+							definiert
+						</li>
+					</ul>
+				</div>
+			</div>
+		<h1>Makros</h1>
+			<div class="slides">
+				<div class="row">
+					<div class="slide code"><code>
+						i{macros.xml}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Makros werden in einer eigenen Datei
 							definiert
 						</li>
 					</ul>
@@ -686,45 +686,18 @@
 			<div class="slides">
 				<div class="row">
 					<div class="slide code"><code>
-						a{global elements}b{}
-						1{}e{define fragments}b{}
-						x{global elements}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
-						a{define fragments}b{}
-						1{}t{void} f{sourceConsumer}(b{}
-						2{}t{const char *}v{begin},b{}
-						2{}t{const char *}v{end},b{}
-						2{}t{void *}v{context}b{}
-						1{}) {b{}
-						2{}f{printf}(b{}
-						3{}s{"%.*s"},b{}
-						3{}(t{int}) (v{end} - v{begin}),b{}
-						3{}v{begin}b{}
-						2{});b{}
-						1{}}b{}
-						x{define fragments}
-					</code></div>
-					<ul class="notes">
-						<li>
-						</li>
-					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
 						a{serialize fragments} {b{}
 						1{}t{const char} v{name}t{[]} = s{"MAIN"};b{}
-						1{}t{struct Macro *} v{macro} =b{}
-						2{}f{getMacroInMap}(b{}
-						3{}&amp;v{macros}, v{name},b{}
-						3{}v{name} + k{sizeof}(v{name}) - 1b{}
-						2{});b{}
+						1{}t{struct Macro *} v{macro} = f{getMacroInMap}(b{}
+						2{}&amp;v{macros}, v{name},b{}
+						2{}v{name} + k{sizeof}(v{name}) - 1b{}
+						1{});b{}
+						1{}t{struct FileConsumer} v{fc};b{}
+						1{}f{setupFileConsumer}(&amp;v{fc}, v{stdout});b{}
+						1{}t{struct EntityConsumer} v{ec};b{}
+						1{}f{setupEntityConsumer}(&amp;v{ec}, &amp;v{fc}.v{consumer});b{}
 						1{}f{serializeMacro}(b{}
-						2{}v{macro}, f{sourceConsumer}, k{NULL}b{}
+						2{}v{macro}, &amp;v{ec}.v{consumer}b{}
 						1{});b{}
 						} x{serialize fragments}
 					</code></div>
