@@ -664,46 +664,141 @@
 						
 						
 						
-						struct EntityContext {
+						struct EntityConsumer {
+						struct Consumer consumer;
+						struct Consumer *subConsumer;
 						char prefix[6];
-						Consumer subConsumer;
-						void *subContext;
 						};
 						
-						void entityConsumer(
-						const char *begin,
-						const char *end,
-						void *context
+						int consumeEntities(
+						struct Consumer *consumer, int ch
 						) {
-						struct EntityContext *ec =
-						(void *) context;
-						for (; begin < end; ++begin) {
+						struct EntityConsumer *ec =
+						(void *) consumer;
+						bool processed = false;
 						
+						if (! processed && ch == '&') {
 						if (*ec->prefix) {
-						if (*begin == ';') {
+						 {
+						char *cur = ec->prefix;
+						for (; *cur; ++cur) {
+						putToConsumer(ec->subConsumer, *cur);
+						*cur = '\0';
+						}
+						} ;
+						}
+						*ec->prefix = ch;
+						processed = true;
+						}
+						
+						if (
+						! processed && *ec->prefix && ch != EOF
+						) {
+						if (ch == ';') {
+						 {
+						bool expanded = false;
+						
+						if (strcmp("&gt", ec->prefix) == 0) {
+						putToConsumer(ec->subConsumer, '>');
+						expanded = true;
+						}
+						if (strcmp("&lt", ec->prefix) == 0) {
+						putToConsumer(ec->subConsumer, '<');
+						expanded = true;
+						}
+						
+						if (strcmp("&amp", ec->prefix) == 0) {
+						putToConsumer(ec->subConsumer, '&');
+						expanded = true;
+						}
 						;
+						if (! expanded) {
+						 {
+						char *cur = ec->prefix;
+						for (; *cur; ++cur) {
+						putToConsumer(ec->subConsumer, *cur);
+						*cur = '\0';
+						}
+						} ;
+						putToConsumer(ec->subConsumer, ch);
+						}
+						} ;
 						
 						memset(
-						ec->prefix, 0,
-						sizeof(ec->prefix)
+						ec->prefix, 0, sizeof(ec->prefix)
 						);
 						;
 						} else {
+						
+						char *cur = ec->prefix + 1;
+						const char *end = ec->prefix +
+						sizeof(ec->prefix) - 1;
+						for (; cur < end && *cur; ++cur) {}
+						if (cur < end) {
+						*cur = ch;
+						} else {
+						 {
+						char *cur = ec->prefix;
+						for (; *cur; ++cur) {
+						putToConsumer(ec->subConsumer, *cur);
+						*cur = '\0';
+						}
+						} ;
+						}
+						processed = true;
 						;
 						}
-						break;
+						processed = true;
 						}
 						
-						if (*begin == '&') {
-						*ec->prefix = *begin;
-						break;
+						if (! processed) {
+						if (ch == EOF) {
+						 {
+						char *cur = ec->prefix;
+						for (; *cur; ++cur) {
+						putToConsumer(ec->subConsumer, *cur);
+						*cur = '\0';
+						}
+						} ;
+						}
+						putToConsumer(ec->subConsumer, ch);
+						}
+						;
+						return processed ? ch : EOF;
 						}
 						
-						ec->subConsumer(
-						begin, begin + 1, ec->subContext
+						void setupEntityConsumer(
+						struct EntityConsumer *ec,
+						struct Consumer *sc
+						) {
+						ASSERT(ec); ASSERT(sc);
+						ec->subConsumer = sc;
+						ec->consumer.put = consumeEntities;
+						
+						memset(
+						ec->prefix, 0, sizeof(ec->prefix)
 						);
 						;
 						}
+						
+						void testEntityConsumer(
+						const char *source,
+						const char *expected
+						) {
+						ASSERT(source); ASSERT(expected);
+						struct BufferConsumer bc;
+						struct EntityConsumer ec;
+						setupBufferConsumer(&bc);
+						setupEntityConsumer(&ec, &bc.consumer);
+						
+						for (; *source; ++source) {
+						putToConsumer(&ec.consumer, *source);
+						}
+						putToConsumer(&ec.consumer, EOF);
+						;
+						ASSERT(strcmp(
+						expected, bc.buffer.buffer
+						) == 0);
 						}
 						
 						
@@ -737,6 +832,24 @@
 						strcmp("ab", bc.buffer.buffer) == 0
 						);
 						} 
+						}  {
+						
+						testEntityConsumer("a bc", "a bc");
+						
+						testEntityConsumer("a&lt;b", "a<b");
+						
+						testEntityConsumer("a&gt;b", "a>b");
+						
+						testEntityConsumer("a&amp;b", "a&b");
+						
+						testEntityConsumer("a&copy;b", "a&copy;b");
+						
+						testEntityConsumer("a&l&lt;b", "a&l<b");
+						
+						testEntityConsumer("a&amp;&amp;b", "a&&b");
+						
+						testEntityConsumer("a&b", "a&b");
+						
 						} ;
 						
 						pushFile(stdin);

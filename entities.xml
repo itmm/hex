@@ -40,10 +40,10 @@
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{expand entities}b{}
-						1{}t{struct EntityContext} {b{}
+						1{}t{struct EntityConsumer} {b{}
+						2{}t{struct Consumer} v{consumer};b{}
+						2{}t{struct Consumer *}v{subConsumer};b{}
 						2{}t{char} v{prefix}t{[6]};b{}
-						2{}t{Consumer} v{subConsumer};b{}
-						2{}t{void *}v{subContext};b{}
 						1{}};b{}
 						x{expand entities}
 					</code></div>
@@ -55,22 +55,259 @@
 							Wenn eine bekannte Entität gefunden wird,
 							dann wird die passende Ersetzung ausgeführt
 						</li><li>
-							Ansonsten wird die Entität direkt kopiert
+							Ansonsten wird die Entität direkt an einen
+							weiteren Consumer kopiert
 						</li>
 					</ul>
 				</div><div class="row">
 					<div class="slide code"><code>
 						a{expand entities}b{}
-						1{}t{void} f{entityConsumer}(b{}
-						2{}t{const char *}v{begin},b{}
-						2{}t{const char *}v{end},b{}
-						2{}t{void *}v{context}b{}
+						1{}t{int} f{consumeEntities}(b{}
+						2{}t{struct Consumer *}v{consumer}, t{int} v{ch}b{}
 						1{}) {b{}
-						2{}t{struct EntityContext *}v{ec} =b{}
-						3{}(t{void *}) v{context};b{}
-						2{}k{for} (; v{begin} &lt; v{end}; ++v{begin}) {b{}
-						3{}e{process entity char};b{}
+						2{}t{struct EntityConsumer *}v{ec} =b{}
+						3{}(t{void *}) v{consumer};b{}
+						2{}t{bool} v{processed} = k{false};b{}
+						2{}e{process entity char};b{}
+						2{}k{return} v{processed} ? v{ch} : k{EOF};b{}
+						1{}}b{}
+						x{expand entities}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Das Verarbeiten eines Zeichens ist ein
+							mehrstufiger Prozess
+						</li><li>
+							Die erste Regel, die greift setzt das
+							<code>processed</code> Flag und signalisiert
+							so den nachfolgenden Schritten, dass es
+							nichts mehr zu tun gibt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process entity char}b{}
+						1{}k{if} (! v{processed} &amp;&amp; v{ch} == s{'&amp;'}) {b{}
+						2{}k{if} (*v{ec}-&gt;v{prefix}) {b{}
+						3{}e{flush entity prefix};b{}
 						2{}}b{}
+						2{}*v{ec}-&gt;v{prefix} = v{ch};b{}
+						2{}v{processed} = k{true};b{}
+						1{}}b{}
+						x{process entity char}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn ein Kaufmannsund gelesen wird, dann
+							startet eine neue Entität
+						</li><li>
+							Falls bereits eine Entität gelesen wird,
+							wird diese abgebrochen
+						</li><li>
+							Das Kaufmannsund ist das erste gespeicherte
+							Zeichen
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{flush entity prefix} {b{}
+						1{}t{char *}v{cur} = v{ec}-&gt;v{prefix};b{}
+						1{}k{for} (; *v{cur}; ++v{cur}) {b{}
+						2{}f{putToConsumer}(v{ec}-&gt;v{subConsumer}, *v{cur});b{}
+						2{}*v{cur} = s{'\0'};b{}
+						1{}}b{}
+						} x{flush entity prefix}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Alle gesetzten Bytes im Präfix werden
+							weitergeleitet
+						</li><li>
+							Das Präfix ist immer mit einem Nullbyte
+							terminiert
+						</li><li>
+							Die gesendeten Bytes werden dabei gelöscht
+						</li><li>
+							Danach ist das Präfix komplett leer
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process entity char}b{}
+						1{}t{if} (b{}
+						2{}! v{processed} &amp;&amp; *v{ec}-&gt;v{prefix} &amp;&amp; v{ch} != k{EOF}b{}
+						1{}) {b{}
+						2{}t{if} (v{ch} == s{';'}) {b{}
+						3{}e{expand current entity};b{}
+						3{}e{clear entity prefix};b{}
+						2{}} t{else} {b{}
+						3{}e{add char to entity};b{}
+						2{}}b{}
+						2{}v{processed} = k{true};b{}
+						1{}}b{}
+						x{process entity char}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn gerade eine Entität gelesen wird, dann
+							ist entweder mit einem <code>';'</code> das
+							Ende erreicht
+						</li><li>
+							Oder ein weiteres Zeichen muss als Teil der
+							Entität gelesen werden
+						</li><li>
+							Wenn das Ende erreicht wurde, wird die
+							Entität ersetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{clear entity prefix}b{}
+						1{}f{memset}(b{}
+						2{}v{ec}-&gt;v{prefix}, 0, k{sizeof}(v{ec}-&gt;v{prefix})b{}
+						1{});b{}
+						x{clear entity prefix}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Um gespeicherte Zeichen zu löschen, müssen
+							nur alle Zeichen auf Null-Bytes gesetzt
+							werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{add char to entity}b{}
+						1{}t{char *}v{cur} = v{ec}-&gt;v{prefix} + 1;b{}
+						1{}t{const char *}v{end} = v{ec}-&gt;v{prefix} +b{}
+						2{}f{sizeof}(v{ec}-&gt;v{prefix}) - 1;b{}
+						1{}k{for} (; v{cur} &lt; v{end} &amp;&amp; *v{cur}; ++v{cur}) {}b{}
+						1{}k{if} (v{cur} &lt; v{end}) {b{}
+						2{}*v{cur} = v{ch};b{}
+						1{}} k{else} {b{}
+						2{}e{flush entity prefix};b{}
+						1{}}b{}
+						1{}v{processed} = k{true};b{}
+						x{add char to entity}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn es ein freies Byte im Präfix gibt, dann
+							wird dieses gesetzt
+						</li><li>
+							Ansonsten kann es sich nicht um eine
+							bekannte Entität handeln
+						</li><li>
+							Und der bisherige Präfix kann ausgegeben
+							werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand current entity} {b{}
+						1{}t{bool} v{expanded} = k{false};b{}
+						1{}e{expand concrete entity};b{}
+						1{}k{if} (! v{expanded}) {b{}
+						2{}e{flush entity prefix};b{}
+						2{}f{putToConsumer}(v{ec}-&gt;v{subConsumer}, v{ch});b{}
+						1{}}b{}
+						} x{expand current entity}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Bekannte Entitäten werden expandiert
+						</li><li>
+							Wenn die Entität nicht bekannt ist, dann wird
+							sie direkt ausgegeben
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand concrete entity}b{}
+						1{}k{if} (f{strcmp}(s{"&amp;gt"}, v{ec}-&gt;v{prefix}) == 0) {b{}
+						2{}f{putToConsumer}(v{ec}-&gt;v{subConsumer}, s{'&gt;'});b{}
+						2{}v{expanded} = k{true};b{}
+						1{}}b{}
+						1{}k{if} (f{strcmp}(s{"&amp;lt"}, v{ec}-&gt;v{prefix}) == 0) {b{}
+						2{}f{putToConsumer}(v{ec}-&gt;v{subConsumer}, s{'&lt;'});b{}
+						2{}v{expanded} = k{true};b{}
+						1{}}b{}
+						x{expand concrete entity}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Das Größer- und Kleiner-Zeichen werden
+							ersetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand concrete entity}b{}
+						1{}k{if} (f{strcmp}(s{"&amp;amp"}, v{ec}-&gt;v{prefix}) == 0) {b{}
+						2{}f{putToConsumer}(v{ec}-&gt;v{subConsumer}, s{'&amp;'});b{}
+						2{}v{expanded} = k{true};b{}
+						1{}}b{}
+						x{expand concrete entity}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Das Kaufmannsund wird ersetzt
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{process entity char}b{}
+						1{}k{if} (! v{processed}) {b{}
+						2{}k{if} (v{ch} == k{EOF}) {b{}
+						3{}e{flush entity prefix};b{}
+						2{}}b{}
+						2{}f{putToConsumer}(v{ec}-&gt;v{subConsumer}, v{ch});b{}
+						1{}}b{}
+						x{process entity char}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Wenn das Zeichen bis zu dieser Stelle nicht
+							verarbeitet wurde, dann wird es einfach and
+							den enthaltenen Consumer weitergereicht
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand entities}b{}
+						1{}t{void} f{setupEntityConsumer}(b{}
+						2{}t{struct EntityConsumer *}v{ec},b{}
+						2{}t{struct Consumer *}v{sc}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{ec}); f{ASSERT}(v{sc});b{}
+						2{}v{ec}-&gt;v{subConsumer} = v{sc};b{}
+						2{}v{ec}-&gt;v{consumer}.v{put} = f{consumeEntities};b{}
+						2{}e{clear entity prefix};b{}
+						1{}}b{}
+						x{expand entities}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Bei der Initialisierung muss das Präfix
+							gelöscht werden
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{expand entities}b{}
+						1{}t{void} f{testEntityConsumer}(b{}
+						2{}t{const char *}v{source},b{}
+						2{}t{const char *}v{expected}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{source}); f{ASSERT}(v{expected});b{}
+						2{}t{struct BufferConsumer} v{bc};b{}
+						2{}t{struct EntityConsumer} v{ec};b{}
+						2{}f{setupBufferConsumer}(&amp;v{bc});b{}
+						2{}f{setupEntityConsumer}(&amp;v{ec}, &amp;v{bc}.v{consumer});b{}
+						2{}e{enqueue entity source};b{}
+						2{}f{ASSERT}(f{strcmp}(b{}
+						3{}v{expected}, v{bc}.v{buffer}.v{buffer}b{}
+						2{}) == 0);b{}
 						1{}}b{}
 						x{expand entities}
 					</code></div>
@@ -78,60 +315,130 @@
 						<li>
 						</li>
 					</ul>
+				</div>
 				</div><div class="row">
 					<div class="slide code"><code>
-						a{process entity char}b{}
-						1{}t{if} (*v{ec}-&gt;v{prefix}) {b{}
-						2{}t{if} (*v{begin} == s{';'}) {b{}
-						3{}e{expand current entity};b{}
-						3{}e{clear entity prefix};b{}
-						2{}} t{else} {b{}
-						3{}e{add char to entity};b{}
-						2{}}b{}
-						2{}break;b{}
+						a{enqueue entity source}b{}
+						1{}k{for} (; *v{source}; ++v{source}) {b{}
+						2{}f{putToConsumer}(&amp;v{ec}.v{consumer}, *v{source});b{}
 						1{}}b{}
-						x{process entity char}
+						1{}f{putToConsumer}(&amp;v{ec}.v{consumer}, k{EOF});b{}
+						x{enqueue entity source}
 					</code></div>
 					<ul class="notes">
 						<li>
 						</li>
 					</ul>
+				</div>
+			<div class="row">
+				<div class="slide title">
+					<h1>Unit Tests</h1>
+				</div>
+				<ul class="notes">
+					<li>
+						Unit-Tests für den EntityConsumer
+					</li>
+				</ul>
+			</div>
 				</div><div class="row">
 					<div class="slide code"><code>
-						a{clear entity prefix}b{}
-						1{}f{memset}(b{}
-						2{}v{ec}-&gt;v{prefix}, 0,b{}
-						2{}k{sizeof}(v{ec}-&gt;v{prefix})b{}
-						1{});b{}
-						x{clear entity prefix}
+						a{perform unit-tests} {b{}
+						1{}e{entity unit-tests}b{}
+						} x{perform unit-tests}
 					</code></div>
 					<ul class="notes">
 						<li>
+							Die Unit-Tests werden in einem eigenen Makro
+							gesammelt
 						</li>
 					</ul>
 				</div><div class="row">
 					<div class="slide code"><code>
-						a{process entity char}b{}
-						1{}t{if} (*v{begin} == s{'&amp;'}) {b{}
-						2{}*v{ec}-&gt;v{prefix} = *v{begin};b{}
-						2{}k{break};b{}
-						1{}}b{}
-						x{process entity char}
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a bc"}, s{"a bc"});b{}
+						x{entity unit-tests}
 					</code></div>
 					<ul class="notes">
 						<li>
+							Texte ohne Entities müssen funktionieren
 						</li>
 					</ul>
 				</div><div class="row">
 					<div class="slide code"><code>
-						a{process entity char}b{}
-						1{}v{ec}-&gt;v{subConsumer}(b{}
-						2{}v{begin}, v{begin} + 1, v{ec}-&gt;v{subContext}b{}
-						1{});b{}
-						x{process entity char}
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;lt;b"}, s{"a&lt;b"});b{}
+						x{entity unit-tests}
 					</code></div>
 					<ul class="notes">
 						<li>
+							Kleiner-Zeichen wird expandiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;gt;b"}, s{"a&gt;b"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Größer-Zeichen wird expandiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;amp;b"}, s{"a&amp;b"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Kaufmannsund wird expandiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;copy;b"}, s{"a&amp;copy;b"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Unbekannte Entität wird nicht expandiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;l&amp;lt;b"}, s{"a&amp;l&lt;b"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Unvollständige Entität wird nicht expandiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;amp;&amp;amp;b"}, s{"a&amp;&amp;b"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Doppelte Entitäten werden expandiert
+						</li>
+					</ul>
+				</div><div class="row">
+					<div class="slide code"><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;b"}, s{"a&amp;b"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul class="notes">
+						<li>
+							Unvollständige Entität wird nicht
+							abgeschnitten
 						</li>
 					</ul>
 				</div>
