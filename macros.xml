@@ -1,27 +1,26 @@
-<!doctype html>
 <html lang="de">
 		<head>
-			<meta charset="utf-8">
+			<meta charset="utf-8" />
 			<title>HTML Extractor</title>
 			<link rel="stylesheet" type="text/css"
-				href="slides/slides.css">
+				href="slides/slides.css" />
 		</head>
 	<body>
 		<h1>Makros</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{global elements}b{}
 						1{}e{define macro};b{}
 						x{global elements}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Makros sind global sichtbare Strukturen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct MacroEntry};b{}
 						b{}
@@ -33,7 +32,7 @@
 						1{}};b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Makros werden in einfach verketteten
 							Listen gesammelt
@@ -51,13 +50,13 @@
 							angefordert
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{includes}b{}
 						1{}#include &lt;stdlib.h&gt;b{}
 						x{includes}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							<code
 								class="include-name">stdlib.h</code>
@@ -70,8 +69,8 @@
 			</div>
 		<h1>Neues Makro anlegen</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct Macro *}f{allocMacro}(b{}
 						2{}t{const char *}v{nameBegin},b{}
@@ -86,7 +85,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Zeiger werden mit
 							<code class="keyword">NULL</code>
@@ -102,8 +101,8 @@
 							terminiert sein
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define logging}b{}
 						1{}#define ASSERT(v{COND}) \b{}
 						2{}k{if} (! (v{COND})) { \b{}
@@ -114,7 +113,7 @@
 						2{}}b{}
 						x{define logging}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn Bedingung falsch ist, wird
 							Fehlermeldung ausgegeben
@@ -124,8 +123,8 @@
 							Datei und Zeile des Tests wird ausgegeben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{allocate macro on heap}b{}
 						1{}f{ASSERT}(v{nameBegin});b{}
 						1{}f{ASSERT}(v{nameBegin} &lt;= v{nameEnd});b{}
@@ -137,7 +136,7 @@
 						1{}f{ASSERT}(v{result});b{}
 						x{allocate macro on heap}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Zeiger werden mit
 							<code class="keyword">NULL</code>
@@ -153,8 +152,8 @@
 							terminiert sein
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{includes}b{}
 						1{}#include &lt;string.h&gt;b{}
 						x{includes}b{}
@@ -167,7 +166,7 @@
 						1{}v{result}-&gt;v{name}[v{nameLength}] = s{'\0'};b{}
 						x{copy macro name}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der Name wird direkt in die das Makro
 							kopiert
@@ -180,8 +179,8 @@
 			</div>
 		<h1>Makros freigeben</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}k{void} f{freeMacro}(b{}
 						2{}t{struct Macro *}v{macro}b{}
@@ -196,7 +195,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Mit einem Makro werden auch alle
 							verketteten Makros freigegeben
@@ -209,8 +208,8 @@
 			</div>
 		<h1>Unit Tests</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{perform unit tests}b{}
 						1{}e{macro unit tests};b{}
 						x{perform unit tests}b{}
@@ -225,7 +224,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Für Unit-Tests gibt es einen einfacheren
 							Konstruktor
@@ -234,8 +233,8 @@
 							Null-Bytes berechnet
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}k{void} f{testMacroName}(b{}
 						2{}t{const char *}v{name}b{}
@@ -250,15 +249,15 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							<code class="fn">testMacroName</code>
 							prüft, ob der Name korrekt in ein Makro
 							kopiert wurde.
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}f{testMacroName}(s{"abc"});b{}
 						1{}f{testMacroName}(s{""});b{}
@@ -273,7 +272,7 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Zum einen wird getestet, ob die Namen
 							korrekt kopiert werden
@@ -287,8 +286,8 @@
 			</div>
 		<h1>Makro Einträge</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct MacroEntry} {b{}
 						2{}t{struct MacroEntry *}v{link};b{}
@@ -298,7 +297,7 @@
 						1{}};b{}
 						x{define macro}b{}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein Eintrag kann entweder auf ein anderes
 							Makro verweisen (wenn dieses an der
@@ -320,8 +319,8 @@
 			</div>
 		<h1>Makro Eintrag anlegen</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct MacroEntry *}f{allocMacroEntry}(b{}
 						2{}t{struct Macro *}v{macro},b{}
@@ -336,7 +335,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wie beim Macro werden die
 							<code class="var">link</code> Verweise
@@ -351,8 +350,8 @@
 							Größe der Bytes ab, die kopiert werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{allocate entry on heap}b{}
 						1{}t{int} v{valueLength} = 0;b{}
 						1{}k{if} (v{valueBegin}) {b{}
@@ -366,7 +365,7 @@
 						1{}f{ASSERT}(v{result});b{}
 						x{allocate entry on heap}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Größe der Struktur wird um die Anzahl
 							der zu kopierenden Bytes vergrößert
@@ -375,8 +374,8 @@
 							dann wird das Programm beendet
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{copy entry values}b{}
 						1{}k{if} (v{valueBegin}) {b{}
 						2{}f{memcpy}(b{}
@@ -389,14 +388,14 @@
 						1{}v{result}-&gt;v{macro} = v{macro};b{}
 						x{copy entry values}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Bytes werden nur kopiert, wenn welche
 							übergeben wurden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct MacroEntry *}b{}
 						1{}f{allocEmptyMacroEntry}() {b{}
@@ -406,7 +405,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Für Tests ist es praktisch, leere
 							Einträge anzulegen
@@ -416,8 +415,8 @@
 			</div>
 		<h1>Makro Einträge freigeben</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}k{void} f{freeMacroEntry}(b{}
 						2{}t{struct MacroEntry *}v{entry}b{}
@@ -431,7 +430,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn ein Eintrag freigegeben wird, so
 							werden auch alle verlinkten Einträge
@@ -441,8 +440,8 @@
 							freigegeben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{forward declarations}b{}
 						1{}t{struct MacroEntry};b{}
 						1{}k{void} f{freeMacroEntry}(b{}
@@ -454,7 +453,7 @@
 						1{}f{freeMacroEntry}(v{macro}-&gt;v{firstEntry});b{}
 						x{free macros entries}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn ein Makro freigegeben wird, so
 							werden auch die anhängenden Einträge
@@ -470,8 +469,8 @@
 			</div>
 		<h1>Auf Attribute zugreifen</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}k{int} f{getMacroEntryValueSize}(b{}
 						2{}t{struct MacroEntry *}v{entry}b{}
@@ -484,7 +483,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Liefert die Anzahl der enthaltenen Bytes
 						</li>
@@ -493,8 +492,8 @@
 			</div>
 		<h1>Unit Tests</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct MacroEntry *}v{entry} =b{}
@@ -508,15 +507,15 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein leerer Eintrag hat keinen Nachfolger
 						</li><li>
 							Und kein Makro
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct MacroEntry *}v{entry} =b{}
@@ -531,13 +530,13 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein leerer Eintrag hat keine Bytes
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct MacroEntry *}b{}
 						1{}f{allocTestMacroEntry}(b{}
@@ -552,15 +551,15 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der Test-Konstruktor bekommt eine
 							Null-terminierte Zeichenkette als
 							Argument
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct MacroEntry *}v{entry} =b{}
@@ -575,14 +574,14 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein Eintrag hat die korrekte Anzahl an
 							Bytes
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct MacroEntry *}v{entry} =b{}
@@ -597,7 +596,7 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Bytes eines Eintrags stimmen überein
 						</li>
@@ -606,8 +605,8 @@
 			</div>
 		<h1>Einträge zu Makros hinzufügen</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{void} f{addEntryToMacro}(b{}
 						2{}t{struct Macro *}v{macro},b{}
@@ -622,7 +621,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein Eintrag wird entweder an das Ende der
 							Liste der Einträge angehängt
@@ -630,15 +629,15 @@
 							Oder als neuer Kopf der Liste gesetzt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{assert add entry}b{}
 						1{}f{ASSERT}(v{macro});b{}
 						1{}f{ASSERT}(v{entry});b{}
 						1{}f{ASSERT}(! v{entry}-&gt;v{link});b{}
 						x{assert add entry}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Makro darf nicht
 							<code class="keyword">NULL</code> sein
@@ -650,14 +649,14 @@
 							Liste hängen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{append entry}b{}
 						1{}v{macro}-&gt;v{lastEntry}-&gt;v{link} = v{entry};b{}
 						1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
 						x{append entry}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Da es schon Einträge gibt, muss es
 							bereits einen letzten geben
@@ -673,14 +672,14 @@
 							bereits <code class="keyword">NULL</code>
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{set first entry}b{}
 						1{}v{macro}-&gt;v{firstEntry} = v{entry};b{}
 						1{}v{macro}-&gt;v{lastEntry} = v{entry};b{}
 						x{set first entry}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der erste Eintrag wird auch als letzter
 							Eintrag gesetzt
@@ -690,8 +689,8 @@
 							bereits <code class="keyword">NULL</code>
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct Macro *}v{macro} =b{}
@@ -706,13 +705,13 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der erste Eintrag im Makro wird gesetzt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct Macro *}v{macro} =b{}
@@ -727,13 +726,13 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der letzte Eintrag im Makro wird gesetzt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct Macro *}v{macro} = k{NULL};b{}
@@ -745,7 +744,7 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Zwei Einträge werden an ein Makro
 							angehängt
@@ -753,8 +752,8 @@
 							Der erste Eintrag muss gesetzt bleiben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{add two entries}b{}
 						1{}v{macro} = f{allocTestMacro}(s{""});b{}
 						1{}v{first} = f{allocEmptyMacroEntry}();b{}
@@ -769,7 +768,7 @@
 						1{}f{ASSERT}(v{macro}-&gt;v{firstEntry} == v{first});b{}
 						x{check first of 2}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Zwei Einträge werden an ein Makro
 							angehängt
@@ -777,8 +776,8 @@
 							Der erste Eintrag muss gesetzt bleiben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct Macro *}v{macro} = k{NULL};b{}
@@ -792,7 +791,7 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Zwei Einträge werden an ein Makro
 							angehängt
@@ -800,8 +799,8 @@
 							Der letzte Eintrag muss gesetzt werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{void} f{addBytesToMacro}(b{}
 						2{}t{struct Macro *}v{macro},b{}
@@ -816,7 +815,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Für die Daten wird ein neuer Eintrag
 							angelegt
@@ -824,8 +823,8 @@
 							Dieser wird an das Makro angehängt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}e{define cycle check}b{}
 						1{}t{void} f{addMacroToMacro}(b{}
@@ -840,7 +839,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Bevor ein Makro hinzugefügt werden kann,
 							muss sichergestellt werden, dass kein
@@ -858,8 +857,8 @@
 							hat, wird dieser Eintrag verwendet
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{reuse last entry}b{}
 						1{}k{if} (v{macro}-&gt;v{firstEntry} &amp;&amp;b{}
 						2{}! v{macro}-&gt;v{lastEntry}-&gt;v{macro}b{}
@@ -869,15 +868,15 @@
 						1{}}b{}
 						x{reuse last entry}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn das Makro-Attribut im letzten
 							Eintrag noch nicht benutzt wird, kann
 							dieses verwendet werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{add macro entry}b{}
 						1{}t{struct MacroEntry *}v{entry} =b{}
 						2{}f{allocMacroEntry}(b{}
@@ -886,7 +885,7 @@
 						1{}f{addEntryToMacro}(v{macro}, v{entry});b{}
 						x{add macro entry}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Sonst muss ein neuer Eintrag mit dem
 							Makro angelegt werden
@@ -896,8 +895,8 @@
 			</div>
 		<h1>Makros serialisieren</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{void} f{serializeMacro}(b{}
 						2{}t{struct Macro *}v{macro,}b{}
@@ -909,7 +908,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Jeder Eintrag wird nacheinander
 							bearbeitet
@@ -918,8 +917,8 @@
 							ausgegeben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{iterate entries}b{}
 						1{}t{struct MacroEntry *}v{entry} =b{}
 						2{}v{macro}-&gt;v{firstEntry};b{}
@@ -933,7 +932,7 @@
 						1{}}b{}
 						x{iterate entries}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Für jeden Eintrag werden zuerst die Bytes
 							ausgegeben
@@ -942,8 +941,8 @@
 							falls vorhanden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{serialize bytes}b{}
 						1{}k{if} (f{getMacroEntryValueSize}(v{entry})) {b{}
 						2{}t{const char *}v{cur} = v{entry}-&gt;v{value};b{}
@@ -954,15 +953,15 @@
 						1{}}b{}
 						x{serialize bytes}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn es Bytes in dem Eintrag gibt, wird
 							der <code class="var">consumer</code> mit
 							ihnen aufgerufen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{void} f{testMacro}(t{struct Macro *}b{}
 						2{}v{macro}, t{const char *}v{expected}b{}
@@ -974,15 +973,15 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Diese Hilfsfunktion prüft ob die
 							Serialisierung eines Makros der Erwartung
 							entspricht
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{serialize test macro}b{}
 						1{}f{serializeMacro}(v{macro}, &amp;v{bc}.v{consumer});b{}
 						1{}f{putToConsumer}(&amp;v{bc}.v{consumer}, k{EOF});b{}
@@ -991,7 +990,7 @@
 						1{}) == 0);b{}
 						x{serialize test macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Serialisiert das Makro
 						</li><li>
@@ -999,8 +998,8 @@
 							enthalten
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{void} f{addStringToMacro}(b{}
 						2{}t{struct Macro *}v{macro},b{}
@@ -1013,14 +1012,14 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Zu Testzwecken kann eine Null-terminierte
 							Zeichenkette hinzugefügt werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests}b{}
 						1{}{b{}
 						2{}t{struct Macro *}v{macro} =b{}
@@ -1032,14 +1031,14 @@
 						1{}}b{}
 						x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Prüft, ob zwei Strings richtig
 							serialisiert werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{macro unit tests} {b{}
 						1{}t{struct Macro *}v{a} =b{}
 						2{}f{allocTestMacro}(s{""});b{}
@@ -1053,7 +1052,7 @@
 						1{}f{freeMacro}(v{a}); f{freeMacro}(v{b});b{}
 						} x{macro unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Prüft, ob Makros expandiert werden
 						</li>
@@ -1062,19 +1061,19 @@
 			</div>
 		<h1>Zykel im Makro-Graph finden</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{includes}b{}
 						1{}#include &lt;stdbool.h&gt;b{}
 						x{includes}b{}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Boolesche Datenwerte werden benötigt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define cycle check}b{}
 						1{}t{bool} f{isMacroInMacro}(b{}
 						2{}t{struct Macro *}v{needle},b{}
@@ -1088,7 +1087,7 @@
 						1{}}b{}
 						x{define cycle check}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn das Makro das gesuchte ist, dann
 							wurde ein Zykel gefunden
@@ -1099,38 +1098,38 @@
 							dann ist es nicht enthalten
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{avoid macro cycles}b{}
 						1{}f{ASSERT}(! f{isMacroInMacro}(b{}
 						2{}v{macro}, v{child}b{}
 						1{}));b{}
 						x{avoid macro cycles}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein Makro darf nur hinzugefügt werden,
 							wenn es den Container nict bereits
 							enthält
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{check cycle macro}b{}
 						1{}k{if} (v{needle} == v{haystack}) {b{}
 						2{}k{return} k{true};b{}
 						1{}}b{}
 						x{check cycle macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn der Container selbst das gesuchte
 							Makro ist, liefert die Funktion
 							<code class="keyword">true</code> zurück
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{check cycle entries}b{}
 						1{}t{struct MacroEntry *}v{entry} =b{}
 						2{}v{haystack}-&gt;v{firstEntry};b{}
@@ -1144,7 +1143,7 @@
 						1{}}b{}
 						x{check cycle entries}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Alle Makros in den Einträgen werden
 							rekursiv untersucht
@@ -1156,8 +1155,8 @@
 			</div>
 		<h1>Makro-Kollektion</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define macro}b{}
 						1{}#define MACRO_SLOTS 128b{}
 						b{}
@@ -1168,7 +1167,7 @@
 						1{}};b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Eine Kollektion von Makros ist ein Array
 							von Makro-Ketten
@@ -1178,8 +1177,8 @@
 							initialisiert werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{void} f{clearMacroMap}(b{}
 						2{}t{struct MacroMap *}v{map}b{}
@@ -1193,7 +1192,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Um den Speicher freizugeben, wird jeder
 							Slot gelöscht
@@ -1202,8 +1201,8 @@
 							gesetzt um wieder verwendet zu werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{int} f{calcHash}(t{const char *}v{begin},b{}
 						2{}t{const char *}v{end}) {b{}
@@ -1218,7 +1217,7 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der Hash wird über den Namen des Makros
 							erstellt
@@ -1229,8 +1228,8 @@
 							Oder ein Ende wird direkt angegeben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct Macro *}f{allocMacroInMap}(b{}
 						2{}t{struct MacroMap *}v{map},b{}
@@ -1245,22 +1244,22 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein neues Makro wird erstellt
 						</li><li>
 							Und in der Hash-Map abgelegt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{insert in slot}b{}
 						1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
 						1{}v{macro}-&gt;v{link} = v{map}-&gt;v{macros}[v{hash}];b{}
 						1{}v{map}-&gt;v{macros}[v{hash}] = v{macro};
 						x{insert in slot}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Makros werden im Slot eingefügt
 						</li><li>
@@ -1268,8 +1267,8 @@
 							gleichem Namen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct Macro *}f{findMacroInMap}(b{}
 						2{}t{struct MacroMap *}v{map},b{}
@@ -1283,14 +1282,14 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Liefert das erste Makro mit dem
 							übergebenen Namen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{find macro in slot}b{}
 						1{}t{int} v{hash} = f{calcHash}(v{begin}, v{end});b{}
 						1{}v{macro} = v{map}-&gt;v{macros}[v{hash}];b{}
@@ -1305,14 +1304,14 @@
 						1{}}b{}
 						x{find macro in slot}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Im passenden Hash-Slot werden die Namen
 							der Makros verglichen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define macro}b{}
 						1{}t{struct Macro *}f{getMacroInMap}(b{}
 						2{}t{struct MacroMap *}v{map},b{}
@@ -1326,14 +1325,14 @@
 						1{}}b{}
 						x{define macro}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Liefert Makro mit angegebenen Namen oder
 							legt ein neues Makro mit diesem Namen an
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{get macro find}b{}
 						1{}v{macro} = f{findMacroInMap}(b{}
 						2{}v{map}, v{begin}, v{end}b{}
@@ -1343,21 +1342,21 @@
 						1{}}b{}
 						x{get macro find}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn das Makro in der Kollektion
 							vorhanden ist, wird dieses verwendet
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{get macro alloc}b{}
 						1{}v{macro} = f{allocMacroInMap}(b{}
 						2{}v{map}, v{begin}, v{end}b{}
 						1{});b{}
 						x{get macro alloc}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Sonst wird ein neues Makro angelegt
 						</li>

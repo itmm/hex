@@ -22,6 +22,7 @@ test: hx
 %.html: %.xml 
 	@echo "sed >$@"
 	@sed	\
+		-e '1s/^/<!doctype html>\n/' \
 		-e 's/1{}/<span class="in1"><\/span>/g' \
 		-e 's/2{}/<span class="in2"><\/span>/g' \
 		-e 's/3{}/<span class="in3"><\/span>/g' \

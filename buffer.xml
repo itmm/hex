@@ -1,32 +1,31 @@
-<!doctype html>
 <html lang="de">
 		<head>
-			<meta charset="utf-8">
+			<meta charset="utf-8" />
 			<title>Buffer Struktur</title>
 			<link rel="stylesheet" type="text/css"
-				href="slides/slides.css">
+				href="slides/slides.css" />
 		</head>
 	<body>
 		<h1>Buffer</h1>
 				<div class="slides">
-					<div class="row">
-						<div class="slide code"><code>
+					<div>
+						<div><code>
 							a{global elements}b{}
 							1{}e{define buffer};b{}
 							x{global elements}
 						</code></div>
-						<ul class="notes">
+						<ul>
 							<li>
 								Buffer sind global sichtbare Strukturen
 							</li>
 						</ul>
-					</div><div class="row">
-						<div class="slide code"><code>
+					</div><div>
+						<div><code>
 							a{perform unit tests}b{}
 							1{}e{buffer unit tests};b{}
 							x{perform unit tests}
 						</code></div>
-						<ul class="notes">
+						<ul>
 							<li>
 								Buffer haben ihre eigenen Unit Tests
 							</li>
@@ -35,8 +34,8 @@
 				</div>
 		<h1>Struktur</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define buffer}b{}
 						1{}#define INIT_BUFFER_SIZE 16b{}
 						b{}
@@ -48,7 +47,7 @@
 						1{}};b{}
 						x{define buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein Buffer kann bis zu
 							<code>INIT_BUFFER_SIZE</code> Bytes
@@ -62,8 +61,8 @@
 			</div>
 		<h1>Zeichen hinzufügen</h1>
 			<div>
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define buffer}b{}
 						1{}t{void} f{addToBuffer}(b{}
 						2{}t{struct Buffer *}v{buffer}, t{char} chb{}
@@ -75,7 +74,7 @@
 						1{}}b{}
 						x{define buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn die Struktur leer ist, muss sie auf
 							den interenen Buffer initialisiert
@@ -91,8 +90,8 @@
 							Dann wird das Byte angefügt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{may initialize buffer}b{}
 						1{}k{if} (! v{buffer}-&gt;v{buffer}) {b{}
 						2{}v{buffer}-&gt;v{buffer} =b{}
@@ -105,7 +104,7 @@
 						1{}}b{}
 						x{may initialize buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn der interne Buffer nicht gesetzt
 							ist, wird er auf den enthaltenen Bereich
@@ -123,8 +122,8 @@
 							werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{assure buffer size}b{}
 						1{}k{if} (b{}
 						2{}v{buffer}-&gt;v{current} &gt;= v{buffer}-&gt;v{end}b{}
@@ -136,14 +135,14 @@
 						1{}}b{}
 						x{assure buffer size}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn der Buffer ausgeschöpft ist, dann
 							wird seine Größe verdoppelt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{reallocate buffer}b{}
 						1{}t{char *}v{newBuffer};b{}
 						1{}k{if} (b{}
@@ -158,7 +157,7 @@
 						1{}e{adjust buffer pointers};b{}
 						x{reallocate buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn der initiale Buffer ausgeschöpft
 							ist, muss neuer Speicher angelegt und
@@ -168,8 +167,8 @@
 							Heap vergrößert werden
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{copy initial buffer}b{}
 						1{}f{ASSERT}(v{newBuffer});b{}
 						1{}f{memcpy}(b{}
@@ -177,14 +176,14 @@
 						1{});b{}
 						x{copy initial buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Vom initialen Buffer werden die Werte
 							direkt kopiert
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{adjust buffer pointers}b{}
 						1{}f{ASSERT}(v{newBuffer});b{}
 						1{}v{buffer}-&gt;v{buffer} = v{newBuffer};b{}
@@ -192,7 +191,7 @@
 						1{}v{buffer}-&gt;v{end} = v{newBuffer} + v{newSize};b{}
 						x{adjust buffer pointers}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Zeiger müssen an den neuen Speicher
 							angepaßt werden
@@ -202,8 +201,8 @@
 			</div>
 		<h1>Buffer zurücksetzen</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{define buffer}b{}
 						1{}t{void} f{resetBuffer}(b{}
 						2{}t{struct Buffer *}v{buffer}b{}
@@ -213,7 +212,7 @@
 						1{}}b{}
 						x{define buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Um einen Buffer wieder zu verwenden, der
 							<code class="var">current</code> muss auf
@@ -229,8 +228,8 @@
 							Es wird kein Speicher freigegeben
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define buffer}b{}
 						1{}t{void} f{eraseBuffer}(b{}
 						2{}t{struct Buffer *}v{buffer}b{}
@@ -241,7 +240,7 @@
 						1{}}b{}
 						x{define buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn ein Buffer auf dem Heap angelegt
 							wurde, wird dieser freigegeben
@@ -250,8 +249,8 @@
 							den Anfang zurückgesetzt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{erase heap buffer}b{}
 						1{}k{if} (v{buffer}-&gt;v{buffer} &amp;&amp;b{}
 						2{}v{buffer}-&gt;v{buffer} != v{buffer}-&gt;v{initial}b{}
@@ -261,7 +260,7 @@
 						1{}}b{}
 						x{erase heap buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Wenn wir nicht den internen Buffer
 							verwenden, wird der Buffer freigegeben
@@ -273,8 +272,8 @@
 			</div>
 		<h1>Unit Tests</h1>
 			<div class="slides">
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{buffer unit tests} {b{}
 						1{}t{struct Buffer} v{buffer} = {};b{}
 						1{}f{addToBuffer}(&amp;v{buffer}, s{'x'});b{}
@@ -285,7 +284,7 @@
 						2{}v{buffer}.v{initial});b{}
 						} x{buffer unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Struktur wird mit dem Hinzufügen
 							initialisiert
@@ -296,8 +295,8 @@
 							verwendet
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{define buffer}b{}
 						1{}t{void} f{addCharsToBuffer}(b{}
 						2{}t{struct Buffer *}v{buffer},b{}
@@ -311,14 +310,14 @@
 						1{}}b{}
 						x{define buffer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Fügt mehrere Kopien eines Zeichens in den
 							Buffer ein
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{buffer unit tests} {b{}
 						1{}t{struct Buffer} v{buffer} = {};b{}
 						1{}f{addCharsToBuffer}(&amp;v{buffer}, s{'x'},b{}
@@ -333,7 +332,7 @@
 						2{}v{buffer}.v{initial});b{}
 						} x{buffer unit tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							In diesem Test werden 1.000 Zeichen
 							eingefügt
@@ -346,7 +345,6 @@
 						</li>
 					</ul>
 				</div>
-			</div>
 		</div>
 	</body>
 </html>

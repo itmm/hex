@@ -1,18 +1,17 @@
-<!doctype html>
 <html lang="de">
 		<head>
-			<meta charset="utf-8">
+			<meta charset="utf-8" />
 			<title>Ausgaben konsumieren</title>
 			<link rel="stylesheet" type="text/css"
-				href="slides/slides.css">
+				href="slides/slides.css" />
 		</head>
 	<body>
 		<div class="slides">
-			<div class="row">
-				<div class="slide title">
+			<div>
+				<div>
 					<h1>Ausgaben konsumieren</h1>
 				</div>
-				<ul class="notes">
+				<ul>
 					<li>
 						Diese Datei beschreibt eine generische Funktion
 						um zeichenweise Ausgaben zu konsumieren
@@ -22,21 +21,21 @@
 					</li>
 				</ul>
 			</div>
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{global elements}b{}
 						1{}e{expand consumer}b{}
 						x{global elements}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Diese Datei stellt globale Funktionen bereit
 							um ein abstraktes Interface zur Verfügung
 							zu stellen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{struct Consumer} {b{}
 						2{}t{int} (* f{put})(b{}
@@ -45,7 +44,7 @@
 						1{}};b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Ein Consumer besteht nur aus einer Funktion,
 							die ein Zeichen entgegennimmt
@@ -59,8 +58,8 @@
 							von <code>EOF</code>
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{void} f{putToConsumer}(b{}
 						2{}t{struct Consumer *}v{c}, t{int} v{ch}b{}
@@ -70,26 +69,26 @@
 						1{}}b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Diese Funktion vereinfacht den Aufruf des
 							Consumers.
 						</li>
 					</ul>
 				</div>
-			<div class="row">
-				<div class="slide title">
+			<div>
+				<div>
 					<h1>Beispiel: FileConsumer</h1>
 				</div>
-				<ul class="notes">
+				<ul>
 					<li>
 						Ein einfacher Consumer schreibt die Daten
 						in eine Datei
 					</li>
 				</ul>
 			</div>
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{struct FileConsumer} {b{}
 						2{}t{struct Consumer} v{consumer};b{}
@@ -97,14 +96,14 @@
 						1{}};b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Neben der Consumer-Struktur muss die Datei
 							bekannt sein
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{int} f{consumeInFile}(b{}
 						2{}t{struct Consumer *}v{c}, t{int} v{ch}b{}
@@ -121,7 +120,7 @@
 						1{}}b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der Consumer wird auf den richtigen Typ
 							gecastet
@@ -135,8 +134,8 @@
 							Andernfalls wird die Datei geschlossen
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{void} f{setupFileConsumer}(b{}
 						2{}t{struct FileConsumer *}v{fc}, t{FILE *}v{f}b{}
@@ -147,18 +146,18 @@
 						1{}}b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Struktur wird mit einer offenen Datei
 							initialisiert
 						</li>
 					</ul>
 				</div>
-			<div class="row">
-				<div class="slide title">
+			<div>
+				<div>
 					<h1>Beispiel: BufferConsumer</h1>
 				</div>
-				<ul class="notes">
+				<ul>
 					<li>
 						Dieser Consumer speichert in einen Buffer
 					</li><li>
@@ -166,8 +165,8 @@
 					</li>
 				</ul>
 			</div>
-				<div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{struct BufferConsumer} {b{}
 						2{}t{struct Consumer} v{consumer};b{}
@@ -175,14 +174,14 @@
 						1{}};b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Neben der Consumer-Struktur muss Platz für
 							den Buffer vorhanden sein
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{int} f{consumeInBuffer}(b{}
 						2{}t{struct Consumer *}v{c}, t{int} v{ch}b{}
@@ -195,7 +194,7 @@
 						1{}}b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Der Consumer wird auf den richtigen Typ
 							gecastet
@@ -211,8 +210,8 @@
 							terminieren
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{expand consumer}b{}
 						1{}t{void} f{setupBufferConsumer}(b{}
 						2{}t{struct BufferConsumer *}v{bc}b{}
@@ -226,37 +225,37 @@
 						1{}}b{}
 						x{expand consumer}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Struktur wird mit einem leeren Buffer
 							initialisiert
 						</li>
 					</ul>
 				</div>
-			<div class="row">
-				<div class="slide title">
+			<div>
+				<div>
 					<h1>Unit Tests</h1>
 				</div>
-				<ul class="notes">
+				<ul>
 					<li>
 						Testet den BufferConsumer als proof of concept
 					</li>
 				</ul>
 			</div>
-				</div><div class="row">
-					<div class="slide code"><code>
+				<div>
+					<div><code>
 						a{perform unit-tests} {b{}
 						1{}e{consumer unit-tests}b{}
 						} x{perform unit-tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Die Unit-Tests werden in einem eigenen Makro
 							gesammelt
 						</li>
 					</ul>
-				</div><div class="row">
-					<div class="slide code"><code>
+				</div><div>
+					<div><code>
 						a{consumer unit-tests} {b{}
 						1{}t{struct BufferConsumer} v{bc};b{}
 						1{}f{setupBufferConsumer}(&amp;v{bc});b{}
@@ -269,7 +268,7 @@
 						1{});b{}
 						} x{consumer unit-tests}
 					</code></div>
-					<ul class="notes">
+					<ul>
 						<li>
 							Zwei Zeichen werden in den Buffer eingefügt
 						</li>
