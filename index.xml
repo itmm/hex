@@ -620,7 +620,7 @@
 					<div><code>
 						a{check valid names}b{}
 						1{}k{static} t{const char} v{valids}[] =b{}
-						2{}s{"12345bfvsntkxe"};b{}
+						2{}s{"123456bfvsntkxe"};b{}
 						1{}k{if} (f{strchr}(v{valids}, v{last})) {b{}
 						2{}v{valid} = k{true};b{}
 						1{}}b{}

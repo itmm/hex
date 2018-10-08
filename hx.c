@@ -822,7 +822,7 @@
 						bool valid = false;
 						
 						static const char valids[] =
-						"12345bfvsntkxe";
+						"123456bfvsntkxe";
 						if (strchr(valids, last)) {
 						valid = true;
 						}
