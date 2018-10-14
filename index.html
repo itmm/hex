@@ -79,14 +79,14 @@
 			<div class="slides">
 				<div>
 					<div><code>
-						<span class="add">@add(<span class="macro-name">MAIN</span>)</span><br/>
+						<span class="add">@add(<span class="macro-name">file: hx.c</span>)</span><br/>
 						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">global elements</span>)</span><br/>
 						<span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 						<span class="in2"></span><span class="type">int</span> <span class="var">argc</span>, <span class="type">const char **</span><span class="var">argv</span><br/>
 						<span class="in1"></span>) {<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">main body</span>)</span><br/>
 						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">MAIN</span>)</span>
+						<span class="end">@end(<span class="macro-name">file: hx.c</span>)</span>
 					</code></div>
 					<ul>
 						<li>
@@ -698,22 +698,49 @@
 				<div>
 					<div><code>
 						<span class="add">@add(<span class="macro-name">serialize fragments</span>)</span> {<br/>
-						<span class="in1"></span><span class="type">const char</span> <span class="var">name</span><span class="type">[]</span> = <span class="str">"MAIN"</span>;<br/>
-						<span class="in1"></span><span class="type">struct Macro *</span> <span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
-						<span class="in2"></span>&amp;<span class="var">macros</span>, <span class="var">name</span>,<br/>
-						<span class="in2"></span><span class="var">name</span> + <span class="keyword">sizeof</span>(<span class="var">name</span>) - 1<br/>
-						<span class="in1"></span>);<br/>
+						<span class="in1"></span><span class="type">struct Macro **</span><span class="var">cur</span> = <span class="var">macros</span>.<span class="var">macros</span>;<br/>
+						<span class="in1"></span><span class="type">struct Macro **</span><span class="var">end</span> =<br/>
+						<span class="in2"></span><span class="var">cur</span> + <span class="var">MACRO_SLOTS</span>;<br/>
+						<span class="in1"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+						<span class="in2"></span><span class="type">struct Macro *</span><span class="var">macro</span> = *<span class="var">cur</span>;<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
+						<span class="in3"></span><span class="keyword">if</span> (! <span class="fn">memcmp</span>(<br/>
+						<span class="in4"></span><span class="str">"file: "</span>, macro-&gt;name, <span class="num">6</span><br/>
+						<span class="in3"></span>)) {<br/>
+						<span class="in4"></span><span class="expand">@expand(<span class="macro-name">write in file</span>)</span>;<br/>
+						<span class="in3"></span>}<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in1"></span>}<br/>
+						} <span class="end">@end(<span class="macro-name">serialize fragments</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+							Fragmente, die mit <code>file:</code>
+							beginnen, werden in die entsprechenden
+							Dateien rausgeschrieben
+						</li>
+					</ul>
+				</div> <div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">write in file</span>)</span><br/>
+						<span class="in1"></span><span class="type">FILE *</span><span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, "w");<br/>
+						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">f</span>);<br/>
 						<span class="in1"></span><span class="type">struct FileConsumer</span> <span class="var">fc</span>;<br/>
-						<span class="in1"></span><span class="fn">setupFileConsumer</span>(&amp;<span class="var">fc</span>, <span class="var">stdout</span>);<br/>
+						<span class="in1"></span><span class="fn">setupFileConsumer</span>(&amp;<span class="var">fc</span>, <span class="var">f</span>);<br/>
 						<span class="in1"></span><span class="type">struct EntityConsumer</span> <span class="var">ec</span>;<br/>
 						<span class="in1"></span><span class="fn">setupEntityConsumer</span>(&amp;<span class="var">ec</span>, &amp;<span class="var">fc</span>.<span class="var">consumer</span>);<br/>
 						<span class="in1"></span><span class="fn">serializeMacro</span>(<br/>
 						<span class="in2"></span><span class="var">macro</span>, &amp;<span class="var">ec</span>.<span class="var">consumer</span><br/>
 						<span class="in1"></span>);<br/>
-						} <span class="end">@end(<span class="macro-name">serialize fragments</span>)</span>
+						<span class="in1"></span><span class="fn">fclose</span>(<span class="var">f</span>);<br/>
+						<span class="end">@end(<span class="macro-name">write in file</span>)</span>
 					</code></div>
 					<ul>
 						<li>
+							Das Fragment wird in die entsprechende
+							Datei geschrieben
+						</li><li>
+							Dabei werden HTML-Entitäten aufgelöst
 						</li>
 					</ul>
 				</div>

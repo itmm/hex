@@ -9,7 +9,7 @@ all: ${HTMLs} hx.c
 
 hx.c: ${SOURCES}
 	@echo "hx index.xml"
-	@hx index.xml >$@
+	@hx index.xml
 
 hx: hx.c
 

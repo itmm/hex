@@ -942,18 +942,30 @@
 						;
 						;
 						 {
-						const char name[] = "MAIN";
-						struct Macro * macro = getMacroInMap(
-						&macros, name,
-						name + sizeof(name) - 1
-						);
+						struct Macro **cur = macros.macros;
+						struct Macro **end =
+						cur + MACRO_SLOTS;
+						for (; cur < end; ++cur) {
+						struct Macro *macro = *cur;
+						for (; macro; macro = macro->link) {
+						if (! memcmp(
+						"file: ", macro->name, 6
+						)) {
+						
+						FILE *f = fopen(macro->name + 6, "w");
+						ASSERT(f);
 						struct FileConsumer fc;
-						setupFileConsumer(&fc, stdout);
+						setupFileConsumer(&fc, f);
 						struct EntityConsumer ec;
 						setupEntityConsumer(&ec, &fc.consumer);
 						serializeMacro(
 						macro, &ec.consumer
 						);
+						fclose(f);
+						;
+						}
+						}
+						}
 						} ;
 						;
 						

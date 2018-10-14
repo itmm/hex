@@ -78,14 +78,14 @@
 			<div class="slides">
 				<div>
 					<div><code>
-						a{MAIN}b{}
+						a{file: hx.c}b{}
 						1{}e{global elements}b{}
 						1{}t{int} f{main}(b{}
 						2{}t{int} v{argc}, t{const char **}v{argv}b{}
 						1{}) {b{}
 						2{}e{main body}b{}
 						1{}}b{}
-						x{MAIN}
+						x{file: hx.c}
 					</code></div>
 					<ul>
 						<li>
@@ -697,22 +697,49 @@
 				<div>
 					<div><code>
 						a{serialize fragments} {b{}
-						1{}t{const char} v{name}t{[]} = s{"MAIN"};b{}
-						1{}t{struct Macro *} v{macro} = f{getMacroInMap}(b{}
-						2{}&amp;v{macros}, v{name},b{}
-						2{}v{name} + k{sizeof}(v{name}) - 1b{}
-						1{});b{}
+						1{}t{struct Macro **}v{cur} = v{macros}.v{macros};b{}
+						1{}t{struct Macro **}v{end} =b{}
+						2{}v{cur} + v{MACRO_SLOTS};b{}
+						1{}k{for} (; v{cur} &lt; v{end}; ++v{cur}) {b{}
+						2{}t{struct Macro *}v{macro} = *v{cur};b{}
+						2{}k{for} (; v{macro}; v{macro} = v{macro}-&gt;v{link}) {b{}
+						3{}k{if} (! f{memcmp}(b{}
+						4{}s{"file: "}, macro-&gt;name, n{6}b{}
+						3{})) {b{}
+						4{}e{write in file};b{}
+						3{}}b{}
+						2{}}b{}
+						1{}}b{}
+						} x{serialize fragments}
+					</code></div>
+					<ul>
+						<li>
+							Fragmente, die mit <code>file:</code>
+							beginnen, werden in die entsprechenden
+							Dateien rausgeschrieben
+						</li>
+					</ul>
+				</div> <div>
+					<div><code>
+						a{write in file}b{}
+						1{}t{FILE *}v{f} = f{fopen}(v{macro}-&gt;v{name} + n{6}, "w");b{}
+						1{}f{ASSERT}(v{f});b{}
 						1{}t{struct FileConsumer} v{fc};b{}
-						1{}f{setupFileConsumer}(&amp;v{fc}, v{stdout});b{}
+						1{}f{setupFileConsumer}(&amp;v{fc}, v{f});b{}
 						1{}t{struct EntityConsumer} v{ec};b{}
 						1{}f{setupEntityConsumer}(&amp;v{ec}, &amp;v{fc}.v{consumer});b{}
 						1{}f{serializeMacro}(b{}
 						2{}v{macro}, &amp;v{ec}.v{consumer}b{}
 						1{});b{}
-						} x{serialize fragments}
+						1{}f{fclose}(v{f});b{}
+						x{write in file}
 					</code></div>
 					<ul>
 						<li>
+							Das Fragment wird in die entsprechende
+							Datei geschrieben
+						</li><li>
+							Dabei werden HTML-Entitäten aufgelöst
 						</li>
 					</ul>
 				</div>
