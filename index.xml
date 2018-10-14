@@ -223,12 +223,39 @@
 					</code></div>
 					<ul>
 						<li>
+							Eine offene Datei (z.B. die Standard-Eingabe)
+							kann direkt als Eingabe-Strom verwendet
+							werden
 						</li>
 					</ul>
 				</div><div>
 					<div><code>
+						a{global elements}b{}
+						1{}t{void} f{pushPath}(t{const char *}v{path}) {b{}
+						2{}t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});b{}
+						2{}e{check file for path};b{}
+						2{}f{pushFile}(v{f});b{}
+						1{}}b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+							Eine Datei, die über einen Pfad beschrieben
+							ist, kann auch als Eingabe-Strom
+							verwendet werden
+						</li><li>
+							Sie muss nur vorher geöffnet werden
+						</li>
+					</ul>
+				</div>
+				</div><div>
+					<div><code>
 						a{process arguments}b{}
-						1{}f{pushFile}(v{stdin});b{}
+						1{}k{if}(v{argc} &gt; n{1}) {b{}
+						2{}f{pushPath}(v{argv}[n{1}]);b{}
+						1{}} k{else} {b{}
+						2{}f{pushFile}(v{stdin});b{}
+						1{}}b{}
 						x{process arguments}
 					</code></div>
 					<ul>
@@ -239,8 +266,7 @@
 							Der Name kann über die Kommandozeile gesetzt
 							werden
 						</li><li>
-							Aber bis das implementiert ist, nehmen wird
-							eine sinnvolle Vorgabe
+							Ansonsten wird die Standard-Eingabe verwendet
 						</li>
 					</ul>
 				</div><div>
@@ -264,21 +290,6 @@
 						<li>
 						</li>
 					</ul>
-				</div><div>
-					<div><code>
-						a{global elements}b{}
-						1{}t{void} f{pushPath}(t{const char *}v{path}) {b{}
-						2{}t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});b{}
-						2{}e{check file for path};b{}
-						2{}f{pushFile}(v{f});b{}
-						1{}}b{}
-						x{global elements}
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div>
 			</div>
 		<h1>Buffer</h1>
 			<div class="slides">

@@ -8,8 +8,8 @@ HTMLs := $(SOURCES:.xml=.html)
 all: ${HTMLs} hx.c
 
 hx.c: ${SOURCES}
-	@echo "hx <index.xml"
-	@hx <index.xml >$@
+	@echo "hx index.xml"
+	@hx index.xml >$@
 
 hx: hx.c
 

@@ -43,6 +43,12 @@
 						input = i;
 						}
 						
+						void pushPath(const char *path) {
+						FILE *f = fopen(path, "r");
+						;
+						pushFile(f);
+						}
+						
 						int nextCh() {
 						int ch = EOF;
 						while (input) {
@@ -54,12 +60,6 @@
 						input = n;
 						}
 						return ch;
-						}
-						
-						void pushPath(const char *path) {
-						FILE *f = fopen(path, "r");
-						;
-						pushFile(f);
 						}
 						
 							
@@ -785,7 +785,11 @@
 						
 						} ;
 						
+						if(argc > 1) {
+						pushPath(argv[1]);
+						} else {
 						pushFile(stdin);
+						}
 						;
 						
 						
