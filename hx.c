@@ -1,16 +1,16 @@
 
-						
-						
-						#include <stdio.h>
-						#include <stdlib.h>
-						
+	
+	
+	#include <stdio.h>
+	#include <stdlib.h>
+
 						#include <stdlib.h>
 						
 						#include <string.h>
 						
 						#include <stdbool.h>
 						;
-						
+	
 						#define ASSERT(COND) \
 						if (! (COND)) { \
 						fprintf(stderr, \
@@ -19,49 +19,49 @@
 						exit(EXIT_FAILURE); \
 						}
 						;
-						
+	
 						struct MacroEntry;
 						void freeMacroEntry(
 						struct MacroEntry *entry
 						);
 						;
-						
-						struct Input {
-						struct Input *link;
-						FILE *file;
-						};
-						
-						struct Input *input = NULL;
-						
-						void pushFile (FILE *file) {
-						struct Input *i =
-						malloc(sizeof(struct Input));
-						
-						;
-						i->link = input;
-						i->file = file;
-						input = i;
-						}
-						
-						void pushPath(const char *path) {
-						FILE *f = fopen(path, "r");
-						;
-						pushFile(f);
-						}
-						
-						int nextCh() {
-						int ch = EOF;
-						while (input) {
-						ch = fgetc(input->file);
-						if (ch != EOF) { break; }
-						struct Input *n = input->link;
-						fclose(input->file);
-						free(input);
-						input = n;
-						}
-						return ch;
-						}
-						
+
+	struct Input {
+		struct Input *link;
+		FILE *file;
+	};
+
+	struct Input *input = NULL;
+
+	void pushFile (FILE *file) {
+		struct Input *i =
+			malloc(sizeof(struct Input));
+
+		;
+		i->link = input;
+		i->file = file;
+		input = i;
+	}
+
+	void pushPath(const char *path) {
+		FILE *f = fopen(path, "r");
+		;
+		pushFile(f);
+	}
+
+	int nextCh() {
+		int ch = EOF;
+		while (input) {
+			ch = fgetc(input->file);
+			if (ch != EOF) { break; }
+			struct Input *n = input->link;
+			fclose(input->file);
+			free(input);
+			input = n;
+		}
+		return ch;
+	}
+
 							
 						#define INIT_BUFFER_SIZE 16
 						
@@ -691,6 +691,7 @@
 						*cur = '\0';
 						}
 						} ;
+						putToConsumer(ec->subConsumer, ch);
 						}
 						processed = true;
 						;
@@ -749,11 +750,11 @@
 						}
 						
 						
-						int main(
-						int argc, const char **argv
-						) {
-						
-						 {
+	int main(
+	int argc, const char **argv
+	) {
+		
+	 {
 						 {
 						struct BufferConsumer bc;
 						setupBufferConsumer(&bc);
@@ -779,195 +780,196 @@
 						
 						testEntityConsumer("a&l&lt;b", "a&l<b");
 						
+						testEntityConsumer("a&bcdefgh;ij", "a&bcdefgh;ij");
+						
 						testEntityConsumer("a&amp;&amp;b", "a&&b");
 						
 						testEntityConsumer("a&b", "a&b");
 						
 						} ;
-						
-						if(argc > 1) {
-						pushPath(argv[1]);
-						} else {
-						pushFile(stdin);
-						}
-						;
-						
-						
-						struct MacroMap macros = {};
-						;
-						{
-						
-						struct Macro * macro = NULL;
-						struct Buffer buffer = {};
-						
-						char openCh = '\0';
-						
-						char name[128];
-						char *nameCur = NULL;
-						const char *nameEnd = name +
-						sizeof(name);
-						;
-						int last = nextCh();
-						int ch = nextCh();
-						while (ch != EOF) {
-						
-						switch (ch) {
-						case '{':
-						 {
-						if (! macro) {
-						if (last == 'a' || last == 'i') {
-						openCh = last;
-						nameCur = name;
-						break;
-						}
-						}
-						}  {
-						if (macro) {
-						bool valid = false;
-						
-						static const char valids[] =
-						"123456bfvsntkxe";
-						if (strchr(valids, last)) {
-						valid = true;
-						}
-						;
-						if (valid) {
-						openCh = last;
-						nameCur = name;
-						break;
-						}
-						}
-						} 
-						if (macro) {
-						addToBuffer(&buffer, last);
-						}
-						;
-						break;
-						case '}': {
-						bool processed = false;
-						 {
-						if (nameCur) {
-						*nameCur = '\0';
-						
-						if (openCh == 'a') {
-						ASSERT(! macro);
-						macro = getMacroInMap(
-							&macros, name, nameCur
-						);
-						processed = true;
-						}
-						
-						if (openCh == 'x') {
-						ASSERT(macro);
-						;
-						
-						if (
-						buffer.buffer != buffer.current
-						) {
-						addBytesToMacro(
-						macro, buffer.buffer,
-						buffer.current
-						);
-						resetBuffer(&buffer);
-						}
-						;
-						macro = NULL;
-						processed = true;
-						}
-						
-						if (openCh == 'i') {
-						ASSERT(! macro);
-						pushPath(name);
-						processed = true;
-						}
-						
-						if (openCh == 'e') {
-						ASSERT(macro);
-						
-						if (
-						buffer.buffer != buffer.current
-						) {
-						addBytesToMacro(
-						macro, buffer.buffer,
-						buffer.current
-						);
-						resetBuffer(&buffer);
-						}
-						;
-						struct Macro *sub =
-						getMacroInMap(
-						&macros, name, nameCur);
-						addMacroToMacro(
-						macro, sub);
-						processed = true;
-						}
-						
-						if (! processed) {
-						ASSERT(macro);
-						const char *c = name;
-						for (; c != nameCur; ++c) {
-						addToBuffer(&buffer, *c);
-						}
-						processed = true;
-						}
-						;
-						nameCur = NULL;
-						last = ch;
-						ch = nextCh();
-						}
-						} 
-						if (macro && ! processed) {
-						addToBuffer(&buffer, last);
-						}
-						;
-						break;
-						}
-						default:
-						 {
-						if (nameCur) {
-						ASSERT(nameCur < nameEnd);
-						*nameCur++ = ch;
-						break;
-						}
-						}  {
-						if (macro) {
-						addToBuffer(&buffer, last);
-						}
-						} ;
-						}
-						;
-						last = ch; ch = nextCh();
-						}
-						}
-						;
-						;
-						 {
-						struct Macro **cur = macros.macros;
-						struct Macro **end =
-						cur + MACRO_SLOTS;
-						for (; cur < end; ++cur) {
-						struct Macro *macro = *cur;
-						for (; macro; macro = macro->link) {
-						if (! memcmp(
-						"file: ", macro->name, 6
-						)) {
-						
-						FILE *f = fopen(macro->name + 6, "w");
-						ASSERT(f);
-						struct FileConsumer fc;
-						setupFileConsumer(&fc, f);
-						struct EntityConsumer ec;
-						setupEntityConsumer(&ec, &fc.consumer);
-						serializeMacro(
-						macro, &ec.consumer
-						);
-						fclose(f);
-						;
-						}
-						}
-						}
-						} ;
-						;
-						
-						}
-						
+	
+	if(argc > 1) {
+		pushPath(argv[1]);
+	} else {
+		pushFile(stdin);
+	}
+;
+	
+	
+	struct MacroMap macros = {};
+;
+	{
+		
+	struct Macro * macro = NULL;
+	struct Buffer buffer = {};
+
+	char openCh = '\0';
+
+	char name[128];
+	char *nameCur = NULL;	
+	const char *nameEnd = name +
+		sizeof(name);
+;
+		int last = nextCh();
+		int ch = nextCh();
+		while (ch != EOF) {
+			
+	switch (ch) {
+		case '{':
+			 {
+	if (! macro) {
+		if (last == 'a' || last == 'i') {
+			openCh = last;
+			nameCur = name;
+			break;
+		}
+	}
+}  {
+	if (macro) {
+		bool valid = false;
+		
+	static const char valids[] =
+		"123456bfvsntkxe";
+	if (strchr(valids, last)) {
+		valid = true;
+	}
+;
+		if (valid) {
+			openCh = last;
+			nameCur = name;
+			break;
+		}
+	}
+} 
+	if (macro) {
+		addToBuffer(&buffer, last);
+	}
+;
+			break;
+		case '}': {
+			bool processed = false;
+			 {
+	if (nameCur) {
+		*nameCur = '\0';
+		
+	if (openCh == 'a') {
+		ASSERT(! macro);
+		macro = getMacroInMap(
+			&macros, name, nameCur
+		);
+		processed = true;
+	}
+
+	if (openCh == 'x') {
+		ASSERT(macro);
+		;
+		
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToMacro(
+			macro, buffer.buffer,
+			buffer.current
+		);
+		resetBuffer(&buffer);
+	}
+;
+		macro = NULL;
+		processed = true;
+	}
+
+	if (openCh == 'i') {
+		ASSERT(! macro);
+		pushPath(name);
+		processed = true;
+	}
+
+	if (openCh == 'e') {
+		ASSERT(macro);
+		
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToMacro(
+			macro, buffer.buffer,
+			buffer.current
+		);
+		resetBuffer(&buffer);
+	}
+;
+		struct Macro *sub =
+			getMacroInMap(
+				&macros, name, nameCur);
+		addMacroToMacro(
+			macro, sub);
+		processed = true;
+	}
+
+	if (! processed) {
+		ASSERT(macro);
+		const char *c = name;
+		for (; c != nameCur; ++c) {
+			addToBuffer(&buffer, *c);
+		}
+		processed = true;
+	}
+;
+		nameCur = NULL;
+		last = ch;
+		ch = nextCh();
+	}
+} 
+	if (macro && ! processed) {
+		addToBuffer(&buffer, last);
+	}
+;
+			break;
+		}
+		default:
+			 {
+	if (nameCur) {
+		ASSERT(nameCur < nameEnd);
+		*nameCur++ = ch;
+		break;
+	}
+}  {
+	if (macro) {
+		addToBuffer(&buffer, last);
+	}
+} ;
+	}
+;
+			last = ch; ch = nextCh();
+		}
+	}
+;
+	 {
+	struct Macro **cur = macros.macros;
+	struct Macro **end =
+		cur + MACRO_SLOTS;
+	for (; cur < end; ++cur) {
+		struct Macro *macro = *cur;
+		for (; macro; macro = macro->link) {
+			if (! memcmp(
+				"file: ", macro->name, 6
+			)) {
+				
+	FILE *f = fopen(macro->name + 6, "w");
+	ASSERT(f);
+	struct FileConsumer fc;
+	setupFileConsumer(&fc, f);
+	struct EntityConsumer ec;
+	setupEntityConsumer(&ec, &fc.consumer);
+	serializeMacro(
+		macro, &ec.consumer
+	);
+	fclose(f);
+;
+			}
+		}
+	}
+} ;
+	;
+	;
+
+	}

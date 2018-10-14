@@ -186,6 +186,7 @@
 						<span class="in2"></span>*<span class="var">cur</span> = <span class="var">ch</span>;<br/>
 						<span class="in1"></span>} <span class="keyword">else</span> {<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">flush entity prefix</span>)</span>;<br/>
+						<span class="in2"></span><span class="fn">putToConsumer</span>(<span class="var">ec</span>-><span class="var">subConsumer</span>, <span class="var">ch</span>);<br/>
 						<span class="in1"></span>}<br/>
 						<span class="in1"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 						<span class="end">@end(<span class="macro-name">add char to entity</span>)</span>
@@ -416,6 +417,17 @@
 					<ul>
 						<li>
 							Unvollständige Entität wird nicht expandiert
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">entity unit-tests</span>)</span><br/>
+						<span class="in1"></span><span class="fn">testEntityConsumer</span>(<span class="str">"a&amp;bcdefgh;ij"</span>, <span class="str">"a&amp;bcdefgh;ij"</span>);<br/>
+						<span class="end">@end(<span class="macro-name">entity unit-tests</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+							Zu lange Entitäten werden kopiert
 						</li>
 					</ul>
 				</div><div>

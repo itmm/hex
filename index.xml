@@ -102,9 +102,9 @@
 						1{}e{perform unit-tests};b{}
 						1{}e{process arguments};b{}
 						1{}e{read source file};b{}
-						1{}e{write HTML file};b{}
 						1{}e{serialize fragments};b{}
 						1{}e{compile program};b{}
+						1{}e{write HTML file};b{}
 						x{main body}
 					</code></div>
 					<ul>

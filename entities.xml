@@ -185,6 +185,7 @@
 						2{}*v{cur} = v{ch};b{}
 						1{}} k{else} {b{}
 						2{}e{flush entity prefix};b{}
+						2{}f{putToConsumer}(v{ec}->v{subConsumer}, v{ch});b{}
 						1{}}b{}
 						1{}v{processed} = k{true};b{}
 						x{add char to entity}
@@ -415,6 +416,17 @@
 					<ul>
 						<li>
 							Unvollständige Entität wird nicht expandiert
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{entity unit-tests}b{}
+						1{}f{testEntityConsumer}(s{"a&amp;bcdefgh;ij"}, s{"a&amp;bcdefgh;ij"});b{}
+						x{entity unit-tests}
+					</code></div>
+					<ul>
+						<li>
+							Zu lange Entitäten werden kopiert
 						</li>
 					</ul>
 				</div><div>
