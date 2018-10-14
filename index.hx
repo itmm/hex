@@ -498,3 +498,13 @@ x{write in file}
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
 * Dabei werden HTML-Entitäten aufgelöst
+
+
+# HTML generieren
+* Aus `hx`-Dateien wird ein HTML-Foliensatz generiert
+
+```
+i{html.xml}
+```
+* Die Generierung liegt in einer eigenen Datei
+

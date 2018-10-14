@@ -1,0 +1,317 @@
+<html lang="de">
+		<head>
+			<meta charset="utf-8" />
+			<title>HTML-Präsentation generieren</title>
+			<link rel="stylesheet" type="text/css"
+				href="slides/slides.css" />
+		</head>
+	<body>
+		<div class="slides">
+			<div>
+				<div>
+					<h1>HTML-Präsentation generieren</h1>
+				</div>
+				<ul>
+					<li>
+						Diese Datei beschreibt Code, um aus den
+						<code>hx</code>-Quelldateien
+						HTML-Präsentationen zu erzeugen
+					</li>
+				</ul>
+			</div>
+				<div>
+					<div><code>
+						a{global elements}b{}
+						1{}t{struct SourceElement} {b{}
+						2{}t{struct SourceElement *}v{link};b{}
+						2{}t{char} v{path}[];b{}
+						1{}};b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+							Alle Dateien, die noch herausgeschrieben
+							werden müssen, werden in einer Liste
+							vorgehalten
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{global elements}b{}
+						1{}t{struct SourceElement} *createSourceElement(b{}
+						2{}t{const char *}v{path}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{path});b{}
+						2{}t{int} v{len} = f{strlen}(v{path}) + n{1};b{}
+						2{}t{int} v{size} =b{}
+						3{}v{len} + f{sizeof}(t{struct SourceElement});b{}
+						2{}t{struct SourceElement *}v{se} =b{}
+						3{}f{malloc}(v{size});b{}
+						2{}f{ASSERT}(v{se});b{}
+						2{}v{se}-&gt;v{link} = k{NULL};b{}
+						2{}f{memcpy}(v{se}-&gt;v{path}, v{path}, v{len});b{}
+						2{}k{return} v{se};b{}
+						1{}}b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+							Die Größe der Struktur wird dynamisch
+							berechnet
+						</li><li>
+							So dass der Name mit abschließenden
+							Null-Byte reinpasst
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write HTML file}b{}
+						1{}k{if} (v{argc} &gt; n{1}) {b{}
+						2{}t{struct SourceElement *}v{cur} =b{}
+						3{}f{createSourceElement}(v{argv}[n{1}]);b{}
+						2{}t{struct SourceElement *}v{end} = v{cur};b{}
+						2{}k{while} (v{cur}) {b{}
+						3{}e{write cur HTML file};b{}
+						3{}t{struct SourceElement *}v{next} =b{}
+						4{}v{cur}-&gt;v{link};b{}
+						3{}f{free}(v{cur});b{}
+						3{}v{cur} = v{next};b{}
+						2{}}b{}
+						1{}}b{}
+						x{write HTML file}
+					</code></div>
+					<ul>
+						<li>
+							Nur wenn die erste Datei über die
+							Aufrufparameter übergeben wurde, werden
+							HTML-Dateien generiert
+						</li><li>
+							Beim Lesen von der Standard-Eingabe ist der
+							Dateiname unbekannt
+						</li><li>
+							Beim Lesen der Datei können weitere
+							Dateien in die Liste eingefügt werden
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{global elements}b{}
+						1{}k{bool} f{hasSuffix}(b{}
+						2{}t{const char *}v{str},b{}
+						2{}t{const char *}v{suff}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{str}); f{ASSERT}(v{suff});b{}
+						2{}t{int} v{sl} = f{strlen}(v{str});b{}
+						2{}t{int} v{su} = f{strlen}(v{suff});b{}
+						2{}k{return} v{sl} &gt;= v{su} &amp;&amp; n{0} == f{memcmp}(b{}
+						3{}v{str} + v{sl} - v{su}, v{suff}, v{su}b{}
+						2{});b{}
+						1{}}b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+							Um zu prüfen, ob Dateinamen die richtige
+							Endung haben, gibt es eine extra Funktion
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write cur HTML file}b{}
+						1{}k{if} (f{hasSuffix}(v{cur}-&gt;v{path}, s{".hx"})) {b{}
+						2{}t{int} v{len} = f{strlen}(v{cur}-&gt;v{path}) + n{3};b{}
+						2{}t{char *}v{outPath} = f{malloc}(v{len});b{}
+						2{}f{ASSERT}(v{outPath});b{}
+						2{}f{memcpy}(v{outPath}, v{cur}-&gt;v{path}, v{len} - n{6});b{}
+						2{}f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});b{}
+						2{}t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});b{}
+						2{}f{ASSERT}(v{out});b{}
+						2{}e{write cur HTML file to out};b{}
+						2{}f{fclose}(v{out});b{}
+						2{}f{free}(v{outPath});b{}
+						1{}}b{}
+						x{write cur HTML file}
+					</code></div>
+					<ul>
+						<li>
+							Nur <code>hx</code>-Dateien werden in HTML
+							konvertiert
+						</li><li>
+							Die HTML hat den gleichen Pfad mit der 
+							Endung <code>.html</code>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write cur HTML file to out} b{}
+						1{}t{FILE *}v{in} = f{fopen}(v{cur}-&gt;v{path}, s{"r"});b{}
+						1{}f{ASSERT}(v{in});b{}
+						1{}e{write HTML file from in to out};b{}
+						1{}f{fclose}(v{in});b{}
+						x{write HTML html file to out}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write HTML file from in to out} {b{}
+						1{}t{int} v{headerLevel} = n{0};b{}
+						1{}t{bool} v{wroteHeader} = k{false};b{}
+						1{}t{bool} v{inCode} = k{false};b{}
+						1{}t{bool} v{inNotes} = k{false};b{}
+						1{}t{bool} v{startOfLine} = k{true};b{}
+						1{}t{char} v{buffer}[n{100}];b{}
+						1{}t{char *}v{bc} = k{NULL};b{}
+						1{}t{char} v{special} = s{'\0'};b{}
+						1{}t{int} v{ch} = f{fgetc}(v{in});b{}
+						1{}k{for} (; v{ch} != k{EOF}; v{ch} = f{fgetc}(v{in})) {b{}
+						2{}e{process ch for HTML};b{}
+						1{}}b{}
+						} x{write HTML file from in to out}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{inCode}) {b{}
+						2{}e{process ch in HTML code};b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{inNotes}) {b{}
+						2{}e{process ch in HTML notes};b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{ch} == s{'#'} &amp;&amp; v{startOfLine}) {b{}
+						2{}++v{headerLevel};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{headerLevel}) {b{}
+						2{}e{process header in HTML};b{}
+						2{}v{startOfLine} = k{true};b{}
+						2{}v{headerLevel} = n{0};b{}
+						2{}v{bc} = k{NULL};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{headerLevel} &amp;&amp; v{bc}) {b{}
+						2{}f{ASSERT}(b{}
+						3{}bc &lt; buffer + sizeof(buffer) - n{1}b{}
+						2{});b{}
+						2{}*v{bc}++ = v{ch};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}k{if} (v{headerLevel} &amp;&amp; v{ch} &gt; s{' '}) {b{}
+						2{}v{bc} = v{buffer};b{}
+						2{}*v{bc}++ = v{ch};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process header in HTML} b{}
+						1{}f{ASSERT}(bc &lt; buffer + sizeof(buffer) - n{1});b{}
+						1{}*v{bc} = s{'\0'};b{}
+						1{}k{if} (v{wroteHeader}) {b{}
+						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						1{}} k{else} {b{}
+						2{}e{write HTML header};b{}
+						2{}v{wroteHeader} = k{true};b{}
+						1{}}b{}
+						1{}f{fprintf}(b{}
+						2{}v{out}, s{"&lt;h%d&gt;%s&lt;/h%d&gt;\n"},b{}
+						2{}v{headerLevel}, v{buffer}, v{headerLevel}b{}
+						1{});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;div class=\"slides\"&gt;\n"});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;div&gt;&lt;div&gt;\n"});b{}
+						1{}f{fprintf}(b{}
+						2{}v{out}, s{"&lt;h%d&gt;%s&lt;/h%d&gt;\n"},b{}
+						2{}v{headerLevel}, v{buffer}, v{headerLevel}b{}
+						1{});b{}
+						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						x{process header in HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write HTML header} b{}
+						1{}f{fprintf}(v{out}, s{"&lt;!doctype html&gt;\n"});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;html lang=\"de\"l&gt;\n"});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;head&gt;\n"});b{}
+						1{}e{write HTML header entries};b{}
+						1{}f{fprintf}(v{out}, s{"&lt;/head&gt;\n"});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;body&gt;\n"});b{}
+						x{write HTML header}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write HTML header entries} b{}
+						1{}f{fprintf}(b{}
+						2{}v{out}, s{"&lt;meta charset=\"utf-8\"&gt;\n"}b{}
+						1{});b{}
+						1{}f{fprintf}(b{}
+						2{}v{out}, s{"&lt;title&gt;%s&lt;/title&gt;\n"}, v{buffer}b{}
+						1{});b{}
+						1{}f{fprintf}(b{}
+						2{}v{out}, s{"&lt;link rel=\"stylesheet\" "}b{}
+						2{}s{"type=\"text/css\" "}b{}
+						2{}s{"href=\"slides/slides.css\"&gt;"}b{}
+						1{});b{}
+						x{write HTML header entries}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div>
+		</div>
+	</body>
+</html>

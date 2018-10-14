@@ -750,6 +750,38 @@
 						}
 						
 						
+						struct SourceElement {
+						struct SourceElement *link;
+						char path[];
+						};
+						
+						struct SourceElement *createSourceElement(
+						const char *path
+						) {
+						ASSERT(path);
+						int len = strlen(path) + 1;
+						int size =
+						len + sizeof(struct SourceElement);
+						struct SourceElement *se =
+						malloc(size);
+						ASSERT(se);
+						se->link = NULL;
+						memcpy(se->path, path, len);
+						return se;
+						}
+						
+						bool hasSuffix(
+						const char *str,
+						const char *suff
+						) {
+						ASSERT(str); ASSERT(suff);
+						int sl = strlen(str);
+						int su = strlen(suff);
+						return sl >= su && 0 == memcmp(
+						str + sl - su, suff, su
+						);
+						}
+						
 	int main(
 	int argc, const char **argv
 	) {
@@ -970,6 +1002,123 @@
 	}
 } ;
 	;
-	;
+	
+						if (argc > 1) {
+						struct SourceElement *cur =
+						createSourceElement(argv[1]);
+						struct SourceElement *end = cur;
+						while (cur) {
+						
+						if (hasSuffix(cur->path, ".hx")) {
+						int len = strlen(cur->path) + 3;
+						char *outPath = malloc(len);
+						ASSERT(outPath);
+						memcpy(outPath, cur->path, len - 6);
+						strcpy(outPath + len - 6, ".html");
+						FILE *out = fopen(outPath, "w");
+						ASSERT(out);
+						 
+						FILE *in = fopen(cur->path, "r");
+						ASSERT(in);
+						 {
+						int headerLevel = 0;
+						bool wroteHeader = false;
+						bool inCode = false;
+						bool inNotes = false;
+						bool startOfLine = true;
+						char buffer[100];
+						char *bc = NULL;
+						char special = '\0';
+						int ch = fgetc(in);
+						for (; ch != EOF; ch = fgetc(in)) {
+						 
+						if (inCode) {
+						;
+						}
+						 
+						if (inNotes) {
+						;
+						}
+						 
+						if (ch == '#' && startOfLine) {
+						++headerLevel;
+						continue;
+						}
+						if (ch == '\n' && headerLevel) {
+						 
+						ASSERT(bc < buffer + sizeof(buffer) - 1);
+						*bc = '\0';
+						if (wroteHeader) {
+						fprintf(out, "</div>\n");
+						fprintf(out, "</div>\n");
+						} else {
+						 
+						fprintf(out, "<!doctype html>\n");
+						fprintf(out, "<html lang=\"de\"l>\n");
+						fprintf(out, "<head>\n");
+						 
+						fprintf(
+						out, "<meta charset=\"utf-8\">\n"
+						);
+						fprintf(
+						out, "<title>%s</title>\n", buffer
+						);
+						fprintf(
+						out, "<link rel=\"stylesheet\" "
+						"type=\"text/css\" "
+						"href=\"slides/slides.css\">"
+						);
+						;
+						fprintf(out, "</head>\n");
+						fprintf(out, "<body>\n");
+						;
+						wroteHeader = true;
+						}
+						fprintf(
+						out, "<h%d>%s</h%d>\n",
+						headerLevel, buffer, headerLevel
+						);
+						fprintf(out, "<div class=\"slides\">\n");
+						fprintf(out, "<div><div>\n");
+						fprintf(
+						out, "<h%d>%s</h%d>\n",
+						headerLevel, buffer, headerLevel
+						);
+						fprintf(out, "</div>\n");
+						;
+						startOfLine = true;
+						headerLevel = 0;
+						bc = NULL;
+						continue;
+						}
+						 
+						if (headerLevel && bc) {
+						ASSERT(
+						bc < buffer + sizeof(buffer) - 1
+						);
+						*bc++ = ch;
+						continue;
+						}
+						if (headerLevel && ch > ' ') {
+						bc = buffer;
+						*bc++ = ch;
+						continue;
+						}
+						;
+						}
+						} ;
+						fclose(in);
+						;
+						fclose(out);
+						free(outPath);
+						}
+						;
+						struct SourceElement *next =
+						cur->link;
+						free(cur);
+						cur = next;
+						}
+						}
+						;
 
 	}
