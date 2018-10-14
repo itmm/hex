@@ -20,6 +20,8 @@ test: hx
 	./hx </dev/null
 
 %.html: %.xml 
+	@echo "xmllint $^"
+	@xmllint --noout $^ || true
 	@echo "sed >$@"
 	@sed	\
 		-e '1s/^/<!doctype html>\n/' \

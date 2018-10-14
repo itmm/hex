@@ -247,7 +247,6 @@
 							Sie muss nur vorher geöffnet werden
 						</li>
 					</ul>
-				</div>
 				</div><div>
 					<div><code>
 						a{process arguments}b{}
@@ -290,6 +289,7 @@
 						<li>
 						</li>
 					</ul>
+				</div>
 			</div>
 		<h1>Buffer</h1>
 			<div class="slides">
