@@ -157,7 +157,7 @@
 				</div><div>
 					<div><code>
 						a{write HTML file from in to out} {b{}
-						1{}t{int} v{headerLevel} = n{0};b{}
+						1{}t{int} v{headerLevel} = n{0}, v{codeLevel} = n{0};b{}
 						1{}t{bool} v{wroteHeader} = k{false};b{}
 						1{}t{bool} v{inCode} = k{false};b{}
 						1{}t{bool} v{inNotes} = k{false};b{}
@@ -239,6 +239,51 @@
 						2{}k{continue};b{}
 						1{}}b{}
 						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'`'}) {b{}
+						2{}++v{codeLevel};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{codeLevel}) {b{}
+						2{}k{if} (v{codeLevel} == n{3}) {b{}
+						3{}v{inCode} = k{true};b{}
+						2{}v{codeLevel} = n{0};b{}
+						3{}k{continue};b{}
+						2{}}b{}
+						2{}v{codeLevel} = n{0};b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code} b{}
+						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'`'}) {b{}
+						2{}++v{codeLevel};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{codeLevel}) {b{}
+						2{}k{if} (v{codeLevel} == n{3}) {b{}
+						3{}v{inCode} = k{false};b{}
+						2{}v{codeLevel} = n{0};b{}
+						3{}k{continue};b{}
+						2{}}b{}
+						2{}v{codeLevel} = n{0};b{}
+						1{}}b{}
+						1{}fputc(ch, out);b{}
+						x{process ch in HTML code}
 					</code></div>
 					<ul>
 						<li>

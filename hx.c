@@ -1037,7 +1037,7 @@
 						FILE *in = fopen(cur->path, "r");
 						ASSERT(in);
 						 {
-						int headerLevel = 0;
+						int headerLevel = 0, codeLevel = 0;
 						bool wroteHeader = false;
 						bool inCode = false;
 						bool inNotes = false;
@@ -1049,6 +1049,20 @@
 						int ch = fgetc(in);
 						 
 						if (inCode) {
+						 
+						if (startOfLine && ch == '`') {
+						++codeLevel;
+						continue;
+						}
+						if (ch == '\n' && codeLevel) {
+						if (codeLevel == 3) {
+						inCode = false;
+						codeLevel = 0;
+						continue;
+						}
+						codeLevel = 0;
+						}
+						fputc(ch, out);
 						;
 						}
 						 
@@ -1123,6 +1137,19 @@
 						bc = buffer;
 						*bc++ = ch;
 						continue;
+						}
+						 
+						if (startOfLine && ch == '`') {
+						++codeLevel;
+						continue;
+						}
+						if (ch == '\n' && codeLevel) {
+						if (codeLevel == 3) {
+						inCode = true;
+						codeLevel = 0;
+						continue;
+						}
+						codeLevel = 0;
 						}
 						 
 						if (ch == EOF) {
