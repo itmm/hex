@@ -166,9 +166,10 @@
 						<span class="in1"></span><span class="type">char</span> <span class="var">buffer</span>[<span class="num">100</span>];<br/>
 						<span class="in1"></span><span class="type">char *</span><span class="var">bc</span> = <span class="keyword">NULL</span>;<br/>
 						<span class="in1"></span><span class="type">char</span> <span class="var">special</span> = <span class="str">'\0'</span>;<br/>
-						<span class="in1"></span><span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">in</span>);<br/>
-						<span class="in1"></span><span class="keyword">for</span> (; <span class="var">ch</span> != <span class="keyword">EOF</span>; <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">in</span>)) {<br/>
+						<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
+						<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">in</span>);<br/>
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">process ch for HTML</span>)</span>;<br/>
+						<span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
 						<span class="in1"></span>}<br/>
 						} <span class="end">@end(<span class="macro-name">write HTML file from in to out</span>)</span>
 					</code></div>
@@ -250,6 +251,22 @@
 						<span class="add">@add(<span class="macro-name">process header in HTML</span>)</span> <br/>
 						<span class="in1"></span><span class="fn">ASSERT</span>(bc &lt; buffer + sizeof(buffer) - <span class="num">1</span>);<br/>
 						<span class="in1"></span>*<span class="var">bc</span> = <span class="str">'\0'</span>;<br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">close previous HTML page</span>)</span>;<br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write header tag</span>)</span>;<br/>
+						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>);<br/>
+						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
+						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write header tag</span>)</span>;<br/>
+						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+						<span class="end">@end(<span class="macro-name">process header in HTML</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">close previous HTML page</span>)</span> <br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">wroteHeader</span>) {<br/>
 						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
@@ -257,18 +274,45 @@
 						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">write HTML header</span>)</span>;<br/>
 						<span class="in2"></span><span class="var">wroteHeader</span> = <span class="keyword">true</span>;<br/>
 						<span class="in1"></span>}<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<br/>
-						<span class="in2"></span><span class="var">out</span>, <span class="str">"&lt;h%d&gt;%s&lt;/h%d&gt;\n"</span>,<br/>
-						<span class="in2"></span><span class="var">headerLevel</span>, <span class="var">buffer</span>, <span class="var">headerLevel</span><br/>
-						<span class="in1"></span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<br/>
-						<span class="in2"></span><span class="var">out</span>, <span class="str">"&lt;h%d&gt;%s&lt;/h%d&gt;\n"</span>,<br/>
-						<span class="in2"></span><span class="var">headerLevel</span>, <span class="var">buffer</span>, <span class="var">headerLevel</span><br/>
-						<span class="in1"></span>);<br/>
-						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
-						<span class="end">@end(<span class="macro-name">process header in HTML</span>)</span>
+						<span class="end">@end(<span class="macro-name">close previous HTML page</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">global elements</span>)</span> <br/>
+						<span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
+						<span class="in2"></span><span class="type">FILE *</span><span class="var">out</span>, <span class="type">const char *</span><span class="var">str</span><br/>
+						<span class="in1"></span>) {<br/>
+						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>); <span class="fn">ASSERT</span>(<span class="var">str</span>);<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">str</span>; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
+						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&lt;'</span>:<br/>
+						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;lt;"</span>); <span class="keyword">break</span>;<br/>
+						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&gt;'</span>:<br/>
+						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;gt;"</span>); <span class="keyword">break</span>;<br/>
+						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&amp;'</span>:<br/>
+						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;amp;"</span>); <span class="keyword">break</span>;<br/>
+						<span class="in3"></span><span class="keyword">default:</span><br/>
+						<span class="in4"></span><span class="fn">fputc</span>(*<span class="var">str</span>, <span class="var">out</span>);<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">write header tag</span>)</span> <br/>
+						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">headerLevel</span>);<br/>
+						<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">buffer</span>);<br/>
+						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/h%d&gt;\n"</span>, <span class="var">headerLevel</span>);<br/>
+						<span class="end">@end(<span class="macro-name">write header tag</span>)</span>
 					</code></div>
 					<ul>
 						<li>
@@ -306,6 +350,20 @@
 						<span class="in2"></span><span class="str">"href=\"slides/slides.css\"&gt;"</span><br/>
 						<span class="in1"></span>);<br/>
 						<span class="end">@end(<span class="macro-name">write HTML header entries</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="keyword">EOF</span>) {<br/>
+						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">close previous HTML page</span>)</span>;<br/>
+						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/body&gt;&lt;/html&gt;\n"</span>);
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
 					</code></div>
 					<ul>
 						<li>

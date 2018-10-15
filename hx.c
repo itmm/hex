@@ -781,6 +781,22 @@
 						str + sl - su, suff, su
 						);
 						}
+						 
+						void writeEscaped(
+						FILE *out, const char *str
+						) {
+						ASSERT(out); ASSERT(str);
+						for (; *str; ++str) switch (*str) {
+						case '<':
+						fprintf(out, "&lt;"); break;
+						case '>':
+						fprintf(out, "&gt;"); break;
+						case '&':
+						fprintf(out, "&amp;"); break;
+						default:
+						fputc(*str, out);
+						}
+						}
 						
 	int main(
 	int argc, const char **argv
@@ -1029,8 +1045,8 @@
 						char buffer[100];
 						char *bc = NULL;
 						char special = '\0';
+						for (;;) {
 						int ch = fgetc(in);
-						for (; ch != EOF; ch = fgetc(in)) {
 						 
 						if (inCode) {
 						;
@@ -1048,6 +1064,7 @@
 						 
 						ASSERT(bc < buffer + sizeof(buffer) - 1);
 						*bc = '\0';
+						 
 						if (wroteHeader) {
 						fprintf(out, "</div>\n");
 						fprintf(out, "</div>\n");
@@ -1074,16 +1091,19 @@
 						;
 						wroteHeader = true;
 						}
-						fprintf(
-						out, "<h%d>%s</h%d>\n",
-						headerLevel, buffer, headerLevel
-						);
+						;
+						 
+						fprintf(out, "<h%d>", headerLevel);
+						writeEscaped(out, buffer);
+						fprintf(out, "</h%d>\n", headerLevel);
+						;
 						fprintf(out, "<div class=\"slides\">\n");
 						fprintf(out, "<div><div>\n");
-						fprintf(
-						out, "<h%d>%s</h%d>\n",
-						headerLevel, buffer, headerLevel
-						);
+						 
+						fprintf(out, "<h%d>", headerLevel);
+						writeEscaped(out, buffer);
+						fprintf(out, "</h%d>\n", headerLevel);
+						;
 						fprintf(out, "</div>\n");
 						;
 						startOfLine = true;
@@ -1104,7 +1124,40 @@
 						*bc++ = ch;
 						continue;
 						}
+						 
+						if (ch == EOF) {
+						 
+						if (wroteHeader) {
+						fprintf(out, "</div>\n");
+						fprintf(out, "</div>\n");
+						} else {
+						 
+						fprintf(out, "<!doctype html>\n");
+						fprintf(out, "<html lang=\"de\"l>\n");
+						fprintf(out, "<head>\n");
+						 
+						fprintf(
+						out, "<meta charset=\"utf-8\">\n"
+						);
+						fprintf(
+						out, "<title>%s</title>\n", buffer
+						);
+						fprintf(
+						out, "<link rel=\"stylesheet\" "
+						"type=\"text/css\" "
+						"href=\"slides/slides.css\">"
+						);
 						;
+						fprintf(out, "</head>\n");
+						fprintf(out, "<body>\n");
+						;
+						wroteHeader = true;
+						}
+						;
+						fprintf(out, "</body></html>\n");
+						}
+						;
+						if (ch == EOF) { break; }
 						}
 						} ;
 						fclose(in);

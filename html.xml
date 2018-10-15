@@ -165,9 +165,10 @@
 						1{}t{char} v{buffer}[n{100}];b{}
 						1{}t{char *}v{bc} = k{NULL};b{}
 						1{}t{char} v{special} = s{'\0'};b{}
-						1{}t{int} v{ch} = f{fgetc}(v{in});b{}
-						1{}k{for} (; v{ch} != k{EOF}; v{ch} = f{fgetc}(v{in})) {b{}
+						1{}k{for} (;;) {b{}
+						2{}t{int} v{ch} = f{fgetc}(v{in});b{}
 						2{}e{process ch for HTML};b{}
+						2{}k{if} (v{ch} == k{EOF}) { k{break}; }b{}
 						1{}}b{}
 						} x{write HTML file from in to out}
 					</code></div>
@@ -249,6 +250,22 @@
 						a{process header in HTML} b{}
 						1{}f{ASSERT}(bc &lt; buffer + sizeof(buffer) - n{1});b{}
 						1{}*v{bc} = s{'\0'};b{}
+						1{}e{close previous HTML page};b{}
+						1{}e{write header tag};b{}
+						1{}f{fprintf}(v{out}, s{"&lt;div class=\"slides\"&gt;\n"});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;div&gt;&lt;div&gt;\n"});b{}
+						1{}e{write header tag};b{}
+						1{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						x{process header in HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{close previous HTML page} b{}
 						1{}k{if} (v{wroteHeader}) {b{}
 						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
 						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
@@ -256,18 +273,45 @@
 						2{}e{write HTML header};b{}
 						2{}v{wroteHeader} = k{true};b{}
 						1{}}b{}
-						1{}f{fprintf}(b{}
-						2{}v{out}, s{"&lt;h%d&gt;%s&lt;/h%d&gt;\n"},b{}
-						2{}v{headerLevel}, v{buffer}, v{headerLevel}b{}
-						1{});b{}
-						1{}f{fprintf}(v{out}, s{"&lt;div class=\"slides\"&gt;\n"});b{}
-						1{}f{fprintf}(v{out}, s{"&lt;div&gt;&lt;div&gt;\n"});b{}
-						1{}f{fprintf}(b{}
-						2{}v{out}, s{"&lt;h%d&gt;%s&lt;/h%d&gt;\n"},b{}
-						2{}v{headerLevel}, v{buffer}, v{headerLevel}b{}
-						1{});b{}
-						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
-						x{process header in HTML}
+						x{close previous HTML page}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{global elements} b{}
+						1{}t{void} f{writeEscaped}(b{}
+						2{}t{FILE *}v{out}, t{const char *}v{str}b{}
+						1{}) {b{}
+						2{}f{ASSERT}(v{out}); f{ASSERT}(v{str});b{}
+						2{}k{for} (; *v{str}; ++v{str}) k{switch} (*v{str}) {b{}
+						3{}k{case} s{'&lt;'}:b{}
+						4{}f{fprintf}(v{out}, s{"&amp;lt;"}); k{break};b{}
+						3{}k{case} s{'&gt;'}:b{}
+						4{}f{fprintf}(v{out}, s{"&amp;gt;"}); k{break};b{}
+						3{}k{case} s{'&amp;'}:b{}
+						4{}f{fprintf}(v{out}, s{"&amp;amp;"}); k{break};b{}
+						3{}k{default:}b{}
+						4{}f{fputc}(*v{str}, v{out});b{}
+						2{}}b{}
+						1{}}b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{write header tag} b{}
+						1{}f{fprintf}(v{out}, s{"&lt;h%d&gt;"}, v{headerLevel});b{}
+						1{}f{writeEscaped}(v{out}, v{buffer});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;/h%d&gt;\n"}, v{headerLevel});b{}
+						x{write header tag}
 					</code></div>
 					<ul>
 						<li>
@@ -305,6 +349,20 @@
 						2{}s{"href=\"slides/slides.css\"&gt;"}b{}
 						1{});b{}
 						x{write HTML header entries}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{ch} == k{EOF}) {b{}
+						2{}e{close previous HTML page};b{}
+						2{}f{fprintf}(v{out}, s{"&lt;/body&gt;&lt;/html&gt;\n"});
+						1{}}b{}
+						x{process ch for HTML}
 					</code></div>
 					<ul>
 						<li>
