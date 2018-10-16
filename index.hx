@@ -104,7 +104,7 @@ a{global elements}
 		t{FILE *}v{file};
 	};
 
-	t{struct Input *}v{input} = k{NULL};b{}
+	t{struct Input *}v{input} = k{NULL};
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -114,7 +114,7 @@ x{global elements}
 * Aus der letzten wird gelesen
 
 ```
-a{global elements}b{}
+a{global elements}
 	t{void} f{pushFile} (t{FILE *}v{file}) {
 		t{struct Input *}v{i} =
 			f{malloc}(f{sizeof}(t{struct Input}));
@@ -130,12 +130,12 @@ x{global elements}
   Eingabe-Strom verwendet werden
 
 ```
-a{global elements}b{}
+a{global elements}
 	t{void} f{pushPath}(t{const char *}v{path}) {
 		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
 		e{check file for path};
 		f{pushFile}(v{f});
-	}b{}
+	}
 x{global elements}
 ```
 * Eine Datei, die über einen Pfad beschrieben ist, kann auch als
@@ -143,7 +143,7 @@ x{global elements}
 * Sie muss nur vorher geöffnet werden
 
 ```
-a{process arguments}b{}
+a{process arguments}
 	k{if}(v{argc} > n{1}) {
 		f{pushPath}(v{argv}[n{1}]);
 	} k{else} {
@@ -206,7 +206,7 @@ i{macros.xml}
   Folien zu finden
 
 ```
-a{read source file}b{}
+a{read source file}
 	e{global source vars};
 	{
 		e{additional read vars};
@@ -259,7 +259,7 @@ x{additional read vars}
   zwischengespeichert
 
 ```
-a{additional read vars}b{}
+a{additional read vars}
 	t{char} v{name}t{[128]};
 	t{char *}v{nameCur} = k{NULL};	
 	t{const char *}v{nameEnd} = v{name} +
@@ -288,7 +288,7 @@ a{process other char} {
 		f{ASSERT}(v{nameCur} < v{nameEnd});
 		*v{nameCur}++ = v{ch};
 		k{break};
-	}b{}
+	}
 } x{process other char}
 ```
 * Wenn ein Name geparst wird, dann der Namensbuffer entsprechend
@@ -338,7 +338,7 @@ a{process macro name}
 			&v{macros}, v{name}, v{nameCur}
 		);
 		v{processed} = k{true};
-	}b{}
+	}
 x{process macro name}
 ```
 * Bei einem öffnenden Makro wird das passende Makro gesucht
@@ -399,16 +399,16 @@ x{flush macro buffer}
 ```
 
 ```
-a{process open brace} {b{}
-	k{if} (v{macro}) {b{}
-		t{bool} v{valid} = k{false};b{}
-		e{check valid names};b{}
-		k{if} (v{valid}) {b{}
-			v{openCh} = v{last};b{}
-			v{nameCur} = v{name};b{}
-			k{break};b{}
-		}b{}
-	}b{}
+a{process open brace} {
+	k{if} (v{macro}) {
+		t{bool} v{valid} = k{false};
+		e{check valid names};
+		k{if} (v{valid}) {
+			v{openCh} = v{last};
+			v{nameCur} = v{name};
+			k{break};
+		}
+	}
 } x{process open brace}
 ```
 
@@ -418,7 +418,7 @@ a{check valid names}
 		s{"123456bfvsntkxe"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
 		v{valid} = k{true};
-	}b{}
+	}
 x{check valid names}
 ```
 
@@ -439,7 +439,7 @@ x{process macro name}
 a{process open brace}
 	k{if} (v{macro}) {
 		f{addToBuffer}(&v{buffer}, v{last});
-	}b{}
+	}
 x{process open brace}
 
 a{process close brace}
@@ -483,7 +483,7 @@ a{serialize fragments} {
   Dateien rausgeschrieben
 
 ```
-a{write in file}b{}
+a{write in file}
 	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
 	f{ASSERT}(v{f});
 	t{struct FileConsumer} v{fc};

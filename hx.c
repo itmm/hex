@@ -783,10 +783,10 @@
 						}
 						 
 						void writeEscaped(
-						FILE *out, const char *str
+						FILE *out, const char *str, const char *end
 						) {
 						ASSERT(out); ASSERT(str);
-						for (; *str; ++str) switch (*str) {
+						for (; *str && str != end; ++str) switch (*str) {
 						case '<':
 						fprintf(out, "&lt;"); break;
 						case '>':
@@ -1022,7 +1022,7 @@
 						if (argc > 1) {
 						struct SourceElement *cur =
 						createSourceElement(argv[1]);
-						struct SourceElement *end = cur;
+						//struct SourceElement *end = cur;
 						while (cur) {
 						
 						if (hasSuffix(cur->path, ".hx")) {
@@ -1039,6 +1039,7 @@
 						 {
 						int headerLevel = 0, codeLevel = 0;
 						int indentLevel = 0;
+						char last = 0;
 						bool wroteHeader = false;
 						bool inCode = false;
 						bool someCode = false;
@@ -1069,6 +1070,9 @@
 						}
 						if (ch == '\n' && codeLevel) {
 						if (codeLevel == 3) {
+						if (last) {
+						writeEscaped(out, &last, &last + 1);
+						}
 						fprintf(out, "</code></div>\n");
 						inCode = false;
 						codeLevel = 0;
@@ -1082,11 +1086,97 @@
 						continue;
 						}
 						if (ch == '\n') {
+						if (last) {
+						writeEscaped(out, &last, &last + 1);
+						last = 0;
+						}
 						fprintf(out, "<br/>\n");
 						continue;
 						}
-						 
-						fputc(ch, out);
+						
+						if (ch == '{') {
+						switch (last) {
+						
+						case 'a':
+						fprintf(out, "<span class=\"add\">@add(");
+						fprintf(out, "<span class=\"name\">");
+						special = last;
+						break;
+						
+						case 'x':
+						fprintf(out, "<span class=\"end\">@end(");
+						fprintf(out, "<span class=\"name\">");
+						special = last;
+						break;
+						
+						case 'e':
+						fprintf(out, "<span class=\"expand\">@expand(");
+						fprintf(out, "<span class=\"name\">");
+						special = last;
+						break;
+						
+						case 'i':
+						fprintf(out, "<span class=\"include\">@include(");
+						fprintf(out, "<span class=\"name\">");
+						special = last;
+						break;
+						
+						case 't':
+						fprintf(out, "<span class=\"type\">");
+						special = last;
+						break;
+						
+						case 'v':
+						fprintf(out, "<span class=\"var\">");
+						special = last;
+						break;
+						
+						case 'f':
+						fprintf(out, "<span class=\"fn\">");
+						special = last;
+						break;
+						
+						case 'k':
+						fprintf(out, "<span class=\"keyword\">");
+						special = last;
+						break;
+						
+						case 's':
+						fprintf(out, "<span class=\"str\">");
+						special = last;
+						break;
+						
+						case 'n':
+						fprintf(out, "<span class=\"num\">");
+						special = last;
+						break;
+						
+						default: break;
+						}
+						if (special) {
+						last = 0;
+						continue;
+						}
+						}
+						
+						if (ch == '}' && special) {
+						if (last) {
+						writeEscaped(out, &last, &last + 1);
+						last = 0;
+						}
+						switch (special) {
+						case 'a': case 'e': case 'i': case 'x':
+						fprintf(out, ")</span>");
+						}
+						fprintf(out, "</span>");
+						special = 0;
+						continue;
+						}
+						
+						if (last) {
+						writeEscaped(out, &last, &last + 1);
+						}
+						last = ch;
 						;
 						}
 						 
@@ -1135,14 +1225,14 @@
 						;
 						 
 						fprintf(out, "<h%d>", headerLevel);
-						writeEscaped(out, buffer);
+						writeEscaped(out, buffer, NULL);
 						fprintf(out, "</h%d>\n", headerLevel);
 						;
 						fprintf(out, "<div class=\"slides\">\n");
 						fprintf(out, "<div><div>\n");
 						 
 						fprintf(out, "<h%d>", headerLevel);
-						writeEscaped(out, buffer);
+						writeEscaped(out, buffer, NULL);
 						fprintf(out, "</h%d>\n", headerLevel);
 						;
 						fprintf(out, "</div>\n");
@@ -1178,6 +1268,7 @@
 						inCode = true;
 						someCode = true;
 						codeLevel = 0;
+						last = 0;
 						continue;
 						}
 						codeLevel = 0;

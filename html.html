@@ -70,7 +70,7 @@
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">argc</span> &gt; <span class="num">1</span>) {<br/>
 						<span class="in2"></span><span class="type">struct SourceElement *</span><span class="var">cur</span> =<br/>
 						<span class="in3"></span><span class="fn">createSourceElement</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
-						<span class="in2"></span><span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
+						<span class="in2"></span>//<span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
 						<span class="in2"></span><span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
 						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">write cur HTML file</span>)</span>;<br/>
 						<span class="in3"></span><span class="type">struct SourceElement *</span><span class="var">next</span> =<br/>
@@ -160,6 +160,7 @@
 						<span class="add">@add(<span class="macro-name">write HTML file from in to out</span>)</span> {<br/>
 						<span class="in1"></span><span class="type">int</span> <span class="var">headerLevel</span> = <span class="num">0</span>, <span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
 						<span class="in1"></span>int indentLevel = 0;<br/>
+						<span class="in1"></span>char last = 0;<br/>
 						<span class="in1"></span><span class="type">bool</span> <span class="var">wroteHeader</span> = <span class="keyword">false</span>;<br/>
 						<span class="in1"></span><span class="type">bool</span> <span class="var">inCode</span> = <span class="keyword">false</span>;<br/>
 						<span class="in1"></span>bool someCode = false;<br/>
@@ -263,6 +264,7 @@
 						<span class="in3"></span><span class="var">inCode</span> = <span class="keyword">true</span>;<br/>
 						<span class="in3"></span><span class="var">someCode</span> = <span class="keyword">true</span>;<br/>
 						<span class="in3"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
+						<span class="in3"></span>last = 0;<br/>
 						<span class="in3"></span><span class="keyword">continue</span>;<br/>
 						<span class="in2"></span>}<br/>
 						<span class="in2"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
@@ -303,6 +305,9 @@
 						<span class="in1"></span>}<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">codeLevel</span>) {<br/>
 						<span class="in2"></span><span class="keyword">if</span> (<span class="var">codeLevel</span> == <span class="num">3</span>) {<br/>
+						<span class="in3"></span>if (last) {<br/>
+						<span class="in4"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
+						<span class="in3"></span>}<br/>
 						<span class="in3"></span>fprintf(out, "&lt;/code&gt;&lt;/div&gt;\n");<br/>
 						<span class="in3"></span><span class="var">inCode</span> = <span class="keyword">false</span>;<br/>
 						<span class="in2"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
@@ -325,6 +330,10 @@
 						<span class="in2"></span><span class="keyword">continue</span>;<br/>
 						<span class="in1"></span>}<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+						<span class="in2"></span>if (last) {<br/>
+						<span class="in3"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
+						<span class="in3"></span>last = 0;<br/>
+						<span class="in2"></span>}<br/>
 						<span class="in2"></span>fprintf(out, "&lt;br/&gt;\n");<br/>
 						<span class="in2"></span>continue;<br/>
 						<span class="in1"></span>}<br/>
@@ -337,8 +346,156 @@
 					</ul>
 				</div><div>
 					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span> <br/>
-						<span class="in1"></span>fputc(ch, out);<br/>
+						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span><br/>
+						<span class="in1"></span>if (ch == '{') {<br/>
+						<span class="in2"></span>switch (last) {<br/>
+						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in3"></span>default: break;<br/>
+						<span class="in2"></span>}
+						<span class="in2"></span>if (special) {<br/>
+						<span class="in3"></span>last = 0;<br/>
+						<span class="in3"></span>continue;<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in1"></span>}
+						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 'a':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"add\"&gt;@add(");<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 'x':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"end\"&gt;@end(");<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 'e':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 'i':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"include\"&gt;@include(");<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 't':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"type\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 'v':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"var\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
+						<span class="in1"></span>case 'f':<br/>
+						<span class="in2"></span>fprintf(out, "&lt;span class=\"fn\"&gt;");<br/>
+						<span class="in2"></span>special = last;<br/>
+						<span class="in2"></span>break;<br/>
+						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span><br/>
+						<span class="in1"></span>if (ch == '}' &amp;&amp; special) {<br/>
+						<span class="in2"></span>if (last) {<br/>
+						<span class="in3"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
+						<span class="in3"></span>last = 0;<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in2"></span>switch (special) {<br/>
+						<span class="in3"></span>case 'a': case 'e': case 'i': case 'x':<br/>
+						<span class="in4"></span>fprintf(out, ")&lt;/span&gt;");<br/>
+						<span class="in2"></span>}<br/>
+						<span class="in2"></span>fprintf(out, "&lt;/span&gt;");<br/>
+						<span class="in2"></span>special = 0;<br/>
+						<span class="in2"></span>continue;<br/>
+						<span class="in1"></span>}
+						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span><br/>
+						<span class="in1"></span>if (last) {<br/>
+						<span class="in2"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
+						<span class="in1"></span>}<br/>
+						<span class="in2"></span>last = ch;<br/>
 						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
 					</code></div>
 					<ul>
@@ -388,10 +545,10 @@
 					<div><code>
 						<span class="add">@add(<span class="macro-name">global elements</span>)</span> <br/>
 						<span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
-						<span class="in2"></span><span class="type">FILE *</span><span class="var">out</span>, <span class="type">const char *</span><span class="var">str</span><br/>
+						<span class="in2"></span><span class="type">FILE *</span><span class="var">out</span>, <span class="type">const char *</span><span class="var">str</span>, const char *end<br/>
 						<span class="in1"></span>) {<br/>
 						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>); <span class="fn">ASSERT</span>(<span class="var">str</span>);<br/>
-						<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">str</span>; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
+						<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">str</span> &amp;&amp; str != end; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
 						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&lt;'</span>:<br/>
 						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;lt;"</span>); <span class="keyword">break</span>;<br/>
 						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&gt;'</span>:<br/>
@@ -413,7 +570,7 @@
 					<div><code>
 						<span class="add">@add(<span class="macro-name">write header tag</span>)</span> <br/>
 						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">headerLevel</span>);<br/>
-						<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">buffer</span>);<br/>
+						<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">buffer</span>, NULL);<br/>
 						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/h%d&gt;\n"</span>, <span class="var">headerLevel</span>);<br/>
 						<span class="end">@end(<span class="macro-name">write header tag</span>)</span>
 					</code></div>

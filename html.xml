@@ -69,7 +69,7 @@
 						1{}k{if} (v{argc} &gt; n{1}) {b{}
 						2{}t{struct SourceElement *}v{cur} =b{}
 						3{}f{createSourceElement}(v{argv}[n{1}]);b{}
-						2{}t{struct SourceElement *}v{end} = v{cur};b{}
+						2{}//t{struct SourceElement *}v{end} = v{cur};b{}
 						2{}k{while} (v{cur}) {b{}
 						3{}e{write cur HTML file};b{}
 						3{}t{struct SourceElement *}v{next} =b{}
@@ -159,6 +159,7 @@
 						a{write HTML file from in to out} {b{}
 						1{}t{int} v{headerLevel} = n{0}, v{codeLevel} = n{0};b{}
 						1{}int indentLevel = 0;b{}
+						1{}char last = 0;b{}
 						1{}t{bool} v{wroteHeader} = k{false};b{}
 						1{}t{bool} v{inCode} = k{false};b{}
 						1{}bool someCode = false;b{}
@@ -262,6 +263,7 @@
 						3{}v{inCode} = k{true};b{}
 						3{}v{someCode} = k{true};b{}
 						3{}v{codeLevel} = n{0};b{}
+						3{}last = 0;b{}
 						3{}k{continue};b{}
 						2{}}b{}
 						2{}v{codeLevel} = n{0};b{}
@@ -302,6 +304,9 @@
 						1{}}b{}
 						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{codeLevel}) {b{}
 						2{}k{if} (v{codeLevel} == n{3}) {b{}
+						3{}if (last) {b{}
+						4{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						3{}}b{}
 						3{}fprintf(out, "&lt;/code&gt;&lt;/div&gt;\n");b{}
 						3{}v{inCode} = k{false};b{}
 						2{}v{codeLevel} = n{0};b{}
@@ -324,6 +329,10 @@
 						2{}k{continue};b{}
 						1{}}b{}
 						1{}k{if} (v{ch} == s{'\n'}) {b{}
+						2{}if (last) {b{}
+						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						3{}last = 0;b{}
+						2{}}b{}
 						2{}fprintf(out, "&lt;br/&gt;\n");b{}
 						2{}continue;b{}
 						1{}}b{}
@@ -336,8 +345,198 @@
 					</ul>
 				</div><div>
 					<div><code>
-						a{process ch in HTML code} b{}
-						1{}fputc(ch, out);b{}
+						a{process ch in HTML code}b{}
+						1{}if (ch == '{') {b{}
+						2{}switch (last) {b{}
+						3{}e{escape html macro}b{}
+						3{}default: break;b{}
+						2{}}
+						2{}if (special) {b{}
+						3{}last = 0;b{}
+						3{}continue;b{}
+						2{}}b{}
+						1{}}
+						x{process ch in HTML code}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'a':b{}
+						2{}fprintf(out, "&lt;span class=\"add\"&gt;@add(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'x':b{}
+						2{}fprintf(out, "&lt;span class=\"end\"&gt;@end(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'e':b{}
+						2{}fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'i':b{}
+						2{}fprintf(out, "&lt;span class=\"include\"&gt;@include(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 't':b{}
+						2{}fprintf(out, "&lt;span class=\"type\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'v':b{}
+						2{}fprintf(out, "&lt;span class=\"var\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'f':b{}
+						2{}fprintf(out, "&lt;span class=\"fn\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'k':b{}
+						2{}fprintf(out, "&lt;span class=\"keyword\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 's':b{}
+						2{}fprintf(out, "&lt;span class=\"str\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'n':b{}
+						2{}fprintf(out, "&lt;span class=\"num\"&gt;");b{}
+						2{}special = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code}b{}
+						1{}if (ch == '}' &amp;&amp; special) {b{}
+						2{}if (last) {b{}
+						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						3{}last = 0;b{}
+						2{}}b{}
+						2{}switch (special) {b{}
+						3{}case 'a': case 'e': case 'i': case 'x':b{}
+						4{}fprintf(out, ")&lt;/span&gt;");b{}
+						2{}}b{}
+						2{}fprintf(out, "&lt;/span&gt;");b{}
+						2{}special = 0;b{}
+						2{}continue;b{}
+						1{}}
+						x{process ch in HTML code}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code}b{}
+						1{}if (last) {b{}
+						2{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						1{}}b{}
+						2{}last = ch;b{}
 						x{process ch in HTML code}
 					</code></div>
 					<ul>
@@ -387,10 +586,10 @@
 					<div><code>
 						a{global elements} b{}
 						1{}t{void} f{writeEscaped}(b{}
-						2{}t{FILE *}v{out}, t{const char *}v{str}b{}
+						2{}t{FILE *}v{out}, t{const char *}v{str}, const char *endb{}
 						1{}) {b{}
 						2{}f{ASSERT}(v{out}); f{ASSERT}(v{str});b{}
-						2{}k{for} (; *v{str}; ++v{str}) k{switch} (*v{str}) {b{}
+						2{}k{for} (; *v{str} &amp;&amp; str != end; ++v{str}) k{switch} (*v{str}) {b{}
 						3{}k{case} s{'&lt;'}:b{}
 						4{}f{fprintf}(v{out}, s{"&amp;lt;"}); k{break};b{}
 						3{}k{case} s{'&gt;'}:b{}
@@ -412,7 +611,7 @@
 					<div><code>
 						a{write header tag} b{}
 						1{}f{fprintf}(v{out}, s{"&lt;h%d&gt;"}, v{headerLevel});b{}
-						1{}f{writeEscaped}(v{out}, v{buffer});b{}
+						1{}f{writeEscaped}(v{out}, v{buffer}, NULL);b{}
 						1{}f{fprintf}(v{out}, s{"&lt;/h%d&gt;\n"}, v{headerLevel});b{}
 						x{write header tag}
 					</code></div>
