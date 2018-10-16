@@ -159,11 +159,13 @@
 					<div><code>
 						<span class="add">@add(<span class="macro-name">write HTML file from in to out</span>)</span> {<br/>
 						<span class="in1"></span><span class="type">int</span> <span class="var">headerLevel</span> = <span class="num">0</span>, <span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
+						<span class="in1"></span>int indentLevel = 0;<br/>
 						<span class="in1"></span><span class="type">bool</span> <span class="var">wroteHeader</span> = <span class="keyword">false</span>;<br/>
 						<span class="in1"></span><span class="type">bool</span> <span class="var">inCode</span> = <span class="keyword">false</span>;<br/>
+						<span class="in1"></span>bool someCode = false;<br/>
 						<span class="in1"></span><span class="type">bool</span> <span class="var">inNotes</span> = <span class="keyword">false</span>;<br/>
 						<span class="in1"></span><span class="type">bool</span> <span class="var">startOfLine</span> = <span class="keyword">true</span>;<br/>
-						<span class="in1"></span><span class="type">char</span> <span class="var">buffer</span>[<span class="num">100</span>];<br/>
+						<span class="in1"></span><span class="type">char</span> <span class="var">buffer</span>[<span class="num">400</span>];<br/>
 						<span class="in1"></span><span class="type">char *</span><span class="var">bc</span> = <span class="keyword">NULL</span>;<br/>
 						<span class="in1"></span><span class="type">char</span> <span class="var">special</span> = <span class="str">'\0'</span>;<br/>
 						<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
@@ -255,12 +257,37 @@
 						<span class="in1"></span>}<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">codeLevel</span>) {<br/>
 						<span class="in2"></span><span class="keyword">if</span> (<span class="var">codeLevel</span> == <span class="num">3</span>) {<br/>
+
+						<span class="in3"></span>fprintf(out, "&lt;/div&gt;&lt;div&gt;&lt;div&gt;\n");<br/>
+						<span class="in3"></span>fprintf(out, "&lt;code&gt;\n");<br/>
 						<span class="in3"></span><span class="var">inCode</span> = <span class="keyword">true</span>;<br/>
+						<span class="in3"></span><span class="var">someCode</span> = <span class="keyword">true</span>;<br/>
+						<span class="in3"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
 						<span class="in3"></span><span class="keyword">continue</span>;<br/>
 						<span class="in2"></span>}<br/>
 						<span class="in2"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
 						<span class="in1"></span>}<br/>
 						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span> <br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">startOfLine</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'\t'</span>) {<br/>
+						<span class="in2"></span>++<span class="var">indentLevel</span>;<br/>
+						<span class="in2"></span><span class="keyword">continue</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="in1"></span>if (indentLevel) {<br/>
+						<span class="in2"></span>fprintf(<br/>
+						<span class="in3"></span>out, "&lt;span class=\"in%d\"&gt;&lt;/span&gt;", indentLevel<br/>
+						<span class="in2"></span>);<br/>
+						<span class="in2"></span>indentLevel = 0;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
 					</code></div>
 					<ul>
 						<li>
@@ -276,11 +303,41 @@
 						<span class="in1"></span>}<br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">codeLevel</span>) {<br/>
 						<span class="in2"></span><span class="keyword">if</span> (<span class="var">codeLevel</span> == <span class="num">3</span>) {<br/>
+						<span class="in3"></span>fprintf(out, "&lt;/code&gt;&lt;/div&gt;\n");<br/>
 						<span class="in3"></span><span class="var">inCode</span> = <span class="keyword">false</span>;<br/>
+						<span class="in2"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
 						<span class="in3"></span><span class="keyword">continue</span>;<br/>
 						<span class="in2"></span>}<br/>
 						<span class="in2"></span><span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
 						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span> <br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">startOfLine</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'`'</span>) {<br/>
+						<span class="in2"></span>++<span class="var">codeLevel</span>;<br/>
+						<span class="in2"></span><span class="keyword">continue</span>;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+						<span class="in2"></span>fprintf(out, "&lt;br/&gt;\n");<br/>
+						<span class="in2"></span>continue;<br/>
+						<span class="in1"></span>}<br/>
+						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span> <br/>
 						<span class="in1"></span>fputc(ch, out);<br/>
 						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
 					</code></div>
@@ -311,6 +368,9 @@
 					<div><code>
 						<span class="add">@add(<span class="macro-name">close previous HTML page</span>)</span> <br/>
 						<span class="in1"></span><span class="keyword">if</span> (<span class="var">wroteHeader</span>) {<br/>
+						<span class="in2"></span>if (someCode) {<br/>
+						<span class="in3"></span>someCode = false;<br/>
+						<span class="in2"></span>}<br/>
 						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 						<span class="in1"></span>} <span class="keyword">else</span> {<br/>

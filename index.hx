@@ -34,7 +34,7 @@
 a{file: hx.c}
 	e{global elements}
 	t{int} f{main}(
-	t{int} v{argc}, t{const char **}v{argv}
+		t{int} v{argc}, t{const char **}v{argv}
 	) {
 		e{main body}
 	}
@@ -45,7 +45,7 @@ x{file: hx.c}
   definiert werden können
 
 ```
-a{main body}b{}
+a{main body}
 	e{perform unit-tests};
 	e{process arguments};
 	e{read source file};

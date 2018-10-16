@@ -38,22 +38,28 @@
 <div><div>
 <h1>Definition des Ablaufs</h1>
 </div>
-a{file: hx.c}
-	e{global elements}
-	t{int} f{main}(
-	t{int} v{argc}, t{const char **}v{argv}
-	) {
-		e{main body}
-	}
-x{file: hx.c}
-a{main body}b{}
-	e{perform unit-tests};
-	e{process arguments};
-	e{read source file};
-	e{serialize fragments};
-	e{compile program};
-	e{write HTML file};
-x{main body}
+</div><div><div>
+<code>
+a{file: hx.c}<br/>
+<span class="in1"></span>e{global elements}<br/>
+<span class="in1"></span>t{int} f{main}(<br/>
+<span class="in2"></span>t{int} v{argc}, t{const char **}v{argv}<br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span>e{main body}<br/>
+<span class="in1"></span>}<br/>
+x{file: hx.c}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{main body}<br/>
+<span class="in1"></span>e{perform unit-tests};<br/>
+<span class="in1"></span>e{process arguments};<br/>
+<span class="in1"></span>e{read source file};<br/>
+<span class="in1"></span>e{serialize fragments};<br/>
+<span class="in1"></span>e{compile program};<br/>
+<span class="in1"></span>e{write HTML file};<br/>
+x{main body}<br/>
+</code></div>
 </div>
 </div>
 <h2>Was macht `@expand`?</h2>
@@ -61,11 +67,14 @@ x{main body}
 <div><div>
 <h2>Was macht `@expand`?</h2>
 </div>
-a{global elements}
-	e{includes};
-	e{define logging};
-	e{forward declarations};
-x{global elements}
+</div><div><div>
+<code>
+a{global elements}<br/>
+<span class="in1"></span>e{includes};<br/>
+<span class="in1"></span>e{define logging};<br/>
+<span class="in1"></span>e{forward declarations};<br/>
+x{global elements}<br/>
+</code></div>
 </div>
 </div>
 <h1>Minimale Vorbereitung für das Parsen</h1>
@@ -73,71 +82,82 @@ x{global elements}
 <div><div>
 <h1>Minimale Vorbereitung für das Parsen</h1>
 </div>
-a{includes}
-	#include <stdio.h>
+</div><div><div>
+<code>
+a{includes}<br/>
+<span class="in1"></span>#include <stdio.h><br/>
+<span class="in1"></span>#include <stdlib.h><br/>
+x{includes}<br/>
+</code></div>
 </div>
 </div>
-<h1>include &lt;stdio.h&gt;</h1>
+<h2>include &lt;stdio.h&gt;include &lt;stdlib.h&gt;x{includes}* Standard File-Funktionen werden vom Programm benötigt</h2>
 <div class="slides">
 <div><div>
-<h1>include &lt;stdio.h&gt;</h1>
+<h2>include &lt;stdio.h&gt;include &lt;stdlib.h&gt;x{includes}* Standard File-Funktionen werden vom Programm benötigt</h2>
 </div>
-	#include <stdlib.h>
-</div>
-</div>
-<h1>include &lt;stdlib.h&gt;</h1>
-<div class="slides">
-<div><div>
-<h1>include &lt;stdlib.h&gt;</h1>
-</div>
-x{includes}
-a{global elements}
-	t{struct Input} {
-		t{struct Input *}v{link};
-		t{FILE *}v{file};
-	};
-
-	t{struct Input *}v{input} = k{NULL};b{}
-x{global elements}
-a{global elements}b{}
-	t{void} f{pushFile} (t{FILE *}v{file}) {
-		t{struct Input *}v{i} =
-			f{malloc}(f{sizeof}(t{struct Input}));
-
-		e{check memory for input};
-		v{i}->v{link} = v{input};
-		v{i}->v{file} = v{file};
-		v{input} = v{i};
-	}
-x{global elements}
-a{global elements}b{}
-	t{void} f{pushPath}(t{const char *}v{path}) {
-		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
-		e{check file for path};
-		f{pushFile}(v{f});
-	}b{}
-x{global elements}
-a{process arguments}b{}
-	k{if}(v{argc} > n{1}) {
-		f{pushPath}(v{argv}[n{1}]);
-	} k{else} {
-		f{pushFile}(v{stdin});
-	}
-x{process arguments}
-a{global elements}
-	t{int} f{nextCh}() {
-		t{int} v{ch} = k{EOF};
-		k{while} (v{input}) {
-			v{ch} = f{fgetc}(v{input}->v{file});
-			k{if} (v{ch} != k{EOF}) { k{break}; }
-			t{struct Input *}v{n} = v{input}->v{link};
-			f{fclose}(v{input}->v{file});
-			f{free}(v{input});
-			v{input} = v{n};
-		}
-		k{return} v{ch};
-	}
-x{global elements}
+</div><div><div>
+<code>
+a{global elements}<br/>
+<span class="in1"></span>t{struct Input} {<br/>
+<span class="in2"></span>t{struct Input *}v{link};<br/>
+<span class="in2"></span>t{FILE *}v{file};<br/>
+<span class="in1"></span>};<br/>
+<br/>
+<span class="in1"></span>t{struct Input *}v{input} = k{NULL};b{}<br/>
+x{global elements}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{global elements}b{}<br/>
+<span class="in1"></span>t{void} f{pushFile} (t{FILE *}v{file}) {<br/>
+<span class="in2"></span>t{struct Input *}v{i} =<br/>
+<span class="in3"></span>f{malloc}(f{sizeof}(t{struct Input}));<br/>
+<br/>
+<span class="in2"></span>e{check memory for input};<br/>
+<span class="in2"></span>v{i}->v{link} = v{input};<br/>
+<span class="in2"></span>v{i}->v{file} = v{file};<br/>
+<span class="in2"></span>v{input} = v{i};<br/>
+<span class="in1"></span>}<br/>
+x{global elements}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{global elements}b{}<br/>
+<span class="in1"></span>t{void} f{pushPath}(t{const char *}v{path}) {<br/>
+<span class="in2"></span>t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});<br/>
+<span class="in2"></span>e{check file for path};<br/>
+<span class="in2"></span>f{pushFile}(v{f});<br/>
+<span class="in1"></span>}b{}<br/>
+x{global elements}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process arguments}b{}<br/>
+<span class="in1"></span>k{if}(v{argc} > n{1}) {<br/>
+<span class="in2"></span>f{pushPath}(v{argv}[n{1}]);<br/>
+<span class="in1"></span>} k{else} {<br/>
+<span class="in2"></span>f{pushFile}(v{stdin});<br/>
+<span class="in1"></span>}<br/>
+x{process arguments}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{global elements}<br/>
+<span class="in1"></span>t{int} f{nextCh}() {<br/>
+<span class="in2"></span>t{int} v{ch} = k{EOF};<br/>
+<span class="in2"></span>k{while} (v{input}) {<br/>
+<span class="in3"></span>v{ch} = f{fgetc}(v{input}->v{file});<br/>
+<span class="in3"></span>k{if} (v{ch} != k{EOF}) { k{break}; }<br/>
+<span class="in3"></span>t{struct Input *}v{n} = v{input}->v{link};<br/>
+<span class="in3"></span>f{fclose}(v{input}->v{file});<br/>
+<span class="in3"></span>f{free}(v{input});<br/>
+<span class="in3"></span>v{input} = v{n};<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span>k{return} v{ch};<br/>
+<span class="in1"></span>}<br/>
+x{global elements}<br/>
+</code></div>
 </div>
 </div>
 <h1>Buffer</h1>
@@ -145,7 +165,10 @@ x{global elements}
 <div><div>
 <h1>Buffer</h1>
 </div>
-i{buffer.xml}
+</div><div><div>
+<code>
+i{buffer.xml}<br/>
+</code></div>
 </div>
 </div>
 <h1>Consumer</h1>
@@ -153,7 +176,10 @@ i{buffer.xml}
 <div><div>
 <h1>Consumer</h1>
 </div>
-i{consumer.xml}
+</div><div><div>
+<code>
+i{consumer.xml}<br/>
+</code></div>
 </div>
 </div>
 <h1>Makros</h1>
@@ -161,7 +187,10 @@ i{consumer.xml}
 <div><div>
 <h1>Makros</h1>
 </div>
-i{macros.xml}
+</div><div><div>
+<code>
+i{macros.xml}<br/>
+</code></div>
 </div>
 </div>
 <h1>Eingabe-Dateien lesen</h1>
@@ -169,165 +198,222 @@ i{macros.xml}
 <div><div>
 <h1>Eingabe-Dateien lesen</h1>
 </div>
-a{read source file}b{}
-	e{global source vars};
-	{
-		e{additional read vars};
-		t{int} v{last} = f{nextCh}();
-		t{int} v{ch} = f{nextCh}();
-		k{while} (v{ch} != v{EOF}) {
-			e{process current char};
-			v{last} = v{ch}; v{ch} = f{nextCh}();
-		}
-	}
-x{read source file}
-a{process current char}
-	k{switch} (v{ch}) {
-		k{case} '{':
-			e{process open brace};
-			k{break};
-		k{case} '}': {
-			t{bool} v{processed} = k{false};
-			e{process close brace};
-			k{break};
-		}
-		k{default}:
-			e{process other char};
-	}
-x{process current char}
-a{additional read vars}
-	t{struct Macro *} v{macro} = k{NULL};
-	t{struct Buffer} v{buffer} = {};
-x{additional read vars}
-a{additional read vars}
-	t{char} v{openCh} = s{'\0'};
-x{additional read vars}
-a{additional read vars}b{}
-	t{char} v{name}t{[128]};
-	t{char *}v{nameCur} = k{NULL};	
-	t{const char *}v{nameEnd} = v{name} +
-		k{sizeof}(v{name});
-x{additional read vars}
-a{process close brace} {
-	k{if} (v{nameCur}) {
-		*v{nameCur} = s{'\0'};
-		e{process macro name};
-		v{nameCur} = k{NULL};
-		v{last} = v{ch};
-		v{ch} = f{nextCh}();
-	}
-} x{process close brace}
-a{process other char} {
-	k{if} (v{nameCur}) {
-		f{ASSERT}(v{nameCur} < v{nameEnd});
-		*v{nameCur}++ = v{ch};
-		k{break};
-	}b{}
-} x{process other char}
-a{process other char} {
-	k{if} (v{macro}) {
-		f{addToBuffer}(&v{buffer}, v{last});
-	}
-} x{process other char}
-a{process open brace} {
-	k{if} (! v{macro}) {
-		k{if} (v{last} == s{'a'} || v{last} == s{'i'}) {
-			v{openCh} = v{last};
-			v{nameCur} = v{name};
-			k{break};
-		}
-	}
-} x{process open brace}
-a{global source vars}
-	t{struct MacroMap} v{macros} = {};
-x{global source vars}
-a{process macro name}
-	k{if} (v{openCh} == s{'a'}) {
-		f{ASSERT}(! v{macro});
-		v{macro} = f{getMacroInMap}(
-			&v{macros}, v{name}, v{nameCur}
-		);
-		v{processed} = k{true};
-	}b{}
-x{process macro name}
-a{process macro name}
-	k{if} (v{openCh} == s{'x'}) {
-		f{ASSERT}(v{macro});
-		e{macro names must match};
-		e{flush macro buffer};
-		v{macro} = k{NULL};
-		v{processed} = k{true};
-	}
-x{process macro name}
-a{process macro name}
-	k{if} (v{openCh} == s{'i'}) {
-		f{ASSERT}(! v{macro});
-		f{pushPath}(v{name});
-		v{processed} = k{true};
-	}
-x{process macro name}
-a{process macro name}
-	k{if} (v{openCh} == s{'e'}) {
-		f{ASSERT}(v{macro});
-		e{flush macro buffer};
-		t{struct Macro *}v{sub} =
-			f{getMacroInMap}(
-				&v{macros}, v{name}, v{nameCur});
-		f{addMacroToMacro}(
-			v{macro}, v{sub});
-		v{processed} = k{true};
-	}
-x{process macro name}
-a{flush macro buffer}
-	k{if} (
-		v{buffer}.v{buffer} != v{buffer}.v{current}
-	) {
-		f{addBytesToMacro}(
-			v{macro}, v{buffer}.v{buffer},
-			v{buffer}.v{current}
-		);
-		f{resetBuffer}(&v{buffer});
-	}
-x{flush macro buffer}
-a{process open brace} {b{}
-	k{if} (v{macro}) {b{}
-		t{bool} v{valid} = k{false};b{}
-		e{check valid names};b{}
-		k{if} (v{valid}) {b{}
-			v{openCh} = v{last};b{}
-			v{nameCur} = v{name};b{}
-			k{break};b{}
-		}b{}
-	}b{}
-} x{process open brace}
-a{check valid names}
-	k{static} t{const char} v{valids}[] =
-		s{"123456bfvsntkxe"};
-	k{if} (f{strchr}(v{valids}, v{last})) {
-		v{valid} = k{true};
-	}b{}
-x{check valid names}
-a{process macro name}
-	k{if} (! v{processed}) {
-		f{ASSERT}(v{macro});
-		t{const char *}v{c} = v{name};
-		k{for} (; v{c} != v{nameCur}; ++v{c}) {
-			f{addToBuffer}(&v{buffer}, *v{c});
-		}
-		v{processed} = k{true};
-	}
-x{process macro name}
-a{process open brace}
-	k{if} (v{macro}) {
-		f{addToBuffer}(&v{buffer}, v{last});
-	}b{}
-x{process open brace}
-
-a{process close brace}
-	k{if} (v{macro} && ! v{processed}) {
-		f{addToBuffer}(&v{buffer}, v{last});
-	}
-x{process close brace}
+</div><div><div>
+<code>
+a{read source file}b{}<br/>
+<span class="in1"></span>e{global source vars};<br/>
+<span class="in1"></span>{<br/>
+<span class="in2"></span>e{additional read vars};<br/>
+<span class="in2"></span>t{int} v{last} = f{nextCh}();<br/>
+<span class="in2"></span>t{int} v{ch} = f{nextCh}();<br/>
+<span class="in2"></span>k{while} (v{ch} != v{EOF}) {<br/>
+<span class="in3"></span>e{process current char};<br/>
+<span class="in3"></span>v{last} = v{ch}; v{ch} = f{nextCh}();<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+x{read source file}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process current char}<br/>
+<span class="in1"></span>k{switch} (v{ch}) {<br/>
+<span class="in2"></span>k{case} '{':<br/>
+<span class="in3"></span>e{process open brace};<br/>
+<span class="in3"></span>k{break};<br/>
+<span class="in2"></span>k{case} '}': {<br/>
+<span class="in3"></span>t{bool} v{processed} = k{false};<br/>
+<span class="in3"></span>e{process close brace};<br/>
+<span class="in3"></span>k{break};<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span>k{default}:<br/>
+<span class="in3"></span>e{process other char};<br/>
+<span class="in1"></span>}<br/>
+x{process current char}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{additional read vars}<br/>
+<span class="in1"></span>t{struct Macro *} v{macro} = k{NULL};<br/>
+<span class="in1"></span>t{struct Buffer} v{buffer} = {};<br/>
+x{additional read vars}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{additional read vars}<br/>
+<span class="in1"></span>t{char} v{openCh} = s{'\0'};<br/>
+x{additional read vars}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{additional read vars}b{}<br/>
+<span class="in1"></span>t{char} v{name}t{[128]};<br/>
+<span class="in1"></span>t{char *}v{nameCur} = k{NULL};<span class="in1"></span><br/>
+<span class="in1"></span>t{const char *}v{nameEnd} = v{name} +<br/>
+<span class="in2"></span>k{sizeof}(v{name});<br/>
+x{additional read vars}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process close brace} {<br/>
+<span class="in1"></span>k{if} (v{nameCur}) {<br/>
+<span class="in2"></span>*v{nameCur} = s{'\0'};<br/>
+<span class="in2"></span>e{process macro name};<br/>
+<span class="in2"></span>v{nameCur} = k{NULL};<br/>
+<span class="in2"></span>v{last} = v{ch};<br/>
+<span class="in2"></span>v{ch} = f{nextCh}();<br/>
+<span class="in1"></span>}<br/>
+} x{process close brace}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process other char} {<br/>
+<span class="in1"></span>k{if} (v{nameCur}) {<br/>
+<span class="in2"></span>f{ASSERT}(v{nameCur} < v{nameEnd});<br/>
+<span class="in2"></span>*v{nameCur}++ = v{ch};<br/>
+<span class="in2"></span>k{break};<br/>
+<span class="in1"></span>}b{}<br/>
+} x{process other char}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process other char} {<br/>
+<span class="in1"></span>k{if} (v{macro}) {<br/>
+<span class="in2"></span>f{addToBuffer}(&v{buffer}, v{last});<br/>
+<span class="in1"></span>}<br/>
+} x{process other char}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process open brace} {<br/>
+<span class="in1"></span>k{if} (! v{macro}) {<br/>
+<span class="in2"></span>k{if} (v{last} == s{'a'} || v{last} == s{'i'}) {<br/>
+<span class="in3"></span>v{openCh} = v{last};<br/>
+<span class="in3"></span>v{nameCur} = v{name};<br/>
+<span class="in3"></span>k{break};<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+} x{process open brace}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{global source vars}<br/>
+<span class="in1"></span>t{struct MacroMap} v{macros} = {};<br/>
+x{global source vars}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process macro name}<br/>
+<span class="in1"></span>k{if} (v{openCh} == s{'a'}) {<br/>
+<span class="in2"></span>f{ASSERT}(! v{macro});<br/>
+<span class="in2"></span>v{macro} = f{getMacroInMap}(<br/>
+<span class="in3"></span>&v{macros}, v{name}, v{nameCur}<br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span>v{processed} = k{true};<br/>
+<span class="in1"></span>}b{}<br/>
+x{process macro name}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process macro name}<br/>
+<span class="in1"></span>k{if} (v{openCh} == s{'x'}) {<br/>
+<span class="in2"></span>f{ASSERT}(v{macro});<br/>
+<span class="in2"></span>e{macro names must match};<br/>
+<span class="in2"></span>e{flush macro buffer};<br/>
+<span class="in2"></span>v{macro} = k{NULL};<br/>
+<span class="in2"></span>v{processed} = k{true};<br/>
+<span class="in1"></span>}<br/>
+x{process macro name}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process macro name}<br/>
+<span class="in1"></span>k{if} (v{openCh} == s{'i'}) {<br/>
+<span class="in2"></span>f{ASSERT}(! v{macro});<br/>
+<span class="in2"></span>f{pushPath}(v{name});<br/>
+<span class="in2"></span>v{processed} = k{true};<br/>
+<span class="in1"></span>}<br/>
+x{process macro name}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process macro name}<br/>
+<span class="in1"></span>k{if} (v{openCh} == s{'e'}) {<br/>
+<span class="in2"></span>f{ASSERT}(v{macro});<br/>
+<span class="in2"></span>e{flush macro buffer};<br/>
+<span class="in2"></span>t{struct Macro *}v{sub} =<br/>
+<span class="in3"></span>f{getMacroInMap}(<br/>
+<span class="in4"></span>&v{macros}, v{name}, v{nameCur});<br/>
+<span class="in2"></span>f{addMacroToMacro}(<br/>
+<span class="in3"></span>v{macro}, v{sub});<br/>
+<span class="in2"></span>v{processed} = k{true};<br/>
+<span class="in1"></span>}<br/>
+x{process macro name}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{flush macro buffer}<br/>
+<span class="in1"></span>k{if} (<br/>
+<span class="in2"></span>v{buffer}.v{buffer} != v{buffer}.v{current}<br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span>f{addBytesToMacro}(<br/>
+<span class="in3"></span>v{macro}, v{buffer}.v{buffer},<br/>
+<span class="in3"></span>v{buffer}.v{current}<br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span>f{resetBuffer}(&v{buffer});<br/>
+<span class="in1"></span>}<br/>
+x{flush macro buffer}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process open brace} {b{}<br/>
+<span class="in1"></span>k{if} (v{macro}) {b{}<br/>
+<span class="in2"></span>t{bool} v{valid} = k{false};b{}<br/>
+<span class="in2"></span>e{check valid names};b{}<br/>
+<span class="in2"></span>k{if} (v{valid}) {b{}<br/>
+<span class="in3"></span>v{openCh} = v{last};b{}<br/>
+<span class="in3"></span>v{nameCur} = v{name};b{}<br/>
+<span class="in3"></span>k{break};b{}<br/>
+<span class="in2"></span>}b{}<br/>
+<span class="in1"></span>}b{}<br/>
+} x{process open brace}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{check valid names}<br/>
+<span class="in1"></span>k{static} t{const char} v{valids}[] =<br/>
+<span class="in2"></span>s{"123456bfvsntkxe"};<br/>
+<span class="in1"></span>k{if} (f{strchr}(v{valids}, v{last})) {<br/>
+<span class="in2"></span>v{valid} = k{true};<br/>
+<span class="in1"></span>}b{}<br/>
+x{check valid names}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process macro name}<br/>
+<span class="in1"></span>k{if} (! v{processed}) {<br/>
+<span class="in2"></span>f{ASSERT}(v{macro});<br/>
+<span class="in2"></span>t{const char *}v{c} = v{name};<br/>
+<span class="in2"></span>k{for} (; v{c} != v{nameCur}; ++v{c}) {<br/>
+<span class="in3"></span>f{addToBuffer}(&v{buffer}, *v{c});<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span>v{processed} = k{true};<br/>
+<span class="in1"></span>}<br/>
+x{process macro name}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{process open brace}<br/>
+<span class="in1"></span>k{if} (v{macro}) {<br/>
+<span class="in2"></span>f{addToBuffer}(&v{buffer}, v{last});<br/>
+<span class="in1"></span>}b{}<br/>
+x{process open brace}<br/>
+<br/>
+a{process close brace}<br/>
+<span class="in1"></span>k{if} (v{macro} && ! v{processed}) {<br/>
+<span class="in2"></span>f{addToBuffer}(&v{buffer}, v{last});<br/>
+<span class="in1"></span>}<br/>
+x{process close brace}<br/>
+</code></div>
 </div>
 </div>
 <h1>Entities auflösen</h1>
@@ -335,7 +421,10 @@ x{process close brace}
 <div><div>
 <h1>Entities auflösen</h1>
 </div>
-i{entities.xml}
+</div><div><div>
+<code>
+i{entities.xml}<br/>
+</code></div>
 </div>
 </div>
 <h1>Fragmente serialisieren</h1>
@@ -343,33 +432,39 @@ i{entities.xml}
 <div><div>
 <h1>Fragmente serialisieren</h1>
 </div>
-a{serialize fragments} {
-	t{struct Macro **}v{cur} = v{macros}.v{macros};
-	t{struct Macro **}v{end} =
-		v{cur} + v{MACRO_SLOTS};
-	k{for} (; v{cur} < v{end}; ++v{cur}) {
-		t{struct Macro *}v{macro} = *v{cur};
-		k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
-			k{if} (! f{memcmp}(
-				s{"file: "}, macro->name, n{6}
-			)) {
-				e{write in file};
-			}
-		}
-	}
-} x{serialize fragments}
-a{write in file}b{}
-	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
-	f{ASSERT}(v{f});
-	t{struct FileConsumer} v{fc};
-	f{setupFileConsumer}(&v{fc}, v{f});
-	t{struct EntityConsumer} v{ec};
-	f{setupEntityConsumer}(&v{ec}, &v{fc}.v{consumer});
-	f{serializeMacro}(
-		v{macro}, &v{ec}.v{consumer}
-	);
-	f{fclose}(v{f});
-x{write in file}
+</div><div><div>
+<code>
+a{serialize fragments} {<br/>
+<span class="in1"></span>t{struct Macro **}v{cur} = v{macros}.v{macros};<br/>
+<span class="in1"></span>t{struct Macro **}v{end} =<br/>
+<span class="in2"></span>v{cur} + v{MACRO_SLOTS};<br/>
+<span class="in1"></span>k{for} (; v{cur} < v{end}; ++v{cur}) {<br/>
+<span class="in2"></span>t{struct Macro *}v{macro} = *v{cur};<br/>
+<span class="in2"></span>k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {<br/>
+<span class="in3"></span>k{if} (! f{memcmp}(<br/>
+<span class="in4"></span>s{"file: "}, macro->name, n{6}<br/>
+<span class="in3"></span>)) {<br/>
+<span class="in4"></span>e{write in file};<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+} x{serialize fragments}<br/>
+</code></div>
+</div><div><div>
+<code>
+a{write in file}b{}<br/>
+<span class="in1"></span>t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");<br/>
+<span class="in1"></span>f{ASSERT}(v{f});<br/>
+<span class="in1"></span>t{struct FileConsumer} v{fc};<br/>
+<span class="in1"></span>f{setupFileConsumer}(&v{fc}, v{f});<br/>
+<span class="in1"></span>t{struct EntityConsumer} v{ec};<br/>
+<span class="in1"></span>f{setupEntityConsumer}(&v{ec}, &v{fc}.v{consumer});<br/>
+<span class="in1"></span>f{serializeMacro}(<br/>
+<span class="in2"></span>v{macro}, &v{ec}.v{consumer}<br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span>f{fclose}(v{f});<br/>
+x{write in file}<br/>
+</code></div>
 </div>
 </div>
 <h1>HTML generieren</h1>
@@ -377,7 +472,10 @@ x{write in file}
 <div><div>
 <h1>HTML generieren</h1>
 </div>
-i{html.xml}
+</div><div><div>
+<code>
+i{html.xml}<br/>
+</code></div>
 </div>
 </div>
 </body></html>

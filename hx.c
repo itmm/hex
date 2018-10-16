@@ -799,7 +799,7 @@
 						}
 						
 	int main(
-	int argc, const char **argv
+		int argc, const char **argv
 	) {
 		
 	 {
@@ -1038,11 +1038,13 @@
 						ASSERT(in);
 						 {
 						int headerLevel = 0, codeLevel = 0;
+						int indentLevel = 0;
 						bool wroteHeader = false;
 						bool inCode = false;
+						bool someCode = false;
 						bool inNotes = false;
 						bool startOfLine = true;
-						char buffer[100];
+						char buffer[400];
 						char *bc = NULL;
 						char special = '\0';
 						for (;;) {
@@ -1050,18 +1052,40 @@
 						 
 						if (inCode) {
 						 
+						if (startOfLine && ch == '\t') {
+						++indentLevel;
+						continue;
+						}
+						if (indentLevel) {
+						fprintf(
+						out, "<span class=\"in%d\"></span>", indentLevel
+						);
+						indentLevel = 0;
+						}
+						 
 						if (startOfLine && ch == '`') {
 						++codeLevel;
 						continue;
 						}
 						if (ch == '\n' && codeLevel) {
 						if (codeLevel == 3) {
+						fprintf(out, "</code></div>\n");
 						inCode = false;
 						codeLevel = 0;
 						continue;
 						}
 						codeLevel = 0;
 						}
+						 
+						if (startOfLine && ch == '`') {
+						++codeLevel;
+						continue;
+						}
+						if (ch == '\n') {
+						fprintf(out, "<br/>\n");
+						continue;
+						}
+						 
 						fputc(ch, out);
 						;
 						}
@@ -1080,6 +1104,9 @@
 						*bc = '\0';
 						 
 						if (wroteHeader) {
+						if (someCode) {
+						someCode = false;
+						}
 						fprintf(out, "</div>\n");
 						fprintf(out, "</div>\n");
 						} else {
@@ -1145,7 +1172,11 @@
 						}
 						if (ch == '\n' && codeLevel) {
 						if (codeLevel == 3) {
+
+						fprintf(out, "</div><div><div>\n");
+						fprintf(out, "<code>\n");
 						inCode = true;
+						someCode = true;
 						codeLevel = 0;
 						continue;
 						}
@@ -1155,6 +1186,9 @@
 						if (ch == EOF) {
 						 
 						if (wroteHeader) {
+						if (someCode) {
+						someCode = false;
+						}
 						fprintf(out, "</div>\n");
 						fprintf(out, "</div>\n");
 						} else {
