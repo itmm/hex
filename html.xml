@@ -165,7 +165,7 @@
 						1{}bool someCode = false;b{}
 						1{}t{bool} v{inNotes} = k{false};b{}
 						1{}t{bool} v{startOfLine} = k{true};b{}
-						1{}t{char} v{buffer}[n{400}];b{}
+						1{}t{char} v{buffer}[n{100}];b{}
 						1{}t{char *}v{bc} = k{NULL};b{}
 						1{}t{char} v{special} = s{'\0'};b{}
 						1{}k{for} (;;) {b{}

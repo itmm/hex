@@ -1045,7 +1045,7 @@
 						bool someCode = false;
 						bool inNotes = false;
 						bool startOfLine = true;
-						char buffer[400];
+						char buffer[100];
 						char *bc = NULL;
 						char special = '\0';
 						for (;;) {
