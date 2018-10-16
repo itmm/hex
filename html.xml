@@ -334,7 +334,7 @@
 						3{}last = 0;b{}
 						2{}}b{}
 						2{}fprintf(out, "&lt;br/&gt;\n");b{}
-						2{}continue;b{}
+						1{}continue;b{}
 						1{}}b{}
 						x{process ch in HTML code}
 					</code></div>
@@ -536,7 +536,8 @@
 						1{}if (last) {b{}
 						2{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
 						1{}}b{}
-						2{}last = ch;b{}
+						1{}last = ch;b{}
+						1{}continue;b{}
 						x{process ch in HTML code}
 					</code></div>
 					<ul>

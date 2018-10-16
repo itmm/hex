@@ -1177,6 +1177,7 @@
 						writeEscaped(out, &last, &last + 1);
 						}
 						last = ch;
+						continue;
 						;
 						}
 						 
