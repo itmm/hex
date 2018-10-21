@@ -198,7 +198,7 @@
 						2{}.v{state} = v{hs_NOTHING_WRITTEN}b{}
 						2{}e{init html status}b{}
 						1{}};b{}
-						1{}char last = 0;b{}
+						1{}char last = '\n';b{}
 
 						1{}// t{int} v{headerLevel} = n{0}, v{codeLevel} = n{0};b{}
 						1{}// int indentLevel = 0;b{}

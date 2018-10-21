@@ -1,4 +1,3 @@
-
 # HTML Extractor
 * Dieses Dokument ist eine Präsentation, welche die Entwicklung des
   **HTML Extractors** (`hx`) beschreibt
@@ -178,7 +177,7 @@ x{global elements}
 * Der dynamisch wachsen kann
 
 ```
-i{buffer.xml}
+i{buffer.hx}
 ```
 * Buffer werden in einer eigenen Datei definiert
 
