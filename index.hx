@@ -185,7 +185,7 @@ i{buffer.hx}
 * Schnittstelle um Bytes zu konsumieren
 
 ```
-i{consumer.xml}
+i{consumer.hx}
 ```
 * Consumer werden in einer eigenen Datei definiert
 
