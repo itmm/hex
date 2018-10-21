@@ -1,16 +1,18 @@
 CFLAGS += -Wall -std=c99
 
-.PHONY: all install clean test
+.PHONY: all install clean test run_hx
 
 HXS := $(wildcard *.hx)
 SOURCES := $(wildcard *.xml)
-HTMLs := $(SOURCES:.xml=.html)
+HTMLs := $(SOURCES:.xml=.html) ${HXS:.hx=.html}
 
 all: ${HTMLs} hx.c
 
-hx.c: ${HXS} ${SOURCES}
+run_hx: ${HXS}
 	@echo "hx index.hx"
 	@hx index.hx
+
+hx.c: run_hx
 
 hx: hx.c
 

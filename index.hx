@@ -197,7 +197,7 @@ i{consumer.xml}
 * Und Makros an mehreren Stellen zu erweitern
 
 ```
-i{macros.xml}
+i{macros.hx}
 ```
 * Makros werden in einer eigenen Datei definiert
 
