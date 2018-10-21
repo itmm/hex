@@ -31,6 +31,7 @@ test: hx
 		-e 's/3{}/<span class="in3"><\/span>/g' \
 		-e 's/4{}/<span class="in4"><\/span>/g' \
 		-e 's/5{}/<span class="in5"><\/span>/g' \
+		-e 's/6{}/<span class="in6"><\/span>/g' \
 		-e 's/b{}/<br\/>/g' \
 		-e 's/f{\([^}]*\)}/<span class="fn">\1<\/span>/g' \
 		-e 's/v{\([^}]*\)}/<span class="var">\1<\/span>/g' \

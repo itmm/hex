@@ -156,22 +156,61 @@
 					</ul>
 				</div><div>
 					<div><code>
+						a{global elements}b{}
+						1{}t{enum HtmlState} {b{}
+						2{}v{hs_NOTHING_WRITTEN},b{}
+						2{}v{hs_IN_SLIDE},b{}
+						3{}v{hs_AFTER_SLIDE}b{}
+						2{}e{html state enums}b{}
+						1{}};b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{global elements}b{}
+						1{}t{struct HtmlStatus} {b{}
+						2{}e{html state elements}b{}
+						1{}};b{}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{html state elements}b{}
+						1{}t{enum HtmlState} v{state};b{}
+						x{html state elements}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
 						a{write HTML file from in to out} {b{}
-						1{}t{int} v{headerLevel} = n{0}, v{codeLevel} = n{0};b{}
-						1{}int indentLevel = 0;b{}
+						1{}t{struct HtmlStatus} v{status} = {b{}
+						2{}.v{state} = v{hs_NOTHING_WRITTEN}b{}
+						2{}e{init html status}b{}
+						1{}};b{}
 						1{}char last = 0;b{}
-						1{}t{bool} v{wroteHeader} = k{false};b{}
-						1{}t{bool} v{inCode} = k{false};b{}
-						1{}bool someCode = false;b{}
-						1{}t{bool} v{inNotes} = k{false};b{}
-						1{}t{bool} v{startOfLine} = k{true};b{}
-						1{}t{char} v{buffer}[n{100}];b{}
-						1{}t{char *}v{bc} = k{NULL};b{}
-						1{}t{char} v{special} = s{'\0'};b{}
+
+						1{}// t{int} v{headerLevel} = n{0}, v{codeLevel} = n{0};b{}
+						1{}// int indentLevel = 0;b{}
+						1{}// t{bool} v{inCode} = k{false};b{}
+						1{}// t{bool} v{inNotes} = k{false};b{}
+						1{}// t{bool} v{noteOpen} = k{false};b{}
+						1{}// t{char} v{special} = s{'\0'};b{}
 						1{}k{for} (;;) {b{}
 						2{}t{int} v{ch} = f{fgetc}(v{in});b{}
 						2{}e{process ch for HTML};b{}
 						2{}k{if} (v{ch} == k{EOF}) { k{break}; }b{}
+						2{}v{last} = v{ch};b{}
 						1{}}b{}
 						} x{write HTML file from in to out}
 					</code></div>
@@ -181,92 +220,79 @@
 					</ul>
 				</div><div>
 					<div><code>
-						a{process ch for HTML} b{}
-						1{}k{if} (v{inCode}) {b{}
-						2{}e{process ch in HTML code};b{}
-						1{}}b{}
-						x{process ch for HTML}
+						a{html state enums}b{}
+						1{}, v{hs_IN_HEADER}b{}
+						x{html state enums}
 					</code></div>
 					<ul>
 						<li>
-
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{global elements}b{}
+						1{}t{bool} isOutOfHtmlSpecial(b{}
+						2{}struct HtmlStatus *sb{}
+						1{}) {b{}
+						2{}e{check html special state};b{}
+						2{}k{return} k{true};b{}
+						1{}}
+						x{global elements}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{check html special state}b{}
+						1{}k{if} (v{s}-&gt;v{state} == v{hs_IN_HEADER}) {b{}
+						2{}k{return} k{false};b{}
+						1{}}b{}
+						x{check html special state}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{html state elements}b{}
+							1{}t{int} v{headerLevel};b{}
+							2{}t{char} v{headerName}[100];b{}
+							2{}t{char *} v{headerNameEnd};b{}
+							2{}t{enum HtmlState} v{headerState};b{}
+						x{html state elements}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{init html status}b{}
+							1{}, .v{headerLevel} = 0b{}
+							1{}, .v{headerNameEnd} = k{NULL}b{}
+						x{init html status}
+					</code></div>
+					<ul>
+						<li>
 						</li>
 					</ul>
 				</div><div>
 					<div><code>
 						a{process ch for HTML} b{}
-						1{}k{if} (v{inNotes}) {b{}
-						2{}e{process ch in HTML notes};b{}
-						1{}}b{}
-						x{process ch for HTML}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch for HTML} b{}
-						1{}k{if} (v{ch} == s{'#'} &amp;&amp; v{startOfLine}) {b{}
-						2{}++v{headerLevel};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{headerLevel}) {b{}
-						2{}e{process header in HTML};b{}
-						2{}v{startOfLine} = k{true};b{}
-						2{}v{headerLevel} = n{0};b{}
-						2{}v{bc} = k{NULL};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						x{process ch for HTML}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch for HTML} b{}
-						1{}k{if} (v{headerLevel} &amp;&amp; v{bc}) {b{}
-						2{}f{ASSERT}(b{}
-						3{}bc &lt; buffer + sizeof(buffer) - n{1}b{}
-						2{});b{}
-						2{}*v{bc}++ = v{ch};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						1{}k{if} (v{headerLevel} &amp;&amp; v{ch} &gt; s{' '}) {b{}
-						2{}v{bc} = v{buffer};b{}
-						2{}*v{bc}++ = v{ch};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						x{process ch for HTML}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch for HTML} b{}
-						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'`'}) {b{}
-						2{}++v{codeLevel};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{codeLevel}) {b{}
-						2{}k{if} (v{codeLevel} == n{3}) {b{}
-
-						3{}fprintf(out, "&lt;/div&gt;&lt;div&gt;&lt;div&gt;\n");b{}
-						3{}fprintf(out, "&lt;code&gt;\n");b{}
-						3{}v{inCode} = k{true};b{}
-						3{}v{someCode} = k{true};b{}
-						3{}v{codeLevel} = n{0};b{}
-						3{}last = 0;b{}
+						1{}k{if} (v{ch} == s{'#'} &amp;&amp; v{last} == s{'\n'}) {b{}
+						2{}k{if} (f{isOutOfHtmlSpecial}(&amp;v{status}) ||b{}
+						3{}v{status}.v{state} == v{hs_IN_HEADER}b{}
+						2{}) {b{}
+						3{}++v{status}.v{headerLevel};b{}
+						3{}if (status.state != hs_IN_HEADER) {
+						4{}status.headerState = status.state;
+						3{}}
+						3{}v{status}.v{state} = v{hs_IN_HEADER};b{}
 						3{}k{continue};b{}
 						2{}}b{}
-						2{}v{codeLevel} = n{0};b{}
 						1{}}b{}
 						x{process ch for HTML}
 					</code></div>
@@ -277,44 +303,16 @@
 					</ul>
 				</div><div>
 					<div><code>
-						a{process ch in HTML code} b{}
-						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'\t'}) {b{}
-						2{}++v{indentLevel};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						1{}if (indentLevel) {b{}
-						2{}fprintf(b{}
-						3{}out, "&lt;span class=\"in%d\"&gt;&lt;/span&gt;", indentLevelb{}
-						2{});b{}
-						2{}indentLevel = 0;b{}
-						1{}}b{}
-						x{process ch in HTML code}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch in HTML code} b{}
-						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'`'}) {b{}
-						2{}++v{codeLevel};b{}
-						2{}k{continue};b{}
-						1{}}b{}
-						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{codeLevel}) {b{}
-						2{}k{if} (v{codeLevel} == n{3}) {b{}
-						3{}if (last) {b{}
-						4{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
-						3{}}b{}
-						3{}fprintf(out, "&lt;/code&gt;&lt;/div&gt;\n");b{}
-						3{}v{inCode} = k{false};b{}
-						2{}v{codeLevel} = n{0};b{}
+						a{process ch for HTML} b{}
+						1{}k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {b{}
+						2{}k{if} (v{ch} == s{'\n'}) {b{}
+						3{}e{process header in HTML};b{}
+						3{}e{reset header state};b{}
+						3{}v{last} = v{ch};b{}
 						3{}k{continue};b{}
 						2{}}b{}
-						2{}v{codeLevel} = n{0};b{}
 						1{}}b{}
-						x{process ch in HTML code}
+						x{process ch for HTML}
 					</code></div>
 					<ul>
 						<li>
@@ -323,222 +321,56 @@
 					</ul>
 				</div><div>
 					<div><code>
-						a{process ch in HTML code} b{}
-						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'`'}) {b{}
-						2{}++v{codeLevel};b{}
-						2{}k{continue};b{}
+						a{reset header state} b{}
+						1{}v{status}.v{state} = v{hs_IN_SLIDE};b{}
+						1{}v{status}.v{headerLevel} = n{0};b{}
+						1{}v{status}.v{headerNameEnd} = k{NULL};b{}
+						1{}status.headerState = hs_IN_SLIDE;b{}
+						x{reset header state}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {b{}
+						2{}k{if} (v{status}.v{headerNameEnd}) {b{}
+						3{}f{ASSERT}(b{}
+						4{}v{status}.v{headerNameEnd} &lt;b{}
+						5{}v{status}.v{headerName} + f{sizeof}(b{}
+						6{}v{status}.v{headerName}b{}
+						5{}) - n{1}b{}
+						3{});b{}
+						3{}*v{status}.v{headerNameEnd}++ = v{ch};b{}
+						3{}v{last} = v{ch};b{}
+						3{}k{continue};b{}
+						2{}}b{}
 						1{}}b{}
-						1{}k{if} (v{ch} == s{'\n'}) {b{}
-						2{}if (last) {b{}
-						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
-						3{}last = 0;b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {b{}
+						2{}k{if} (! v{status}.v{headerNameEnd} &amp;&amp;b{}
+						3{}v{ch} &gt; s{' '}b{}
+						2{}) {b{}
+						3{}v{status}.v{headerNameEnd} =b{}
+						4{}v{status}.v{headerName};b{}
+						3{}*v{status}.v{headerNameEnd}++ = v{ch};b{}
+						3{}v{last} = v{ch};b{}
+						3{}k{continue};b{}
 						2{}}b{}
-						2{}fprintf(out, "&lt;br/&gt;\n");b{}
-						1{}continue;b{}
 						1{}}b{}
-						x{process ch in HTML code}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch in HTML code}b{}
-						1{}if (ch == '{') {b{}
-						2{}switch (last) {b{}
-						3{}e{escape html macro}b{}
-						3{}default: break;b{}
-						2{}}
-						2{}if (special) {b{}
-						3{}last = 0;b{}
-						3{}continue;b{}
-						2{}}b{}
-						1{}}
-						x{process ch in HTML code}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'a':b{}
-						2{}fprintf(out, "&lt;span class=\"add\"&gt;@add(");b{}
-						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'x':b{}
-						2{}fprintf(out, "&lt;span class=\"end\"&gt;@end(");b{}
-						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'e':b{}
-						2{}fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");b{}
-						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'i':b{}
-						2{}fprintf(out, "&lt;span class=\"include\"&gt;@include(");b{}
-						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 't':b{}
-						2{}fprintf(out, "&lt;span class=\"type\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'v':b{}
-						2{}fprintf(out, "&lt;span class=\"var\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'f':b{}
-						2{}fprintf(out, "&lt;span class=\"fn\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'k':b{}
-						2{}fprintf(out, "&lt;span class=\"keyword\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 's':b{}
-						2{}fprintf(out, "&lt;span class=\"str\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{escape html macro}b{}
-						1{}case 'n':b{}
-						2{}fprintf(out, "&lt;span class=\"num\"&gt;");b{}
-						2{}special = last;b{}
-						2{}break;b{}
-						x{escape html macro}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch in HTML code}b{}
-						1{}if (ch == '}' &amp;&amp; special) {b{}
-						2{}if (last) {b{}
-						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
-						3{}last = 0;b{}
-						2{}}b{}
-						2{}switch (special) {b{}
-						3{}case 'a': case 'e': case 'i': case 'x':b{}
-						4{}fprintf(out, ")&lt;/span&gt;");b{}
-						2{}}b{}
-						2{}fprintf(out, "&lt;/span&gt;");b{}
-						2{}special = 0;b{}
-						2{}continue;b{}
-						1{}}
-						x{process ch in HTML code}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{process ch in HTML code}b{}
-						1{}if (last) {b{}
-						2{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
-						1{}}b{}
-						1{}last = ch;b{}
-						1{}continue;b{}
-						x{process ch in HTML code}
+						x{process ch for HTML}
 					</code></div>
 					<ul>
 						<li>
@@ -548,8 +380,7 @@
 				</div><div>
 					<div><code>
 						a{process header in HTML} b{}
-						1{}f{ASSERT}(bc &lt; buffer + sizeof(buffer) - n{1});b{}
-						1{}*v{bc} = s{'\0'};b{}
+						1{}f{ASSERT}(v{status}.v{headerNameEnd});b{}
 						1{}e{close previous HTML page};b{}
 						1{}e{write header tag};b{}
 						1{}f{fprintf}(v{out}, s{"&lt;div class=\"slides\"&gt;\n"});b{}
@@ -557,26 +388,6 @@
 						1{}e{write header tag};b{}
 						1{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
 						x{process header in HTML}
-					</code></div>
-					<ul>
-						<li>
-
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a{close previous HTML page} b{}
-						1{}k{if} (v{wroteHeader}) {b{}
-						2{}if (someCode) {b{}
-						3{}someCode = false;b{}
-						2{}}b{}
-						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
-						2{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
-						1{}} k{else} {b{}
-						2{}e{write HTML header};b{}
-						2{}v{wroteHeader} = k{true};b{}
-						1{}}b{}
-						x{close previous HTML page}
 					</code></div>
 					<ul>
 						<li>
@@ -611,10 +422,35 @@
 				</div><div>
 					<div><code>
 						a{write header tag} b{}
-						1{}f{fprintf}(v{out}, s{"&lt;h%d&gt;"}, v{headerLevel});b{}
-						1{}f{writeEscaped}(v{out}, v{buffer}, NULL);b{}
-						1{}f{fprintf}(v{out}, s{"&lt;/h%d&gt;\n"}, v{headerLevel});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;h%d&gt;"}, v{status}.v{headerLevel});b{}
+
+						1{}f{writeEscaped}(v{out}, v{status}.v{headerName}, v{status}.v{headerNameEnd});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;/h%d&gt;\n"}, v{status}.v{headerLevel});b{}
 						x{write header tag}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{close previous HTML page} b{}
+						1{}switch (status.headerState) {b{}
+						2{}case hs_NOTHING_WRITTEN: {b{}
+						3{}e{write HTML header};b{}
+						3{}break;b{}
+						2{}}
+						2{}case hs_IN_SLIDE: {b{}
+						3{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						3{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						3{}break;b{}
+						2{}}
+						2{}default: {b{}
+						3{}f{fprintf}(v{out}, s{"&lt;/div&gt;\n"});b{}
+						2{}}b{}
+						1{}}b{}
+						x{close previous HTML page}
 					</code></div>
 					<ul>
 						<li>
@@ -643,9 +479,9 @@
 						1{}f{fprintf}(b{}
 						2{}v{out}, s{"&lt;meta charset=\"utf-8\"&gt;\n"}b{}
 						1{});b{}
-						1{}f{fprintf}(b{}
-						2{}v{out}, s{"&lt;title&gt;%s&lt;/title&gt;\n"}, v{buffer}b{}
-						1{});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;title&gt;"});b{}
+						1{}f{writeEscaped}(v{out}, v{status}.v{headerName}, v{status}.v{headerNameEnd});b{}
+						1{}f{fprintf}(v{out}, s{"&lt;/title&gt;"});b{}
 						1{}f{fprintf}(b{}
 						2{}v{out}, s{"&lt;link rel=\"stylesheet\" "}b{}
 						2{}s{"type=\"text/css\" "}b{}
@@ -660,7 +496,431 @@
 					</ul>
 				</div><div>
 					<div><code>
+						a{html state enums}b{}
+						1{}, v{hs_IN_CODE}b{}
+						x{html state enums}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{check html special state}b{}
+						1{}k{if} (v{s}-&gt;v{state} == v{hs_IN_CODE}) {b{}
+						2{}k{return} k{false};b{}
+						1{}}b{}
+						x{check html special state}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{html state elements}b{}
+							1{}t{int} v{codeOpening};b{}
+							1{}t{int} v{codeIndent};b{}
+							2{}t{char} v{codeSpecial};b{}
+						x{html state elements}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{init html status}b{}
+							1{}, .v{codeOpening} = 0b{}
+							1{}, .v{codeIndent} = 0b{}
+							1{}, .v{codeSpecial} = s{'\0'}b{}
+						x{init html status}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
 						a{process ch for HTML} b{}
+						1{}k{if} (v{last} == s{'\n'} &amp;&amp; v{ch} == s{'`'}) {b{}
+						2{}k{if} (f{isOutOfHtmlSpecial}(&amp;v{status}) ||b{}
+						3{}v{status}.v{state} == v{hs_IN_CODE}b{}
+						2{}) {b{}
+						3{}++v{status}.v{codeOpening};b{}
+						3{}k{continue};b{}
+						2{}}b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{ch} == s{'\n'} &amp;&amp; v{status}.v{codeOpening} == n{3}) {b{}
+						2{}v{status}.v{codeOpening} = n{0};b{}
+						2{}k{if} (f{isOutOfHtmlSpecial}(&amp;v{status})) {b{}
+						3{}k{if} (v{status}.v{state} == v{hs_IN_SLIDE}) {
+						4{}fprintf(out, "&lt;/div&gt;\n");b{}
+						3{}}b{}
+						3{}fprintf(out, "&lt;div&gt;&lt;div&gt;\n");b{}
+						3{}fprintf(out, "&lt;code&gt;\n");b{}
+						3{}v{status}.v{state} = v{hs_IN_CODE};b{}
+						3{}v{last} = 0;b{}
+						3{}k{continue};b{}
+						2{}} k{else} k{if} (v{status}.v{state} == v{hs_IN_CODE}) {b{}
+						3{}fprintf(out, "&lt;/code&gt;\n");b{}
+						3{}fprintf(out, "&lt;/div&gt;\n");b{}
+						3{}v{status}.v{state} = v{hs_IN_SLIDE};b{}
+						3{}v{status}.v{codeIndent} = 0;b{}
+						3{}v{status}.v{codeSpecial} = s{'\0'};b{}
+						3{}v{last} = 0;b{}
+						3{}k{continue};b{}
+						2{}}
+						1{}}b{}
+						1{}v{status}.v{codeOpening} = n{0};b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML}b{}
+						1{}k{if} (status.state == hs_IN_CODE) {b{}
+						2{}e{process ch in HTML code};b{}
+						2{}if (last) {b{}
+						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						2{}}b{}
+						2{}last = ch;b{}
+						2{}continue;b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code} b{}
+						1{}k{if} (v{ch} == s{'\n'}) {b{}
+						2{}if (last) {b{}
+						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						2{}}b{}
+						2{}fprintf(out, "&lt;br/&gt;\n");b{}
+						3{}last = ch;b{}
+						2{}continue;b{}
+						1{}}b{}
+						x{process ch in HTML code}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code} b{}
+						1{}k{if} (v{last} == s{'\n'} &amp;&amp; v{ch} == s{'\t'}) {b{}
+						2{}++v{status}.v{codeIndent};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}if (status.codeIndent) {b{}
+						2{}fprintf(b{}
+						3{}out, "&lt;span class=\"in%d\"&gt;&lt;/span&gt;", status.codeIndentb{}
+						2{});b{}
+						2{}status.codeIndent = 0;b{}
+						1{}}b{}
+						x{process ch in HTML code}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code}b{}
+						1{}if (ch == '{') {b{}
+						2{}switch (last) {b{}
+						3{}e{escape html macro}b{}
+						3{}default: break;b{}
+						2{}}
+						2{}if (status.codeSpecial) {b{}
+						3{}last = 0;b{}
+						3{}continue;b{}
+						2{}}b{}
+						1{}}
+						x{process ch in HTML code}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch in HTML code}b{}
+						1{}if (ch == '}' &amp;&amp; status.codeSpecial) {b{}
+						2{}if (last) {b{}
+						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						3{}last = 0;b{}
+						2{}}b{}
+						2{}switch (status.codeSpecial) {b{}
+						3{}case 'a': case 'e': case 'i': case 'x':b{}
+						4{}fprintf(out, ")&lt;/span&gt;");b{}
+						2{}}b{}
+						2{}fprintf(out, "&lt;/span&gt;");b{}
+						2{}status.codeSpecial = 0;b{}
+						2{}continue;b{}
+						1{}}
+						x{process ch in HTML code}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'a':b{}
+						2{}fprintf(out, "&lt;span class=\"add\"&gt;@add(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'x':b{}
+						2{}fprintf(out, "&lt;span class=\"end\"&gt;@end(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'e':b{}
+						2{}fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'i':b{}
+						2{}fprintf(out, "&lt;span class=\"include\"&gt;@include(");b{}
+						2{}fprintf(out, "&lt;span class=\"name\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 't':b{}
+						2{}fprintf(out, "&lt;span class=\"type\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'v':b{}
+						2{}fprintf(out, "&lt;span class=\"var\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'f':b{}
+						2{}fprintf(out, "&lt;span class=\"fn\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'k':b{}
+						2{}fprintf(out, "&lt;span class=\"keyword\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 's':b{}
+						2{}fprintf(out, "&lt;span class=\"str\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{escape html macro}b{}
+						1{}case 'n':b{}
+						2{}fprintf(out, "&lt;span class=\"num\"&gt;");b{}
+						2{}status.codeSpecial = last;b{}
+						2{}break;b{}
+						x{escape html macro}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{html state enums}b{}
+						1{}, v{hs_IN_NOTES}b{}
+						x{html state enums}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{check html special state}b{}
+						1{}k{if} (v{s}-&gt;v{state} == v{hs_IN_NOTES}) {b{}
+						2{}k{return} k{false};b{}
+						1{}}b{}
+						x{check html special state}
+					</code></div>
+					<ul>
+						<li>
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{last} == s{'\n'} &amp;&amp; v{status}.v{state} == v{hs_IN_NOTES}) {b{}
+
+						2{}k{if} (ch == s{'*'}) {b{}
+						3{}f{fprintf}(v{out}, s{"&lt;/li&gt;&lt;li&gt;\n"});b{}
+						3{}v{last} = 0;b{}
+						3{}k{continue};b{}
+						2{}} k{else} k{if} (ch != s{' '} &amp;&amp; ch != s{'\t'}) {b{}
+						3{}f{fprintf}(v{out}, s{"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"});b{}
+						3{}v{status}.v{state} = hs_AFTER_SLIDE;b{}
+						3{}v{last} = v{ch};b{}
+						3{}k{continue};b{}
+						2{}}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{last} == s{'\n'} &amp;&amp; v{ch} == s{'*'}) {b{}
+						2{}k{if} (f{isOutOfHtmlSpecial}(&amp;v{status})) {b{}
+						3{}k{if}(v{status}.v{state} != v{hs_IN_SLIDE}) {b{}
+						4{}f{fprintf}(v{out}, s{"&lt;div&gt;\n"});b{}
+						3{}}b{}
+						3{}v{status}.v{state} = v{hs_IN_NOTES};b{}
+						3{}f{fprintf}(v{out}, s{"&lt;ul&gt;&lt;li&gt;\n"});b{}
+						3{}v{last} = s{'\0'};b{}
+						3{}k{continue};b{}
+						2{}}b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a{process ch for HTML} b{}
+						1{}k{if} (v{status}.v{state} == v{hs_IN_NOTES}) {b{}
+						2{}k{if} (v{last}) {
+						3{}writeEscaped(out, &amp;last, &amp;last + 1);b{}
+						2{}}b{}
+						2{}v{last} = v{ch};b{}
+						2{}v{continue};b{}
+						1{}}b{}
+						x{process ch for HTML}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div>
+				<!--
+				</div><div>
+					<div><code>
+						a {process ch for HTML} b{}
 						1{}k{if} (v{ch} == k{EOF}) {b{}
 						2{}e{close previous HTML page};b{}
 						2{}f{fprintf}(v{out}, s{"&lt;/body&gt;&lt;/html&gt;\n"});
@@ -672,7 +932,47 @@
 
 						</li>
 					</ul>
-				</div>
+				</div><div>
+					<div><code>
+						a {process ch in HTML notes} b{}
+						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'\n'}) {b{}
+						2{}v{inNotes} = k{false};b{}
+						2{}f{fprintf}(v{out}, s{"&lt;/ul&gt;\n"});b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}k{if} (v{startOfLine} &amp;&amp; v{ch} == s{'*'}) {b{}
+						2{}v{startOfLine} = k{false};b{}
+						2{}k{if} (v{noteOpen}) { fprintf(out, "&lt;/li&gt;"); }b{}
+						2{}v{noteOpen} = k{true};b{}
+						2{}f{fprintf}(v{out}, s{"&lt;li&gt;"});b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						x{process ch in HTML notes}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div><div>
+					<div><code>
+						a {process ch in HTML notes}b{}
+						1{}k{if} (v{ch} != k{EOF}) {b{}
+						2{}t{char} v{c} = v{ch};b{}
+						2{}f{writeEscaped}(v{out}, &amp;v{c}, &amp;v{c} + 1);b{}
+						2{}v{startOfLine} = k{ch} == s{'\n'};b{}
+						2{}k{continue};b{}
+						1{}}b{}
+						1{}v{inNotes} = k{false};b{}
+						1{}f{fprintf}(v{out}, s{"&lt;/ul&gt;\n"});b{}
+						x{process ch in HTML notes}
+					</code></div>
+					<ul>
+						<li>
+
+						</li>
+					</ul>
+				</div> -->
 		</div>
 	</body>
 </html>

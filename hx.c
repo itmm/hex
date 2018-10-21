@@ -781,6 +781,53 @@
 						str + sl - su, suff, su
 						);
 						}
+						
+						enum HtmlState {
+						hs_NOTHING_WRITTEN,
+						hs_IN_SLIDE,
+						hs_AFTER_SLIDE
+						
+						, hs_IN_HEADER
+						
+						, hs_IN_CODE
+						
+						, hs_IN_NOTES
+						
+						};
+						
+						struct HtmlStatus {
+						
+						enum HtmlState state;
+						
+							int headerLevel;
+							char headerName[100];
+							char * headerNameEnd;
+							enum HtmlState headerState;
+						
+							int codeOpening;
+							int codeIndent;
+							char codeSpecial;
+						
+						};
+						
+						bool isOutOfHtmlSpecial(
+						struct HtmlStatus *s
+						) {
+						
+						if (s->state == hs_IN_HEADER) {
+						return false;
+						}
+						
+						if (s->state == hs_IN_CODE) {
+						return false;
+						}
+						
+						if (s->state == hs_IN_NOTES) {
+						return false;
+						}
+						;
+						return true;
+						}
 						 
 						void writeEscaped(
 						FILE *out, const char *str, const char *end
@@ -1037,61 +1084,185 @@
 						FILE *in = fopen(cur->path, "r");
 						ASSERT(in);
 						 {
-						int headerLevel = 0, codeLevel = 0;
-						int indentLevel = 0;
+						struct HtmlStatus status = {
+						.state = hs_NOTHING_WRITTEN
+						
+							, .headerLevel = 0
+							, .headerNameEnd = NULL
+						
+							, .codeOpening = 0
+							, .codeIndent = 0
+							, .codeSpecial = '\0'
+						
+						};
 						char last = 0;
-						bool wroteHeader = false;
-						bool inCode = false;
-						bool someCode = false;
-						bool inNotes = false;
-						bool startOfLine = true;
-						char buffer[100];
-						char *bc = NULL;
-						char special = '\0';
+
+						// int headerLevel = 0, codeLevel = 0;
+						// int indentLevel = 0;
+						// bool inCode = false;
+						// bool inNotes = false;
+						// bool noteOpen = false;
+						// char special = '\0';
 						for (;;) {
 						int ch = fgetc(in);
 						 
-						if (inCode) {
-						 
-						if (startOfLine && ch == '\t') {
-						++indentLevel;
+						if (ch == '#' && last == '\n') {
+						if (isOutOfHtmlSpecial(&status) ||
+						status.state == hs_IN_HEADER
+						) {
+						++status.headerLevel;
+						if (status.state != hs_IN_HEADER) {
+						status.headerState = status.state;
+						}
+						status.state = hs_IN_HEADER;
 						continue;
 						}
-						if (indentLevel) {
+						}
+						 
+						if (status.state == hs_IN_HEADER) {
+						if (ch == '\n') {
+						 
+						ASSERT(status.headerNameEnd);
+						 
+						switch (status.headerState) {
+						case hs_NOTHING_WRITTEN: {
+						 
+						fprintf(out, "<!doctype html>\n");
+						fprintf(out, "<html lang=\"de\"l>\n");
+						fprintf(out, "<head>\n");
+						 
 						fprintf(
-						out, "<span class=\"in%d\"></span>", indentLevel
+						out, "<meta charset=\"utf-8\">\n"
 						);
-						indentLevel = 0;
+						fprintf(out, "<title>");
+						writeEscaped(out, status.headerName, status.headerNameEnd);
+						fprintf(out, "</title>");
+						fprintf(
+						out, "<link rel=\"stylesheet\" "
+						"type=\"text/css\" "
+						"href=\"slides/slides.css\">"
+						);
+						;
+						fprintf(out, "</head>\n");
+						fprintf(out, "<body>\n");
+						;
+						break;
+						}
+						case hs_IN_SLIDE: {
+						fprintf(out, "</div>\n");
+						fprintf(out, "</div>\n");
+						break;
+						}
+						default: {
+						fprintf(out, "</div>\n");
+						}
+						}
+						;
+						 
+						fprintf(out, "<h%d>", status.headerLevel);
+
+						writeEscaped(out, status.headerName, status.headerNameEnd);
+						fprintf(out, "</h%d>\n", status.headerLevel);
+						;
+						fprintf(out, "<div class=\"slides\">\n");
+						fprintf(out, "<div><div>\n");
+						 
+						fprintf(out, "<h%d>", status.headerLevel);
+
+						writeEscaped(out, status.headerName, status.headerNameEnd);
+						fprintf(out, "</h%d>\n", status.headerLevel);
+						;
+						fprintf(out, "</div>\n");
+						;
+						 
+						status.state = hs_IN_SLIDE;
+						status.headerLevel = 0;
+						status.headerNameEnd = NULL;
+						status.headerState = hs_IN_SLIDE;
+						;
+						last = ch;
+						continue;
+						}
 						}
 						 
-						if (startOfLine && ch == '`') {
-						++codeLevel;
+						if (status.state == hs_IN_HEADER) {
+						if (status.headerNameEnd) {
+						ASSERT(
+						status.headerNameEnd <
+						status.headerName + sizeof(
+						status.headerName
+						) - 1
+						);
+						*status.headerNameEnd++ = ch;
+						last = ch;
 						continue;
 						}
-						if (ch == '\n' && codeLevel) {
-						if (codeLevel == 3) {
-						if (last) {
-						writeEscaped(out, &last, &last + 1);
-						}
-						fprintf(out, "</code></div>\n");
-						inCode = false;
-						codeLevel = 0;
-						continue;
-						}
-						codeLevel = 0;
 						}
 						 
-						if (startOfLine && ch == '`') {
-						++codeLevel;
+						if (status.state == hs_IN_HEADER) {
+						if (! status.headerNameEnd &&
+						ch > ' '
+						) {
+						status.headerNameEnd =
+						status.headerName;
+						*status.headerNameEnd++ = ch;
+						last = ch;
 						continue;
 						}
+						}
+						 
+						if (last == '\n' && ch == '`') {
+						if (isOutOfHtmlSpecial(&status) ||
+						status.state == hs_IN_CODE
+						) {
+						++status.codeOpening;
+						continue;
+						}
+						}
+						 
+						if (ch == '\n' && status.codeOpening == 3) {
+						status.codeOpening = 0;
+						if (isOutOfHtmlSpecial(&status)) {
+						if (status.state == hs_IN_SLIDE) {
+						fprintf(out, "</div>\n");
+						}
+						fprintf(out, "<div><div>\n");
+						fprintf(out, "<code>\n");
+						status.state = hs_IN_CODE;
+						last = 0;
+						continue;
+						} else if (status.state == hs_IN_CODE) {
+						fprintf(out, "</code>\n");
+						fprintf(out, "</div>\n");
+						status.state = hs_IN_SLIDE;
+						status.codeIndent = 0;
+						status.codeSpecial = '\0';
+						last = 0;
+						continue;
+						}
+						}
+						status.codeOpening = 0;
+						
+						if (status.state == hs_IN_CODE) {
+						 
 						if (ch == '\n') {
 						if (last) {
 						writeEscaped(out, &last, &last + 1);
-						last = 0;
 						}
 						fprintf(out, "<br/>\n");
+						last = ch;
 						continue;
+						}
+						 
+						if (last == '\n' && ch == '\t') {
+						++status.codeIndent;
+						continue;
+						}
+						if (status.codeIndent) {
+						fprintf(
+						out, "<span class=\"in%d\"></span>", status.codeIndent
+						);
+						status.codeIndent = 0;
 						}
 						
 						if (ch == '{') {
@@ -1100,217 +1271,122 @@
 						case 'a':
 						fprintf(out, "<span class=\"add\">@add(");
 						fprintf(out, "<span class=\"name\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'x':
 						fprintf(out, "<span class=\"end\">@end(");
 						fprintf(out, "<span class=\"name\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'e':
 						fprintf(out, "<span class=\"expand\">@expand(");
 						fprintf(out, "<span class=\"name\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'i':
 						fprintf(out, "<span class=\"include\">@include(");
 						fprintf(out, "<span class=\"name\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 't':
 						fprintf(out, "<span class=\"type\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'v':
 						fprintf(out, "<span class=\"var\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'f':
 						fprintf(out, "<span class=\"fn\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'k':
 						fprintf(out, "<span class=\"keyword\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 's':
 						fprintf(out, "<span class=\"str\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						case 'n':
 						fprintf(out, "<span class=\"num\">");
-						special = last;
+						status.codeSpecial = last;
 						break;
 						
 						default: break;
 						}
-						if (special) {
+						if (status.codeSpecial) {
 						last = 0;
 						continue;
 						}
 						}
 						
-						if (ch == '}' && special) {
+						if (ch == '}' && status.codeSpecial) {
 						if (last) {
 						writeEscaped(out, &last, &last + 1);
 						last = 0;
 						}
-						switch (special) {
+						switch (status.codeSpecial) {
 						case 'a': case 'e': case 'i': case 'x':
 						fprintf(out, ")</span>");
 						}
 						fprintf(out, "</span>");
-						special = 0;
+						status.codeSpecial = 0;
 						continue;
 						}
-						
+						;
 						if (last) {
 						writeEscaped(out, &last, &last + 1);
 						}
 						last = ch;
 						continue;
-						;
 						}
 						 
-						if (inNotes) {
-						;
-						}
-						 
-						if (ch == '#' && startOfLine) {
-						++headerLevel;
-						continue;
-						}
-						if (ch == '\n' && headerLevel) {
-						 
-						ASSERT(bc < buffer + sizeof(buffer) - 1);
-						*bc = '\0';
-						 
-						if (wroteHeader) {
-						if (someCode) {
-						someCode = false;
-						}
-						fprintf(out, "</div>\n");
-						fprintf(out, "</div>\n");
-						} else {
-						 
-						fprintf(out, "<!doctype html>\n");
-						fprintf(out, "<html lang=\"de\"l>\n");
-						fprintf(out, "<head>\n");
-						 
-						fprintf(
-						out, "<meta charset=\"utf-8\">\n"
-						);
-						fprintf(
-						out, "<title>%s</title>\n", buffer
-						);
-						fprintf(
-						out, "<link rel=\"stylesheet\" "
-						"type=\"text/css\" "
-						"href=\"slides/slides.css\">"
-						);
-						;
-						fprintf(out, "</head>\n");
-						fprintf(out, "<body>\n");
-						;
-						wroteHeader = true;
-						}
-						;
-						 
-						fprintf(out, "<h%d>", headerLevel);
-						writeEscaped(out, buffer, NULL);
-						fprintf(out, "</h%d>\n", headerLevel);
-						;
-						fprintf(out, "<div class=\"slides\">\n");
-						fprintf(out, "<div><div>\n");
-						 
-						fprintf(out, "<h%d>", headerLevel);
-						writeEscaped(out, buffer, NULL);
-						fprintf(out, "</h%d>\n", headerLevel);
-						;
-						fprintf(out, "</div>\n");
-						;
-						startOfLine = true;
-						headerLevel = 0;
-						bc = NULL;
-						continue;
-						}
-						 
-						if (headerLevel && bc) {
-						ASSERT(
-						bc < buffer + sizeof(buffer) - 1
-						);
-						*bc++ = ch;
-						continue;
-						}
-						if (headerLevel && ch > ' ') {
-						bc = buffer;
-						*bc++ = ch;
-						continue;
-						}
-						 
-						if (startOfLine && ch == '`') {
-						++codeLevel;
-						continue;
-						}
-						if (ch == '\n' && codeLevel) {
-						if (codeLevel == 3) {
+						if (last == '\n' && status.state == hs_IN_NOTES) {
 
-						fprintf(out, "</div><div><div>\n");
-						fprintf(out, "<code>\n");
-						inCode = true;
-						someCode = true;
-						codeLevel = 0;
+						if (ch == '*') {
+						fprintf(out, "</li><li>\n");
 						last = 0;
 						continue;
+						} else if (ch != ' ' && ch != '\t') {
+						fprintf(out, "</li></ul></div>\n");
+						status.state = hs_AFTER_SLIDE;
+						last = ch;
+						continue;
 						}
-						codeLevel = 0;
 						}
 						 
-						if (ch == EOF) {
-						 
-						if (wroteHeader) {
-						if (someCode) {
-						someCode = false;
+						if (last == '\n' && ch == '*') {
+						if (isOutOfHtmlSpecial(&status)) {
+						if(status.state != hs_IN_SLIDE) {
+						fprintf(out, "<div>\n");
 						}
-						fprintf(out, "</div>\n");
-						fprintf(out, "</div>\n");
-						} else {
-						 
-						fprintf(out, "<!doctype html>\n");
-						fprintf(out, "<html lang=\"de\"l>\n");
-						fprintf(out, "<head>\n");
-						 
-						fprintf(
-						out, "<meta charset=\"utf-8\">\n"
-						);
-						fprintf(
-						out, "<title>%s</title>\n", buffer
-						);
-						fprintf(
-						out, "<link rel=\"stylesheet\" "
-						"type=\"text/css\" "
-						"href=\"slides/slides.css\">"
-						);
-						;
-						fprintf(out, "</head>\n");
-						fprintf(out, "<body>\n");
-						;
-						wroteHeader = true;
+						status.state = hs_IN_NOTES;
+						fprintf(out, "<ul><li>\n");
+						last = '\0';
+						continue;
 						}
-						;
-						fprintf(out, "</body></html>\n");
+						}
+						 
+						if (status.state == hs_IN_NOTES) {
+						if (last) {
+						writeEscaped(out, &last, &last + 1);
+						}
+						last = ch;
+						continue;
 						}
 						;
 						if (ch == EOF) { break; }
+						last = ch;
 						}
 						} ;
 						fclose(in);
