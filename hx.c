@@ -610,241 +610,101 @@
 	}
 ;
 
-						
-						struct EntityConsumer {
-						struct Consumer consumer;
-						struct Consumer *subConsumer;
-						char prefix[6];
-						};
-						
-						int consumeEntities(
-						struct Consumer *consumer, int ch
-						) {
-						struct EntityConsumer *ec =
-						(void *) consumer;
-						bool processed = false;
-						
-						if (! processed && ch == '&') {
-						if (*ec->prefix) {
-						 {
-						char *cur = ec->prefix;
-						for (; *cur; ++cur) {
-						putToConsumer(ec->subConsumer, *cur);
-						*cur = '\0';
-						}
-						} ;
-						}
-						*ec->prefix = ch;
-						processed = true;
-						}
-						
-						if (
-						! processed && *ec->prefix && ch != EOF
-						) {
-						if (ch == ';') {
-						 {
-						bool expanded = false;
-						
-						if (strcmp("&gt", ec->prefix) == 0) {
-						putToConsumer(ec->subConsumer, '>');
-						expanded = true;
-						}
-						if (strcmp("&lt", ec->prefix) == 0) {
-						putToConsumer(ec->subConsumer, '<');
-						expanded = true;
-						}
-						
-						if (strcmp("&amp", ec->prefix) == 0) {
-						putToConsumer(ec->subConsumer, '&');
-						expanded = true;
-						}
-						;
-						if (! expanded) {
-						 {
-						char *cur = ec->prefix;
-						for (; *cur; ++cur) {
-						putToConsumer(ec->subConsumer, *cur);
-						*cur = '\0';
-						}
-						} ;
-						putToConsumer(ec->subConsumer, ch);
-						}
-						} ;
-						
-						memset(
-						ec->prefix, 0, sizeof(ec->prefix)
-						);
-						;
-						} else {
-						
-						char *cur = ec->prefix + 1;
-						const char *end = ec->prefix +
-						sizeof(ec->prefix) - 1;
-						for (; cur < end && *cur; ++cur) {}
-						if (cur < end) {
-						*cur = ch;
-						} else {
-						 {
-						char *cur = ec->prefix;
-						for (; *cur; ++cur) {
-						putToConsumer(ec->subConsumer, *cur);
-						*cur = '\0';
-						}
-						} ;
-						putToConsumer(ec->subConsumer, ch);
-						}
-						processed = true;
-						;
-						}
-						processed = true;
-						}
-						
-						if (! processed) {
-						if (ch == EOF) {
-						 {
-						char *cur = ec->prefix;
-						for (; *cur; ++cur) {
-						putToConsumer(ec->subConsumer, *cur);
-						*cur = '\0';
-						}
-						} ;
-						}
-						putToConsumer(ec->subConsumer, ch);
-						}
-						;
-						return processed ? ch : EOF;
-						}
-						
-						void setupEntityConsumer(
-						struct EntityConsumer *ec,
-						struct Consumer *sc
-						) {
-						ASSERT(ec); ASSERT(sc);
-						ec->subConsumer = sc;
-						ec->consumer.put = consumeEntities;
-						
-						memset(
-						ec->prefix, 0, sizeof(ec->prefix)
-						);
-						;
-						}
-						
-						void testEntityConsumer(
-						const char *source,
-						const char *expected
-						) {
-						ASSERT(source); ASSERT(expected);
-						struct BufferConsumer bc;
-						struct EntityConsumer ec;
-						setupBufferConsumer(&bc);
-						setupEntityConsumer(&ec, &bc.consumer);
-						
-						for (; *source; ++source) {
-						putToConsumer(&ec.consumer, *source);
-						}
-						putToConsumer(&ec.consumer, EOF);
-						;
-						ASSERT(strcmp(
-						expected, bc.buffer.buffer
-						) == 0);
-						}
-						
-						
-						struct SourceElement {
-						struct SourceElement *link;
-						char path[];
-						};
-						
-						struct SourceElement *createSourceElement(
-						const char *path
-						) {
-						ASSERT(path);
-						int len = strlen(path) + 1;
-						int size =
-						len + sizeof(struct SourceElement);
-						struct SourceElement *se =
-						malloc(size);
-						ASSERT(se);
-						se->link = NULL;
-						memcpy(se->path, path, len);
-						return se;
-						}
-						
-						bool hasSuffix(
-						const char *str,
-						const char *suff
-						) {
-						ASSERT(str); ASSERT(suff);
-						int sl = strlen(str);
-						int su = strlen(suff);
-						return sl >= su && 0 == memcmp(
-						str + sl - su, suff, su
-						);
-						}
-						
-						enum HtmlState {
-						hs_NOTHING_WRITTEN,
-						hs_IN_SLIDE,
-						hs_AFTER_SLIDE
-						
-						, hs_IN_HEADER
-						
-						, hs_IN_CODE
-						
-						, hs_IN_NOTES
-						
-						};
-						
-						struct HtmlStatus {
-						
-						enum HtmlState state;
-						
-							int headerLevel;
-							char headerName[100];
-							char * headerNameEnd;
-							enum HtmlState headerState;
-						
-							int codeOpening;
-							int codeIndent;
-							char codeSpecial;
-						
-						};
-						
-						bool isOutOfHtmlSpecial(
-						struct HtmlStatus *s
-						) {
-						
-						if (s->state == hs_IN_HEADER) {
-						return false;
-						}
-						
-						if (s->state == hs_IN_CODE) {
-						return false;
-						}
-						
-						if (s->state == hs_IN_NOTES) {
-						return false;
-						}
-						;
-						return true;
-						}
-						 
-						void writeEscaped(
-						FILE *out, const char *str, const char *end
-						) {
-						ASSERT(out); ASSERT(str);
-						for (; *str && str != end; ++str) switch (*str) {
-						case '<':
-						fprintf(out, "&lt;"); break;
-						case '>':
-						fprintf(out, "&gt;"); break;
-						case '&':
-						fprintf(out, "&amp;"); break;
-						default:
-						fputc(*str, out);
-						}
-						}
-						
+	struct SourceElement {
+		struct SourceElement *link;
+		char path[];
+	};
+
+	struct SourceElement *createSourceElement(
+		const char *path
+	) {
+		ASSERT(path);
+		int len = strlen(path) + 1;
+		int size =
+			len + sizeof(struct SourceElement);
+		struct SourceElement *se =
+			malloc(size);
+		ASSERT(se);
+		se->link = NULL;
+		memcpy(se->path, path, len);
+		return se;
+	}
+
+	bool hasSuffix(
+		const char *str,
+		const char *suff
+	) {
+		ASSERT(str); ASSERT(suff);
+		int sl = strlen(str);
+		int su = strlen(suff);
+		return sl >= su && 0 == memcmp(
+			str + sl - su, suff, su
+		);
+	}
+
+	enum HtmlState {
+		hs_NOTHING_WRITTEN,
+		hs_IN_SLIDE,
+			hs_AFTER_SLIDE
+		
+	, hs_IN_HEADER
+
+	, hs_IN_CODE
+
+	, hs_IN_NOTES
+
+	};
+
+	struct HtmlStatus {
+		
+	enum HtmlState state;
+
+	int headerLevel;
+		char headerName[100];
+		char * headerNameEnd;
+		enum HtmlState headerState;
+
+	int codeOpening;
+	int codeIndent;
+		char codeSpecial;
+
+	};
+
+	bool isOutOfHtmlSpecial(
+		struct HtmlStatus *s
+	) {
+		
+	if (s->state == hs_IN_HEADER) {
+		return false;
+	}
+
+	if (s->state == hs_IN_CODE) {
+		return false;
+	}
+
+	if (s->state == hs_IN_NOTES) {
+		return false;
+	}
+;
+		return true;
+	}
+ 
+	void writeEscaped(
+		FILE *out, const char *str, const char *end
+	) {
+		ASSERT(out); ASSERT(str);
+		for (; *str && str != end; ++str) switch (*str) {
+			case '<':
+				fprintf(out, "&lt;"); break;
+			case '>':
+				fprintf(out, "&gt;"); break;
+			case '&':
+				fprintf(out, "&"); break;
+			default:
+				fputc(*str, out);
+		}
+	}
+
 	int main(
 		int argc, const char **argv
 	) {
@@ -861,27 +721,7 @@
 		strcmp("ab", bc.buffer.buffer) == 0
 	);
 } 
-}  {
-						
-						testEntityConsumer("a bc", "a bc");
-						
-						testEntityConsumer("a&lt;b", "a<b");
-						
-						testEntityConsumer("a&gt;b", "a>b");
-						
-						testEntityConsumer("a&amp;b", "a&b");
-						
-						testEntityConsumer("a&copy;b", "a&copy;b");
-						
-						testEntityConsumer("a&l&lt;b", "a&l<b");
-						
-						testEntityConsumer("a&bcdefgh;ij", "a&bcdefgh;ij");
-						
-						testEntityConsumer("a&amp;&amp;b", "a&&b");
-						
-						testEntityConsumer("a&b", "a&b");
-						
-						} ;
+} ;
 	
 	if(argc > 1) {
 		pushPath(argv[1]);
@@ -1053,10 +893,8 @@
 	ASSERT(f);
 	struct FileConsumer fc;
 	setupFileConsumer(&fc, f);
-	struct EntityConsumer ec;
-	setupEntityConsumer(&ec, &fc.consumer);
 	serializeMacro(
-		macro, &ec.consumer
+		macro, &fc.consumer
 	);
 	fclose(f);
 ;
@@ -1066,341 +904,331 @@
 } ;
 	;
 	
-						if (argc > 1) {
-						struct SourceElement *cur =
-						createSourceElement(argv[1]);
-						//struct SourceElement *end = cur;
-						while (cur) {
-						
-						if (hasSuffix(cur->path, ".hx")) {
-						int len = strlen(cur->path) + 3;
-						char *outPath = malloc(len);
-						ASSERT(outPath);
-						memcpy(outPath, cur->path, len - 6);
-						strcpy(outPath + len - 6, ".html");
-						FILE *out = fopen(outPath, "w");
-						ASSERT(out);
-						 
-						FILE *in = fopen(cur->path, "r");
-						ASSERT(in);
-						 {
-						struct HtmlStatus status = {
-						.state = hs_NOTHING_WRITTEN
-						
-							, .headerLevel = 0
-							, .headerNameEnd = NULL
-						
-							, .codeOpening = 0
-							, .codeIndent = 0
-							, .codeSpecial = '\0'
-						
-						};
-						char last = '\n';
+	if (argc > 1) {
+		struct SourceElement *cur =
+			createSourceElement(argv[1]);
+		//struct SourceElement *end = cur;
+		while (cur) {
+			
+	if (hasSuffix(cur->path, ".hx")) {
+		int len = strlen(cur->path) + 3;
+		char *outPath = malloc(len);
+		ASSERT(outPath);
+		memcpy(outPath, cur->path, len - 6);
+		strcpy(outPath + len - 6, ".html");
+		FILE *out = fopen(outPath, "w");
+		ASSERT(out);
+		 
+	FILE *in = fopen(cur->path, "r");
+	ASSERT(in);
+	 {
+	struct HtmlStatus status = {
+		.state = hs_NOTHING_WRITTEN
+		
+	, .headerLevel = 0
+	, .headerNameEnd = NULL
 
-						// int headerLevel = 0, codeLevel = 0;
-						// int indentLevel = 0;
-						// bool inCode = false;
-						// bool inNotes = false;
-						// bool noteOpen = false;
-						// char special = '\0';
-						for (;;) {
-						int ch = fgetc(in);
-						 
-						if (ch == '#' && last == '\n') {
-						if (isOutOfHtmlSpecial(&status) ||
-						status.state == hs_IN_HEADER
-						) {
-						++status.headerLevel;
-						if (status.state != hs_IN_HEADER) {
-						status.headerState = status.state;
-						}
-						status.state = hs_IN_HEADER;
-						continue;
-						}
-						}
-						 
-						if (status.state == hs_IN_HEADER) {
-						if (ch == '\n') {
-						 
-						ASSERT(status.headerNameEnd);
-						 
-						switch (status.headerState) {
-						case hs_NOTHING_WRITTEN: {
-						 
-						fprintf(out, "<!doctype html>\n");
-						fprintf(out, "<html lang=\"de\"l>\n");
-						fprintf(out, "<head>\n");
-						 
-						fprintf(
-						out, "<meta charset=\"utf-8\">\n"
-						);
-						fprintf(out, "<title>");
-						writeEscaped(out, status.headerName, status.headerNameEnd);
-						fprintf(out, "</title>");
-						fprintf(
-						out, "<link rel=\"stylesheet\" "
-						"type=\"text/css\" "
-						"href=\"slides/slides.css\">"
-						);
-						;
-						fprintf(out, "</head>\n");
-						fprintf(out, "<body>\n");
-						;
-						break;
-						}
-						case hs_IN_SLIDE: {
-						fprintf(out, "</div>\n");
-						fprintf(out, "</div>\n");
-						break;
-						}
-						default: {
-						fprintf(out, "</div>\n");
-						}
-						}
-						;
-						 
-						fprintf(out, "<h%d>", status.headerLevel);
+	, .codeOpening = 0
+	, .codeIndent = 0
+	, .codeSpecial = '\0'
 
-						writeEscaped(out, status.headerName, status.headerNameEnd);
-						fprintf(out, "</h%d>\n", status.headerLevel);
-						;
-						fprintf(out, "<div class=\"slides\">\n");
-						fprintf(out, "<div><div>\n");
-						 
-						fprintf(out, "<h%d>", status.headerLevel);
-
-						writeEscaped(out, status.headerName, status.headerNameEnd);
-						fprintf(out, "</h%d>\n", status.headerLevel);
-						;
-						fprintf(out, "</div>\n");
-						;
-						 
-						status.state = hs_IN_SLIDE;
-						status.headerLevel = 0;
-						status.headerNameEnd = NULL;
-						status.headerState = hs_IN_SLIDE;
-						;
-						last = ch;
-						continue;
-						}
-						}
-						 
-						if (status.state == hs_IN_HEADER) {
-						if (status.headerNameEnd) {
-						ASSERT(
-						status.headerNameEnd <
-						status.headerName + sizeof(
+	};
+	char last = '\n';
+	for (;;) {
+		int ch = fgetc(in);
+		 
+	if (ch == '#' && last == '\n') {
+		if (isOutOfHtmlSpecial(&status) ||
+			status.state == hs_IN_HEADER
+		) {
+			++status.headerLevel;
+			if (status.state != hs_IN_HEADER) {
+				status.headerState = status.state;
+			}
+			status.state = hs_IN_HEADER;
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_HEADER) {
+		if (ch == '\n') {
+			 
+	ASSERT(status.headerNameEnd);
+	 
+	switch (status.headerState) {
+		case hs_NOTHING_WRITTEN: {
+			 
+	fprintf(out, "<!doctype html>\n");
+	fprintf(out, "<html lang=\"de\"l>\n");
+	fprintf(out, "<head>\n");
+	 
+	fprintf(
+		out, "<meta charset=\"utf-8\">\n"
+	);
+	fprintf(out, "<title>");
+	writeEscaped(out, status.headerName, status.headerNameEnd);
+	fprintf(out, "</title>");
+	fprintf(
+		out, "<link rel=\"stylesheet\" "
+		"type=\"text/css\" "
+		"href=\"slides/slides.css\">"
+	);
+;
+	fprintf(out, "</head>\n");
+	fprintf(out, "<body>\n");
+;
+			break;
+		}
+		case hs_IN_SLIDE: {
+			fprintf(out, "</div>\n");
+			fprintf(out, "</div>\n");
+			break;
+		}
+		default: {
+			fprintf(out, "</div>\n");
+		}
+	}
+;
+	 
+	fprintf(out, "<h%d>", status.headerLevel);
+	writeEscaped(out, status.headerName, status.headerNameEnd);
+	fprintf(out, "</h%d>\n", status.headerLevel);
+;
+	fprintf(out, "<div class=\"slides\">\n");
+	fprintf(out, "<div><div>\n");
+	 
+	fprintf(out, "<h%d>", status.headerLevel);
+	writeEscaped(out, status.headerName, status.headerNameEnd);
+	fprintf(out, "</h%d>\n", status.headerLevel);
+;
+	fprintf(out, "</div>\n");
+;
+			 
+	status.state = hs_IN_SLIDE;
+	status.headerLevel = 0;
+	status.headerNameEnd = NULL;
+	status.headerState = hs_IN_SLIDE;
+;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_HEADER) {
+		if (status.headerNameEnd) {
+			ASSERT(
+				status.headerNameEnd <
+					status.headerName + sizeof(
 						status.headerName
-						) - 1
-						);
-						*status.headerNameEnd++ = ch;
-						last = ch;
-						continue;
-						}
-						}
-						 
-						if (status.state == hs_IN_HEADER) {
-						if (! status.headerNameEnd &&
-						ch > ' '
-						) {
-						status.headerNameEnd =
-						status.headerName;
-						*status.headerNameEnd++ = ch;
-						last = ch;
-						continue;
-						}
-						}
-						 
-						if (last == '\n' && ch == '`') {
-						if (isOutOfHtmlSpecial(&status) ||
-						status.state == hs_IN_CODE
-						) {
-						++status.codeOpening;
-						continue;
-						}
-						}
-						 
-						if (ch == '\n' && status.codeOpening == 3) {
-						status.codeOpening = 0;
-						if (isOutOfHtmlSpecial(&status)) {
-						if (status.state == hs_IN_SLIDE) {
-						fprintf(out, "</div>\n");
-						}
-						fprintf(out, "<div><div>\n");
-						fprintf(out, "<code>\n");
-						status.state = hs_IN_CODE;
-						last = 0;
-						continue;
-						} else if (status.state == hs_IN_CODE) {
-						fprintf(out, "</code>\n");
-						fprintf(out, "</div>\n");
-						status.state = hs_IN_SLIDE;
-						status.codeIndent = 0;
-						status.codeSpecial = '\0';
-						last = 0;
-						continue;
-						}
-						}
-						status.codeOpening = 0;
-						
-						if (status.state == hs_IN_CODE) {
-						 
-						if (ch == '\n') {
-						if (last) {
-						writeEscaped(out, &last, &last + 1);
-						}
-						fprintf(out, "<br/>\n");
-						last = ch;
-						continue;
-						}
-						 
-						if (last == '\n' && ch == '\t') {
-						++status.codeIndent;
-						continue;
-						}
-						if (status.codeIndent) {
-						fprintf(
-						out, "<span class=\"in%d\"></span>", status.codeIndent
-						);
-						status.codeIndent = 0;
-						}
-						
-						if (ch == '{') {
-						switch (last) {
-						
-						case 'a':
-						fprintf(out, "<span class=\"add\">@add(");
-						fprintf(out, "<span class=\"name\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'x':
-						fprintf(out, "<span class=\"end\">@end(");
-						fprintf(out, "<span class=\"name\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'e':
-						fprintf(out, "<span class=\"expand\">@expand(");
-						fprintf(out, "<span class=\"name\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'i':
-						fprintf(out, "<span class=\"include\">@include(");
-						fprintf(out, "<span class=\"name\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 't':
-						fprintf(out, "<span class=\"type\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'v':
-						fprintf(out, "<span class=\"var\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'f':
-						fprintf(out, "<span class=\"fn\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'k':
-						fprintf(out, "<span class=\"keyword\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 's':
-						fprintf(out, "<span class=\"str\">");
-						status.codeSpecial = last;
-						break;
-						
-						case 'n':
-						fprintf(out, "<span class=\"num\">");
-						status.codeSpecial = last;
-						break;
-						
-						default: break;
-						}
-						if (status.codeSpecial) {
-						last = 0;
-						continue;
-						}
-						}
-						
-						if (ch == '}' && status.codeSpecial) {
-						if (last) {
-						writeEscaped(out, &last, &last + 1);
-						last = 0;
-						}
-						switch (status.codeSpecial) {
-						case 'a': case 'e': case 'i': case 'x':
-						fprintf(out, ")</span>");
-						}
-						fprintf(out, "</span>");
-						status.codeSpecial = 0;
-						continue;
-						}
-						;
-						if (last) {
-						writeEscaped(out, &last, &last + 1);
-						}
-						last = ch;
-						continue;
-						}
-						 
-						if (last == '\n' && status.state == hs_IN_NOTES) {
+					) - 1
+			);
+			*status.headerNameEnd++ = ch;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_HEADER) {
+		if (! status.headerNameEnd &&
+			ch > ' '
+		) {
+			status.headerNameEnd =
+				status.headerName;
+			*status.headerNameEnd++ = ch;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (last == '\n' && ch == '`') {
+		if (isOutOfHtmlSpecial(&status) ||
+			status.state == hs_IN_CODE
+		) {
+			++status.codeOpening;
+			continue;
+		}
+	}
+ 
+	if (ch == '\n' && status.codeOpening == 3) {
+		status.codeOpening = 0;
+		if (isOutOfHtmlSpecial(&status)) {
+			if (status.state == hs_IN_SLIDE) {
+				fprintf(out, "</div>\n");
+			}
+			fprintf(out, "<div><div>\n");
+			fprintf(out, "<code>\n");
+			status.state = hs_IN_CODE;
+			last = 0;
+			continue;
+		} else if (status.state == hs_IN_CODE) {
+			fprintf(out, "</code>\n");
+			fprintf(out, "</div>\n");
+			status.state = hs_IN_SLIDE;
+			status.codeIndent = 0;
+			status.codeSpecial = '\0';
+			last = 0;
+			continue;
+		}
+	}
+	status.codeOpening = 0;
 
-						if (ch == '*') {
-						fprintf(out, "</li><li>\n");
-						last = 0;
-						continue;
-						} else if (ch != ' ' && ch != '\t') {
-						fprintf(out, "</li></ul></div>\n");
-						status.state = hs_AFTER_SLIDE;
-						last = ch;
-						continue;
-						}
-						}
-						 
-						if (last == '\n' && ch == '*') {
-						if (isOutOfHtmlSpecial(&status)) {
-						if(status.state != hs_IN_SLIDE) {
-						fprintf(out, "<div>\n");
-						}
-						status.state = hs_IN_NOTES;
-						fprintf(out, "<ul><li>\n");
-						last = '\0';
-						continue;
-						}
-						}
-						 
-						if (status.state == hs_IN_NOTES) {
-						if (last) {
-						writeEscaped(out, &last, &last + 1);
-						}
-						last = ch;
-						continue;
-						}
-						;
-						if (ch == EOF) { break; }
-						last = ch;
-						}
-						} ;
-						fclose(in);
-						;
-						fclose(out);
-						free(outPath);
-						}
-						;
-						struct SourceElement *next =
-						cur->link;
-						free(cur);
-						cur = next;
-						}
-						}
-						;
+	if (status.state == hs_IN_CODE) {
+		 
+	if (ch == '\n') {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		fprintf(out, "<br/>\n");
+			last = ch;
+		continue;
+	}
+ 
+	if (last == '\n' && ch == '\t') {
+		++status.codeIndent;
+		continue;
+	}
+	if (status.codeIndent) {
+		fprintf(
+			out, "<span class=\"in%d\"></span>", status.codeIndent
+		);
+		status.codeIndent = 0;
+	}
+
+	if (ch == '{') {
+		switch (last) {
+			
+	case 'a':
+		fprintf(out, "<span class=\"add\">@add(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'x':
+		fprintf(out, "<span class=\"end\">@end(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'e':
+		fprintf(out, "<span class=\"expand\">@expand(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'i':
+		fprintf(out, "<span class=\"include\">@include(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 't':
+		fprintf(out, "<span class=\"type\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'v':
+		fprintf(out, "<span class=\"var\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'f':
+		fprintf(out, "<span class=\"fn\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'k':
+		fprintf(out, "<span class=\"keyword\">");
+		status.codeSpecial = last;
+		break;
+
+	case 's':
+		fprintf(out, "<span class=\"str\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'n':
+		fprintf(out, "<span class=\"num\">");
+		status.codeSpecial = last;
+		break;
+
+			default: break;
+		}
+		if (status.codeSpecial) {
+			last = 0;
+			continue;
+		}
+	}
+
+	if (ch == '}' && status.codeSpecial) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+			last = 0;
+		}
+		switch (status.codeSpecial) {
+			case 'a': case 'e': case 'i': case 'x':
+				fprintf(out, ")</span>");
+		}
+		fprintf(out, "</span>");
+		status.codeSpecial = 0;
+		continue;
+	}
+;
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		last = ch;
+		continue;
+	}
+ 
+	if (last == '\n' && status.state == hs_IN_NOTES) {
+		if (ch == '*') {
+			fprintf(out, "</li><li>\n");
+			last = 0;
+			continue;
+		} else if (ch != ' ' && ch != '\t') {
+			fprintf(out, "</li></ul></div>\n");
+			status.state = hs_AFTER_SLIDE;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (last == '\n' && ch == '*') {
+		if (isOutOfHtmlSpecial(&status)) {
+			if(status.state != hs_IN_SLIDE) {
+				fprintf(out, "<div>\n");
+			}
+			status.state = hs_IN_NOTES;
+			fprintf(out, "<ul><li>\n");
+			last = '\0';
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_NOTES) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		last = ch;
+		continue;
+	}
+;
+		if (ch == EOF) { break; }
+		last = ch;
+	}
+} ;
+	fclose(in);
+;
+		fclose(out);
+		free(outPath);
+	}
+;
+			struct SourceElement *next =
+				cur->link;
+			free(cur);
+			cur = next;
+		}
+	}
+;
 
 	}

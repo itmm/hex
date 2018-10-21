@@ -595,7 +595,7 @@ x{define macro}
 
 ```
 a{reuse last entry}
-	k{if} (v{macro}->v{firstEntry} &&amp;
+	k{if} (v{macro}->v{firstEntry} &&
 		! v{macro}->v{lastEntry}->v{macro}
 	) {
 		v{macro}->v{lastEntry}->v{macro} = v{child};
@@ -843,7 +843,7 @@ a{define macro}
 		t{const char *}v{end}) {
 		f{ASSERT}(v{begin});
 		t{unsigned} v{hash} = n{0xf1e2d3c4};
-		k{while} (*v{begin} &&amp; v{begin} != v{end}) {
+		k{while} (*v{begin} && v{begin} != v{end}) {
 			v{hash} ^= *v{begin}++;
 			v{hash} = (v{hash} << 3) |
 				(v{hash} >> 29);
@@ -910,7 +910,7 @@ a{find macro in slot}
 		k{while} (v{a} != v{end}) {
 			k{if} (*v{a}++ != *v{b}++) { k{break}; }
 		}
-		k{if} (v{a} == v{end} &&amp; ! *v{b}) {
+		k{if} (v{a} == v{end} && ! *v{b}) {
 			k{return} v{macro}; }
 	}
 x{find macro in slot}

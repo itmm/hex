@@ -274,7 +274,7 @@ INIT_BUFFER_SIZE;<br/>
 <code>
 <span class="add">@add(<span class="name">erase heap buffer)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">buffer</span> &amp;&amp;amp;<br/>
+<span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">buffer</span> &&<br/>
 <span class="in2"></span>
 <span class="var">buffer</span>-&gt;<span class="var">buffer</span> != <span class="var">buffer</span>-&gt;<span class="var">initial</span><br/>
 <span class="in1"></span>
@@ -304,7 +304,7 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
 <span class="in1"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="str">'x'</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="str">'x'</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(*<span class="var">buffer</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
 <span class="in1"></span>
@@ -356,7 +356,7 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
 <span class="in1"></span>
-<span class="fn">addCharsToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="str">'x'</span>,<br/>
+<span class="fn">addCharsToBuffer</span>(&<span class="var">buffer</span>, <span class="str">'x'</span>,<br/>
 <span class="in2"></span>
 1000);<br/>
 <span class="in1"></span>
@@ -370,7 +370,7 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in2"></span>
 <span class="var">buffer</span>.<span class="var">initial</span>);<br/>
 <span class="in1"></span>
-<span class="fn">eraseBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
+<span class="fn">eraseBuffer</span>(&<span class="var">buffer</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> ==<br/>
 <span class="in2"></span>

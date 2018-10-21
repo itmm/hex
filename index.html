@@ -484,7 +484,7 @@
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -538,7 +538,7 @@
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span><br/>
+&<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -605,7 +605,7 @@
 <span class="in3"></span>
 <span class="fn">getMacroInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span>);<br/>
+&<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span>);<br/>
 <span class="in2"></span>
 <span class="fn">addMacroToMacro</span>(<br/>
 <span class="in3"></span>
@@ -637,7 +637,7 @@
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">resetBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
+<span class="fn">resetBuffer</span>(&<span class="var">buffer</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -701,7 +701,7 @@
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">nameCur</span>; ++<span class="var">c</span>) {<br/>
 <span class="in3"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
@@ -719,7 +719,7 @@
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -729,31 +729,17 @@
 
 <span class="add">@add(<span class="name">process close brace)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">macro</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">macro</span> && ! <span class="var">processed</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
 <span class="end">@end(<span class="name">process close brace)</span></span><br/>
 </code>
 </div>
-</div>
-</div>
-<h1>Entities auflösen</h1>
-<div class="slides">
-<div><div>
-<h1>Entities auflösen</h1>
-</div>
 <ul><li>
- In den Eingabe-Dateien können HTML-Entities vorkommen</li><li>
- Diese werden durch ihre ASCII-Äquivalente ersetzt</li></ul></div>
-<div><div>
-<code>
-<span class="include">@include(<span class="name">entities.xml)</span></span><br/>
-</code>
-</div>
-</div>
+ Entities werden in einer eigenen Datei expandiert</li></ul></div>
 </div>
 <h1>Fragmente serialisieren</h1>
 <div class="slides">
@@ -807,15 +793,11 @@
 <span class="in1"></span>
 <span class="type">struct FileConsumer</span> <span class="var">fc</span>;<br/>
 <span class="in1"></span>
-<span class="fn">setupFileConsumer</span>(&amp;<span class="var">fc</span>, <span class="var">f</span>);<br/>
-<span class="in1"></span>
-<span class="type">struct EntityConsumer</span> <span class="var">ec</span>;<br/>
-<span class="in1"></span>
-<span class="fn">setupEntityConsumer</span>(&amp;<span class="var">ec</span>, &amp;<span class="var">fc</span>.<span class="var">consumer</span>);<br/>
+<span class="fn">setupFileConsumer</span>(&<span class="var">fc</span>, <span class="var">f</span>);<br/>
 <span class="in1"></span>
 <span class="fn">serializeMacro</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, &amp;<span class="var">ec</span>.<span class="var">consumer</span><br/>
+<span class="var">macro</span>, &<span class="var">fc</span>.<span class="var">consumer</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
@@ -836,6 +818,6 @@
  Aus `hx`-Dateien wird ein HTML-Foliensatz generiert</li></ul></div>
 <div><div>
 <code>
-<span class="include">@include(<span class="name">html.xml)</span></span><br/>
+<span class="include">@include(<span class="name">html.hx)</span></span><br/>
 </code>
 </div>

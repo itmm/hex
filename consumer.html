@@ -191,7 +191,7 @@
 <span class="in2"></span>
 <span class="type">int</span> <span class="var">cr</span> = <span class="var">ch</span> != <span class="keyword">EOF</span> ? <span class="var">ch</span> : <span class="str">'\0'</span>;<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">bc</span>-&gt;<span class="var">buffer</span>, <span class="var">cr</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">bc</span>-&gt;<span class="var">buffer</span>, <span class="var">cr</span>);<br/>
 <span class="in2"></span>
 <span class="keyword">return</span> <span class="var">ch</span>;<br/>
 <span class="in1"></span>
@@ -220,7 +220,7 @@
 <span class="in2"></span>
 <span class="fn">memset</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">bc</span>-&gt;<span class="var">buffer</span>, 0,<br/>
+&<span class="var">bc</span>-&gt;<span class="var">buffer</span>, 0,<br/>
 <span class="in3"></span>
 <span class="fn">sizeof</span>(<span class="var">bc</span>-&gt;<span class="var">buffer</span>)<br/>
 <span class="in2"></span>
@@ -258,9 +258,9 @@
 <span class="in1"></span>
 <span class="type">struct BufferConsumer</span> <span class="var">bc</span>;<br/>
 <span class="in1"></span>
-<span class="fn">setupBufferConsumer</span>(&amp;<span class="var">bc</span>);<br/>
+<span class="fn">setupBufferConsumer</span>(&<span class="var">bc</span>);<br/>
 <span class="in1"></span>
-<span class="type">struct Consumer *</span><span class="var">c</span> = &amp;<span class="var">bc</span>.<span class="var">consumer</span>;<br/>
+<span class="type">struct Consumer *</span><span class="var">c</span> = &<span class="var">bc</span>.<span class="var">consumer</span>;<br/>
 <span class="in1"></span>
 <span class="fn">putToConsumer</span>(<span class="var">c</span>, <span class="str">'a'</span>);<br/>
 <span class="in1"></span>

@@ -1003,7 +1003,7 @@ __FILE__, __LINE__); \<br/>
 <code>
 <span class="add">@add(<span class="name">reuse last entry)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> &amp;&amp;amp;<br/>
+<span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> &&<br/>
 <span class="in2"></span>
 ! <span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">macro</span><br/>
 <span class="in1"></span>
@@ -1132,11 +1132,11 @@ __FILE__, __LINE__); \<br/>
 <span class="in2"></span>
 <span class="type">struct BufferConsumer</span> <span class="var">bc</span>;<br/>
 <span class="in2"></span>
-<span class="fn">setupBufferConsumer</span>(&amp;<span class="var">bc</span>);<br/>
+<span class="fn">setupBufferConsumer</span>(&<span class="var">bc</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">serialize test macro)</span></span>;<br/>
 <span class="in2"></span>
-<span class="fn">eraseBuffer</span>(&amp;<span class="var">bc</span>.<span class="var">buffer</span>);<br/>
+<span class="fn">eraseBuffer</span>(&<span class="var">bc</span>.<span class="var">buffer</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1148,9 +1148,9 @@ __FILE__, __LINE__); \<br/>
 <code>
 <span class="add">@add(<span class="name">serialize test macro)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">serializeMacro</span>(<span class="var">macro</span>, &amp;<span class="var">bc</span>.<span class="var">consumer</span>);<br/>
+<span class="fn">serializeMacro</span>(<span class="var">macro</span>, &<span class="var">bc</span>.<span class="var">consumer</span>);<br/>
 <span class="in1"></span>
-<span class="fn">putToConsumer</span>(&amp;<span class="var">bc</span>.<span class="var">consumer</span>, <span class="keyword">EOF</span>);<br/>
+<span class="fn">putToConsumer</span>(&<span class="var">bc</span>.<span class="var">consumer</span>, <span class="keyword">EOF</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="fn">strcmp</span>(<br/>
 <span class="in2"></span>
@@ -1418,7 +1418,7 @@ __FILE__, __LINE__); \<br/>
 <span class="in2"></span>
 <span class="type">unsigned</span> <span class="var">hash</span> = <span class="num">0xf1e2d3c4</span>;<br/>
 <span class="in2"></span>
-<span class="keyword">while</span> (*<span class="var">begin</span> &amp;&amp;amp; <span class="var">begin</span> != <span class="var">end</span>) {<br/>
+<span class="keyword">while</span> (*<span class="var">begin</span> && <span class="var">begin</span> != <span class="var">end</span>) {<br/>
 <span class="in3"></span>
 <span class="var">hash</span> ^= *<span class="var">begin</span>++;<br/>
 <span class="in3"></span>
@@ -1532,7 +1532,7 @@ __FILE__, __LINE__); \<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="var">a</span> == <span class="var">end</span> &amp;&amp;amp; ! *<span class="var">b</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">a</span> == <span class="var">end</span> && ! *<span class="var">b</span>) {<br/>
 <span class="in3"></span>
 <span class="keyword">return</span> <span class="var">macro</span>; }<br/>
 <span class="in1"></span>

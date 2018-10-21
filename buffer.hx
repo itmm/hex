@@ -163,7 +163,7 @@ x{define buffer}
 
 ```
 a{erase heap buffer}
-	k{if} (v{buffer}->v{buffer} &&amp;
+	k{if} (v{buffer}->v{buffer} &&
 		v{buffer}->v{buffer} != v{buffer}->v{initial}
 	) {
 		f{free}(v{buffer}->v{buffer});

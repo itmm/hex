@@ -450,13 +450,6 @@ a{process close brace}
 x{process close brace}
 ```
 
-# Entities auflösen
-* In den Eingabe-Dateien können HTML-Entities vorkommen
-* Diese werden durch ihre ASCII-Äquivalente ersetzt
-
-```
-i{entities.xml}
-```
 * Entities werden in einer eigenen Datei expandiert
 
 # Fragmente serialisieren
@@ -489,10 +482,8 @@ a{write in file}
 	f{ASSERT}(v{f});
 	t{struct FileConsumer} v{fc};
 	f{setupFileConsumer}(&v{fc}, v{f});
-	t{struct EntityConsumer} v{ec};
-	f{setupEntityConsumer}(&v{ec}, &v{fc}.v{consumer});
 	f{serializeMacro}(
-		v{macro}, &v{ec}.v{consumer}
+		v{macro}, &v{fc}.v{consumer}
 	);
 	f{fclose}(v{f});
 x{write in file}
@@ -505,7 +496,7 @@ x{write in file}
 * Aus `hx`-Dateien wird ein HTML-Foliensatz generiert
 
 ```
-i{html.xml}
+i{html.hx}
 ```
 * Die Generierung liegt in einer eigenen Datei
 

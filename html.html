@@ -1,979 +1,1164 @@
 <!doctype html>
-<html lang="de">
-		<head>
-			<meta charset="utf-8" />
-			<title>HTML-Präsentation generieren</title>
-			<link rel="stylesheet" type="text/css"
-				href="slides/slides.css" />
-		</head>
-	<body>
-		<div class="slides">
-			<div>
-				<div>
-					<h1>HTML-Präsentation generieren</h1>
-				</div>
-				<ul>
-					<li>
-						Diese Datei beschreibt Code, um aus den
-						<code>hx</code>-Quelldateien
-						HTML-Präsentationen zu erzeugen
-					</li>
-				</ul>
-			</div>
-				<div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
-						<span class="in1"></span><span class="type">struct SourceElement</span> {<br/>
-						<span class="in2"></span><span class="type">struct SourceElement *</span><span class="var">link</span>;<br/>
-						<span class="in2"></span><span class="type">char</span> <span class="var">path</span>[];<br/>
-						<span class="in1"></span>};<br/>
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-							Alle Dateien, die noch herausgeschrieben
-							werden müssen, werden in einer Liste
-							vorgehalten
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
-						<span class="in1"></span><span class="type">struct SourceElement</span> *createSourceElement(<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">path</span><br/>
-						<span class="in1"></span>) {<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">path</span>);<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">size</span> =<br/>
-						<span class="in3"></span><span class="var">len</span> + <span class="fn">sizeof</span>(<span class="type">struct SourceElement</span>);<br/>
-						<span class="in2"></span><span class="type">struct SourceElement *</span><span class="var">se</span> =<br/>
-						<span class="in3"></span><span class="fn">malloc</span>(<span class="var">size</span>);<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">se</span>);<br/>
-						<span class="in2"></span><span class="var">se</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
-						<span class="in2"></span><span class="fn">memcpy</span>(<span class="var">se</span>-&gt;<span class="var">path</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="var">se</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-							Die Größe der Struktur wird dynamisch
-							berechnet
-						</li><li>
-							So dass der Name mit abschließenden
-							Null-Byte reinpasst
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write HTML file</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">argc</span> &gt; <span class="num">1</span>) {<br/>
-						<span class="in2"></span><span class="type">struct SourceElement *</span><span class="var">cur</span> =<br/>
-						<span class="in3"></span><span class="fn">createSourceElement</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
-						<span class="in2"></span>//<span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
-						<span class="in2"></span><span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
-						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">write cur HTML file</span>)</span>;<br/>
-						<span class="in3"></span><span class="type">struct SourceElement *</span><span class="var">next</span> =<br/>
-						<span class="in4"></span><span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
-						<span class="in3"></span><span class="fn">free</span>(<span class="var">cur</span>);<br/>
-						<span class="in3"></span><span class="var">cur</span> = <span class="var">next</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">write HTML file</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-							Nur wenn die erste Datei über die
-							Aufrufparameter übergeben wurde, werden
-							HTML-Dateien generiert
-						</li><li>
-							Beim Lesen von der Standard-Eingabe ist der
-							Dateiname unbekannt
-						</li><li>
-							Beim Lesen der Datei können weitere
-							Dateien in die Liste eingefügt werden
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">bool</span> <span class="fn">hasSuffix</span>(<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">str</span>,<br/>
-						<span class="in2"></span><span class="type">const char *</span><span class="var">suff</span><br/>
-						<span class="in1"></span>) {<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">str</span>); <span class="fn">ASSERT</span>(<span class="var">suff</span>);<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">sl</span> = <span class="fn">strlen</span>(<span class="var">str</span>);<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">su</span> = <span class="fn">strlen</span>(<span class="var">suff</span>);<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="var">sl</span> &gt;= <span class="var">su</span> &amp;&amp; <span class="num">0</span> == <span class="fn">memcmp</span>(<br/>
-						<span class="in3"></span><span class="var">str</span> + <span class="var">sl</span> - <span class="var">su</span>, <span class="var">suff</span>, <span class="var">su</span><br/>
-						<span class="in2"></span>);<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-							Um zu prüfen, ob Dateinamen die richtige
-							Endung haben, gibt es eine extra Funktion
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write cur HTML file</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".hx"</span>)) {<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>) + <span class="num">3</span>;<br/>
-						<span class="in2"></span><span class="type">char *</span><span class="var">outPath</span> = <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">outPath</span>);<br/>
-						<span class="in2"></span><span class="fn">memcpy</span>(<span class="var">outPath</span>, <span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="var">len</span> - <span class="num">6</span>);<br/>
-						<span class="in2"></span><span class="fn">strcpy</span>(<span class="var">outPath</span> + <span class="var">len</span> - <span class="num">6</span>, <span class="str">".html"</span>);<br/>
-						<span class="in2"></span><span class="type">FILE *</span><span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>, <span class="str">"w"</span>);<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">write cur HTML file to out</span>)</span>;<br/>
-						<span class="in2"></span><span class="fn">fclose</span>(<span class="var">out</span>);<br/>
-						<span class="in2"></span><span class="fn">free</span>(<span class="var">outPath</span>);<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">write cur HTML file</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-							Nur <code>hx</code>-Dateien werden in HTML
-							konvertiert
-						</li><li>
-							Die HTML hat den gleichen Pfad mit der 
-							Endung <code>.html</code>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write cur HTML file to out</span>)</span> <br/>
-						<span class="in1"></span><span class="type">FILE *</span><span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">"r"</span>);<br/>
-						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">in</span>);<br/>
-						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write HTML file from in to out</span>)</span>;<br/>
-						<span class="in1"></span><span class="fn">fclose</span>(<span class="var">in</span>);<br/>
-						<span class="end">@end(<span class="macro-name">write HTML html file to out</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
-						<span class="in1"></span><span class="type">enum HtmlState</span> {<br/>
-						<span class="in2"></span><span class="var">hs_NOTHING_WRITTEN</span>,<br/>
-						<span class="in2"></span><span class="var">hs_IN_SLIDE</span>,<br/>
-						<span class="in3"></span><span class="var">hs_AFTER_SLIDE</span><br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">html state enums</span>)</span><br/>
-						<span class="in1"></span>};<br/>
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
-						<span class="in1"></span><span class="type">struct HtmlStatus</span> {<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">html state elements</span>)</span><br/>
-						<span class="in1"></span>};<br/>
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">html state elements</span>)</span><br/>
-						<span class="in1"></span><span class="type">enum HtmlState</span> <span class="var">state</span>;<br/>
-						<span class="end">@end(<span class="macro-name">html state elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write HTML file from in to out</span>)</span> {<br/>
-						<span class="in1"></span><span class="type">struct HtmlStatus</span> <span class="var">status</span> = {<br/>
-						<span class="in2"></span>.<span class="var">state</span> = <span class="var">hs_NOTHING_WRITTEN</span><br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">init html status</span>)</span><br/>
-						<span class="in1"></span>};<br/>
-						<span class="in1"></span>char last = '\n';<br/>
+<html lang="de"l>
+<head>
+<meta charset="utf-8">
+<title>HTML-Präsentation generieren</title><link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>HTML-Präsentation generieren</h1>
+<div class="slides">
+<div><div>
+<h1>HTML-Präsentation generieren</h1>
+</div>
+<ul><li>
+ Diese Datei beschreibt Code, um aus den &lt;code&gt;hx&lt;/code&gt;-Quelldateien
+  HTML-Präsentationen zu erzeugen</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">struct SourceElement</span> {<br/>
+<span class="in2"></span>
+<span class="type">struct SourceElement *</span><span class="var">link</span>;<br/>
+<span class="in2"></span>
+<span class="type">char</span> <span class="var">path</span>[];<br/>
+<span class="in1"></span>
+};<br/>
 
-						<span class="in1"></span>// <span class="type">int</span> <span class="var">headerLevel</span> = <span class="num">0</span>, <span class="var">codeLevel</span> = <span class="num">0</span>;<br/>
-						<span class="in1"></span>// int indentLevel = 0;<br/>
-						<span class="in1"></span>// <span class="type">bool</span> <span class="var">inCode</span> = <span class="keyword">false</span>;<br/>
-						<span class="in1"></span>// <span class="type">bool</span> <span class="var">inNotes</span> = <span class="keyword">false</span>;<br/>
-						<span class="in1"></span>// <span class="type">bool</span> <span class="var">noteOpen</span> = <span class="keyword">false</span>;<br/>
-						<span class="in1"></span>// <span class="type">char</span> <span class="var">special</span> = <span class="str">'\0'</span>;<br/>
-						<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
-						<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">in</span>);<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">process ch for HTML</span>)</span>;<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
-						<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-						<span class="in1"></span>}<br/>
-						} <span class="end">@end(<span class="macro-name">write HTML file from in to out</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">html state enums</span>)</span><br/>
-						<span class="in1"></span>, <span class="var">hs_IN_HEADER</span><br/>
-						<span class="end">@end(<span class="macro-name">html state enums</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span><br/>
-						<span class="in1"></span><span class="type">bool</span> isOutOfHtmlSpecial(<br/>
-						<span class="in2"></span>struct HtmlStatus *s<br/>
-						<span class="in1"></span>) {<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">check html special state</span>)</span>;<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
-						<span class="in1"></span>}
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">check html special state</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="keyword">false</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">check html special state</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">html state elements</span>)</span><br/>
-							<span class="in1"></span><span class="type">int</span> <span class="var">headerLevel</span>;<br/>
-							<span class="in2"></span><span class="type">char</span> <span class="var">headerName</span>[100];<br/>
-							<span class="in2"></span><span class="type">char *</span> <span class="var">headerNameEnd</span>;<br/>
-							<span class="in2"></span><span class="type">enum HtmlState</span> <span class="var">headerState</span>;<br/>
-						<span class="end">@end(<span class="macro-name">html state elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">init html status</span>)</span><br/>
-							<span class="in1"></span>, .<span class="var">headerLevel</span> = 0<br/>
-							<span class="in1"></span>, .<span class="var">headerNameEnd</span> = <span class="keyword">NULL</span><br/>
-						<span class="end">@end(<span class="macro-name">init html status</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'#'</span> &amp;&amp; <span class="var">last</span> == <span class="str">'\n'</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span><br/>
-						<span class="in2"></span>) {<br/>
-						<span class="in3"></span>++<span class="var">status</span>.<span class="var">headerLevel</span>;<br/>
-						<span class="in3"></span>if (status.state != hs_IN_HEADER) {
-						<span class="in4"></span>status.headerState = status.state;
-						<span class="in3"></span>}
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_HEADER</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">struct SourceElement</span> *createSourceElement(<br/>
+<span class="in2"></span>
+<span class="type">const char *</span><span class="var">path</span><br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">path</span>);<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">size</span> =<br/>
+<span class="in3"></span>
+<span class="var">len</span> + <span class="fn">sizeof</span>(<span class="type">struct SourceElement</span>);<br/>
+<span class="in2"></span>
+<span class="type">struct SourceElement *</span><span class="var">se</span> =<br/>
+<span class="in3"></span>
+<span class="fn">malloc</span>(<span class="var">size</span>);<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">se</span>);<br/>
+<span class="in2"></span>
+<span class="var">se</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span>
+<span class="fn">memcpy</span>(<span class="var">se</span>-&gt;<span class="var">path</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="var">se</span>;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
-						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">process header in HTML</span>)</span>;<br/>
-						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">reset header state</span>)</span>;<br/>
-						<span class="in3"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ So dass der Name mit abschließenden Null-Byte reinpasst</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write HTML file)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">argc</span> &gt; <span class="num">1</span>) {<br/>
+<span class="in2"></span>
+<span class="type">struct SourceElement *</span><span class="var">cur</span> =<br/>
+<span class="in3"></span>
+<span class="fn">createSourceElement</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
+<span class="in2"></span>
+//<span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
+<span class="in2"></span>
+<span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">write cur HTML file)</span></span>;<br/>
+<span class="in3"></span>
+<span class="type">struct SourceElement *</span><span class="var">next</span> =<br/>
+<span class="in4"></span>
+<span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
+<span class="in3"></span>
+<span class="fn">free</span>(<span class="var">cur</span>);<br/>
+<span class="in3"></span>
+<span class="var">cur</span> = <span class="var">next</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">reset header state</span>)</span> <br/>
-						<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
-						<span class="in1"></span><span class="var">status</span>.<span class="var">headerLevel</span> = <span class="num">0</span>;<br/>
-						<span class="in1"></span><span class="var">status</span>.<span class="var">headerNameEnd</span> = <span class="keyword">NULL</span>;<br/>
-						<span class="in1"></span>status.headerState = hs_IN_SLIDE;<br/>
-						<span class="end">@end(<span class="macro-name">reset header state</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">write HTML file)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Beim Lesen von der Standard-Eingabe ist der Dateiname unbekannt</li><li>
+ Beim Lesen der Datei können weitere Dateien in die Liste eingefügt
+  werden</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">bool</span> <span class="fn">hasSuffix</span>(<br/>
+<span class="in2"></span>
+<span class="type">const char *</span><span class="var">str</span>,<br/>
+<span class="in2"></span>
+<span class="type">const char *</span><span class="var">suff</span><br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">str</span>); <span class="fn">ASSERT</span>(<span class="var">suff</span>);<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">sl</span> = <span class="fn">strlen</span>(<span class="var">str</span>);<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">su</span> = <span class="fn">strlen</span>(<span class="var">suff</span>);<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="var">sl</span> &gt;= <span class="var">su</span> && <span class="num">0</span> == <span class="fn">memcmp</span>(<br/>
+<span class="in3"></span>
+<span class="var">str</span> + <span class="var">sl</span> - <span class="var">su</span>, <span class="var">suff</span>, <span class="var">su</span><br/>
+<span class="in2"></span>
+);<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">headerNameEnd</span>) {<br/>
-						<span class="in3"></span><span class="fn">ASSERT</span>(<br/>
-						<span class="in4"></span><span class="var">status</span>.<span class="var">headerNameEnd</span> &lt;<br/>
-						<span class="in5"></span><span class="var">status</span>.<span class="var">headerName</span> + <span class="fn">sizeof</span>(<br/>
-						<span class="in6"></span><span class="var">status</span>.<span class="var">headerName</span><br/>
-						<span class="in5"></span>) - <span class="num">1</span><br/>
-						<span class="in3"></span>);<br/>
-						<span class="in3"></span>*<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
-						<span class="in3"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write cur HTML file)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".hx"</span>)) {<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>) + <span class="num">3</span>;<br/>
+<span class="in2"></span>
+<span class="type">char *</span><span class="var">outPath</span> = <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">outPath</span>);<br/>
+<span class="in2"></span>
+<span class="fn">memcpy</span>(<span class="var">outPath</span>, <span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="var">len</span> - <span class="num">6</span>);<br/>
+<span class="in2"></span>
+<span class="fn">strcpy</span>(<span class="var">outPath</span> + <span class="var">len</span> - <span class="num">6</span>, <span class="str">".html"</span>);<br/>
+<span class="in2"></span>
+<span class="type">FILE *</span><span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>, <span class="str">"w"</span>);<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">write cur HTML file to out)</span></span>;<br/>
+<span class="in2"></span>
+<span class="fn">fclose</span>(<span class="var">out</span>);<br/>
+<span class="in2"></span>
+<span class="fn">free</span>(<span class="var">outPath</span>);<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">headerNameEnd</span> &amp;&amp;<br/>
-						<span class="in3"></span><span class="var">ch</span> &gt; <span class="str">' '</span><br/>
-						<span class="in2"></span>) {<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">headerNameEnd</span> =<br/>
-						<span class="in4"></span><span class="var">status</span>.<span class="var">headerName</span>;<br/>
-						<span class="in3"></span>*<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
-						<span class="in3"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">write cur HTML file)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Die HTML hat den gleichen Pfad mit der Endung &lt;code&gt;.html&lt;/code&gt;</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write cur HTML file to out)</span></span> <br/>
+<span class="in1"></span>
+<span class="type">FILE *</span><span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">"r"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">ASSERT</span>(<span class="var">in</span>);<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">write HTML file from in to out)</span></span>;<br/>
+<span class="in1"></span>
+<span class="fn">fclose</span>(<span class="var">in</span>);<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process header in HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
-						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">close previous HTML page</span>)</span>;<br/>
-						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write header tag</span>)</span>;<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write header tag</span>)</span>;<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
-						<span class="end">@end(<span class="macro-name">process header in HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">write HTML html file to out)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">enum HtmlState</span> {<br/>
+<span class="in2"></span>
+<span class="var">hs_NOTHING_WRITTEN</span>,<br/>
+<span class="in2"></span>
+<span class="var">hs_IN_SLIDE</span>,<br/>
+<span class="in3"></span>
+<span class="var">hs_AFTER_SLIDE</span><br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">html state enums)</span></span><br/>
+<span class="in1"></span>
+};<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">global elements</span>)</span> <br/>
-						<span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
-						<span class="in2"></span><span class="type">FILE *</span><span class="var">out</span>, <span class="type">const char *</span><span class="var">str</span>, const char *end<br/>
-						<span class="in1"></span>) {<br/>
-						<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>); <span class="fn">ASSERT</span>(<span class="var">str</span>);<br/>
-						<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">str</span> &amp;&amp; str != end; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
-						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&lt;'</span>:<br/>
-						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;lt;"</span>); <span class="keyword">break</span>;<br/>
-						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&gt;'</span>:<br/>
-						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;gt;"</span>); <span class="keyword">break</span>;<br/>
-						<span class="in3"></span><span class="keyword">case</span> <span class="str">'&amp;'</span>:<br/>
-						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;amp;"</span>); <span class="keyword">break</span>;<br/>
-						<span class="in3"></span><span class="keyword">default:</span><br/>
-						<span class="in4"></span><span class="fn">fputc</span>(*<span class="var">str</span>, <span class="var">out</span>);<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">global elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">struct HtmlStatus</span> {<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">html state elements)</span></span><br/>
+<span class="in1"></span>
+};<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write header tag</span>)</span> <br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">html state elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">enum HtmlState</span> <span class="var">state</span>;<br/>
 
-						<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span>, <span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/h%d&gt;\n"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
-						<span class="end">@end(<span class="macro-name">write header tag</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">html state elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write HTML file from in to out)</span></span> {<br/>
+<span class="in1"></span>
+<span class="type">struct HtmlStatus</span> <span class="var">status</span> = {<br/>
+<span class="in2"></span>
+.<span class="var">state</span> = <span class="var">hs_NOTHING_WRITTEN</span><br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">init html status)</span></span><br/>
+<span class="in1"></span>
+};<br/>
+<span class="in1"></span>
+char last = '\n';<br/>
+<span class="in1"></span>
+<span class="keyword">for</span> (;;) {<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">in</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">process ch for HTML)</span></span>;<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
+<span class="in2"></span>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">close previous HTML page</span>)</span> <br/>
-						<span class="in1"></span>switch (status.headerState) {<br/>
-						<span class="in2"></span>case hs_NOTHING_WRITTEN: {<br/>
-						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">write HTML header</span>)</span>;<br/>
-						<span class="in3"></span>break;<br/>
-						<span class="in2"></span>}
-						<span class="in2"></span>case hs_IN_SLIDE: {<br/>
-						<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
-						<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
-						<span class="in3"></span>break;<br/>
-						<span class="in2"></span>}
-						<span class="in2"></span>default: {<br/>
-						<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">close previous HTML page</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+} <span class="end">@end(<span class="name">write HTML file from in to out)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">html state enums)</span></span><br/>
+<span class="in1"></span>
+, <span class="var">hs_IN_HEADER</span><br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write HTML header</span>)</span> <br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;!doctype html&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;html lang=\"de\"l&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;head&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="expand">@expand(<span class="macro-name">write HTML header entries</span>)</span>;<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/head&gt;\n"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;body&gt;\n"</span>);<br/>
-						<span class="end">@end(<span class="macro-name">write HTML header</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">html state enums)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">bool</span> isOutOfHtmlSpecial(<br/>
+<span class="in2"></span>
+struct HtmlStatus *s<br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">check html special state)</span></span>;<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">write HTML header entries</span>)</span> <br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<br/>
-						<span class="in2"></span><span class="var">out</span>, <span class="str">"&lt;meta charset=\"utf-8\"&gt;\n"</span><br/>
-						<span class="in1"></span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;title&gt;"</span>);<br/>
-						<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span>, <span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/title&gt;"</span>);<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<br/>
-						<span class="in2"></span><span class="var">out</span>, <span class="str">"&lt;link rel=\"stylesheet\" "</span><br/>
-						<span class="in2"></span><span class="str">"type=\"text/css\" "</span><br/>
-						<span class="in2"></span><span class="str">"href=\"slides/slides.css\"&gt;"</span><br/>
-						<span class="in1"></span>);<br/>
-						<span class="end">@end(<span class="macro-name">write HTML header entries</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">check html special state)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="keyword">false</span>;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">html state enums</span>)</span><br/>
-						<span class="in1"></span>, <span class="var">hs_IN_CODE</span><br/>
-						<span class="end">@end(<span class="macro-name">html state enums</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">check html special state</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="keyword">false</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">check html special state</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">html state elements</span>)</span><br/>
-							<span class="in1"></span><span class="type">int</span> <span class="var">codeOpening</span>;<br/>
-							<span class="in1"></span><span class="type">int</span> <span class="var">codeIndent</span>;<br/>
-							<span class="in2"></span><span class="type">char</span> <span class="var">codeSpecial</span>;<br/>
-						<span class="end">@end(<span class="macro-name">html state elements</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">init html status</span>)</span><br/>
-							<span class="in1"></span>, .<span class="var">codeOpening</span> = 0<br/>
-							<span class="in1"></span>, .<span class="var">codeIndent</span> = 0<br/>
-							<span class="in1"></span>, .<span class="var">codeSpecial</span> = <span class="str">'\0'</span><br/>
-						<span class="end">@end(<span class="macro-name">init html status</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'`'</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
-						<span class="in2"></span>) {<br/>
-						<span class="in3"></span>++<span class="var">status</span>.<span class="var">codeOpening</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">check html special state)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">html state elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">int</span> <span class="var">headerLevel</span>;<br/>
+<span class="in2"></span>
+<span class="type">char</span> <span class="var">headerName</span>[100];<br/>
+<span class="in2"></span>
+<span class="type">char *</span> <span class="var">headerNameEnd</span>;<br/>
+<span class="in2"></span>
+<span class="type">enum HtmlState</span> <span class="var">headerState</span>;<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">3</span>) {<br/>
-						<span class="in2"></span><span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>)) {<br/>
-						<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_SLIDE</span>) {
-						<span class="in4"></span>fprintf(out, "&lt;/div&gt;\n");<br/>
-						<span class="in3"></span>}<br/>
-						<span class="in3"></span>fprintf(out, "&lt;div&gt;&lt;div&gt;\n");<br/>
-						<span class="in3"></span>fprintf(out, "&lt;code&gt;\n");<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_CODE</span>;<br/>
-						<span class="in3"></span><span class="var">last</span> = 0;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
-						<span class="in3"></span>fprintf(out, "&lt;/code&gt;\n");<br/>
-						<span class="in3"></span>fprintf(out, "&lt;/div&gt;\n");<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">codeIndent</span> = 0;<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'\0'</span>;<br/>
-						<span class="in3"></span><span class="var">last</span> = 0;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}
-						<span class="in1"></span>}<br/>
-						<span class="in1"></span><span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">html state elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">init html status)</span></span><br/>
+<span class="in1"></span>
+, .<span class="var">headerLevel</span> = 0<br/>
+<span class="in1"></span>
+, .<span class="var">headerNameEnd</span> = <span class="keyword">NULL</span><br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (status.state == hs_IN_CODE) {<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">process ch in HTML code</span>)</span>;<br/>
-						<span class="in2"></span>if (last) {<br/>
-						<span class="in3"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in2"></span>last = ch;<br/>
-						<span class="in2"></span>continue;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">init html status)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'#'</span> && <span class="var">last</span> == <span class="str">'\n'</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>) ||<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span><br/>
+<span class="in2"></span>
+) {<br/>
+<span class="in3"></span>
+++<span class="var">status</span>.<span class="var">headerLevel</span>;<br/>
+<span class="in3"></span>
+if (status.state != hs_IN_HEADER) {<br/>
+<span class="in4"></span>
+status.headerState = status.state;<br/>
+<span class="in3"></span>
+}<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_HEADER</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
-						<span class="in2"></span>if (last) {<br/>
-						<span class="in3"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in2"></span>fprintf(out, "&lt;br/&gt;\n");<br/>
-						<span class="in3"></span>last = ch;<br/>
-						<span class="in2"></span>continue;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">process header in HTML)</span></span>;<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">reset header state)</span></span>;<br/>
+<span class="in3"></span>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'\t'</span>) {<br/>
-						<span class="in2"></span>++<span class="var">status</span>.<span class="var">codeIndent</span>;<br/>
-						<span class="in2"></span><span class="keyword">continue</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="in1"></span>if (status.codeIndent) {<br/>
-						<span class="in2"></span>fprintf(<br/>
-						<span class="in3"></span>out, "&lt;span class=\"in%d\"&gt;&lt;/span&gt;", status.codeIndent<br/>
-						<span class="in2"></span>);<br/>
-						<span class="in2"></span>status.codeIndent = 0;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">reset header state)</span></span> <br/>
+<span class="in1"></span>
+<span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
+<span class="in1"></span>
+<span class="var">status</span>.<span class="var">headerLevel</span> = <span class="num">0</span>;<br/>
+<span class="in1"></span>
+<span class="var">status</span>.<span class="var">headerNameEnd</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in1"></span>
+status.headerState = hs_IN_SLIDE;<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span><br/>
-						<span class="in1"></span>if (ch == '{') {<br/>
-						<span class="in2"></span>switch (last) {<br/>
-						<span class="in3"></span><span class="expand">@expand(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in3"></span>default: break;<br/>
-						<span class="in2"></span>}
-						<span class="in2"></span>if (status.codeSpecial) {<br/>
-						<span class="in3"></span>last = 0;<br/>
-						<span class="in3"></span>continue;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}
-						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">reset header state)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">headerNameEnd</span>) {<br/>
+<span class="in3"></span>
+<span class="fn">ASSERT</span>(<br/>
+<span class="in4"></span>
+<span class="var">status</span>.<span class="var">headerNameEnd</span> &lt;<br/>
+<span class="in5"></span>
+<span class="var">status</span>.<span class="var">headerName</span> + <span class="fn">sizeof</span>(<br/>
+<span class="in6"></span>
+<span class="var">status</span>.<span class="var">headerName</span><br/>
+<span class="in5"></span>
+) - <span class="num">1</span><br/>
+<span class="in3"></span>
+);<br/>
+<span class="in3"></span>
+*<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
+<span class="in3"></span>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch in HTML code</span>)</span><br/>
-						<span class="in1"></span>if (ch == '}' &amp;&amp; status.codeSpecial) {<br/>
-						<span class="in2"></span>if (last) {<br/>
-						<span class="in3"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
-						<span class="in3"></span>last = 0;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in2"></span>switch (status.codeSpecial) {<br/>
-						<span class="in3"></span>case 'a': case 'e': case 'i': case 'x':<br/>
-						<span class="in4"></span>fprintf(out, ")&lt;/span&gt;");<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in2"></span>fprintf(out, "&lt;/span&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = 0;<br/>
-						<span class="in2"></span>continue;<br/>
-						<span class="in1"></span>}
-						<span class="end">@end(<span class="macro-name">process ch in HTML code</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">headerNameEnd</span> &&<br/>
+<span class="in3"></span>
+<span class="var">ch</span> &gt; <span class="str">' '</span><br/>
+<span class="in2"></span>
+) {<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">headerNameEnd</span> =<br/>
+<span class="in4"></span>
+<span class="var">status</span>.<span class="var">headerName</span>;<br/>
+<span class="in3"></span>
+*<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
+<span class="in3"></span>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'a':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"add\"&gt;@add(");<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process header in HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="fn">ASSERT</span>(<span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">close previous HTML page)</span></span>;<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">write header tag)</span></span>;<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">write header tag)</span></span>;<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'x':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"end\"&gt;@end(");<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process header in HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">global elements)</span></span> <br/>
+<span class="in1"></span>
+<span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
+<span class="in2"></span>
+<span class="type">FILE *</span><span class="var">out</span>, <span class="type">const char *</span><span class="var">str</span>, const char *end<br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">out</span>); <span class="fn">ASSERT</span>(<span class="var">str</span>);<br/>
+<span class="in2"></span>
+<span class="keyword">for</span> (; *<span class="var">str</span> && str != end; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
+<span class="in3"></span>
+<span class="keyword">case</span> <span class="str">'&lt;'</span>:<br/>
+<span class="in4"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;"</span>); <span class="keyword">break</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">case</span> <span class="str">'&gt;'</span>:<br/>
+<span class="in4"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&gt;"</span>); <span class="keyword">break</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">case</span> <span class="str">'&'</span>:<br/>
+<span class="in4"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&"</span>); <span class="keyword">break</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">default:</span><br/>
+<span class="in4"></span>
+<span class="fn">fputc</span>(*<span class="var">str</span>, <span class="var">out</span>);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'e':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write header tag)</span></span> <br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
+<span class="in1"></span>
+<span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span>, <span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/h%d&gt;\n"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'i':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"include\"&gt;@include(");<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">write header tag)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">close previous HTML page)</span></span> <br/>
+<span class="in1"></span>
+switch (status.headerState) {<br/>
+<span class="in2"></span>
+case hs_NOTHING_WRITTEN: {<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">write HTML header)</span></span>;<br/>
+<span class="in3"></span>
+break;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+case hs_IN_SLIDE: {<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span>
+break;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+default: {<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 't':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"type\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">close previous HTML page)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write HTML header)</span></span> <br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;!doctype html&gt;\n"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;html lang=\"de\"l&gt;\n"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;head&gt;\n"</span>);<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">write HTML header entries)</span></span>;<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/head&gt;\n"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;body&gt;\n"</span>);<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'v':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"var\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">write HTML header)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">write HTML header entries)</span></span> <br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<br/>
+<span class="in2"></span>
+<span class="var">out</span>, <span class="str">"&lt;meta charset=\"utf-8\"&gt;\n"</span><br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;title&gt;"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span>, <span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/title&gt;"</span>);<br/>
+<span class="in1"></span>
+<span class="fn">fprintf</span>(<br/>
+<span class="in2"></span>
+<span class="var">out</span>, <span class="str">"&lt;link rel=\"stylesheet\" "</span><br/>
+<span class="in2"></span>
+<span class="str">"type=\"text/css\" "</span><br/>
+<span class="in2"></span>
+<span class="str">"href=\"slides/slides.css\"&gt;"</span><br/>
+<span class="in1"></span>
+);<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'f':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"fn\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">write HTML header entries)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">html state enums)</span></span><br/>
+<span class="in1"></span>
+, <span class="var">hs_IN_CODE</span><br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'k':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"keyword\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">html state enums)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">check html special state)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="keyword">false</span>;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 's':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"str\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">check html special state)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">html state elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">int</span> <span class="var">codeOpening</span>;<br/>
+<span class="in1"></span>
+<span class="type">int</span> <span class="var">codeIndent</span>;<br/>
+<span class="in2"></span>
+<span class="type">char</span> <span class="var">codeSpecial</span>;<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">escape html macro</span>)</span><br/>
-						<span class="in1"></span>case 'n':<br/>
-						<span class="in2"></span>fprintf(out, "&lt;span class=\"num\"&gt;");<br/>
-						<span class="in2"></span>status.codeSpecial = last;<br/>
-						<span class="in2"></span>break;<br/>
-						<span class="end">@end(<span class="macro-name">escape html macro</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">html state elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">init html status)</span></span><br/>
+<span class="in1"></span>
+, .<span class="var">codeOpening</span> = 0<br/>
+<span class="in1"></span>
+, .<span class="var">codeIndent</span> = 0<br/>
+<span class="in1"></span>
+, .<span class="var">codeSpecial</span> = <span class="str">'\0'</span><br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">html state enums</span>)</span><br/>
-						<span class="in1"></span>, <span class="var">hs_IN_NOTES</span><br/>
-						<span class="end">@end(<span class="macro-name">html state enums</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">check html special state</span>)</span><br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
-						<span class="in2"></span><span class="keyword">return</span> <span class="keyword">false</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">check html special state</span>)</span>
-					</code></div>
-					<ul>
-						<li>
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="end">@end(<span class="name">init html status)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'`'</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>) ||<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
+<span class="in2"></span>
+) {<br/>
+<span class="in3"></span>
+++<span class="var">status</span>.<span class="var">codeOpening</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						<span class="in2"></span><span class="keyword">if</span> (ch == <span class="str">'*'</span>) {<br/>
-						<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;li&gt;\n"</span>);<br/>
-						<span class="in3"></span><span class="var">last</span> = 0;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (ch != <span class="str">' '</span> &amp;&amp; ch != <span class="str">'\t'</span>) {<br/>
-						<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"</span>);<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = hs_AFTER_SLIDE;<br/>
-						<span class="in3"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> && <span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">3</span>) {<br/>
+<span class="in2"></span>
+<span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>)) {<br/>
+<span class="in3"></span>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_SLIDE</span>) {<br/>
+<span class="in4"></span>
+fprintf(out, "&lt;/div&gt;\n");<br/>
+<span class="in3"></span>
+}<br/>
+<span class="in3"></span>
+fprintf(out, "&lt;div&gt;&lt;div&gt;\n");<br/>
+<span class="in3"></span>
+fprintf(out, "&lt;code&gt;\n");<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_CODE</span>;<br/>
+<span class="in3"></span>
+<span class="var">last</span> = 0;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in3"></span>
+fprintf(out, "&lt;/code&gt;\n");<br/>
+<span class="in3"></span>
+fprintf(out, "&lt;/div&gt;\n");<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">codeIndent</span> = 0;<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'\0'</span>;<br/>
+<span class="in3"></span>
+<span class="var">last</span> = 0;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+<span class="in1"></span>
+<span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>)) {<br/>
-						<span class="in3"></span><span class="keyword">if</span>(<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_SLIDE</span>) {<br/>
-						<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;\n"</span>);<br/>
-						<span class="in3"></span>}<br/>
-						<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_NOTES</span>;<br/>
-						<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;ul&gt;&lt;li&gt;\n"</span>);<br/>
-						<span class="in3"></span><span class="var">last</span> = <span class="str">'\0'</span>;<br/>
-						<span class="in3"></span><span class="keyword">continue</span>;<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (status.state == hs_IN_CODE) {<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">process ch in HTML code)</span></span>;<br/>
+<span class="in2"></span>
+if (last) {<br/>
+<span class="in3"></span>
+writeEscaped(out, &last, &last + 1);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+last = ch;<br/>
+<span class="in2"></span>
+continue;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						<span class="add">@add(<span class="macro-name">process ch for HTML</span>)</span> <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="var">last</span>) {
-						<span class="in3"></span>writeEscaped(out, &amp;last, &amp;last + 1);<br/>
-						<span class="in2"></span>}<br/>
-						<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-						<span class="in2"></span><span class="var">continue</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch in HTML code)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+<span class="in2"></span>
+if (last) {<br/>
+<span class="in3"></span>
+writeEscaped(out, &last, &last + 1);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;br/&gt;\n");<br/>
+<span class="in3"></span>
+last = ch;<br/>
+<span class="in2"></span>
+continue;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div>
-				<!--
-				</div><div>
-					<div><code>
-						a {process ch for HTML} <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="keyword">EOF</span>) {<br/>
-						<span class="in2"></span><span class="expand">@expand(<span class="macro-name">close previous HTML page</span>)</span>;<br/>
-						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/body&gt;&lt;/html&gt;\n"</span>);
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch for HTML</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch in HTML code)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch in HTML code)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'\t'</span>) {<br/>
+<span class="in2"></span>
+++<span class="var">status</span>.<span class="var">codeIndent</span>;<br/>
+<span class="in2"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in1"></span>
+}<br/>
+<span class="in1"></span>
+if (status.codeIndent) {<br/>
+<span class="in2"></span>
+fprintf(<br/>
+<span class="in3"></span>
+out, "&lt;span class=\"in%d\"&gt;&lt;/span&gt;", status.codeIndent<br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+status.codeIndent = 0;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a {process ch in HTML notes} <br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">startOfLine</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
-						<span class="in2"></span><span class="var">inNotes</span> = <span class="keyword">false</span>;<br/>
-						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/ul&gt;\n"</span>);<br/>
-						<span class="in2"></span><span class="keyword">continue</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">startOfLine</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
-						<span class="in2"></span><span class="var">startOfLine</span> = <span class="keyword">false</span>;<br/>
-						<span class="in2"></span><span class="keyword">if</span> (<span class="var">noteOpen</span>) { fprintf(out, "&lt;/li&gt;"); }<br/>
-						<span class="in2"></span><span class="var">noteOpen</span> = <span class="keyword">true</span>;<br/>
-						<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;li&gt;"</span>);<br/>
-						<span class="in2"></span><span class="keyword">continue</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="end">@end(<span class="macro-name">process ch in HTML notes</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch in HTML code)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
+<span class="in1"></span>
+if (ch == '{') {<br/>
+<span class="in2"></span>
+switch (last) {<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">escape html macro)</span></span><br/>
+<span class="in3"></span>
+default: break;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+if (status.codeSpecial) {<br/>
+<span class="in3"></span>
+last = 0;<br/>
+<span class="in3"></span>
+continue;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div><div>
-					<div><code>
-						a {process ch in HTML notes}<br/>
-						<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="keyword">EOF</span>) {<br/>
-						<span class="in2"></span><span class="type">char</span> <span class="var">c</span> = <span class="var">ch</span>;<br/>
-						<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, &amp;<span class="var">c</span>, &amp;<span class="var">c</span> + 1);<br/>
-						<span class="in2"></span><span class="var">startOfLine</span> = <span class="keyword">ch</span> == <span class="str">'\n'</span>;<br/>
-						<span class="in2"></span><span class="keyword">continue</span>;<br/>
-						<span class="in1"></span>}<br/>
-						<span class="in1"></span><span class="var">inNotes</span> = <span class="keyword">false</span>;<br/>
-						<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/ul&gt;\n"</span>);<br/>
-						<span class="end">@end(<span class="macro-name">process ch in HTML notes</span>)</span>
-					</code></div>
-					<ul>
-						<li>
+<span class="end">@end(<span class="name">process ch in HTML code)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
+<span class="in1"></span>
+if (ch == '}' && status.codeSpecial) {<br/>
+<span class="in2"></span>
+if (last) {<br/>
+<span class="in3"></span>
+writeEscaped(out, &last, &last + 1);<br/>
+<span class="in3"></span>
+last = 0;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+switch (status.codeSpecial) {<br/>
+<span class="in3"></span>
+case 'a': case 'e': case 'i': case 'x':<br/>
+<span class="in4"></span>
+fprintf(out, ")&lt;/span&gt;");<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;/span&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = 0;<br/>
+<span class="in2"></span>
+continue;<br/>
+<span class="in1"></span>
+}<br/>
 
-						</li>
-					</ul>
-				</div> -->
-		</div>
-	</body>
-</html>
+<span class="end">@end(<span class="name">process ch in HTML code)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'a':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"add\"&gt;@add(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'x':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"end\"&gt;@end(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'e':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'i':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"include\"&gt;@include(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 't':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"type\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'v':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"var\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'f':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"fn\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'k':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"keyword\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 's':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"str\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'n':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"num\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">html state enums)</span></span><br/>
+<span class="in1"></span>
+, <span class="var">hs_IN_NOTES</span><br/>
+
+<span class="end">@end(<span class="name">html state enums)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">check html special state)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="keyword">false</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">check html special state)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (ch == <span class="str">'*'</span>) {<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;li&gt;\n"</span>);<br/>
+<span class="in3"></span>
+<span class="var">last</span> = 0;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+} <span class="keyword">else</span> <span class="keyword">if</span> (ch != <span class="str">' '</span> && ch != <span class="str">'\t'</span>) {<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> = hs_AFTER_SLIDE;<br/>
+<span class="in3"></span>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>)) {<br/>
+<span class="in3"></span>
+<span class="keyword">if</span>(<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_SLIDE</span>) {<br/>
+<span class="in4"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;\n"</span>);<br/>
+<span class="in3"></span>
+}<br/>
+<span class="in3"></span>
+<span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_NOTES</span>;<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;ul&gt;&lt;li&gt;\n"</span>);<br/>
+<span class="in3"></span>
+<span class="var">last</span> = <span class="str">'\0'</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">continue</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="var">last</span>) {<br/>
+<span class="in3"></span>
+writeEscaped(out, &last, &last + 1);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="in2"></span>
+<span class="var">continue</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
