@@ -10,7 +10,7 @@ x{global elements}
 * Buffer sind global sichtbare Strukturen
 
 ```
-a{perform unit tests}
+d{perform unit tests}
 	e{buffer unit tests};
 x{perform unit tests}
 ```
@@ -19,7 +19,7 @@ x{perform unit tests}
 # Struktur
 
 ```
-a{define buffer}
+d{define buffer}
 	#define INIT_BUFFER_SIZE 16
 	
 	t{struct Buffer} {
@@ -55,7 +55,7 @@ x{define buffer}
 * Dann wird das Byte angefügt
 
 ```
-a{may initialize buffer}
+d{may initialize buffer}
 	k{if} (! v{buffer}->v{buffer}) {
 		v{buffer}->v{buffer} =
 			v{buffer}->v{initial};
@@ -76,7 +76,7 @@ x{may initialize buffer}
 * Und der Buffer trotzdem weiter benutzt werden
 
 ```
-a{assure buffer size}
+d{assure buffer size}
 	k{if} (
 		v{buffer}->v{current} >= v{buffer}->v{end}
 	) {
@@ -90,7 +90,7 @@ x{assure buffer size}
 * Wenn der Buffer ausgeschöpft ist, dann wird seine Größe verdoppelt
 
 ```
-a{reallocate buffer}
+d{reallocate buffer}
 	t{char *}v{newBuffer};
 	k{if} (
 		v{buffer}->v{buffer} == v{buffer}->v{initial}
@@ -109,7 +109,7 @@ x{reallocate buffer}
 * Andernfalls kann der Speicherblock im Heap vergrößert werden
 
 ```
-a{copy initial buffer}
+d{copy initial buffer}
 	f{ASSERT}(v{newBuffer});
 	f{memcpy}(
 		v{newBuffer}, v{buffer}->v{buffer}, v{size}
@@ -119,7 +119,7 @@ x{copy initial buffer}
 * Vom initialen Buffer werden die Werte direkt kopiert
 
 ```
-a{adjust buffer pointers}
+d{adjust buffer pointers}
 	f{ASSERT}(v{newBuffer});
 	v{buffer}->v{buffer} = v{newBuffer};
 	v{buffer}->v{current} = v{newBuffer} + v{size};
@@ -162,7 +162,7 @@ x{define buffer}
 * Zusätzlich wird der aktuelle Zeiger auf den Anfang zurückgesetzt
 
 ```
-a{erase heap buffer}
+d{erase heap buffer}
 	k{if} (v{buffer}->v{buffer} &&
 		v{buffer}->v{buffer} != v{buffer}->v{initial}
 	) {
@@ -178,7 +178,7 @@ x{erase heap buffer}
 # Unit Tests
 
 ```
-a{buffer unit tests} {
+d{buffer unit tests} {
 	t{struct Buffer} v{buffer} = {};
 	f{addToBuffer}(&v{buffer}, s{'x'});
 	f{ASSERT}(*v{buffer}.v{buffer} == s{'x'});

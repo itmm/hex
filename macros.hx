@@ -60,11 +60,14 @@ x{define macro}
 
 ```
 a{define logging}
-	#define ASSERT(v{COND}) \
+	#define ASSERT(v{COND}, ...) \
 		k{if} (! (v{COND})) { \
 			f{fprintf}(v{stderr}, \
-				s{"%s:%d FAILED\n"}, \
+				s{"%s:%d"}, \
 				__FILE__, __LINE__); \
+			f{fprintf}(v{stderr}, \
+				s{" FAILED: "} __VA_ARGS__); \
+			f{fprintf}(v{stderr}, s{"\n"}); \
 			f{exit}(v{EXIT_FAILURE}); \
 		}
 x{define logging}
@@ -111,13 +114,27 @@ x{copy macro name}
 
 ```
 a{define macro}
-	k{void} f{freeMacro}(
+	t{void} f{freeMacrosEntries}(
+		t{struct Macro *}v{macro}
+	) {
+		k{if} (v{macro}) {
+			e{free macros entries};
+			v{macro}->v{firstEntry} = k{NULL};
+			v{macro}->v{lastEntry} = k{NULL};
+		}
+	}
+x{define macro}
+```
+
+```
+a{define macro}
+	t{void} f{freeMacro}(
 		t{struct Macro *}v{macro}
 	) {
 		k{while} (v{macro}) {
 			t{struct Macro *}v{link} =
 				v{macro}->v{link};
-			e{free macros entries};
+			freeMacrosEntries(macro);
 			f{free}(v{macro});
 			v{macro} = v{link};
 		}
@@ -183,6 +200,16 @@ x{macro unit tests}
 * Zum einen wird getestet, ob die Namen korrekt kopiert werden
 * Zum anderen wird sichergestellt, dass die Verweise
   <code class="keyword">NULL</code> sind
+
+```
+a{define macro}
+	t{bool} f{isPopulatedMacro}(
+		t{const struct Macro *}v{macro}
+	) {
+		return macro && macro->firstEntry;
+	}
+x{define macro}
+```
 
 # Makro Einträge
 
@@ -263,12 +290,12 @@ x{copy entry values}
 
 ```
 a{define macro}
-	t{struct MacroEntry *}
-	f{allocEmptyMacroEntry}() {
-		k{return} f{allocMacroEntry}(
-			k{NULL}, k{NULL}, k{NULL}
-		);
-	}
+t{struct MacroEntry *}
+f{allocEmptyMacroEntry}() {
+	k{return} f{allocMacroEntry}(
+		k{NULL}, k{NULL}, k{NULL}
+	);
+}
 x{define macro}
 ```
 * Für Tests ist es praktisch, leere Einträge anzulegen
@@ -277,28 +304,28 @@ x{define macro}
 
 ```
 a{define macro}
-	k{void} f{freeMacroEntry}(
-		t{struct MacroEntry *}v{entry}
-	) {
-		k{while} (v{entry}) {
-			t{struct MacroEntry *}v{link} =
-				v{entry}->v{link};
-			f{free}(v{entry});
-			v{entry} = v{link};
-		}
+k{void} f{freeMacroEntry}(
+	t{struct MacroEntry *}v{entry}
+) {
+	k{while} (v{entry}) {
+		t{struct MacroEntry *}v{link} =
+			v{entry}->v{link};
+		f{free}(v{entry});
+		v{entry} = v{link};
 	}
+}
 x{define macro}
 ```
 * Wenn ein Eintrag freigegeben wird, so werden auch alle verlinkten
-  Einträge freigegeben
+Einträge freigegeben
 * Referenzierte Makros werden nicht mit freigegeben
 
 ```
 a{forward declarations}
-	t{struct MacroEntry};
-	k{void} f{freeMacroEntry}(
-		t{struct MacroEntry *}v{entry}
-	);
+t{struct MacroEntry};
+k{void} f{freeMacroEntry}(
+	t{struct MacroEntry *}v{entry}
+);
 x{forward declarations}
 
 a{free macros entries}

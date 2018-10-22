@@ -11,19 +11,22 @@
 	#include <stdbool.h>
 ;
 	
-	#define ASSERT(COND) \
+	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
 			fprintf(stderr, \
-				"%s:%d FAILED\n", \
+				"%s:%d", \
 				__FILE__, __LINE__); \
+			fprintf(stderr, \
+				" FAILED: " __VA_ARGS__); \
+			fprintf(stderr, "\n"); \
 			exit(EXIT_FAILURE); \
 		}
 ;
 	
-	struct MacroEntry;
-	void freeMacroEntry(
-		struct MacroEntry *entry
-	);
+struct MacroEntry;
+void freeMacroEntry(
+	struct MacroEntry *entry
+);
 ;
 
 	struct Input {
@@ -261,15 +264,25 @@
 		return result;
 	}
 
+	void freeMacrosEntries(
+		struct Macro *macro
+	) {
+		if (macro) {
+			
+	freeMacroEntry(macro->firstEntry);
+;
+			macro->firstEntry = NULL;
+			macro->lastEntry = NULL;
+		}
+	}
+
 	void freeMacro(
 		struct Macro *macro
 	) {
 		while (macro) {
 			struct Macro *link =
 				macro->link;
-			
-	freeMacroEntry(macro->firstEntry);
-;
+			freeMacrosEntries(macro);
 			free(macro);
 			macro = link;
 		}
@@ -293,6 +306,12 @@
 			strcmp(macro->name, name) == 0
 		);
 		freeMacro(macro);
+	}
+
+	bool isPopulatedMacro(
+		const struct Macro *macro
+	) {
+		return macro && macro->firstEntry;
 	}
 
 	struct MacroEntry {
@@ -335,23 +354,23 @@
 		return result;
 	}
 
-	struct MacroEntry *
-	allocEmptyMacroEntry() {
-		return allocMacroEntry(
-			NULL, NULL, NULL
-		);
-	}
+struct MacroEntry *
+allocEmptyMacroEntry() {
+	return allocMacroEntry(
+		NULL, NULL, NULL
+	);
+}
 
-	void freeMacroEntry(
-		struct MacroEntry *entry
-	) {
-		while (entry) {
-			struct MacroEntry *link =
-				entry->link;
-			free(entry);
-			entry = link;
-		}
+void freeMacroEntry(
+	struct MacroEntry *entry
+) {
+	while (entry) {
+		struct MacroEntry *link =
+			entry->link;
+		free(entry);
+		entry = link;
 	}
+}
 
 	int getMacroEntryValueSize(
 		struct MacroEntry *entry
@@ -755,7 +774,8 @@
 		case '{':
 			 {
 	if (! macro) {
-		if (last == 'a' || last == 'i') {
+		static const char valids[] = "adir";
+		if (strchr(valids, last)) {
 			openCh = last;
 			nameCur = name;
 			break;
@@ -789,16 +809,44 @@
 	if (nameCur) {
 		*nameCur = '\0';
 		
-	if (openCh == 'a') {
-		ASSERT(! macro);
+	if (openCh == 'd') {
+		ASSERT(! macro, "def in macro");
 		macro = getMacroInMap(
 			&macros, name, nameCur
 		);
+		ASSERT(macro, "macro %.*s already defined", (int) (nameCur - name), name);
+		if (! macro) {
+			macro = allocMacroInMap(
+				&macros, name, nameCur
+			);
+		}
+		processed = true;
+	}
+
+	if (openCh == 'a') {
+		ASSERT(! macro, "add in macro");
+		macro = findMacroInMap(
+			&macros, name, nameCur
+		);
+		if (! isPopulatedMacro(macro)) {
+			printf("macro [%.*s] not defined\n", (int) (nameCur - name), name);
+			macro = getMacroInMap(&macros, name, nameCur);
+		}
+		processed = true;
+	}
+
+	if (openCh == 'r') {
+		ASSERT(! macro, "replace in macro");
+		macro = getMacroInMap(
+			&macros, name, nameCur
+		);
+		ASSERT(macro, "macro %.*s not defined", (int) (nameCur - name), name);
+		freeMacrosEntries(macro);
 		processed = true;
 	}
 
 	if (openCh == 'x') {
-		ASSERT(macro);
+		ASSERT(macro, "end not in macro");
 		;
 		
 	if (
@@ -816,13 +864,13 @@
 	}
 
 	if (openCh == 'i') {
-		ASSERT(! macro);
+		ASSERT(! macro, "include in macro");
 		pushPath(name);
 		processed = true;
 	}
 
 	if (openCh == 'e') {
-		ASSERT(macro);
+		ASSERT(macro, "expand not in macro");
 		
 	if (
 		buffer.buffer != buffer.current
@@ -843,7 +891,7 @@
 	}
 
 	if (openCh == 'p') {
-		ASSERT(macro);
+		ASSERT(macro, "private not in macro");
 		
 	static char prefix[] = "_private_";
 	
@@ -868,7 +916,7 @@
 	}
 
 	if (openCh == 'm') {
-		ASSERT(macro);
+		ASSERT(macro, "magic not in macro");
 		
 	static char magic[] = "2478325";
 	
@@ -890,7 +938,7 @@
 	}
 
 	if (! processed) {
-		ASSERT(macro);
+		ASSERT(macro, "unknown macro %.*s", (int) (nameCur - name), name);
 		const char *c = name;
 		for (; c != nameCur; ++c) {
 			addToBuffer(&buffer, *c);
@@ -912,7 +960,7 @@
 		default:
 			 {
 	if (nameCur) {
-		ASSERT(nameCur < nameEnd);
+		ASSERT(nameCur < nameEnd, "name too long");
 		*nameCur++ = ch;
 		break;
 	}
@@ -939,7 +987,7 @@
 			)) {
 				
 	FILE *f = fopen(macro->name + 6, "w");
-	ASSERT(f);
+	ASSERT(f, "can't open %s", macro->name + 6);
 	struct FileConsumer fc;
 	setupFileConsumer(&fc, f);
 	serializeMacro(
@@ -1146,8 +1194,18 @@
 	if (ch == '{') {
 		switch (last) {
 			
+	case 'd':
+		fprintf(out, "<span class=\"add\">@def(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
 	case 'a':
 		fprintf(out, "<span class=\"add\">@add(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'r':
+		fprintf(out, "<span class=\"add\">@replace(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;
@@ -1225,7 +1283,7 @@
 		}
 		switch (status.codeSpecial) {
 			case 'a': case 'e': case 'i': case 'x':
-			case 'p': case 'm':
+			case 'r': case 'd': case 'p': case 'm':
 				fprintf(out, ")</span>");
 		}
 		fprintf(out, "</span>");

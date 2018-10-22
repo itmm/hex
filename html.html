@@ -875,7 +875,7 @@ switch (status.codeSpecial) {<br/>
 <span class="in3"></span>
 case 'a': case 'e': case 'i': case 'x':<br/>
 <span class="in3"></span>
-case 'p': case 'm':<br/>
+case 'r': case 'd': case 'p': case 'm':<br/>
 <span class="in4"></span>
 fprintf(out, ")&lt;/span&gt;");<br/>
 <span class="in2"></span>
@@ -897,9 +897,29 @@ continue;<br/>
 <code>
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
+case 'd':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"add\"&gt;@def(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
 case 'a':<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"add\"&gt;@add(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
+case 'r':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"add\"&gt;@replace(");<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
 <span class="in2"></span>

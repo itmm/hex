@@ -480,7 +480,7 @@ a{process ch in HTML code}
 		}
 		switch (status.codeSpecial) {
 			case 'a': case 'e': case 'i': case 'x':
-			case 'p': case 'm':
+			case 'r': case 'd': case 'p': case 'm':
 				fprintf(out, ")</span>");
 		}
 		fprintf(out, "</span>");
@@ -492,8 +492,18 @@ x{process ch in HTML code}
 
 ```
 a{escape html macro}
+	case 'd':
+		fprintf(out, "<span class=\"add\">@def(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
 	case 'a':
 		fprintf(out, "<span class=\"add\">@add(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'r':
+		fprintf(out, "<span class=\"add\">@replace(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;

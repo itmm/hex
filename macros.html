@@ -105,15 +105,21 @@
 <code>
 <span class="add">@add(<span class="name">define logging)</span></span><br/>
 <span class="in1"></span>
-#define ASSERT(<span class="var">COND</span>) \<br/>
+#define ASSERT(<span class="var">COND</span>, ...) \<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
 <span class="in3"></span>
 <span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
 <span class="in4"></span>
-<span class="str">"%s:%d FAILED\n"</span>, \<br/>
+<span class="str">"%s:%d"</span>, \<br/>
 <span class="in4"></span>
 __FILE__, __LINE__); \<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
+<span class="in4"></span>
+<span class="str">" FAILED: "</span> __VA_ARGS__); \<br/>
+<span class="in3"></span>
+<span class="fn">fprintf</span>(<span class="var">stderr</span>, <span class="str">"\n"</span>); \<br/>
 <span class="in3"></span>
 <span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \<br/>
 <span class="in2"></span>
@@ -191,7 +197,33 @@ __FILE__, __LINE__); \<br/>
 <code>
 <span class="add">@add(<span class="name">define macro)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">void</span> <span class="fn">freeMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">freeMacrosEntries</span>(<br/>
+<span class="in2"></span>
+<span class="type">struct Macro *</span><span class="var">macro</span><br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">free macros entries)</span></span>;<br/>
+<span class="in3"></span>
+<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in3"></span>
+<span class="var">macro</span>-&gt;<span class="var">lastEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">define macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">define macro)</span></span><br/>
+<span class="in1"></span>
+<span class="type">void</span> <span class="fn">freeMacro</span>(<br/>
 <span class="in2"></span>
 <span class="type">struct Macro *</span><span class="var">macro</span><br/>
 <span class="in1"></span>
@@ -203,7 +235,7 @@ __FILE__, __LINE__); \<br/>
 <span class="in4"></span>
 <span class="var">macro</span>-&gt;<span class="var">link</span>;<br/>
 <span class="in3"></span>
-<span class="expand">@expand(<span class="name">free macros entries)</span></span>;<br/>
+freeMacrosEntries(macro);<br/>
 <span class="in3"></span>
 <span class="fn">free</span>(<span class="var">macro</span>);<br/>
 <span class="in3"></span>
@@ -312,6 +344,24 @@ __FILE__, __LINE__); \<br/>
 <ul><li>
  Zum anderen wird sichergestellt, dass die Verweise
   &lt;code class="keyword"&gt;NULL&lt;/code&gt; sind</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">define macro)</span></span><br/>
+<span class="in1"></span>
+<span class="type">bool</span> <span class="fn">isPopulatedMacro</span>(<br/>
+<span class="in2"></span>
+<span class="type">const struct Macro *</span><span class="var">macro</span><br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+return macro && macro-&gt;firstEntry;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">define macro)</span></span><br/>
+</code>
+</div>
+</div>
 </div>
 <h1>Makro Einträge</h1>
 <div class="slides">
@@ -437,17 +487,17 @@ __FILE__, __LINE__); \<br/>
 <div><div>
 <code>
 <span class="add">@add(<span class="name">define macro)</span></span><br/>
-<span class="in1"></span>
+
 <span class="type">struct MacroEntry *</span><br/>
-<span class="in1"></span>
+
 <span class="fn">allocEmptyMacroEntry</span>() {<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="fn">allocMacroEntry</span>(<br/>
-<span class="in3"></span>
-<span class="keyword">NULL</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
-<span class="in2"></span>
-);<br/>
 <span class="in1"></span>
+<span class="keyword">return</span> <span class="fn">allocMacroEntry</span>(<br/>
+<span class="in2"></span>
+<span class="keyword">NULL</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
+<span class="in1"></span>
+);<br/>
+
 }<br/>
 
 <span class="end">@end(<span class="name">define macro)</span></span><br/>
@@ -464,25 +514,25 @@ __FILE__, __LINE__); \<br/>
 <div><div>
 <code>
 <span class="add">@add(<span class="name">define macro)</span></span><br/>
-<span class="in1"></span>
+
 <span class="keyword">void</span> <span class="fn">freeMacroEntry</span>(<br/>
-<span class="in2"></span>
+<span class="in1"></span>
 <span class="type">struct MacroEntry *</span><span class="var">entry</span><br/>
-<span class="in1"></span>
+
 ) {<br/>
-<span class="in2"></span>
-<span class="keyword">while</span> (<span class="var">entry</span>) {<br/>
-<span class="in3"></span>
-<span class="type">struct MacroEntry *</span><span class="var">link</span> =<br/>
-<span class="in4"></span>
-<span class="var">entry</span>-&gt;<span class="var">link</span>;<br/>
-<span class="in3"></span>
-<span class="fn">free</span>(<span class="var">entry</span>);<br/>
-<span class="in3"></span>
-<span class="var">entry</span> = <span class="var">link</span>;<br/>
-<span class="in2"></span>
-}<br/>
 <span class="in1"></span>
+<span class="keyword">while</span> (<span class="var">entry</span>) {<br/>
+<span class="in2"></span>
+<span class="type">struct MacroEntry *</span><span class="var">link</span> =<br/>
+<span class="in3"></span>
+<span class="var">entry</span>-&gt;<span class="var">link</span>;<br/>
+<span class="in2"></span>
+<span class="fn">free</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span>
+<span class="var">entry</span> = <span class="var">link</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
 }<br/>
 
 <span class="end">@end(<span class="name">define macro)</span></span><br/>
@@ -493,13 +543,13 @@ __FILE__, __LINE__); \<br/>
 <div><div>
 <code>
 <span class="add">@add(<span class="name">forward declarations)</span></span><br/>
-<span class="in1"></span>
+
 <span class="type">struct MacroEntry</span>;<br/>
-<span class="in1"></span>
+
 <span class="keyword">void</span> <span class="fn">freeMacroEntry</span>(<br/>
-<span class="in2"></span>
-<span class="type">struct MacroEntry *</span><span class="var">entry</span><br/>
 <span class="in1"></span>
+<span class="type">struct MacroEntry *</span><span class="var">entry</span><br/>
+
 );<br/>
 
 <span class="end">@end(<span class="name">forward declarations)</span></span><br/>

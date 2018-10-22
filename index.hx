@@ -31,7 +31,7 @@
 * Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 
 ```
-a{file: hx.c}
+d{file: hx.c}
 	e{global elements}
 	t{int} f{main}(
 		t{int} v{argc}, t{const char **}v{argv}
@@ -45,7 +45,7 @@ x{file: hx.c}
   definiert werden können
 
 ```
-a{main body}
+d{main body}
 	e{perform unit-tests};
 	e{process arguments};
 	e{read source file};
@@ -70,7 +70,7 @@ x{main body}
 * Sie können mit `@add`-`@end`-Sequenzen definiert oder erweitert werden
 
 ```
-a{global elements}
+d{global elements}
 	e{includes};
 	e{define logging};
 	e{forward declarations};
@@ -89,7 +89,7 @@ x{global elements}
   eine weitere Datei gelesen werden
 
 ```
-a{includes}
+d{includes}
 	#include <stdio.h>
 	#include <stdlib.h>
 x{includes}
@@ -143,7 +143,7 @@ x{global elements}
 * Sie muss nur vorher geöffnet werden
 
 ```
-a{process arguments}
+d{process arguments}
 	k{if}(v{argc} > n{1}) {
 		f{pushPath}(v{argv}[n{1}]);
 	} k{else} {
@@ -286,7 +286,7 @@ a{process close brace} {
 ```
 a{process other char} {
 	k{if} (v{nameCur}) {
-		f{ASSERT}(v{nameCur} < v{nameEnd});
+		f{ASSERT}(v{nameCur} < v{nameEnd}, s{"name too long"});
 		*v{nameCur}++ = v{ch};
 		k{break};
 	}
@@ -308,7 +308,8 @@ a{process other char} {
 ```
 a{process open brace} {
 	k{if} (! v{macro}) {
-		k{if} (v{last} == s{'a'} || v{last} == s{'i'}) {
+		k{static} t{const char} v{valids}[] = s{"adir"};
+		k{if} (f{strchr}(v{valids}, v{last})) {
 			v{openCh} = v{last};
 			v{nameCur} = v{name};
 			k{break};
@@ -333,22 +334,63 @@ x{global source vars}
 
 ```
 a{process macro name}
-	k{if} (v{openCh} == s{'a'}) {
-		f{ASSERT}(! v{macro});
+	k{if} (v{openCh} == s{'d'}) {
+		f{ASSERT}(! v{macro}, "def in macro");
 		v{macro} = f{getMacroInMap}(
 			&v{macros}, v{name}, v{nameCur}
 		);
+		f{ASSERT}(v{macro}, "macro %.*s already defined", (int) (nameCur - name), name);
+		if (! macro) {
+			v{macro} = f{allocMacroInMap}(
+				&v{macros}, v{name}, v{nameCur}
+			);
+		}
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
+* Erzeugt eine neues Makro
+* Das Makro darf nicht bereits vorhanden sein
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'a'}) {
+		f{ASSERT}(! v{macro}, "add in macro");
+		v{macro} = f{findMacroInMap}(
+			&v{macros}, v{name}, v{nameCur}
+		);
+		if (! isPopulatedMacro(macro)) {
+			printf("macro [%.*s] not defined\n", (int) (nameCur - name), name);
+			macro = getMacroInMap(&macros, name, nameCur);
+		}
 		v{processed} = k{true};
 	}
 x{process macro name}
 ```
 * Bei einem öffnenden Makro wird das passende Makro gesucht
 * Weitere Bytes können zu diesem Makro hinzugefügt werden
+* Das Makro muss bereits vorhanden sein
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'r'}) {
+		f{ASSERT}(! v{macro}, "replace in macro");
+		v{macro} = f{getMacroInMap}(
+			&v{macros}, v{name}, v{nameCur}
+		);
+		f{ASSERT}(v{macro}, "macro %.*s not defined", (int) (nameCur - name), name);
+		f{freeMacrosEntries}(v{macro});
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
+* Bei einem `@replace` wird der Inhalt eines Makros zurückgesetzt
+* Das Makro muss bereits vorhanden sein
 
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'x'}) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{macro}, "end not in macro");
 		e{macro names must match};
 		e{flush macro buffer};
 		v{macro} = k{NULL};
@@ -361,7 +403,7 @@ x{process macro name}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'i'}) {
-		f{ASSERT}(! v{macro});
+		f{ASSERT}(! v{macro}, "include in macro");
 		f{pushPath}(v{name});
 		v{processed} = k{true};
 	}
@@ -373,7 +415,7 @@ x{process macro name}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{macro}, "expand not in macro");
 		e{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
@@ -388,7 +430,7 @@ x{process macro name}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'p'}) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{macro}, "private not in macro");
 		e{process private macro};
 		v{processed} = k{true};
 	}
@@ -419,7 +461,7 @@ x{process private macro}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'m'}) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{macro}, "magic not in macro");
 		e{process magic macro};
 		v{processed} = k{true};
 	}
@@ -482,7 +524,7 @@ x{check valid names}
 ```
 a{process macro name}
 	k{if} (! v{processed}) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{macro}, "unknown macro %.*s", (int) (nameCur - name), name);
 		t{const char *}v{c} = v{name};
 		k{for} (; v{c} != v{nameCur}; ++v{c}) {
 			f{addToBuffer}(&v{buffer}, *v{c});
@@ -535,7 +577,7 @@ a{serialize fragments} {
 ```
 a{write in file}
 	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
-	f{ASSERT}(v{f});
+	f{ASSERT}(v{f}, "can't open %s", v{macro}->v{name} + n{6});
 	t{struct FileConsumer} v{fc};
 	f{setupFileConsumer}(&v{fc}, v{f});
 	f{serializeMacro}(
