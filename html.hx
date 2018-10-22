@@ -5,7 +5,8 @@
 ```
 a{global elements}
 	t{struct SourceElement} {
-		t{struct SourceElement *}v{link};
+		t{struct SourceElement *}p{link};
+		t{unsigned} p{magic};
 		t{char} v{path}[];
 	};
 x{global elements}
@@ -25,8 +26,9 @@ a{global elements}
 		t{struct SourceElement *}v{se} =
 			f{malloc}(v{size});
 		f{ASSERT}(v{se});
-		v{se}->v{link} = k{NULL};
+		v{se}->p{link} = k{NULL};
 		f{memcpy}(v{se}->v{path}, v{path}, v{len});
+		v{se}->p{magic} = m{source element};
 		k{return} v{se};
 	}
 x{global elements}
@@ -43,7 +45,7 @@ a{write HTML file}
 		k{while} (v{cur}) {
 			e{write cur HTML file};
 			t{struct SourceElement *}v{next} =
-				v{cur}->v{link};
+				v{cur}->p{link};
 			f{free}(v{cur});
 			v{cur} = v{next};
 		}
@@ -478,6 +480,7 @@ a{process ch in HTML code}
 		}
 		switch (status.codeSpecial) {
 			case 'a': case 'e': case 'i': case 'x':
+			case 'p': case 'm':
 				fprintf(out, ")</span>");
 		}
 		fprintf(out, "</span>");
@@ -576,6 +579,24 @@ x{escape html macro}
 a{escape html macro}
 	case 'n':
 		fprintf(out, "<span class=\"num\">");
+		status.codeSpecial = last;
+		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
+	case 'p':
+		fprintf(out, "<span class=\"type\">@priv(<span>");
+		status.codeSpecial = last;
+		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
+	case 'm':
+		fprintf(out, "<span class=\"num\">@magic(<span>");
 		status.codeSpecial = last;
 		break;
 x{escape html macro}

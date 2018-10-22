@@ -386,6 +386,62 @@ x{process macro name}
 ```
 
 ```
+a{process macro name}
+	k{if} (v{openCh} == s{'p'}) {
+		f{ASSERT}(v{macro});
+		e{process private macro};
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
+* Die Implementierung wird später durch eine sinnvollere ersetzt
+* Daher ist der zugehörige Code in einem eigenen Fragment gekapselt
+* Dieses kann später ersetzt werden
+* Nachdem diese Funktionalität implementiert wurde
+
+```
+a{process private macro}
+	t{static char} v{prefix}[] = "_private_";
+	e{flush macro buffer};
+	f{addBytesToMacro}(
+		v{macro}, v{prefix}, v{prefix} + f{sizeof}(v{prefix}) - 1
+	);
+	f{addBytesToMacro}(
+		v{macro}, v{name}, v{nameCur}
+	);
+x{process private macro}
+```
+* Erstmal nur ein konstanter String, um private Bezeichner zu
+  verstecken
+* Später soll ein individueller Hash integriert werden
+* Der vom Dateinamen abhängt
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'m'}) {
+		f{ASSERT}(v{macro});
+		e{process magic macro};
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
+* Auch die Implementierung des magci-Makros soll später ersetzt werden
+* Daher wird es in einem eigenen Fragment gekapselt
+
+```
+a{process magic macro}
+	t{static char} v{magic}[] = "2478325";
+	e{flush macro buffer};
+	f{addBytesToMacro}(
+		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - 1
+	);
+x{process magic macro}
+```
+* Die provisorische Version liefert nur eine konstante Zahl
+* Aber auch hier sollte eigentlich ein Hash geliefert werden
+* Der vom Dateinamen und vom Argument abhängt
+
+```
 a{flush macro buffer}
 	k{if} (
 		v{buffer}.v{buffer} != v{buffer}.v{current}
@@ -416,7 +472,7 @@ a{process open brace} {
 ```
 a{check valid names}
 	k{static} t{const char} v{valids}[] =
-		s{"123456bfvsntkxe"};
+		s{"123456bfvsntkxepm"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
 		v{valid} = k{true};
 	}

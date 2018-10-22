@@ -621,6 +621,92 @@
 </div>
 <div><div>
 <code>
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">process private macro)</span></span>;<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Daher ist der zugehörige Code in einem eigenen Fragment gekapselt</li><li>
+ Dieses kann später ersetzt werden</li><li>
+ Nachdem diese Funktionalität implementiert wurde</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process private macro)</span></span><br/>
+<span class="in1"></span>
+<span class="type">static char</span> <span class="var">prefix</span>[] = "_private_";<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="in1"></span>
+<span class="fn">addBytesToMacro</span>(<br/>
+<span class="in2"></span>
+<span class="var">macro</span>, <span class="var">prefix</span>, <span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - 1<br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+<span class="fn">addBytesToMacro</span>(<br/>
+<span class="in2"></span>
+<span class="var">macro</span>, <span class="var">name</span>, <span class="var">nameCur</span><br/>
+<span class="in1"></span>
+);<br/>
+
+<span class="end">@end(<span class="name">process private macro)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Später soll ein individueller Hash integriert werden</li><li>
+ Der vom Dateinamen abhängt</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'m'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">process magic macro)</span></span>;<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Daher wird es in einem eigenen Fragment gekapselt</li></ul></div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process magic macro)</span></span><br/>
+<span class="in1"></span>
+<span class="type">static char</span> <span class="var">magic</span>[] = "2478325";<br/>
+<span class="in1"></span>
+<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="in1"></span>
+<span class="fn">addBytesToMacro</span>(<br/>
+<span class="in2"></span>
+<span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - 1<br/>
+<span class="in1"></span>
+);<br/>
+
+<span class="end">@end(<span class="name">process magic macro)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Aber auch hier sollte eigentlich ein Hash geliefert werden</li><li>
+ Der vom Dateinamen und vom Argument abhängt</li></ul></div>
+<div><div>
+<code>
 <span class="add">@add(<span class="name">flush macro buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<br/>
@@ -677,7 +763,7 @@
 <span class="in1"></span>
 <span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
 <span class="in2"></span>
-<span class="str">"123456bfvsntkxe"</span>;<br/>
+<span class="str">"123456bfvsntkxepm"</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 <span class="in2"></span>

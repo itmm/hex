@@ -611,7 +611,8 @@
 ;
 
 	struct SourceElement {
-		struct SourceElement *link;
+		struct SourceElement *_private_link;
+		unsigned _private_magic;
 		char path[];
 	};
 
@@ -625,8 +626,9 @@
 		struct SourceElement *se =
 			malloc(size);
 		ASSERT(se);
-		se->link = NULL;
+		se->_private_link = NULL;
 		memcpy(se->path, path, len);
+		se->_private_magic = 2478325;
 		return se;
 	}
 
@@ -764,7 +766,7 @@
 		bool valid = false;
 		
 	static const char valids[] =
-		"123456bfvsntkxe";
+		"123456bfvsntkxepm";
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -837,6 +839,53 @@
 				&macros, name, nameCur);
 		addMacroToMacro(
 			macro, sub);
+		processed = true;
+	}
+
+	if (openCh == 'p') {
+		ASSERT(macro);
+		
+	static char prefix[] = "_private_";
+	
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToMacro(
+			macro, buffer.buffer,
+			buffer.current
+		);
+		resetBuffer(&buffer);
+	}
+;
+	addBytesToMacro(
+		macro, prefix, prefix + sizeof(prefix) - 1
+	);
+	addBytesToMacro(
+		macro, name, nameCur
+	);
+;
+		processed = true;
+	}
+
+	if (openCh == 'm') {
+		ASSERT(macro);
+		
+	static char magic[] = "2478325";
+	
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToMacro(
+			macro, buffer.buffer,
+			buffer.current
+		);
+		resetBuffer(&buffer);
+	}
+;
+	addBytesToMacro(
+		macro, magic, magic + sizeof(magic) - 1
+	);
+;
 		processed = true;
 	}
 
@@ -1151,6 +1200,16 @@
 		status.codeSpecial = last;
 		break;
 
+	case 'p':
+		fprintf(out, "<span class=\"type\">@priv(<span>");
+		status.codeSpecial = last;
+		break;
+
+	case 'm':
+		fprintf(out, "<span class=\"num\">@magic(<span>");
+		status.codeSpecial = last;
+		break;
+
 			default: break;
 		}
 		if (status.codeSpecial) {
@@ -1166,6 +1225,7 @@
 		}
 		switch (status.codeSpecial) {
 			case 'a': case 'e': case 'i': case 'x':
+			case 'p': case 'm':
 				fprintf(out, ")</span>");
 		}
 		fprintf(out, "</span>");
@@ -1224,7 +1284,7 @@
 	}
 ;
 			struct SourceElement *next =
-				cur->link;
+				cur->_private_link;
 			free(cur);
 			cur = next;
 		}

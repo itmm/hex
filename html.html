@@ -18,7 +18,9 @@
 <span class="in1"></span>
 <span class="type">struct SourceElement</span> {<br/>
 <span class="in2"></span>
-<span class="type">struct SourceElement *</span><span class="var">link</span>;<br/>
+<span class="type">struct SourceElement *</span><span class="type">@priv(<span>link)</span></span>;<br/>
+<span class="in2"></span>
+<span class="type">unsigned</span> <span class="type">@priv(<span>magic)</span></span>;<br/>
 <span class="in2"></span>
 <span class="type">char</span> <span class="var">path</span>[];<br/>
 <span class="in1"></span>
@@ -52,9 +54,11 @@
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">se</span>);<br/>
 <span class="in2"></span>
-<span class="var">se</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
+<span class="var">se</span>-&gt;<span class="type">@priv(<span>link)</span></span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 <span class="fn">memcpy</span>(<span class="var">se</span>-&gt;<span class="var">path</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
+<span class="in2"></span>
+<span class="var">se</span>-&gt;<span class="type">@priv(<span>magic)</span></span> = <span class="num">@magic(<span>source element)</span></span>;<br/>
 <span class="in2"></span>
 <span class="keyword">return</span> <span class="var">se</span>;<br/>
 <span class="in1"></span>
@@ -83,7 +87,7 @@
 <span class="in3"></span>
 <span class="type">struct SourceElement *</span><span class="var">next</span> =<br/>
 <span class="in4"></span>
-<span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
+<span class="var">cur</span>-&gt;<span class="type">@priv(<span>link)</span></span>;<br/>
 <span class="in3"></span>
 <span class="fn">free</span>(<span class="var">cur</span>);<br/>
 <span class="in3"></span>
@@ -870,6 +874,8 @@ last = 0;<br/>
 switch (status.codeSpecial) {<br/>
 <span class="in3"></span>
 case 'a': case 'e': case 'i': case 'x':<br/>
+<span class="in3"></span>
+case 'p': case 'm':<br/>
 <span class="in4"></span>
 fprintf(out, ")&lt;/span&gt;");<br/>
 <span class="in2"></span>
@@ -1046,6 +1052,38 @@ break;<br/>
 case 'n':<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"num\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'p':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"type\"&gt;@priv(&lt;span&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'm':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"num\"&gt;@magic(&lt;span&gt;");<br/>
 <span class="in2"></span>
 status.codeSpecial = last;<br/>
 <span class="in2"></span>
