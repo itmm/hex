@@ -1007,6 +1007,340 @@ void freeMacroEntry(
 		//struct SourceElement *end = cur;
 		while (cur) {
 			
+	if (hasSuffix(cur->path, ".x")) {
+		int len = strlen(cur->path) + 4;
+		char *outPath = malloc(len);
+		ASSERT(outPath);
+		memcpy(outPath, cur->path, len - 6);
+		strcpy(outPath + len - 6, ".html");
+		FILE *out = fopen(outPath, "w");
+		ASSERT(out);
+		 
+	FILE *in = fopen(cur->path, "r");
+	ASSERT(in);
+	 {
+	struct HtmlStatus status = {
+		.state = hs_NOTHING_WRITTEN
+		
+	, .headerLevel = 0
+	, .headerNameEnd = NULL
+
+	, .codeOpening = 0
+	, .codeIndent = 0
+	, .codeSpecial = '\0'
+
+	};
+	char last = '\n';
+	for (;;) {
+		int ch = fgetc(in);
+		 
+	if (ch == '#' && last == '\n') {
+		if (isOutOfHtmlSpecial(&status) ||
+			status.state == hs_IN_HEADER
+		) {
+			++status.headerLevel;
+			if (status.state != hs_IN_HEADER) {
+				status.headerState = status.state;
+			}
+			status.state = hs_IN_HEADER;
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_HEADER) {
+		if (ch == '\n') {
+			 
+	ASSERT(status.headerNameEnd);
+	 
+	switch (status.headerState) {
+		case hs_NOTHING_WRITTEN: {
+			 
+	fprintf(out, "<!doctype html>\n");
+	fprintf(out, "<html lang=\"de\"l>\n");
+	fprintf(out, "<head>\n");
+	 
+	fprintf(
+		out, "<meta charset=\"utf-8\">\n"
+	);
+	fprintf(out, "<title>");
+	writeEscaped(out, status.headerName, status.headerNameEnd);
+	fprintf(out, "</title>");
+	fprintf(
+		out, "<link rel=\"stylesheet\" "
+		"type=\"text/css\" "
+		"href=\"slides/slides.css\">"
+	);
+;
+	fprintf(out, "</head>\n");
+	fprintf(out, "<body>\n");
+;
+			break;
+		}
+		case hs_IN_SLIDE: {
+			fprintf(out, "</div>\n");
+			fprintf(out, "</div>\n");
+			break;
+		}
+		default: {
+			fprintf(out, "</div>\n");
+		}
+	}
+;
+	 
+	fprintf(out, "<h%d>", status.headerLevel);
+	writeEscaped(out, status.headerName, status.headerNameEnd);
+	fprintf(out, "</h%d>\n", status.headerLevel);
+;
+	fprintf(out, "<div class=\"slides\">\n");
+	fprintf(out, "<div><div>\n");
+	 
+	fprintf(out, "<h%d>", status.headerLevel);
+	writeEscaped(out, status.headerName, status.headerNameEnd);
+	fprintf(out, "</h%d>\n", status.headerLevel);
+;
+	fprintf(out, "</div>\n");
+;
+			 
+	status.state = hs_IN_SLIDE;
+	status.headerLevel = 0;
+	status.headerNameEnd = NULL;
+	status.headerState = hs_IN_SLIDE;
+;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_HEADER) {
+		if (status.headerNameEnd) {
+			ASSERT(
+				status.headerNameEnd <
+					status.headerName + sizeof(
+						status.headerName
+					) - 1
+			);
+			*status.headerNameEnd++ = ch;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_HEADER) {
+		if (! status.headerNameEnd &&
+			ch > ' '
+		) {
+			status.headerNameEnd =
+				status.headerName;
+			*status.headerNameEnd++ = ch;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (last == '\n' && ch == '`') {
+		if (isOutOfHtmlSpecial(&status) ||
+			status.state == hs_IN_CODE
+		) {
+			++status.codeOpening;
+			continue;
+		}
+	}
+ 
+	if (ch == '\n' && status.codeOpening == 3) {
+		status.codeOpening = 0;
+		if (isOutOfHtmlSpecial(&status)) {
+			if (status.state == hs_IN_SLIDE) {
+				fprintf(out, "</div>\n");
+			}
+			fprintf(out, "<div><div>\n");
+			fprintf(out, "<code>\n");
+			status.state = hs_IN_CODE;
+			last = 0;
+			continue;
+		} else if (status.state == hs_IN_CODE) {
+			fprintf(out, "</code>\n");
+			fprintf(out, "</div>\n");
+			status.state = hs_IN_SLIDE;
+			status.codeIndent = 0;
+			status.codeSpecial = '\0';
+			last = 0;
+			continue;
+		}
+	}
+	status.codeOpening = 0;
+
+	if (status.state == hs_IN_CODE) {
+		 
+	if (ch == '\n') {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		fprintf(out, "<br/>\n");
+			last = ch;
+		continue;
+	}
+ 
+	if (last == '\n' && ch == '\t') {
+		++status.codeIndent;
+		continue;
+	}
+	if (status.codeIndent) {
+		fprintf(
+			out, "<span class=\"in%d\"></span>", status.codeIndent
+		);
+		status.codeIndent = 0;
+	}
+
+	if (ch == '{') {
+		switch (last) {
+			
+	case 'd':
+		fprintf(out, "<span class=\"add\">@def(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'a':
+		fprintf(out, "<span class=\"add\">@add(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'r':
+		fprintf(out, "<span class=\"add\">@replace(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'x':
+		fprintf(out, "<span class=\"end\">@end(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'e':
+		fprintf(out, "<span class=\"expand\">@expand(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'i':
+		fprintf(out, "<span class=\"include\">@include(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 't':
+		fprintf(out, "<span class=\"type\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'v':
+		fprintf(out, "<span class=\"var\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'f':
+		fprintf(out, "<span class=\"fn\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'k':
+		fprintf(out, "<span class=\"keyword\">");
+		status.codeSpecial = last;
+		break;
+
+	case 's':
+		fprintf(out, "<span class=\"str\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'n':
+		fprintf(out, "<span class=\"num\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'p':
+		fprintf(out, "<span class=\"type\">@priv(<span>");
+		status.codeSpecial = last;
+		break;
+
+	case 'm':
+		fprintf(out, "<span class=\"num\">@magic(<span>");
+		status.codeSpecial = last;
+		break;
+
+			default: break;
+		}
+		if (status.codeSpecial) {
+			last = 0;
+			continue;
+		}
+	}
+
+	if (ch == '}' && status.codeSpecial) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+			last = 0;
+		}
+		switch (status.codeSpecial) {
+			case 'a': case 'e': case 'i': case 'x':
+			case 'r': case 'd': case 'p': case 'm':
+				fprintf(out, ")</span>");
+		}
+		fprintf(out, "</span>");
+		status.codeSpecial = 0;
+		continue;
+	}
+;
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		last = ch;
+		continue;
+	}
+ 
+	if (last == '\n' && status.state == hs_IN_NOTES) {
+		if (ch == '*') {
+			fprintf(out, "</li><li>\n");
+			last = 0;
+			continue;
+		} else if (ch != ' ' && ch != '\t') {
+			fprintf(out, "</li></ul></div>\n");
+			status.state = hs_AFTER_SLIDE;
+			last = ch;
+			continue;
+		}
+	}
+ 
+	if (last == '\n' && ch == '*') {
+		if (isOutOfHtmlSpecial(&status)) {
+			if(status.state != hs_IN_SLIDE) {
+				fprintf(out, "<div>\n");
+			}
+			status.state = hs_IN_NOTES;
+			fprintf(out, "<ul><li>\n");
+			last = '\0';
+			continue;
+		}
+	}
+ 
+	if (status.state == hs_IN_NOTES) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		last = ch;
+		continue;
+	}
+;
+		if (ch == EOF) { break; }
+		last = ch;
+	}
+} ;
+	fclose(in);
+;
+		fclose(out);
+		free(outPath);
+	}
+
 	if (hasSuffix(cur->path, ".hx")) {
 		int len = strlen(cur->path) + 3;
 		char *outPath = malloc(len);

@@ -177,7 +177,7 @@ x{global elements}
 * Der dynamisch wachsen kann
 
 ```
-i{buffer.hx}
+i{buffer.x}
 ```
 * Buffer werden in einer eigenen Datei definiert
 
@@ -185,7 +185,7 @@ i{buffer.hx}
 * Schnittstelle um Bytes zu konsumieren
 
 ```
-i{consumer.hx}
+i{consumer.x}
 ```
 * Consumer werden in einer eigenen Datei definiert
 
@@ -197,7 +197,7 @@ i{consumer.hx}
 * Und Makros an mehreren Stellen zu erweitern
 
 ```
-i{macros.hx}
+i{macros.x}
 ```
 * Makros werden in einer eigenen Datei definiert
 
@@ -594,7 +594,7 @@ x{write in file}
 * Aus `hx`-Dateien wird ein HTML-Foliensatz generiert
 
 ```
-i{html.hx}
+i{html.x}
 ```
 * Die Generierung liegt in einer eigenen Datei
 

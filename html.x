@@ -78,6 +78,25 @@ x{global elements}
 
 ```
 d{write cur HTML file}
+	k{if} (f{hasSuffix}(v{cur}->v{path}, s{".x"})) {
+		t{int} v{len} = f{strlen}(v{cur}->v{path}) + n{4};
+		t{char *}v{outPath} = f{malloc}(v{len});
+		f{ASSERT}(v{outPath});
+		f{memcpy}(v{outPath}, v{cur}->v{path}, v{len} - n{6});
+		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
+		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
+		f{ASSERT}(v{out});
+		e{write cur HTML file to out};
+		f{fclose}(v{out});
+		f{free}(v{outPath});
+	}
+x{write cur HTML file}
+```
+* Nur <code>x</code>-Dateien werden in HTML konvertiert
+* Die HTML hat den gleichen Pfad mit der Endung <code>.html</code>
+
+```
+d{write cur HTML file}
 	k{if} (f{hasSuffix}(v{cur}->v{path}, s{".hx"})) {
 		t{int} v{len} = f{strlen}(v{cur}->v{path}) + n{3};
 		t{char *}v{outPath} = f{malloc}(v{len});
@@ -92,8 +111,6 @@ d{write cur HTML file}
 	}
 x{write cur HTML file}
 ```
-* Nur <code>hx</code>-Dateien werden in HTML konvertiert
-* Die HTML hat den gleichen Pfad mit der Endung <code>.html</code>
 
 ```
 d{write cur HTML file to out} 
