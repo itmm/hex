@@ -1,6 +1,6 @@
 CFLAGS += -Wall -std=c99 -g
 
-.PHONY: all install clean test run_hx
+.PHONY: all install clean test
 
 Xs := $(wildcard *.x)
 HTMLs := ${Xs:.x=.html}
@@ -8,7 +8,7 @@ HTMLs := ${Xs:.x=.html}
 all: hx.c
 
 hx.c: ${Xs}
-	hx index.x
+	hx
 
 hx: hx.c
 

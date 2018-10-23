@@ -749,7 +749,7 @@ void freeMacroEntry(
 	if(argc > 1) {
 		pushPath(argv[1]);
 	} else {
-		pushFile(stdin);
+		pushPath("index.x");
 	}
 ;
 	
@@ -1003,12 +1003,15 @@ void freeMacroEntry(
 } ;
 	;
 	
+	struct SourceElement *cur;
 	if (argc > 1) {
-		struct SourceElement *cur =
-			createSourceElement(argv[1]);
-		struct SourceElement *end = cur;
-		while (cur) {
-			
+		cur = createSourceElement(argv[1]);
+	} else {
+		cur = createSourceElement("index.x");
+	}
+	struct SourceElement *end = cur;
+	while (cur) {
+		
 	if (hasSuffix(cur->path, ".x")) {
 		int len = strlen(cur->path) + 4;
 		char *outPath = malloc(len);
@@ -1743,11 +1746,10 @@ void freeMacroEntry(
 		free(outPath);
 	}
 ;
-			struct SourceElement *next =
-				cur->_private_link;
-			free(cur);
-			cur = next;
-		}
+		struct SourceElement *next =
+			cur->_private_link;
+		free(cur);
+		cur = next;
 	}
 ;
 

@@ -38,23 +38,22 @@ x{global elements}
 
 ```
 d{write HTML file}
+	t{struct SourceElement *}v{cur};
 	k{if} (v{argc} > n{1}) {
-		t{struct SourceElement *}v{cur} =
-			f{createSourceElement}(v{argv}[n{1}]);
-		t{struct SourceElement *}v{end} = v{cur};
-		k{while} (v{cur}) {
-			e{write cur HTML file};
-			t{struct SourceElement *}v{next} =
-				v{cur}->p{link};
-			f{free}(v{cur});
-			v{cur} = v{next};
-		}
+		v{cur} = f{createSourceElement}(v{argv}[n{1}]);
+	} else {
+		v{cur} = f{createSourceElement}(s{"index.x"});
+	}
+	t{struct SourceElement *}v{end} = v{cur};
+	k{while} (v{cur}) {
+		e{write cur HTML file};
+		t{struct SourceElement *}v{next} =
+			v{cur}->p{link};
+		f{free}(v{cur});
+		v{cur} = v{next};
 	}
 x{write HTML file}
 ```
-* Nur wenn die erste Datei über die Aufrufparameter übergeben wurde,
-  werden HTML-Dateien generiert
-* Beim Lesen von der Standard-Eingabe ist der Dateiname unbekannt
 * Beim Lesen der Datei können weitere Dateien in die Liste eingefügt
   werden
 

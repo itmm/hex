@@ -147,13 +147,13 @@ d{process arguments}
 	k{if}(v{argc} > n{1}) {
 		f{pushPath}(v{argv}[n{1}]);
 	} k{else} {
-		f{pushFile}(v{stdin});
+		f{pushPath}(s{"index.x"});
 	}
 x{process arguments}
 ```
 * Der Source-Code für die Slideware muss aus einer Datei geladen werden
 * Der Name kann über die Kommandozeile gesetzt werden
-* Ansonsten wird die Standard-Eingabe verwendet
+* Ansonsten wird `index.x` als Vorgabe verwendet
 
 ```
 a{global elements}
