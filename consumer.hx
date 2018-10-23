@@ -14,7 +14,7 @@ x{global elements}
 
 
 ```
-a{expand consumer}
+d{expand consumer}
 	t{struct Consumer} {
 		t{int} (* f{put})(
 			t{struct Consumer *}v{consumer}, t{int} v{ch}
@@ -144,14 +144,14 @@ x{expand consumer}
 * Testet den BufferConsumer als proof of concept
 
 ```
-a{perform unit-tests} {
+d{perform unit-tests} {
 	e{consumer unit-tests}
 } x{perform unit-tests}
 ```
 * Die Unit-Tests werden in einem eigenen Makro gesammelt
 
 ```
-a{consumer unit-tests} {
+d{consumer unit-tests} {
 	t{struct BufferConsumer} v{bc};
 	f{setupBufferConsumer}(&v{bc});
 	t{struct Consumer *}v{c} = &v{bc}.v{consumer};

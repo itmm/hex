@@ -207,7 +207,7 @@ i{macros.hx}
   Folien zu finden
 
 ```
-a{read source file}
+d{read source file}
 	e{global source vars};
 	{
 		e{additional read vars};
@@ -223,7 +223,7 @@ x{read source file}
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 
 ```
-a{process current char}
+d{process current char}
 	k{switch} (v{ch}) {
 		k{case} '{':
 			e{process open brace};
@@ -242,7 +242,7 @@ x{process current char}
   Mengenklammern an
 
 ```
-a{additional read vars}
+d{additional read vars}
 	t{struct Macro *} v{macro} = k{NULL};
 	t{struct Buffer} v{buffer} = {};
 x{additional read vars}
@@ -270,7 +270,7 @@ x{additional read vars}
 * Wenn `v{nameCur}` gesetzt ist, dann wird ein Name in Buffer gelesen
 
 ```
-a{process close brace} {
+d{process close brace} {
 	k{if} (v{nameCur}) {
 		*v{nameCur} = s{'\0'};
 		e{process macro name};
@@ -284,7 +284,7 @@ a{process close brace} {
 * Danach wird der Namenszeiger zurückgesetzt
 
 ```
-a{process other char} {
+d{process other char} {
 	k{if} (v{nameCur}) {
 		f{ASSERT}(v{nameCur} < v{nameEnd}, s{"name too long"});
 		*v{nameCur}++ = v{ch};
@@ -306,7 +306,7 @@ a{process other char} {
   angefügt werden
 
 ```
-a{process open brace} {
+d{process open brace} {
 	k{if} (! v{macro}) {
 		k{static} t{const char} v{valids}[] = s{"adir"};
 		k{if} (f{strchr}(v{valids}, v{last})) {
@@ -325,7 +325,7 @@ a{process open brace} {
   `}`
 
 ```
-a{global source vars}
+d{global source vars}
 	t{struct MacroMap} v{macros} = {};
 x{global source vars}
 ```
@@ -333,7 +333,7 @@ x{global source vars}
   angelegt
 
 ```
-a{process macro name}
+d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, "def in macro");
 		v{macro} = f{getMacroInMap}(
@@ -442,7 +442,7 @@ x{process macro name}
 * Nachdem diese Funktionalität implementiert wurde
 
 ```
-a{process private macro}
+d{process private macro}
 	t{static char} v{prefix}[] = "_private_";
 	e{flush macro buffer};
 	f{addBytesToMacro}(
@@ -471,7 +471,7 @@ x{process macro name}
 * Daher wird es in einem eigenen Fragment gekapselt
 
 ```
-a{process magic macro}
+d{process magic macro}
 	t{static char} v{magic}[] = "2478325";
 	e{flush macro buffer};
 	f{addBytesToMacro}(
@@ -484,7 +484,7 @@ x{process magic macro}
 * Der vom Dateinamen und vom Argument abhängt
 
 ```
-a{flush macro buffer}
+d{flush macro buffer}
 	k{if} (
 		v{buffer}.v{buffer} != v{buffer}.v{current}
 	) {
@@ -512,7 +512,7 @@ a{process open brace} {
 ```
 
 ```
-a{check valid names}
+d{check valid names}
 	k{static} t{const char} v{valids}[] =
 		s{"123456bfvsntkxepm"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
@@ -555,7 +555,7 @@ x{process close brace}
   rausgeschrieben
 
 ```
-a{serialize fragments} {
+d{serialize fragments} {
 	t{struct Macro **}v{cur} = v{macros}.v{macros};
 	t{struct Macro **}v{end} =
 		v{cur} + v{MACRO_SLOTS};
@@ -575,7 +575,7 @@ a{serialize fragments} {
   Dateien rausgeschrieben
 
 ```
-a{write in file}
+d{write in file}
 	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
 	f{ASSERT}(v{f}, "can't open %s", v{macro}->v{name} + n{6});
 	t{struct FileConsumer} v{fc};

@@ -37,7 +37,7 @@ x{global elements}
 * So dass der Name mit abschließenden Null-Byte reinpasst
 
 ```
-a{write HTML file}
+d{write HTML file}
 	k{if} (v{argc} > n{1}) {
 		t{struct SourceElement *}v{cur} =
 			f{createSourceElement}(v{argv}[n{1}]);
@@ -77,7 +77,7 @@ x{global elements}
   extra Funktion
 
 ```
-a{write cur HTML file}
+d{write cur HTML file}
 	k{if} (f{hasSuffix}(v{cur}->v{path}, s{".hx"})) {
 		t{int} v{len} = f{strlen}(v{cur}->v{path}) + n{3};
 		t{char *}v{outPath} = f{malloc}(v{len});
@@ -96,7 +96,7 @@ x{write cur HTML file}
 * Die HTML hat den gleichen Pfad mit der Endung <code>.html</code>
 
 ```
-a{write cur HTML file to out} 
+d{write cur HTML file to out} 
 	t{FILE *}v{in} = f{fopen}(v{cur}->v{path}, s{"r"});
 	f{ASSERT}(v{in});
 	e{write HTML file from in to out};
@@ -124,13 +124,13 @@ x{global elements}
 ```
 
 ```
-a{html state elements}
+d{html state elements}
 	t{enum HtmlState} v{state};
 x{html state elements}
 ```
 
 ```
-a{write HTML file from in to out} {
+d{write HTML file from in to out} {
 	t{struct HtmlStatus} v{status} = {
 		.v{state} = v{hs_NOTHING_WRITTEN}
 		e{init html status}
@@ -146,7 +146,7 @@ a{write HTML file from in to out} {
 ```
 
 ```
-a{html state enums}
+d{html state enums}
 	, v{hs_IN_HEADER}
 x{html state enums}
 ```
@@ -163,7 +163,7 @@ x{global elements}
 ```
 
 ```
-a{check html special state}
+d{check html special state}
 	k{if} (v{s}->v{state} == v{hs_IN_HEADER}) {
 		k{return} k{false};
 	}
@@ -180,14 +180,14 @@ x{html state elements}
 ```
 
 ```
-a{init html status}
+d{init html status}
 	, .v{headerLevel} = 0
 	, .v{headerNameEnd} = k{NULL}
 x{init html status}
 ```
 
 ```
-a{process ch for HTML} 
+d{process ch for HTML} 
 	k{if} (v{ch} == s{'#'} && v{last} == s{'\n'}) {
 		k{if} (f{isOutOfHtmlSpecial}(&v{status}) ||
 			v{status}.v{state} == v{hs_IN_HEADER}
@@ -217,7 +217,7 @@ x{process ch for HTML}
 ```
 
 ```
-a{reset header state} 
+d{reset header state} 
 	v{status}.v{state} = v{hs_IN_SLIDE};
 	v{status}.v{headerLevel} = n{0};
 	v{status}.v{headerNameEnd} = k{NULL};
@@ -260,7 +260,7 @@ x{process ch for HTML}
 ```
 
 ```
-a{process header in HTML} 
+d{process header in HTML} 
 	f{ASSERT}(v{status}.v{headerNameEnd});
 	e{close previous HTML page};
 	e{write header tag};
@@ -292,7 +292,7 @@ x{global elements}
 ```
 
 ```
-a{write header tag} 
+d{write header tag} 
 	f{fprintf}(v{out}, s{"<h%d>"}, v{status}.v{headerLevel});
 	f{writeEscaped}(v{out}, v{status}.v{headerName}, v{status}.v{headerNameEnd});
 	f{fprintf}(v{out}, s{"</h%d>\n"}, v{status}.v{headerLevel});
@@ -300,7 +300,7 @@ x{write header tag}
 ```
 
 ```
-a{close previous HTML page} 
+d{close previous HTML page} 
 	switch (status.headerState) {
 		case hs_NOTHING_WRITTEN: {
 			e{write HTML header};
@@ -319,7 +319,7 @@ x{close previous HTML page}
 ```
 
 ```
-a{write HTML header} 
+d{write HTML header} 
 	f{fprintf}(v{out}, s{"<!doctype html>\n"});
 	f{fprintf}(v{out}, s{"<html lang=\"de\"l>\n"});
 	f{fprintf}(v{out}, s{"<head>\n"});
@@ -330,7 +330,7 @@ x{write HTML header}
 ```
 
 ```
-a{write HTML header entries} 
+d{write HTML header entries} 
 	f{fprintf}(
 		v{out}, s{"<meta charset=\"utf-8\">\n"}
 	);
@@ -429,7 +429,7 @@ x{process ch for HTML}
 ```
 
 ```
-a{process ch in HTML code} 
+d{process ch in HTML code} 
 	k{if} (v{ch} == s{'\n'}) {
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
@@ -491,7 +491,7 @@ x{process ch in HTML code}
 ```
 
 ```
-a{escape html macro}
+d{escape html macro}
 	case 'd':
 		fprintf(out, "<span class=\"add\">@def(");
 		fprintf(out, "<span class=\"name\">");

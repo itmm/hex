@@ -22,7 +22,7 @@
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">define macro)</span></span><br/>
+<span class="add">@def(<span class="name">define macro)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct MacroEntry</span>;<br/>
 
@@ -103,7 +103,7 @@
   Null-Byte terminiert sein</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">define logging)</span></span><br/>
+<span class="add">@def(<span class="name">define logging)</span></span><br/>
 <span class="in1"></span>
 #define ASSERT(<span class="var">COND</span>, ...) \<br/>
 <span class="in2"></span>
@@ -133,7 +133,7 @@ __FILE__, __LINE__); \<br/>
  Datei und Zeile des Tests wird ausgegeben</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">allocate macro on heap)</span></span><br/>
+<span class="add">@def(<span class="name">allocate macro on heap)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">nameBegin</span>);<br/>
 <span class="in1"></span>
@@ -169,7 +169,7 @@ __FILE__, __LINE__); \<br/>
 
 <br/>
 
-<span class="add">@add(<span class="name">copy macro name)</span></span><br/>
+<span class="add">@def(<span class="name">copy macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">memcpy</span>(<br/>
 <span class="in2"></span>
@@ -314,7 +314,7 @@ freeMacrosEntries(macro);<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@def(<span class="name">macro unit tests)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">testMacroName</span>(<span class="str">"abc"</span>);<br/>
 <span class="in1"></span>
@@ -431,7 +431,7 @@ return macro && macro-&gt;firstEntry;<br/>
   werden</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">allocate entry on heap)</span></span><br/>
+<span class="add">@def(<span class="name">allocate entry on heap)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">valueLength</span> = 0;<br/>
 <span class="in1"></span>
@@ -460,7 +460,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Wenn nicht genug Speicher vorhanden ist, dann wird das Programm beendet</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">copy entry values)</span></span><br/>
+<span class="add">@def(<span class="name">copy entry values)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">valueBegin</span>) {<br/>
 <span class="in2"></span>
@@ -542,7 +542,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Referenzierte Makros werden nicht mit freigegeben</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">forward declarations)</span></span><br/>
+<span class="add">@def(<span class="name">forward declarations)</span></span><br/>
 
 <span class="type">struct MacroEntry</span>;<br/>
 
@@ -556,7 +556,7 @@ return macro && macro-&gt;firstEntry;<br/>
 
 <br/>
 
-<span class="add">@add(<span class="name">free macros entries)</span></span><br/>
+<span class="add">@def(<span class="name">free macros entries)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">freeMacroEntry</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span>);<br/>
 
@@ -795,7 +795,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Oder als neuer Kopf der Liste gesetzt</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">assert add entry)</span></span><br/>
+<span class="add">@def(<span class="name">assert add entry)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
 <span class="in1"></span>
@@ -811,7 +811,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Eintrag darf noch nicht in einer anderen Liste hängen</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">append entry)</span></span><br/>
+<span class="add">@def(<span class="name">append entry)</span></span><br/>
 <span class="in1"></span>
 <span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">link</span> = <span class="var">entry</span>;<br/>
 <span class="in1"></span>
@@ -827,7 +827,7 @@ return macro && macro-&gt;firstEntry;<br/>
   &lt;code class="keyword"&gt;NULL&lt;/code&gt;</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">set first entry)</span></span><br/>
+<span class="add">@def(<span class="name">set first entry)</span></span><br/>
 <span class="in1"></span>
 <span class="var">macro</span>-&gt;<span class="var">firstEntry</span> = <span class="var">entry</span>;<br/>
 <span class="in1"></span>
@@ -926,7 +926,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Der erste Eintrag muss gesetzt bleiben</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">add two entries)</span></span><br/>
+<span class="add">@def(<span class="name">add two entries)</span></span><br/>
 <span class="in1"></span>
 <span class="var">macro</span> = <span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
 <span class="in1"></span>
@@ -944,7 +944,7 @@ return macro && macro-&gt;firstEntry;<br/>
 
 <br/>
 
-<span class="add">@add(<span class="name">check first of 2)</span></span><br/>
+<span class="add">@def(<span class="name">check first of 2)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">first</span>);<br/>
 
@@ -1051,7 +1051,7 @@ return macro && macro-&gt;firstEntry;<br/>
   verwendet</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">reuse last entry)</span></span><br/>
+<span class="add">@def(<span class="name">reuse last entry)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> &&<br/>
 <span class="in2"></span>
@@ -1071,7 +1071,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">add macro entry)</span></span><br/>
+<span class="add">@def(<span class="name">add macro entry)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
 <span class="in2"></span>
@@ -1121,7 +1121,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Makros in Einträgen werden rekursiv ausgegeben</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">iterate entries)</span></span><br/>
+<span class="add">@def(<span class="name">iterate entries)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
 <span class="in2"></span>
@@ -1150,7 +1150,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Dann wird rekursiv das Makro ausgegeben, falls vorhanden</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">serialize bytes)</span></span><br/>
+<span class="add">@def(<span class="name">serialize bytes)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">getMacroEntryValueSize</span>(<span class="var">entry</span>)) {<br/>
 <span class="in2"></span>
@@ -1196,7 +1196,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">serialize test macro)</span></span><br/>
+<span class="add">@def(<span class="name">serialize test macro)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">serializeMacro</span>(<span class="var">macro</span>, &<span class="var">bc</span>.<span class="var">consumer</span>);<br/>
 <span class="in1"></span>
@@ -1310,7 +1310,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">define cycle check)</span></span><br/>
+<span class="add">@def(<span class="name">define cycle check)</span></span><br/>
 <span class="in1"></span>
 <span class="type">bool</span> <span class="fn">isMacroInMacro</span>(<br/>
 <span class="in2"></span>
@@ -1340,7 +1340,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Wenn das Makro dort nicht gefunden wurde, dann ist es nicht enthalten</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">avoid macro cycles)</span></span><br/>
+<span class="add">@def(<span class="name">avoid macro cycles)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(! <span class="fn">isMacroInMacro</span>(<br/>
 <span class="in2"></span>
@@ -1354,7 +1354,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">check cycle macro)</span></span><br/>
+<span class="add">@def(<span class="name">check cycle macro)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">haystack</span>) {<br/>
 <span class="in2"></span>
@@ -1368,7 +1368,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">check cycle entries)</span></span><br/>
+<span class="add">@def(<span class="name">check cycle entries)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct MacroEntry *</span><span class="var">entry</span> =<br/>
 <span class="in2"></span>
@@ -1521,7 +1521,7 @@ return macro && macro-&gt;firstEntry;<br/>
  Und in der Hash-Map abgelegt</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">insert in slot)</span></span><br/>
+<span class="add">@def(<span class="name">insert in slot)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
@@ -1564,7 +1564,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">find macro in slot)</span></span><br/>
+<span class="add">@def(<span class="name">find macro in slot)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
@@ -1622,7 +1622,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">get macro find)</span></span><br/>
+<span class="add">@def(<span class="name">get macro find)</span></span><br/>
 <span class="in1"></span>
 <span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
 <span class="in2"></span>
@@ -1642,7 +1642,7 @@ return macro && macro-&gt;firstEntry;<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">get macro alloc)</span></span><br/>
+<span class="add">@def(<span class="name">get macro alloc)</span></span><br/>
 <span class="in1"></span>
 <span class="var">macro</span> = <span class="fn">allocMacroInMap</span>(<br/>
 <span class="in2"></span>

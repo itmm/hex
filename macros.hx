@@ -8,7 +8,7 @@ x{global elements}
 * Makros sind global sichtbare Strukturen
 
 ```
-a{define macro}
+d{define macro}
 	t{struct MacroEntry};
 
 	t{struct Macro} {
@@ -59,7 +59,7 @@ x{define macro}
   Null-Byte terminiert sein
 
 ```
-a{define logging}
+d{define logging}
 	#define ASSERT(v{COND}, ...) \
 		k{if} (! (v{COND})) { \
 			f{fprintf}(v{stderr}, \
@@ -77,7 +77,7 @@ x{define logging}
 * Datei und Zeile des Tests wird ausgegeben
 
 ```
-a{allocate macro on heap}
+d{allocate macro on heap}
 	f{ASSERT}(v{nameBegin});
 	f{ASSERT}(v{nameBegin} <= v{nameEnd});
 	t{int} v{nameLength} =
@@ -99,7 +99,7 @@ a{includes}
 	#include <string.h>
 x{includes}
 
-a{copy macro name}
+d{copy macro name}
 	f{memcpy}(
 		v{result}->v{name}, v{nameBegin},
 		v{nameLength}
@@ -183,7 +183,7 @@ x{define macro}
   Makro kopiert wurde
 
 ```
-a{macro unit tests}
+d{macro unit tests}
 	f{testMacroName}(s{"abc"});
 	f{testMacroName}(s{""});
 	f{testMacroName}(s{"A c"});
@@ -256,7 +256,7 @@ x{define macro}
   werden
 
 ```
-a{allocate entry on heap}
+d{allocate entry on heap}
 	t{int} v{valueLength} = 0;
 	k{if} (v{valueBegin}) {
 		f{ASSERT}(v{valueBegin} <= v{valueEnd});
@@ -274,7 +274,7 @@ x{allocate entry on heap}
 * Wenn nicht genug Speicher vorhanden ist, dann wird das Programm beendet
 
 ```
-a{copy entry values}
+d{copy entry values}
 	k{if} (v{valueBegin}) {
 		f{memcpy}(
 			v{result}->v{value}, v{valueBegin},
@@ -321,14 +321,14 @@ Einträge freigegeben
 * Referenzierte Makros werden nicht mit freigegeben
 
 ```
-a{forward declarations}
+d{forward declarations}
 t{struct MacroEntry};
 k{void} f{freeMacroEntry}(
 	t{struct MacroEntry *}v{entry}
 );
 x{forward declarations}
 
-a{free macros entries}
+d{free macros entries}
 	f{freeMacroEntry}(v{macro}->v{firstEntry});
 x{free macros entries}
 ```
@@ -463,7 +463,7 @@ x{define macro}
 * Oder als neuer Kopf der Liste gesetzt
 
 ```
-a{assert add entry}
+d{assert add entry}
 	f{ASSERT}(v{macro});
 	f{ASSERT}(v{entry});
 	f{ASSERT}(! v{entry}->v{link});
@@ -474,7 +474,7 @@ x{assert add entry}
 * Eintrag darf noch nicht in einer anderen Liste hängen
 
 ```
-a{append entry}
+d{append entry}
 	v{macro}->v{lastEntry}->v{link} = v{entry};
 	v{macro}->v{lastEntry} = v{entry};
 x{append entry}
@@ -486,7 +486,7 @@ x{append entry}
   <code class="keyword">NULL</code>
 
 ```
-a{set first entry}
+d{set first entry}
 	v{macro}->v{firstEntry} = v{entry};
 	v{macro}->v{lastEntry} = v{entry};
 x{set first entry}
@@ -545,7 +545,7 @@ x{macro unit tests}
 * Der erste Eintrag muss gesetzt bleiben
 
 ```
-a{add two entries}
+d{add two entries}
 	v{macro} = f{allocTestMacro}(s{""});
 	v{first} = f{allocEmptyMacroEntry}();
 	v{second} = f{allocEmptyMacroEntry}();
@@ -554,7 +554,7 @@ a{add two entries}
 	f{addEntryToMacro}(v{macro}, v{second});
 x{add two entries}
 
-a{check first of 2}
+d{check first of 2}
 	f{ASSERT}(v{macro}->v{firstEntry} == v{first});
 x{check first of 2}
 ```
@@ -621,7 +621,7 @@ x{define macro}
   verwendet
 
 ```
-a{reuse last entry}
+d{reuse last entry}
 	k{if} (v{macro}->v{firstEntry} &&
 		! v{macro}->v{lastEntry}->v{macro}
 	) {
@@ -634,7 +634,7 @@ x{reuse last entry}
   kann dieses verwendet werden
 
 ```
-a{add macro entry}
+d{add macro entry}
 	t{struct MacroEntry *}v{entry} =
 		f{allocMacroEntry}(
 			v{child}, k{NULL}, k{NULL}
@@ -662,7 +662,7 @@ x{define macro}
 * Makros in Einträgen werden rekursiv ausgegeben
 
 ```
-a{iterate entries}
+d{iterate entries}
 	t{struct MacroEntry *}v{entry} =
 		v{macro}->v{firstEntry};
 	k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {
@@ -679,7 +679,7 @@ x{iterate entries}
 * Dann wird rekursiv das Makro ausgegeben, falls vorhanden
 
 ```
-a{serialize bytes}
+d{serialize bytes}
 	k{if} (f{getMacroEntryValueSize}(v{entry})) {
 		t{const char *}v{cur} = v{entry}->v{value};
 		t{const char *}v{end} = v{entry}->v{valueEnd};
@@ -708,7 +708,7 @@ x{define macro}
   Erwartung entspricht
 
 ```
-a{serialize test macro}
+d{serialize test macro}
 	f{serializeMacro}(v{macro}, &v{bc}.v{consumer});
 	f{putToConsumer}(&v{bc}.v{consumer}, k{EOF});
 	f{ASSERT}(f{strcmp}(
@@ -775,7 +775,7 @@ x{includes}
 * Boolesche Datenwerte werden benötigt
 
 ```
-a{define cycle check}
+d{define cycle check}
 	t{bool} f{isMacroInMacro}(
 		t{struct Macro *}v{needle},
 		t{struct Macro *}v{haystack}
@@ -793,7 +793,7 @@ x{define cycle check}
 * Wenn das Makro dort nicht gefunden wurde, dann ist es nicht enthalten
 
 ```
-a{avoid macro cycles}
+d{avoid macro cycles}
 	f{ASSERT}(! f{isMacroInMacro}(
 		v{macro}, v{child}
 	));
@@ -803,7 +803,7 @@ x{avoid macro cycles}
   bereits enthält
 
 ```
-a{check cycle macro}
+d{check cycle macro}
 	k{if} (v{needle} == v{haystack}) {
 		k{return} k{true};
 	}
@@ -813,7 +813,7 @@ x{check cycle macro}
   <code class="keyword">true</code> zurück
 
 ```
-a{check cycle entries}
+d{check cycle entries}
 	t{struct MacroEntry *}v{entry} =
 		v{haystack}->v{firstEntry};
 	k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {
@@ -902,7 +902,7 @@ x{define macro}
 * Und in der Hash-Map abgelegt
 
 ```
-a{insert in slot}
+d{insert in slot}
 	t{int} v{hash} = f{calcHash}(v{begin}, v{end});
 	v{macro}->v{link} = v{map}->v{macros}[v{hash}];
 	v{map}->v{macros}[v{hash}] = v{macro};
@@ -928,7 +928,7 @@ x{define macro}
 * Liefert das erste Makro mit dem übergebenen Namen
 
 ```
-a{find macro in slot}
+d{find macro in slot}
 	t{int} v{hash} = f{calcHash}(v{begin}, v{end});
 	v{macro} = v{map}->v{macros}[v{hash}];
 	k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
@@ -962,7 +962,7 @@ x{define macro}
   diesem Namen an
 
 ```
-a{get macro find}
+d{get macro find}
 	v{macro} = f{findMacroInMap}(
 		v{map}, v{begin}, v{end}
 	);
@@ -974,7 +974,7 @@ x{get macro find}
 * Wenn das Makro in der Kollektion vorhanden ist, wird dieses verwendet
 
 ```
-a{get macro alloc}
+d{get macro alloc}
 	v{macro} = f{allocMacroInMap}(
 		v{map}, v{begin}, v{end}
 	);

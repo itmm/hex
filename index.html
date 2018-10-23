@@ -339,7 +339,7 @@
   Folien zu finden</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">read source file)</span></span><br/>
+<span class="add">@def(<span class="name">read source file)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">global source vars)</span></span>;<br/>
 <span class="in1"></span>
@@ -367,7 +367,7 @@
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process current char)</span></span><br/>
+<span class="add">@def(<span class="name">process current char)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
 <span class="in2"></span>
@@ -399,7 +399,7 @@
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">additional read vars)</span></span><br/>
+<span class="add">@def(<span class="name">additional read vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Macro *</span> <span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
@@ -439,7 +439,7 @@
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process close brace)</span></span> {<br/>
+<span class="add">@def(<span class="name">process close brace)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">nameCur</span>) {<br/>
 <span class="in2"></span>
@@ -462,7 +462,7 @@
  Danach wird der Namenszeiger zurückgesetzt</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process other char)</span></span> {<br/>
+<span class="add">@def(<span class="name">process other char)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">nameCur</span>) {<br/>
 <span class="in2"></span>
@@ -494,7 +494,7 @@
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process open brace)</span></span> {<br/>
+<span class="add">@def(<span class="name">process open brace)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
 <span class="in2"></span>
@@ -522,7 +522,7 @@
   `}`</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">global source vars)</span></span><br/>
+<span class="add">@def(<span class="name">global source vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct MacroMap</span> <span class="var">macros</span> = {};<br/>
 
@@ -532,7 +532,7 @@
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="add">@def(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
 <span class="in2"></span>
@@ -715,7 +715,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
  Nachdem diese Funktionalität implementiert wurde</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process private macro)</span></span><br/>
+<span class="add">@def(<span class="name">process private macro)</span></span><br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">prefix</span>[] = "_private_";<br/>
 <span class="in1"></span>
@@ -760,7 +760,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
  Daher wird es in einem eigenen Fragment gekapselt</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">process magic macro)</span></span><br/>
+<span class="add">@def(<span class="name">process magic macro)</span></span><br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">magic</span>[] = "2478325";<br/>
 <span class="in1"></span>
@@ -780,7 +780,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
  Der vom Dateinamen und vom Argument abhängt</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">flush macro buffer)</span></span><br/>
+<span class="add">@def(<span class="name">flush macro buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<br/>
 <span class="in2"></span>
@@ -832,7 +832,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">check valid names)</span></span><br/>
+<span class="add">@def(<span class="name">check valid names)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
 <span class="in2"></span>
@@ -910,7 +910,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
   rausgeschrieben</li></ul></div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">serialize fragments)</span></span> {<br/>
+<span class="add">@def(<span class="name">serialize fragments)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Macro **</span><span class="var">cur</span> = <span class="var">macros</span>.<span class="var">macros</span>;<br/>
 <span class="in1"></span>
@@ -944,7 +944,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
-<span class="add">@add(<span class="name">write in file)</span></span><br/>
+<span class="add">@def(<span class="name">write in file)</span></span><br/>
 <span class="in1"></span>
 <span class="type">FILE *</span><span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, "w");<br/>
 <span class="in1"></span>
