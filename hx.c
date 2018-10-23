@@ -687,7 +687,9 @@ void freeMacroEntry(
 
 	int codeOpening;
 	int codeIndent;
-		char codeSpecial;
+	char codeSpecial;
+	char codeName[100];
+	char *codeNameEnd;
 
 	};
 
@@ -1004,7 +1006,7 @@ void freeMacroEntry(
 	if (argc > 1) {
 		struct SourceElement *cur =
 			createSourceElement(argv[1]);
-		//struct SourceElement *end = cur;
+		struct SourceElement *end = cur;
 		while (cur) {
 			
 	if (hasSuffix(cur->path, ".x")) {
@@ -1028,6 +1030,7 @@ void freeMacroEntry(
 	, .codeOpening = 0
 	, .codeIndent = 0
 	, .codeSpecial = '\0'
+	, .codeNameEnd = NULL
 
 	};
 	char last = '\n';
@@ -1226,6 +1229,7 @@ void freeMacroEntry(
 		fprintf(out, "<span class=\"include\">@include(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 't':
@@ -1282,12 +1286,43 @@ void freeMacroEntry(
 			last = 0;
 		}
 		switch (status.codeSpecial) {
-			case 'a': case 'e': case 'i': case 'x':
-			case 'r': case 'd': case 'p': case 'm':
+			case 'i': {
+				
+	ASSERT(status.codeNameEnd <
+		status.codeName + sizeof(status.codeName)
+	);
+	*status.codeNameEnd = '\0';
+	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
+		!= '.') {
+		--status.codeNameEnd;
+	}
+	ASSERT(status.codeNameEnd >= status.codeName, "no period");
+	*status.codeNameEnd = '\0';
+	fprintf(out, "<a href=\"%s.html\">", status.codeName);
+	*status.codeNameEnd = '.';
+	fprintf(out, "%s</a>)</span>", status.codeName);
+	end->_private_link = createSourceElement(status.codeName);
+	end = end->_private_link;
+	status.codeNameEnd = NULL;
+
+;
+				break;
+			}
+			case 'a': case 'e': case 'x':
+			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
+			}
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
+		continue;
+	}
+
+	if (ch != EOF && status.codeNameEnd) {
+		ASSERT(status.codeNameEnd <
+			status.codeName + sizeof(status.codeName)
+		);
+		*status.codeNameEnd++ = ch;
 		continue;
 	}
 ;
@@ -1362,6 +1397,7 @@ void freeMacroEntry(
 	, .codeOpening = 0
 	, .codeIndent = 0
 	, .codeSpecial = '\0'
+	, .codeNameEnd = NULL
 
 	};
 	char last = '\n';
@@ -1560,6 +1596,7 @@ void freeMacroEntry(
 		fprintf(out, "<span class=\"include\">@include(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 't':
@@ -1616,12 +1653,43 @@ void freeMacroEntry(
 			last = 0;
 		}
 		switch (status.codeSpecial) {
-			case 'a': case 'e': case 'i': case 'x':
-			case 'r': case 'd': case 'p': case 'm':
+			case 'i': {
+				
+	ASSERT(status.codeNameEnd <
+		status.codeName + sizeof(status.codeName)
+	);
+	*status.codeNameEnd = '\0';
+	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
+		!= '.') {
+		--status.codeNameEnd;
+	}
+	ASSERT(status.codeNameEnd >= status.codeName, "no period");
+	*status.codeNameEnd = '\0';
+	fprintf(out, "<a href=\"%s.html\">", status.codeName);
+	*status.codeNameEnd = '.';
+	fprintf(out, "%s</a>)</span>", status.codeName);
+	end->_private_link = createSourceElement(status.codeName);
+	end = end->_private_link;
+	status.codeNameEnd = NULL;
+
+;
+				break;
+			}
+			case 'a': case 'e': case 'x':
+			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
+			}
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
+		continue;
+	}
+
+	if (ch != EOF && status.codeNameEnd) {
+		ASSERT(status.codeNameEnd <
+			status.codeName + sizeof(status.codeName)
+		);
+		*status.codeNameEnd++ = ch;
 		continue;
 	}
 ;

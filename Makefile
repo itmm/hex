@@ -1,17 +1,14 @@
-CFLAGS += -Wall -std=c99
+CFLAGS += -Wall -std=c99 -g
 
 .PHONY: all install clean test run_hx
 
 Xs := $(wildcard *.x)
 HTMLs := ${Xs:.x=.html}
 
-all: ${HTMLs} hx.c
+all: hx.c
 
-run_hx: ${HXS}
-	@echo "hx index.x"
-	@hx index.x
-
-hx.c: run_hx
+hx.c: ${Xs}
+	hx index.x
 
 hx: hx.c
 
@@ -20,9 +17,6 @@ install: hx
 
 test: hx
 	./hx </dev/null
-
-%.html: %.x
-	hx $^
 
 clean:
 	rm -f hx.c ${HTMLs}

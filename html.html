@@ -79,7 +79,7 @@
 <span class="in3"></span>
 <span class="fn">createSourceElement</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
 <span class="in2"></span>
-//<span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
+<span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
 <span class="in3"></span>
@@ -688,8 +688,12 @@ default: {<br/>
 <span class="type">int</span> <span class="var">codeOpening</span>;<br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">codeIndent</span>;<br/>
-<span class="in2"></span>
+<span class="in1"></span>
 <span class="type">char</span> <span class="var">codeSpecial</span>;<br/>
+<span class="in1"></span>
+<span class="type">char</span> <span class="var">codeName</span>[100];<br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">codeNameEnd</span>;<br/>
 
 <span class="end">@end(<span class="name">html state elements)</span></span><br/>
 </code>
@@ -704,6 +708,8 @@ default: {<br/>
 , .<span class="var">codeIndent</span> = 0<br/>
 <span class="in1"></span>
 , .<span class="var">codeSpecial</span> = <span class="str">'\0'</span><br/>
+<span class="in1"></span>
+, .<span class="var">codeNameEnd</span> = <span class="keyword">NULL</span><br/>
 
 <span class="end">@end(<span class="name">init html status)</span></span><br/>
 </code>
@@ -905,17 +911,91 @@ last = 0;<br/>
 <span class="in2"></span>
 switch (status.codeSpecial) {<br/>
 <span class="in3"></span>
-case 'a': case 'e': case 'i': case 'x':<br/>
+case 'i': {<br/>
+<span class="in4"></span>
+<span class="expand">@expand(<span class="name">handle html include)</span></span>;<br/>
+<span class="in4"></span>
+break;<br/>
 <span class="in3"></span>
-case 'r': case 'd': case 'p': case 'm':<br/>
+}<br/>
+<span class="in3"></span>
+case 'a': case 'e': case 'x':<br/>
+<span class="in3"></span>
+case 'r': case 'd': case 'p': case 'm': {<br/>
 <span class="in4"></span>
 fprintf(out, ")&lt;/span&gt;");<br/>
+<span class="in3"></span>
+}<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;/span&gt;");<br/>
 <span class="in2"></span>
 status.codeSpecial = 0;<br/>
+<span class="in2"></span>
+continue;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process ch in HTML code)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@def(<span class="name">handle html include)</span></span><br/>
+<span class="in1"></span>
+ASSERT(status.codeNameEnd &lt;<br/>
+<span class="in2"></span>
+status.codeName + sizeof(status.codeName)<br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+*status.codeNameEnd = '\0';<br/>
+<span class="in1"></span>
+while (status.codeNameEnd &gt;= status.codeName && *status.codeNameEnd<br/>
+<span class="in2"></span>
+!= '.') {<br/>
+<span class="in2"></span>
+--status.codeNameEnd;<br/>
+<span class="in1"></span>
+}<br/>
+<span class="in1"></span>
+ASSERT(status.codeNameEnd &gt;= status.codeName, "no period");<br/>
+<span class="in1"></span>
+*status.codeNameEnd = '\0';<br/>
+<span class="in1"></span>
+fprintf(out, "&lt;a href=\"%s.html\"&gt;", status.codeName);<br/>
+<span class="in1"></span>
+*status.codeNameEnd = '.';<br/>
+<span class="in1"></span>
+fprintf(out, "%s&lt;/a&gt;)&lt;/span&gt;", status.codeName);<br/>
+<span class="in1"></span>
+end-&gt;<span class="type">@priv(<span>link)</span></span> = createSourceElement(status.codeName);<br/>
+<span class="in1"></span>
+end = end-&gt;<span class="type">@priv(<span>link)</span></span>;<br/>
+<span class="in1"></span>
+status.codeNameEnd = NULL;<br/>
+
+<br/>
+
+<span class="end">@end(<span class="name">handle html include)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+<span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
+<span class="in1"></span>
+if (ch != EOF && status.codeNameEnd) {<br/>
+<span class="in2"></span>
+ASSERT(status.codeNameEnd &lt;<br/>
+<span class="in3"></span>
+status.codeName + sizeof(status.codeName)<br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+*status.codeNameEnd++ = ch;<br/>
 <span class="in2"></span>
 continue;<br/>
 <span class="in1"></span>
@@ -1010,6 +1090,8 @@ fprintf(out, "&lt;span class=\"include\"&gt;@include(");<br/>
 fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
 <span class="in2"></span>
 status.codeSpecial = last;<br/>
+<span class="in2"></span>
+status.codeNameEnd = status.codeName;<br/>
 <span class="in2"></span>
 break;<br/>
 

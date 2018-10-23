@@ -41,7 +41,7 @@ d{write HTML file}
 	k{if} (v{argc} > n{1}) {
 		t{struct SourceElement *}v{cur} =
 			f{createSourceElement}(v{argv}[n{1}]);
-		//t{struct SourceElement *}v{end} = v{cur};
+		t{struct SourceElement *}v{end} = v{cur};
 		k{while} (v{cur}) {
 			e{write cur HTML file};
 			t{struct SourceElement *}v{next} =
@@ -380,7 +380,9 @@ x{check html special state}
 a{html state elements}
 	t{int} v{codeOpening};
 	t{int} v{codeIndent};
-		t{char} v{codeSpecial};
+	t{char} v{codeSpecial};
+	t{char} v{codeName}[100];
+	t{char *}v{codeNameEnd};
 x{html state elements}
 ```
 
@@ -389,6 +391,7 @@ a{init html status}
 	, .v{codeOpening} = 0
 	, .v{codeIndent} = 0
 	, .v{codeSpecial} = s{'\0'}
+	, .v{codeNameEnd} = k{NULL}
 x{init html status}
 ```
 
@@ -496,12 +499,51 @@ a{process ch in HTML code}
 			last = 0;
 		}
 		switch (status.codeSpecial) {
-			case 'a': case 'e': case 'i': case 'x':
-			case 'r': case 'd': case 'p': case 'm':
+			case 'i': {
+				e{handle html include};
+				break;
+			}
+			case 'a': case 'e': case 'x':
+			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
+			}
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
+		continue;
+	}
+x{process ch in HTML code}
+```
+
+```
+d{handle html include}
+	ASSERT(status.codeNameEnd <
+		status.codeName + sizeof(status.codeName)
+	);
+	*status.codeNameEnd = '\0';
+	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
+		!= '.') {
+		--status.codeNameEnd;
+	}
+	ASSERT(status.codeNameEnd >= status.codeName, "no period");
+	*status.codeNameEnd = '\0';
+	fprintf(out, "<a href=\"%s.html\">", status.codeName);
+	*status.codeNameEnd = '.';
+	fprintf(out, "%s</a>)</span>", status.codeName);
+	end->p{link} = createSourceElement(status.codeName);
+	end = end->p{link};
+	status.codeNameEnd = NULL;
+
+x{handle html include}
+```
+
+```
+a{process ch in HTML code}
+	if (ch != EOF && status.codeNameEnd) {
+		ASSERT(status.codeNameEnd <
+			status.codeName + sizeof(status.codeName)
+		);
+		*status.codeNameEnd++ = ch;
 		continue;
 	}
 x{process ch in HTML code}
@@ -553,6 +595,7 @@ a{escape html macro}
 		fprintf(out, "<span class=\"include\">@include(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
+		status.codeNameEnd = status.codeName;
 		break;
 x{escape html macro}
 ```
