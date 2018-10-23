@@ -14,6 +14,7 @@
   HTML-Präsentationen zu erzeugen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct SourceElement</span> {<br/>
@@ -29,9 +30,12 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Alle Dateien, die noch herausgeschrieben werden müssen, werden in einer
+  Liste vorgehalten</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct SourceElement</span> *createSourceElement(<br/>
@@ -68,9 +72,11 @@
 </code>
 </div>
 <ul><li>
+ Die Größe der Struktur wird dynamisch berechnet</li><li>
  So dass der Name mit abschließenden Null-Byte reinpasst</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write HTML file)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct SourceElement *</span><span class="var">cur</span>;<br/>
@@ -104,9 +110,12 @@
 <span class="end">@end(<span class="name">write HTML file)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Beim Lesen der Datei können weitere Dateien in die Liste eingefügt
+  werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">bool</span> <span class="fn">hasSuffix</span>(<br/>
@@ -134,9 +143,12 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Um zu prüfen, ob Dateinamen die richtige Endung haben, gibt es eine
+  extra Funktion</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write cur HTML file)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".x"</span>)) {<br/>
@@ -167,9 +179,11 @@
 </code>
 </div>
 <ul><li>
+ Nur &lt;code&gt;x&lt;/code&gt;-Dateien werden in HTML konvertiert</li><li>
  Die HTML hat den gleichen Pfad mit der Endung &lt;code&gt;.html&lt;/code&gt;</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write cur HTML file)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".hx"</span>)) {<br/>
@@ -202,6 +216,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write cur HTML file to out)</span></span> <br/>
 <span class="in1"></span>
 <span class="type">FILE *</span><span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">"r"</span>);<br/>
@@ -218,6 +233,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">enum HtmlState</span> {<br/>
@@ -238,6 +254,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct HtmlStatus</span> {<br/>
@@ -252,6 +269,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">html state elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">enum HtmlState</span> <span class="var">state</span>;<br/>
@@ -262,6 +280,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write HTML file from in to out)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct HtmlStatus</span> <span class="var">status</span> = {<br/>
@@ -292,6 +311,7 @@ char last = '\n';<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">html state enums)</span></span><br/>
 <span class="in1"></span>
 , <span class="var">hs_IN_HEADER</span><br/>
@@ -302,6 +322,7 @@ char last = '\n';<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">bool</span> isOutOfHtmlSpecial(<br/>
@@ -322,6 +343,7 @@ struct HtmlStatus *s<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">check html special state)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
@@ -336,6 +358,7 @@ struct HtmlStatus *s<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">html state elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">headerLevel</span>;<br/>
@@ -352,6 +375,7 @@ struct HtmlStatus *s<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">init html status)</span></span><br/>
 <span class="in1"></span>
 , .<span class="var">headerLevel</span> = 0<br/>
@@ -364,6 +388,7 @@ struct HtmlStatus *s<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'#'</span> && <span class="var">last</span> == <span class="str">'\n'</span>) {<br/>
@@ -396,6 +421,7 @@ status.headerState = status.state;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
@@ -420,6 +446,7 @@ status.headerState = status.state;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">reset header state)</span></span> <br/>
 <span class="in1"></span>
 <span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
@@ -436,6 +463,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
@@ -470,6 +498,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
@@ -500,6 +529,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process header in HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
@@ -522,6 +552,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span> <br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
@@ -560,6 +591,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write header tag)</span></span> <br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
@@ -574,6 +606,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">close previous HTML page)</span></span> <br/>
 <span class="in1"></span>
 switch (status.headerState) {<br/>
@@ -610,6 +643,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write HTML header)</span></span> <br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;!doctype html&gt;\n"</span>);<br/>
@@ -630,6 +664,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write HTML header entries)</span></span> <br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<br/>
@@ -660,6 +695,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">html state enums)</span></span><br/>
 <span class="in1"></span>
 , <span class="var">hs_IN_CODE</span><br/>
@@ -670,6 +706,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">check html special state)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
@@ -684,6 +721,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">html state elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">codeOpening</span>;<br/>
@@ -702,6 +740,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">init html status)</span></span><br/>
 <span class="in1"></span>
 , .<span class="var">codeOpening</span> = 0<br/>
@@ -718,6 +757,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'`'</span>) {<br/>
@@ -742,6 +782,7 @@ default: {<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> && <span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">3</span>) {<br/>
@@ -762,7 +803,7 @@ fprintf(out, "&lt;code&gt;\n");<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_CODE</span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = 0;<br/>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -778,7 +819,7 @@ fprintf(out, "&lt;/div&gt;\n");<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'\0'</span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = 0;<br/>
+<span class="var">last</span> = <span class="var">ch</span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -794,6 +835,7 @@ fprintf(out, "&lt;/div&gt;\n");<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (status.state == hs_IN_CODE) {<br/>
@@ -818,6 +860,7 @@ continue;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process ch in HTML code)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
@@ -842,6 +885,7 @@ continue;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch in HTML code)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'\t'</span>) {<br/>
@@ -870,6 +914,7 @@ status.codeIndent = 0;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
 <span class="in1"></span>
 if (ch == '{') {<br/>
@@ -898,6 +943,7 @@ continue;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
 <span class="in1"></span>
 if (ch == '}' && status.codeSpecial) {<br/>
@@ -944,6 +990,7 @@ continue;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">handle html include)</span></span><br/>
 <span class="in1"></span>
 ASSERT(status.codeNameEnd &lt;<br/>
@@ -986,6 +1033,7 @@ status.codeNameEnd = NULL;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
 <span class="in1"></span>
 if (ch != EOF && status.codeNameEnd) {<br/>
@@ -1008,6 +1056,7 @@ continue;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'd':<br/>
@@ -1046,6 +1095,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'x':<br/>
@@ -1064,6 +1114,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'e':<br/>
@@ -1082,6 +1133,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'i':<br/>
@@ -1102,6 +1154,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 't':<br/>
@@ -1118,6 +1171,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'v':<br/>
@@ -1134,6 +1188,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'f':<br/>
@@ -1150,6 +1205,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'k':<br/>
@@ -1166,6 +1222,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 's':<br/>
@@ -1182,6 +1239,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'n':<br/>
@@ -1198,6 +1256,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'p':<br/>
@@ -1214,6 +1273,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">escape html macro)</span></span><br/>
 <span class="in1"></span>
 case 'm':<br/>
@@ -1230,6 +1290,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">html state enums)</span></span><br/>
 <span class="in1"></span>
 , <span class="var">hs_IN_NOTES</span><br/>
@@ -1240,6 +1301,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">check html special state)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
@@ -1254,6 +1316,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
@@ -1286,6 +1349,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
@@ -1316,6 +1380,7 @@ break;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>

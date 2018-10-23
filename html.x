@@ -418,7 +418,7 @@ a{process ch for HTML}
 			fprintf(out, "<div><div>\n");
 			fprintf(out, "<code>\n");
 			v{status}.v{state} = v{hs_IN_CODE};
-			v{last} = 0;
+			v{last} = v{ch};
 			k{continue};
 		} k{else} k{if} (v{status}.v{state} == v{hs_IN_CODE}) {
 			fprintf(out, "</code>\n");
@@ -426,7 +426,7 @@ a{process ch for HTML}
 			v{status}.v{state} = v{hs_IN_SLIDE};
 			v{status}.v{codeIndent} = 0;
 			v{status}.v{codeSpecial} = s{'\0'};
-			v{last} = 0;
+			v{last} = v{ch};
 			k{continue};
 		}
 	}

@@ -14,6 +14,7 @@
  Die Länge dieser Buffer kann dynamisch wachsen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">define buffer)</span></span>;<br/>
@@ -21,9 +22,11 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Buffer sind global sichtbare Strukturen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">perform unit tests)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">buffer unit tests)</span></span>;<br/>
@@ -31,7 +34,8 @@
 <span class="end">@end(<span class="name">perform unit tests)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Buffer haben ihre eigenen Unit Tests</li></ul></div>
 </div>
 <h1>Struktur</h1>
 <div class="slides">
@@ -41,6 +45,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
 #define INIT_BUFFER_SIZE 16<br/>
@@ -63,6 +68,7 @@
 </code>
 </div>
 <ul><li>
+ Ein Buffer kann bis zu `INIT_BUFFER_SIZE` Bytes direkt aufnehmen</li><li>
  Bei weiteren Bytes wird der Speicher im Heap angelegt</li></ul></div>
 </div>
 <h1>Zeichen hinzufügen</h1>
@@ -73,6 +79,7 @@
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">addToBuffer</span>(<br/>
@@ -95,12 +102,15 @@
 </code>
 </div>
 <ul><li>
+ Wenn die Struktur leer ist, muss sie auf den interenen Buffer
+  initialisiert werden</li><li>
  Das ermöglicht die Initialisierung als Literal</li><li>
  Zusätzlich muss sicher gestellt werden, dass ein weiteres Byte angefügt
   werden kann</li><li>
  Dann wird das Byte angefügt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">may initialize buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (! <span class="var">buffer</span>-&gt;<span class="var">buffer</span>) {<br/>
@@ -125,6 +135,8 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ Wenn der interne Buffer nicht gesetzt ist, wird er auf den enthaltenen
+  Bereich gesetzt</li><li>
  Das stellt sicher, dass ein initialisierter Buffer keinen Speicher im
   Heap belegt</li><li>
  Mit &lt;code class="fn"&gt;eraseBuffer&lt;/code&gt; kann ggf. vorhandener
@@ -132,6 +144,7 @@ INIT_BUFFER_SIZE;<br/>
  Und der Buffer trotzdem weiter benutzt werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">assure buffer size)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<br/>
@@ -153,9 +166,11 @@ INIT_BUFFER_SIZE;<br/>
 <span class="end">@end(<span class="name">assure buffer size)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn der Buffer ausgeschöpft ist, dann wird seine Größe verdoppelt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">reallocate buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">char *</span><span class="var">newBuffer</span>;<br/>
@@ -184,9 +199,12 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ Wenn der initiale Buffer ausgeschöpft ist, muss neuer Speicher angelegt
+  und manuell befüllt werden</li><li>
  Andernfalls kann der Speicherblock im Heap vergrößert werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">copy initial buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">newBuffer</span>);<br/>
@@ -200,9 +218,11 @@ INIT_BUFFER_SIZE;<br/>
 <span class="end">@end(<span class="name">copy initial buffer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Vom initialen Buffer werden die Werte direkt kopiert</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">adjust buffer pointers)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">newBuffer</span>);<br/>
@@ -216,7 +236,8 @@ INIT_BUFFER_SIZE;<br/>
 <span class="end">@end(<span class="name">adjust buffer pointers)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Die Zeiger müssen an den neuen Speicher angepaßt werden</li></ul></div>
 </div>
 <h1>Buffer zurücksetzen</h1>
 <div class="slides">
@@ -226,6 +247,7 @@ INIT_BUFFER_SIZE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">resetBuffer</span>(<br/>
@@ -244,11 +266,15 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ Um einen Buffer wieder zu verwenden, der
+  &lt;code class="var"&gt;current&lt;/code&gt; muss auf
+  &lt;code class="var"&gt;buffer&lt;/code&gt; zurück gesetzt werden</li><li>
  Das funktioniert auch, wenn der initiale Buffer verwendet wird</li><li>
  Oder die Zeiger noch &lt;code class="keyword"&gt;NULL&lt;/code&gt; sind</li><li>
  Es wird kein Speicher freigegeben</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">eraseBuffer</span>(<br/>
@@ -269,9 +295,11 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ Wenn ein Buffer auf dem Heap angelegt wurde, wird dieser freigegeben</li><li>
  Zusätzlich wird der aktuelle Zeiger auf den Anfang zurückgesetzt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">erase heap buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">buffer</span> &&<br/>
@@ -290,6 +318,8 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ Wenn wir nicht den internen Buffer verwenden, wird der Buffer
+  freigegeben</li><li>
  Und der Buffer-Zeiger wird gelöscht</li></ul></div>
 </div>
 <h1>Unit Tests</h1>
@@ -300,6 +330,7 @@ INIT_BUFFER_SIZE;<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">buffer unit tests)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
@@ -320,10 +351,12 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ Die Struktur wird mit dem Hinzufügen initialisiert</li><li>
  Danach ist ein Byte belegt</li><li>
  Und nur der initiale Buffer wird verwendet</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">addCharsToBuffer</span>(<br/>
@@ -349,9 +382,11 @@ INIT_BUFFER_SIZE;<br/>
 <span class="end">@end(<span class="name">define buffer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Fügt mehrere Kopien eines Zeichens in den Buffer ein</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
@@ -380,5 +415,6 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
+ In diesem Test werden 1.000 Zeichen eingefügt</li><li>
  Dafür reicht der initiale Buffer nicht aus</li><li>
  Aber der zusätzliche Speicher wird nach dem Löschen freigegeben</li></ul></div>

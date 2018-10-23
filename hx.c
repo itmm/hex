@@ -1161,7 +1161,7 @@ void freeMacroEntry(
 			fprintf(out, "<div><div>\n");
 			fprintf(out, "<code>\n");
 			status.state = hs_IN_CODE;
-			last = 0;
+			last = ch;
 			continue;
 		} else if (status.state == hs_IN_CODE) {
 			fprintf(out, "</code>\n");
@@ -1169,7 +1169,7 @@ void freeMacroEntry(
 			status.state = hs_IN_SLIDE;
 			status.codeIndent = 0;
 			status.codeSpecial = '\0';
-			last = 0;
+			last = ch;
 			continue;
 		}
 	}
@@ -1528,7 +1528,7 @@ void freeMacroEntry(
 			fprintf(out, "<div><div>\n");
 			fprintf(out, "<code>\n");
 			status.state = hs_IN_CODE;
-			last = 0;
+			last = ch;
 			continue;
 		} else if (status.state == hs_IN_CODE) {
 			fprintf(out, "</code>\n");
@@ -1536,7 +1536,7 @@ void freeMacroEntry(
 			status.state = hs_IN_SLIDE;
 			status.codeIndent = 0;
 			status.codeSpecial = '\0';
-			last = 0;
+			last = ch;
 			continue;
 		}
 	}

@@ -62,6 +62,7 @@
  Nach und nach werden die einzelnen Elemente mit Leben gefüllt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">file: hx.c)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">global elements)</span></span><br/>
@@ -80,10 +81,12 @@
 </code>
 </div>
 <ul><li>
+ Das Hauptprogramm besteht aus der `f{main}`-Funktion</li><li>
  Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
   definiert werden können</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">main body)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">perform unit-tests)</span></span>;<br/>
@@ -102,6 +105,8 @@
 </code>
 </div>
 <ul><li>
+ Bei jedem Start werden alle Unit-Tests ausgeführt (um eine umfangreiche
+  Testabdeckung zu sichern)</li><li>
  Parameter von der Kommandozeile werden ausgewertet</li><li>
  Dann wird ein Parse-Graph aus Fragmenten aufgebaut</li><li>
  Und das daraus resultierende Programm generiert und übersetzt</li><li>
@@ -121,6 +126,7 @@
  Sie können mit `@add`-`@end`-Sequenzen definiert oder erweitert werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">includes)</span></span>;<br/>
@@ -133,6 +139,8 @@
 </code>
 </div>
 <ul><li>
+ System-Dateien werden vor der Definition von Strukturen und Funktionen
+  eingebunden</li><li>
  Auch müssen Macros für das Logging vor den Funktionen definiert werden,
   die sie verwenden</li></ul></div>
 </div>
@@ -148,6 +156,7 @@
   eine weitere Datei gelesen werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">includes)</span></span><br/>
 <span class="in1"></span>
 #include &lt;stdio.h&gt;<br/>
@@ -158,9 +167,11 @@
 </code>
 </div>
 <ul><li>
+ Standard File-Funktionen werden vom Programm benötigt</li><li>
  Standard Bibliothek wird für dynamische Speicherverwaltung benötigt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Input</span> {<br/>
@@ -179,12 +190,14 @@
 </code>
 </div>
 <ul><li>
+ Es gibt immer eine aktuelle Datei, die gerade gelesen wird</li><li>
  Mitten während des Lesens können andere Dateien eingelesen (inkludiert)
   werden</li><li>
  Daher gibt es einen Stapel offener Dateien</li><li>
  Aus der letzten wird gelesen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">pushFile</span> (<span class="type">FILE *</span><span class="var">file</span>) {<br/>
@@ -208,9 +221,12 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Eine offene Datei (z.B. die Standard-Eingabe) kann direkt als
+  Eingabe-Strom verwendet werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const char *</span><span class="var">path</span>) {<br/>
@@ -227,9 +243,12 @@
 </code>
 </div>
 <ul><li>
+ Eine Datei, die über einen Pfad beschrieben ist, kann auch als
+  Eingabe-Strom verwendet werden</li><li>
  Sie muss nur vorher geöffnet werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process arguments)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span>(<span class="var">argc</span> &gt; <span class="num">1</span>) {<br/>
@@ -246,10 +265,12 @@
 </code>
 </div>
 <ul><li>
+ Der Source-Code für die Slideware muss aus einer Datei geladen werden</li><li>
  Der Name kann über die Kommandozeile gesetzt werden</li><li>
  Ansonsten wird `index.x` als Vorgabe verwendet</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
@@ -291,10 +312,12 @@
  Der dynamisch wachsen kann</li></ul></div>
 <div><div>
 <code>
+
 <span class="include">@include(<span class="name"><a href="buffer.html">buffer.x</a>)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Buffer werden in einer eigenen Datei definiert</li></ul></div>
 </div>
 <h1>Consumer</h1>
 <div class="slides">
@@ -305,10 +328,12 @@
  Schnittstelle um Bytes zu konsumieren</li></ul></div>
 <div><div>
 <code>
+
 <span class="include">@include(<span class="name"><a href="consumer.html">consumer.x</a>)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Consumer werden in einer eigenen Datei definiert</li></ul></div>
 </div>
 <h1>Makros</h1>
 <div class="slides">
@@ -323,10 +348,12 @@
  Und Makros an mehreren Stellen zu erweitern</li></ul></div>
 <div><div>
 <code>
+
 <span class="include">@include(<span class="name"><a href="macros.html">macros.x</a>)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Makros werden in einer eigenen Datei definiert</li></ul></div>
 </div>
 <h1>Eingabe-Dateien lesen</h1>
 <div class="slides">
@@ -339,6 +366,7 @@
   Folien zu finden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">read source file)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">global source vars)</span></span>;<br/>
@@ -364,9 +392,11 @@
 <span class="end">@end(<span class="name">read source file)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process current char)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
@@ -396,9 +426,12 @@
 <span class="end">@end(<span class="name">process current char)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Beim Parsen kommt es nur auf das Öffnen und Schließen von
+  Mengenklammern an</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">additional read vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Macro *</span> <span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
@@ -409,10 +442,12 @@
 </code>
 </div>
 <ul><li>
+ Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb</li><li>
  In einem Code sind wir sogar in einem Makro, dessen Inhalt gelesen wird</li><li>
  Am Anfang sind wir außerhalb eines Code-Blocks</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">additional read vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">char</span> <span class="var">openCh</span> = <span class="str">'\0'</span>;<br/>
@@ -420,9 +455,12 @@
 <span class="end">@end(<span class="name">additional read vars)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Der Befehl vor einer öffnenden Mengenklammer wird in dieser Variable
+  zwischengespeichert</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">additional read vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">char</span> <span class="var">name</span><span class="type">[128]</span>;<br/>
@@ -436,9 +474,11 @@
 <span class="end">@end(<span class="name">additional read vars)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn `v{nameCur}` gesetzt ist, dann wird ein Name in Buffer gelesen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process close brace)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">nameCur</span>) {<br/>
@@ -459,9 +499,11 @@
 </code>
 </div>
 <ul><li>
+ Bei einer schließenden Mengenklammer wird der Makro-Name ausgewertet</li><li>
  Danach wird der Namenszeiger zurückgesetzt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process other char)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">nameCur</span>) {<br/>
@@ -477,9 +519,12 @@
 } <span class="end">@end(<span class="name">process other char)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn ein Name geparst wird, dann der Namensbuffer entsprechend
+  erweitert</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process other char)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
@@ -491,9 +536,12 @@
 } <span class="end">@end(<span class="name">process other char)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn es ein aktuelles Makro gibt, dann müssen sonstige Zeichen dort
+  angefügt werden</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process open brace)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
@@ -516,12 +564,15 @@
 </code>
 </div>
 <ul><li>
+ Wenn außerhalb eines Makros die Folge `a`, `{` gelesen wird, dann
+  beginnt ein `@add`-Fragment</li><li>
  Falls ein `i`, `{` gelesen wird, dann muss eine andere Datei mit
   `@include` eingebunden werden</li><li>
  Es folgt der Name des Makros oder der Pfad der Datei bis zum nächsten
   `}`</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">global source vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct MacroMap</span> <span class="var">macros</span> = {};<br/>
@@ -529,9 +580,12 @@
 <span class="end">@end(<span class="name">global source vars)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Kollektion mit allen Makros wird für folgende Schritte sichtbar
+  angelegt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
@@ -564,9 +618,11 @@ if (! macro) {<br/>
 </code>
 </div>
 <ul><li>
+ Erzeugt eine neues Makro</li><li>
  Das Makro darf nicht bereits vorhanden sein</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'a'</span>) {<br/>
@@ -595,10 +651,12 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Bei einem öffnenden Makro wird das passende Makro gesucht</li><li>
  Weitere Bytes können zu diesem Makro hinzugefügt werden</li><li>
  Das Makro muss bereits vorhanden sein</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
@@ -623,9 +681,11 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Bei einem `@replace` wird der Inhalt eines Makros zurückgesetzt</li><li>
  Das Makro muss bereits vorhanden sein</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
@@ -645,9 +705,11 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="end">@end(<span class="name">process macro name)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Bei einem schließenden Makro wird das aktuelle Makro unterbrochen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'i'</span>) {<br/>
@@ -663,9 +725,12 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="end">@end(<span class="name">process macro name)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und auf
+  den Stapel der offenen Dateien gelegt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
@@ -694,6 +759,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
@@ -710,11 +776,13 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Die Implementierung wird später durch eine sinnvollere ersetzt</li><li>
  Daher ist der zugehörige Code in einem eigenen Fragment gekapselt</li><li>
  Dieses kann später ersetzt werden</li><li>
  Nachdem diese Funktionalität implementiert wurde</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process private macro)</span></span><br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">prefix</span>[] = "_private_";<br/>
@@ -737,10 +805,13 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Erstmal nur ein konstanter String, um private Bezeichner zu
+  verstecken</li><li>
  Später soll ein individueller Hash integriert werden</li><li>
  Der vom Dateinamen abhängt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'m'</span>) {<br/>
@@ -757,9 +828,11 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Auch die Implementierung des magci-Makros soll später ersetzt werden</li><li>
  Daher wird es in einem eigenen Fragment gekapselt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">process magic macro)</span></span><br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">magic</span>[] = "2478325";<br/>
@@ -776,10 +849,12 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Die provisorische Version liefert nur eine konstante Zahl</li><li>
  Aber auch hier sollte eigentlich ein Hash geliefert werden</li><li>
  Der vom Dateinamen und vom Argument abhängt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">flush macro buffer)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<br/>
@@ -806,6 +881,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process open brace)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
@@ -832,6 +908,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">check valid names)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
@@ -850,6 +927,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
@@ -874,6 +952,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">process open brace)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
@@ -910,6 +989,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
   rausgeschrieben</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">serialize fragments)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Macro **</span><span class="var">cur</span> = <span class="var">macros</span>.<span class="var">macros</span>;<br/>
@@ -941,9 +1021,12 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 } <span class="end">@end(<span class="name">serialize fragments)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Fragmente, die mit `file:` beginnen, werden in die entsprechenden
+  Dateien rausgeschrieben</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">write in file)</span></span><br/>
 <span class="in1"></span>
 <span class="type">FILE *</span><span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, "w");<br/>
@@ -966,6 +1049,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
+ Das Fragment wird in die entsprechende Datei geschrieben</li><li>
  Dabei werden HTML-Entitäten aufgelöst</li></ul></div>
 </div>
 <h1>HTML generieren</h1>
@@ -977,6 +1061,9 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
  Aus `hx`-Dateien wird ein HTML-Foliensatz generiert</li></ul></div>
 <div><div>
 <code>
+
 <span class="include">@include(<span class="name"><a href="html.html">html.x</a>)</span></span><br/>
 </code>
 </div>
+<ul><li>
+ Die Generierung liegt in einer eigenen Datei</li></ul></div>

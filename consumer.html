@@ -16,6 +16,7 @@
   Dateien angelegt werden müssen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">expand consumer)</span></span><br/>
@@ -23,9 +24,12 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Diese Datei stellt globale Funktionen bereit um ein abstraktes
+  Interface zur Verfügung zu stellen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Consumer</span> {<br/>
@@ -42,12 +46,15 @@
 </code>
 </div>
 <ul><li>
+ Ein Consumer besteht nur aus einer Funktion, die ein Zeichen
+  entgegennimmt</li><li>
  Der Consumer ist trotzdem als &lt;code&gt;struct&lt;/code&gt; ausgeführt, damit
   nicht immer ein Paar aus Funktionszeiger und Kontext durchgereicht
   werden muss</li><li>
  Das Ende wird signalisiert durch das Senden von &lt;code&gt;EOF&lt;/code&gt;</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">putToConsumer</span>(<br/>
@@ -65,7 +72,8 @@
 <span class="end">@end(<span class="name">expand consumer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Diese Funktion vereinfacht den Aufruf des Consumers</li></ul></div>
 </div>
 <h1>Beispiel: FileConsumer</h1>
 <div class="slides">
@@ -76,6 +84,7 @@
  Ein einfacher Consumer schreibt die Daten in eine Datei</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct FileConsumer</span> {<br/>
@@ -89,9 +98,11 @@
 <span class="end">@end(<span class="name">expand consumer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Neben der Consumer-Struktur muss die Datei bekannt sein</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="fn">consumeInFile</span>(<br/>
@@ -124,12 +135,14 @@
 </code>
 </div>
 <ul><li>
+ Der Consumer wird auf den richtigen Typ gecastet</li><li>
  Das setzt vorraus, dass er korrekt initialisiert wurde</li><li>
  Wenn nicht das Ende erreicht ist, wird das Zeichen in die Datei
   geschrieben</li><li>
  Andernfalls wird die Datei geschlossen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">setupFileConsumer</span>(<br/>
@@ -149,7 +162,8 @@
 <span class="end">@end(<span class="name">expand consumer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Die Struktur wird mit einer offenen Datei initialisiert</li></ul></div>
 </div>
 <h1>Beispiel: BufferConsumer</h1>
 <div class="slides">
@@ -161,6 +175,7 @@
  Er ist praktisch zum Unit-Testen</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct BufferConsumer</span> {<br/>
@@ -174,9 +189,11 @@
 <span class="end">@end(<span class="name">expand consumer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Neben der Consumer-Struktur muss Platz für den Buffer vorhanden sein</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="fn">consumeInBuffer</span>(<br/>
@@ -201,6 +218,7 @@
 </code>
 </div>
 <ul><li>
+ Der Consumer wird auf den richtigen Typ gecastet</li><li>
  Das setzt vorraus, dass er korrekt initialisiert wurde</li><li>
  Wenn nicht das Ende erreicht ist, wird das Zeichen in den Buffer
   geschrieben</li><li>
@@ -208,6 +226,7 @@
   String zu terminieren</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@add(<span class="name">expand consumer)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">setupBufferConsumer</span>(<br/>
@@ -233,7 +252,8 @@
 <span class="end">@end(<span class="name">expand consumer)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Die Struktur wird mit einem leeren Buffer initialisiert</li></ul></div>
 </div>
 <h1>Unit Tests</h1>
 <div class="slides">
@@ -244,6 +264,7 @@
  Testet den BufferConsumer als proof of concept</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">perform unit-tests)</span></span> {<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">consumer unit-tests)</span></span><br/>
@@ -251,9 +272,11 @@
 } <span class="end">@end(<span class="name">perform unit-tests)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Die Unit-Tests werden in einem eigenen Makro gesammelt</li></ul></div>
 <div><div>
 <code>
+
 <span class="add">@def(<span class="name">consumer unit-tests)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct BufferConsumer</span> <span class="var">bc</span>;<br/>
@@ -277,3 +300,5 @@
 } <span class="end">@end(<span class="name">consumer unit-tests)</span></span><br/>
 </code>
 </div>
+<ul><li>
+ Zwei Zeichen werden in den Buffer eingefügt</li></ul></div>
