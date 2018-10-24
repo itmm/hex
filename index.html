@@ -592,13 +592,17 @@
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, "def in macro");<br/>
 <span class="in2"></span>
-<span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
+<span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
 <span class="in3"></span>
 &<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>, "macro %.*s already defined", (int) (nameCur - name), name);<br/>
+if (isPopulatedMacro(macro)) {<br/>
+<span class="in3"></span>
+printf("macro [%.*s] already defined\n", (int) (nameCur - name), name);<br/>
+<span class="in2"></span>
+}<br/>
 <span class="in2"></span>
 if (! macro) {<br/>
 <span class="in3"></span>
@@ -736,6 +740,35 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">macro</span>, "expand not in macro");<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="in2"></span>
+<span class="type">struct Macro *</span><span class="var">sub</span> =<br/>
+<span class="in3"></span>
+<span class="fn">getMacroInMap</span>(<br/>
+<span class="in4"></span>
+&<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span>);<br/>
+<span class="in2"></span>
+<span class="fn">addMacroToMacro</span>(<br/>
+<span class="in3"></span>
+<span class="var">macro</span>, <span class="var">sub</span>);<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, "multiple not in macro");<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
@@ -913,7 +946,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="in1"></span>
 <span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] =<br/>
 <span class="in2"></span>
-<span class="str">"123456bfvsntkxepm"</span>;<br/>
+<span class="str">"123456fvsntkxeEpm"</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 <span class="in2"></span>

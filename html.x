@@ -95,7 +95,7 @@ x{write cur HTML file}
 * Die HTML hat den gleichen Pfad mit der Endung <code>.html</code>
 
 ```
-d{write cur HTML file}
+a{write cur HTML file}
 	k{if} (f{hasSuffix}(v{cur}->v{path}, s{".hx"})) {
 		t{int} v{len} = f{strlen}(v{cur}->v{path}) + n{3};
 		t{char *}v{outPath} = f{malloc}(v{len});
@@ -502,7 +502,7 @@ a{process ch in HTML code}
 				e{handle html include};
 				break;
 			}
-			case 'a': case 'e': case 'x':
+			case 'a': case 'e': case 'E': case 'x':
 			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
 			}
@@ -582,6 +582,11 @@ x{escape html macro}
 a{escape html macro}
 	case 'e':
 		fprintf(out, "<span class=\"expand\">@expand(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'E':
+		fprintf(out, "<span class=\"expand\">@multiple(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;

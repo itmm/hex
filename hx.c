@@ -788,7 +788,7 @@ void freeMacroEntry(
 		bool valid = false;
 		
 	static const char valids[] =
-		"123456bfvsntkxepm";
+		"123456fvsntkxeEpm";
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -813,10 +813,12 @@ void freeMacroEntry(
 		
 	if (openCh == 'd') {
 		ASSERT(! macro, "def in macro");
-		macro = getMacroInMap(
+		macro = findMacroInMap(
 			&macros, name, nameCur
 		);
-		ASSERT(macro, "macro %.*s already defined", (int) (nameCur - name), name);
+		if (isPopulatedMacro(macro)) {
+			printf("macro [%.*s] already defined\n", (int) (nameCur - name), name);
+		}
 		if (! macro) {
 			macro = allocMacroInMap(
 				&macros, name, nameCur
@@ -873,6 +875,27 @@ void freeMacroEntry(
 
 	if (openCh == 'e') {
 		ASSERT(macro, "expand not in macro");
+		
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToMacro(
+			macro, buffer.buffer,
+			buffer.current
+		);
+		resetBuffer(&buffer);
+	}
+;
+		struct Macro *sub =
+			getMacroInMap(
+				&macros, name, nameCur);
+		addMacroToMacro(
+			macro, sub);
+		processed = true;
+	}
+
+	if (openCh == 'E') {
+		ASSERT(macro, "multiple not in macro");
 		
 	if (
 		buffer.buffer != buffer.current
@@ -1227,6 +1250,11 @@ void freeMacroEntry(
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;
+	case 'E':
+		fprintf(out, "<span class=\"expand\">@multiple(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
 
 	case 'i':
 		fprintf(out, "<span class=\"include\">@include(");
@@ -1311,7 +1339,7 @@ void freeMacroEntry(
 ;
 				break;
 			}
-			case 'a': case 'e': case 'x':
+			case 'a': case 'e': case 'E': case 'x':
 			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
 			}
@@ -1594,6 +1622,11 @@ void freeMacroEntry(
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;
+	case 'E':
+		fprintf(out, "<span class=\"expand\">@multiple(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
 
 	case 'i':
 		fprintf(out, "<span class=\"include\">@include(");
@@ -1678,7 +1711,7 @@ void freeMacroEntry(
 ;
 				break;
 			}
-			case 'a': case 'e': case 'x':
+			case 'a': case 'e': case 'E': case 'x':
 			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
 			}

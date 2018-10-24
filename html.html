@@ -184,7 +184,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">write cur HTML file)</span></span><br/>
+<span class="add">@add(<span class="name">write cur HTML file)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".hx"</span>)) {<br/>
 <span class="in2"></span>
@@ -966,7 +966,7 @@ break;<br/>
 <span class="in3"></span>
 }<br/>
 <span class="in3"></span>
-case 'a': case 'e': case 'x':<br/>
+case 'a': case 'e': case 'E': case 'x':<br/>
 <span class="in3"></span>
 case 'r': case 'd': case 'p': case 'm': {<br/>
 <span class="in4"></span>
@@ -1120,6 +1120,16 @@ break;<br/>
 case 'e':<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"expand\"&gt;@expand(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
+case 'E':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"expand\"&gt;@multiple(");<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
 <span class="in2"></span>

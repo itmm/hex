@@ -336,10 +336,12 @@ x{global source vars}
 d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, "def in macro");
-		v{macro} = f{getMacroInMap}(
+		v{macro} = f{findMacroInMap}(
 			&v{macros}, v{name}, v{nameCur}
 		);
-		f{ASSERT}(v{macro}, "macro %.*s already defined", (int) (nameCur - name), name);
+		if (isPopulatedMacro(macro)) {
+			printf("macro [%.*s] already defined\n", (int) (nameCur - name), name);
+		}
 		if (! macro) {
 			v{macro} = f{allocMacroInMap}(
 				&v{macros}, v{name}, v{nameCur}
@@ -416,6 +418,21 @@ x{process macro name}
 a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
 		f{ASSERT}(v{macro}, "expand not in macro");
+		e{flush macro buffer};
+		t{struct Macro *}v{sub} =
+			f{getMacroInMap}(
+				&v{macros}, v{name}, v{nameCur});
+		f{addMacroToMacro}(
+			v{macro}, v{sub});
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'E'}) {
+		f{ASSERT}(v{macro}, "multiple not in macro");
 		e{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
@@ -514,7 +531,7 @@ a{process open brace} {
 ```
 d{check valid names}
 	k{static} t{const char} v{valids}[] =
-		s{"123456bfvsntkxepm"};
+		s{"123456fvsntkxeEpm"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
 		v{valid} = k{true};
 	}
