@@ -39,6 +39,10 @@
 <span class="in2"></span>
 <span class="type">struct MacroEntry *</span><span class="var">lastEntry</span>;<br/>
 <span class="in2"></span>
+<span class="type">int</span> expands;<br/>
+<span class="in2"></span>
+<span class="type">int</span> multiples;<br/>
+<span class="in2"></span>
 <span class="type">char </span><span class="var">name</span><span class="type">[]</span>;<br/>
 <span class="in1"></span>
 };<br/>
@@ -94,6 +98,10 @@
 <span class="var">result</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 <span class="var">result</span>-&gt;<span class="var">firstEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span>
+<span class="var">result</span>-&gt;<span class="var">expands</span> = 0;<br/>
+<span class="in2"></span>
+<span class="var">result</span>-&gt;<span class="var">multiples</span> = 0;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">copy macro name)</span></span>;<br/>
 <span class="in2"></span>
@@ -983,7 +991,7 @@ return macro && macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">struct MacroEntry *</span><span class="var">second</span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">add two entries)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">add two entries)</span></span>;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">check first of 2)</span></span>;<br/>
 <span class="in2"></span>
@@ -1041,7 +1049,7 @@ return macro && macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">struct MacroEntry *</span><span class="var">second</span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">add two entries)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">add two entries)</span></span>;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>

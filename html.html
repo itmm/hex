@@ -167,7 +167,7 @@
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">write cur HTML file to out)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">write cur HTML file to out)</span></span>;<br/>
 <span class="in2"></span>
 <span class="fn">fclose</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
@@ -202,7 +202,7 @@
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">write cur HTML file to out)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">write cur HTML file to out)</span></span>;<br/>
 <span class="in2"></span>
 <span class="fn">fclose</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
@@ -536,13 +536,13 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">close previous HTML page)</span></span>;<br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">write header tag)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">write header tag)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>);<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">write header tag)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">write header tag)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 

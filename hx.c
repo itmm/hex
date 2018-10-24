@@ -234,6 +234,8 @@ void freeMacroEntry(
 		struct Macro *link;
 		struct MacroEntry *firstEntry;
 		struct MacroEntry *lastEntry;
+		int expands;
+		int multiples;
 		char name[];
 	};
 
@@ -254,6 +256,8 @@ void freeMacroEntry(
 ;
 		result->link = NULL;
 		result->firstEntry = NULL;
+		result->expands = 0;
+		result->multiples = 0;
 		
 	memcpy(
 		result->name, nameBegin,
@@ -889,6 +893,13 @@ void freeMacroEntry(
 		struct Macro *sub =
 			getMacroInMap(
 				&macros, name, nameCur);
+		if (sub->expands) {
+			printf("multiple expands of [%s]\n", sub->name);
+		}
+		if (sub->multiples) {
+			printf("expand after mult of [%s]\n", sub->name);
+		}
+		++sub->expands;
 		addMacroToMacro(
 			macro, sub);
 		processed = true;
@@ -910,6 +921,10 @@ void freeMacroEntry(
 		struct Macro *sub =
 			getMacroInMap(
 				&macros, name, nameCur);
+		if (sub->expands) {
+			printf("multiple after expand of [%s]\n", sub->name);
+		}
+		++sub->multiples;
 		addMacroToMacro(
 			macro, sub);
 		processed = true;

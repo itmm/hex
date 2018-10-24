@@ -698,7 +698,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">macro names must match)</span></span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
@@ -741,13 +741,27 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">macro</span>, "expand not in macro");<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
 <span class="type">struct Macro *</span><span class="var">sub</span> =<br/>
 <span class="in3"></span>
 <span class="fn">getMacroInMap</span>(<br/>
 <span class="in4"></span>
 &<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span>);<br/>
+<span class="in2"></span>
+if (sub-&gt;expands) {<br/>
+<span class="in3"></span>
+printf("multiple expands of [%s]\n", sub-&gt;name);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+if (sub-&gt;multiples) {<br/>
+<span class="in3"></span>
+printf("expand after mult of [%s]\n", sub-&gt;name);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+++sub-&gt;expands;<br/>
 <span class="in2"></span>
 <span class="fn">addMacroToMacro</span>(<br/>
 <span class="in3"></span>
@@ -770,13 +784,21 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">macro</span>, "multiple not in macro");<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
 <span class="type">struct Macro *</span><span class="var">sub</span> =<br/>
 <span class="in3"></span>
 <span class="fn">getMacroInMap</span>(<br/>
 <span class="in4"></span>
 &<span class="var">macros</span>, <span class="var">name</span>, <span class="var">nameCur</span>);<br/>
+<span class="in2"></span>
+if (sub-&gt;expands) {<br/>
+<span class="in3"></span>
+printf("multiple after expand of [%s]\n", sub-&gt;name);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+++sub-&gt;multiples;<br/>
 <span class="in2"></span>
 <span class="fn">addMacroToMacro</span>(<br/>
 <span class="in3"></span>
@@ -820,7 +842,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">prefix</span>[] = "_private_";<br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in2"></span>
@@ -870,7 +892,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">magic</span>[] = "2478325";<br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in2"></span>

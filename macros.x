@@ -15,6 +15,8 @@ d{define macro}
 		t{struct Macro *}v{link};
 		t{struct MacroEntry *}v{firstEntry};
 		t{struct MacroEntry *}v{lastEntry};
+		t{int} expands;
+		t{int} multiples;
 		t{char }v{name}t{[]};
 	};
 x{define macro}
@@ -47,6 +49,8 @@ a{define macro}
 		e{allocate macro on heap};
 		v{result}->v{link} = k{NULL};
 		v{result}->v{firstEntry} = k{NULL};
+		v{result}->v{expands} = 0;
+		v{result}->v{multiples} = 0;
 		e{copy macro name};
 		k{return} v{result};
 	}
@@ -535,7 +539,7 @@ a{macro unit tests}
 		t{struct Macro *}v{macro} = k{NULL};
 		t{struct MacroEntry *}v{first};
 		t{struct MacroEntry *}v{second};
-		e{add two entries};
+		E{add two entries};
 		e{check first of 2};
 		f{freeMacro}(v{macro});
 	}
@@ -567,7 +571,7 @@ a{macro unit tests}
 		t{struct Macro *}v{macro} = k{NULL};
 		t{struct MacroEntry *}v{first};
 		t{struct MacroEntry *}v{second};
-		e{add two entries};
+		E{add two entries};
 		f{ASSERT}(
 			v{macro}->v{lastEntry} == v{second}
 		);

@@ -394,7 +394,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'x'}) {
 		f{ASSERT}(v{macro}, "end not in macro");
 		e{macro names must match};
-		e{flush macro buffer};
+		E{flush macro buffer};
 		v{macro} = k{NULL};
 		v{processed} = k{true};
 	}
@@ -418,10 +418,17 @@ x{process macro name}
 a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
 		f{ASSERT}(v{macro}, "expand not in macro");
-		e{flush macro buffer};
+		E{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
 				&v{macros}, v{name}, v{nameCur});
+		if (sub->expands) {
+			printf("multiple expands of [%s]\n", sub->name);
+		}
+		if (sub->multiples) {
+			printf("expand after mult of [%s]\n", sub->name);
+		}
+		++sub->expands;
 		f{addMacroToMacro}(
 			v{macro}, v{sub});
 		v{processed} = k{true};
@@ -433,10 +440,14 @@ x{process macro name}
 a{process macro name}
 	k{if} (v{openCh} == s{'E'}) {
 		f{ASSERT}(v{macro}, "multiple not in macro");
-		e{flush macro buffer};
+		E{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
 				&v{macros}, v{name}, v{nameCur});
+		if (sub->expands) {
+			printf("multiple after expand of [%s]\n", sub->name);
+		}
+		++sub->multiples;
 		f{addMacroToMacro}(
 			v{macro}, v{sub});
 		v{processed} = k{true};
@@ -461,7 +472,7 @@ x{process macro name}
 ```
 d{process private macro}
 	t{static char} v{prefix}[] = "_private_";
-	e{flush macro buffer};
+	E{flush macro buffer};
 	f{addBytesToMacro}(
 		v{macro}, v{prefix}, v{prefix} + f{sizeof}(v{prefix}) - 1
 	);
@@ -490,7 +501,7 @@ x{process macro name}
 ```
 d{process magic macro}
 	t{static char} v{magic}[] = "2478325";
-	e{flush macro buffer};
+	E{flush macro buffer};
 	f{addBytesToMacro}(
 		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - 1
 	);

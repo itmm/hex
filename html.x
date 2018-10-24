@@ -85,7 +85,7 @@ d{write cur HTML file}
 		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
 		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
 		f{ASSERT}(v{out});
-		e{write cur HTML file to out};
+		E{write cur HTML file to out};
 		f{fclose}(v{out});
 		f{free}(v{outPath});
 	}
@@ -104,7 +104,7 @@ a{write cur HTML file}
 		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
 		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
 		f{ASSERT}(v{out});
-		e{write cur HTML file to out};
+		E{write cur HTML file to out};
 		f{fclose}(v{out});
 		f{free}(v{outPath});
 	}
@@ -279,10 +279,10 @@ x{process ch for HTML}
 d{process header in HTML} 
 	f{ASSERT}(v{status}.v{headerNameEnd});
 	e{close previous HTML page};
-	e{write header tag};
+	E{write header tag};
 	f{fprintf}(v{out}, s{"<div class=\"slides\">\n"});
 	f{fprintf}(v{out}, s{"<div><div>\n"});
-	e{write header tag};
+	E{write header tag};
 	f{fprintf}(v{out}, s{"</div>\n"});
 x{process header in HTML}
 ```
