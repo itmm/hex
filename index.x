@@ -590,17 +590,32 @@ d{serialize fragments} {
 	k{for} (; v{cur} < v{end}; ++v{cur}) {
 		t{struct Macro *}v{macro} = *v{cur};
 		k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
-			k{if} (! f{memcmp}(
-				s{"file: "}, macro->name, n{6}
-			)) {
-				e{write in file};
-			}
+			e{serialize macro};
 		}
 	}
 } x{serialize fragments}
 ```
 * Fragmente, die mit `file:` beginnen, werden in die entsprechenden
   Dateien rausgeschrieben
+
+```
+d{serialize macro}
+	k{if} (! f{memcmp}(
+		s{"file: "}, macro->name, n{6}
+	)) {
+		++v{macro}->v{expands};
+		e{write in file};
+	}
+x{serialize macro}
+```
+
+```
+a{serialize macro}
+	k{if} (macro->expands + macro->multiples <= 0) {
+		printf("macro [%s] not used\n", macro->name);
+	}
+x{serialize macro}
+```
 
 ```
 d{write in file}

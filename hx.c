@@ -1022,10 +1022,12 @@ void freeMacroEntry(
 	for (; cur < end; ++cur) {
 		struct Macro *macro = *cur;
 		for (; macro; macro = macro->link) {
-			if (! memcmp(
-				"file: ", macro->name, 6
-			)) {
-				
+			
+	if (! memcmp(
+		"file: ", macro->name, 6
+	)) {
+		++macro->expands;
+		
 	FILE *f = fopen(macro->name + 6, "w");
 	ASSERT(f, "can't open %s", macro->name + 6);
 	struct FileConsumer fc;
@@ -1035,7 +1037,12 @@ void freeMacroEntry(
 	);
 	fclose(f);
 ;
-			}
+	}
+
+	if (macro->expands + macro->multiples <= 0) {
+		printf("macro [%s] not used\n", macro->name);
+	}
+;
 		}
 	}
 } ;
