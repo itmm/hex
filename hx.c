@@ -1042,6 +1042,10 @@ void freeMacroEntry(
 	if (macro->expands + macro->multiples <= 0) {
 		printf("macro [%s] not used\n", macro->name);
 	}
+
+	if (macro->multiples == 1) {
+		printf("multiple macro [%s] only used once\n", macro->name);
+	}
 ;
 		}
 	}

@@ -618,6 +618,13 @@ x{serialize macro}
 ```
 
 ```
+a{serialize macro}
+	k{if} (macro->multiples == 1) {
+		printf("multiple macro [%s] only used once\n", macro->name);
+	}
+x{serialize macro}
+```
+```
 d{write in file}
 	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
 	f{ASSERT}(v{f}, "can't open %s", v{macro}->v{name} + n{6});
