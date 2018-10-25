@@ -645,12 +645,13 @@ x{add macro entry}
 
 ```
 a{define macro}
+	e{serialize test defines};
 	t{void} f{serializeMacro}(
 		t{struct Macro *}v{macro,}
-		t{struct Consumer *}v{consumer}
+		t{FILE *}v{out}
 	) {
 		f{ASSERT}(v{macro});
-		f{ASSERT}(v{consumer});
+		f{ASSERT}(v{out});
 		e{iterate entries};
 	}
 x{define macro}
@@ -666,7 +667,7 @@ d{iterate entries}
 		e{serialize bytes};
 		k{if} (v{entry}->v{macro}) {
 			f{serializeMacro}(
-				v{entry}->v{macro}, v{consumer}
+				v{entry}->v{macro}, v{out}
 			);
 		}
 	}
@@ -676,12 +677,25 @@ x{iterate entries}
 * Dann wird rekursiv das Makro ausgegeben, falls vorhanden
 
 ```
+d{serialize test defines}
+	t{char *}v{macroTestBufferCur} = k{NULL};
+	t{const char *}v{macroTestBufferEnd} = k{NULL};
+x{serialize test defines}
+```
+
+```
 d{serialize bytes}
 	k{if} (f{getMacroEntryValueSize}(v{entry})) {
 		t{const char *}v{cur} = v{entry}->v{value};
 		t{const char *}v{end} = v{entry}->v{valueEnd};
-		k{for} (; v{cur} < v{end}; ++v{cur}) {
-			f{putToConsumer}(v{consumer}, *v{cur});
+		t{int} v{len} = v{end} - v{cur};
+		k{if} (! v{macroTestBufferCur}) {
+			f{ASSERT}(f{fwrite}(v{cur}, 1, v{len}, v{out}) == v{len});
+		} k{else} {
+			f{ASSERT}(v{macroTestBufferCur} + v{len} < v{macroTestBufferEnd});
+			f{memcpy}(v{macroTestBufferCur}, v{cur}, v{len});
+			v{macroTestBufferCur} += v{len};
+			*v{macroTestBufferCur} = s{'\0'};
 		}
 	}
 x{serialize bytes}
@@ -694,10 +708,7 @@ a{define macro}
 	t{void} f{testMacro}(t{struct Macro *}
 		v{macro}, t{const char *}v{expected}
 	) {
-		t{struct BufferConsumer} v{bc};
-		f{setupBufferConsumer}(&v{bc});
 		e{serialize test macro};
-		f{eraseBuffer}(&v{bc}.v{buffer});
 	}
 x{define macro}
 ```
@@ -706,11 +717,15 @@ x{define macro}
 
 ```
 d{serialize test macro}
-	f{serializeMacro}(v{macro}, &v{bc}.v{consumer});
-	f{putToConsumer}(&v{bc}.v{consumer}, k{EOF});
+	char buffer[100];
+	macroTestBufferCur = buffer;
+	macroTestBufferEnd = buffer + sizeof(buffer);
+	f{serializeMacro}(v{macro}, (void *) buffer);
 	f{ASSERT}(f{strcmp}(
-		v{expected}, v{bc}.v{buffer}.v{buffer}
+		v{expected}, v{buffer}
 	) == 0);
+	macroTestBufferCur = NULL;
+	macroTestBufferEnd = NULL;
 x{serialize test macro}
 ```
 * Serialisiert das Makro

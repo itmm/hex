@@ -319,22 +319,6 @@
 <ul><li>
  Buffer werden in einer eigenen Datei definiert</li></ul></div>
 </div>
-<h1>Consumer</h1>
-<div class="slides">
-<div><div>
-<h1>Consumer</h1>
-</div>
-<ul><li>
- Schnittstelle um Bytes zu konsumieren</li></ul></div>
-<div><div>
-<code>
-
-<span class="include">@include(<span class="name"><a href="consumer.html">consumer.x</a>)</span></span><br/>
-</code>
-</div>
-<ul><li>
- Consumer werden in einer eigenen Datei definiert</li></ul></div>
-</div>
 <h1>Makros</h1>
 <div class="slides">
 <div><div>
@@ -1146,15 +1130,7 @@ printf("macro [%s] not populated\n", macro-&gt;name);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">f</span>, "can't open %s", <span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span>);<br/>
 <span class="in1"></span>
-<span class="type">struct FileConsumer</span> <span class="var">fc</span>;<br/>
-<span class="in1"></span>
-<span class="fn">setupFileConsumer</span>(&<span class="var">fc</span>, <span class="var">f</span>);<br/>
-<span class="in1"></span>
-<span class="fn">serializeMacro</span>(<br/>
-<span class="in2"></span>
-<span class="var">macro</span>, &<span class="var">fc</span>.<span class="var">consumer</span><br/>
-<span class="in1"></span>
-);<br/>
+<span class="fn">serializeMacro</span>(<span class="var">macro</span>, <span class="var">f</span>);<br/>
 <span class="in1"></span>
 <span class="fn">fclose</span>(<span class="var">f</span>);<br/>
 

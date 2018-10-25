@@ -160,74 +160,6 @@ void freeMacroEntry(
 ;
 
 	
-	struct Consumer {
-		int (* put)(
-			struct Consumer *consumer, int ch
-		);
-	};
-
-	void putToConsumer(
-		struct Consumer *c, int ch
-	) {
-		ASSERT(c); ASSERT(c->put);
-		c->put(c, ch);
-	}
-
-	struct FileConsumer {
-		struct Consumer consumer;
-		FILE * file;
-	};
-
-	int consumeInFile(
-		struct Consumer *c, int ch
-	) {
-		struct FileConsumer *fc = (void *) c;
-		ASSERT(fc); ASSERT(fc->file);
-		if (ch != EOF) {
-			ch = fputc(ch, fc->file);
-		} else {
-			fclose(fc->file);
-			fc->file = NULL;
-		}
-		return ch;
-	}
-
-	void setupFileConsumer(
-		struct FileConsumer *fc, FILE *f
-	) {
-		ASSERT(fc); ASSERT(f);
-		fc->file = f;
-		fc->consumer.put = consumeInFile;
-	}
-
-	struct BufferConsumer {
-		struct Consumer consumer;
-		struct Buffer buffer;
-	};
-
-	int consumeInBuffer(
-		struct Consumer *c, int ch
-	) {
-		struct BufferConsumer *bc = (void *) c;
-		ASSERT(bc);
-		int cr = ch != EOF ? ch : '\0';
-		addToBuffer(&bc->buffer, cr);
-		return ch;
-	}
-
-	void setupBufferConsumer(
-		struct BufferConsumer *bc
-	) {
-		ASSERT(bc);
-		memset(
-			&bc->buffer, 0,
-			sizeof(bc->buffer)
-		);
-		bc->consumer.put = consumeInBuffer;
-	}
-
-
-	
 	struct MacroEntry;
 
 	struct Macro {
@@ -487,12 +419,16 @@ void freeMacroEntry(
 ;
 	}
 
+	
+	char *macroTestBufferCur = NULL;
+	const char *macroTestBufferEnd = NULL;
+;
 	void serializeMacro(
 		struct Macro *macro,
-		struct Consumer *consumer
+		FILE *out
 	) {
 		ASSERT(macro);
-		ASSERT(consumer);
+		ASSERT(out);
 		
 	struct MacroEntry *entry =
 		macro->firstEntry;
@@ -501,14 +437,20 @@ void freeMacroEntry(
 	if (getMacroEntryValueSize(entry)) {
 		const char *cur = entry->value;
 		const char *end = entry->valueEnd;
-		for (; cur < end; ++cur) {
-			putToConsumer(consumer, *cur);
+		int len = end - cur;
+		if (! macroTestBufferCur) {
+			ASSERT(fwrite(cur, 1, len, out) == len);
+		} else {
+			ASSERT(macroTestBufferCur + len < macroTestBufferEnd);
+			memcpy(macroTestBufferCur, cur, len);
+			macroTestBufferCur += len;
+			*macroTestBufferCur = '\0';
 		}
 	}
 ;
 		if (entry->macro) {
 			serializeMacro(
-				entry->macro, consumer
+				entry->macro, out
 			);
 		}
 	}
@@ -518,16 +460,17 @@ void freeMacroEntry(
 	void testMacro(struct Macro *
 		macro, const char *expected
 	) {
-		struct BufferConsumer bc;
-		setupBufferConsumer(&bc);
 		
-	serializeMacro(macro, &bc.consumer);
-	putToConsumer(&bc.consumer, EOF);
+	char buffer[100];
+	macroTestBufferCur = buffer;
+	macroTestBufferEnd = buffer + sizeof(buffer);
+	serializeMacro(macro, (void *) buffer);
 	ASSERT(strcmp(
-		expected, bc.buffer.buffer
+		expected, buffer
 	) == 0);
+	macroTestBufferCur = NULL;
+	macroTestBufferEnd = NULL;
 ;
-		eraseBuffer(&bc.buffer);
 	}
 
 	void addStringToMacro(
@@ -761,19 +704,7 @@ void freeMacroEntry(
 	ASSERT(buffer.buffer ==
 		buffer.initial);
 } ;
- {
-	 {
-	struct BufferConsumer bc;
-	setupBufferConsumer(&bc);
-	struct Consumer *c = &bc.consumer;
-	putToConsumer(c, 'a');
-	putToConsumer(c, 'b');
-	putToConsumer(c, EOF);
-	ASSERT(
-		strcmp("ab", bc.buffer.buffer) == 0
-	);
-} 
-} 
+
 	
 	testMacroName("abc");
 	testMacroName("");
@@ -1196,11 +1127,7 @@ void freeMacroEntry(
 		
 	FILE *f = fopen(macro->name + 6, "w");
 	ASSERT(f, "can't open %s", macro->name + 6);
-	struct FileConsumer fc;
-	setupFileConsumer(&fc, f);
-	serializeMacro(
-		macro, &fc.consumer
-	);
+	serializeMacro(macro, f);
 	fclose(f);
 ;
 	}

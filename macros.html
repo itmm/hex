@@ -1187,17 +1187,19 @@ return macro && macro-&gt;firstEntry;<br/>
 
 <span class="add">@add(<span class="name">define macro)</span></span><br/>
 <span class="in1"></span>
+<span class="expand">@expand(<span class="name">serialize test defines)</span></span>;<br/>
+<span class="in1"></span>
 <span class="type">void</span> <span class="fn">serializeMacro</span>(<br/>
 <span class="in2"></span>
 <span class="type">struct Macro *</span><span class="var">macro,</span><br/>
 <span class="in2"></span>
-<span class="type">struct Consumer *</span><span class="var">consumer</span><br/>
+<span class="type">FILE *</span><span class="var">out</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">consumer</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">iterate entries)</span></span>;<br/>
 <span class="in1"></span>
@@ -1226,7 +1228,7 @@ return macro && macro-&gt;firstEntry;<br/>
 <span class="in3"></span>
 <span class="fn">serializeMacro</span>(<br/>
 <span class="in4"></span>
-<span class="var">entry</span>-&gt;<span class="var">macro</span>, <span class="var">consumer</span><br/>
+<span class="var">entry</span>-&gt;<span class="var">macro</span>, <span class="var">out</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>
@@ -1243,6 +1245,19 @@ return macro && macro-&gt;firstEntry;<br/>
 <div><div>
 <code>
 
+<span class="add">@def(<span class="name">serialize test defines)</span></span><br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">macroTestBufferCur</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in1"></span>
+<span class="type">const char *</span><span class="var">macroTestBufferEnd</span> = <span class="keyword">NULL</span>;<br/>
+
+<span class="end">@end(<span class="name">serialize test defines)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
 <span class="add">@def(<span class="name">serialize bytes)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">getMacroEntryValueSize</span>(<span class="var">entry</span>)) {<br/>
@@ -1251,9 +1266,21 @@ return macro && macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">end</span> = <span class="var">entry</span>-&gt;<span class="var">valueEnd</span>;<br/>
 <span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+<span class="type">int</span> <span class="var">len</span> = <span class="var">end</span> - <span class="var">cur</span>;<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (! <span class="var">macroTestBufferCur</span>) {<br/>
 <span class="in3"></span>
-<span class="fn">putToConsumer</span>(<span class="var">consumer</span>, *<span class="var">cur</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="fn">fwrite</span>(<span class="var">cur</span>, 1, <span class="var">len</span>, <span class="var">out</span>) == <span class="var">len</span>);<br/>
+<span class="in2"></span>
+} <span class="keyword">else</span> {<br/>
+<span class="in3"></span>
+<span class="fn">ASSERT</span>(<span class="var">macroTestBufferCur</span> + <span class="var">len</span> &lt; <span class="var">macroTestBufferEnd</span>);<br/>
+<span class="in3"></span>
+<span class="fn">memcpy</span>(<span class="var">macroTestBufferCur</span>, <span class="var">cur</span>, <span class="var">len</span>);<br/>
+<span class="in3"></span>
+<span class="var">macroTestBufferCur</span> += <span class="var">len</span>;<br/>
+<span class="in3"></span>
+*<span class="var">macroTestBufferCur</span> = <span class="str">'\0'</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -1276,13 +1303,7 @@ return macro && macro-&gt;firstEntry;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="type">struct BufferConsumer</span> <span class="var">bc</span>;<br/>
-<span class="in2"></span>
-<span class="fn">setupBufferConsumer</span>(&<span class="var">bc</span>);<br/>
-<span class="in2"></span>
 <span class="expand">@expand(<span class="name">serialize test macro)</span></span>;<br/>
-<span class="in2"></span>
-<span class="fn">eraseBuffer</span>(&<span class="var">bc</span>.<span class="var">buffer</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1297,15 +1318,23 @@ return macro && macro-&gt;firstEntry;<br/>
 
 <span class="add">@def(<span class="name">serialize test macro)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">serializeMacro</span>(<span class="var">macro</span>, &<span class="var">bc</span>.<span class="var">consumer</span>);<br/>
+char buffer[100];<br/>
 <span class="in1"></span>
-<span class="fn">putToConsumer</span>(&<span class="var">bc</span>.<span class="var">consumer</span>, <span class="keyword">EOF</span>);<br/>
+macroTestBufferCur = buffer;<br/>
+<span class="in1"></span>
+macroTestBufferEnd = buffer + sizeof(buffer);<br/>
+<span class="in1"></span>
+<span class="fn">serializeMacro</span>(<span class="var">macro</span>, (void *) buffer);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="fn">strcmp</span>(<br/>
 <span class="in2"></span>
-<span class="var">expected</span>, <span class="var">bc</span>.<span class="var">buffer</span>.<span class="var">buffer</span><br/>
+<span class="var">expected</span>, <span class="var">buffer</span><br/>
 <span class="in1"></span>
 ) == 0);<br/>
+<span class="in1"></span>
+macroTestBufferCur = NULL;<br/>
+<span class="in1"></span>
+macroTestBufferEnd = NULL;<br/>
 
 <span class="end">@end(<span class="name">serialize test macro)</span></span><br/>
 </code>

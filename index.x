@@ -181,14 +181,6 @@ i{buffer.x}
 ```
 * Buffer werden in einer eigenen Datei definiert
 
-# Consumer
-* Schnittstelle um Bytes zu konsumieren
-
-```
-i{consumer.x}
-```
-* Consumer werden in einer eigenen Datei definiert
-
 # Makros
 * Makros können während des Parsens erweitert, ersetzt und angewendet
   werden
@@ -637,11 +629,7 @@ x{serialize macro}
 d{write in file}
 	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
 	f{ASSERT}(v{f}, "can't open %s", v{macro}->v{name} + n{6});
-	t{struct FileConsumer} v{fc};
-	f{setupFileConsumer}(&v{fc}, v{f});
-	f{serializeMacro}(
-		v{macro}, &v{fc}.v{consumer}
-	);
+	f{serializeMacro}(v{macro}, v{f});
 	f{fclose}(v{f});
 x{write in file}
 ```
