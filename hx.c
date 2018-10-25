@@ -40,7 +40,12 @@ void freeMacroEntry(
 		struct Input *i =
 			malloc(sizeof(struct Input));
 
-		;
+		
+	ASSERT(
+		i,
+		"no memory for input"
+	);
+;
 		i->link = input;
 		i->file = file;
 		input = i;
@@ -48,7 +53,11 @@ void freeMacroEntry(
 
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
-		;
+		
+	ASSERT(
+		f, "can't open [%s]", path
+	);
+;
 		pushFile(f);
 	}
 
@@ -952,7 +961,13 @@ void freeMacroEntry(
 
 	if (openCh == 'x') {
 		ASSERT(macro, "end not in macro");
-		;
+		
+	ASSERT(
+		! strcmp(macro->name, name),
+		"closing [%s] != [%s]",
+		name, macro->name
+	);
+;
 		
 	if (
 		buffer.buffer != buffer.current
@@ -1147,7 +1162,6 @@ void freeMacroEntry(
 		}
 	}
 } ;
-	;
 	
 	struct SourceElement *cur;
 	if (argc > 1) {

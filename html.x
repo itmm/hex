@@ -100,7 +100,7 @@ d{write cur HTML file to out}
 	f{ASSERT}(v{in});
 	e{write HTML file from in to out};
 	f{fclose}(v{in});
-x{write HTML html file to out}
+x{write cur HTML file to out}
 ```
 
 ```

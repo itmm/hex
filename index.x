@@ -50,7 +50,6 @@ d{main body}
 	e{process arguments};
 	e{read source file};
 	e{serialize fragments};
-	e{compile program};
 	e{write HTML file};
 x{main body}
 ```
@@ -130,6 +129,15 @@ x{global elements}
   Eingabe-Strom verwendet werden
 
 ```
+d{check memory for input}
+	ASSERT(
+		i,
+		"no memory for input"
+	);
+x{check memory for input}
+```
+
+```
 a{global elements}
 	t{void} f{pushPath}(t{const char *}v{path}) {
 		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
@@ -141,6 +149,14 @@ x{global elements}
 * Eine Datei, die über einen Pfad beschrieben ist, kann auch als
   Eingabe-Strom verwendet werden
 * Sie muss nur vorher geöffnet werden
+
+```
+d{check file for path}
+	ASSERT(
+		f, "can't open [%s]", path
+	);
+x{check file for path}
+```
 
 ```
 d{process arguments}
@@ -393,6 +409,16 @@ a{process macro name}
 x{process macro name}
 ```
 * Bei einem schließenden Makro wird das aktuelle Makro unterbrochen
+
+```
+d{macro names must match}
+	ASSERT(
+		! strcmp(macro->name, name),
+		"closing [%s] != [%s]",
+		name, macro->name
+	);
+x{macro names must match}
+```
 
 ```
 a{process macro name}

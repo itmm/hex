@@ -97,8 +97,6 @@
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">serialize fragments)</span></span>;<br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">compile program)</span></span>;<br/>
-<span class="in1"></span>
 <span class="expand">@expand(<span class="name">write HTML file)</span></span>;<br/>
 
 <span class="end">@end(<span class="name">main body)</span></span><br/>
@@ -227,6 +225,23 @@
 <div><div>
 <code>
 
+<span class="add">@def(<span class="name">check memory for input)</span></span><br/>
+<span class="in1"></span>
+ASSERT(<br/>
+<span class="in2"></span>
+i,<br/>
+<span class="in2"></span>
+"no memory for input"<br/>
+<span class="in1"></span>
+);<br/>
+
+<span class="end">@end(<span class="name">check memory for input)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const char *</span><span class="var">path</span>) {<br/>
@@ -246,6 +261,21 @@
  Eine Datei, die über einen Pfad beschrieben ist, kann auch als
   Eingabe-Strom verwendet werden</li><li>
  Sie muss nur vorher geöffnet werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">check file for path)</span></span><br/>
+<span class="in1"></span>
+ASSERT(<br/>
+<span class="in2"></span>
+f, "can't open [%s]", path<br/>
+<span class="in1"></span>
+);<br/>
+
+<span class="end">@end(<span class="name">check file for path)</span></span><br/>
+</code>
+</div>
+</div>
 <div><div>
 <code>
 
@@ -695,6 +725,25 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </div>
 <ul><li>
  Bei einem schließenden Makro wird das aktuelle Makro unterbrochen</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">macro names must match)</span></span><br/>
+<span class="in1"></span>
+ASSERT(<br/>
+<span class="in2"></span>
+! strcmp(macro-&gt;name, name),<br/>
+<span class="in2"></span>
+"closing [%s] != [%s]",<br/>
+<span class="in2"></span>
+name, macro-&gt;name<br/>
+<span class="in1"></span>
+);<br/>
+
+<span class="end">@end(<span class="name">macro names must match)</span></span><br/>
+</code>
+</div>
+</div>
 <div><div>
 <code>
 
