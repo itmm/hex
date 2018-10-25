@@ -10,7 +10,7 @@
 <h1>HTML-Präsentation generieren</h1>
 </div>
 <ul><li>
- Diese Datei beschreibt Code, um aus den <code>hx</code>-Quelldateien
+ Diese Datei beschreibt Code, um aus den <code>x</code>-Quelldateien
   HTML-Präsentationen zu erzeugen</li></ul></div>
 <div><div>
 <code>
@@ -167,7 +167,7 @@
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@multiple(<span class="name">write cur HTML file to out)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">write cur HTML file to out)</span></span>;<br/>
 <span class="in2"></span>
 <span class="fn">fclose</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
@@ -181,39 +181,6 @@
 <ul><li>
  Nur <code>.x</code>-Dateien werden in HTML konvertiert</li><li>
  Die HTML hat den gleichen Pfad mit der Endung <code>.html</code></li></ul></div>
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">write cur HTML file)</span></span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".hx"</span>)) {<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>) + <span class="num">3</span>;<br/>
-<span class="in2"></span>
-<span class="type">char *</span><span class="var">outPath</span> = <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">outPath</span>);<br/>
-<span class="in2"></span>
-<span class="fn">memcpy</span>(<span class="var">outPath</span>, <span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="var">len</span> - <span class="num">6</span>);<br/>
-<span class="in2"></span>
-<span class="fn">strcpy</span>(<span class="var">outPath</span> + <span class="var">len</span> - <span class="num">6</span>, <span class="str">".html"</span>);<br/>
-<span class="in2"></span>
-<span class="type">FILE *</span><span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>, <span class="str">"w"</span>);<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">write cur HTML file to out)</span></span>;<br/>
-<span class="in2"></span>
-<span class="fn">fclose</span>(<span class="var">out</span>);<br/>
-<span class="in2"></span>
-<span class="fn">free</span>(<span class="var">outPath</span>);<br/>
-<span class="in1"></span>
-}<br/>
-
-<span class="end">@end(<span class="name">write cur HTML file)</span></span><br/>
-</code>
-</div>
-</div>
 <div><div>
 <code>
 

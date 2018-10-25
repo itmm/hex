@@ -1,5 +1,5 @@
 # HTML-Präsentation generieren
-* Diese Datei beschreibt Code, um aus den `hx`-Quelldateien
+* Diese Datei beschreibt Code, um aus den `x`-Quelldateien
   HTML-Präsentationen zu erzeugen
 
 ```
@@ -85,7 +85,7 @@ d{write cur HTML file}
 		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
 		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
 		f{ASSERT}(v{out});
-		E{write cur HTML file to out};
+		e{write cur HTML file to out};
 		f{fclose}(v{out});
 		f{free}(v{outPath});
 	}
@@ -93,23 +93,6 @@ x{write cur HTML file}
 ```
 * Nur `.x`-Dateien werden in HTML konvertiert
 * Die HTML hat den gleichen Pfad mit der Endung `.html`
-
-```
-a{write cur HTML file}
-	k{if} (f{hasSuffix}(v{cur}->v{path}, s{".hx"})) {
-		t{int} v{len} = f{strlen}(v{cur}->v{path}) + n{3};
-		t{char *}v{outPath} = f{malloc}(v{len});
-		f{ASSERT}(v{outPath});
-		f{memcpy}(v{outPath}, v{cur}->v{path}, v{len} - n{6});
-		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
-		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
-		f{ASSERT}(v{out});
-		E{write cur HTML file to out};
-		f{fclose}(v{out});
-		f{free}(v{outPath});
-	}
-x{write cur HTML file}
-```
 
 ```
 d{write cur HTML file to out} 
