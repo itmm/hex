@@ -739,7 +739,29 @@ void freeMacroEntry(
 		int argc, const char **argv
 	) {
 		
+	
 	 {
+	struct Buffer buffer = {};
+	addToBuffer(&buffer, 'x');
+	ASSERT(*buffer.buffer == 'x');
+	ASSERT(buffer.buffer + 1 ==
+		buffer.current);
+	ASSERT(buffer.buffer ==
+		buffer.initial);
+}  {
+	struct Buffer buffer = {};
+	addCharsToBuffer(&buffer, 'x',
+		1000);
+	ASSERT(*buffer.buffer == 'x');
+	ASSERT(buffer.buffer + 1000 ==
+		buffer.current);
+	ASSERT(buffer.buffer !=
+		buffer.initial);
+	eraseBuffer(&buffer);
+	ASSERT(buffer.buffer ==
+		buffer.initial);
+} ;
+ {
 	 {
 	struct BufferConsumer bc;
 	setupBufferConsumer(&bc);
@@ -751,7 +773,148 @@ void freeMacroEntry(
 		strcmp("ab", bc.buffer.buffer) == 0
 	);
 } 
+} 
+	
+	testMacroName("abc");
+	testMacroName("");
+	testMacroName("A c");
+	{
+		struct Macro *macro =
+			allocTestMacro("ab");
+		ASSERT(macro);
+		ASSERT(! macro->link);
+		ASSERT(! macro->firstEntry);
+		freeMacro(macro);
+	}
+
+	{
+		struct MacroEntry *entry =
+			allocEmptyMacroEntry();
+
+		ASSERT(entry);
+		ASSERT(! entry->link);
+		ASSERT(! entry->macro);
+
+		freeMacroEntry(entry);
+	}
+
+	{
+		struct MacroEntry *entry =
+			allocEmptyMacroEntry();
+
+		ASSERT(entry);
+		ASSERT(
+			getMacroEntryValueSize(
+				entry) == 0);
+
+		freeMacroEntry(entry);
+	}
+
+	{
+		struct MacroEntry *entry =
+			allocTestMacroEntry("abc");
+
+		ASSERT(entry);
+		ASSERT(
+			getMacroEntryValueSize(
+				entry) == 3);
+
+		freeMacroEntry(entry);
+	}
+
+	{
+		struct MacroEntry *entry =
+			allocTestMacroEntry("abc");
+
+		ASSERT(entry);
+		ASSERT(
+			memcmp(entry->value,
+				"abc", 3) == 0);
+
+		freeMacroEntry(entry);
+	}
+
+	{
+		struct Macro *macro =
+			allocTestMacro("");
+		struct MacroEntry *entry =
+			allocEmptyMacroEntry();
+		addEntryToMacro(macro, entry);
+		ASSERT(
+			macro->firstEntry == entry
+		);
+		freeMacro(macro);
+	}
+
+	{
+		struct Macro *macro =
+			allocTestMacro("");
+		struct MacroEntry *entry =
+			allocEmptyMacroEntry();
+		addEntryToMacro(macro, entry);
+		ASSERT(
+			macro->lastEntry == entry
+		);
+		freeMacro(macro);
+	}
+
+	{
+		struct Macro *macro = NULL;
+		struct MacroEntry *first;
+		struct MacroEntry *second;
+		
+	macro = allocTestMacro("");
+	first = allocEmptyMacroEntry();
+	second = allocEmptyMacroEntry();
+
+	addEntryToMacro(macro, first);
+	addEntryToMacro(macro, second);
+;
+		
+	ASSERT(macro->firstEntry == first);
+;
+		freeMacro(macro);
+	}
+
+	{
+		struct Macro *macro = NULL;
+		struct MacroEntry *first;
+		struct MacroEntry *second;
+		
+	macro = allocTestMacro("");
+	first = allocEmptyMacroEntry();
+	second = allocEmptyMacroEntry();
+
+	addEntryToMacro(macro, first);
+	addEntryToMacro(macro, second);
+;
+		ASSERT(
+			macro->lastEntry == second
+		);
+		freeMacro(macro);
+	}
+
+	{
+		struct Macro *macro =
+			allocTestMacro("");
+		addStringToMacro(macro, "abc");
+		addStringToMacro(macro, "def");
+		testMacro(macro, "abcdef");
+		freeMacro(macro);
+	}
+ {
+	struct Macro *a =
+		allocTestMacro("");
+	struct Macro *b =
+		allocTestMacro("");
+	addStringToMacro(a, "abc");
+	addMacroToMacro(b, a);
+	addStringToMacro(b, "def");
+	addMacroToMacro(b, a);
+	testMacro(b, "abcdefabc");
+	freeMacro(a); freeMacro(b);
 } ;
+;
 	
 	if(argc > 1) {
 		pushPath(argv[1]);
@@ -1043,11 +1206,15 @@ void freeMacroEntry(
 	}
 
 	if (macro->expands + macro->multiples <= 0) {
-		printf("macro [%s] not used\n", macro->name);
+		printf("macro [%s] not called\n", macro->name);
 	}
 
 	if (macro->multiples == 1) {
 		printf("multiple macro [%s] only used once\n", macro->name);
+	}
+
+	if (! isPopulatedMacro(macro)) {
+		printf("macro [%s] not populated\n", macro->name);
 	}
 ;
 		}

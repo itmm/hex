@@ -144,7 +144,7 @@ x{expand consumer}
 * Testet den BufferConsumer als proof of concept
 
 ```
-d{perform unit-tests} {
+a{perform unit-tests} {
 	e{consumer unit-tests}
 } x{perform unit-tests}
 ```

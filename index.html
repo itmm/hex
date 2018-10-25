@@ -1099,7 +1099,7 @@ printf("multiple after expand of [%s]\n", sub-&gt;name);<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (macro-&gt;expands + macro-&gt;multiples &lt;= 0) {<br/>
 <span class="in2"></span>
-printf("macro [%s] not used\n", macro-&gt;name);<br/>
+printf("macro [%s] not called\n", macro-&gt;name);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1115,6 +1115,21 @@ printf("macro [%s] not used\n", macro-&gt;name);<br/>
 <span class="keyword">if</span> (macro-&gt;multiples == 1) {<br/>
 <span class="in2"></span>
 printf("multiple macro [%s] only used once\n", macro-&gt;name);<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">serialize macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">serialize macro)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (! isPopulatedMacro(macro)) {<br/>
+<span class="in2"></span>
+printf("macro [%s] not populated\n", macro-&gt;name);<br/>
 <span class="in1"></span>
 }<br/>
 

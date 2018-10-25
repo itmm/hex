@@ -10,9 +10,9 @@ x{global elements}
 * Buffer sind global sichtbare Strukturen
 
 ```
-d{perform unit tests}
+d{perform unit-tests}
 	e{buffer unit tests};
-x{perform unit tests}
+x{perform unit-tests}
 ```
 * Buffer haben ihre eigenen Unit Tests
 

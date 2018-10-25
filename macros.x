@@ -150,9 +150,9 @@ x{define macro}
 # Unit Tests
 
 ```
-a{perform unit tests}
+a{perform unit-tests}
 	e{macro unit tests};
-x{perform unit tests}
+x{perform unit-tests}
 
 a{define macro}
 	t{struct Macro *}f{allocTestMacro}(

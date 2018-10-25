@@ -612,7 +612,7 @@ x{serialize macro}
 ```
 a{serialize macro}
 	k{if} (macro->expands + macro->multiples <= 0) {
-		printf("macro [%s] not used\n", macro->name);
+		printf("macro [%s] not called\n", macro->name);
 	}
 x{serialize macro}
 ```
@@ -624,6 +624,15 @@ a{serialize macro}
 	}
 x{serialize macro}
 ```
+
+```
+a{serialize macro}
+	k{if} (! isPopulatedMacro(macro)) {
+		printf("macro [%s] not populated\n", macro->name);
+	}
+x{serialize macro}
+```
+
 ```
 d{write in file}
 	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
