@@ -24,10 +24,10 @@ x{expand consumer}
 ```
 * Ein Consumer besteht nur aus einer Funktion, die ein Zeichen
   entgegennimmt
-* Der Consumer ist trotzdem als <code>struct</code> ausgeführt, damit
+* Der Consumer ist trotzdem als `t{struct}` ausgeführt, damit
   nicht immer ein Paar aus Funktionszeiger und Kontext durchgereicht
   werden muss
-* Das Ende wird signalisiert durch das Senden von <code>EOF</code>
+* Das Ende wird signalisiert durch das Senden von `k{EOF}`
 
 ```
 a{expand consumer}

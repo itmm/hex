@@ -11,10 +11,10 @@
 </div>
 <ul><li>
  Dieses Dokument ist eine Präsentation, welche die Entwicklung des
-  **HTML Extractors** (`hx`) beschreibt</li><li>
- Es enthält zusätzlich den gesamten Source-Code von `hx`</li><li>
+  <b>HTML Extractors</b> (<code>hx</code>) beschreibt</li><li>
+ Es enthält zusätzlich den gesamten Source-Code von <code>hx</code></li><li>
  Es handelt sich um den Versuch eines neuen Programmier-Konzeptes:
-  das **Slideware-Programming** (SWP).</li><li>
+  das <b>Slideware-Programming</b> (SWP).</li><li>
  Viel Spass.</li></ul></div>
 </div>
 <h2>Funktionsweise von `hx`</h2>
@@ -23,11 +23,11 @@
 <h2>Funktionsweise von `hx`</h2>
 </div>
 <ul><li>
- `hx` generiert Source-Code und HTML-Präsentationen aus einem
+ <code>hx</code> generiert Source-Code und HTML-Präsentationen aus einem
   Basis-Format</li><li>
- Dieses lehnt an Markdown an und hat die Datei-Endung `.hx`</li><li>
+ Dieses lehnt an Markdown an und hat die Datei-Endung <code>.hx</code></li><li>
  Die Präsentationen bauen Schritt für Schritt das Programm auf</li><li>
- `hx` kann ebenfalls navigierbare Verweise in die Präsentation einbauen</li></ul></div>
+ <code>hx</code> kann ebenfalls navigierbare Verweise in die Präsentation einbauen</li></ul></div>
 </div>
 <h2>Slideware Programming (SWP)</h2>
 <div class="slides">
@@ -81,7 +81,7 @@
 </code>
 </div>
 <ul><li>
- Das Hauptprogramm besteht aus der `f{main}`-Funktion</li><li>
+ Das Hauptprogramm besteht aus der <code><span class="fn">main</span></code>-Funktion</li><li>
  Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
   definiert werden können</li></ul></div>
 <div><div>
@@ -119,11 +119,11 @@
 <h2>Was macht `@expand`?</h2>
 </div>
 <ul><li>
- `@expand`-Blöcke beschreiben Makro-Aufrufe</li><li>
+ <code>@expand</code>-Blöcke beschreiben Makro-Aufrufe</li><li>
  Der Wert des Makros mit dem Namen in Klammern wird anstelle des Aufrufs
   im endgültigen Programm gesetzt</li><li>
- Diese Makros bilden ein zentrales Element von `hx`</li><li>
- Sie können mit `@add`-`@end`-Sequenzen definiert oder erweitert werden</li></ul></div>
+ Diese Makros bilden ein zentrales Element von <code>hx</code></li><li>
+ Sie können mit <code>@add</code>-<code>@end</code>-Sequenzen definiert oder erweitert werden</li></ul></div>
 <div><div>
 <code>
 
@@ -267,7 +267,7 @@
 <ul><li>
  Der Source-Code für die Slideware muss aus einer Datei geladen werden</li><li>
  Der Name kann über die Kommandozeile gesetzt werden</li><li>
- Ansonsten wird `index.x` als Vorgabe verwendet</li></ul></div>
+ Ansonsten wird <code>index.x</code> als Vorgabe verwendet</li></ul></div>
 <div><div>
 <code>
 
@@ -343,7 +343,7 @@
 <ul><li>
  Makros können während des Parsens erweitert, ersetzt und angewendet
   werden</li><li>
- Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren ist
+ Ein Haupt-Vorteil von <code>hx</code> gegenüber anderen Makro-Präprozessoren ist
   die Möglichkeit, Makros vor der Definition zu verwenden</li><li>
  Und Makros an mehreren Stellen zu erweitern</li></ul></div>
 <div><div>
@@ -475,7 +475,7 @@
 </code>
 </div>
 <ul><li>
- Wenn `v{nameCur}` gesetzt ist, dann wird ein Name in Buffer gelesen</li></ul></div>
+ Wenn <code><span class="var">nameCur</span></code> gesetzt ist, dann wird ein Name in Buffer gelesen</li></ul></div>
 <div><div>
 <code>
 
@@ -564,12 +564,12 @@
 </code>
 </div>
 <ul><li>
- Wenn außerhalb eines Makros die Folge `a`, `{` gelesen wird, dann
-  beginnt ein `@add`-Fragment</li><li>
- Falls ein `i`, `{` gelesen wird, dann muss eine andere Datei mit
-  `@include` eingebunden werden</li><li>
+ Wenn außerhalb eines Makros die Folge <code>a</code>, <code>{</code> gelesen wird, dann
+  beginnt ein <code>@add</code>-Fragment</li><li>
+ Falls ein <code>i</code>, <code>{</code> gelesen wird, dann muss eine andere Datei mit
+  <code>@include</code> eingebunden werden</li><li>
  Es folgt der Name des Makros oder der Pfad der Datei bis zum nächsten
-  `}`</li></ul></div>
+  <code>}</code></li></ul></div>
 <div><div>
 <code>
 
@@ -685,7 +685,7 @@ macro = getMacroInMap(&macros, name, nameCur);<br/>
 </code>
 </div>
 <ul><li>
- Bei einem `@replace` wird der Inhalt eines Makros zurückgesetzt</li><li>
+ Bei einem <code>@replace</code> wird der Inhalt eines Makros zurückgesetzt</li><li>
  Das Makro muss bereits vorhanden sein</li></ul></div>
 <div><div>
 <code>
@@ -1069,7 +1069,7 @@ printf("multiple after expand of [%s]\n", sub-&gt;name);<br/>
 </code>
 </div>
 <ul><li>
- Fragmente, die mit `file:` beginnen, werden in die entsprechenden
+ Fragmente, die mit <code>file:</code> beginnen, werden in die entsprechenden
   Dateien rausgeschrieben</li></ul></div>
 <div><div>
 <code>
@@ -1156,7 +1156,7 @@ printf("multiple macro [%s] only used once\n", macro-&gt;name);<br/>
 <h1>HTML generieren</h1>
 </div>
 <ul><li>
- Aus `hx`-Dateien wird ein HTML-Foliensatz generiert</li></ul></div>
+ Aus <code>hx</code>-Dateien wird ein HTML-Foliensatz generiert</li></ul></div>
 <div><div>
 <code>
 

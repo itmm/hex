@@ -68,7 +68,7 @@
 </code>
 </div>
 <ul><li>
- Ein Buffer kann bis zu `INIT_BUFFER_SIZE` Bytes direkt aufnehmen</li><li>
+ Ein Buffer kann bis zu <code>INIT_BUFFER_SIZE</code> Bytes direkt aufnehmen</li><li>
  Bei weiteren Bytes wird der Speicher im Heap angelegt</li></ul></div>
 </div>
 <h1>Zeichen hinzufügen</h1>
@@ -139,8 +139,8 @@ INIT_BUFFER_SIZE;<br/>
   Bereich gesetzt</li><li>
  Das stellt sicher, dass ein initialisierter Buffer keinen Speicher im
   Heap belegt</li><li>
- Mit &lt;code class="fn"&gt;eraseBuffer&lt;/code&gt; kann ggf. vorhandener
-  Heap-Speicher freigegeben werden</li><li>
+ Mit <code><span class="fn">eraseBuffer</span></code> kann ggf. vorhandener Heap-Speicher freigegeben
+  werden</li><li>
  Und der Buffer trotzdem weiter benutzt werden</li></ul></div>
 <div><div>
 <code>
@@ -266,11 +266,10 @@ INIT_BUFFER_SIZE;<br/>
 </code>
 </div>
 <ul><li>
- Um einen Buffer wieder zu verwenden, der
-  &lt;code class="var"&gt;current&lt;/code&gt; muss auf
-  &lt;code class="var"&gt;buffer&lt;/code&gt; zurück gesetzt werden</li><li>
+ Um einen Buffer wieder zu verwenden, der <code><span class="var">current</span></code> muss auf
+  <code><span class="var">buffer</span></code> zurück gesetzt werden</li><li>
  Das funktioniert auch, wenn der initiale Buffer verwendet wird</li><li>
- Oder die Zeiger noch &lt;code class="keyword"&gt;NULL&lt;/code&gt; sind</li><li>
+ Oder die Zeiger noch <code><span class="keyword">NULL</span></code> sind</li><li>
  Es wird kein Speicher freigegeben</li></ul></div>
 <div><div>
 <code>

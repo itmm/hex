@@ -1,5 +1,5 @@
 # HTML-Präsentation generieren
-* Diese Datei beschreibt Code, um aus den <code>hx</code>-Quelldateien
+* Diese Datei beschreibt Code, um aus den `hx`-Quelldateien
   HTML-Präsentationen zu erzeugen
 
 ```
@@ -91,8 +91,8 @@ d{write cur HTML file}
 	}
 x{write cur HTML file}
 ```
-* Nur <code>x</code>-Dateien werden in HTML konvertiert
-* Die HTML hat den gleichen Pfad mit der Endung <code>.html</code>
+* Nur `.x`-Dateien werden in HTML konvertiert
+* Die HTML hat den gleichen Pfad mit der Endung `.html`
 
 ```
 a{write cur HTML file}
@@ -477,6 +477,13 @@ x{process ch in HTML code}
 
 ```
 a{process ch in HTML code}
+	E{escape HTML code tag};
+x{process ch in HTML code}
+```
+
+
+```
+d{escape HTML code tag}
 	if (ch == '{') {
 		switch (last) {
 			e{escape html macro}
@@ -487,11 +494,11 @@ a{process ch in HTML code}
 			continue;
 		}
 	}
-x{process ch in HTML code}
+x{escape HTML code tag}
 ```
 
 ```
-a{process ch in HTML code}
+a{escape HTML code tag}
 	if (ch == '}' && status.codeSpecial) {
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
@@ -511,7 +518,7 @@ a{process ch in HTML code}
 		status.codeSpecial = 0;
 		continue;
 	}
-x{process ch in HTML code}
+x{escape HTML code tag}
 ```
 
 ```
@@ -677,6 +684,20 @@ x{escape html macro}
 ```
 
 ```
+a{html state elements}
+	t{bool} v{noteInCode};
+	t{bool} v{noteInBold};
+x{html state elements}
+```
+
+```
+a{init html status}
+	, .v{noteInCode} = k{false}
+	, .v{noteInBold} = k{false}
+x{init html status}
+```
+
+```
 a{html state enums}
 	, v{hs_IN_NOTES}
 x{html state enums}
@@ -719,6 +740,48 @@ a{process ch for HTML}
 			v{last} = s{'\0'};
 			k{continue};
 		}
+	}
+x{process ch for HTML}
+```
+
+```
+a{process ch for HTML} 
+	k{if} (v{ch} == s{'`'} && v{status}.v{state} == v{hs_IN_NOTES}) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		k{if} (v{status}.v{noteInCode}) {
+			f{fprintf}(v{out}, s{"</code>"});
+		} k{else} {
+			f{fprintf}(v{out}, s{"<code>"});
+		}
+		v{status}.v{noteInCode} = ! v{status}.v{noteInCode};
+		v{last} = 0;
+		v{continue};
+	}
+x{process ch for HTML}
+```
+
+```
+a{process ch for HTML} 
+	k{if} (v{status}.v{state} == v{hs_IN_NOTES} &&
+	v{status}.v{noteInCode}) {
+		E{escape HTML code tag};
+	}
+x{process ch for HTML}
+```
+
+```
+a{process ch for HTML} 
+	k{if} (v{ch} == s{'*'} && v{last} == s{'*'} && v{status}.v{state} == v{hs_IN_NOTES}) {
+		k{if} (v{status}.v{noteInBold}) {
+			f{fprintf}(v{out}, s{"</b>"});
+		} k{else} {
+			f{fprintf}(v{out}, s{"<b>"});
+		}
+		v{status}.v{noteInBold} = ! v{status}.v{noteInBold};
+		v{last} = 0;
+		v{continue};
 	}
 x{process ch for HTML}
 ```

@@ -695,6 +695,9 @@ void freeMacroEntry(
 	char codeName[100];
 	char *codeNameEnd;
 
+	bool noteInCode;
+	bool noteInBold;
+
 	};
 
 	bool isOutOfHtmlSpecial(
@@ -1084,6 +1087,9 @@ void freeMacroEntry(
 	, .codeSpecial = '\0'
 	, .codeNameEnd = NULL
 
+	, .noteInCode = false
+	, .noteInBold = false
+
 	};
 	char last = '\n';
 	for (;;) {
@@ -1246,6 +1252,7 @@ void freeMacroEntry(
 		status.codeIndent = 0;
 	}
 
+	
 	if (ch == '{') {
 		switch (last) {
 			
@@ -1374,6 +1381,7 @@ void freeMacroEntry(
 		status.codeSpecial = 0;
 		continue;
 	}
+;
 
 	if (ch != EOF && status.codeNameEnd) {
 		ASSERT(status.codeNameEnd <
@@ -1413,6 +1421,165 @@ void freeMacroEntry(
 			last = '\0';
 			continue;
 		}
+	}
+ 
+	if (ch == '`' && status.state == hs_IN_NOTES) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		if (status.noteInCode) {
+			fprintf(out, "</code>");
+		} else {
+			fprintf(out, "<code>");
+		}
+		status.noteInCode = ! status.noteInCode;
+		last = 0;
+		continue;
+	}
+ 
+	if (status.state == hs_IN_NOTES &&
+	status.noteInCode) {
+		
+	if (ch == '{') {
+		switch (last) {
+			
+	case 'd':
+		fprintf(out, "<span class=\"add\">@def(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'a':
+		fprintf(out, "<span class=\"add\">@add(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'r':
+		fprintf(out, "<span class=\"add\">@replace(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'x':
+		fprintf(out, "<span class=\"end\">@end(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'e':
+		fprintf(out, "<span class=\"expand\">@expand(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'E':
+		fprintf(out, "<span class=\"expand\">@multiple(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'i':
+		fprintf(out, "<span class=\"include\">@include(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		status.codeNameEnd = status.codeName;
+		break;
+
+	case 't':
+		fprintf(out, "<span class=\"type\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'v':
+		fprintf(out, "<span class=\"var\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'f':
+		fprintf(out, "<span class=\"fn\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'k':
+		fprintf(out, "<span class=\"keyword\">");
+		status.codeSpecial = last;
+		break;
+
+	case 's':
+		fprintf(out, "<span class=\"str\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'n':
+		fprintf(out, "<span class=\"num\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'p':
+		fprintf(out, "<span class=\"type\">@priv(<span>");
+		status.codeSpecial = last;
+		break;
+
+	case 'm':
+		fprintf(out, "<span class=\"num\">@magic(<span>");
+		status.codeSpecial = last;
+		break;
+
+			default: break;
+		}
+		if (status.codeSpecial) {
+			last = 0;
+			continue;
+		}
+	}
+
+	if (ch == '}' && status.codeSpecial) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+			last = 0;
+		}
+		switch (status.codeSpecial) {
+			case 'i': {
+				
+	ASSERT(status.codeNameEnd <
+		status.codeName + sizeof(status.codeName)
+	);
+	*status.codeNameEnd = '\0';
+	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
+		!= '.') {
+		--status.codeNameEnd;
+	}
+	ASSERT(status.codeNameEnd >= status.codeName, "no period");
+	*status.codeNameEnd = '\0';
+	fprintf(out, "<a href=\"%s.html\">", status.codeName);
+	*status.codeNameEnd = '.';
+	fprintf(out, "%s</a>)</span>", status.codeName);
+	end->_private_link = createSourceElement(status.codeName);
+	end = end->_private_link;
+	status.codeNameEnd = NULL;
+
+;
+				break;
+			}
+			case 'a': case 'e': case 'E': case 'x':
+			case 'r': case 'd': case 'p': case 'm': {
+				fprintf(out, ")</span>");
+			}
+		}
+		fprintf(out, "</span>");
+		status.codeSpecial = 0;
+		continue;
+	}
+;
+	}
+ 
+	if (ch == '*' && last == '*' && status.state == hs_IN_NOTES) {
+		if (status.noteInBold) {
+			fprintf(out, "</b>");
+		} else {
+			fprintf(out, "<b>");
+		}
+		status.noteInBold = ! status.noteInBold;
+		last = 0;
+		continue;
 	}
  
 	if (status.state == hs_IN_NOTES) {
@@ -1456,6 +1623,9 @@ void freeMacroEntry(
 	, .codeSpecial = '\0'
 	, .codeNameEnd = NULL
 
+	, .noteInCode = false
+	, .noteInBold = false
+
 	};
 	char last = '\n';
 	for (;;) {
@@ -1618,6 +1788,7 @@ void freeMacroEntry(
 		status.codeIndent = 0;
 	}
 
+	
 	if (ch == '{') {
 		switch (last) {
 			
@@ -1746,6 +1917,7 @@ void freeMacroEntry(
 		status.codeSpecial = 0;
 		continue;
 	}
+;
 
 	if (ch != EOF && status.codeNameEnd) {
 		ASSERT(status.codeNameEnd <
@@ -1785,6 +1957,165 @@ void freeMacroEntry(
 			last = '\0';
 			continue;
 		}
+	}
+ 
+	if (ch == '`' && status.state == hs_IN_NOTES) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+		}
+		if (status.noteInCode) {
+			fprintf(out, "</code>");
+		} else {
+			fprintf(out, "<code>");
+		}
+		status.noteInCode = ! status.noteInCode;
+		last = 0;
+		continue;
+	}
+ 
+	if (status.state == hs_IN_NOTES &&
+	status.noteInCode) {
+		
+	if (ch == '{') {
+		switch (last) {
+			
+	case 'd':
+		fprintf(out, "<span class=\"add\">@def(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'a':
+		fprintf(out, "<span class=\"add\">@add(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'r':
+		fprintf(out, "<span class=\"add\">@replace(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'x':
+		fprintf(out, "<span class=\"end\">@end(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'e':
+		fprintf(out, "<span class=\"expand\">@expand(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'E':
+		fprintf(out, "<span class=\"expand\">@multiple(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'i':
+		fprintf(out, "<span class=\"include\">@include(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		status.codeNameEnd = status.codeName;
+		break;
+
+	case 't':
+		fprintf(out, "<span class=\"type\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'v':
+		fprintf(out, "<span class=\"var\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'f':
+		fprintf(out, "<span class=\"fn\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'k':
+		fprintf(out, "<span class=\"keyword\">");
+		status.codeSpecial = last;
+		break;
+
+	case 's':
+		fprintf(out, "<span class=\"str\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'n':
+		fprintf(out, "<span class=\"num\">");
+		status.codeSpecial = last;
+		break;
+
+	case 'p':
+		fprintf(out, "<span class=\"type\">@priv(<span>");
+		status.codeSpecial = last;
+		break;
+
+	case 'm':
+		fprintf(out, "<span class=\"num\">@magic(<span>");
+		status.codeSpecial = last;
+		break;
+
+			default: break;
+		}
+		if (status.codeSpecial) {
+			last = 0;
+			continue;
+		}
+	}
+
+	if (ch == '}' && status.codeSpecial) {
+		if (last) {
+			writeEscaped(out, &last, &last + 1);
+			last = 0;
+		}
+		switch (status.codeSpecial) {
+			case 'i': {
+				
+	ASSERT(status.codeNameEnd <
+		status.codeName + sizeof(status.codeName)
+	);
+	*status.codeNameEnd = '\0';
+	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
+		!= '.') {
+		--status.codeNameEnd;
+	}
+	ASSERT(status.codeNameEnd >= status.codeName, "no period");
+	*status.codeNameEnd = '\0';
+	fprintf(out, "<a href=\"%s.html\">", status.codeName);
+	*status.codeNameEnd = '.';
+	fprintf(out, "%s</a>)</span>", status.codeName);
+	end->_private_link = createSourceElement(status.codeName);
+	end = end->_private_link;
+	status.codeNameEnd = NULL;
+
+;
+				break;
+			}
+			case 'a': case 'e': case 'E': case 'x':
+			case 'r': case 'd': case 'p': case 'm': {
+				fprintf(out, ")</span>");
+			}
+		}
+		fprintf(out, "</span>");
+		status.codeSpecial = 0;
+		continue;
+	}
+;
+	}
+ 
+	if (ch == '*' && last == '*' && status.state == hs_IN_NOTES) {
+		if (status.noteInBold) {
+			fprintf(out, "</b>");
+		} else {
+			fprintf(out, "<b>");
+		}
+		status.noteInBold = ! status.noteInBold;
+		last = 0;
+		continue;
 	}
  
 	if (status.state == hs_IN_NOTES) {

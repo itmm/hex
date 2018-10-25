@@ -34,8 +34,7 @@ a{includes}
 	#include <stdlib.h>
 x{includes}
 ```
-* <code class="include-name">stdlib.h</code> wird für die Definition von
-  <code class="keyword">NULL</code> benötigt
+* `stdlib.h` wird für die Definition von `k{NULL}` benötigt
 
 # Neues Makro anlegen
 
@@ -56,9 +55,9 @@ a{define macro}
 	}
 x{define macro}
 ```
-* Die Zeiger werden mit <code class="keyword">NULL</code> initializiert
-* <code class="var">lastEntry</code> wird erst initialisiert, wenn
-  <code class="var">firstEntry</code> gesetzt wird
+* Die Zeiger werden mit `k{NULL}` initializiert
+* `v{lastEntry}` wird erst initialisiert, wenn `v{firstEntry}` gesetzt
+  wird
 * Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
   Null-Byte terminiert sein
 
@@ -92,9 +91,9 @@ d{allocate macro on heap}
 	f{ASSERT}(v{result});
 x{allocate macro on heap}
 ```
-* Die Zeiger werden mit <code class="keyword">NULL</code> initializiert
-* <code class="var">lastEntry</code> wird erst initialisiert, wenn
-  <code class="var">firstEntry</code> gesetzt wird
+* Die Zeiger werden mit `k{NULL}` initializiert
+* `v{lastEntry}` wird erst initialisiert, wenn `v{firstEntry}` gesetzt
+  wird
 * Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
   Null-Byte terminiert sein
 
@@ -183,8 +182,8 @@ a{define macro}
 	}
 x{define macro}
 ```
-* <code class="fn">testMacroName</code> prüft, ob der Name korrekt in ein
-  Makro kopiert wurde
+* `f{testMacroName}` prüft, ob der Name korrekt in ein Makro kopiert
+  wurde
 
 ```
 d{macro unit tests}
@@ -202,8 +201,7 @@ d{macro unit tests}
 x{macro unit tests}
 ```
 * Zum einen wird getestet, ob die Namen korrekt kopiert werden
-* Zum anderen wird sichergestellt, dass die Verweise
-  <code class="keyword">NULL</code> sind
+* Zum anderen wird sichergestellt, dass die Verweise `k{NULL}` sind
 
 ```
 a{define macro}
@@ -252,10 +250,9 @@ a{define macro}
 	}
 x{define macro}
 ```
-* Wie beim Macro werden die <code class="var">link</code> Verweise auf
-  <code class="keyword">NULL</code> initialisiert
-* Sowohl <code class="var">macro</code> als auch
-  <code class="var">valueBegin</code> sind optional
+* Wie beim Macro werden die `v{link}` Verweise auf `k{NULL}`
+  initialisiert
+* Sowohl `v{macro}` als auch `v{valueBegin}` sind optional
 * Die Größe des Eintrags hängt von der Größe der Bytes ab, die kopiert
   werden
 
@@ -338,8 +335,8 @@ x{free macros entries}
 ```
 * Wenn ein Makro freigegeben wird, so werden auch die anhängenden
   Einträge freigegeben
-* Damit die Funktion im <code class="fn">freeMacro</code> sichtbar ist,
-  wird sie in der Include-Sektion definiert
+* Damit die Funktion im `f{freeMacro}` sichtbar ist, wird sie in der
+  Include-Sektion definiert
 
 # Auf Attribute zugreifen
 
@@ -473,8 +470,8 @@ d{assert add entry}
 	f{ASSERT}(! v{entry}->v{link});
 x{assert add entry}
 ```
-* Makro darf nicht <code class="keyword">NULL</code> sein
-* Eintrag darf nicht <code class="keyword">NULL</code> sein
+* Makro darf nicht `k{NULL}` sein
+* Eintrag darf nicht `k{NULL}` sein
 * Eintrag darf noch nicht in einer anderen Liste hängen
 
 ```
@@ -486,8 +483,7 @@ x{append entry}
 * Da es schon Einträge gibt, muss es bereits einen letzten geben
 * Dessen neuer Nachfolger ist der neue Eintrag
 * Der neue Eintrag wird zum neuen letzten Eintrag
-* Der Nachfolger von <code class="var">entry</code> ist bereits
-  <code class="keyword">NULL</code>
+* Der Nachfolger von `v{entry}` ist bereits `k{NULL}`
 
 ```
 d{set first entry}
@@ -496,8 +492,7 @@ d{set first entry}
 x{set first entry}
 ```
 * Der erste Eintrag wird auch als letzter Eintrag gesetzt
-* Der Nachfolger von <code class="var">entry</code> ist bereits
-* <code class="keyword">NULL</code>
+* Der Nachfolger von `v{entry}` ist bereits `k{NULL}`
 
 ```
 a{macro unit tests}
@@ -617,10 +612,8 @@ x{define macro}
 ```
 * Bevor ein Makro hinzugefügt werden kann, muss sichergestellt werden,
   dass kein Zykel entsteht
-* Ein Zykel liegt vor, wenn <code class="var">macro</code> gleich
-  <code class="var">child</code> ist
-* Oder bereits direkt oder indirekt zu <code class="var">child</code>
-  hinzugefügt wurde
+* Ein Zykel liegt vor, wenn `v{macro}` gleich `v{child}` ist
+* Oder bereits direkt oder indirekt zu `v{child}` hinzugefügt wurde
 * Falls der letzte Eintrag noch kein Makro hat, wird dieser Eintrag
   verwendet
 
@@ -693,8 +686,8 @@ d{serialize bytes}
 	}
 x{serialize bytes}
 ```
-* Wenn es Bytes in dem Eintrag gibt, wird der
-  <code class="var">consumer</code> mit ihnen aufgerufen
+* Wenn es Bytes in dem Eintrag gibt, wird der `v{consumer}` mit ihnen
+  aufgerufen
 
 ```
 a{define macro}
@@ -814,7 +807,7 @@ d{check cycle macro}
 x{check cycle macro}
 ```
 * Wenn der Container selbst das gesuchte Makro ist, liefert die Funktion
-  <code class="keyword">true</code> zurück
+  `k{true}` zurück
 
 ```
 d{check cycle entries}
@@ -847,8 +840,7 @@ a{define macro}
 x{define macro}
 ```
 * Eine Kollektion von Makros ist ein Array von Makro-Ketten
-* Alle Felder müssen mit <code class="keyword">NULL</code> initialisiert
-  werden
+* Alle Felder müssen mit `k{NULL}` initialisiert werden
 
 ```
 a{define macro}
@@ -866,7 +858,6 @@ x{define macro}
 ```
 * Um den Speicher freizugeben, wird jeder Slot gelöscht
 * und auf <code class="keyword">NULL</code> gesetzt um wieder verwendet
-  zu werden
 
 ```
 a{define macro}

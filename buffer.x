@@ -71,8 +71,8 @@ x{may initialize buffer}
   Bereich gesetzt
 * Das stellt sicher, dass ein initialisierter Buffer keinen Speicher im
   Heap belegt
-* Mit <code class="fn">eraseBuffer</code> kann ggf. vorhandener
-  Heap-Speicher freigegeben werden
+* Mit `f{eraseBuffer}` kann ggf. vorhandener Heap-Speicher freigegeben
+  werden
 * Und der Buffer trotzdem weiter benutzt werden
 
 ```
@@ -140,11 +140,10 @@ a{define buffer}
 	}
 x{define buffer}
 ```
-* Um einen Buffer wieder zu verwenden, der
-  <code class="var">current</code> muss auf
-  <code class="var">buffer</code> zurück gesetzt werden
+* Um einen Buffer wieder zu verwenden, der `v{current}` muss auf
+  `v{buffer}` zurück gesetzt werden
 * Das funktioniert auch, wenn der initiale Buffer verwendet wird
-* Oder die Zeiger noch <code class="keyword">NULL</code> sind
+* Oder die Zeiger noch `k{NULL}` sind
 * Es wird kein Speicher freigegeben
 
 ```
