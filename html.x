@@ -3,52 +3,11 @@
   HTML-Präsentationen zu erzeugen
 
 ```
-a{global elements}
-	t{struct SourceElement} {
-		t{struct SourceElement *}p{link};
-		t{unsigned} p{magic};
-		t{char} v{path}[];
-	};
-x{global elements}
-```
-* Alle Dateien, die noch herausgeschrieben werden müssen, werden in einer
-  Liste vorgehalten
-
-```
-a{global elements}
-	t{struct SourceElement} *createSourceElement(
-		t{const char *}v{path}
-	) {
-		f{ASSERT}(v{path});
-		t{int} v{len} = f{strlen}(v{path}) + n{1};
-		t{int} v{size} =
-			v{len} + f{sizeof}(t{struct SourceElement});
-		t{struct SourceElement *}v{se} =
-			f{malloc}(v{size});
-		f{ASSERT}(v{se});
-		v{se}->p{link} = k{NULL};
-		f{memcpy}(v{se}->v{path}, v{path}, v{len});
-		v{se}->p{magic} = m{source element};
-		k{return} v{se};
-	}
-x{global elements}
-```
-* Die Größe der Struktur wird dynamisch berechnet
-* So dass der Name mit abschließenden Null-Byte reinpasst
-
-```
 d{write HTML file}
-	t{struct SourceElement *}v{cur};
-	k{if} (v{argc} > n{1}) {
-		v{cur} = f{createSourceElement}(v{argv}[n{1}]);
-	} else {
-		v{cur} = f{createSourceElement}(s{"index.x"});
-	}
-	t{struct SourceElement *}v{end} = v{cur};
+	t{struct Input *}v{cur} = v{used};
 	k{while} (v{cur}) {
 		e{write cur HTML file};
-		t{struct SourceElement *}v{next} =
-			v{cur}->p{link};
+		t{struct Input *}v{next} = v{cur}->v{link};
 		f{free}(v{cur});
 		v{cur} = v{next};
 	}
@@ -77,11 +36,11 @@ x{global elements}
 
 ```
 d{write cur HTML file}
-	k{if} (f{hasSuffix}(v{cur}->v{path}, s{".x"})) {
-		t{int} v{len} = f{strlen}(v{cur}->v{path}) + n{4};
+	k{if} (f{hasSuffix}(v{cur}->v{name}, s{".x"})) {
+		t{int} v{len} = f{strlen}(v{cur}->v{name}) + n{4};
 		t{char *}v{outPath} = f{malloc}(v{len});
 		f{ASSERT}(v{outPath});
-		f{memcpy}(v{outPath}, v{cur}->v{path}, v{len} - n{6});
+		f{memcpy}(v{outPath}, v{cur}->v{name}, v{len} - n{6});
 		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
 		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
 		f{ASSERT}(v{out});
@@ -96,7 +55,7 @@ x{write cur HTML file}
 
 ```
 d{write cur HTML file to out} 
-	t{FILE *}v{in} = f{fopen}(v{cur}->v{path}, s{"r"});
+	t{FILE *}v{in} = f{fopen}(v{cur}->v{name}, s{"r"});
 	f{ASSERT}(v{in});
 	e{write HTML file from in to out};
 	f{fclose}(v{in});
@@ -519,8 +478,6 @@ d{handle html include}
 	fprintf(out, "<a href=\"%s.html\">", status.codeName);
 	*status.codeNameEnd = '.';
 	fprintf(out, "%s</a>)</span>", status.codeName);
-	end->p{link} = createSourceElement(status.codeName);
-	end = end->p{link};
 	status.codeNameEnd = NULL;
 
 x{handle html include}

@@ -15,91 +15,15 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">global elements)</span></span><br/>
-<span class="in1"></span>
-<span class="type">struct SourceElement</span> {<br/>
-<span class="in2"></span>
-<span class="type">struct SourceElement *</span><span class="type">@priv(<span>link)</span></span>;<br/>
-<span class="in2"></span>
-<span class="type">unsigned</span> <span class="type">@priv(<span>magic)</span></span>;<br/>
-<span class="in2"></span>
-<span class="type">char</span> <span class="var">path</span>[];<br/>
-<span class="in1"></span>
-};<br/>
-
-<span class="end">@end(<span class="name">global elements)</span></span><br/>
-</code>
-</div>
-<ul><li>
- Alle Dateien, die noch herausgeschrieben werden müssen, werden in einer
-  Liste vorgehalten</li></ul></div>
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">global elements)</span></span><br/>
-<span class="in1"></span>
-<span class="type">struct SourceElement</span> *createSourceElement(<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">path</span><br/>
-<span class="in1"></span>
-) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">path</span>);<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">size</span> =<br/>
-<span class="in3"></span>
-<span class="var">len</span> + <span class="fn">sizeof</span>(<span class="type">struct SourceElement</span>);<br/>
-<span class="in2"></span>
-<span class="type">struct SourceElement *</span><span class="var">se</span> =<br/>
-<span class="in3"></span>
-<span class="fn">malloc</span>(<span class="var">size</span>);<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">se</span>);<br/>
-<span class="in2"></span>
-<span class="var">se</span>-&gt;<span class="type">@priv(<span>link)</span></span> = <span class="keyword">NULL</span>;<br/>
-<span class="in2"></span>
-<span class="fn">memcpy</span>(<span class="var">se</span>-&gt;<span class="var">path</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
-<span class="in2"></span>
-<span class="var">se</span>-&gt;<span class="type">@priv(<span>magic)</span></span> = <span class="num">@magic(<span>source element)</span></span>;<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="var">se</span>;<br/>
-<span class="in1"></span>
-}<br/>
-
-<span class="end">@end(<span class="name">global elements)</span></span><br/>
-</code>
-</div>
-<ul><li>
- Die Größe der Struktur wird dynamisch berechnet</li><li>
- So dass der Name mit abschließenden Null-Byte reinpasst</li></ul></div>
-<div><div>
-<code>
-
 <span class="add">@def(<span class="name">write HTML file)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct SourceElement *</span><span class="var">cur</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">argc</span> &gt; <span class="num">1</span>) {<br/>
-<span class="in2"></span>
-<span class="var">cur</span> = <span class="fn">createSourceElement</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
-<span class="in1"></span>
-} else {<br/>
-<span class="in2"></span>
-<span class="var">cur</span> = <span class="fn">createSourceElement</span>(<span class="str">"index.x"</span>);<br/>
-<span class="in1"></span>
-}<br/>
-<span class="in1"></span>
-<span class="type">struct SourceElement *</span><span class="var">end</span> = <span class="var">cur</span>;<br/>
+<span class="type">struct Input *</span><span class="var">cur</span> = <span class="var">used</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">write cur HTML file)</span></span>;<br/>
 <span class="in2"></span>
-<span class="type">struct SourceElement *</span><span class="var">next</span> =<br/>
-<span class="in3"></span>
-<span class="var">cur</span>-&gt;<span class="type">@priv(<span>link)</span></span>;<br/>
+<span class="type">struct Input *</span><span class="var">next</span> = <span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
 <span class="in2"></span>
 <span class="fn">free</span>(<span class="var">cur</span>);<br/>
 <span class="in2"></span>
@@ -151,15 +75,15 @@
 
 <span class="add">@def(<span class="name">write cur HTML file)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">".x"</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">hasSuffix</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">".x"</span>)) {<br/>
 <span class="in2"></span>
-<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>) + <span class="num">4</span>;<br/>
+<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>) + <span class="num">4</span>;<br/>
 <span class="in2"></span>
 <span class="type">char *</span><span class="var">outPath</span> = <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">outPath</span>);<br/>
 <span class="in2"></span>
-<span class="fn">memcpy</span>(<span class="var">outPath</span>, <span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="var">len</span> - <span class="num">6</span>);<br/>
+<span class="fn">memcpy</span>(<span class="var">outPath</span>, <span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="var">len</span> - <span class="num">6</span>);<br/>
 <span class="in2"></span>
 <span class="fn">strcpy</span>(<span class="var">outPath</span> + <span class="var">len</span> - <span class="num">6</span>, <span class="str">".html"</span>);<br/>
 <span class="in2"></span>
@@ -186,7 +110,7 @@
 
 <span class="add">@def(<span class="name">write cur HTML file to out)</span></span> <br/>
 <span class="in1"></span>
-<span class="type">FILE *</span><span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">path</span>, <span class="str">"r"</span>);<br/>
+<span class="type">FILE *</span><span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">"r"</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">in</span>);<br/>
 <span class="in1"></span>
@@ -996,10 +920,6 @@ fprintf(out, "&lt;a href=\"%s.html\"&gt;", status.codeName);<br/>
 *status.codeNameEnd = '.';<br/>
 <span class="in1"></span>
 fprintf(out, "%s&lt;/a&gt;)&lt;/span&gt;", status.codeName);<br/>
-<span class="in1"></span>
-end-&gt;<span class="type">@priv(<span>link)</span></span> = createSourceElement(status.codeName);<br/>
-<span class="in1"></span>
-end = end-&gt;<span class="type">@priv(<span>link)</span></span>;<br/>
 <span class="in1"></span>
 status.codeNameEnd = NULL;<br/>
 

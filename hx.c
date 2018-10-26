@@ -586,28 +586,6 @@ void freeMacroEntry(
 	}
 ;
 
-	struct SourceElement {
-		struct SourceElement *_private_link;
-		unsigned _private_magic;
-		char path[];
-	};
-
-	struct SourceElement *createSourceElement(
-		const char *path
-	) {
-		ASSERT(path);
-		int len = strlen(path) + 1;
-		int size =
-			len + sizeof(struct SourceElement);
-		struct SourceElement *se =
-			malloc(size);
-		ASSERT(se);
-		se->_private_link = NULL;
-		memcpy(se->path, path, len);
-		se->_private_magic = 2478325;
-		return se;
-	}
-
 	bool hasSuffix(
 		const char *str,
 		const char *suff
@@ -1176,25 +1154,19 @@ void freeMacroEntry(
 	}
 } ;
 	
-	struct SourceElement *cur;
-	if (argc > 1) {
-		cur = createSourceElement(argv[1]);
-	} else {
-		cur = createSourceElement("index.x");
-	}
-	struct SourceElement *end = cur;
+	struct Input *cur = used;
 	while (cur) {
 		
-	if (hasSuffix(cur->path, ".x")) {
-		int len = strlen(cur->path) + 4;
+	if (hasSuffix(cur->name, ".x")) {
+		int len = strlen(cur->name) + 4;
 		char *outPath = malloc(len);
 		ASSERT(outPath);
-		memcpy(outPath, cur->path, len - 6);
+		memcpy(outPath, cur->name, len - 6);
 		strcpy(outPath + len - 6, ".html");
 		FILE *out = fopen(outPath, "w");
 		ASSERT(out);
 		 
-	FILE *in = fopen(cur->path, "r");
+	FILE *in = fopen(cur->name, "r");
 	ASSERT(in);
 	 {
 	struct HtmlStatus status = {
@@ -1486,8 +1458,6 @@ void freeMacroEntry(
 	fprintf(out, "<a href=\"%s.html\">", status.codeName);
 	*status.codeNameEnd = '.';
 	fprintf(out, "%s</a>)</span>", status.codeName);
-	end->_private_link = createSourceElement(status.codeName);
-	end = end->_private_link;
 	status.codeNameEnd = NULL;
 
 ;
@@ -1673,8 +1643,6 @@ void freeMacroEntry(
 	fprintf(out, "<a href=\"%s.html\">", status.codeName);
 	*status.codeNameEnd = '.';
 	fprintf(out, "%s</a>)</span>", status.codeName);
-	end->_private_link = createSourceElement(status.codeName);
-	end = end->_private_link;
 	status.codeNameEnd = NULL;
 
 ;
@@ -1721,8 +1689,7 @@ void freeMacroEntry(
 		free(outPath);
 	}
 ;
-		struct SourceElement *next =
-			cur->_private_link;
+		struct Input *next = cur->link;
 		free(cur);
 		cur = next;
 	}
