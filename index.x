@@ -101,9 +101,11 @@ a{global elements}
 	t{struct Input} {
 		t{struct Input *}v{link};
 		t{FILE *}v{file};
+		t{char} v{name}[];
 	};
 
 	t{struct Input *}v{input} = k{NULL};
+	t{struct Input *}v{used} = k{NULL};
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -114,35 +116,18 @@ x{global elements}
 
 ```
 a{global elements}
-	t{void} f{pushFile} (t{FILE *}v{file}) {
-		t{struct Input *}v{i} =
-			f{malloc}(f{sizeof}(t{struct Input}));
-
-		e{check memory for input};
-		v{i}->v{link} = v{input};
-		v{i}->v{file} = v{file};
-		v{input} = v{i};
-	}
-x{global elements}
-```
-* Eine offene Datei (z.B. die Standard-Eingabe) kann direkt als
-  Eingabe-Strom verwendet werden
-
-```
-d{check memory for input}
-	ASSERT(
-		i,
-		"no memory for input"
-	);
-x{check memory for input}
-```
-
-```
-a{global elements}
 	t{void} f{pushPath}(t{const char *}v{path}) {
 		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
 		e{check file for path};
-		f{pushFile}(v{f});
+		t{int} len = f{strlen}(v{path}) + n{1};
+		t{struct Input *}v{i} = f{malloc}(
+			f{sizeof}(t{struct Input}) + v{len}
+		);
+		e{check memory for input};
+		v{i}->v{link} = v{input};
+		v{i}->v{file} = v{f};
+		f{memcpy}(v{i}->v{name}, v{path}, v{len});
+		v{input} = v{i};
 	}
 x{global elements}
 ```
@@ -156,6 +141,15 @@ d{check file for path}
 		f, "can't open [%s]", path
 	);
 x{check file for path}
+```
+
+```
+d{check memory for input}
+	ASSERT(
+		i,
+		"no memory for input"
+	);
+x{check memory for input}
 ```
 
 ```
@@ -180,7 +174,8 @@ a{global elements}
 			k{if} (v{ch} != k{EOF}) { k{break}; }
 			t{struct Input *}v{n} = v{input}->v{link};
 			f{fclose}(v{input}->v{file});
-			f{free}(v{input});
+			v{input}->v{link} = v{used};
+			v{used} = v{input};
 			v{input} = v{n};
 		}
 		k{return} v{ch};
@@ -421,10 +416,26 @@ x{macro names must match}
 ```
 
 ```
+a{global source vars}
+	t{bool} f{alreadyUsed}(t{const char *}v{name}) {
+		k{for} (t{struct Input *}v{u} = v{used}; v{u}; v{u} =
+		v{u}->v{link}) {
+			if (strcmp(u->name, name) == 0) {
+				return true;
+			}
+		}
+		k{return} k{false};
+	}
+x{global source vars}
+```
+
+```
 a{process macro name}
 	k{if} (v{openCh} == s{'i'}) {
 		f{ASSERT}(! v{macro}, "include in macro");
-		f{pushPath}(v{name});
+		k{if} (! f{alreadyUsed}(v{name})) {
+			f{pushPath}(v{name});
+		}
 		v{processed} = k{true};
 	}
 x{process macro name}

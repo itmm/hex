@@ -32,24 +32,11 @@ void freeMacroEntry(
 	struct Input {
 		struct Input *link;
 		FILE *file;
+		char name[];
 	};
 
 	struct Input *input = NULL;
-
-	void pushFile (FILE *file) {
-		struct Input *i =
-			malloc(sizeof(struct Input));
-
-		
-	ASSERT(
-		i,
-		"no memory for input"
-	);
-;
-		i->link = input;
-		i->file = file;
-		input = i;
-	}
+	struct Input *used = NULL;
 
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
@@ -58,7 +45,20 @@ void freeMacroEntry(
 		f, "can't open [%s]", path
 	);
 ;
-		pushFile(f);
+		int len = strlen(path) + 1;
+		struct Input *i = malloc(
+			sizeof(struct Input) + len
+		);
+		
+	ASSERT(
+		i,
+		"no memory for input"
+	);
+;
+		i->link = input;
+		i->file = f;
+		memcpy(i->name, path, len);
+		input = i;
 	}
 
 	int nextCh() {
@@ -68,7 +68,8 @@ void freeMacroEntry(
 			if (ch != EOF) { break; }
 			struct Input *n = input->link;
 			fclose(input->file);
-			free(input);
+			input->link = used;
+			used = input;
 			input = n;
 		}
 		return ch;
@@ -865,6 +866,16 @@ void freeMacroEntry(
 	
 	
 	struct MacroMap macros = {};
+
+	bool alreadyUsed(const char *name) {
+		for (struct Input *u = used; u; u =
+		u->link) {
+			if (strcmp(u->name, name) == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 ;
 	{
 		
@@ -985,7 +996,9 @@ void freeMacroEntry(
 
 	if (openCh == 'i') {
 		ASSERT(! macro, "include in macro");
-		pushPath(name);
+		if (! alreadyUsed(name)) {
+			pushPath(name);
+		}
 		processed = true;
 	}
 
