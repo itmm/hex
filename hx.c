@@ -61,6 +61,8 @@ void freeMacroEntry(
 		input = i;
 	}
 
+	const char *stylesheet = "slides/slides.css";
+
 	int nextCh() {
 		int ch = EOF;
 		while (input) {
@@ -835,9 +837,16 @@ void freeMacroEntry(
 } ;
 ;
 	
-	if(argc > 1) {
-		pushPath(argv[1]);
-	} else {
+	bool someFiles = false;
+	for (int i = 1; i < argc; ++i) {
+		if (memcmp(argv[i], "--css=", 6) == 0) {
+			stylesheet = argv[i] + 6;
+		} else {
+			pushPath(argv[1]);
+			someFiles = true;
+		}
+	}
+	if (! someFiles) {
 		pushPath("index.x");
 	}
 ;
@@ -1222,7 +1231,8 @@ void freeMacroEntry(
 	fprintf(
 		out, "<link rel=\"stylesheet\" "
 		"type=\"text/css\" "
-		"href=\"slides/slides.css\">"
+		"href=\"%s\">",
+		stylesheet
 	);
 ;
 	fprintf(out, "</head>\n");

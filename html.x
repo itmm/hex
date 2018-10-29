@@ -298,7 +298,8 @@ d{write HTML header entries}
 	f{fprintf}(
 		v{out}, s{"<link rel=\"stylesheet\" "}
 		s{"type=\"text/css\" "}
-		s{"href=\"slides/slides.css\">"}
+		s{"href=\"%s\">"},
+		v{stylesheet}
 	);
 x{write HTML header entries}
 ```

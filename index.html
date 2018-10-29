@@ -270,13 +270,38 @@ i,<br/>
 <div><div>
 <code>
 
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
+const char *stylesheet = "slides/slides.css";<br/>
+
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
 <span class="add">@def(<span class="name">process arguments)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span>(<span class="var">argc</span> &gt; <span class="num">1</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">pushPath</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
+<span class="type">bool</span> someFiles = false;<br/>
 <span class="in1"></span>
-} <span class="keyword">else</span> {<br/>
+for (int i = 1; i &lt; argc; ++i) {<br/>
+<span class="in2"></span>
+if (memcmp(argv[i], "--css=", 6) == 0) {<br/>
+<span class="in3"></span>
+stylesheet = argv[i] + 6;<br/>
+<span class="in2"></span>
+} else {<br/>
+<span class="in3"></span>
+<span class="fn">pushPath</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
+<span class="in3"></span>
+someFiles = true;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+<span class="in1"></span>
+if (! someFiles) {<br/>
 <span class="in2"></span>
 <span class="fn">pushPath</span>(<span class="str">"index.x"</span>);<br/>
 <span class="in1"></span>

@@ -153,10 +153,23 @@ x{check memory for input}
 ```
 
 ```
+a{global elements}
+	const char *stylesheet = "slides/slides.css";
+x{global elements}
+```
+
+```
 d{process arguments}
-	k{if}(v{argc} > n{1}) {
-		f{pushPath}(v{argv}[n{1}]);
-	} k{else} {
+	t{bool} someFiles = false;
+	for (int i = 1; i < argc; ++i) {
+		if (memcmp(argv[i], "--css=", 6) == 0) {
+			stylesheet = argv[i] + 6;
+		} else {
+			f{pushPath}(v{argv}[n{1}]);
+			someFiles = true;
+		}
+	}
+	if (! someFiles) {
 		f{pushPath}(s{"index.x"});
 	}
 x{process arguments}
