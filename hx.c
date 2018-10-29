@@ -951,15 +951,22 @@ void freeMacroEntry(
 		
 	if (openCh == 'd') {
 		ASSERT(! macro, "def in macro");
-		macro = findMacroInMap(
-			&macros, name.buffer, name.current - 1
+		
+	macro = findMacroInMap(
+		&macros, name.buffer,
+		name.current - 1
+	);
+	if (isPopulatedMacro(macro)) {
+		printf(
+			"macro [%s] already defined\n",
+			name.current
 		);
-		if (isPopulatedMacro(macro)) {
-			printf("macro [%s] already defined\n", name.current);
-		}
+	}
+;
 		if (! macro) {
 			macro = allocMacroInMap(
-				&macros, name.buffer, name.current - 1
+				&macros, name.buffer,
+				name.current - 1
 			);
 		}
 		processed = true;
@@ -1169,23 +1176,39 @@ void freeMacroEntry(
 	)) {
 		++macro->expands;
 		
-	FILE *f = fopen(macro->name + 6, "w");
-	ASSERT(f, "can't open %s", macro->name + 6);
+	FILE *f =
+		fopen(macro->name + 6, "w");
+	ASSERT(
+		f, "can't open %s",
+		macro->name + 6
+	);
 	serializeMacro(macro, f);
 	fclose(f);
 ;
 	}
-
-	if (macro->expands + macro->multiples <= 0) {
-		printf("macro [%s] not called\n", macro->name);
+ {
+	int sum =
+		macro->expands + macro->multiples;
+	if (sum <= 0) {
+		printf(
+			"macro [%s] not called\n",
+			macro->name
+		);
 	}
-
+} 
 	if (macro->multiples == 1) {
-		printf("multiple macro [%s] only used once\n", macro->name);
+		printf(
+			"multiple macro [%s] only "
+				"used once\n",
+			macro->name
+		);
 	}
 
 	if (! isPopulatedMacro(macro)) {
-		printf("macro [%s] not populated\n", macro->name);
+		printf(
+			"macro [%s] not populated\n",
+			macro->name
+		);
 	}
 ;
 		}

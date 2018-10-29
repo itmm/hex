@@ -425,30 +425,46 @@ x{global source vars}
 d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, "def in macro");
-		v{macro} = f{findMacroInMap}(
-			&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
-		);
-		if (isPopulatedMacro(macro)) {
-			printf("macro [%s] already defined\n", name.current);
-		}
+		e{check for double def};
 		if (! macro) {
 			v{macro} = f{allocMacroInMap}(
-				&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
+				&v{macros}, v{name}.v{buffer},
+				v{name}.v{current} - 1
 			);
 		}
 		v{processed} = k{true};
 	}
 x{process macro name}
 ```
-* Erzeugt eine neues Makro
-* Das Makro darf nicht bereits vorhanden sein
+* Erzeugt ein neues Makro
+* Das Makro darf nicht mehrfach definiert werden
+
+```
+d{check for double def}
+	v{macro} = f{findMacroInMap}(
+		&v{macros}, v{name}.v{buffer},
+		v{name}.v{current} - 1
+	);
+	if (isPopulatedMacro(macro)) {
+		printf(
+			"macro [%s] already defined\n",
+			name.current
+		);
+	}
+x{check for double def}
+```
+* Wenn das Makro bereits existiert, wird es vielleicht nur verwendet
+* Es muss geprüft werden, ob es schon Inhalt hat
+* Das wäre dann eine Fehlermeldung wert
+* Bricht aber die Abarbeitung nicht ab
 
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
 		f{ASSERT}(! v{macro}, "add in macro");
 		v{macro} = f{findMacroInMap}(
-			&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
+			&v{macros}, v{name}.v{buffer},
+			v{name}.v{current} - 1
 		);
 		if (! isPopulatedMacro(macro)) {
 			printf("macro [%s] not defined\n",name.buffer);
@@ -683,15 +699,17 @@ a{process open brace}
 		f{addToBuffer}(&v{buffer}, v{last});
 	}
 x{process open brace}
+```
+* Wenn wir uns in einem Makro befinden und bis hier gekommen sind, dann
+  wird das Zeichen vor der öffnenden Klammer zum Makro hinzu gefügt
 
+```
 a{process close brace}
 	k{if} (v{macro} && ! v{processed}) {
 		f{addToBuffer}(&v{buffer}, v{last});
 	}
 x{process close brace}
 ```
-
-* Entities werden in einer eigenen Datei expandiert
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
@@ -712,6 +730,8 @@ d{serialize fragments} {
 ```
 * Fragmente, die mit `file:` beginnen, werden in die entsprechenden
   Dateien rausgeschrieben
+* Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft expandiert
+  wurden
 
 ```
 d{serialize macro}
@@ -723,41 +743,65 @@ d{serialize macro}
 	}
 x{serialize macro}
 ```
+* Wenn der Name eines Makros mit `file: ` beginnt, dann wird es in die
+  passende Datei geschrieben
+* Zusätzlich zählt das als eine Expansion
 
 ```
-a{serialize macro}
-	k{if} (macro->expands + macro->multiples <= 0) {
-		printf("macro [%s] not called\n", macro->name);
+a{serialize macro} {
+	t{int} v{sum} =
+		macro->expands + macro->multiples;
+	k{if} (sum <= 0) {
+		printf(
+			"macro [%s] not called\n",
+			macro->name
+		);
 	}
-x{serialize macro}
+} x{serialize macro}
 ```
+* Ein Makro wurde nicht aufgerufen
+* Dies wird mit einer Meldung quittiert
 
 ```
 a{serialize macro}
 	k{if} (macro->multiples == 1) {
-		printf("multiple macro [%s] only used once\n", macro->name);
+		printf(
+			"multiple macro [%s] only "
+				"used once\n",
+			macro->name
+		);
 	}
 x{serialize macro}
 ```
+* Ein Makro das zur mehrfachen Verwendung deklariert wurde, wird nur
+  einmal verwendet
+* Dies wird mit einer Meldung quittiert
 
 ```
 a{serialize macro}
 	k{if} (! isPopulatedMacro(macro)) {
-		printf("macro [%s] not populated\n", macro->name);
+		printf(
+			"macro [%s] not populated\n",
+			macro->name
+		);
 	}
 x{serialize macro}
 ```
+* Für jedes Makro, das nicht befüllt wurde wird eine Meldung ausgegeben
 
 ```
 d{write in file}
-	t{FILE *}v{f} = f{fopen}(v{macro}->v{name} + n{6}, "w");
-	f{ASSERT}(v{f}, "can't open %s", v{macro}->v{name} + n{6});
+	t{FILE *}v{f} =
+		f{fopen}(v{macro}->v{name} + n{6}, "w");
+	f{ASSERT}(
+		v{f}, "can't open %s",
+		v{macro}->v{name} + n{6}
+	);
 	f{serializeMacro}(v{macro}, v{f});
 	f{fclose}(v{f});
 x{write in file}
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
-* Dabei werden HTML-Entitäten aufgelöst
 
 
 # HTML generieren
