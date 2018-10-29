@@ -49,9 +49,7 @@
 <span class="add">@def(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
 #define INIT_BUFFER_SIZE 16<br/>
-
-<br/>
-<span class="in2"></span>
+<span class="in1"></span>
 <span class="type">struct Buffer</span> {<br/>
 <span class="in2"></span>
 <span class="type">char</span> <span class="var">initial</span><span class="type">[INIT_BUFFER_SIZE]</span>;<br/>
@@ -69,7 +67,100 @@
 </div>
 <ul><li>
  Ein Buffer kann bis zu <code>INIT_BUFFER_SIZE</code> Bytes direkt aufnehmen</li><li>
- Bei weiteren Bytes wird der Speicher im Heap angelegt</li></ul></div>
+ Bei weiteren Bytes wird der Speicher im Heap angelegt</li><li>
+ <code><span class="var">initial</span></code> kann die ersten Bytes aufnehmen, ohne Speicher auf dem
+  Heap anzufordern</li><li>
+ <code><span class="var">buffer</span></code> zeigt auf den Anfang des zu nutzenden Byte-Blocks</li><li>
+ <code><span class="var">current</span></code> zeigt auf das erste freie Zeichen im Byte-Block</li><li>
+ <code><span class="var">end</span></code> zeigt auf das erste nicht mehr zum Buffer gehörende Byte</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="in1"></span>
+<span class="type">static inline void</span> <span class="fn">bufferInvariant</span>(<br/>
+<span class="in2"></span>
+<span class="type">const struct Buffer *</span>b<br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">b</span>);<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">b</span>-&gt;<span class="var">buffer</span> &lt;= <span class="var">b</span>-&gt;<span class="var">current</span>);<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">b</span>-&gt;<span class="var">current</span> &lt;= <span class="var">b</span>-&gt;<span class="var">end</span>);<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Die Zeiger im Buffer müssen immer geordnet sein</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="in1"></span>
+<span class="type">struct Buffer</span> b = {};<br/>
+<span class="in1"></span>
+<span class="fn">bufferInvariant</span>(&b);<br/>
+
+} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Diese Bedingung ist auch erfüllt, wenn alle Bytes im Buffer <code>0</code> sind</li><li>
+ Dies ist eine mögliche Initialisierung des Buffers</li></ul></div>
+</div>
+<h1>Aktiver & Inaktiver Buffer</h1>
+<div class="slides">
+<div><div>
+<h1>Aktiver & Inaktiver Buffer</h1>
+</div>
+<ul><li>
+ Ein Buffer kann aktiv oder inaktiv sein</li><li>
+ Ein aktiver Buffer kann auch leer sein</li><li>
+ Als Unterscheidung dient, ob <code><span class="var">buffer</span></code> <code><span class="keyword">NULL</span></code> ist</li><li>
+ Ein in aktiver Buffer wird durch das Hinzufügen eines Zeichens aktiv</li><li>
+ Oder durch Aufruf von <code><span class="fn">activateBuffer</span></code></li><li>
+ Ein Buffer wird durch Löschen mit <code><span class="fn">eraseBuffer</span></code> inaktiv</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="in1"></span>
+<span class="type">static inline bool</span> <span class="fn">isActiveBuffer</span>(<br/>
+<span class="in2"></span>
+<span class="type">const struct Buffer *</span>b<br/>
+<span class="in1"></span>
+) {<br/>
+<span class="in2"></span>
+bufferInvariant(b);<br/>
+<span class="in2"></span>
+return b-&gt;buffer;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Ein Buffer ist aktiv, wenn der Zeiger <code><span class="var">buffer</span></code> gesetzt ist</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="in1"></span>
+<span class="type">struct Buffer</span> b = {};<br/>
+<span class="in1"></span>
+<span class="fn">ASSERT</span>(! <span class="fn">isActiveBuffer</span>(&b));<br/>
+
+} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Ein leerer Buffer ist nicht aktiv</li></ul></div>
 </div>
 <h1>Zeichen hinzufügen</h1>
 <div class="slides">
@@ -82,15 +173,65 @@
 
 <span class="add">@add(<span class="name">define buffer)</span></span><br/>
 <span class="in1"></span>
+<span class="type">void</span> <span class="fn">activateBuffer</span>(<span class="type">struct Buffer</span> *b) {<br/>
+<span class="in2"></span>
+<span class="fn">bufferInvariant</span>(<span class="var">b</span>);<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (! <span class="var">b</span>-&gt;<span class="var">buffer</span>) {<br/>
+<span class="in3"></span>
+<span class="var">b</span>-&gt;<span class="var">buffer</span> = <span class="var">b</span>-&gt;<span class="var">initial</span>;<br/>
+<span class="in3"></span>
+<span class="var">b</span>-&gt;<span class="var">current</span> = <span class="var">b</span>-&gt;<span class="var">buffer</span>;<br/>
+<span class="in3"></span>
+<span class="var">b</span>-&gt;<span class="var">end</span> = <span class="var">b</span>-&gt;<span class="var">initial</span> +<br/>
+<span class="in4"></span>
+<span class="fn">sizeof</span>(<span class="var">b</span>-&gt;<span class="var">initial</span>);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Wenn der interne Buffer nicht gesetzt ist, wird er auf den enthaltenen
+  Bereich gesetzt</li><li>
+ Das stellt sicher, dass ein initialisierter Buffer keinen Speicher im
+  Heap belegt</li><li>
+ Mit <code><span class="fn">eraseBuffer</span></code> kann ggf. vorhandener Heap-Speicher freigegeben
+  werden</li><li>
+ Und der Buffer trotzdem weiter benutzt werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="in1"></span>
+<span class="type">struct Buffer</span> b = {};<br/>
+<span class="in1"></span>
+<span class="fn">activateBuffer</span>(&b);<br/>
+<span class="in1"></span>
+<span class="fn">ASSERT</span>(<span class="fn">isActiveBuffer</span>(&b));<br/>
+
+} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Ein leerer Buffer kann aktiviert werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="in1"></span>
 <span class="type">void</span> <span class="fn">addToBuffer</span>(<br/>
 <span class="in2"></span>
 <span class="type">struct Buffer *</span><span class="var">buffer</span>, <span class="type">char</span> ch<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+<span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">may initialize buffer)</span></span><br/>
+<span class="fn">activateBuffer</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">assure buffer size)</span></span><br/>
 <span class="in2"></span>
@@ -111,47 +252,9 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">may initialize buffer)</span></span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="var">buffer</span>-&gt;<span class="var">buffer</span>) {<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">buffer</span> =<br/>
-<span class="in3"></span>
-<span class="var">buffer</span>-&gt;<span class="var">initial</span>;<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">current</span> =<br/>
-<span class="in3"></span>
-<span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">end</span> =<br/>
-<span class="in3"></span>
-<span class="var">buffer</span>-&gt;<span class="var">initial</span> +<br/>
-<span class="in4"></span>
-INIT_BUFFER_SIZE;<br/>
-<span class="in1"></span>
-}<br/>
-
-<span class="end">@end(<span class="name">may initialize buffer)</span></span><br/>
-</code>
-</div>
-<ul><li>
- Wenn der interne Buffer nicht gesetzt ist, wird er auf den enthaltenen
-  Bereich gesetzt</li><li>
- Das stellt sicher, dass ein initialisierter Buffer keinen Speicher im
-  Heap belegt</li><li>
- Mit <code><span class="fn">eraseBuffer</span></code> kann ggf. vorhandener Heap-Speicher freigegeben
-  werden</li><li>
- Und der Buffer trotzdem weiter benutzt werden</li></ul></div>
-<div><div>
-<code>
-
 <span class="add">@def(<span class="name">assure buffer size)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">current</span> &gt;= <span class="var">buffer</span>-&gt;<span class="var">end</span><br/>
-<span class="in1"></span>
-) {<br/>
+<span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">current</span> &gt;= <span class="var">buffer</span>-&gt;<span class="var">end</span>) {<br/>
 <span class="in2"></span>
 <span class="type">int</span> <span class="var">size</span> = <span class="var">buffer</span>-&gt;<span class="var">current</span> -<br/>
 <span class="in3"></span>
@@ -175,11 +278,7 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in1"></span>
 <span class="type">char *</span><span class="var">newBuffer</span>;<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">buffer</span> == <span class="var">buffer</span>-&gt;<span class="var">initial</span><br/>
-<span class="in1"></span>
-) {<br/>
+<span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">buffer</span> == <span class="var">buffer</span>-&gt;<span class="var">initial</span>) {<br/>
 <span class="in2"></span>
 <span class="var">newBuffer</span> = <span class="fn">malloc</span>(<span class="var">newSize</span>);<br/>
 <span class="in2"></span>
@@ -189,7 +288,9 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in2"></span>
 <span class="var">newBuffer</span> = <span class="fn">realloc</span>(<br/>
 <span class="in3"></span>
-<span class="var">buffer</span>-&gt;<span class="var">buffer</span>, <span class="var">newSize</span>);<br/>
+<span class="var">buffer</span>-&gt;<span class="var">buffer</span>, <span class="var">newSize</span><br/>
+<span class="in2"></span>
+);<br/>
 <span class="in1"></span>
 }<br/>
 <span class="in1"></span>
@@ -256,7 +357,7 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+<span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
 <span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
 <span class="in1"></span>
@@ -282,11 +383,13 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+<span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">erase heap buffer)</span></span>;<br/>
 <span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
+<span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span>
+<span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -295,7 +398,9 @@ INIT_BUFFER_SIZE;<br/>
 </div>
 <ul><li>
  Wenn ein Buffer auf dem Heap angelegt wurde, wird dieser freigegeben</li><li>
- Zusätzlich wird der aktuelle Zeiger auf den Anfang zurückgesetzt</li></ul></div>
+ Die Zeiger werden auf <code><span class="keyword">NULL</span></code> gesetzt</li><li>
+ Nur <code><span class="var">end</span></code> muss nicht aktualisiert werden, da es bei der
+  Initialisierung gesetzt wird</li></ul></div>
 <div><div>
 <code>
 
@@ -308,8 +413,6 @@ INIT_BUFFER_SIZE;<br/>
 ) {<br/>
 <span class="in2"></span>
 <span class="fn">free</span>(<span class="var">buffer</span>-&gt;<span class="var">buffer</span>);<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="var">buffer</span>-&gt;<span class="var">initial</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -318,8 +421,7 @@ INIT_BUFFER_SIZE;<br/>
 </div>
 <ul><li>
  Wenn wir nicht den internen Buffer verwenden, wird der Buffer
-  freigegeben</li><li>
- Und der Buffer-Zeiger wird gelöscht</li></ul></div>
+  freigegeben</li></ul></div>
 </div>
 <h1>Unit Tests</h1>
 <div class="slides">
@@ -330,21 +432,17 @@ INIT_BUFFER_SIZE;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
 <span class="in1"></span>
-<span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
+<span class="type">struct Buffer</span> <span class="var">b</span> = {};<br/>
 <span class="in1"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="str">'x'</span>);<br/>
+<span class="fn">addToBuffer</span>(&<span class="var">b</span>, <span class="str">'x'</span>);<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(*<span class="var">buffer</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
+<span class="fn">ASSERT</span>(*<span class="var">b</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> + 1 ==<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>.<span class="var">current</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="var">buffer</span> + 1 == <span class="var">b</span>.<span class="var">current</span>);<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> ==<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>.<span class="var">initial</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="var">buffer</span> == <span class="var">b</span>.<span class="var">initial</span>);<br/>
 
 } <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
 </code>
@@ -366,7 +464,7 @@ INIT_BUFFER_SIZE;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>);<br/>
+<span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">count</span> &gt;= 0);<br/>
 <span class="in2"></span>
@@ -388,27 +486,21 @@ INIT_BUFFER_SIZE;<br/>
 
 <span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
 <span class="in1"></span>
-<span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
+<span class="type">struct Buffer</span> <span class="var">b</span> = {};<br/>
 <span class="in1"></span>
-<span class="fn">addCharsToBuffer</span>(&<span class="var">buffer</span>, <span class="str">'x'</span>,<br/>
-<span class="in2"></span>
-1000);<br/>
+<span class="fn">addCharsToBuffer</span>(&<span class="var">b</span>, <span class="str">'x'</span>, 1000);<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(*<span class="var">buffer</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="fn">isActiveBuffer</span>(&<span class="var">b</span>));<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> + 1000 ==<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>.<span class="var">current</span>);<br/>
+<span class="fn">ASSERT</span>(*<span class="var">b</span>.<span class="var">buffer</span> == <span class="str">'x'</span>);<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> !=<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>.<span class="var">initial</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="var">buffer</span> + 1000 == <span class="var">b</span>.<span class="var">current</span>);<br/>
 <span class="in1"></span>
-<span class="fn">eraseBuffer</span>(&<span class="var">buffer</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="var">buffer</span> != <span class="var">b</span>.<span class="var">initial</span>);<br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="var">buffer</span> ==<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>.<span class="var">initial</span>);<br/>
+<span class="fn">eraseBuffer</span>(&<span class="var">b</span>);<br/>
+<span class="in1"></span>
+<span class="fn">ASSERT</span>(! <span class="fn">isActiveBuffer</span>(&<span class="var">b</span>));<br/>
 
 } <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
 </code>

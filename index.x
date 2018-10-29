@@ -9,7 +9,7 @@
 ## Funktionsweise von `hx`
 * `hx` generiert Source-Code und HTML-Präsentationen aus einem
   Basis-Format
-* Dieses lehnt an Markdown an und hat die Datei-Endung `.hx`
+* Dieses lehnt an Markdown an und hat die Datei-Endung `.x`
 * Die Präsentationen bauen Schritt für Schritt das Programm auf
 * `hx` kann ebenfalls navigierbare Verweise in die Präsentation einbauen
 
@@ -23,8 +23,9 @@
 * Sondern wie das Programm aufgebaut wird
 * Zu jedem Zeitpunkt muss das bisher beschriebene Programm ausführbar
   sein
-* Wenn nicht definierte Makros zu nichts expandieren
-* So kann das Verständnis für ein Programm schrittweise erarbeitet werden
+* Nicht definierte Makros werden zu nichts expandieren
+* So kann das Verständnis für ein Programm schrittweise erarbeitet
+  werden
 
 # Definition des Ablaufs
 * Zuerst wird das Haupt-Programm in ganz groben Pinselstrichen skizziert
@@ -66,7 +67,10 @@ x{main body}
 * Der Wert des Makros mit dem Namen in Klammern wird anstelle des Aufrufs
   im endgültigen Programm gesetzt
 * Diese Makros bilden ein zentrales Element von `hx`
-* Sie können mit `@add`-`@end`-Sequenzen definiert oder erweitert werden
+* Sie können mit `@def`-`@end`-Sequenzen definiert werden
+* Oder mit `@add`-`@end` erweitert werden
+* Ein `@expand` darf nur einmal aufgelöst werden
+* Für mehrfache Auflösungen muss `@mulitple` verwendet werden
 
 ```
 d{global elements}
@@ -112,7 +116,11 @@ x{global elements}
 * Mitten während des Lesens können andere Dateien eingelesen (inkludiert)
   werden
 * Daher gibt es einen Stapel offener Dateien
-* Aus der letzten wird gelesen
+* Aus der letzten wird aktuell gelesen
+* Eine Liste aller gelesenen Dateien wird in `v{used}` verwaltet
+* Damit wird verhindert, dass eine Datei mehrfach gelesen wird
+* Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
+  werden müssen
 
 ```
 a{global elements}
@@ -131,9 +139,10 @@ a{global elements}
 	}
 x{global elements}
 ```
-* Eine Datei, die über einen Pfad beschrieben ist, kann auch als
-  Eingabe-Strom verwendet werden
-* Sie muss nur vorher geöffnet werden
+* Dateien werden über ihren Pfad identifiziert
+* Dieser wird als Name gespeichert
+* Die Struktur wird dynamisch so groß gewählt, dass der Name hinein
+  passt
 
 ```
 d{check file for path}
@@ -142,6 +151,7 @@ d{check file for path}
 	);
 x{check file for path}
 ```
+* Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab
 
 ```
 d{check memory for input}
@@ -151,32 +161,79 @@ d{check memory for input}
 	);
 x{check memory for input}
 ```
+* Wenn kein Speicher für die `t{struct Input}` vorhanden ist bricht das
+  Programm ab
+
+# Kommandozeile
+* Die Kommandozeile wird Element für Element abgearbeitet
 
 ```
 a{global elements}
-	const char *stylesheet = "slides/slides.css";
+	const char *stylesheet =
+		"slides/slides.css";
 x{global elements}
 ```
+* Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
+* Über die Kommandozeile kann eine alternative Datei angegeben werden
 
 ```
 d{process arguments}
-	t{bool} someFiles = false;
+	t{bool} someFile = false;
 	for (int i = 1; i < argc; ++i) {
-		if (memcmp(argv[i], "--css=", 6) == 0) {
-			stylesheet = argv[i] + 6;
-		} else {
-			f{pushPath}(v{argv}[n{1}]);
-			someFiles = true;
-		}
+		e{process argument};
+		ASSERT(
+			false,
+			"unknown argument [%s]",
+			argv[i]
+		);
 	}
-	if (! someFiles) {
+x{process arguments}
+```
+* Die Argumente werden einzeln durchgegangen
+* Wenn sie nicht verwendet werden, bricht das Programm ab
+
+```
+d{process argument} {
+	const char prefix[] = "--css";
+	int len = sizeof(prefix) - 1;
+	if (memcmp(argv[i], prefix, len) == 0) {
+		stylesheet = argv[i] + len;
+		continue;
+	}
+} x{process argument}
+```
+* Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
+  werden
+
+```
+a{process argument}
+	if (! someFile) {
+		f{pushPath}(v{argv}[n{1}]);
+		someFile = true;
+		continue;
+	}
+x{process argument}
+```
+* Ansonsten wird das Argument als Pfad der `.x`-Datei interpretiert
+* Aus dieser werden HTML-Slides und Source-Code generiert
+* Es kann nur eine Datei angegeben werden
+
+```
+a{process arguments}
+	if (! someFile) {
 		f{pushPath}(s{"index.x"});
 	}
 x{process arguments}
 ```
-* Der Source-Code für die Slideware muss aus einer Datei geladen werden
-* Der Name kann über die Kommandozeile gesetzt werden
-* Ansonsten wird `index.x` als Vorgabe verwendet
+* Wenn kein Pfad angegeben wurde, wird `index.x` als Vorgabe verwendet
+
+# Nächstes Zeichen
+* Die Funktion `f{nextCh}` liest das nächste Zeichen aus der aktuellen
+  Datei
+* Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
+  Stapel der offenen Dateien geholt
+* Erst wenn die letzte Datei fertig gelesen wurde, wird ein `k{EOF}`
+  zurück geliefert
 
 ```
 a{global elements}
@@ -185,16 +242,28 @@ a{global elements}
 		k{while} (v{input}) {
 			v{ch} = f{fgetc}(v{input}->v{file});
 			k{if} (v{ch} != k{EOF}) { k{break}; }
-			t{struct Input *}v{n} = v{input}->v{link};
-			f{fclose}(v{input}->v{file});
-			v{input}->v{link} = v{used};
-			v{used} = v{input};
-			v{input} = v{n};
+			e{get next input file};
 		}
 		k{return} v{ch};
 	}
 x{global elements}
 ```
+* Wenn kein `k{EOF}` gelesen wurde, dann wird das Zeichen zurück
+  geliefert
+* Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
+
+```
+d{get next input file}
+	t{struct Input *}v{n} = v{input}->v{link};
+	f{fclose}(v{input}->v{file});
+	v{input}->v{link} = v{used};
+	v{used} = v{input};
+	v{input} = v{n};
+x{get next input file}
+```
+* Die aktuelle Datei wird geschlossen und in die Liste der bereits
+  verarbeiteten Dateien eingereiht
+* Dann wird der Vorgänger zur aktuellen Datei erklärt
 
 # Buffer
 * Einfache Implementierung in C eines Byte-Vektors
@@ -228,15 +297,18 @@ d{read source file}
 	{
 		e{additional read vars};
 		t{int} v{last} = f{nextCh}();
-		t{int} v{ch} = f{nextCh}();
+		t{int} v{ch} = v{last} != k{EOF} ? f{nextCh}() : k{EOF};
 		k{while} (v{ch} != v{EOF}) {
 			e{process current char};
 			v{last} = v{ch}; v{ch} = f{nextCh}();
 		}
 	}
 x{read source file}
+
 ```
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
+* Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
+  schon das erste Zeichen ein `k{EOF}` ist)
 
 ```
 d{process current char}
@@ -256,6 +328,8 @@ x{process current char}
 ```
 * Beim Parsen kommt es nur auf das Öffnen und Schließen von
   Mengenklammern an
+* Diese bestimmen den Anfang und das Ende von Makro-Sequenzen
+* Welche die Bearbeitung der sonstigen Zeichen steuern
 
 ```
 d{additional read vars}
@@ -264,33 +338,33 @@ d{additional read vars}
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
-* In einem Code sind wir sogar in einem Makro, dessen Inhalt gelesen wird
+* In einem Code sind wir sogar in einem Makro, dessen Inhalt gerade
+  gelesen wird
 * Am Anfang sind wir außerhalb eines Code-Blocks
+* In einem Code-Block ist `v{macro}` nicht `k{NULL}`
 
 ```
 a{additional read vars}
 	t{char} v{openCh} = s{'\0'};
 x{additional read vars}
 ```
-* Der Befehl vor einer öffnenden Mengenklammer wird in dieser Variable
+* Das Zeichenvor einer öffnenden Mengenklammer wird in `v{openCh}`
   zwischengespeichert
+* Es beschreibt, welcher Befehl ausgeführt werden soll
 
 ```
 a{additional read vars}
-	t{char} v{name}t{[128]};
-	t{char *}v{nameCur} = k{NULL};	
-	t{const char *}v{nameEnd} = v{name} +
-		k{sizeof}(v{name});
+	t{struct Buffer} v{name} = {};
 x{additional read vars}
 ```
-* Wenn `v{nameCur}` gesetzt ist, dann wird ein Name in Buffer gelesen
+* Wenn `v{name}` aktiv ist, dann wird ein Name in Buffer gelesen
 
 ```
 d{process close brace} {
-	k{if} (v{nameCur}) {
-		*v{nameCur} = s{'\0'};
+	k{if} (isActiveBuffer(&v{name})) {
+		f{addToBuffer}(&v{name}, s{'\0'});
 		e{process macro name};
-		v{nameCur} = k{NULL};
+		f{eraseBuffer}(&v{name});
 		v{last} = v{ch};
 		v{ch} = f{nextCh}();
 	}
@@ -301,9 +375,8 @@ d{process close brace} {
 
 ```
 d{process other char} {
-	k{if} (v{nameCur}) {
-		f{ASSERT}(v{nameCur} < v{nameEnd}, s{"name too long"});
-		*v{nameCur}++ = v{ch};
+	k{if} (isActiveBuffer(&v{name})) {
+		f{addToBuffer}(&v{name}, v{ch});
 		k{break};
 	}
 } x{process other char}
@@ -327,7 +400,7 @@ d{process open brace} {
 		k{static} t{const char} v{valids}[] = s{"adir"};
 		k{if} (f{strchr}(v{valids}, v{last})) {
 			v{openCh} = v{last};
-			v{nameCur} = v{name};
+			f{activateBuffer}(&v{name});
 			k{break};
 		}
 	}
@@ -353,14 +426,14 @@ d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, "def in macro");
 		v{macro} = f{findMacroInMap}(
-			&v{macros}, v{name}, v{nameCur}
+			&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
 		);
 		if (isPopulatedMacro(macro)) {
-			printf("macro [%.*s] already defined\n", (int) (nameCur - name), name);
+			printf("macro [%s] already defined\n", name.current);
 		}
 		if (! macro) {
 			v{macro} = f{allocMacroInMap}(
-				&v{macros}, v{name}, v{nameCur}
+				&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
 			);
 		}
 		v{processed} = k{true};
@@ -375,11 +448,11 @@ a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
 		f{ASSERT}(! v{macro}, "add in macro");
 		v{macro} = f{findMacroInMap}(
-			&v{macros}, v{name}, v{nameCur}
+			&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
 		);
 		if (! isPopulatedMacro(macro)) {
-			printf("macro [%.*s] not defined\n", (int) (nameCur - name), name);
-			macro = getMacroInMap(&macros, name, nameCur);
+			printf("macro [%s] not defined\n",name.buffer);
+			macro = getMacroInMap(&macros, name.buffer, name.current - 1);
 		}
 		v{processed} = k{true};
 	}
@@ -394,9 +467,9 @@ a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
 		f{ASSERT}(! v{macro}, "replace in macro");
 		v{macro} = f{getMacroInMap}(
-			&v{macros}, v{name}, v{nameCur}
+			&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
 		);
-		f{ASSERT}(v{macro}, "macro %.*s not defined", (int) (nameCur - name), name);
+		f{ASSERT}(v{macro}, "macro %s not defined", name.buffer);
 		f{freeMacrosEntries}(v{macro});
 		v{processed} = k{true};
 	}
@@ -421,9 +494,9 @@ x{process macro name}
 ```
 d{macro names must match}
 	ASSERT(
-		! strcmp(macro->name, name),
+		! strcmp(macro->name, name.buffer),
 		"closing [%s] != [%s]",
-		name, macro->name
+		name.buffer, macro->name
 	);
 x{macro names must match}
 ```
@@ -446,8 +519,8 @@ x{global source vars}
 a{process macro name}
 	k{if} (v{openCh} == s{'i'}) {
 		f{ASSERT}(! v{macro}, "include in macro");
-		k{if} (! f{alreadyUsed}(v{name})) {
-			f{pushPath}(v{name});
+		k{if} (! f{alreadyUsed}(v{name}.v{buffer})) {
+			f{pushPath}(v{name}.v{buffer});
 		}
 		v{processed} = k{true};
 	}
@@ -463,7 +536,7 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
-				&v{macros}, v{name}, v{nameCur});
+				&v{macros}, v{name}.buffer, v{name}.current - 1);
 		if (sub->expands) {
 			printf("multiple expands of [%s]\n", sub->name);
 		}
@@ -485,7 +558,7 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
-				&v{macros}, v{name}, v{nameCur});
+				&v{macros}, v{name}.buffer, v{name}.current - 1);
 		if (sub->expands) {
 			printf("multiple after expand of [%s]\n", sub->name);
 		}
@@ -519,7 +592,7 @@ d{process private macro}
 		v{macro}, v{prefix}, v{prefix} + f{sizeof}(v{prefix}) - 1
 	);
 	f{addBytesToMacro}(
-		v{macro}, v{name}, v{nameCur}
+		v{macro}, v{name}.buffer, v{name}.current - 1
 	);
 x{process private macro}
 ```
@@ -574,7 +647,7 @@ a{process open brace} {
 		e{check valid names};
 		k{if} (v{valid}) {
 			v{openCh} = v{last};
-			v{nameCur} = v{name};
+			activateBuffer(&name);
 			k{break};
 		}
 	}
@@ -594,9 +667,9 @@ x{check valid names}
 ```
 a{process macro name}
 	k{if} (! v{processed}) {
-		f{ASSERT}(v{macro}, "unknown macro %.*s", (int) (nameCur - name), name);
-		t{const char *}v{c} = v{name};
-		k{for} (; v{c} != v{nameCur}; ++v{c}) {
+		f{ASSERT}(v{macro}, "unknown macro %s", name.buffer);
+		t{const char *}v{c} = v{name}.buffer;
+		k{for} (; v{c} != v{name.current} - 1; ++v{c}) {
 			f{addToBuffer}(&v{buffer}, *v{c});
 		}
 		v{processed} = k{true};

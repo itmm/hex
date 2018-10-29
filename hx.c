@@ -61,25 +61,27 @@ void freeMacroEntry(
 		input = i;
 	}
 
-	const char *stylesheet = "slides/slides.css";
+	const char *stylesheet =
+		"slides/slides.css";
 
 	int nextCh() {
 		int ch = EOF;
 		while (input) {
 			ch = fgetc(input->file);
 			if (ch != EOF) { break; }
-			struct Input *n = input->link;
-			fclose(input->file);
-			input->link = used;
-			used = input;
-			input = n;
+			
+	struct Input *n = input->link;
+	fclose(input->file);
+	input->link = used;
+	used = input;
+	input = n;
+;
 		}
 		return ch;
 	}
 
 	
 	#define INIT_BUFFER_SIZE 16
-	
 	struct Buffer {
 		char initial[INIT_BUFFER_SIZE];
 		char *buffer;
@@ -87,33 +89,44 @@ void freeMacroEntry(
 		const char *end;
 	};
 
+	static inline void bufferInvariant(
+		const struct Buffer *b
+	) {
+		ASSERT(b);
+		ASSERT(b->buffer <= b->current);
+		ASSERT(b->current <= b->end);
+	}
+
+	static inline bool isActiveBuffer(
+		const struct Buffer *b
+	) {
+		bufferInvariant(b);
+		return b->buffer;
+	}
+
+	void activateBuffer(struct Buffer *b) {
+		bufferInvariant(b);
+		if (! b->buffer) {
+			b->buffer = b->initial;
+			b->current = b->buffer;
+			b->end = b->initial +
+				sizeof(b->initial);
+		}
+	}
+
 	void addToBuffer(
 		struct Buffer *buffer, char ch
 	) {
-		ASSERT(buffer);
+		bufferInvariant(buffer);
+		activateBuffer(buffer);
 		
-	if (! buffer->buffer) {
-		buffer->buffer =
-			buffer->initial;
-		buffer->current =
-			buffer->buffer;
-		buffer->end =
-			buffer->initial +
-				INIT_BUFFER_SIZE;
-	}
-
-		
-	if (
-		buffer->current >= buffer->end
-	) {
+	if (buffer->current >= buffer->end) {
 		int size = buffer->current -
 			buffer->buffer;
 		int newSize = 2 * size;
 		
 	char *newBuffer;
-	if (
-		buffer->buffer == buffer->initial
-	) {
+	if (buffer->buffer == buffer->initial) {
 		newBuffer = malloc(newSize);
 		
 	ASSERT(newBuffer);
@@ -123,7 +136,8 @@ void freeMacroEntry(
 ;
 	} else {
 		newBuffer = realloc(
-			buffer->buffer, newSize);
+			buffer->buffer, newSize
+		);
 	}
 	
 	ASSERT(newBuffer);
@@ -140,30 +154,30 @@ void freeMacroEntry(
 	void resetBuffer(
 		struct Buffer *buffer
 	) {
-		ASSERT(buffer);
+		bufferInvariant(buffer);
 		buffer->current = buffer->buffer;
 	}
 
 	void eraseBuffer(
 		struct Buffer *buffer
 	) {
-		ASSERT(buffer);
+		bufferInvariant(buffer);
 		
 	if (buffer->buffer &&
 		buffer->buffer != buffer->initial
 	) {
 		free(buffer->buffer);
-		buffer->buffer = buffer->initial;
 	}
 ;
-		buffer->current = buffer->buffer;
+		buffer->buffer = NULL;
+		buffer->current = NULL;
 	}
 
 	void addCharsToBuffer(
 		struct Buffer *buffer,
 		char ch, int count
 	) {
-		ASSERT(buffer);
+		bufferInvariant(buffer);
 		ASSERT(count >= 0);
 		for (; count; --count) {
 			addToBuffer(buffer, ch);
@@ -674,25 +688,30 @@ void freeMacroEntry(
 		
 	
 	 {
-	struct Buffer buffer = {};
-	addToBuffer(&buffer, 'x');
-	ASSERT(*buffer.buffer == 'x');
-	ASSERT(buffer.buffer + 1 ==
-		buffer.current);
-	ASSERT(buffer.buffer ==
-		buffer.initial);
+	struct Buffer b = {};
+	bufferInvariant(&b);
 }  {
-	struct Buffer buffer = {};
-	addCharsToBuffer(&buffer, 'x',
-		1000);
-	ASSERT(*buffer.buffer == 'x');
-	ASSERT(buffer.buffer + 1000 ==
-		buffer.current);
-	ASSERT(buffer.buffer !=
-		buffer.initial);
-	eraseBuffer(&buffer);
-	ASSERT(buffer.buffer ==
-		buffer.initial);
+	struct Buffer b = {};
+	ASSERT(! isActiveBuffer(&b));
+}  {
+	struct Buffer b = {};
+	activateBuffer(&b);
+	ASSERT(isActiveBuffer(&b));
+}  {
+	struct Buffer b = {};
+	addToBuffer(&b, 'x');
+	ASSERT(*b.buffer == 'x');
+	ASSERT(b.buffer + 1 == b.current);
+	ASSERT(b.buffer == b.initial);
+}  {
+	struct Buffer b = {};
+	addCharsToBuffer(&b, 'x', 1000);
+	ASSERT(isActiveBuffer(&b));
+	ASSERT(*b.buffer == 'x');
+	ASSERT(b.buffer + 1000 == b.current);
+	ASSERT(b.buffer != b.initial);
+	eraseBuffer(&b);
+	ASSERT(! isActiveBuffer(&b));
 } ;
 
 	
@@ -837,16 +856,30 @@ void freeMacroEntry(
 } ;
 ;
 	
-	bool someFiles = false;
+	bool someFile = false;
 	for (int i = 1; i < argc; ++i) {
-		if (memcmp(argv[i], "--css=", 6) == 0) {
-			stylesheet = argv[i] + 6;
-		} else {
-			pushPath(argv[1]);
-			someFiles = true;
-		}
+		 {
+	const char prefix[] = "--css";
+	int len = sizeof(prefix) - 1;
+	if (memcmp(argv[i], prefix, len) == 0) {
+		stylesheet = argv[i] + len;
+		continue;
 	}
-	if (! someFiles) {
+} 
+	if (! someFile) {
+		pushPath(argv[1]);
+		someFile = true;
+		continue;
+	}
+;
+		ASSERT(
+			false,
+			"unknown argument [%s]",
+			argv[i]
+		);
+	}
+
+	if (! someFile) {
 		pushPath("index.x");
 	}
 ;
@@ -871,13 +904,10 @@ void freeMacroEntry(
 
 	char openCh = '\0';
 
-	char name[128];
-	char *nameCur = NULL;	
-	const char *nameEnd = name +
-		sizeof(name);
+	struct Buffer name = {};
 ;
 		int last = nextCh();
-		int ch = nextCh();
+		int ch = last != EOF ? nextCh() : EOF;
 		while (ch != EOF) {
 			
 	switch (ch) {
@@ -887,7 +917,7 @@ void freeMacroEntry(
 		static const char valids[] = "adir";
 		if (strchr(valids, last)) {
 			openCh = last;
-			nameCur = name;
+			activateBuffer(&name);
 			break;
 		}
 	}
@@ -903,7 +933,7 @@ void freeMacroEntry(
 ;
 		if (valid) {
 			openCh = last;
-			nameCur = name;
+			activateBuffer(&name);
 			break;
 		}
 	}
@@ -916,20 +946,20 @@ void freeMacroEntry(
 		case '}': {
 			bool processed = false;
 			 {
-	if (nameCur) {
-		*nameCur = '\0';
+	if (isActiveBuffer(&name)) {
+		addToBuffer(&name, '\0');
 		
 	if (openCh == 'd') {
 		ASSERT(! macro, "def in macro");
 		macro = findMacroInMap(
-			&macros, name, nameCur
+			&macros, name.buffer, name.current - 1
 		);
 		if (isPopulatedMacro(macro)) {
-			printf("macro [%.*s] already defined\n", (int) (nameCur - name), name);
+			printf("macro [%s] already defined\n", name.current);
 		}
 		if (! macro) {
 			macro = allocMacroInMap(
-				&macros, name, nameCur
+				&macros, name.buffer, name.current - 1
 			);
 		}
 		processed = true;
@@ -938,11 +968,11 @@ void freeMacroEntry(
 	if (openCh == 'a') {
 		ASSERT(! macro, "add in macro");
 		macro = findMacroInMap(
-			&macros, name, nameCur
+			&macros, name.buffer, name.current - 1
 		);
 		if (! isPopulatedMacro(macro)) {
-			printf("macro [%.*s] not defined\n", (int) (nameCur - name), name);
-			macro = getMacroInMap(&macros, name, nameCur);
+			printf("macro [%s] not defined\n",name.buffer);
+			macro = getMacroInMap(&macros, name.buffer, name.current - 1);
 		}
 		processed = true;
 	}
@@ -950,9 +980,9 @@ void freeMacroEntry(
 	if (openCh == 'r') {
 		ASSERT(! macro, "replace in macro");
 		macro = getMacroInMap(
-			&macros, name, nameCur
+			&macros, name.buffer, name.current - 1
 		);
-		ASSERT(macro, "macro %.*s not defined", (int) (nameCur - name), name);
+		ASSERT(macro, "macro %s not defined", name.buffer);
 		freeMacrosEntries(macro);
 		processed = true;
 	}
@@ -961,9 +991,9 @@ void freeMacroEntry(
 		ASSERT(macro, "end not in macro");
 		
 	ASSERT(
-		! strcmp(macro->name, name),
+		! strcmp(macro->name, name.buffer),
 		"closing [%s] != [%s]",
-		name, macro->name
+		name.buffer, macro->name
 	);
 ;
 		
@@ -983,8 +1013,8 @@ void freeMacroEntry(
 
 	if (openCh == 'i') {
 		ASSERT(! macro, "include in macro");
-		if (! alreadyUsed(name)) {
-			pushPath(name);
+		if (! alreadyUsed(name.buffer)) {
+			pushPath(name.buffer);
 		}
 		processed = true;
 	}
@@ -1004,7 +1034,7 @@ void freeMacroEntry(
 ;
 		struct Macro *sub =
 			getMacroInMap(
-				&macros, name, nameCur);
+				&macros, name.buffer, name.current - 1);
 		if (sub->expands) {
 			printf("multiple expands of [%s]\n", sub->name);
 		}
@@ -1032,7 +1062,7 @@ void freeMacroEntry(
 ;
 		struct Macro *sub =
 			getMacroInMap(
-				&macros, name, nameCur);
+				&macros, name.buffer, name.current - 1);
 		if (sub->expands) {
 			printf("multiple after expand of [%s]\n", sub->name);
 		}
@@ -1061,7 +1091,7 @@ void freeMacroEntry(
 		macro, prefix, prefix + sizeof(prefix) - 1
 	);
 	addBytesToMacro(
-		macro, name, nameCur
+		macro, name.buffer, name.current - 1
 	);
 ;
 		processed = true;
@@ -1090,15 +1120,15 @@ void freeMacroEntry(
 	}
 
 	if (! processed) {
-		ASSERT(macro, "unknown macro %.*s", (int) (nameCur - name), name);
-		const char *c = name;
-		for (; c != nameCur; ++c) {
+		ASSERT(macro, "unknown macro %s", name.buffer);
+		const char *c = name.buffer;
+		for (; c != name.current - 1; ++c) {
 			addToBuffer(&buffer, *c);
 		}
 		processed = true;
 	}
 ;
-		nameCur = NULL;
+		eraseBuffer(&name);
 		last = ch;
 		ch = nextCh();
 	}
@@ -1111,9 +1141,8 @@ void freeMacroEntry(
 		}
 		default:
 			 {
-	if (nameCur) {
-		ASSERT(nameCur < nameEnd, "name too long");
-		*nameCur++ = ch;
+	if (isActiveBuffer(&name)) {
+		addToBuffer(&name, ch);
 		break;
 	}
 }  {
