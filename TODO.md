@@ -6,3 +6,5 @@
 * Navigierbare Verweise
 * Letztes Zeichen ausgeben
 * Nur die ersten n-Folien verarbeiten
+* Slides ohne Kommentare loggen
+* Makro und Fragment auseinanderdröseln

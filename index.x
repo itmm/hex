@@ -466,26 +466,42 @@ a{process macro name}
 			&v{macros}, v{name}.v{buffer},
 			v{name}.v{current} - 1
 		);
-		if (! isPopulatedMacro(macro)) {
-			printf("macro [%s] not defined\n",name.buffer);
-			macro = getMacroInMap(&macros, name.buffer, name.current - 1);
-		}
+		e{check for add without def};
 		v{processed} = k{true};
 	}
 x{process macro name}
 ```
 * Bei einem öffnenden Makro wird das passende Makro gesucht
 * Weitere Bytes können zu diesem Makro hinzugefügt werden
-* Das Makro muss bereits vorhanden sein
+
+```
+d{check for add without def}
+	if (! isPopulatedMacro(macro)) {
+		printf(
+			"macro [%s] not defined\n",
+			name.buffer
+		);
+		macro = getMacroInMap(
+			&macros, name.buffer,
+			name.current - 1
+		);
+	}
+x{check for add without def}
+```
+* Das Makro muss bereits vorhanden und nicht leer sein
 
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
 		f{ASSERT}(! v{macro}, "replace in macro");
 		v{macro} = f{getMacroInMap}(
-			&v{macros}, v{name}.v{buffer}, v{name}.v{current} - 1
+			&v{macros}, v{name}.v{buffer},
+			v{name}.v{current} - 1
 		);
-		f{ASSERT}(v{macro}, "macro %s not defined", name.buffer);
+		f{ASSERT}(
+			v{macro}, "macro %s not defined",
+			name.buffer
+		);
 		f{freeMacrosEntries}(v{macro});
 		v{processed} = k{true};
 	}
@@ -516,13 +532,20 @@ d{macro names must match}
 	);
 x{macro names must match}
 ```
+* Wenn der öffnende und schließende Name nicht passt, wird die
+  Abarbeitung abgebrochen
 
 ```
 a{global source vars}
 	t{bool} f{alreadyUsed}(t{const char *}v{name}) {
-		k{for} (t{struct Input *}v{u} = v{used}; v{u}; v{u} =
-		v{u}->v{link}) {
-			if (strcmp(u->name, name) == 0) {
+		t{struct Input *}v{i} = v{input};
+		k{for} (; v{i}; v{i} = v{i}->v{link}) {
+			if (strcmp(i->name, name) == 0) {
+				return true;
+			}
+		}
+		k{for} (v{i} = v{used}; v{i}; v{i} = v{i}->v{link}) {
+			if (strcmp(i->name, name) == 0) {
 				return true;
 			}
 		}
@@ -530,6 +553,11 @@ a{global source vars}
 	}
 x{global source vars}
 ```
+* Prüft ob eine Datei bereits verwendet wurde
+* Sowohl die offenen als auch die bereits prozessierten Dateien werden
+  durchgegangen
+* Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
+  verarbeitet wird
 
 ```
 a{process macro name}
@@ -542,30 +570,51 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und auf
-  den Stapel der offenen Dateien gelegt
+* Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
+  auf den Stapel der offenen Dateien gelegt
+* Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
 		f{ASSERT}(v{macro}, "expand not in macro");
 		E{flush macro buffer};
-		t{struct Macro *}v{sub} =
-			f{getMacroInMap}(
-				&v{macros}, v{name}.buffer, v{name}.current - 1);
-		if (sub->expands) {
-			printf("multiple expands of [%s]\n", sub->name);
-		}
-		if (sub->multiples) {
-			printf("expand after mult of [%s]\n", sub->name);
-		}
+		t{struct Macro *}v{sub} = f{getMacroInMap}(
+			&v{macros}, v{name}.buffer,
+			v{name}.current - 1
+		);
+		e{check macro expand count};
 		++sub->expands;
-		f{addMacroToMacro}(
-			v{macro}, v{sub});
+		f{addMacroToMacro}(v{macro}, v{sub});
 		v{processed} = k{true};
 	}
 x{process macro name}
 ```
+* Bei einem `@expand` wird das Makro gesucht und eingebunden
+* Ggf. wird das Makro dabei auch erzeugt, um später befüllt zu werden
+* Das Attribut `v{expands}` zählt, wie häufig das Makro expandiert
+  wurde
+
+```
+d{check macro expand count}
+	if (sub->expands) {
+		printf(
+			"multiple expands of [%s]\n",
+			sub->name
+		);
+	}
+	if (sub->multiples) {
+		printf(
+			"expand after mult of [%s]\n",
+			sub->name
+		);
+	}
+x{check macro expand count}
+```
+* Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
+  ausgegeben
+* Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
+  ebenfalls eine Meldung ausgegeben
 
 ```
 a{process macro name}

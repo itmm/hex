@@ -241,7 +241,7 @@ a{global elements}
 			k{case} s{'>'}:
 				f{fprintf}(v{out}, s{"&gt;"}); k{break};
 			k{case} s{'&'}:
-				f{fprintf}(v{out}, s{"&"}); k{break};
+				f{fprintf}(v{out}, s{"&amp;"}); k{break};
 			k{default:}
 				f{fputc}(*v{str}, v{out});
 		}

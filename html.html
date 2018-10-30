@@ -56,7 +56,7 @@
 <span class="in2"></span>
 <span class="type">int</span> <span class="var">su</span> = <span class="fn">strlen</span>(<span class="var">suff</span>);<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">sl</span> &gt;= <span class="var">su</span> && <span class="num">0</span> == <span class="fn">memcmp</span>(<br/>
+<span class="keyword">return</span> <span class="var">sl</span> &gt;= <span class="var">su</span> &amp;&amp; <span class="num">0</span> == <span class="fn">memcmp</span>(<br/>
 <span class="in3"></span>
 <span class="var">str</span> + <span class="var">sl</span> - <span class="var">su</span>, <span class="var">suff</span>, <span class="var">su</span><br/>
 <span class="in2"></span>
@@ -282,9 +282,9 @@ struct HtmlStatus *s<br/>
 
 <span class="add">@def(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'#'</span> && <span class="var">last</span> == <span class="str">'\n'</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'#'</span> &amp;&amp; <span class="var">last</span> == <span class="str">'\n'</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>) ||<br/>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span><br/>
 <span class="in2"></span>
@@ -394,7 +394,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">headerNameEnd</span> &&<br/>
+<span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">headerNameEnd</span> &amp;&amp;<br/>
 <span class="in3"></span>
 <span class="var">ch</span> &gt; <span class="str">' '</span><br/>
 <span class="in2"></span>
@@ -454,19 +454,19 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">out</span>); <span class="fn">ASSERT</span>(<span class="var">str</span>);<br/>
 <span class="in2"></span>
-<span class="keyword">for</span> (; *<span class="var">str</span> && str != end; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
+<span class="keyword">for</span> (; *<span class="var">str</span> &amp;&amp; str != end; ++<span class="var">str</span>) <span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
 <span class="in3"></span>
 <span class="keyword">case</span> <span class="str">'&lt;'</span>:<br/>
 <span class="in4"></span>
-<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;"</span>); <span class="keyword">break</span>;<br/>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;lt;"</span>); <span class="keyword">break</span>;<br/>
 <span class="in3"></span>
 <span class="keyword">case</span> <span class="str">'&gt;'</span>:<br/>
 <span class="in4"></span>
-<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&gt;"</span>); <span class="keyword">break</span>;<br/>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;gt;"</span>); <span class="keyword">break</span>;<br/>
 <span class="in3"></span>
-<span class="keyword">case</span> <span class="str">'&'</span>:<br/>
+<span class="keyword">case</span> <span class="str">'&amp;'</span>:<br/>
 <span class="in4"></span>
-<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&"</span>); <span class="keyword">break</span>;<br/>
+<span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;amp;"</span>); <span class="keyword">break</span>;<br/>
 <span class="in3"></span>
 <span class="keyword">default:</span><br/>
 <span class="in4"></span>
@@ -653,9 +653,9 @@ default: {<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'`'</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'`'</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>) ||<br/>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
 <span class="in2"></span>
@@ -678,11 +678,11 @@ default: {<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> && <span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">3</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">3</span>) {<br/>
 <span class="in2"></span>
 <span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>)) {<br/>
 <span class="in3"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_SLIDE</span>) {<br/>
 <span class="in4"></span>
@@ -737,7 +737,7 @@ fprintf(out, "&lt;/div&gt;\n");<br/>
 <span class="in2"></span>
 if (last) {<br/>
 <span class="in3"></span>
-writeEscaped(out, &last, &last + 1);<br/>
+writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
@@ -760,7 +760,7 @@ continue;<br/>
 <span class="in2"></span>
 if (last) {<br/>
 <span class="in3"></span>
-writeEscaped(out, &last, &last + 1);<br/>
+writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
@@ -781,7 +781,7 @@ continue;<br/>
 
 <span class="add">@add(<span class="name">process ch in HTML code)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'\t'</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'\t'</span>) {<br/>
 <span class="in2"></span>
 ++<span class="var">status</span>.<span class="var">codeIndent</span>;<br/>
 <span class="in2"></span>
@@ -850,11 +850,11 @@ continue;<br/>
 
 <span class="add">@add(<span class="name">escape HTML code tag)</span></span><br/>
 <span class="in1"></span>
-if (ch == '}' && status.codeSpecial) {<br/>
+if (ch == '}' &amp;&amp; status.codeSpecial) {<br/>
 <span class="in2"></span>
 if (last) {<br/>
 <span class="in3"></span>
-writeEscaped(out, &last, &last + 1);<br/>
+writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in3"></span>
 last = 0;<br/>
 <span class="in2"></span>
@@ -905,7 +905,7 @@ status.codeName + sizeof(status.codeName)<br/>
 <span class="in1"></span>
 *status.codeNameEnd = '\0';<br/>
 <span class="in1"></span>
-while (status.codeNameEnd &gt;= status.codeName && *status.codeNameEnd<br/>
+while (status.codeNameEnd &gt;= status.codeName &amp;&amp; *status.codeNameEnd<br/>
 <span class="in2"></span>
 != '.') {<br/>
 <span class="in2"></span>
@@ -936,7 +936,7 @@ status.codeNameEnd = NULL;<br/>
 
 <span class="add">@add(<span class="name">process ch in HTML code)</span></span><br/>
 <span class="in1"></span>
-if (ch != EOF && status.codeNameEnd) {<br/>
+if (ch != EOF &amp;&amp; status.codeNameEnd) {<br/>
 <span class="in2"></span>
 ASSERT(status.codeNameEnd &lt;<br/>
 <span class="in3"></span>
@@ -1255,7 +1255,7 @@ break;<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (ch == <span class="str">'*'</span>) {<br/>
 <span class="in3"></span>
@@ -1265,7 +1265,7 @@ break;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
-} <span class="keyword">else</span> <span class="keyword">if</span> (ch != <span class="str">' '</span> && ch != <span class="str">'\t'</span>) {<br/>
+} <span class="keyword">else</span> <span class="keyword">if</span> (ch != <span class="str">' '</span> &amp;&amp; ch != <span class="str">'\t'</span>) {<br/>
 <span class="in3"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"</span>);<br/>
 <span class="in3"></span>
@@ -1288,9 +1288,9 @@ break;<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> && <span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">last</span> == <span class="str">'\n'</span> &amp;&amp; <span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&<span class="var">status</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>)) {<br/>
 <span class="in3"></span>
 <span class="keyword">if</span>(<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_SLIDE</span>) {<br/>
 <span class="in4"></span>
@@ -1319,11 +1319,11 @@ break;<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'`'</span> && <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'`'</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
 <span class="in2"></span>
 if (last) {<br/>
 <span class="in3"></span>
-writeEscaped(out, &last, &last + 1);<br/>
+writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
@@ -1354,7 +1354,7 @@ writeEscaped(out, &last, &last + 1);<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span> &&<br/>
+<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span> &amp;&amp;<br/>
 <span class="in1"></span>
 <span class="var">status</span>.<span class="var">noteInCode</span>) {<br/>
 <span class="in2"></span>
@@ -1371,7 +1371,7 @@ writeEscaped(out, &last, &last + 1);<br/>
 
 <span class="add">@add(<span class="name">process ch for HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'*'</span> && <span class="var">last</span> == <span class="str">'*'</span> && <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'*'</span> &amp;&amp; <span class="var">last</span> == <span class="str">'*'</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">noteInBold</span>) {<br/>
 <span class="in3"></span>
@@ -1404,7 +1404,7 @@ writeEscaped(out, &last, &last + 1);<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (<span class="var">last</span>) {<br/>
 <span class="in3"></span>
-writeEscaped(out, &last, &last + 1);<br/>
+writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>

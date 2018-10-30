@@ -624,13 +624,13 @@ if (! someFile) {<br/>
 
 <span class="add">@def(<span class="name">process close brace)</span></span> {<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (isActiveBuffer(&<span class="var">name</span>)) {<br/>
+<span class="keyword">if</span> (isActiveBuffer(&amp;<span class="var">name</span>)) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">name</span>, <span class="str">'\0'</span>);<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="str">'\0'</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">process macro name)</span></span>;<br/>
 <span class="in2"></span>
-<span class="fn">eraseBuffer</span>(&<span class="var">name</span>);<br/>
+<span class="fn">eraseBuffer</span>(&amp;<span class="var">name</span>);<br/>
 <span class="in2"></span>
 <span class="var">last</span> = <span class="var">ch</span>;<br/>
 <span class="in2"></span>
@@ -649,9 +649,9 @@ if (! someFile) {<br/>
 
 <span class="add">@def(<span class="name">process other char)</span></span> {<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (isActiveBuffer(&<span class="var">name</span>)) {<br/>
+<span class="keyword">if</span> (isActiveBuffer(&amp;<span class="var">name</span>)) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">name</span>, <span class="var">ch</span>);<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="var">ch</span>);<br/>
 <span class="in2"></span>
 <span class="keyword">break</span>;<br/>
 <span class="in1"></span>
@@ -670,7 +670,7 @@ if (! someFile) {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -693,7 +693,7 @@ if (! someFile) {<br/>
 <span class="in3"></span>
 <span class="var">openCh</span> = <span class="var">last</span>;<br/>
 <span class="in3"></span>
-<span class="fn">activateBuffer</span>(&<span class="var">name</span>);<br/>
+<span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
 <span class="in3"></span>
 <span class="keyword">break</span>;<br/>
 <span class="in2"></span>
@@ -739,7 +739,7 @@ if (! macro) {<br/>
 <span class="in3"></span>
 <span class="var">macro</span> = <span class="fn">allocMacroInMap</span>(<br/>
 <span class="in4"></span>
-&<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
 <span class="var">name</span>.<span class="var">current</span> - 1<br/>
 <span class="in3"></span>
@@ -764,7 +764,7 @@ if (! macro) {<br/>
 <span class="in1"></span>
 <span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
 <span class="in2"></span>
-&<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in2"></span>
 <span class="var">name</span>.<span class="var">current</span> - 1<br/>
 <span class="in1"></span>
@@ -801,17 +801,13 @@ name.current<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
 <span class="in3"></span>
-&<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - 1<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span>
+<span class="var">name</span>.<span class="var">current</span> - 1<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-if (! isPopulatedMacro(macro)) {<br/>
-<span class="in3"></span>
-printf("macro [%s] not defined\n",name.buffer);<br/>
-<span class="in3"></span>
-macro = getMacroInMap(&macros, name.buffer, name.current - 1);<br/>
-<span class="in2"></span>
-}<br/>
+<span class="expand">@expand(<span class="name">check for add without def)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 <span class="in1"></span>
@@ -822,8 +818,37 @@ macro = getMacroInMap(&macros, name.buffer, name.current - 1);<br/>
 </div>
 <ul><li>
  Bei einem öffnenden Makro wird das passende Makro gesucht</li><li>
- Weitere Bytes können zu diesem Makro hinzugefügt werden</li><li>
- Das Makro muss bereits vorhanden sein</li></ul></div>
+ Weitere Bytes können zu diesem Makro hinzugefügt werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">check for add without def)</span></span><br/>
+<span class="in1"></span>
+if (! isPopulatedMacro(macro)) {<br/>
+<span class="in2"></span>
+printf(<br/>
+<span class="in3"></span>
+"macro [%s] not defined\n",<br/>
+<span class="in3"></span>
+name.buffer<br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+macro = getMacroInMap(<br/>
+<span class="in3"></span>
+&amp;macros, name.buffer,<br/>
+<span class="in3"></span>
+name.current - 1<br/>
+<span class="in2"></span>
+);<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">check for add without def)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Das Makro muss bereits vorhanden und nicht leer sein</li></ul></div>
 <div><div>
 <code>
 
@@ -835,11 +860,19 @@ macro = getMacroInMap(&macros, name.buffer, name.current - 1);<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
 <span class="in3"></span>
-&<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - 1<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span>
+<span class="var">name</span>.<span class="var">current</span> - 1<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>, "macro %s not defined", name.buffer);<br/>
+<span class="fn">ASSERT</span>(<br/>
+<span class="in3"></span>
+<span class="var">macro</span>, "macro %s not defined",<br/>
+<span class="in3"></span>
+name.buffer<br/>
+<span class="in2"></span>
+);<br/>
 <span class="in2"></span>
 <span class="fn">freeMacrosEntries</span>(<span class="var">macro</span>);<br/>
 <span class="in2"></span>
@@ -895,7 +928,9 @@ name.buffer, macro-&gt;name<br/>
 <span class="end">@end(<span class="name">macro names must match)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn der öffnende und schließende Name nicht passt, wird die
+  Abarbeitung abgebrochen</li></ul></div>
 <div><div>
 <code>
 
@@ -903,11 +938,21 @@ name.buffer, macro-&gt;name<br/>
 <span class="in1"></span>
 <span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const char *</span><span class="var">name</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">for</span> (<span class="type">struct Input *</span><span class="var">u</span> = <span class="var">used</span>; <span class="var">u</span>; <span class="var">u</span> =<br/>
+<span class="type">struct Input *</span><span class="var">i</span> = <span class="var">input</span>;<br/>
 <span class="in2"></span>
-<span class="var">u</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="keyword">for</span> (; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in3"></span>
-if (strcmp(u-&gt;name, name) == 0) {<br/>
+if (strcmp(i-&gt;name, name) == 0) {<br/>
+<span class="in4"></span>
+return true;<br/>
+<span class="in3"></span>
+}<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+<span class="keyword">for</span> (<span class="var">i</span> = <span class="var">used</span>; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="in3"></span>
+if (strcmp(i-&gt;name, name) == 0) {<br/>
 <span class="in4"></span>
 return true;<br/>
 <span class="in3"></span>
@@ -922,7 +967,12 @@ return true;<br/>
 <span class="end">@end(<span class="name">global source vars)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Prüft ob eine Datei bereits verwendet wurde</li><li>
+ Sowohl die offenen als auch die bereits prozessierten Dateien werden
+  durchgegangen</li><li>
+ Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
+  verarbeitet wird</li></ul></div>
 <div><div>
 <code>
 
@@ -946,8 +996,9 @@ return true;<br/>
 </code>
 </div>
 <ul><li>
- Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und auf
-  den Stapel der offenen Dateien gelegt</li></ul></div>
+ Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
+  auf den Stapel der offenen Dateien gelegt</li><li>
+ Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert</li></ul></div>
 <div><div>
 <code>
 
@@ -959,29 +1010,19 @@ return true;<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
-<span class="type">struct Macro *</span><span class="var">sub</span> =<br/>
+<span class="type">struct Macro *</span><span class="var">sub</span> = <span class="fn">getMacroInMap</span>(<br/>
 <span class="in3"></span>
-<span class="fn">getMacroInMap</span>(<br/>
-<span class="in4"></span>
-&<span class="var">macros</span>, <span class="var">name</span>.buffer, <span class="var">name</span>.current - 1);<br/>
-<span class="in2"></span>
-if (sub-&gt;expands) {<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
-printf("multiple expands of [%s]\n", sub-&gt;name);<br/>
+<span class="var">name</span>.current - 1<br/>
 <span class="in2"></span>
-}<br/>
+);<br/>
 <span class="in2"></span>
-if (sub-&gt;multiples) {<br/>
-<span class="in3"></span>
-printf("expand after mult of [%s]\n", sub-&gt;name);<br/>
-<span class="in2"></span>
-}<br/>
+<span class="expand">@expand(<span class="name">check macro expand count)</span></span>;<br/>
 <span class="in2"></span>
 ++sub-&gt;expands;<br/>
 <span class="in2"></span>
-<span class="fn">addMacroToMacro</span>(<br/>
-<span class="in3"></span>
-<span class="var">macro</span>, <span class="var">sub</span>);<br/>
+<span class="fn">addMacroToMacro</span>(<span class="var">macro</span>, <span class="var">sub</span>);<br/>
 <span class="in2"></span>
 <span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 <span class="in1"></span>
@@ -990,7 +1031,48 @@ printf("expand after mult of [%s]\n", sub-&gt;name);<br/>
 <span class="end">@end(<span class="name">process macro name)</span></span><br/>
 </code>
 </div>
+<ul><li>
+ Bei einem <code>@expand</code> wird das Makro gesucht und eingebunden</li><li>
+ Ggf. wird das Makro dabei auch erzeugt, um später befüllt zu werden</li><li>
+ Das Attribut <code><span class="var">expands</span></code> zählt, wie häufig das Makro expandiert
+  wurde</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">check macro expand count)</span></span><br/>
+<span class="in1"></span>
+if (sub-&gt;expands) {<br/>
+<span class="in2"></span>
+printf(<br/>
+<span class="in3"></span>
+"multiple expands of [%s]\n",<br/>
+<span class="in3"></span>
+sub-&gt;name<br/>
+<span class="in2"></span>
+);<br/>
+<span class="in1"></span>
+}<br/>
+<span class="in1"></span>
+if (sub-&gt;multiples) {<br/>
+<span class="in2"></span>
+printf(<br/>
+<span class="in3"></span>
+"expand after mult of [%s]\n",<br/>
+<span class="in3"></span>
+sub-&gt;name<br/>
+<span class="in2"></span>
+);<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">check macro expand count)</span></span><br/>
+</code>
 </div>
+<ul><li>
+ Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
+  ausgegeben</li><li>
+ Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
+  ebenfalls eine Meldung ausgegeben</li></ul></div>
 <div><div>
 <code>
 
@@ -1006,7 +1088,7 @@ printf("expand after mult of [%s]\n", sub-&gt;name);<br/>
 <span class="in3"></span>
 <span class="fn">getMacroInMap</span>(<br/>
 <span class="in4"></span>
-&<span class="var">macros</span>, <span class="var">name</span>.buffer, <span class="var">name</span>.current - 1);<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.buffer, <span class="var">name</span>.current - 1);<br/>
 <span class="in2"></span>
 if (sub-&gt;expands) {<br/>
 <span class="in3"></span>
@@ -1142,7 +1224,7 @@ printf("multiple after expand of [%s]\n", sub-&gt;name);<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">resetBuffer</span>(&<span class="var">buffer</span>);<br/>
+<span class="fn">resetBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1165,7 +1247,7 @@ printf("multiple after expand of [%s]\n", sub-&gt;name);<br/>
 <span class="in3"></span>
 <span class="var">openCh</span> = <span class="var">last</span>;<br/>
 <span class="in3"></span>
-activateBuffer(&name);<br/>
+activateBuffer(&amp;name);<br/>
 <span class="in3"></span>
 <span class="keyword">break</span>;<br/>
 <span class="in2"></span>
@@ -1209,7 +1291,7 @@ activateBuffer(&name);<br/>
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name.current</span> - 1; ++<span class="var">c</span>) {<br/>
 <span class="in3"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
@@ -1228,7 +1310,7 @@ activateBuffer(&name);<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1243,9 +1325,9 @@ activateBuffer(&name);<br/>
 
 <span class="add">@add(<span class="name">process close brace)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">macro</span> && ! <span class="var">processed</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">macro</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">addToBuffer</span>(&<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
 

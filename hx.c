@@ -676,7 +676,7 @@ void freeMacroEntry(
 			case '>':
 				fprintf(out, "&gt;"); break;
 			case '&':
-				fprintf(out, "&"); break;
+				fprintf(out, "&amp;"); break;
 			default:
 				fputc(*str, out);
 		}
@@ -888,9 +888,14 @@ void freeMacroEntry(
 	struct MacroMap macros = {};
 
 	bool alreadyUsed(const char *name) {
-		for (struct Input *u = used; u; u =
-		u->link) {
-			if (strcmp(u->name, name) == 0) {
+		struct Input *i = input;
+		for (; i; i = i->link) {
+			if (strcmp(i->name, name) == 0) {
+				return true;
+			}
+		}
+		for (i = used; i; i = i->link) {
+			if (strcmp(i->name, name) == 0) {
 				return true;
 			}
 		}
@@ -975,21 +980,34 @@ void freeMacroEntry(
 	if (openCh == 'a') {
 		ASSERT(! macro, "add in macro");
 		macro = findMacroInMap(
-			&macros, name.buffer, name.current - 1
+			&macros, name.buffer,
+			name.current - 1
 		);
-		if (! isPopulatedMacro(macro)) {
-			printf("macro [%s] not defined\n",name.buffer);
-			macro = getMacroInMap(&macros, name.buffer, name.current - 1);
-		}
+		
+	if (! isPopulatedMacro(macro)) {
+		printf(
+			"macro [%s] not defined\n",
+			name.buffer
+		);
+		macro = getMacroInMap(
+			&macros, name.buffer,
+			name.current - 1
+		);
+	}
+;
 		processed = true;
 	}
 
 	if (openCh == 'r') {
 		ASSERT(! macro, "replace in macro");
 		macro = getMacroInMap(
-			&macros, name.buffer, name.current - 1
+			&macros, name.buffer,
+			name.current - 1
 		);
-		ASSERT(macro, "macro %s not defined", name.buffer);
+		ASSERT(
+			macro, "macro %s not defined",
+			name.buffer
+		);
 		freeMacrosEntries(macro);
 		processed = true;
 	}
@@ -1039,18 +1057,26 @@ void freeMacroEntry(
 		resetBuffer(&buffer);
 	}
 ;
-		struct Macro *sub =
-			getMacroInMap(
-				&macros, name.buffer, name.current - 1);
-		if (sub->expands) {
-			printf("multiple expands of [%s]\n", sub->name);
-		}
-		if (sub->multiples) {
-			printf("expand after mult of [%s]\n", sub->name);
-		}
+		struct Macro *sub = getMacroInMap(
+			&macros, name.buffer,
+			name.current - 1
+		);
+		
+	if (sub->expands) {
+		printf(
+			"multiple expands of [%s]\n",
+			sub->name
+		);
+	}
+	if (sub->multiples) {
+		printf(
+			"expand after mult of [%s]\n",
+			sub->name
+		);
+	}
+;
 		++sub->expands;
-		addMacroToMacro(
-			macro, sub);
+		addMacroToMacro(macro, sub);
 		processed = true;
 	}
 
