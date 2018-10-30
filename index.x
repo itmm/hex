@@ -194,7 +194,7 @@ x{process arguments}
 
 ```
 d{process argument} {
-	const char prefix[] = "--css";
+	const char prefix[] = "--css=";
 	int len = sizeof(prefix) - 1;
 	if (memcmp(argv[i], prefix, len) == 0) {
 		stylesheet = argv[i] + len;
