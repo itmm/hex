@@ -964,7 +964,7 @@ void freeMacroEntry(
 	if (isPopulatedMacro(macro)) {
 		printf(
 			"macro [%s] already defined\n",
-			name.current
+			name.buffer
 		);
 	}
 ;

@@ -448,7 +448,7 @@ d{check for double def}
 	if (isPopulatedMacro(macro)) {
 		printf(
 			"macro [%s] already defined\n",
-			name.current
+			name.buffer
 		);
 	}
 x{check for double def}
