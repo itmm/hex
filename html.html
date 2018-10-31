@@ -192,11 +192,22 @@ char last = '\n';<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (<span class="var">ch</span> == <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
 <span class="in2"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in1"></span>
 }<br/>
 
 } <span class="end">@end(<span class="name">write HTML file from in to out)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">move ch to last)</span></span><br/>
+<span class="in1"></span>
+<span class="var">last</span> = <span class="var">ch</span> == <span class="keyword">EOF</span> ? <span class="str">'\0'</span> : <span class="var">ch</span>;<br/>
+
+<span class="end">@end(<span class="name">move ch to last)</span></span><br/>
 </code>
 </div>
 </div>
@@ -323,7 +334,7 @@ status.headerState = status.state;<br/>
 <span class="in3"></span>
 <span class="expand">@expand(<span class="name">reset header state)</span></span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -375,7 +386,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in3"></span>
 *<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -406,7 +417,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in3"></span>
 *<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -696,7 +707,7 @@ fprintf(out, "&lt;code&gt;\n");<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_CODE</span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -712,7 +723,7 @@ fprintf(out, "&lt;/div&gt;\n");<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'\0'</span>;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -733,6 +744,27 @@ fprintf(out, "&lt;/div&gt;\n");<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (status.state == hs_IN_CODE) {<br/>
 <span class="in2"></span>
+<span class="keyword">if</span> (ch == EOF) {<br/>
+<span class="in3"></span>
+fprintf(stderr, "unterminated code block\n");<br/>
+<span class="in3"></span>
+break;<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process ch for HTML)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process ch for HTML)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (status.state == hs_IN_CODE) {<br/>
+<span class="in2"></span>
 <span class="expand">@expand(<span class="name">process ch in HTML code)</span></span>;<br/>
 <span class="in2"></span>
 if (last) {<br/>
@@ -741,7 +773,7 @@ writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
-last = ch;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in2"></span>
 continue;<br/>
 <span class="in1"></span>
@@ -765,8 +797,8 @@ writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 }<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;br/&gt;\n");<br/>
-<span class="in3"></span>
-last = ch;<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in2"></span>
 continue;<br/>
 <span class="in1"></span>
@@ -1271,7 +1303,7 @@ break;<br/>
 <span class="in3"></span>
 <span class="var">status</span>.<span class="var">state</span> = hs_AFTER_SLIDE;<br/>
 <span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">continue</span>;<br/>
 <span class="in2"></span>
@@ -1408,7 +1440,7 @@ writeEscaped(out, &amp;last, &amp;last + 1);<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
+<span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">continue</span>;<br/>
 <span class="in1"></span>

@@ -98,9 +98,15 @@ d{write HTML file from in to out} {
 		t{int} v{ch} = f{fgetc}(v{in});
 		e{process ch for HTML};
 		k{if} (v{ch} == k{EOF}) { k{break}; }
-		v{last} = v{ch};
+		E{move ch to last};
 	}
 } x{write HTML file from in to out}
+```
+
+```
+d{move ch to last}
+	v{last} = v{ch} == k{EOF} ? s{'\0'} : v{ch};
+x{move ch to last}
 ```
 
 ```
@@ -167,7 +173,7 @@ a{process ch for HTML}
 		k{if} (v{ch} == s{'\n'}) {
 			e{process header in HTML};
 			e{reset header state};
-			v{last} = v{ch};
+			E{move ch to last};
 			k{continue};
 		}
 	}
@@ -194,7 +200,7 @@ a{process ch for HTML}
 					) - n{1}
 			);
 			*v{status}.v{headerNameEnd}++ = v{ch};
-			v{last} = v{ch};
+			E{move ch to last};
 			k{continue};
 		}
 	}
@@ -210,7 +216,7 @@ a{process ch for HTML}
 			v{status}.v{headerNameEnd} =
 				v{status}.v{headerName};
 			*v{status}.v{headerNameEnd}++ = v{ch};
-			v{last} = v{ch};
+			E{move ch to last};
 			k{continue};
 		}
 	}
@@ -361,7 +367,7 @@ a{process ch for HTML}
 			fprintf(out, "<div><div>\n");
 			fprintf(out, "<code>\n");
 			v{status}.v{state} = v{hs_IN_CODE};
-			v{last} = v{ch};
+			E{move ch to last};
 			k{continue};
 		} k{else} k{if} (v{status}.v{state} == v{hs_IN_CODE}) {
 			fprintf(out, "</code>\n");
@@ -369,7 +375,7 @@ a{process ch for HTML}
 			v{status}.v{state} = v{hs_IN_SLIDE};
 			v{status}.v{codeIndent} = 0;
 			v{status}.v{codeSpecial} = s{'\0'};
-			v{last} = v{ch};
+			E{move ch to last};
 			k{continue};
 		}
 	}
@@ -380,11 +386,22 @@ x{process ch for HTML}
 ```
 a{process ch for HTML}
 	k{if} (status.state == hs_IN_CODE) {
+		k{if} (ch == EOF) {
+			fprintf(stderr, "unterminated code block\n");
+			break;
+		}
+	}
+x{process ch for HTML}
+```
+
+```
+a{process ch for HTML}
+	k{if} (status.state == hs_IN_CODE) {
 		e{process ch in HTML code};
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
 		}
-		last = ch;
+		E{move ch to last};
 		continue;
 	}
 x{process ch for HTML}
@@ -397,7 +414,7 @@ d{process ch in HTML code}
 			writeEscaped(out, &last, &last + 1);
 		}
 		fprintf(out, "<br/>\n");
-			last = ch;
+		E{move ch to last};
 		continue;
 	}
 x{process ch in HTML code}
@@ -662,7 +679,7 @@ a{process ch for HTML}
 		} k{else} k{if} (ch != s{' '} && ch != s{'\t'}) {
 			f{fprintf}(v{out}, s{"</li></ul></div>\n"});
 			v{status}.v{state} = hs_AFTER_SLIDE;
-			v{last} = v{ch};
+			E{move ch to last};
 			k{continue};
 		}
 	}
@@ -733,7 +750,7 @@ a{process ch for HTML}
 		k{if} (v{last}) {
 			writeEscaped(out, &last, &last + 1);
 		}
-		v{last} = v{ch};
+		E{move ch to last};
 		v{continue};
 	}
 x{process ch for HTML}

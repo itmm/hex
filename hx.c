@@ -1348,7 +1348,9 @@ void freeMacroEntry(
 	status.headerNameEnd = NULL;
 	status.headerState = hs_IN_SLIDE;
 ;
-			last = ch;
+			
+	last = ch == EOF ? '\0' : ch;
+;
 			continue;
 		}
 	}
@@ -1362,7 +1364,9 @@ void freeMacroEntry(
 					) - 1
 			);
 			*status.headerNameEnd++ = ch;
-			last = ch;
+			
+	last = ch == EOF ? '\0' : ch;
+;
 			continue;
 		}
 	}
@@ -1374,7 +1378,9 @@ void freeMacroEntry(
 			status.headerNameEnd =
 				status.headerName;
 			*status.headerNameEnd++ = ch;
-			last = ch;
+			
+	last = ch == EOF ? '\0' : ch;
+;
 			continue;
 		}
 	}
@@ -1397,7 +1403,9 @@ void freeMacroEntry(
 			fprintf(out, "<div><div>\n");
 			fprintf(out, "<code>\n");
 			status.state = hs_IN_CODE;
-			last = ch;
+			
+	last = ch == EOF ? '\0' : ch;
+;
 			continue;
 		} else if (status.state == hs_IN_CODE) {
 			fprintf(out, "</code>\n");
@@ -1405,11 +1413,20 @@ void freeMacroEntry(
 			status.state = hs_IN_SLIDE;
 			status.codeIndent = 0;
 			status.codeSpecial = '\0';
-			last = ch;
+			
+	last = ch == EOF ? '\0' : ch;
+;
 			continue;
 		}
 	}
 	status.codeOpening = 0;
+
+	if (status.state == hs_IN_CODE) {
+		if (ch == EOF) {
+			fprintf(stderr, "unterminated code block\n");
+			break;
+		}
+	}
 
 	if (status.state == hs_IN_CODE) {
 		 
@@ -1418,7 +1435,9 @@ void freeMacroEntry(
 			writeEscaped(out, &last, &last + 1);
 		}
 		fprintf(out, "<br/>\n");
-			last = ch;
+		
+	last = ch == EOF ? '\0' : ch;
+;
 		continue;
 	}
  
@@ -1573,7 +1592,9 @@ void freeMacroEntry(
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
 		}
-		last = ch;
+		
+	last = ch == EOF ? '\0' : ch;
+;
 		continue;
 	}
  
@@ -1585,7 +1606,9 @@ void freeMacroEntry(
 		} else if (ch != ' ' && ch != '\t') {
 			fprintf(out, "</li></ul></div>\n");
 			status.state = hs_AFTER_SLIDE;
-			last = ch;
+			
+	last = ch == EOF ? '\0' : ch;
+;
 			continue;
 		}
 	}
@@ -1763,12 +1786,16 @@ void freeMacroEntry(
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
 		}
-		last = ch;
+		
+	last = ch == EOF ? '\0' : ch;
+;
 		continue;
 	}
 ;
 		if (ch == EOF) { break; }
-		last = ch;
+		
+	last = ch == EOF ? '\0' : ch;
+;
 	}
 } ;
 	fclose(in);
