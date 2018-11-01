@@ -617,7 +617,7 @@ void freeMacroEntry(
 	enum HtmlState {
 		hs_NOTHING_WRITTEN,
 		hs_IN_SLIDE,
-			hs_AFTER_SLIDE
+		hs_AFTER_SLIDE
 		
 	, hs_IN_HEADER
 

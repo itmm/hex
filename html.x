@@ -13,8 +13,7 @@ d{write HTML file}
 	}
 x{write HTML file}
 ```
-* Beim Lesen der Datei können weitere Dateien in die Liste eingefügt
-  werden
+* Alle bisher prozessierten Dateien werden erneut durchgegangen
 
 ```
 a{global elements}
@@ -61,17 +60,23 @@ d{write cur HTML file to out}
 	f{fclose}(v{in});
 x{write cur HTML file to out}
 ```
+* Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 
 ```
 a{global elements}
 	t{enum HtmlState} {
 		v{hs_NOTHING_WRITTEN},
 		v{hs_IN_SLIDE},
-			v{hs_AFTER_SLIDE}
+		v{hs_AFTER_SLIDE}
 		e{html state enums}
 	};
 x{global elements}
 ```
+* In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die
+  gerade generierte HTML-Datei befindet
+* Vor dem ersten Element muss der HTML-Header geschrieben werden
+* Ansonsten wird unterschieden, ob eine Folie bereits geöffnet wurde
+* Oder ob gerade keine Folie offen ist
 
 ```
 a{global elements}
@@ -80,12 +85,14 @@ a{global elements}
 	};
 x{global elements}
 ```
+* Der aktuelle Status wird in `t{struct HtmlStatus}` abgelegt
 
 ```
 d{html state elements}
 	t{enum HtmlState} v{state};
 x{html state elements}
 ```
+* Der aktuelle Zustand wird im Status abgelegt
 
 ```
 d{write HTML file from in to out} {
@@ -102,29 +109,41 @@ d{write HTML file from in to out} {
 	}
 } x{write HTML file from in to out}
 ```
+* Beim Schreiben einer Datei wird zuerst der Status initialisiert
+* Wir befinden uns am Anfang einer Zeile
+* Dies wird durch `v{last} == s{'\n'}` signalisiert
+* Jedes Zeichen wird prozessiert
+* Bis das Datei-Ende erreicht ist
 
 ```
 d{move ch to last}
 	v{last} = v{ch} == k{EOF} ? s{'\0'} : v{ch};
 x{move ch to last}
 ```
+* Beim Kopieren des Zeichens wird `k{EOF}` durch `s{'\0'}` ersetzt
+
+## Überschriften
 
 ```
 d{html state enums}
 	, v{hs_IN_HEADER}
 x{html state enums}
 ```
+* Es gibt einen eigenen Zustand, wenn eine Überschrift gelesen wird
 
 ```
 a{global elements}
-	t{bool} isOutOfHtmlSpecial(
-		struct HtmlStatus *s
+	t{bool} f{isOutOfHtmlSpecial}(
+		t{struct HtmlStatus *}v{s}
 	) {
 		e{check html special state};
 		k{return} k{true};
 	}
 x{global elements}
 ```
+* Die Funktion `f{isOutOfHtmlSpecial}` liefert `k{true}`, wenn sich
+  der Zustands-Automat gerade nicht in einem Sonder-Modus (Überschrift,
+  Code, Notizen) befindet
 
 ```
 d{check html special state}
@@ -133,13 +152,14 @@ d{check html special state}
 	}
 x{check html special state}
 ```
+* Die Überschrift ist ein Sonder-Modus
 
 ```
 a{html state elements}
 	t{int} v{headerLevel};
-		t{char} v{headerName}[100];
-		t{char *} v{headerNameEnd};
-		t{enum HtmlState} v{headerState};
+	t{char} v{headerName}[100];
+	t{char *} v{headerNameEnd};
+	t{enum HtmlState} v{headerState};
 x{html state elements}
 ```
 

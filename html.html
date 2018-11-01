@@ -35,8 +35,7 @@
 </code>
 </div>
 <ul><li>
- Beim Lesen der Datei können weitere Dateien in die Liste eingefügt
-  werden</li></ul></div>
+ Alle bisher prozessierten Dateien werden erneut durchgegangen</li></ul></div>
 <div><div>
 <code>
 
@@ -121,7 +120,8 @@
 <span class="end">@end(<span class="name">write cur HTML file to out)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Zuerst wird die Eingabe-Datei zum Lesen geöffnet</li></ul></div>
 <div><div>
 <code>
 
@@ -132,7 +132,7 @@
 <span class="var">hs_NOTHING_WRITTEN</span>,<br/>
 <span class="in2"></span>
 <span class="var">hs_IN_SLIDE</span>,<br/>
-<span class="in3"></span>
+<span class="in2"></span>
 <span class="var">hs_AFTER_SLIDE</span><br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">html state enums)</span></span><br/>
@@ -142,7 +142,12 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die
+  gerade generierte HTML-Datei befindet</li><li>
+ Vor dem ersten Element muss der HTML-Header geschrieben werden</li><li>
+ Ansonsten wird unterschieden, ob eine Folie bereits geöffnet wurde</li><li>
+ Oder ob gerade keine Folie offen ist</li></ul></div>
 <div><div>
 <code>
 
@@ -157,7 +162,8 @@
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Der aktuelle Status wird in <code><span class="type">struct HtmlStatus</span></code> abgelegt</li></ul></div>
 <div><div>
 <code>
 
@@ -168,7 +174,8 @@
 <span class="end">@end(<span class="name">html state elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Der aktuelle Zustand wird im Status abgelegt</li></ul></div>
 <div><div>
 <code>
 
@@ -199,7 +206,12 @@ char last = '\n';<br/>
 } <span class="end">@end(<span class="name">write HTML file from in to out)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Beim Schreiben einer Datei wird zuerst der Status initialisiert</li><li>
+ Wir befinden uns am Anfang einer Zeile</li><li>
+ Dies wird durch <code><span class="var">last</span> == <span class="str">'\n'</span></code> signalisiert</li><li>
+ Jedes Zeichen wird prozessiert</li><li>
+ Bis das Datei-Ende erreicht ist</li></ul></div>
 <div><div>
 <code>
 
@@ -209,6 +221,14 @@ char last = '\n';<br/>
 
 <span class="end">@end(<span class="name">move ch to last)</span></span><br/>
 </code>
+</div>
+<ul><li>
+ Beim Kopieren des Zeichens wird <code><span class="keyword">EOF</span></code> durch <code><span class="str">'\0'</span></code> ersetzt</li></ul></div>
+</div>
+<h2>Überschriften</h2>
+<div class="slides">
+<div><div>
+<h2>Überschriften</h2>
 </div>
 </div>
 <div><div>
@@ -221,15 +241,16 @@ char last = '\n';<br/>
 <span class="end">@end(<span class="name">html state enums)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Es gibt einen eigenen Zustand, wenn eine Überschrift gelesen wird</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
-<span class="type">bool</span> isOutOfHtmlSpecial(<br/>
+<span class="type">bool</span> <span class="fn">isOutOfHtmlSpecial</span>(<br/>
 <span class="in2"></span>
-struct HtmlStatus *s<br/>
+<span class="type">struct HtmlStatus *</span><span class="var">s</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
@@ -242,7 +263,10 @@ struct HtmlStatus *s<br/>
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Die Funktion <code><span class="fn">isOutOfHtmlSpecial</span></code> liefert <code><span class="keyword">true</span></code>, wenn sich
+  der Zustands-Automat gerade nicht in einem Sonder-Modus (Überschrift,
+  Code, Notizen) befindet</li></ul></div>
 <div><div>
 <code>
 

@@ -8,3 +8,5 @@
 * Slides ohne Kommentare loggen
 * Makro und Fragment auseinanderdröseln
 * SVG-Grafiken in Slides
+* Header-Name in Buffer ablegen
+* Buffer mit Heap als nicht aktiv markieren
