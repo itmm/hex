@@ -1204,7 +1204,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">struct Macro *</span><span class="var">macro,</span><br/>
 <span class="in2"></span>
-<span class="type">FILE *</span><span class="var">out</span><br/>
+<span class="type">FILE *</span><span class="var">out</span>,<br/>
+<span class="in2"></span>
+<span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
@@ -1239,7 +1241,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in3"></span>
 <span class="fn">serializeMacro</span>(<br/>
 <span class="in4"></span>
-<span class="var">entry</span>-&gt;<span class="var">macro</span>, <span class="var">out</span><br/>
+<span class="var">entry</span>-&gt;<span class="var">macro</span>, <span class="var">out</span>,<br/>
+<span class="in4"></span>
+<span class="var">writeLineMacros</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>
@@ -1335,7 +1339,7 @@ macroTestBufferCur = buffer;<br/>
 <span class="in1"></span>
 macroTestBufferEnd = buffer + sizeof(buffer);<br/>
 <span class="in1"></span>
-<span class="fn">serializeMacro</span>(<span class="var">macro</span>, (void *) buffer);<br/>
+<span class="fn">serializeMacro</span>(<span class="var">macro</span>, (void *) buffer, <span class="keyword">false</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="fn">strcmp</span>(<br/>
 <span class="in2"></span>

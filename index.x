@@ -338,6 +338,7 @@ x{process current char}
 d{additional read vars}
 	t{struct Macro *}v{macro} = k{NULL};
 	t{struct Buffer} v{buffer} = {};
+	t{int} v{bufferLine} = n{0};
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
@@ -358,6 +359,7 @@ x{additional read vars}
 ```
 a{additional read vars}
 	t{struct Buffer} v{name} = {};
+	t{int} v{nameLine} = n{0};
 x{additional read vars}
 ```
 * Wenn `v{name}` aktiv ist, dann wird ein Name in Buffer gelesen
@@ -390,6 +392,9 @@ d{process other char} {
 ```
 a{process other char} {
 	k{if} (v{macro}) {
+		if (! isActiveBuffer(&v{buffer)) {
+			bufferLine = input->line;
+		}
 		f{addToBuffer}(&v{buffer}, v{last});
 	}
 } x{process other char}
@@ -675,10 +680,11 @@ d{process private macro}
 	f{addBytesToMacro}(
 		v{macro}, v{prefix},
 		v{prefix} + f{sizeof}(v{prefix}) - n{1},
-		k{NULL}, n{0}
+		v{input}, v{nameLine}
 	);
 	f{addBytesToMacro}(
-		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1}
+		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1},
+		k{input}, v{nameLine}
 	);
 x{process private macro}
 ```
@@ -705,7 +711,8 @@ d{process magic macro}
 	t{static char} v{magic}t{[]} = s{"2478325"};
 	E{flush macro buffer};
 	f{addBytesToMacro}(
-		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - n{1}
+		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - n{1},
+		v{input}, v{nameLine}
 	);
 x{process magic macro}
 ```
@@ -720,7 +727,8 @@ d{flush macro buffer}
 	) {
 		f{addBytesToMacro}(
 			v{macro}, v{buffer}.v{buffer},
-			v{buffer}.v{current}
+			v{buffer}.v{current},
+			v{input}, v{bufferLine}
 		);
 		f{resetBuffer}(&v{buffer});
 	}
@@ -736,6 +744,7 @@ a{process open brace} {
 		e{check valid names};
 		k{if} (v{valid}) {
 			v{openCh} = v{last};
+			v{nameLine} = v{input}->v{line};
 			f{activateBuffer}(&v{name});
 			k{break};
 		}
@@ -769,6 +778,9 @@ a{process macro name}
 		);
 		t{const char *}v{c} = v{name}.v{buffer};
 		k{for} (; v{c} != v{name.current} - n{1}; ++v{c}) {
+			if (! isActiveBuffer(&v{buffer)) {
+				bufferLine = input->line;
+			}
 			f{addToBuffer}(&v{buffer}, *v{c});
 		}
 		v{processed} = k{true};
@@ -782,6 +794,9 @@ x{process macro name}
 ```
 a{process open brace}
 	k{if} (v{macro}) {
+		if (! isActiveBuffer(&v{buffer)) {
+			bufferLine = input->line;
+		}
 		f{addToBuffer}(&v{buffer}, v{last});
 	}
 x{process open brace}
@@ -792,6 +807,9 @@ x{process open brace}
 ```
 a{process close brace}
 	k{if} (v{macro} && ! v{processed}) {
+		if (! isActiveBuffer(&v{buffer)) {
+			bufferLine = input->line;
+		}
 		f{addToBuffer}(&v{buffer}, v{last});
 	}
 x{process close brace}
@@ -886,7 +904,7 @@ d{write in file}
 		v{f}, s{"can't open %s"},
 		v{macro}->v{name} + n{6}
 	);
-	f{serializeMacro}(v{macro}, v{f});
+	f{serializeMacro}(v{macro}, v{f}, k{false});
 	f{fclose}(v{f});
 x{write in file}
 ```

@@ -655,7 +655,8 @@ a{define macro}
 	e{serialize test defines};
 	t{void} f{serializeMacro}(
 		t{struct Macro *}v{macro,}
-		t{FILE *}v{out}
+		t{FILE *}v{out},
+		t{bool} v{writeLineMacros}
 	) {
 		f{ASSERT}(v{macro});
 		f{ASSERT}(v{out});
@@ -674,7 +675,8 @@ d{iterate entries}
 		e{serialize bytes};
 		k{if} (v{entry}->v{macro}) {
 			f{serializeMacro}(
-				v{entry}->v{macro}, v{out}
+				v{entry}->v{macro}, v{out},
+				v{writeLineMacros}
 			);
 		}
 	}
@@ -727,7 +729,7 @@ d{serialize test macro}
 	char buffer[100];
 	macroTestBufferCur = buffer;
 	macroTestBufferEnd = buffer + sizeof(buffer);
-	f{serializeMacro}(v{macro}, (void *) buffer);
+	f{serializeMacro}(v{macro}, (void *) buffer, k{false});
 	f{ASSERT}(f{strcmp}(
 		v{expected}, v{buffer}
 	) == 0);

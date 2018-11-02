@@ -476,7 +476,8 @@ void freeMacroEntry(
 ;
 	void serializeMacro(
 		struct Macro *macro,
-		FILE *out
+		FILE *out,
+		bool writeLineMacros
 	) {
 		ASSERT(macro);
 		ASSERT(out);
@@ -501,7 +502,8 @@ void freeMacroEntry(
 ;
 		if (entry->macro) {
 			serializeMacro(
-				entry->macro, out
+				entry->macro, out,
+				writeLineMacros
 			);
 		}
 	}
@@ -515,7 +517,7 @@ void freeMacroEntry(
 	char buffer[100];
 	macroTestBufferCur = buffer;
 	macroTestBufferEnd = buffer + sizeof(buffer);
-	serializeMacro(macro, (void *) buffer);
+	serializeMacro(macro, (void *) buffer, false);
 	ASSERT(strcmp(
 		expected, buffer
 	) == 0);
@@ -932,10 +934,12 @@ void freeMacroEntry(
 		
 	struct Macro *macro = NULL;
 	struct Buffer buffer = {};
+	int bufferLine = 0;
 
 	char openCh = '\0';
 
 	struct Buffer name = {};
+	int nameLine = 0;
 ;
 		int last = nextCh();
 		int ch = last != EOF ? nextCh() : EOF;
@@ -964,12 +968,16 @@ void freeMacroEntry(
 ;
 		if (valid) {
 			openCh = last;
+			nameLine = input->line;
 			activateBuffer(&name);
 			break;
 		}
 	}
 } 
 	if (macro) {
+		if (! isActiveBuffer(& buffer)) 
+			bufferLine = input->line;
+		
 		addToBuffer(&buffer, last);
 	}
 ;
@@ -1053,7 +1061,8 @@ void freeMacroEntry(
 	) {
 		addBytesToMacro(
 			macro, buffer.buffer,
-			buffer.current
+			buffer.current,
+			input, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
@@ -1078,7 +1087,8 @@ void freeMacroEntry(
 	) {
 		addBytesToMacro(
 			macro, buffer.buffer,
-			buffer.current
+			buffer.current,
+			input, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
@@ -1114,7 +1124,8 @@ void freeMacroEntry(
 	) {
 		addBytesToMacro(
 			macro, buffer.buffer,
-			buffer.current
+			buffer.current,
+			input, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
@@ -1149,17 +1160,20 @@ void freeMacroEntry(
 	) {
 		addBytesToMacro(
 			macro, buffer.buffer,
-			buffer.current
+			buffer.current,
+			input, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
 ;
 	addBytesToMacro(
 		macro, prefix,
-		prefix + sizeof(prefix) - 1
+		prefix + sizeof(prefix) - 1,
+		input, nameLine
 	);
 	addBytesToMacro(
-		macro, name.buffer, name.current - 1
+		macro, name.buffer, name.current - 1,
+		input, nameLine
 	);
 ;
 		processed = true;
@@ -1175,13 +1189,15 @@ void freeMacroEntry(
 	) {
 		addBytesToMacro(
 			macro, buffer.buffer,
-			buffer.current
+			buffer.current,
+			input, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
 ;
 	addBytesToMacro(
-		macro, magic, magic + sizeof(magic) - 1
+		macro, magic, magic + sizeof(magic) - 1,
+		input, nameLine
 	);
 ;
 		processed = true;
@@ -1194,6 +1210,9 @@ void freeMacroEntry(
 		);
 		const char *c = name.buffer;
 		for (; c != name.current - 1; ++c) {
+			if (! isActiveBuffer(& buffer)) 
+				bufferLine = input->line;
+			
 			addToBuffer(&buffer, *c);
 		}
 		processed = true;
@@ -1205,6 +1224,9 @@ void freeMacroEntry(
 	}
 } 
 	if (macro && ! processed) {
+		if (! isActiveBuffer(& buffer)) 
+			bufferLine = input->line;
+		
 		addToBuffer(&buffer, last);
 	}
 ;
@@ -1218,6 +1240,9 @@ void freeMacroEntry(
 	}
 }  {
 	if (macro) {
+		if (! isActiveBuffer(& buffer)) 
+			bufferLine = input->line;
+		
 		addToBuffer(&buffer, last);
 	}
 } ;
@@ -1246,7 +1271,7 @@ void freeMacroEntry(
 		f, "can't open %s",
 		macro->name + 6
 	);
-	serializeMacro(macro, f);
+	serializeMacro(macro, f, false);
 	fclose(f);
 ;
 	}

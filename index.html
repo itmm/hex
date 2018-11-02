@@ -589,6 +589,8 @@
 <span class="type">struct Macro *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
+<span class="in1"></span>
+<span class="type">int</span> <span class="var">bufferLine</span> = <span class="num">0</span>;<br/>
 
 <span class="end">@end(<span class="name">additional read vars)</span></span><br/>
 </code>
@@ -619,6 +621,8 @@
 <span class="add">@add(<span class="name">additional read vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">name</span> = {};<br/>
+<span class="in1"></span>
+<span class="type">int</span> <span class="var">nameLine</span> = <span class="num">0</span>;<br/>
 
 <span class="end">@end(<span class="name">additional read vars)</span></span><br/>
 </code>
@@ -675,6 +679,12 @@
 <span class="add">@add(<span class="name">process other char)</span></span> {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
+<span class="in2"></span>
+if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
+<span class="in3"></span>
+bufferLine = input-&gt;line;<br/>
+<span class="in2"></span>
+</span><br/>
 <span class="in2"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
@@ -1179,13 +1189,17 @@
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">prefix</span>,<br/>
 <span class="in2"></span>
-<span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span><br/>
+<span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>,<br/>
+<span class="in2"></span>
+<span class="var">input</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">macro</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
+<span class="in2"></span>
+<span class="keyword">input</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1230,7 +1244,9 @@
 <span class="in1"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - <span class="num">1</span><br/>
+<span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - <span class="num">1</span>,<br/>
+<span class="in2"></span>
+<span class="var">input</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1256,7 +1272,9 @@
 <span class="in3"></span>
 <span class="var">macro</span>, <span class="var">buffer</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-<span class="var">buffer</span>.<span class="var">current</span><br/>
+<span class="var">buffer</span>.<span class="var">current</span>,<br/>
+<span class="in3"></span>
+<span class="var">input</span>, <span class="var">bufferLine</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1284,6 +1302,8 @@
 <span class="keyword">if</span> (<span class="var">valid</span>) {<br/>
 <span class="in3"></span>
 <span class="var">openCh</span> = <span class="var">last</span>;<br/>
+<span class="in3"></span>
+<span class="var">nameLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 <span class="in3"></span>
 <span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
 <span class="in3"></span>
@@ -1342,6 +1362,12 @@
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name.current</span> - <span class="num">1</span>; ++<span class="var">c</span>) {<br/>
 <span class="in3"></span>
+if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
+<span class="in4"></span>
+bufferLine = input-&gt;line;<br/>
+<span class="in3"></span>
+</span><br/>
+<span class="in3"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
 <span class="in2"></span>
 }<br/>
@@ -1364,6 +1390,12 @@
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
 <span class="in2"></span>
+if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
+<span class="in3"></span>
+bufferLine = input-&gt;line;<br/>
+<span class="in2"></span>
+</span><br/>
+<span class="in2"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
 }<br/>
@@ -1380,6 +1412,12 @@
 <span class="add">@add(<span class="name">process close brace)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
+<span class="in2"></span>
+if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
+<span class="in3"></span>
+bufferLine = input-&gt;line;<br/>
+<span class="in2"></span>
+</span><br/>
 <span class="in2"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
@@ -1548,7 +1586,7 @@
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
-<span class="fn">serializeMacro</span>(<span class="var">macro</span>, <span class="var">f</span>);<br/>
+<span class="fn">serializeMacro</span>(<span class="var">macro</span>, <span class="var">f</span>, <span class="keyword">false</span>);<br/>
 <span class="in1"></span>
 <span class="fn">fclose</span>(<span class="var">f</span>);<br/>
 
