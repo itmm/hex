@@ -1,4 +1,7 @@
-# Makros
+# Fragmente
+* Fragmente bilden einen gerichteten azyklischen Graph
+* Die Infix-Traversierung dieses Graphen bildet die generierten
+  Source-Code Dateien
 
 ```
 a{global elements}
@@ -15,8 +18,8 @@ d{define macro}
 		t{struct Macro *}v{link};
 		t{struct MacroEntry *}v{firstEntry};
 		t{struct MacroEntry *}v{lastEntry};
-		t{int} expands;
-		t{int} multiples;
+		t{int} v{expands};
+		t{int} v{multiples};
 		t{char }v{name}t{[]};
 	};
 x{define macro}

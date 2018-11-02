@@ -2,14 +2,17 @@
 <html lang="de"l>
 <head>
 <meta charset="utf-8">
-<title>Makros</title><link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<title>Fragmente</title><link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
-<h1>Makros</h1>
+<h1>Fragmente</h1>
 <div class="slides">
 <div><div>
-<h1>Makros</h1>
+<h1>Fragmente</h1>
 </div>
-</div>
+<ul><li>
+ Fragmente bilden einen gerichteten azyklischen Graph</li><li>
+ Die Infix-Traversierung dieses Graphen bildet die generierten
+  Source-Code Dateien</li></ul></div>
 <div><div>
 <code>
 
@@ -39,9 +42,9 @@
 <span class="in2"></span>
 <span class="type">struct MacroEntry *</span><span class="var">lastEntry</span>;<br/>
 <span class="in2"></span>
-<span class="type">int</span> expands;<br/>
+<span class="type">int</span> <span class="var">expands</span>;<br/>
 <span class="in2"></span>
-<span class="type">int</span> multiples;<br/>
+<span class="type">int</span> <span class="var">multiples</span>;<br/>
 <span class="in2"></span>
 <span class="type">char </span><span class="var">name</span><span class="type">[]</span>;<br/>
 <span class="in1"></span>
