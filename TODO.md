@@ -1,5 +1,4 @@
 * index.x dokumentieren
-* html.x dokumentieren
 * Code-Formattierung in Headern
 * Fragmente lokal zu Dateien scopen
 * Navigierbare Verweise

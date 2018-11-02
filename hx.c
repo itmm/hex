@@ -632,9 +632,9 @@ void freeMacroEntry(
 	enum HtmlState state;
 
 	int headerLevel;
-		char headerName[100];
-		char * headerNameEnd;
-		enum HtmlState headerState;
+	char headerName[100];
+	char * headerNameEnd;
+	enum HtmlState headerState;
 
 	int codeOpening;
 	int codeIndent;
@@ -904,7 +904,7 @@ void freeMacroEntry(
 ;
 	{
 		
-	struct Macro * macro = NULL;
+	struct Macro *macro = NULL;
 	struct Buffer buffer = {};
 
 	char openCh = '\0';
@@ -1095,10 +1095,18 @@ void freeMacroEntry(
 ;
 		struct Macro *sub =
 			getMacroInMap(
-				&macros, name.buffer, name.current - 1);
-		if (sub->expands) {
-			printf("multiple after expand of [%s]\n", sub->name);
-		}
+				&macros, name.buffer,
+				name.current - 1
+			);
+		
+	if (sub->expands) {
+		printf(
+			"multiple after expand "
+				"of [%s]\n",
+			sub->name
+		);
+	}
+;
 		++sub->multiples;
 		addMacroToMacro(
 			macro, sub);
@@ -1121,7 +1129,8 @@ void freeMacroEntry(
 	}
 ;
 	addBytesToMacro(
-		macro, prefix, prefix + sizeof(prefix) - 1
+		macro, prefix,
+		prefix + sizeof(prefix) - 1
 	);
 	addBytesToMacro(
 		macro, name.buffer, name.current - 1
@@ -1153,7 +1162,10 @@ void freeMacroEntry(
 	}
 
 	if (! processed) {
-		ASSERT(macro, "unknown macro %s", name.buffer);
+		ASSERT(
+			macro, "unknown macro %s",
+			name.buffer
+		);
 		const char *c = name.buffer;
 		for (; c != name.current - 1; ++c) {
 			addToBuffer(&buffer, *c);

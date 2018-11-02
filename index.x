@@ -54,8 +54,8 @@ d{main body}
 	e{write HTML file};
 x{main body}
 ```
-* Bei jedem Start werden alle Unit-Tests ausgeführt (um eine umfangreiche
-  Testabdeckung zu sichern)
+* Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
+  umfangreiche Testabdeckung zu sichern)
 * Parameter von der Kommandozeile werden ausgewertet
 * Dann wird ein Parse-Graph aus Fragmenten aufgebaut
 * Und das daraus resultierende Programm generiert und übersetzt
@@ -64,8 +64,8 @@ x{main body}
 
 ## Was macht `@expand`?
 * `@expand`-Blöcke beschreiben Makro-Aufrufe
-* Der Wert des Makros mit dem Namen in Klammern wird anstelle des Aufrufs
-  im endgültigen Programm gesetzt
+* Der Wert des Makros mit dem Namen in Klammern wird anstelle des
+  Aufrufs im endgültigen Programm gesetzt
 * Diese Makros bilden ein zentrales Element von `hx`
 * Sie können mit `@def`-`@end`-Sequenzen definiert werden
 * Oder mit `@add`-`@end` erweitert werden
@@ -81,8 +81,8 @@ x{global elements}
 ```
 * System-Dateien werden vor der Definition von Strukturen und Funktionen
   eingebunden
-* Auch müssen Macros für das Logging vor den Funktionen definiert werden,
-  die sie verwenden
+* Auch müssen Macros für das Logging vor den Funktionen definiert
+  werden, die sie verwenden
 
 
 # Minimale Vorbereitung für das Parsen
@@ -113,8 +113,8 @@ a{global elements}
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
-* Mitten während des Lesens können andere Dateien eingelesen (inkludiert)
-  werden
+* Mitten während des Lesens können andere Dateien eingelesen
+  (inkludiert) werden
 * Daher gibt es einen Stapel offener Dateien
 * Aus der letzten wird aktuell gelesen
 * Eine Liste aller gelesenen Dateien wird in `v{used}` verwaltet
@@ -333,7 +333,7 @@ x{process current char}
 
 ```
 d{additional read vars}
-	t{struct Macro *} v{macro} = k{NULL};
+	t{struct Macro *}v{macro} = k{NULL};
 	t{struct Buffer} v{buffer} = {};
 x{additional read vars}
 ```
@@ -623,10 +623,10 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
-				&v{macros}, v{name}.buffer, v{name}.current - 1);
-		if (sub->expands) {
-			printf("multiple after expand of [%s]\n", sub->name);
-		}
+				&v{macros}, v{name}.buffer,
+				v{name}.current - 1
+			);
+		e{check for prev expands};
 		++sub->multiples;
 		f{addMacroToMacro}(
 			v{macro}, v{sub});
@@ -634,6 +634,22 @@ a{process macro name}
 	}
 x{process macro name}
 ```
+* Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
+  expandiert werden
+
+```
+d{check for prev expands}
+	if (sub->expands) {
+		printf(
+			"multiple after expand "
+				"of [%s]\n",
+			sub->name
+		);
+	}
+x{check for prev expands}
+```
+* Es ist ein Fehler, wenn das Fragment bereits normal `@expand`iert
+  wurde
 
 ```
 a{process macro name}
@@ -654,7 +670,8 @@ d{process private macro}
 	t{static char} v{prefix}[] = "_private_";
 	E{flush macro buffer};
 	f{addBytesToMacro}(
-		v{macro}, v{prefix}, v{prefix} + f{sizeof}(v{prefix}) - 1
+		v{macro}, v{prefix},
+		v{prefix} + f{sizeof}(v{prefix}) - 1
 	);
 	f{addBytesToMacro}(
 		v{macro}, v{name}.buffer, v{name}.current - 1
@@ -675,7 +692,8 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Auch die Implementierung des magci-Makros soll später ersetzt werden
+* Auch die Implementierung des `@magic`-Befehls soll später ersetzt
+  werden
 * Daher wird es in einem eigenen Fragment gekapselt
 
 ```
@@ -704,6 +722,8 @@ d{flush macro buffer}
 	}
 x{flush macro buffer}
 ```
+* Das Fragment fügt alle Bytes im Buffer an ein Fragment an
+* Danach wird der Buffer zurück gesetzt
 
 ```
 a{process open brace} {
@@ -718,21 +738,31 @@ a{process open brace} {
 	}
 } x{process open brace}
 ```
+* Prüft, ob ein Befehl innerhalb eines Fragments mit einem gültigen
+  Zeichen beginnt
+* In diesem Fall wird das Zeichen als Befehls-Opcode gesichert und der
+  Buffer aktiviert um alle Zeichen bis zu eine schließenden
+  Mengenklammer zu speichern
 
 ```
 d{check valid names}
-	k{static} t{const char} v{valids}[] =
+	t{static const char} v{valids}t{[]} =
 		s{"123456fvsntkxeEpm"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
 		v{valid} = k{true};
 	}
 x{check valid names}
 ```
+* Gültige Kommando-Zeichen sind in einem String abgelegt
+* Wenn das Zeichen im String vorkommt, dann ist es gültig
 
 ```
 a{process macro name}
 	k{if} (! v{processed}) {
-		f{ASSERT}(v{macro}, "unknown macro %s", name.buffer);
+		f{ASSERT}(
+			v{macro}, "unknown macro %s",
+			name.buffer
+		);
 		t{const char *}v{c} = v{name}.buffer;
 		k{for} (; v{c} != v{name.current} - 1; ++v{c}) {
 			f{addToBuffer}(&v{buffer}, *v{c});
@@ -741,6 +771,9 @@ a{process macro name}
 	}
 x{process macro name}
 ```
+* Wenn kein bekannter Befehl erkannt wurde, dann ist die
+  befehlsähnliche Eingabe Teil des Programms
+* Und wird daher in den entsprechenden Buffer kopiert
 
 ```
 a{process open brace}
@@ -759,6 +792,9 @@ a{process close brace}
 	}
 x{process close brace}
 ```
+* Wenn schließende Mengenklammern nicht Teil eines Makros sind, können
+  sie Teil des Programms sein
+* Und werden daher zum Buffer direkt hinzugefügt
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
