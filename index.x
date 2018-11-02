@@ -273,21 +273,21 @@ x{get next input file}
 * Der dynamisch wachsen kann
 
 ```
-i{buffer.x}
+i{buf.x}
 ```
 * Buffer werden in einer eigenen Datei definiert
 
-# Makros
-* Makros können während des Parsens erweitert, ersetzt und angewendet
-  werden
+# Fragmente
+* Fragmenten können während des Parsens erweitert, ersetzt und
+  angewendet werden
 * Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren ist
-  die Möglichkeit, Makros vor der Definition zu verwenden
-* Und Makros an mehreren Stellen zu erweitern
+  die Möglichkeit, Fragmente vor der Definition zu verwenden
+* Und Fragment an mehreren Stellen zu erweitern
 
 ```
-i{macros.x}
+i{frag.x}
 ```
-* Makros werden in einer eigenen Datei definiert
+* Fragment-Behandlung wird in einer eigenen Datei definiert
 
 # Eingabe-Dateien lesen
 * In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die Makros
