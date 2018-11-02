@@ -674,7 +674,8 @@ d{process private macro}
 	E{flush macro buffer};
 	f{addBytesToMacro}(
 		v{macro}, v{prefix},
-		v{prefix} + f{sizeof}(v{prefix}) - n{1}
+		v{prefix} + f{sizeof}(v{prefix}) - n{1},
+		k{NULL}, n{0}
 	);
 	f{addBytesToMacro}(
 		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1}

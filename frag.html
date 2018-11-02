@@ -417,6 +417,8 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">valueEnd</span>;<br/>
 <span class="in2"></span>
+<span class="expand">@expand(<span class="name">additional entry attributes)</span></span>;<br/>
+<span class="in2"></span>
 <span class="type">char </span><span class="var">value</span><span class="type">[]</span>;<br/>
 <span class="in1"></span>
 };<br/>
@@ -1076,7 +1078,11 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">value</span>,<br/>
 <span class="in2"></span>
-<span class="type">const char *</span><span class="var">valueEnd</span><br/>
+<span class="type">const char *</span><span class="var">valueEnd</span>,<br/>
+<span class="in2"></span>
+<span class="type">struct Input *</span><span class="var">input</span>,<br/>
+<span class="in2"></span>
+<span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
@@ -1087,6 +1093,8 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="keyword">NULL</span>, <span class="var">value</span>, <span class="var">valueEnd</span><br/>
 <span class="in3"></span>
 );<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">populate additional entry fields)</span></span>;<br/>
 <span class="in2"></span>
 <span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
 <span class="in1"></span>
@@ -1362,7 +1370,9 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>, <span class="var">str</span>, <span class="var">str</span> + <span class="var">size</span><br/>
+<span class="var">macro</span>, <span class="var">str</span>, <span class="var">str</span> + <span class="var">size</span>,<br/>
+<span class="in3"></span>
+<span class="keyword">NULL</span>, <span class="num">0</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -1824,3 +1834,40 @@ macroTestBufferEnd = NULL;<br/>
 </div>
 <ul><li>
  Sonst wird ein neues Makro angelegt</li></ul></div>
+</div>
+<h1>Position im Original merken</h1>
+<div class="slides">
+<div><div>
+<h1>Position im Original merken</h1>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">additional entry attributes)</span></span><br/>
+<span class="in1"></span>
+struct Input *input;<br/>
+<span class="in1"></span>
+int line;<br/>
+
+<span class="end">@end(<span class="name">additional entry attributes)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Jedes Fragment hält einen Zeiger auf die Datei aus der das Fragment
+  generiert wurde</li><li>
+ Und die Zeile in dieser Datei</li><li>
+ So kann durch spezielle <code>#line</code> Makros im generierten Source-Code auf
+  die ursprüngliche Datei verwiesen werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">populate additional entry fields)</span></span><br/>
+<span class="in1"></span>
+<span class="var">entry</span>-&gt;<span class="var">input</span> = <span class="var">input</span>;<br/>
+<span class="in1"></span>
+<span class="var">entry</span>-&gt;<span class="var">line</span> = <span class="var">line</span>;<br/>
+
+<span class="end">@end(<span class="name">populate additional entry fields)</span></span><br/>
+</code>
+</div>

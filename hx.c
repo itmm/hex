@@ -295,6 +295,10 @@ void freeMacroEntry(
 		struct MacroEntry *link;
 		struct Macro *macro;
 		const char *valueEnd;
+		
+	struct Input *input;
+	int line;
+;
 		char value[];
 	};
 
@@ -396,12 +400,18 @@ void freeMacroEntry(
 	void addBytesToMacro(
 		struct Macro *macro,
 		const char *value,
-		const char *valueEnd
+		const char *valueEnd,
+		struct Input *input,
+		int line
 	) {
 		struct MacroEntry *entry =
 			allocMacroEntry(
 				NULL, value, valueEnd
 			);
+		
+	entry->input = input;
+	entry->line = line;
+;
 		addEntryToMacro(macro, entry);
 	}
 
@@ -520,7 +530,8 @@ void freeMacroEntry(
 	) {
 		int size = strlen(str);
 		addBytesToMacro(
-			macro, str, str + size
+			macro, str, str + size,
+			NULL, 0
 		);
 	}
 

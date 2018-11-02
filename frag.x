@@ -224,6 +224,7 @@ a{define macro}
 		t{struct MacroEntry *}v{link};
 		t{struct Macro *}v{macro};
 		t{const char *}v{valueEnd};
+		e{additional entry attributes};
 		t{char }v{value}t{[]};
 	};
 x{define macro}
@@ -585,12 +586,15 @@ a{define macro}
 	t{void} f{addBytesToMacro}(
 		t{struct Macro *}v{macro},
 		t{const char *}v{value},
-		t{const char *}v{valueEnd}
+		t{const char *}v{valueEnd},
+		t{struct Input *}v{input},
+		t{int} v{line}
 	) {
 		t{struct MacroEntry *}v{entry} =
 			f{allocMacroEntry}(
 				k{NULL}, v{value}, v{valueEnd}
 			);
+		e{populate additional entry fields};
 		f{addEntryToMacro}(v{macro}, v{entry});
 	}
 x{define macro}
@@ -742,7 +746,8 @@ a{define macro}
 	) {
 		t{int} v{size} = f{strlen}(v{str});
 		f{addBytesToMacro}(
-			v{macro}, v{str}, v{str} + v{size}
+			v{macro}, v{str}, v{str} + v{size},
+			k{NULL}, n{0}
 		);
 	}
 x{define macro}
@@ -994,3 +999,24 @@ d{get macro alloc}
 x{get macro alloc}
 ```
 * Sonst wird ein neues Makro angelegt
+
+# Position im Original merken
+
+```
+d{additional entry attributes}
+	struct Input *input;
+	int line;
+x{additional entry attributes}
+```
+* Jedes Fragment hält einen Zeiger auf die Datei aus der das Fragment
+  generiert wurde
+* Und die Zeile in dieser Datei
+* So kann durch spezielle `#line` Makros im generierten Source-Code auf
+  die ursprüngliche Datei verwiesen werden
+
+```
+d{populate additional entry fields}
+	v{entry}->v{input} = v{input};
+	v{entry}->v{line} = v{line};
+x{populate additional entry fields}
+```
