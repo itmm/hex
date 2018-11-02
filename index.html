@@ -182,7 +182,9 @@
 <span class="in2"></span>
 <span class="type">FILE *</span><span class="var">file</span>;<br/>
 <span class="in2"></span>
-<span class="type">char</span> <span class="var">name</span>[];<br/>
+<span class="expand">@expand(<span class="name">additional input elements)</span></span>;<br/>
+<span class="in2"></span>
+<span class="type">char</span> <span class="var">name</span><span class="type">[]</span>;<br/>
 <span class="in1"></span>
 };<br/>
 
@@ -216,7 +218,7 @@
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">check file for path)</span></span>;<br/>
 <span class="in2"></span>
-<span class="type">int</span> len = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
+<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
 <span class="in2"></span>
 <span class="type">struct Input *</span><span class="var">i</span> = <span class="fn">malloc</span>(<br/>
 <span class="in3"></span>
@@ -231,6 +233,8 @@
 <span class="var">i</span>-&gt;<span class="var">file</span> = <span class="var">f</span>;<br/>
 <span class="in2"></span>
 <span class="fn">memcpy</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@expand(<span class="name">init additional input elements)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">input</span> = <span class="var">i</span>;<br/>
 <span class="in1"></span>
@@ -249,9 +253,9 @@
 
 <span class="add">@def(<span class="name">check file for path)</span></span><br/>
 <span class="in1"></span>
-ASSERT(<br/>
+<span class="fn">ASSERT</span>(<br/>
 <span class="in2"></span>
-f, "can't open [%s]", path<br/>
+<span class="var">f</span>, <span class="str">"can't open [%s]"</span>, <span class="var">path</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -265,11 +269,11 @@ f, "can't open [%s]", path<br/>
 
 <span class="add">@def(<span class="name">check memory for input)</span></span><br/>
 <span class="in1"></span>
-ASSERT(<br/>
+<span class="fn">ASSERT</span>(<br/>
 <span class="in2"></span>
-i,<br/>
+<span class="var">i</span>,<br/>
 <span class="in2"></span>
-"no memory for input"<br/>
+<span class="str">"no memory for input"</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -292,9 +296,9 @@ i,<br/>
 
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
-const char *stylesheet =<br/>
+<span class="type">const char *</span><span class="var">stylesheet</span> =<br/>
 <span class="in2"></span>
-"slides/slides.css";<br/>
+<span class="str">"slides/slides.css"</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
@@ -307,19 +311,19 @@ const char *stylesheet =<br/>
 
 <span class="add">@def(<span class="name">process arguments)</span></span><br/>
 <span class="in1"></span>
-<span class="type">bool</span> someFile = false;<br/>
+<span class="type">bool</span> <span class="var">someFile</span> = <span class="keyword">false</span>;<br/>
 <span class="in1"></span>
-for (int i = 1; i &lt; argc; ++i) {<br/>
+<span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">process argument)</span></span>;<br/>
 <span class="in2"></span>
-ASSERT(<br/>
+<span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-false,<br/>
+<span class="keyword">false</span>,<br/>
 <span class="in3"></span>
-"unknown argument [%s]",<br/>
+<span class="str">"unknown argument [%s]"</span>,<br/>
 <span class="in3"></span>
-argv[i]<br/>
+<span class="var">argv</span>[<span class="var">i</span>]<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -336,15 +340,15 @@ argv[i]<br/>
 
 <span class="add">@def(<span class="name">process argument)</span></span> {<br/>
 <span class="in1"></span>
-const char prefix[] = "--css=";<br/>
+<span class="type">const char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"--css="</span>;<br/>
 <span class="in1"></span>
-int len = sizeof(prefix) - 1;<br/>
+<span class="type">int</span> <span class="var">len</span> = <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>;<br/>
 <span class="in1"></span>
-if (memcmp(argv[i], prefix, len) == 0) {<br/>
+<span class="keyword">if</span> (<span class="fn">memcmp</span>(<span class="var">argv</span>[<span class="var">i</span>], <span class="var">prefix</span>, <span class="var">len</span>) == <span class="num">0</span>) {<br/>
 <span class="in2"></span>
-stylesheet = argv[i] + len;<br/>
+<span class="var">stylesheet</span> = <span class="var">argv</span>[<span class="var">i</span>] + <span class="var">len</span>;<br/>
 <span class="in2"></span>
-continue;<br/>
+<span class="keyword">continue</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -359,13 +363,13 @@ continue;<br/>
 
 <span class="add">@add(<span class="name">process argument)</span></span><br/>
 <span class="in1"></span>
-if (! someFile) {<br/>
+<span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 <span class="in2"></span>
 <span class="fn">pushPath</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
 <span class="in2"></span>
-someFile = true;<br/>
+<span class="var">someFile</span> = <span class="keyword">true</span>;<br/>
 <span class="in2"></span>
-continue;<br/>
+<span class="keyword">continue</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -381,7 +385,7 @@ continue;<br/>
 
 <span class="add">@add(<span class="name">process arguments)</span></span><br/>
 <span class="in1"></span>
-if (! someFile) {<br/>
+<span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 <span class="in2"></span>
 <span class="fn">pushPath</span>(<span class="str">"index.x"</span>);<br/>
 <span class="in1"></span>
@@ -417,6 +421,8 @@ if (! someFile) {<br/>
 <span class="keyword">while</span> (<span class="var">input</span>) {<br/>
 <span class="in3"></span>
 <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
+<span class="in3"></span>
+<span class="expand">@expand(<span class="name">preprocess char)</span></span>;<br/>
 <span class="in3"></span>
 <span class="keyword">if</span> (<span class="var">ch</span> != <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
 <span class="in3"></span>
@@ -630,7 +636,7 @@ if (! someFile) {<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">process macro name)</span></span>;<br/>
 <span class="in2"></span>
-<span class="fn">eraseBuffer</span>(&amp;<span class="var">name</span>);<br/>
+<span class="fn">resetBuffer</span>(&amp;<span class="var">name</span>);<br/>
 <span class="in2"></span>
 <span class="var">last</span> = <span class="var">ch</span>;<br/>
 <span class="in2"></span>
@@ -687,7 +693,7 @@ if (! someFile) {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span>[] = <span class="str">"adir"</span>;<br/>
+<span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span><span class="type">[]</span> = <span class="str">"adir"</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 <span class="in3"></span>
@@ -731,17 +737,17 @@ if (! someFile) {<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">macro</span>, "def in macro");<br/>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"def in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">check for double def)</span></span>;<br/>
 <span class="in2"></span>
-if (! macro) {<br/>
+<span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
 <span class="in3"></span>
 <span class="var">macro</span> = <span class="fn">allocMacroInMap</span>(<br/>
 <span class="in4"></span>
 &amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>
@@ -766,17 +772,17 @@ if (! macro) {<br/>
 <span class="in2"></span>
 &amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in2"></span>
-<span class="var">name</span>.<span class="var">current</span> - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
-if (isPopulatedMacro(macro)) {<br/>
+<span class="keyword">if</span> (<span class="fn">isPopulatedMacro</span>(<span class="var">macro</span>)) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"macro [%s] already defined\n",<br/>
+<span class="str">"macro [%s] already defined\n"</span>,<br/>
 <span class="in3"></span>
-name.buffer<br/>
+<span class="var">name</span>.<span class="var">buffer</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -797,13 +803,13 @@ name.buffer<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'a'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">macro</span>, "add in macro");<br/>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"add in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
 <span class="in3"></span>
 &amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -824,21 +830,21 @@ name.buffer<br/>
 
 <span class="add">@def(<span class="name">check for add without def)</span></span><br/>
 <span class="in1"></span>
-if (! isPopulatedMacro(macro)) {<br/>
+<span class="keyword">if</span> (! <span class="fn">isPopulatedMacro</span>(<span class="var">macro</span>)) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"macro [%s] not defined\n",<br/>
+<span class="str">"macro [%s] not defined\n"</span>,<br/>
 <span class="in3"></span>
-name.buffer<br/>
+<span class="var">name</span>.<span class="var">buffer</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-macro = getMacroInMap(<br/>
+<span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
 <span class="in3"></span>
-&amp;macros, name.buffer,<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-name.current - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -856,21 +862,21 @@ name.current - 1<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">macro</span>, "replace in macro");<br/>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"replace in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
 <span class="in3"></span>
 &amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>, "macro %s not defined",<br/>
+<span class="var">macro</span>, <span class="str">"macro %s not defined"</span>,<br/>
 <span class="in3"></span>
-name.buffer<br/>
+<span class="var">name</span>.<span class="var">buffer</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -893,7 +899,7 @@ name.buffer<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>, "end not in macro");<br/>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, <span class="str">"end not in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">macro names must match)</span></span>;<br/>
 <span class="in2"></span>
@@ -915,13 +921,13 @@ name.buffer<br/>
 
 <span class="add">@def(<span class="name">macro names must match)</span></span><br/>
 <span class="in1"></span>
-ASSERT(<br/>
+<span class="fn">ASSERT</span>(<br/>
 <span class="in2"></span>
-! strcmp(macro-&gt;name, name.buffer),<br/>
+! <span class="fn">strcmp</span>(<span class="var">macro</span>-&gt;<span class="var">name</span>, <span class="var">name</span>.<span class="var">buffer</span>),<br/>
 <span class="in2"></span>
-"closing [%s] != [%s]",<br/>
+<span class="str">"closing [%s] != [%s]"</span>,<br/>
 <span class="in2"></span>
-name.buffer, macro-&gt;name<br/>
+<span class="var">name</span>.<span class="var">buffer</span>, <span class="var">macro</span>-&gt;<span class="var">name</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -942,9 +948,9 @@ name.buffer, macro-&gt;name<br/>
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in3"></span>
-if (strcmp(i-&gt;name, name) == 0) {<br/>
+<span class="keyword">if</span> (<span class="fn">strcmp</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == <span class="num">0</span>) {<br/>
 <span class="in4"></span>
-return true;<br/>
+<span class="keyword">return</span> <span class="keyword">true</span>;<br/>
 <span class="in3"></span>
 }<br/>
 <span class="in2"></span>
@@ -952,9 +958,9 @@ return true;<br/>
 <span class="in2"></span>
 <span class="keyword">for</span> (<span class="var">i</span> = <span class="var">used</span>; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in3"></span>
-if (strcmp(i-&gt;name, name) == 0) {<br/>
+<span class="keyword">if</span> (<span class="fn">strcmp</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == <span class="num">0</span>) {<br/>
 <span class="in4"></span>
-return true;<br/>
+<span class="keyword">return</span> <span class="keyword">true</span>;<br/>
 <span class="in3"></span>
 }<br/>
 <span class="in2"></span>
@@ -980,7 +986,7 @@ return true;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'i'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">macro</span>, "include in macro");<br/>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"include in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="var">buffer</span>)) {<br/>
 <span class="in3"></span>
@@ -1006,7 +1012,7 @@ return true;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>, "expand not in macro");<br/>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, <span class="str">"expand not in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
@@ -1014,7 +1020,7 @@ return true;<br/>
 <span class="in3"></span>
 &amp;<span class="var">macros</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.current - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1041,25 +1047,25 @@ return true;<br/>
 
 <span class="add">@def(<span class="name">check macro expand count)</span></span><br/>
 <span class="in1"></span>
-if (sub-&gt;expands) {<br/>
+<span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"multiple expands of [%s]\n",<br/>
+<span class="str">"multiple expands of [%s]\n"</span>,<br/>
 <span class="in3"></span>
-sub-&gt;name<br/>
+<span class="var">sub</span>-&gt;<span class="var">name</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
 }<br/>
 <span class="in1"></span>
-if (sub-&gt;multiples) {<br/>
+<span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">multiples</span>) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"expand after mult of [%s]\n",<br/>
+<span class="str">"expand after mult of [%s]\n"</span>,<br/>
 <span class="in3"></span>
-sub-&gt;name<br/>
+<span class="var">sub</span>-&gt;<span class="var">name</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -1080,7 +1086,7 @@ sub-&gt;name<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>, "multiple not in macro");<br/>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, <span class="str">"multiple not in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
@@ -1088,9 +1094,9 @@ sub-&gt;name<br/>
 <span class="in3"></span>
 <span class="fn">getMacroInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.buffer,<br/>
+&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
-<span class="var">name</span>.current - 1<br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>
@@ -1117,15 +1123,15 @@ sub-&gt;name<br/>
 
 <span class="add">@def(<span class="name">check for prev expands)</span></span><br/>
 <span class="in1"></span>
-if (sub-&gt;expands) {<br/>
+<span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"multiple after expand "<br/>
+<span class="str">"multiple after expand "</span><br/>
 <span class="in4"></span>
-"of [%s]\n",<br/>
+<span class="str">"of [%s]\n"</span>,<br/>
 <span class="in3"></span>
-sub-&gt;name<br/>
+<span class="var">sub</span>-&gt;<span class="var">name</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -1144,7 +1150,7 @@ sub-&gt;name<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>, "private not in macro");<br/>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, <span class="str">"private not in macro"</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">process private macro)</span></span>;<br/>
 <span class="in2"></span>
@@ -1165,7 +1171,7 @@ sub-&gt;name<br/>
 
 <span class="add">@def(<span class="name">process private macro)</span></span><br/>
 <span class="in1"></span>
-<span class="type">static char</span> <span class="var">prefix</span>[] = "_private_";<br/>
+<span class="type">static char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"_private_"</span>;<br/>
 <span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
@@ -1173,13 +1179,13 @@ sub-&gt;name<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">prefix</span>,<br/>
 <span class="in2"></span>
-<span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - 1<br/>
+<span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="var">name</span>.buffer, <span class="var">name</span>.current - 1<br/>
+<span class="var">macro</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1218,13 +1224,13 @@ sub-&gt;name<br/>
 
 <span class="add">@def(<span class="name">process magic macro)</span></span><br/>
 <span class="in1"></span>
-<span class="type">static char</span> <span class="var">magic</span>[] = "2478325";<br/>
+<span class="type">static char</span> <span class="var">magic</span><span class="type">[]</span> = <span class="str">"2478325"</span>;<br/>
 <span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToMacro</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - 1<br/>
+<span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - <span class="num">1</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1279,7 +1285,7 @@ sub-&gt;name<br/>
 <span class="in3"></span>
 <span class="var">openCh</span> = <span class="var">last</span>;<br/>
 <span class="in3"></span>
-activateBuffer(&amp;name);<br/>
+<span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
 <span class="in3"></span>
 <span class="keyword">break</span>;<br/>
 <span class="in2"></span>
@@ -1303,7 +1309,7 @@ activateBuffer(&amp;name);<br/>
 <span class="in1"></span>
 <span class="type">static const char</span> <span class="var">valids</span><span class="type">[]</span> =<br/>
 <span class="in2"></span>
-<span class="str">"123456fvsntkxeEpm"</span>;<br/>
+<span class="str">"fvsntkxeEpm"</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 <span class="in2"></span>
@@ -1326,15 +1332,15 @@ activateBuffer(&amp;name);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>, "unknown macro %s",<br/>
+<span class="var">macro</span>, <span class="str">"unknown macro %s"</span>,<br/>
 <span class="in3"></span>
-name.buffer<br/>
+<span class="var">name</span>.<span class="var">buffer</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="type">const char *</span><span class="var">c</span> = <span class="var">name</span>.buffer;<br/>
+<span class="type">const char *</span><span class="var">c</span> = <span class="var">name</span>.<span class="var">buffer</span>;<br/>
 <span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name.current</span> - 1; ++<span class="var">c</span>) {<br/>
+<span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name.current</span> - <span class="num">1</span>; ++<span class="var">c</span>) {<br/>
 <span class="in3"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
 <span class="in2"></span>
@@ -1457,15 +1463,15 @@ name.buffer<br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">sum</span> =<br/>
 <span class="in2"></span>
-macro-&gt;expands + macro-&gt;multiples;<br/>
+<span class="var">macro</span>-&gt;<span class="var">expands</span> + <span class="var">macro</span>-&gt;<span class="var">multiples</span>;<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (sum &lt;= 0) {<br/>
+<span class="keyword">if</span> (<span class="var">sum</span> &lt;= <span class="num">0</span>) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"macro [%s] not called\n",<br/>
+<span class="str">"macro [%s] not called\n"</span>,<br/>
 <span class="in3"></span>
-macro-&gt;name<br/>
+<span class="var">macro</span>-&gt;<span class="var">name</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -1482,15 +1488,15 @@ macro-&gt;name<br/>
 
 <span class="add">@add(<span class="name">serialize macro)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (macro-&gt;multiples == 1) {<br/>
+<span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">multiples</span> == <span class="num">1</span>) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"multiple macro [%s] only "<br/>
+<span class="str">"multiple macro [%s] only "</span><br/>
 <span class="in4"></span>
-"used once\n",<br/>
+<span class="str">"used once\n"</span>,<br/>
 <span class="in3"></span>
-macro-&gt;name<br/>
+<span class="var">macro</span>-&gt;<span class="var">name</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -1508,13 +1514,13 @@ macro-&gt;name<br/>
 
 <span class="add">@add(<span class="name">serialize macro)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (! isPopulatedMacro(macro)) {<br/>
+<span class="keyword">if</span> (! <span class="fn">isPopulatedMacro</span>(<span class="var">macro</span>)) {<br/>
 <span class="in2"></span>
-printf(<br/>
+<span class="fn">printf</span>(<br/>
 <span class="in3"></span>
-"macro [%s] not populated\n",<br/>
+<span class="str">"macro [%s] not populated\n"</span>,<br/>
 <span class="in3"></span>
-macro-&gt;name<br/>
+<span class="var">macro</span>-&gt;<span class="var">name</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -1532,11 +1538,11 @@ macro-&gt;name<br/>
 <span class="in1"></span>
 <span class="type">FILE *</span><span class="var">f</span> =<br/>
 <span class="in2"></span>
-<span class="fn">fopen</span>(<span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, "w");<br/>
+<span class="fn">fopen</span>(<span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, <span class="str">"w"</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in2"></span>
-<span class="var">f</span>, "can't open %s",<br/>
+<span class="var">f</span>, <span class="str">"can't open %s"</span>,<br/>
 <span class="in2"></span>
 <span class="var">macro</span>-&gt;<span class="var">name</span> + <span class="num">6</span><br/>
 <span class="in1"></span>
@@ -1551,6 +1557,54 @@ macro-&gt;name<br/>
 </div>
 <ul><li>
  Das Fragment wird in die entsprechende Datei geschrieben</li></ul></div>
+</div>
+<h1>Zeilennummern</h1>
+<div class="slides">
+<div><div>
+<h1>Zeilennummern</h1>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">additional input elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">int</span> <span class="var">line</span>;<br/>
+
+<span class="end">@end(<span class="name">additional input elements)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Pro Datei wird die aktuelle Zeile festgehalten</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">init additional input elements)</span></span><br/>
+<span class="in1"></span>
+<span class="var">i</span>-&gt;<span class="var">line</span> = <span class="num">1</span>;<br/>
+
+<span class="end">@end(<span class="name">init additional input elements)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Beim Öffnen einer neuen <code>.x</code>-Datei befinden wir uns in Zeile <code><span class="num">1</span></code></li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">preprocess char)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+<span class="in2"></span>
+++<span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">preprocess char)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Wenn ein Zeilenumbruch gelesen wird, wird die aktuelle Zeile
+  erhöht</li></ul></div>
 </div>
 <h1>HTML generieren</h1>
 <div class="slides">

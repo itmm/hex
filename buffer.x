@@ -35,6 +35,8 @@ x{define buffer}
   Heap anzufordern
 * `v{buffer}` zeigt auf den Anfang des zu nutzenden Byte-Blocks
 * `v{current}` zeigt auf das erste freie Zeichen im Byte-Block
+* `v{current}` kann auch `k{NULL}` sein, um anzuzeigen, dass der Buffer
+  momentan nicht aktiv ist
 * `v{end}` zeigt auf das erste nicht mehr zum Buffer gehörende Byte
 
 ```
@@ -43,8 +45,10 @@ a{define buffer}
 		t{const struct Buffer *}b
 	) {
 		f{ASSERT}(v{b});
-		f{ASSERT}(v{b}->v{buffer} <= v{b}->v{current});
-		f{ASSERT}(v{b}->v{current} <= v{b}->v{end});
+		k{if} (v{b}->v{current}) {
+			f{ASSERT}(v{b}->v{buffer} <= v{b}->v{current});
+			f{ASSERT}(v{b}->v{current} <= v{b}->v{end});
+		}
 	}
 x{define buffer}
 ```
@@ -62,10 +66,10 @@ d{buffer unit tests} {
 # Aktiver & Inaktiver Buffer
 * Ein Buffer kann aktiv oder inaktiv sein
 * Ein aktiver Buffer kann auch leer sein
-* Als Unterscheidung dient, ob `v{buffer}` `k{NULL}` ist
+* Als Unterscheidung dient, ob `v{current}` `k{NULL}` ist
 * Ein in aktiver Buffer wird durch das Hinzufügen eines Zeichens aktiv
 * Oder durch Aufruf von `f{activateBuffer}`
-* Ein Buffer wird durch Löschen mit `f{eraseBuffer}` inaktiv
+* Ein Buffer wird durch Zurücksetzen oder Löschen inaktiv
 
 ```
 a{define buffer}
@@ -73,11 +77,11 @@ a{define buffer}
 		t{const struct Buffer *}b
 	) {
 		bufferInvariant(b);
-		return b->buffer;
+		return b->current;
 	}
 x{define buffer}
 ```
-* Ein Buffer ist aktiv, wenn der Zeiger `v{buffer}` gesetzt ist
+* Ein Buffer ist aktiv, wenn der Zeiger `v{current}` gesetzt ist
 
 ```
 a{buffer unit tests} {
@@ -95,9 +99,11 @@ a{define buffer}
 		f{bufferInvariant}(v{b});
 		k{if} (! v{b}->v{buffer}) {
 			v{b}->v{buffer} = v{b}->v{initial};
-			v{b}->v{current} = v{b}->v{buffer};
 			v{b}->v{end} = v{b}->v{initial} +
 				f{sizeof}(v{b}->v{initial});
+		}
+		k{if} (! v{b}->v{current}) {
+			v{b}->v{current} = v{b}->v{buffer};
 		}
 	}
 x{define buffer}
@@ -196,7 +202,7 @@ a{define buffer}
 		t{struct Buffer *}v{buffer}
 	) {
 		f{bufferInvariant}(v{buffer});
-		v{buffer}->v{current} = v{buffer}->v{buffer};
+		v{buffer}->v{current} = k{NULL};
 	}
 x{define buffer}
 ```

@@ -72,6 +72,8 @@
   Heap anzufordern</li><li>
  <code><span class="var">buffer</span></code> zeigt auf den Anfang des zu nutzenden Byte-Blocks</li><li>
  <code><span class="var">current</span></code> zeigt auf das erste freie Zeichen im Byte-Block</li><li>
+ <code><span class="var">current</span></code> kann auch <code><span class="keyword">NULL</span></code> sein, um anzuzeigen, dass der Buffer
+  momentan nicht aktiv ist</li><li>
  <code><span class="var">end</span></code> zeigt auf das erste nicht mehr zum Buffer gehörende Byte</li></ul></div>
 <div><div>
 <code>
@@ -86,9 +88,13 @@
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">b</span>);<br/>
 <span class="in2"></span>
+<span class="keyword">if</span> (<span class="var">b</span>-&gt;<span class="var">current</span>) {<br/>
+<span class="in3"></span>
 <span class="fn">ASSERT</span>(<span class="var">b</span>-&gt;<span class="var">buffer</span> &lt;= <span class="var">b</span>-&gt;<span class="var">current</span>);<br/>
-<span class="in2"></span>
+<span class="in3"></span>
 <span class="fn">ASSERT</span>(<span class="var">b</span>-&gt;<span class="var">current</span> &lt;= <span class="var">b</span>-&gt;<span class="var">end</span>);<br/>
+<span class="in2"></span>
+}<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -121,10 +127,10 @@
 <ul><li>
  Ein Buffer kann aktiv oder inaktiv sein</li><li>
  Ein aktiver Buffer kann auch leer sein</li><li>
- Als Unterscheidung dient, ob <code><span class="var">buffer</span></code> <code><span class="keyword">NULL</span></code> ist</li><li>
+ Als Unterscheidung dient, ob <code><span class="var">current</span></code> <code><span class="keyword">NULL</span></code> ist</li><li>
  Ein in aktiver Buffer wird durch das Hinzufügen eines Zeichens aktiv</li><li>
  Oder durch Aufruf von <code><span class="fn">activateBuffer</span></code></li><li>
- Ein Buffer wird durch Löschen mit <code><span class="fn">eraseBuffer</span></code> inaktiv</li></ul></div>
+ Ein Buffer wird durch Zurücksetzen oder Löschen inaktiv</li></ul></div>
 <div><div>
 <code>
 
@@ -138,7 +144,7 @@
 <span class="in2"></span>
 bufferInvariant(b);<br/>
 <span class="in2"></span>
-return b-&gt;buffer;<br/>
+return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -146,7 +152,7 @@ return b-&gt;buffer;<br/>
 </code>
 </div>
 <ul><li>
- Ein Buffer ist aktiv, wenn der Zeiger <code><span class="var">buffer</span></code> gesetzt ist</li></ul></div>
+ Ein Buffer ist aktiv, wenn der Zeiger <code><span class="var">current</span></code> gesetzt ist</li></ul></div>
 <div><div>
 <code>
 
@@ -181,11 +187,15 @@ return b-&gt;buffer;<br/>
 <span class="in3"></span>
 <span class="var">b</span>-&gt;<span class="var">buffer</span> = <span class="var">b</span>-&gt;<span class="var">initial</span>;<br/>
 <span class="in3"></span>
-<span class="var">b</span>-&gt;<span class="var">current</span> = <span class="var">b</span>-&gt;<span class="var">buffer</span>;<br/>
-<span class="in3"></span>
 <span class="var">b</span>-&gt;<span class="var">end</span> = <span class="var">b</span>-&gt;<span class="var">initial</span> +<br/>
 <span class="in4"></span>
 <span class="fn">sizeof</span>(<span class="var">b</span>-&gt;<span class="var">initial</span>);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (! <span class="var">b</span>-&gt;<span class="var">current</span>) {<br/>
+<span class="in3"></span>
+<span class="var">b</span>-&gt;<span class="var">current</span> = <span class="var">b</span>-&gt;<span class="var">buffer</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -359,7 +369,7 @@ return b-&gt;buffer;<br/>
 <span class="in2"></span>
 <span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
-<span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="var">buffer</span>-&gt;<span class="var">buffer</span>;<br/>
+<span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
 }<br/>
 

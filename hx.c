@@ -32,6 +32,9 @@ void freeMacroEntry(
 	struct Input {
 		struct Input *link;
 		FILE *file;
+		
+	int line;
+;
 		char name[];
 	};
 
@@ -58,6 +61,9 @@ void freeMacroEntry(
 		i->link = input;
 		i->file = f;
 		memcpy(i->name, path, len);
+		
+	i->line = 1;
+;
 		input = i;
 	}
 
@@ -68,6 +74,11 @@ void freeMacroEntry(
 		int ch = EOF;
 		while (input) {
 			ch = fgetc(input->file);
+			
+	if (ch == '\n') {
+		++input->line;
+	}
+;
 			if (ch != EOF) { break; }
 			
 	struct Input *n = input->link;
@@ -93,24 +104,28 @@ void freeMacroEntry(
 		const struct Buffer *b
 	) {
 		ASSERT(b);
-		ASSERT(b->buffer <= b->current);
-		ASSERT(b->current <= b->end);
+		if (b->current) {
+			ASSERT(b->buffer <= b->current);
+			ASSERT(b->current <= b->end);
+		}
 	}
 
 	static inline bool isActiveBuffer(
 		const struct Buffer *b
 	) {
 		bufferInvariant(b);
-		return b->buffer;
+		return b->current;
 	}
 
 	void activateBuffer(struct Buffer *b) {
 		bufferInvariant(b);
 		if (! b->buffer) {
 			b->buffer = b->initial;
-			b->current = b->buffer;
 			b->end = b->initial +
 				sizeof(b->initial);
+		}
+		if (! b->current) {
+			b->current = b->buffer;
 		}
 	}
 
@@ -155,7 +170,7 @@ void freeMacroEntry(
 		struct Buffer *buffer
 	) {
 		bufferInvariant(buffer);
-		buffer->current = buffer->buffer;
+		buffer->current = NULL;
 	}
 
 	void eraseBuffer(
@@ -931,7 +946,7 @@ void freeMacroEntry(
 		bool valid = false;
 		
 	static const char valids[] =
-		"123456fvsntkxeEpm";
+		"fvsntkxeEpm";
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -1173,7 +1188,7 @@ void freeMacroEntry(
 		processed = true;
 	}
 ;
-		eraseBuffer(&name);
+		resetBuffer(&name);
 		last = ch;
 		ch = nextCh();
 	}

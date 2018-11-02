@@ -105,7 +105,8 @@ a{global elements}
 	t{struct Input} {
 		t{struct Input *}v{link};
 		t{FILE *}v{file};
-		t{char} v{name}[];
+		e{additional input elements};
+		t{char} v{name}t{[]};
 	};
 
 	t{struct Input *}v{input} = k{NULL};
@@ -127,7 +128,7 @@ a{global elements}
 	t{void} f{pushPath}(t{const char *}v{path}) {
 		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
 		e{check file for path};
-		t{int} len = f{strlen}(v{path}) + n{1};
+		t{int} v{len} = f{strlen}(v{path}) + n{1};
 		t{struct Input *}v{i} = f{malloc}(
 			f{sizeof}(t{struct Input}) + v{len}
 		);
@@ -135,6 +136,7 @@ a{global elements}
 		v{i}->v{link} = v{input};
 		v{i}->v{file} = v{f};
 		f{memcpy}(v{i}->v{name}, v{path}, v{len});
+		e{init additional input elements};
 		v{input} = v{i};
 	}
 x{global elements}
@@ -146,8 +148,8 @@ x{global elements}
 
 ```
 d{check file for path}
-	ASSERT(
-		f, "can't open [%s]", path
+	f{ASSERT}(
+		v{f}, s{"can't open [%s]"}, v{path}
 	);
 x{check file for path}
 ```
@@ -155,9 +157,9 @@ x{check file for path}
 
 ```
 d{check memory for input}
-	ASSERT(
-		i,
-		"no memory for input"
+	f{ASSERT}(
+		v{i},
+		s{"no memory for input"}
 	);
 x{check memory for input}
 ```
@@ -169,8 +171,8 @@ x{check memory for input}
 
 ```
 a{global elements}
-	const char *stylesheet =
-		"slides/slides.css";
+	t{const char *}v{stylesheet} =
+		s{"slides/slides.css"};
 x{global elements}
 ```
 * Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
@@ -178,13 +180,13 @@ x{global elements}
 
 ```
 d{process arguments}
-	t{bool} someFile = false;
-	for (int i = 1; i < argc; ++i) {
+	t{bool} v{someFile} = k{false};
+	k{for} (t{int} v{i} = n{1}; v{i} < v{argc}; ++v{i}) {
 		e{process argument};
-		ASSERT(
-			false,
-			"unknown argument [%s]",
-			argv[i]
+		f{ASSERT}(
+			k{false},
+			s{"unknown argument [%s]"},
+			v{argv}[v{i}]
 		);
 	}
 x{process arguments}
@@ -194,11 +196,11 @@ x{process arguments}
 
 ```
 d{process argument} {
-	const char prefix[] = "--css=";
-	int len = sizeof(prefix) - 1;
-	if (memcmp(argv[i], prefix, len) == 0) {
-		stylesheet = argv[i] + len;
-		continue;
+	t{const char} v{prefix}t{[]} = s{"--css="};
+	t{int} v{len} = f{sizeof}(v{prefix}) - n{1};
+	k{if} (f{memcmp}(v{argv}[v{i}], v{prefix}, v{len}) == n{0}) {
+		v{stylesheet} = v{argv}[v{i}] + v{len};
+		k{continue};
 	}
 } x{process argument}
 ```
@@ -207,10 +209,10 @@ d{process argument} {
 
 ```
 a{process argument}
-	if (! someFile) {
+	k{if} (! v{someFile}) {
 		f{pushPath}(v{argv}[n{1}]);
-		someFile = true;
-		continue;
+		v{someFile} = k{true};
+		k{continue};
 	}
 x{process argument}
 ```
@@ -220,7 +222,7 @@ x{process argument}
 
 ```
 a{process arguments}
-	if (! someFile) {
+	k{if} (! v{someFile}) {
 		f{pushPath}(s{"index.x"});
 	}
 x{process arguments}
@@ -241,6 +243,7 @@ a{global elements}
 		t{int} v{ch} = k{EOF};
 		k{while} (v{input}) {
 			v{ch} = f{fgetc}(v{input}->v{file});
+			e{preprocess char};
 			k{if} (v{ch} != k{EOF}) { k{break}; }
 			e{get next input file};
 		}
@@ -364,7 +367,7 @@ d{process close brace} {
 	k{if} (isActiveBuffer(&v{name})) {
 		f{addToBuffer}(&v{name}, s{'\0'});
 		e{process macro name};
-		f{eraseBuffer}(&v{name});
+		f{resetBuffer}(&v{name});
 		v{last} = v{ch};
 		v{ch} = f{nextCh}();
 	}
@@ -397,7 +400,7 @@ a{process other char} {
 ```
 d{process open brace} {
 	k{if} (! v{macro}) {
-		k{static} t{const char} v{valids}[] = s{"adir"};
+		k{static} t{const char} v{valids}t{[]} = s{"adir"};
 		k{if} (f{strchr}(v{valids}, v{last})) {
 			v{openCh} = v{last};
 			f{activateBuffer}(&v{name});
@@ -424,12 +427,12 @@ x{global source vars}
 ```
 d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
-		f{ASSERT}(! v{macro}, "def in macro");
+		f{ASSERT}(! v{macro}, s{"def in macro"});
 		e{check for double def};
-		if (! macro) {
+		k{if} (! v{macro}) {
 			v{macro} = f{allocMacroInMap}(
 				&v{macros}, v{name}.v{buffer},
-				v{name}.v{current} - 1
+				v{name}.v{current} - n{1}
 			);
 		}
 		v{processed} = k{true};
@@ -443,12 +446,12 @@ x{process macro name}
 d{check for double def}
 	v{macro} = f{findMacroInMap}(
 		&v{macros}, v{name}.v{buffer},
-		v{name}.v{current} - 1
+		v{name}.v{current} - n{1}
 	);
-	if (isPopulatedMacro(macro)) {
-		printf(
-			"macro [%s] already defined\n",
-			name.buffer
+	k{if} (f{isPopulatedMacro}(v{macro})) {
+		f{printf}(
+			s{"macro [%s] already defined\n"},
+			v{name}.v{buffer}
 		);
 	}
 x{check for double def}
@@ -461,10 +464,10 @@ x{check for double def}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
-		f{ASSERT}(! v{macro}, "add in macro");
+		f{ASSERT}(! v{macro}, s{"add in macro"});
 		v{macro} = f{findMacroInMap}(
 			&v{macros}, v{name}.v{buffer},
-			v{name}.v{current} - 1
+			v{name}.v{current} - n{1}
 		);
 		e{check for add without def};
 		v{processed} = k{true};
@@ -476,14 +479,14 @@ x{process macro name}
 
 ```
 d{check for add without def}
-	if (! isPopulatedMacro(macro)) {
-		printf(
-			"macro [%s] not defined\n",
-			name.buffer
+	k{if} (! f{isPopulatedMacro}(v{macro})) {
+		f{printf}(
+			s{"macro [%s] not defined\n"},
+			v{name}.v{buffer}
 		);
-		macro = getMacroInMap(
-			&macros, name.buffer,
-			name.current - 1
+		v{macro} = f{getMacroInMap}(
+			&v{macros}, v{name}.v{buffer},
+			v{name}.v{current} - n{1}
 		);
 	}
 x{check for add without def}
@@ -493,14 +496,14 @@ x{check for add without def}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
-		f{ASSERT}(! v{macro}, "replace in macro");
+		f{ASSERT}(! v{macro}, s{"replace in macro"});
 		v{macro} = f{getMacroInMap}(
 			&v{macros}, v{name}.v{buffer},
-			v{name}.v{current} - 1
+			v{name}.v{current} - n{1}
 		);
 		f{ASSERT}(
-			v{macro}, "macro %s not defined",
-			name.buffer
+			v{macro}, s{"macro %s not defined"},
+			v{name}.v{buffer}
 		);
 		f{freeMacrosEntries}(v{macro});
 		v{processed} = k{true};
@@ -513,7 +516,7 @@ x{process macro name}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'x'}) {
-		f{ASSERT}(v{macro}, "end not in macro");
+		f{ASSERT}(v{macro}, s{"end not in macro"});
 		e{macro names must match};
 		E{flush macro buffer};
 		v{macro} = k{NULL};
@@ -525,10 +528,10 @@ x{process macro name}
 
 ```
 d{macro names must match}
-	ASSERT(
-		! strcmp(macro->name, name.buffer),
-		"closing [%s] != [%s]",
-		name.buffer, macro->name
+	f{ASSERT}(
+		! f{strcmp}(v{macro}->v{name}, v{name}.v{buffer}),
+		s{"closing [%s] != [%s]"},
+		v{name}.v{buffer}, v{macro}->v{name}
 	);
 x{macro names must match}
 ```
@@ -540,13 +543,13 @@ a{global source vars}
 	t{bool} f{alreadyUsed}(t{const char *}v{name}) {
 		t{struct Input *}v{i} = v{input};
 		k{for} (; v{i}; v{i} = v{i}->v{link}) {
-			if (strcmp(i->name, name) == 0) {
-				return true;
+			k{if} (f{strcmp}(v{i}->v{name}, v{name}) == n{0}) {
+				k{return} k{true};
 			}
 		}
 		k{for} (v{i} = v{used}; v{i}; v{i} = v{i}->v{link}) {
-			if (strcmp(i->name, name) == 0) {
-				return true;
+			k{if} (f{strcmp}(v{i}->v{name}, v{name}) == n{0}) {
+				k{return} k{true};
 			}
 		}
 		k{return} k{false};
@@ -562,7 +565,7 @@ x{global source vars}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'i'}) {
-		f{ASSERT}(! v{macro}, "include in macro");
+		f{ASSERT}(! v{macro}, s{"include in macro"});
 		k{if} (! f{alreadyUsed}(v{name}.v{buffer})) {
 			f{pushPath}(v{name}.v{buffer});
 		}
@@ -577,11 +580,11 @@ x{process macro name}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
-		f{ASSERT}(v{macro}, "expand not in macro");
+		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
 		t{struct Macro *}v{sub} = f{getMacroInMap}(
 			&v{macros}, v{name}.buffer,
-			v{name}.current - 1
+			v{name}.v{current} - n{1}
 		);
 		e{check macro expand count};
 		++sub->expands;
@@ -597,16 +600,16 @@ x{process macro name}
 
 ```
 d{check macro expand count}
-	if (sub->expands) {
-		printf(
-			"multiple expands of [%s]\n",
-			sub->name
+	k{if} (v{sub}->v{expands}) {
+		f{printf}(
+			s{"multiple expands of [%s]\n"},
+			v{sub}->v{name}
 		);
 	}
-	if (sub->multiples) {
-		printf(
-			"expand after mult of [%s]\n",
-			sub->name
+	k{if} (v{sub}->v{multiples}) {
+		f{printf}(
+			s{"expand after mult of [%s]\n"},
+			v{sub}->v{name}
 		);
 	}
 x{check macro expand count}
@@ -619,12 +622,12 @@ x{check macro expand count}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'E'}) {
-		f{ASSERT}(v{macro}, "multiple not in macro");
+		f{ASSERT}(v{macro}, s{"multiple not in macro"});
 		E{flush macro buffer};
 		t{struct Macro *}v{sub} =
 			f{getMacroInMap}(
-				&v{macros}, v{name}.buffer,
-				v{name}.current - 1
+				&v{macros}, v{name}.v{buffer},
+				v{name}.v{current} - n{1}
 			);
 		e{check for prev expands};
 		++sub->multiples;
@@ -639,11 +642,11 @@ x{process macro name}
 
 ```
 d{check for prev expands}
-	if (sub->expands) {
-		printf(
-			"multiple after expand "
-				"of [%s]\n",
-			sub->name
+	k{if} (v{sub}->v{expands}) {
+		f{printf}(
+			s{"multiple after expand "}
+				s{"of [%s]\n"},
+			v{sub}->v{name}
 		);
 	}
 x{check for prev expands}
@@ -654,7 +657,7 @@ x{check for prev expands}
 ```
 a{process macro name}
 	k{if} (v{openCh} == s{'p'}) {
-		f{ASSERT}(v{macro}, "private not in macro");
+		f{ASSERT}(v{macro}, s{"private not in macro"});
 		e{process private macro};
 		v{processed} = k{true};
 	}
@@ -667,14 +670,14 @@ x{process macro name}
 
 ```
 d{process private macro}
-	t{static char} v{prefix}[] = "_private_";
+	t{static char} v{prefix}t{[]} = s{"_private_"};
 	E{flush macro buffer};
 	f{addBytesToMacro}(
 		v{macro}, v{prefix},
-		v{prefix} + f{sizeof}(v{prefix}) - 1
+		v{prefix} + f{sizeof}(v{prefix}) - n{1}
 	);
 	f{addBytesToMacro}(
-		v{macro}, v{name}.buffer, v{name}.current - 1
+		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1}
 	);
 x{process private macro}
 ```
@@ -698,10 +701,10 @@ x{process macro name}
 
 ```
 d{process magic macro}
-	t{static char} v{magic}[] = "2478325";
+	t{static char} v{magic}t{[]} = s{"2478325"};
 	E{flush macro buffer};
 	f{addBytesToMacro}(
-		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - 1
+		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - n{1}
 	);
 x{process magic macro}
 ```
@@ -732,7 +735,7 @@ a{process open brace} {
 		e{check valid names};
 		k{if} (v{valid}) {
 			v{openCh} = v{last};
-			activateBuffer(&name);
+			f{activateBuffer}(&v{name});
 			k{break};
 		}
 	}
@@ -747,7 +750,7 @@ a{process open brace} {
 ```
 d{check valid names}
 	t{static const char} v{valids}t{[]} =
-		s{"123456fvsntkxeEpm"};
+		s{"fvsntkxeEpm"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
 		v{valid} = k{true};
 	}
@@ -760,11 +763,11 @@ x{check valid names}
 a{process macro name}
 	k{if} (! v{processed}) {
 		f{ASSERT}(
-			v{macro}, "unknown macro %s",
-			name.buffer
+			v{macro}, s{"unknown macro %s"},
+			v{name}.v{buffer}
 		);
-		t{const char *}v{c} = v{name}.buffer;
-		k{for} (; v{c} != v{name.current} - 1; ++v{c}) {
+		t{const char *}v{c} = v{name}.v{buffer};
+		k{for} (; v{c} != v{name.current} - n{1}; ++v{c}) {
 			f{addToBuffer}(&v{buffer}, *v{c});
 		}
 		v{processed} = k{true};
@@ -835,11 +838,11 @@ x{serialize macro}
 ```
 a{serialize macro} {
 	t{int} v{sum} =
-		macro->expands + macro->multiples;
-	k{if} (sum <= 0) {
-		printf(
-			"macro [%s] not called\n",
-			macro->name
+		v{macro}->v{expands} + v{macro}->v{multiples};
+	k{if} (v{sum} <= n{0}) {
+		f{printf}(
+			s{"macro [%s] not called\n"},
+			v{macro}->v{name}
 		);
 	}
 } x{serialize macro}
@@ -849,11 +852,11 @@ a{serialize macro} {
 
 ```
 a{serialize macro}
-	k{if} (macro->multiples == 1) {
-		printf(
-			"multiple macro [%s] only "
-				"used once\n",
-			macro->name
+	k{if} (v{macro}->v{multiples} == n{1}) {
+		f{printf}(
+			s{"multiple macro [%s] only "}
+				s{"used once\n"},
+			v{macro}->v{name}
 		);
 	}
 x{serialize macro}
@@ -864,10 +867,10 @@ x{serialize macro}
 
 ```
 a{serialize macro}
-	k{if} (! isPopulatedMacro(macro)) {
-		printf(
-			"macro [%s] not populated\n",
-			macro->name
+	k{if} (! f{isPopulatedMacro}(v{macro})) {
+		f{printf}(
+			s{"macro [%s] not populated\n"},
+			v{macro}->v{name}
 		);
 	}
 x{serialize macro}
@@ -877,9 +880,9 @@ x{serialize macro}
 ```
 d{write in file}
 	t{FILE *}v{f} =
-		f{fopen}(v{macro}->v{name} + n{6}, "w");
+		f{fopen}(v{macro}->v{name} + n{6}, s{"w"});
 	f{ASSERT}(
-		v{f}, "can't open %s",
+		v{f}, s{"can't open %s"},
 		v{macro}->v{name} + n{6}
 	);
 	f{serializeMacro}(v{macro}, v{f});
@@ -888,6 +891,31 @@ x{write in file}
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
 
+# Zeilennummern
+
+```
+d{additional input elements}
+	t{int} v{line};
+x{additional input elements}
+```
+* Pro Datei wird die aktuelle Zeile festgehalten
+
+```
+d{init additional input elements}
+	v{i}->v{line} = n{1};
+x{init additional input elements}
+```
+* Beim Öffnen einer neuen `.x`-Datei befinden wir uns in Zeile `n{1}`
+
+```
+d{preprocess char}
+	k{if} (v{ch} == s{'\n'}) {
+		++v{input}->v{line};
+	}
+x{preprocess char}
+```
+* Wenn ein Zeilenumbruch gelesen wird, wird die aktuelle Zeile
+  erhöht
 
 # HTML generieren
 * Aus `hx`-Dateien wird ein HTML-Foliensatz generiert

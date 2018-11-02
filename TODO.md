@@ -1,4 +1,4 @@
-* index.x dokumentieren
+* html.x dokumentieren
 * Code-Formattierung in Headern
 * Fragmente lokal zu Dateien scopen
 * Navigierbare Verweise
@@ -8,4 +8,5 @@
 * Makro und Fragment auseinanderdröseln
 * SVG-Grafiken in Slides
 * Header-Name in Buffer ablegen
-* Buffer mit Heap als nicht aktiv markieren
+* Directories richtig behandeln
+* #line Makros in .c und .h Dateien
