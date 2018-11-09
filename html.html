@@ -103,7 +103,10 @@
 </div>
 <ul><li>
  Nur <code>.x</code>-Dateien werden in HTML konvertiert</li><li>
- Die HTML hat den gleichen Pfad mit der Endung <code>.html</code></li></ul></div>
+ Die HTML hat den gleichen Pfad mit der Endung <code>.html</code></li><li>
+ Es sollte zwar keine anderen Dateien geben,</li><li>
+ Aber um komische Dateinamen durch das ersetzen des letzten Buchstabens
+  zu vermeiden, wird noch einmal geprüft</li></ul></div>
 <div><div>
 <code>
 
@@ -290,9 +293,7 @@ char last = '\n';<br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">headerLevel</span>;<br/>
 <span class="in1"></span>
-<span class="type">char</span> <span class="var">headerName</span>[100];<br/>
-<span class="in1"></span>
-<span class="type">char *</span> <span class="var">headerNameEnd</span>;<br/>
+<span class="type">struct Buffer</span> <span class="var">headerName</span>;<br/>
 <span class="in1"></span>
 <span class="type">enum HtmlState</span> <span class="var">headerState</span>;<br/>
 
@@ -307,7 +308,7 @@ char last = '\n';<br/>
 <span class="in1"></span>
 , .<span class="var">headerLevel</span> = 0<br/>
 <span class="in1"></span>
-, .<span class="var">headerNameEnd</span> = <span class="keyword">NULL</span><br/>
+, .<span class="var">headerName</span> = {}<br/>
 
 <span class="end">@end(<span class="name">init html status)</span></span><br/>
 </code>
@@ -380,7 +381,7 @@ status.headerState = status.state;<br/>
 <span class="in1"></span>
 <span class="var">status</span>.<span class="var">headerLevel</span> = <span class="num">0</span>;<br/>
 <span class="in1"></span>
-<span class="var">status</span>.<span class="var">headerNameEnd</span> = <span class="keyword">NULL</span>;<br/>
+<span class="fn">resetBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>);<br/>
 <span class="in1"></span>
 status.headerState = hs_IN_SLIDE;<br/>
 
@@ -395,21 +396,9 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="var">status</span>.<span class="var">headerNameEnd</span>) {<br/>
+<span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>)) {<br/>
 <span class="in3"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in4"></span>
-<span class="var">status</span>.<span class="var">headerNameEnd</span> &lt;<br/>
-<span class="in5"></span>
-<span class="var">status</span>.<span class="var">headerName</span> + <span class="fn">sizeof</span>(<br/>
-<span class="in6"></span>
-<span class="var">status</span>.<span class="var">headerName</span><br/>
-<span class="in5"></span>
-) - <span class="num">1</span><br/>
-<span class="in3"></span>
-);<br/>
-<span class="in3"></span>
-*<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>, <span class="var">ch</span>);<br/>
 <span class="in3"></span>
 <span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
@@ -430,17 +419,13 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">headerNameEnd</span> &amp;&amp;<br/>
+<span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>) &amp;&amp;<br/>
 <span class="in3"></span>
 <span class="var">ch</span> &gt; <span class="str">' '</span><br/>
 <span class="in2"></span>
 ) {<br/>
 <span class="in3"></span>
-<span class="var">status</span>.<span class="var">headerNameEnd</span> =<br/>
-<span class="in4"></span>
-<span class="var">status</span>.<span class="var">headerName</span>;<br/>
-<span class="in3"></span>
-*<span class="var">status</span>.<span class="var">headerNameEnd</span>++ = <span class="var">ch</span>;<br/>
+<span class="fn">addToBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>, <span class="var">ch</span>);<br/>
 <span class="in3"></span>
 <span class="expand">@multiple(<span class="name">move ch to last)</span></span>;<br/>
 <span class="in3"></span>
@@ -459,7 +444,7 @@ status.headerState = hs_IN_SLIDE;<br/>
 
 <span class="add">@def(<span class="name">process header in HTML)</span></span> <br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="fn">isActiveBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>));<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">close previous HTML page)</span></span>;<br/>
 <span class="in1"></span>
@@ -523,7 +508,15 @@ status.headerState = hs_IN_SLIDE;<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
 <span class="in1"></span>
-<span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span>, <span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
+<span class="fn">writeEscaped</span>(<br/>
+<span class="in2"></span>
+<span class="var">out</span>,<br/>
+<span class="in2"></span>
+<span class="var">status</span>.<span class="var">headerName</span>.<span class="var">buffer</span>,<br/>
+<span class="in2"></span>
+<span class="var">status</span>.<span class="var">headerName</span>.<span class="var">current</span><br/>
+<span class="in1"></span>
+);<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/h%d&gt;\n"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
 
@@ -602,7 +595,15 @@ default: {<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;title&gt;"</span>);<br/>
 <span class="in1"></span>
-<span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span>, <span class="var">status</span>.<span class="var">headerNameEnd</span>);<br/>
+<span class="fn">writeEscaped</span>(<br/>
+<span class="in2"></span>
+<span class="var">out</span>,<br/>
+<span class="in2"></span>
+<span class="var">status</span>.<span class="var">headerName</span>.<span class="var">buffer</span>,<br/>
+<span class="in2"></span>
+<span class="var">status</span>.<span class="var">headerName</span>.<span class="var">current</span><br/>
+<span class="in1"></span>
+);<br/>
 <span class="in1"></span>
 <span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/title&gt;"</span>);<br/>
 <span class="in1"></span>

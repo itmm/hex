@@ -51,6 +51,9 @@ x{write cur HTML file}
 ```
 * Nur `.x`-Dateien werden in HTML konvertiert
 * Die HTML hat den gleichen Pfad mit der Endung `.html`
+* Es sollte zwar keine anderen Dateien geben,
+* Aber um komische Dateinamen durch das ersetzen des letzten Buchstabens
+  zu vermeiden, wird noch einmal geprüft
 
 ```
 d{write cur HTML file to out} 
@@ -157,8 +160,7 @@ x{check html special state}
 ```
 a{html state elements}
 	t{int} v{headerLevel};
-	t{char} v{headerName}[100];
-	t{char *} v{headerNameEnd};
+	t{struct Buffer} v{headerName};
 	t{enum HtmlState} v{headerState};
 x{html state elements}
 ```
@@ -166,7 +168,7 @@ x{html state elements}
 ```
 d{init html status}
 	, .v{headerLevel} = 0
-	, .v{headerNameEnd} = k{NULL}
+	, .v{headerName} = {}
 x{init html status}
 ```
 
@@ -204,7 +206,7 @@ x{process ch for HTML}
 d{reset header state} 
 	v{status}.v{state} = v{hs_IN_SLIDE};
 	v{status}.v{headerLevel} = n{0};
-	v{status}.v{headerNameEnd} = k{NULL};
+	f{resetBuffer}(&v{status}.v{headerName});
 	status.headerState = hs_IN_SLIDE;
 x{reset header state}
 ```
@@ -212,14 +214,8 @@ x{reset header state}
 ```
 a{process ch for HTML} 
 	k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {
-		k{if} (v{status}.v{headerNameEnd}) {
-			f{ASSERT}(
-				v{status}.v{headerNameEnd} <
-					v{status}.v{headerName} + f{sizeof}(
-						v{status}.v{headerName}
-					) - n{1}
-			);
-			*v{status}.v{headerNameEnd}++ = v{ch};
+		k{if} (f{isActiveBuffer}(&v{status}.v{headerName})) {
+			f{addToBuffer}(&v{status}.v{headerName}, v{ch});
 			E{move ch to last};
 			k{continue};
 		}
@@ -230,12 +226,10 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {
-		k{if} (! v{status}.v{headerNameEnd} &&
+		k{if} (! f{isActiveBuffer}(&v{status}.v{headerName}) &&
 			v{ch} > s{' '}
 		) {
-			v{status}.v{headerNameEnd} =
-				v{status}.v{headerName};
-			*v{status}.v{headerNameEnd}++ = v{ch};
+			f{addToBuffer}(&v{status}.v{headerName}, v{ch});
 			E{move ch to last};
 			k{continue};
 		}
@@ -245,7 +239,7 @@ x{process ch for HTML}
 
 ```
 d{process header in HTML} 
-	f{ASSERT}(v{status}.v{headerNameEnd});
+	f{ASSERT}(f{isActiveBuffer}(&v{status}.v{headerName}));
 	e{close previous HTML page};
 	E{write header tag};
 	f{fprintf}(v{out}, s{"<div class=\"slides\">\n"});
@@ -278,7 +272,11 @@ x{global elements}
 ```
 d{write header tag} 
 	f{fprintf}(v{out}, s{"<h%d>"}, v{status}.v{headerLevel});
-	f{writeEscaped}(v{out}, v{status}.v{headerName}, v{status}.v{headerNameEnd});
+	f{writeEscaped}(
+		v{out},
+		v{status}.v{headerName}.v{buffer},
+		v{status}.v{headerName}.v{current}
+	);
 	f{fprintf}(v{out}, s{"</h%d>\n"}, v{status}.v{headerLevel});
 x{write header tag}
 ```
@@ -319,7 +317,11 @@ d{write HTML header entries}
 		v{out}, s{"<meta charset=\"utf-8\">\n"}
 	);
 	f{fprintf}(v{out}, s{"<title>"});
-	f{writeEscaped}(v{out}, v{status}.v{headerName}, v{status}.v{headerNameEnd});
+	f{writeEscaped}(
+		v{out},
+		v{status}.v{headerName}.v{buffer},
+		v{status}.v{headerName}.v{current}
+	);
 	f{fprintf}(v{out}, s{"</title>"});
 	f{fprintf}(
 		v{out}, s{"<link rel=\"stylesheet\" "}

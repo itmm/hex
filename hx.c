@@ -660,8 +660,7 @@ void freeFragEntry(
 	enum HtmlState state;
 
 	int headerLevel;
-	char headerName[100];
-	char * headerNameEnd;
+	struct Buffer headerName;
 	enum HtmlState headerState;
 
 	int codeOpening;
@@ -1323,7 +1322,7 @@ void freeFragEntry(
 		.state = hs_NOTHING_WRITTEN
 		
 	, .headerLevel = 0
-	, .headerNameEnd = NULL
+	, .headerName = {}
 
 	, .codeOpening = 0
 	, .codeIndent = 0
@@ -1354,7 +1353,7 @@ void freeFragEntry(
 	if (status.state == hs_IN_HEADER) {
 		if (ch == '\n') {
 			 
-	ASSERT(status.headerNameEnd);
+	ASSERT(isActiveBuffer(&status.headerName));
 	 
 	switch (status.headerState) {
 		case hs_NOTHING_WRITTEN: {
@@ -1367,7 +1366,11 @@ void freeFragEntry(
 		out, "<meta charset=\"utf-8\">\n"
 	);
 	fprintf(out, "<title>");
-	writeEscaped(out, status.headerName, status.headerNameEnd);
+	writeEscaped(
+		out,
+		status.headerName.buffer,
+		status.headerName.current
+	);
 	fprintf(out, "</title>");
 	fprintf(
 		out, "<link rel=\"stylesheet\" "
@@ -1393,14 +1396,22 @@ void freeFragEntry(
 ;
 	 
 	fprintf(out, "<h%d>", status.headerLevel);
-	writeEscaped(out, status.headerName, status.headerNameEnd);
+	writeEscaped(
+		out,
+		status.headerName.buffer,
+		status.headerName.current
+	);
 	fprintf(out, "</h%d>\n", status.headerLevel);
 ;
 	fprintf(out, "<div class=\"slides\">\n");
 	fprintf(out, "<div><div>\n");
 	 
 	fprintf(out, "<h%d>", status.headerLevel);
-	writeEscaped(out, status.headerName, status.headerNameEnd);
+	writeEscaped(
+		out,
+		status.headerName.buffer,
+		status.headerName.current
+	);
 	fprintf(out, "</h%d>\n", status.headerLevel);
 ;
 	fprintf(out, "</div>\n");
@@ -1408,7 +1419,7 @@ void freeFragEntry(
 			 
 	status.state = hs_IN_SLIDE;
 	status.headerLevel = 0;
-	status.headerNameEnd = NULL;
+	resetBuffer(&status.headerName);
 	status.headerState = hs_IN_SLIDE;
 ;
 			
@@ -1419,14 +1430,8 @@ void freeFragEntry(
 	}
  
 	if (status.state == hs_IN_HEADER) {
-		if (status.headerNameEnd) {
-			ASSERT(
-				status.headerNameEnd <
-					status.headerName + sizeof(
-						status.headerName
-					) - 1
-			);
-			*status.headerNameEnd++ = ch;
+		if (isActiveBuffer(&status.headerName)) {
+			addToBuffer(&status.headerName, ch);
 			
 	last = ch == EOF ? '\0' : ch;
 ;
@@ -1435,12 +1440,10 @@ void freeFragEntry(
 	}
  
 	if (status.state == hs_IN_HEADER) {
-		if (! status.headerNameEnd &&
+		if (! isActiveBuffer(&status.headerName) &&
 			ch > ' '
 		) {
-			status.headerNameEnd =
-				status.headerName;
-			*status.headerNameEnd++ = ch;
+			addToBuffer(&status.headerName, ch);
 			
 	last = ch == EOF ? '\0' : ch;
 ;
