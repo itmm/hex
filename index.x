@@ -336,7 +336,7 @@ x{process current char}
 
 ```
 d{additional read vars}
-	t{struct Macro *}v{macro} = k{NULL};
+	t{struct Frag *}v{macro} = k{NULL};
 	t{struct Buffer} v{buffer} = {};
 	t{int} v{bufferLine} = n{0};
 x{additional read vars}
@@ -510,7 +510,7 @@ a{process macro name}
 			v{macro}, s{"macro %s not defined"},
 			v{name}.v{buffer}
 		);
-		f{freeMacrosEntries}(v{macro});
+		f{freeFragEntries}(v{macro});
 		v{processed} = k{true};
 	}
 x{process macro name}
@@ -587,7 +587,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
 		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
-		t{struct Macro *}v{sub} = f{getMacroInMap}(
+		t{struct Frag *}v{sub} = f{getMacroInMap}(
 			&v{macros}, v{name}.buffer,
 			v{name}.v{current} - n{1}
 		);
@@ -629,7 +629,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'E'}) {
 		f{ASSERT}(v{macro}, s{"multiple not in macro"});
 		E{flush macro buffer};
-		t{struct Macro *}v{sub} =
+		t{struct Frag *}v{sub} =
 			f{getMacroInMap}(
 				&v{macros}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
@@ -824,11 +824,11 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	t{struct Macro **}v{cur} = v{macros}.v{macros};
-	t{struct Macro **}v{end} =
+	t{struct Frag **}v{cur} = v{macros}.v{macros};
+	t{struct Frag **}v{end} =
 		v{cur} + v{MACRO_SLOTS};
 	k{for} (; v{cur} < v{end}; ++v{cur}) {
-		t{struct Macro *}v{macro} = *v{cur};
+		t{struct Frag *}v{macro} = *v{cur};
 		k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
 			e{serialize macro};
 		}

@@ -586,7 +586,7 @@
 
 <span class="add">@def(<span class="name">additional read vars)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct Macro *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
+<span class="type">struct Frag *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
 <span class="in1"></span>
@@ -890,7 +890,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">freeMacrosEntries</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFragEntries</span>(<span class="var">macro</span>);<br/>
 <span class="in2"></span>
 <span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 <span class="in1"></span>
@@ -1026,7 +1026,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
-<span class="type">struct Macro *</span><span class="var">sub</span> = <span class="fn">getMacroInMap</span>(<br/>
+<span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getMacroInMap</span>(<br/>
 <span class="in3"></span>
 &amp;<span class="var">macros</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
@@ -1100,7 +1100,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
-<span class="type">struct Macro *</span><span class="var">sub</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
 <span class="in3"></span>
 <span class="fn">getMacroInMap</span>(<br/>
 <span class="in4"></span>
@@ -1444,15 +1444,15 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">serialize fragments)</span></span> {<br/>
 <span class="in1"></span>
-<span class="type">struct Macro **</span><span class="var">cur</span> = <span class="var">macros</span>.<span class="var">macros</span>;<br/>
+<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">macros</span>.<span class="var">macros</span>;<br/>
 <span class="in1"></span>
-<span class="type">struct Macro **</span><span class="var">end</span> =<br/>
+<span class="type">struct Frag **</span><span class="var">end</span> =<br/>
 <span class="in2"></span>
 <span class="var">cur</span> + <span class="var">MACRO_SLOTS</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 <span class="in2"></span>
-<span class="type">struct Macro *</span><span class="var">macro</span> = *<span class="var">cur</span>;<br/>
+<span class="type">struct Frag *</span><span class="var">macro</span> = *<span class="var">cur</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in3"></span>

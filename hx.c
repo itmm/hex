@@ -23,9 +23,9 @@
 		}
 ;
 	
-struct MacroEntry;
+struct FragEntry;
 void freeMacroEntry(
-	struct MacroEntry *entry
+	struct FragEntry *entry
 );
 ;
 
@@ -201,28 +201,28 @@ void freeMacroEntry(
 ;
 
 	
-	struct MacroEntry;
+	struct FragEntry;
 
-	struct Macro {
-		struct Macro *link;
-		struct MacroEntry *firstEntry;
-		struct MacroEntry *lastEntry;
+	struct Frag {
+		struct Frag *link;
+		struct FragEntry *firstEntry;
+		struct FragEntry *lastEntry;
 		int expands;
 		int multiples;
 		char name[];
 	};
 
-	struct Macro *allocMacro(
+	struct Frag *allocFrag(
 		const char *nameBegin,
 		const char *nameEnd
 	) {
-		struct Macro *result = NULL;
+		struct Frag *result = NULL;
 		
 	ASSERT(nameBegin);
 	ASSERT(nameBegin <= nameEnd);
 	int nameLength =
 		nameEnd - nameBegin;
-	int macroSize = sizeof(struct Macro)
+	int macroSize = sizeof(struct Frag)
 		+ nameLength + 1;
 	result = malloc(macroSize);
 	ASSERT(result);
@@ -241,8 +241,8 @@ void freeMacroEntry(
 		return result;
 	}
 
-	void freeMacrosEntries(
-		struct Macro *macro
+	void freeFragEntries(
+		struct Frag *macro
 	) {
 		if (macro) {
 			
@@ -254,21 +254,21 @@ void freeMacroEntry(
 	}
 
 	void freeMacro(
-		struct Macro *macro
+		struct Frag *macro
 	) {
 		while (macro) {
-			struct Macro *link =
+			struct Frag *link =
 				macro->link;
-			freeMacrosEntries(macro);
+			freeFragEntries(macro);
 			free(macro);
 			macro = link;
 		}
 	}
 
-	struct Macro *allocTestMacro(
+	struct Frag *allocTestMacro(
 		const char *name
 	) {
-		return allocMacro(
+		return allocFrag(
 			name, name + strlen(name)
 		);
 	}
@@ -276,7 +276,7 @@ void freeMacroEntry(
 	void testMacroName(
 		const char *name
 	) {
-		struct Macro *macro =
+		struct Frag *macro =
 			allocTestMacro(name);
 		ASSERT(macro);
 		ASSERT(
@@ -286,14 +286,14 @@ void freeMacroEntry(
 	}
 
 	bool isPopulatedMacro(
-		const struct Macro *macro
+		const struct Frag *macro
 	) {
 		return macro && macro->firstEntry;
 	}
 
-	struct MacroEntry {
-		struct MacroEntry *link;
-		struct Macro *macro;
+	struct FragEntry {
+		struct FragEntry *link;
+		struct Frag *macro;
 		const char *valueEnd;
 		
 	struct Input *input;
@@ -302,12 +302,12 @@ void freeMacroEntry(
 		char value[];
 	};
 
-	struct MacroEntry *allocMacroEntry(
-		struct Macro *macro,
+	struct FragEntry *allocMacroEntry(
+		struct Frag *macro,
 		const char *valueBegin,
 		const char *valueEnd
 	) {
-		struct MacroEntry *result = NULL;
+		struct FragEntry *result = NULL;
 		
 	int valueLength = 0;
 	if (valueBegin) {
@@ -316,7 +316,7 @@ void freeMacroEntry(
 			valueEnd - valueBegin;
 	}
 	int entrySize = valueLength +
-		sizeof(struct MacroEntry);
+		sizeof(struct FragEntry);
 	result = malloc(entrySize);
 	ASSERT(result);
 ;
@@ -335,7 +335,7 @@ void freeMacroEntry(
 		return result;
 	}
 
-struct MacroEntry *
+struct FragEntry *
 allocEmptyMacroEntry() {
 	return allocMacroEntry(
 		NULL, NULL, NULL
@@ -343,10 +343,10 @@ allocEmptyMacroEntry() {
 }
 
 void freeMacroEntry(
-	struct MacroEntry *entry
+	struct FragEntry *entry
 ) {
 	while (entry) {
-		struct MacroEntry *link =
+		struct FragEntry *link =
 			entry->link;
 		free(entry);
 		entry = link;
@@ -354,7 +354,7 @@ void freeMacroEntry(
 }
 
 	int getMacroEntryValueSize(
-		struct MacroEntry *entry
+		struct FragEntry *entry
 	) {
 		if (! entry) {
 			return 0;
@@ -363,7 +363,7 @@ void freeMacroEntry(
 			entry->value;
 	}
 
-	struct MacroEntry *
+	struct FragEntry *
 	allocTestMacroEntry(
 		const char *value
 	) {
@@ -376,8 +376,8 @@ void freeMacroEntry(
 	}
 
 	void addEntryToMacro(
-		struct Macro *macro,
-		struct MacroEntry *entry
+		struct Frag *macro,
+		struct FragEntry *entry
 	) {
 		
 	ASSERT(macro);
@@ -398,13 +398,13 @@ void freeMacroEntry(
 	}
 
 	void addBytesToMacro(
-		struct Macro *macro,
+		struct Frag *macro,
 		const char *value,
 		const char *valueEnd,
 		struct Input *input,
 		int line
 	) {
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocMacroEntry(
 				NULL, value, valueEnd
 			);
@@ -417,8 +417,8 @@ void freeMacroEntry(
 
 	
 	bool isMacroInMacro(
-		struct Macro *needle,
-		struct Macro *haystack
+		struct Frag *needle,
+		struct Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -428,7 +428,7 @@ void freeMacroEntry(
 	}
 ;
 		
-	struct MacroEntry *entry =
+	struct FragEntry *entry =
 		haystack->firstEntry;
 	for (; entry; entry = entry->link) {
 		if (! entry->macro) { continue; }
@@ -443,8 +443,8 @@ void freeMacroEntry(
 	}
 
 	void addMacroToMacro(
-		struct Macro *macro,
-		struct Macro *child
+		struct Frag *macro,
+		struct Frag *child
 	) {
 		ASSERT(macro);
 		ASSERT(child);
@@ -462,7 +462,7 @@ void freeMacroEntry(
 	}
 ;
 		
-	struct MacroEntry *entry =
+	struct FragEntry *entry =
 		allocMacroEntry(
 			child, NULL, NULL
 		);
@@ -475,14 +475,14 @@ void freeMacroEntry(
 	const char *macroTestBufferEnd = NULL;
 ;
 	void serializeMacro(
-		struct Macro *macro,
+		struct Frag *macro,
 		FILE *out,
 		bool writeLineMacros
 	) {
 		ASSERT(macro);
 		ASSERT(out);
 		
-	struct MacroEntry *entry =
+	struct FragEntry *entry =
 		macro->firstEntry;
 	for (; entry; entry = entry->link) {
 		
@@ -510,7 +510,7 @@ void freeMacroEntry(
 ;
 	}
 
-	void testMacro(struct Macro *
+	void testMacro(struct Frag *
 		macro, const char *expected
 	) {
 		
@@ -527,7 +527,7 @@ void freeMacroEntry(
 	}
 
 	void addStringToMacro(
-		struct Macro *macro,
+		struct Frag *macro,
 		const char *str
 	) {
 		int size = strlen(str);
@@ -540,7 +540,7 @@ void freeMacroEntry(
 	#define MACRO_SLOTS 128
 
 	struct MacroMap {
-		struct Macro *macros[
+		struct Frag *macros[
 			MACRO_SLOTS
 		];
 	};
@@ -548,8 +548,8 @@ void freeMacroEntry(
 	void clearMacroMap(
 		struct MacroMap *map
 	) {
-		struct Macro **cur = map->macros;
-		struct Macro **end =
+		struct Frag **cur = map->macros;
+		struct Frag **end =
 			cur + MACRO_SLOTS;
 		for (; cur < end; ++cur) {
 			freeMacro(*cur); *cur = NULL;
@@ -568,14 +568,14 @@ void freeMacroEntry(
 		return hash % MACRO_SLOTS;
 	}
 
-	struct Macro *allocMacroInMap(
+	struct Frag *allocMacroInMap(
 		struct MacroMap *map,
 		const char *begin,
 		const char *end
 	) {
 		ASSERT(map);
-		struct Macro *macro =
-			allocMacro(begin, end);
+		struct Frag *macro =
+			allocFrag(begin, end);
 		
 	int hash = calcHash(begin, end);
 	macro->link = map->macros[hash];
@@ -584,13 +584,13 @@ void freeMacroEntry(
 		return macro;
 	}
 
-	struct Macro *findMacroInMap(
+	struct Frag *findMacroInMap(
 		struct MacroMap *map,
 		const char *begin,
 		const char *end
 	) {
 		ASSERT(map);
-		struct Macro *macro = NULL;
+		struct Frag *macro = NULL;
 		
 	int hash = calcHash(begin, end);
 	macro = map->macros[hash];
@@ -607,12 +607,12 @@ void freeMacroEntry(
 		return macro;
 	}
 
-	struct Macro *getMacroInMap(
+	struct Frag *getMacroInMap(
 		struct MacroMap *map,
 		const char *begin,
 		const char *end
 	) {
-		struct Macro *macro = NULL;
+		struct Frag *macro = NULL;
 		
 	macro = findMacroInMap(
 		map, begin, end
@@ -747,7 +747,7 @@ void freeMacroEntry(
 	testMacroName("");
 	testMacroName("A c");
 	{
-		struct Macro *macro =
+		struct Frag *macro =
 			allocTestMacro("ab");
 		ASSERT(macro);
 		ASSERT(! macro->link);
@@ -756,7 +756,7 @@ void freeMacroEntry(
 	}
 
 	{
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocEmptyMacroEntry();
 
 		ASSERT(entry);
@@ -767,7 +767,7 @@ void freeMacroEntry(
 	}
 
 	{
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocEmptyMacroEntry();
 
 		ASSERT(entry);
@@ -779,7 +779,7 @@ void freeMacroEntry(
 	}
 
 	{
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocTestMacroEntry("abc");
 
 		ASSERT(entry);
@@ -791,7 +791,7 @@ void freeMacroEntry(
 	}
 
 	{
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocTestMacroEntry("abc");
 
 		ASSERT(entry);
@@ -803,9 +803,9 @@ void freeMacroEntry(
 	}
 
 	{
-		struct Macro *macro =
+		struct Frag *macro =
 			allocTestMacro("");
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocEmptyMacroEntry();
 		addEntryToMacro(macro, entry);
 		ASSERT(
@@ -815,9 +815,9 @@ void freeMacroEntry(
 	}
 
 	{
-		struct Macro *macro =
+		struct Frag *macro =
 			allocTestMacro("");
-		struct MacroEntry *entry =
+		struct FragEntry *entry =
 			allocEmptyMacroEntry();
 		addEntryToMacro(macro, entry);
 		ASSERT(
@@ -827,9 +827,9 @@ void freeMacroEntry(
 	}
 
 	{
-		struct Macro *macro = NULL;
-		struct MacroEntry *first;
-		struct MacroEntry *second;
+		struct Frag *macro = NULL;
+		struct FragEntry *first;
+		struct FragEntry *second;
 		
 	macro = allocTestMacro("");
 	first = allocEmptyMacroEntry();
@@ -845,9 +845,9 @@ void freeMacroEntry(
 	}
 
 	{
-		struct Macro *macro = NULL;
-		struct MacroEntry *first;
-		struct MacroEntry *second;
+		struct Frag *macro = NULL;
+		struct FragEntry *first;
+		struct FragEntry *second;
 		
 	macro = allocTestMacro("");
 	first = allocEmptyMacroEntry();
@@ -863,7 +863,7 @@ void freeMacroEntry(
 	}
 
 	{
-		struct Macro *macro =
+		struct Frag *macro =
 			allocTestMacro("");
 		addStringToMacro(macro, "abc");
 		addStringToMacro(macro, "def");
@@ -871,9 +871,9 @@ void freeMacroEntry(
 		freeMacro(macro);
 	}
  {
-	struct Macro *a =
+	struct Frag *a =
 		allocTestMacro("");
-	struct Macro *b =
+	struct Frag *b =
 		allocTestMacro("");
 	addStringToMacro(a, "abc");
 	addMacroToMacro(b, a);
@@ -932,7 +932,7 @@ void freeMacroEntry(
 ;
 	{
 		
-	struct Macro *macro = NULL;
+	struct Frag *macro = NULL;
 	struct Buffer buffer = {};
 	int bufferLine = 0;
 
@@ -1042,7 +1042,7 @@ void freeMacroEntry(
 			macro, "macro %s not defined",
 			name.buffer
 		);
-		freeMacrosEntries(macro);
+		freeFragEntries(macro);
 		processed = true;
 	}
 
@@ -1093,7 +1093,7 @@ void freeMacroEntry(
 		resetBuffer(&buffer);
 	}
 ;
-		struct Macro *sub = getMacroInMap(
+		struct Frag *sub = getMacroInMap(
 			&macros, name.buffer,
 			name.current - 1
 		);
@@ -1130,7 +1130,7 @@ void freeMacroEntry(
 		resetBuffer(&buffer);
 	}
 ;
-		struct Macro *sub =
+		struct Frag *sub =
 			getMacroInMap(
 				&macros, name.buffer,
 				name.current - 1
@@ -1253,11 +1253,11 @@ void freeMacroEntry(
 	}
 ;
 	 {
-	struct Macro **cur = macros.macros;
-	struct Macro **end =
+	struct Frag **cur = macros.macros;
+	struct Frag **end =
 		cur + MACRO_SLOTS;
 	for (; cur < end; ++cur) {
-		struct Macro *macro = *cur;
+		struct Frag *macro = *cur;
 		for (; macro; macro = macro->link) {
 			
 	if (! memcmp(
