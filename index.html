@@ -732,7 +732,7 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">global source vars)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct MacroMap</span> <span class="var">macros</span> = {};<br/>
+<span class="type">struct FragMap</span> <span class="var">frags</span> = {};<br/>
 
 <span class="end">@end(<span class="name">global source vars)</span></span><br/>
 </code>
@@ -753,9 +753,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
 <span class="in3"></span>
-<span class="var">macro</span> = <span class="fn">allocMacroInMap</span>(<br/>
+<span class="var">macro</span> = <span class="fn">allocFragInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in3"></span>
@@ -778,15 +778,15 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">check for double def)</span></span><br/>
 <span class="in1"></span>
-<span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
+<span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in2"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in2"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">isPopulatedMacro</span>(<span class="var">macro</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">macro</span>)) {<br/>
 <span class="in2"></span>
 <span class="fn">printf</span>(<br/>
 <span class="in3"></span>
@@ -815,9 +815,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"add in macro"</span>);<br/>
 <span class="in2"></span>
-<span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
+<span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
@@ -840,7 +840,7 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">check for add without def)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (! <span class="fn">isPopulatedMacro</span>(<span class="var">macro</span>)) {<br/>
+<span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">macro</span>)) {<br/>
 <span class="in2"></span>
 <span class="fn">printf</span>(<br/>
 <span class="in3"></span>
@@ -850,9 +850,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
+<span class="var">macro</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
@@ -874,9 +874,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"replace in macro"</span>);<br/>
 <span class="in2"></span>
-<span class="var">macro</span> = <span class="fn">getMacroInMap</span>(<br/>
+<span class="var">macro</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
@@ -1026,9 +1026,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getMacroInMap</span>(<br/>
+<span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.buffer,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
@@ -1038,7 +1038,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 ++sub-&gt;expands;<br/>
 <span class="in2"></span>
-<span class="fn">addMacroToMacro</span>(<span class="var">macro</span>, <span class="var">sub</span>);<br/>
+<span class="fn">addFragToFrag</span>(<span class="var">macro</span>, <span class="var">sub</span>);<br/>
 <span class="in2"></span>
 <span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 <span class="in1"></span>
@@ -1102,9 +1102,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
 <span class="in3"></span>
-<span class="fn">getMacroInMap</span>(<br/>
+<span class="fn">getFragInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">macros</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in3"></span>
@@ -1114,7 +1114,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 ++sub-&gt;multiples;<br/>
 <span class="in2"></span>
-<span class="fn">addMacroToMacro</span>(<br/>
+<span class="fn">addFragToFrag</span>(<br/>
 <span class="in3"></span>
 <span class="var">macro</span>, <span class="var">sub</span>);<br/>
 <span class="in2"></span>
@@ -1185,7 +1185,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
-<span class="fn">addBytesToMacro</span>(<br/>
+<span class="fn">addBytesToFrag</span>(<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">prefix</span>,<br/>
 <span class="in2"></span>
@@ -1195,7 +1195,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
-<span class="fn">addBytesToMacro</span>(<br/>
+<span class="fn">addBytesToFrag</span>(<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
 <span class="in2"></span>
@@ -1242,7 +1242,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
-<span class="fn">addBytesToMacro</span>(<br/>
+<span class="fn">addBytesToFrag</span>(<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - <span class="num">1</span>,<br/>
 <span class="in2"></span>
@@ -1268,7 +1268,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">addBytesToMacro</span>(<br/>
+<span class="fn">addBytesToFrag</span>(<br/>
 <span class="in3"></span>
 <span class="var">macro</span>, <span class="var">buffer</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
@@ -1444,11 +1444,11 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">serialize fragments)</span></span> {<br/>
 <span class="in1"></span>
-<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">macros</span>.<span class="var">macros</span>;<br/>
+<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">frags</span>.<span class="var">frags</span>;<br/>
 <span class="in1"></span>
 <span class="type">struct Frag **</span><span class="var">end</span> =<br/>
 <span class="in2"></span>
-<span class="var">cur</span> + <span class="var">MACRO_SLOTS</span>;<br/>
+<span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 <span class="in2"></span>
@@ -1552,7 +1552,7 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@add(<span class="name">serialize macro)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (! <span class="fn">isPopulatedMacro</span>(<span class="var">macro</span>)) {<br/>
+<span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">macro</span>)) {<br/>
 <span class="in2"></span>
 <span class="fn">printf</span>(<br/>
 <span class="in3"></span>
@@ -1586,7 +1586,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
-<span class="fn">serializeMacro</span>(<span class="var">macro</span>, <span class="var">f</span>, <span class="keyword">false</span>);<br/>
+<span class="fn">serializeFrag</span>(<span class="var">macro</span>, <span class="var">f</span>, <span class="keyword">false</span>);<br/>
 <span class="in1"></span>
 <span class="fn">fclose</span>(<span class="var">f</span>);<br/>
 

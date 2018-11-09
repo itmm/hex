@@ -423,7 +423,7 @@ d{process open brace} {
 
 ```
 d{global source vars}
-	t{struct MacroMap} v{macros} = {};
+	t{struct FragMap} v{frags} = {};
 x{global source vars}
 ```
 * Kollektion mit allen Makros wird für folgende Schritte sichtbar
@@ -435,8 +435,8 @@ d{process macro name}
 		f{ASSERT}(! v{macro}, s{"def in macro"});
 		e{check for double def};
 		k{if} (! v{macro}) {
-			v{macro} = f{allocMacroInMap}(
-				&v{macros}, v{name}.v{buffer},
+			v{macro} = f{allocFragInMap}(
+				&v{frags}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		}
@@ -449,11 +449,11 @@ x{process macro name}
 
 ```
 d{check for double def}
-	v{macro} = f{findMacroInMap}(
-		&v{macros}, v{name}.v{buffer},
+	v{macro} = f{findFragInMap}(
+		&v{frags}, v{name}.v{buffer},
 		v{name}.v{current} - n{1}
 	);
-	k{if} (f{isPopulatedMacro}(v{macro})) {
+	k{if} (f{isPopulatedFrag}(v{macro})) {
 		f{printf}(
 			s{"macro [%s] already defined\n"},
 			v{name}.v{buffer}
@@ -470,8 +470,8 @@ x{check for double def}
 a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
 		f{ASSERT}(! v{macro}, s{"add in macro"});
-		v{macro} = f{findMacroInMap}(
-			&v{macros}, v{name}.v{buffer},
+		v{macro} = f{findFragInMap}(
+			&v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		e{check for add without def};
@@ -484,13 +484,13 @@ x{process macro name}
 
 ```
 d{check for add without def}
-	k{if} (! f{isPopulatedMacro}(v{macro})) {
+	k{if} (! f{isPopulatedFrag}(v{macro})) {
 		f{printf}(
 			s{"macro [%s] not defined\n"},
 			v{name}.v{buffer}
 		);
-		v{macro} = f{getMacroInMap}(
-			&v{macros}, v{name}.v{buffer},
+		v{macro} = f{getFragInMap}(
+			&v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 	}
@@ -502,8 +502,8 @@ x{check for add without def}
 a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
 		f{ASSERT}(! v{macro}, s{"replace in macro"});
-		v{macro} = f{getMacroInMap}(
-			&v{macros}, v{name}.v{buffer},
+		v{macro} = f{getFragInMap}(
+			&v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		f{ASSERT}(
@@ -587,13 +587,13 @@ a{process macro name}
 	k{if} (v{openCh} == s{'e'}) {
 		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
-		t{struct Frag *}v{sub} = f{getMacroInMap}(
-			&v{macros}, v{name}.buffer,
+		t{struct Frag *}v{sub} = f{getFragInMap}(
+			&v{frags}, v{name}.buffer,
 			v{name}.v{current} - n{1}
 		);
 		e{check macro expand count};
 		++sub->expands;
-		f{addMacroToMacro}(v{macro}, v{sub});
+		f{addFragToFrag}(v{macro}, v{sub});
 		v{processed} = k{true};
 	}
 x{process macro name}
@@ -630,13 +630,13 @@ a{process macro name}
 		f{ASSERT}(v{macro}, s{"multiple not in macro"});
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} =
-			f{getMacroInMap}(
-				&v{macros}, v{name}.v{buffer},
+			f{getFragInMap}(
+				&v{frags}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		e{check for prev expands};
 		++sub->multiples;
-		f{addMacroToMacro}(
+		f{addFragToFrag}(
 			v{macro}, v{sub});
 		v{processed} = k{true};
 	}
@@ -677,12 +677,12 @@ x{process macro name}
 d{process private macro}
 	t{static char} v{prefix}t{[]} = s{"_private_"};
 	E{flush macro buffer};
-	f{addBytesToMacro}(
+	f{addBytesToFrag}(
 		v{macro}, v{prefix},
 		v{prefix} + f{sizeof}(v{prefix}) - n{1},
 		v{input}, v{nameLine}
 	);
-	f{addBytesToMacro}(
+	f{addBytesToFrag}(
 		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1},
 		k{input}, v{nameLine}
 	);
@@ -710,7 +710,7 @@ x{process macro name}
 d{process magic macro}
 	t{static char} v{magic}t{[]} = s{"2478325"};
 	E{flush macro buffer};
-	f{addBytesToMacro}(
+	f{addBytesToFrag}(
 		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - n{1},
 		v{input}, v{nameLine}
 	);
@@ -725,7 +725,7 @@ d{flush macro buffer}
 	k{if} (
 		v{buffer}.v{buffer} != v{buffer}.v{current}
 	) {
-		f{addBytesToMacro}(
+		f{addBytesToFrag}(
 			v{macro}, v{buffer}.v{buffer},
 			v{buffer}.v{current},
 			v{input}, v{bufferLine}
@@ -824,9 +824,9 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	t{struct Frag **}v{cur} = v{macros}.v{macros};
+	t{struct Frag **}v{cur} = v{frags}.v{frags};
 	t{struct Frag **}v{end} =
-		v{cur} + v{MACRO_SLOTS};
+		v{cur} + v{FRAG_SLOTS};
 	k{for} (; v{cur} < v{end}; ++v{cur}) {
 		t{struct Frag *}v{macro} = *v{cur};
 		k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
@@ -886,7 +886,7 @@ x{serialize macro}
 
 ```
 a{serialize macro}
-	k{if} (! f{isPopulatedMacro}(v{macro})) {
+	k{if} (! f{isPopulatedFrag}(v{macro})) {
 		f{printf}(
 			s{"macro [%s] not populated\n"},
 			v{macro}->v{name}
@@ -904,7 +904,7 @@ d{write in file}
 		v{f}, s{"can't open %s"},
 		v{macro}->v{name} + n{6}
 	);
-	f{serializeMacro}(v{macro}, v{f}, k{false});
+	f{serializeFrag}(v{macro}, v{f}, k{false});
 	f{fclose}(v{f});
 x{write in file}
 ```

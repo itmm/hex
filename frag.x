@@ -48,17 +48,17 @@ a{define frag}
 		t{const char *}v{nameEnd}
 	) {
 		t{struct Frag *}v{result} = k{NULL};
-		e{allocate macro on heap};
+		e{allocate frag on heap};
 		v{result}->v{link} = k{NULL};
 		v{result}->v{firstEntry} = k{NULL};
 		v{result}->v{expands} = 0;
 		v{result}->v{multiples} = 0;
-		e{copy macro name};
+		e{copy frag name};
 		k{return} v{result};
 	}
 x{define frag}
 ```
-* Die Zeiger werden mit `k{NULL}` initializiert
+* Die Zeiger werden mit `k{NULL}` initialisiert
 * `v{lastEntry}` wird erst initialisiert, wenn `v{firstEntry}` gesetzt
   wird
 * Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
@@ -83,18 +83,18 @@ x{define logging}
 * Datei und Zeile des Tests wird ausgegeben
 
 ```
-d{allocate macro on heap}
+d{allocate frag on heap}
 	f{ASSERT}(v{nameBegin});
 	f{ASSERT}(v{nameBegin} <= v{nameEnd});
 	t{int} v{nameLength} =
 		v{nameEnd} - v{nameBegin};
-	t{int} v{macroSize} = k{sizeof}(t{struct Frag})
+	t{int} v{size} = k{sizeof}(t{struct Frag})
 		+ v{nameLength} + 1;
-	v{result} = v{malloc}(v{macroSize});
+	v{result} = v{malloc}(v{size});
 	f{ASSERT}(v{result});
-x{allocate macro on heap}
+x{allocate frag on heap}
 ```
-* Die Zeiger werden mit `k{NULL}` initializiert
+* Die Zeiger werden mit `k{NULL}` initialisiert
 * `v{lastEntry}` wird erst initialisiert, wenn `v{firstEntry}` gesetzt
   wird
 * Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
@@ -105,28 +105,28 @@ a{includes}
 	#include <string.h>
 x{includes}
 
-d{copy macro name}
+d{copy frag name}
 	f{memcpy}(
 		v{result}->v{name}, v{nameBegin},
 		v{nameLength}
 	);
 	v{result}->v{name}[v{nameLength}] = s{'\0'};
-x{copy macro name}
+x{copy frag name}
 ```
-* Der Name wird direkt in die das Makro kopiert
+* Der Name wird direkt in das Fragment kopiert
 * Der Name wird mit einem Null-Byte abgeschlossen
 
-# Makros freigeben
+# Fragmente freigeben
 
 ```
 a{define frag}
 	t{void} f{freeFragEntries}(
-		t{struct Frag *}v{macro}
+		t{struct Frag *}v{frag}
 	) {
-		k{if} (v{macro}) {
-			e{free macros entries};
-			v{macro}->v{firstEntry} = k{NULL};
-			v{macro}->v{lastEntry} = k{NULL};
+		k{if} (v{frag}) {
+			e{free frag entries};
+			v{frag}->v{firstEntry} = k{NULL};
+			v{frag}->v{lastEntry} = k{NULL};
 		}
 	}
 x{define frag}
@@ -134,31 +134,31 @@ x{define frag}
 
 ```
 a{define frag}
-	t{void} f{freeMacro}(
-		t{struct Frag *}v{macro}
+	t{void} f{freeFrag}(
+		t{struct Frag *}v{f}
 	) {
-		k{while} (v{macro}) {
-			t{struct Frag *}v{link} =
-				v{macro}->v{link};
-			freeFragEntries(macro);
-			f{free}(v{macro});
-			v{macro} = v{link};
+		k{while} (v{f}) {
+			t{struct Frag *}v{l} =
+				v{f}->v{link};
+			freeFragEntries(f);
+			f{free}(v{f});
+			v{f} = v{l};
 		}
 	}
 x{define frag}
 ```
-* Mit einem Makro werden auch alle verketteten Makros freigegeben
+* Mit einem Fragment werden auch alle verketteten Fragmente freigegeben
 * Die Freigabe der einzelnen Einträge wird später definiert
 		
 # Unit Tests
 
 ```
 a{perform unit-tests}
-	e{macro unit tests};
+	e{frag unit tests};
 x{perform unit-tests}
 
 a{define frag}
-	t{struct Frag *}f{allocTestMacro}(
+	t{struct Frag *}f{allocTestFrag}(
 		t{const char *}v{name}
 	) {
 		k{return} f{allocFrag}(
@@ -172,77 +172,77 @@ x{define frag}
 
 ```
 a{define frag}
-	k{void} f{testMacroName}(
+	k{void} f{testFragName}(
 		t{const char *}v{name}
 	) {
-		t{struct Frag *}v{macro} =
-			f{allocTestMacro}(v{name});
-		f{ASSERT}(v{macro});
+		t{struct Frag *}v{f} =
+			f{allocTestFrag}(v{name});
+		f{ASSERT}(v{f});
 		f{ASSERT}(
-			f{strcmp}(v{macro}->v{name}, v{name}) == 0
+			f{strcmp}(v{f}->v{name}, v{name}) == 0
 		);
-		f{freeMacro}(v{macro});
+		f{freeFrag}(v{f});
 	}
 x{define frag}
 ```
-* `f{testMacroName}` prüft, ob der Name korrekt in ein Makro kopiert
+* `f{testFragName}` prüft, ob der Name korrekt in ein Fragment kopiert
   wurde
 
 ```
-d{macro unit tests}
-	f{testMacroName}(s{"abc"});
-	f{testMacroName}(s{""});
-	f{testMacroName}(s{"A c"});
+d{frag unit tests}
+	f{testFragName}(s{"abc"});
+	f{testFragName}(s{""});
+	f{testFragName}(s{"A c"});
 	{
-		t{struct Frag *}v{macro} =
-			f{allocTestMacro}(s{"ab"});
-		f{ASSERT}(v{macro});
-		f{ASSERT}(! v{macro}->v{link});
-		f{ASSERT}(! v{macro}->v{firstEntry});
-		f{freeMacro}(v{macro});
+		t{struct Frag *}v{f} =
+			f{allocTestFrag}(s{"ab"});
+		f{ASSERT}(v{f});
+		f{ASSERT}(! v{f}->v{link});
+		f{ASSERT}(! v{f}->v{firstEntry});
+		f{freeFrag}(v{f});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
 * Zum einen wird getestet, ob die Namen korrekt kopiert werden
 * Zum anderen wird sichergestellt, dass die Verweise `k{NULL}` sind
 
 ```
 a{define frag}
-	t{bool} f{isPopulatedMacro}(
-		t{const struct Frag *}v{macro}
+	t{bool} f{isPopulatedFrag}(
+		t{const struct Frag *}v{f}
 	) {
-		return macro && macro->firstEntry;
+		return f && f->firstEntry;
 	}
 x{define frag}
 ```
 
-# Makro Einträge
+# Fragment-Einträge
 
 ```
 a{define frag}
 	t{struct FragEntry} {
 		t{struct FragEntry *}v{link};
-		t{struct Frag *}v{macro};
+		t{struct Frag *}v{frag};
 		t{const char *}v{valueEnd};
 		e{additional entry attributes};
 		t{char }v{value}t{[]};
 	};
 x{define frag}
 ```
-* Ein Eintrag kann entweder auf ein anderes Makro verweisen (wenn dieses
-  an der aktuellen Stelle expandiert werden soll)
+* Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
+  dieses an der aktuellen Stelle expandiert werden soll)
 * Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
 * Die Länge des Byte-Arrays wird über einen Zeiger angezeigt (damit auch
   Null-Bytes verwendet werden können)
-* Wenn ein Eintrag sowohl Daten als auch ein Makro enthält, so wird
+* Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
   zuerst der Text ausgegeben
 		
-# Makro Eintrag anlegen
+# Fragment-Eintrag anlegen
 
 ```
 a{define frag}
-	t{struct FragEntry *}f{allocMacroEntry}(
-		t{struct Frag *}v{macro},
+	t{struct FragEntry *}f{allocFragEntry}(
+		t{struct Frag *}v{frag},
 		t{const char *}v{valueBegin},
 		t{const char *}v{valueEnd}
 	) {
@@ -254,10 +254,10 @@ a{define frag}
 	}
 x{define frag}
 ```
-* Wie beim Macro werden die `v{link}` Verweise auf `k{NULL}`
+* Wie bei einem Fragment werden die `v{link}` Verweise auf `k{NULL}`
   initialisiert
-* Sowohl `v{macro}` als auch `v{valueBegin}` sind optional
-* Die Größe des Eintrags hängt von der Größe der Bytes ab, die kopiert
+* Sowohl `v{frag}` als auch `v{valueBegin}` sind optional
+* Die Größe des Eintrags hängt von der Anzahl der Bytes ab, die kopiert
   werden
 
 ```
@@ -288,7 +288,7 @@ d{copy entry values}
 	}
 	v{result}->v{valueEnd} =
 		v{result}->v{value} + v{valueLength};
-	v{result}->v{macro} = v{macro};
+	v{result}->v{frag} = v{frag};
 x{copy entry values}
 ```
 * Die Bytes werden nur kopiert, wenn welche übergeben wurden
@@ -296,8 +296,8 @@ x{copy entry values}
 ```
 a{define frag}
 t{struct FragEntry *}
-f{allocEmptyMacroEntry}() {
-	k{return} f{allocMacroEntry}(
+f{allocEmptyFragEntry}() {
+	k{return} f{allocFragEntry}(
 		k{NULL}, k{NULL}, k{NULL}
 	);
 }
@@ -305,55 +305,57 @@ x{define frag}
 ```
 * Für Tests ist es praktisch, leere Einträge anzulegen
 
-# Makro Einträge freigeben
+# Fragment-Einträge freigeben
 
 ```
 a{define frag}
-k{void} f{freeMacroEntry}(
-	t{struct FragEntry *}v{entry}
+k{void} f{freeFragEntry}(
+	t{struct FragEntry *}v{e}
 ) {
-	k{while} (v{entry}) {
-		t{struct FragEntry *}v{link} =
-			v{entry}->v{link};
-		f{free}(v{entry});
-		v{entry} = v{link};
+	k{while} (v{e}) {
+		t{struct FragEntry *}v{l} =
+			v{e}->v{link};
+		f{free}(v{e});
+		v{e} = v{l};
 	}
 }
 x{define frag}
 ```
 * Wenn ein Eintrag freigegeben wird, so werden auch alle verlinkten
-Einträge freigegeben
-* Referenzierte Makros werden nicht mit freigegeben
+  Einträge freigegeben
+* Referenzierte Fragmente werden nicht mit freigegeben
 
 ```
 d{forward declarations}
 t{struct FragEntry};
-k{void} f{freeMacroEntry}(
+k{void} f{freeFragEntry}(
 	t{struct FragEntry *}v{entry}
 );
 x{forward declarations}
-
-d{free macros entries}
-	f{freeMacroEntry}(v{macro}->v{firstEntry});
-x{free macros entries}
 ```
-* Wenn ein Makro freigegeben wird, so werden auch die anhängenden
+
+```
+d{free frag entries}
+	f{freeFragEntry}(v{frag}->v{firstEntry});
+x{free frag entries}
+```
+* Wenn ein Fragment freigegeben wird, so werden auch die anhängenden
   Einträge freigegeben
-* Damit die Funktion im `f{freeMacro}` sichtbar ist, wird sie in der
+* Damit die Funktion im `f{freeFrag}` sichtbar ist, wird sie in der
   Include-Sektion definiert
 
 # Auf Attribute zugreifen
 
 ```
 a{define frag}
-	k{int} f{getMacroEntryValueSize}(
-		t{struct FragEntry *}v{entry}
+	k{int} f{getFragEntryValueSize}(
+		t{struct FragEntry *}v{e}
 	) {
-		k{if} (! v{entry}) {
+		k{if} (! v{e}) {
 			k{return} n{0};
 		}
-		k{return} v{entry}->v{valueEnd} -
-			v{entry}->v{value};
+		k{return} v{e}->v{valueEnd} -
+			v{e}->v{value};
 	}
 x{define frag}
 ```
@@ -362,50 +364,50 @@ x{define frag}
 # Unit Tests
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
 		t{struct FragEntry *}v{entry} =
-			f{allocEmptyMacroEntry}();
+			f{allocEmptyFragEntry}();
 
 		f{ASSERT}(v{entry});
 		f{ASSERT}(! v{entry}->v{link});
-		f{ASSERT}(! v{entry}->v{macro});
+		f{ASSERT}(! v{entry}->v{frag});
 
-		f{freeMacroEntry}(v{entry});
+		f{freeFragEntry}(v{entry});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
 * Ein leerer Eintrag hat keinen Nachfolger
-* Und kein Makro
+* Und kein Fragment
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
 		t{struct FragEntry *}v{entry} =
-			f{allocEmptyMacroEntry}();
+			f{allocEmptyFragEntry}();
 
 		f{ASSERT}(v{entry});
 		f{ASSERT}(
-			f{getMacroEntryValueSize}(
+			f{getFragEntryValueSize}(
 				v{entry}) == n{0);}
 
-		f{freeMacroEntry}(v{entry});
+		f{freeFragEntry}(v{entry});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
 * Ein leerer Eintrag hat keine Bytes
 
 ```
 a{define frag}
 	t{struct FragEntry *}
-	f{allocTestMacroEntry}(
-		t{const char *}v{value}
+	f{allocTestFragEntry}(
+		t{const char *}v{v}
 	) {
-		t{const char *}v{end} = v{value} +
-			f{strlen}(v{value});
+		t{const char *}v{e} = v{v} +
+			f{strlen}(v{v});
 
-		k{return} f{allocMacroEntry}(
-			k{NULL}, v{value}, v{end}
+		k{return} f{allocFragEntry}(
+			k{NULL}, v{v}, v{e}
 		);
 	}
 x{define frag}
@@ -414,49 +416,49 @@ x{define frag}
   Argument
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
 		t{struct FragEntry *}v{entry} =
-			f{allocTestMacroEntry}(s{"abc"});
+			f{allocTestFragEntry}(s{"abc"});
 
 		f{ASSERT}(v{entry});
 		f{ASSERT}(
-			f{getMacroEntryValueSize}(
+			f{getFragEntryValueSize}(
 				v{entry}) == n{3);}
 
-		f{freeMacroEntry}(v{entry});
+		f{freeFragEntry}(v{entry});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
 * Ein Eintrag hat die korrekte Anzahl an Bytes
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
 		t{struct FragEntry *}v{entry} =
-			f{allocTestMacroEntry}(s{"abc"});
+			f{allocTestFragEntry}(s{"abc"});
 
 		f{ASSERT}(v{entry});
 		f{ASSERT}(
 			f{memcmp}(v{entry}->v{value},
 				s{"abc"}, n{3}) == n{0);}
 
-		f{freeMacroEntry}(v{entry});
+		f{freeFragEntry}(v{entry});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
 * Die Bytes eines Eintrags stimmen überein
 
-# Einträge zu Makros hinzufügen
+# Einträge zu Fragmenten hinzufügen
 
 ```
 a{define frag}
-	t{void} f{addEntryToMacro}(
-		t{struct Frag *}v{macro},
+	t{void} f{addEntryToFrag}(
+		t{struct Frag *}v{frag},
 		t{struct FragEntry *}v{entry}
 	) {
 		e{assert add entry};
-		k{if} (v{macro}->v{firstEntry}) {
+		k{if} (v{frag}->v{firstEntry}) {
 			e{append entry};
 		} k{else} {
 			e{set first entry};
@@ -469,19 +471,19 @@ x{define frag}
 
 ```
 d{assert add entry}
-	f{ASSERT}(v{macro});
+	f{ASSERT}(v{frag});
 	f{ASSERT}(v{entry});
 	f{ASSERT}(! v{entry}->v{link});
 x{assert add entry}
 ```
-* Makro darf nicht `k{NULL}` sein
+* Fragment darf nicht `k{NULL}` sein
 * Eintrag darf nicht `k{NULL}` sein
 * Eintrag darf noch nicht in einer anderen Liste hängen
 
 ```
 d{append entry}
-	v{macro}->v{lastEntry}->v{link} = v{entry};
-	v{macro}->v{lastEntry} = v{entry};
+	v{frag}->v{lastEntry}->v{link} = v{entry};
+	v{frag}->v{lastEntry} = v{entry};
 x{append entry}
 ```
 * Da es schon Einträge gibt, muss es bereits einen letzten geben
@@ -491,191 +493,191 @@ x{append entry}
 
 ```
 d{set first entry}
-	v{macro}->v{firstEntry} = v{entry};
-	v{macro}->v{lastEntry} = v{entry};
+	v{frag}->v{firstEntry} = v{entry};
+	v{frag}->v{lastEntry} = v{entry};
 x{set first entry}
 ```
 * Der erste Eintrag wird auch als letzter Eintrag gesetzt
 * Der Nachfolger von `v{entry}` ist bereits `k{NULL}`
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
-		t{struct Frag *}v{macro} =
-			f{allocTestMacro}(s{""});
-		t{struct FragEntry *}v{entry} =
-			f{allocEmptyMacroEntry}();
-		f{addEntryToMacro}(v{macro}, v{entry});
+		t{struct Frag *}v{f} =
+			f{allocTestFrag}(s{""});
+		t{struct FragEntry *}v{e} =
+			f{allocEmptyFragEntry}();
+		f{addEntryToFrag}(v{f}, v{e});
 		f{ASSERT}(
-			v{macro}->v{firstEntry} == v{entry}
+			v{f}->v{firstEntry} == v{e}
 		);
-		f{freeMacro}(v{macro});
+		f{freeFrag}(v{f});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
-* Der erste Eintrag im Makro wird gesetzt
+* Der erste Eintrag im Fragment wird gesetzt
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
-		t{struct Frag *}v{macro} =
-			f{allocTestMacro}(s{""});
-		t{struct FragEntry *}v{entry} =
-			f{allocEmptyMacroEntry}();
-		f{addEntryToMacro}(v{macro}, v{entry});
+		t{struct Frag *}v{f} =
+			f{allocTestFrag}(s{""});
+		t{struct FragEntry *}v{e} =
+			f{allocEmptyFragEntry}();
+		f{addEntryToFrag}(v{f}, v{e});
 		f{ASSERT}(
-			v{macro}->v{lastEntry} == v{entry}
+			v{f}->v{lastEntry} == v{e}
 		);
-		f{freeMacro}(v{macro});
+		f{freeFrag}(v{f});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
-* Der letzte Eintrag im Makro wird gesetzt
+* Der letzte Eintrag im Fragment wird gesetzt
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
-		t{struct Frag *}v{macro} = k{NULL};
+		t{struct Frag *}v{frag} = k{NULL};
 		t{struct FragEntry *}v{first};
 		t{struct FragEntry *}v{second};
 		E{add two entries};
 		e{check first of 2};
-		f{freeMacro}(v{macro});
+		f{freeFrag}(v{frag});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
-* Zwei Einträge werden an ein Makro angehängt
+* Zwei Einträge werden an ein Fragment angehängt
 * Der erste Eintrag muss gesetzt bleiben
 
 ```
 d{add two entries}
-	v{macro} = f{allocTestMacro}(s{""});
-	v{first} = f{allocEmptyMacroEntry}();
-	v{second} = f{allocEmptyMacroEntry}();
+	v{frag} = f{allocTestFrag}(s{""});
+	v{first} = f{allocEmptyFragEntry}();
+	v{second} = f{allocEmptyFragEntry}();
 
-	f{addEntryToMacro}(v{macro}, v{first});
-	f{addEntryToMacro}(v{macro}, v{second});
+	f{addEntryToFrag}(v{frag}, v{first});
+	f{addEntryToFrag}(v{frag}, v{second});
 x{add two entries}
 
 d{check first of 2}
-	f{ASSERT}(v{macro}->v{firstEntry} == v{first});
+	f{ASSERT}(v{frag}->v{firstEntry} == v{first});
 x{check first of 2}
 ```
-* Zwei Einträge werden an ein Makro angehängt
+* Zwei Einträge werden an ein Fragment angehängt
 * Der erste Eintrag muss gesetzt bleiben
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
-		t{struct Frag *}v{macro} = k{NULL};
+		t{struct Frag *}v{frag} = k{NULL};
 		t{struct FragEntry *}v{first};
 		t{struct FragEntry *}v{second};
 		E{add two entries};
 		f{ASSERT}(
-			v{macro}->v{lastEntry} == v{second}
+			v{frag}->v{lastEntry} == v{second}
 		);
-		f{freeMacro}(v{macro});
+		f{freeFrag}(v{frag});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
-* Zwei Einträge werden an ein Makro angehängt
+* Zwei Einträge werden an ein Fragment angehängt
 * Der letzte Eintrag muss gesetzt werden
 
 ```
 a{define frag}
-	t{void} f{addBytesToMacro}(
-		t{struct Frag *}v{macro},
+	t{void} f{addBytesToFrag}(
+		t{struct Frag *}v{frag},
 		t{const char *}v{value},
 		t{const char *}v{valueEnd},
 		t{struct Input *}v{input},
 		t{int} v{line}
 	) {
 		t{struct FragEntry *}v{entry} =
-			f{allocMacroEntry}(
+			f{allocFragEntry}(
 				k{NULL}, v{value}, v{valueEnd}
 			);
 		e{populate additional entry fields};
-		f{addEntryToMacro}(v{macro}, v{entry});
+		f{addEntryToFrag}(v{frag}, v{entry});
 	}
 x{define frag}
 ```
 * Für die Daten wird ein neuer Eintrag angelegt
-* Dieser wird an das Makro angehängt
+* Dieser wird an das Fragment angehängt
 
 ```
 a{define frag}
 	e{define cycle check}
-	t{void} f{addMacroToMacro}(
-		t{struct Frag *}v{macro},
+	t{void} f{addFragToFrag}(
+		t{struct Frag *}v{frag},
 		t{struct Frag *}v{child}
 	) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{frag});
 		f{ASSERT}(v{child});
-		e{avoid macro cycles};
+		e{avoid frag cycles};
 		e{reuse last entry};
-		e{add macro entry};
+		e{add frag entry};
 	}
 x{define frag}
 ```
-* Bevor ein Makro hinzugefügt werden kann, muss sichergestellt werden,
+* Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
   dass kein Zykel entsteht
-* Ein Zykel liegt vor, wenn `v{macro}` gleich `v{child}` ist
+* Ein Zykel liegt vor, wenn `v{frag}` gleich `v{child}` ist
 * Oder bereits direkt oder indirekt zu `v{child}` hinzugefügt wurde
-* Falls der letzte Eintrag noch kein Makro hat, wird dieser Eintrag
+* Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
   verwendet
 
 ```
 d{reuse last entry}
-	k{if} (v{macro}->v{firstEntry} &&
-		! v{macro}->v{lastEntry}->v{macro}
+	k{if} (v{frag}->v{firstEntry} &&
+		! v{frag}->v{lastEntry}->v{frag}
 	) {
-		v{macro}->v{lastEntry}->v{macro} = v{child};
+		v{frag}->v{lastEntry}->v{frag} = v{child};
 		k{return};
 	}
 x{reuse last entry}
 ```
-* Wenn das Makro-Attribut im letzten Eintrag noch nicht benutzt wird,
+* Wenn das Fragment-Attribut im letzten Eintrag noch nicht benutzt wird,
   kann dieses verwendet werden
 
 ```
-d{add macro entry}
+d{add frag entry}
 	t{struct FragEntry *}v{entry} =
-		f{allocMacroEntry}(
+		f{allocFragEntry}(
 			v{child}, k{NULL}, k{NULL}
 		);
-	f{addEntryToMacro}(v{macro}, v{entry});
-x{add macro entry}
+	f{addEntryToFrag}(v{frag}, v{entry});
+x{add frag entry}
 ```
-* Sonst muss ein neuer Eintrag mit dem Makro angelegt werden
+* Sonst muss ein neuer Eintrag in dem Fragment angelegt werden
 
-# Makros serialisieren
+# Fragmente serialisieren
 
 ```
 a{define frag}
 	e{serialize test defines};
-	t{void} f{serializeMacro}(
-		t{struct Frag *}v{macro,}
+	t{void} f{serializeFrag}(
+		t{struct Frag *}v{frag},
 		t{FILE *}v{out},
 		t{bool} v{writeLineMacros}
 	) {
-		f{ASSERT}(v{macro});
+		f{ASSERT}(v{frag});
 		f{ASSERT}(v{out});
 		e{iterate entries};
 	}
 x{define frag}
 ```
 * Jeder Eintrag wird nacheinander bearbeitet
-* Makros in Einträgen werden rekursiv ausgegeben
+* Fragmente in Einträgen werden rekursiv ausgegeben
 
 ```
 d{iterate entries}
 	t{struct FragEntry *}v{entry} =
-		v{macro}->v{firstEntry};
+		v{frag}->v{firstEntry};
 	k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {
 		e{serialize bytes};
-		k{if} (v{entry}->v{macro}) {
-			f{serializeMacro}(
-				v{entry}->v{macro}, v{out},
+		k{if} (v{entry}->v{frag}) {
+			f{serializeFrag}(
+				v{entry}->v{frag}, v{out},
 				v{writeLineMacros}
 			);
 		}
@@ -683,28 +685,28 @@ d{iterate entries}
 x{iterate entries}
 ```
 * Für jeden Eintrag werden zuerst die Bytes ausgegeben
-* Dann wird rekursiv das Makro ausgegeben, falls vorhanden
+* Dann wird rekursiv das Fragment ausgegeben, falls vorhanden
 
 ```
 d{serialize test defines}
-	t{char *}v{macroTestBufferCur} = k{NULL};
-	t{const char *}v{macroTestBufferEnd} = k{NULL};
+	t{char *}v{fragTestBufferCur} = k{NULL};
+	t{const char *}v{fragTestBufferEnd} = k{NULL};
 x{serialize test defines}
 ```
 
 ```
 d{serialize bytes}
-	k{if} (f{getMacroEntryValueSize}(v{entry})) {
+	k{if} (f{getFragEntryValueSize}(v{entry})) {
 		t{const char *}v{cur} = v{entry}->v{value};
 		t{const char *}v{end} = v{entry}->v{valueEnd};
 		t{int} v{len} = v{end} - v{cur};
-		k{if} (! v{macroTestBufferCur}) {
+		k{if} (! v{fragTestBufferCur}) {
 			f{ASSERT}(f{fwrite}(v{cur}, 1, v{len}, v{out}) == v{len});
 		} k{else} {
-			f{ASSERT}(v{macroTestBufferCur} + v{len} < v{macroTestBufferEnd});
-			f{memcpy}(v{macroTestBufferCur}, v{cur}, v{len});
-			v{macroTestBufferCur} += v{len};
-			*v{macroTestBufferCur} = s{'\0'};
+			f{ASSERT}(v{fragTestBufferCur} + v{len} < v{fragTestBufferEnd});
+			f{memcpy}(v{fragTestBufferCur}, v{cur}, v{len});
+			v{fragTestBufferCur} += v{len};
+			*v{fragTestBufferCur} = s{'\0'};
 		}
 	}
 x{serialize bytes}
@@ -714,41 +716,41 @@ x{serialize bytes}
 
 ```
 a{define frag}
-	t{void} f{testMacro}(t{struct Frag *}
-		v{macro}, t{const char *}v{expected}
+	t{void} f{testFrag}(t{struct Frag *}
+		v{frag}, t{const char *}v{expected}
 	) {
-		e{serialize test macro};
+		e{serialize test frag};
 	}
 x{define frag}
 ```
-* Diese Hilfsfunktion prüft ob die Serialisierung eines Makros der
+* Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
   Erwartung entspricht
 
 ```
-d{serialize test macro}
+d{serialize test frag}
 	char buffer[100];
-	macroTestBufferCur = buffer;
-	macroTestBufferEnd = buffer + sizeof(buffer);
-	f{serializeMacro}(v{macro}, (void *) buffer, k{false});
+	fragTestBufferCur = buffer;
+	fragTestBufferEnd = buffer + sizeof(buffer);
+	f{serializeFrag}(v{frag}, (void *) buffer, k{false});
 	f{ASSERT}(f{strcmp}(
 		v{expected}, v{buffer}
 	) == 0);
-	macroTestBufferCur = NULL;
-	macroTestBufferEnd = NULL;
-x{serialize test macro}
+	fragTestBufferCur = NULL;
+	fragTestBufferEnd = NULL;
+x{serialize test frag}
 ```
-* Serialisiert das Makro
+* Serialisiert das Fragment
 * Der Buffer muss die erwarteten Werte enthalten
 
 ```
 a{define frag}
-	t{void} f{addStringToMacro}(
-		t{struct Frag *}v{macro},
+	t{void} f{addStringToFrag}(
+		t{struct Frag *}v{frag},
 		t{const char *}v{str}
 	) {
 		t{int} v{size} = f{strlen}(v{str});
-		f{addBytesToMacro}(
-			v{macro}, v{str}, v{str} + v{size},
+		f{addBytesToFrag}(
+			v{frag}, v{str}, v{str} + v{size},
 			k{NULL}, n{0}
 		);
 	}
@@ -758,36 +760,36 @@ x{define frag}
   werden
 
 ```
-a{macro unit tests}
+a{frag unit tests}
 	{
-		t{struct Frag *}v{macro} =
-			f{allocTestMacro}(s{""});
-		f{addStringToMacro}(v{macro}, s{"abc"});
-		f{addStringToMacro}(v{macro}, s{"def"});
-		f{testMacro}(v{macro}, s{"abcdef"});
-		f{freeMacro}(v{macro});
+		t{struct Frag *}v{frag} =
+			f{allocTestFrag}(s{""});
+		f{addStringToFrag}(v{frag}, s{"abc"});
+		f{addStringToFrag}(v{frag}, s{"def"});
+		f{testFrag}(v{frag}, s{"abcdef"});
+		f{freeFrag}(v{frag});
 	}
-x{macro unit tests}
+x{frag unit tests}
 ```
 * Prüft, ob zwei Strings richtig serialisiert werden
 
 ```
-a{macro unit tests} {
+a{frag unit tests} {
 	t{struct Frag *}v{a} =
-		f{allocTestMacro}(s{""});
+		f{allocTestFrag}(s{""});
 	t{struct Frag *}v{b} =
-		f{allocTestMacro}(s{""});
-	f{addStringToMacro}(v{a}, s{"abc"});
-	f{addMacroToMacro}(v{b}, v{a});
-	f{addStringToMacro}(v{b}, s{"def"});
-	f{addMacroToMacro}(v{b}, v{a});
-	f{testMacro}(v{b}, s{"abcdefabc"});
-	f{freeMacro}(v{a}); f{freeMacro}(v{b});
-} x{macro unit tests}
+		f{allocTestFrag}(s{""});
+	f{addStringToFrag}(v{a}, s{"abc"});
+	f{addFragToFrag}(v{b}, v{a});
+	f{addStringToFrag}(v{b}, s{"def"});
+	f{addFragToFrag}(v{b}, v{a});
+	f{testFrag}(v{b}, s{"abcdefabc"});
+	f{freeFrag}(v{a}); f{freeFrag}(v{b});
+} x{frag unit tests}
 ```
-* Prüft, ob Makros expandiert werden
+* Prüft, ob Fragmente expandiert werden
 
-# Zykel im Makro-Graph finden
+# Zykel im Fragment-Graph finden
 
 ```
 a{includes}
@@ -798,85 +800,86 @@ x{includes}
 
 ```
 d{define cycle check}
-	t{bool} f{isMacroInMacro}(
+	t{bool} f{isFragInFrag}(
 		t{struct Frag *}v{needle},
 		t{struct Frag *}v{haystack}
 	) {
 		f{ASSERT}(v{needle});
 		f{ASSERT}(v{haystack});
-		e{check cycle macro};
+		e{check cycle frag};
 		e{check cycle entries};
 		k{return} k{false};
 	}
 x{define cycle check}
 ```
-* Wenn das Makro das gesuchte ist, dann wurde ein Zykel gefunden
+* Wenn das Fragment das gesuchte ist, dann wurde ein Zykel gefunden
 * Danach wird über alle Einträge gesucht
-* Wenn das Makro dort nicht gefunden wurde, dann ist es nicht enthalten
+* Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht
+  enthalten
 
 ```
-d{avoid macro cycles}
-	f{ASSERT}(! f{isMacroInMacro}(
-		v{macro}, v{child}
+d{avoid frag cycles}
+	f{ASSERT}(! f{isFragInFrag}(
+		v{frag}, v{child}
 	));
-x{avoid macro cycles}
+x{avoid frag cycles}
 ```
-* Ein Makro darf nur hinzugefügt werden, wenn es den Container nicht
+* Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht
   bereits enthält
 
 ```
-d{check cycle macro}
+d{check cycle frag}
 	k{if} (v{needle} == v{haystack}) {
 		k{return} k{true};
 	}
-x{check cycle macro}
+x{check cycle frag}
 ```
-* Wenn der Container selbst das gesuchte Makro ist, liefert die Funktion
-  `k{true}` zurück
+* Wenn der Container selbst das gesuchte Fragment ist, liefert die
+  Funktion `k{true}` zurück
 
 ```
 d{check cycle entries}
 	t{struct FragEntry *}v{entry} =
 		v{haystack}->v{firstEntry};
 	k{for} (; v{entry}; v{entry} = v{entry}->v{link}) {
-		k{if} (! v{entry}->v{macro}) { k{continue}; }
-		k{if} (f{isMacroInMacro}(
-			v{needle}, v{entry}->v{macro}
+		k{if} (! v{entry}->v{frag}) { k{continue}; }
+		k{if} (f{isFragInFrag}(
+			v{needle}, v{entry}->v{frag}
 		)) {
 			k{return} k{true};
 		}
 	}
 x{check cycle entries}
 ```
-* Alle Makros in den Einträgen werden rekursiv untersucht
+* Alle Fragment in den Einträgen werden rekursiv untersucht
 * Damit wird der ganze Graph durchsucht
 
-# Makro-Kollektion
+# Fragment-Kollektion
 
 ```
 a{define frag}
-	#define MACRO_SLOTS 128
+	#define FRAG_SLOTS 128
 
-	t{struct MacroMap} {
-		t{struct Frag *}v{macros}t{[}
-			t{MACRO_SLOTS}
+	t{struct FragMap} {
+		t{struct Frag *}v{frags}t{[}
+			t{FRAG_SLOTS}
 		t{]};
 	};
 x{define frag}
 ```
-* Eine Kollektion von Makros ist ein Array von Makro-Ketten
+* Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
 * Alle Felder müssen mit `k{NULL}` initialisiert werden
 
 ```
 a{define frag}
-	t{void} f{clearMacroMap}(
-		t{struct MacroMap *}v{map}
+	t{void} f{clearFragMap}(
+		t{struct FragMap *}v{map}
 	) {
-		t{struct Frag **}v{cur} = v{map}->v{macros};
+		t{struct Frag **}v{cur} = v{map}->v{frags};
 		t{struct Frag **}v{end} =
-			v{cur} + v{MACRO_SLOTS};
+			v{cur} + v{FRAG_SLOTS};
 		k{for} (; v{cur} < v{end}; ++v{cur}) {
-			f{freeMacro}(*v{cur}); *v{cur} = k{NULL};
+			f{freeFrag}(*v{cur}); *v{cur} = k{NULL};
 		}
 	}
 x{define frag}
@@ -895,112 +898,113 @@ a{define frag}
 			v{hash} = (v{hash} << 3) |
 				(v{hash} >> 29);
 		}
-		k{return} v{hash} % v{MACRO_SLOTS};
+		k{return} v{hash} % v{FRAG_SLOTS};
 	}
 x{define frag}
 ```
-* Der Hash wird über den Namen des Makros erstellt
+* Der Hash wird über den Namen des Fragments erstellt
 * Der Name kann entweder durch ein Null-Byte abgeschlossen werden
 * Oder ein Ende wird direkt angegeben
 
 ```
 a{define frag}
-	t{struct Frag *}f{allocMacroInMap}(
-		t{struct MacroMap *}v{map},
+	t{struct Frag *}f{allocFragInMap}(
+		t{struct FragMap *}v{map},
 		t{const char *}v{begin},
 		t{const char *}v{end}
 	) {
 		f{ASSERT}(v{map});
-		t{struct Frag *}v{macro} =
+		t{struct Frag *}v{frag} =
 			f{allocFrag}(v{begin}, v{end});
 		e{insert in slot};
-		k{return} v{macro};
+		k{return} v{frag};
 	}
 x{define frag}
 ```
-* Ein neues Makro wird erstellt
+* Ein neues Fragment wird erstellt
 * Und in der Hash-Map abgelegt
 
 ```
 d{insert in slot}
 	t{int} v{hash} = f{calcHash}(v{begin}, v{end});
-	v{macro}->v{link} = v{map}->v{macros}[v{hash}];
-	v{map}->v{macros}[v{hash}] = v{macro};
+	v{frag}->v{link} = v{map}->v{frags}[v{hash}];
+	v{map}->v{frags}[v{hash}] = v{frag};
 x{insert in slot}
 ```
-* Makros werden im Slot eingefügt
-* Neue Makros überlagern alte Slots mit gleichem Namen
+* Fragment wird im Slot eingefügt
+* Neue Fragmente überlagern alte Fragmente mit gleichem Namen
 
 ```
 a{define frag}
-	t{struct Frag *}f{findMacroInMap}(
-		t{struct MacroMap *}v{map},
+	t{struct Frag *}f{findFragInMap}(
+		t{struct FragMap *}v{map},
 		t{const char *}v{begin},
 		t{const char *}v{end}
 	) {
 		f{ASSERT}(v{map});
-		t{struct Frag *}v{macro} = f{NULL};
-		e{find macro in slot};
-		k{return} v{macro};
+		t{struct Frag *}v{frag} = f{NULL};
+		e{find frag in slot};
+		k{return} v{frag};
 	}
 x{define frag}
 ```
-* Liefert das erste Makro mit dem übergebenen Namen
+* Liefert das erste Fragment mit dem übergebenen Namen
 
 ```
-d{find macro in slot}
+d{find frag in slot}
 	t{int} v{hash} = f{calcHash}(v{begin}, v{end});
-	v{macro} = v{map}->v{macros}[v{hash}];
-	k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
+	v{frag} = v{map}->v{frags}[v{hash}];
+	k{for} (; v{frag}; v{frag} = v{frag}->v{link}) {
 		t{const char *}v{a} = v{begin};
-		t{const char *}v{b} = v{macro}->v{name};
+		t{const char *}v{b} = v{frag}->v{name};
 		k{while} (v{a} != v{end}) {
 			k{if} (*v{a}++ != *v{b}++) { k{break}; }
 		}
 		k{if} (v{a} == v{end} && ! *v{b}) {
-			k{return} v{macro}; }
+			k{return} v{frag}; }
 	}
-x{find macro in slot}
+x{find frag in slot}
 ```
-* Im passenden Hash-Slot werden die Namen der Makros verglichen
+* Im passenden Hash-Slot werden die Namen der Fragmente verglichen
 
 ```
 a{define frag}
-	t{struct Frag *}f{getMacroInMap}(
-		t{struct MacroMap *}v{map},
+	t{struct Frag *}f{getFragInMap}(
+		t{struct FragMap *}v{map},
 		t{const char *}v{begin},
 		t{const char *}v{end}
 	) {
-		t{struct Frag *}v{macro} = NULL;
-		e{get macro find};
-		e{get macro alloc};
-		k{return} v{macro};
+		t{struct Frag *}v{frag} = NULL;
+		e{get frag find};
+		e{get frag alloc};
+		k{return} v{frag};
 	}
 x{define frag}
 ```
-* Liefert Makro mit angegebenen Namen oder legt ein neues Makro mit
+* Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment mit
   diesem Namen an
 
 ```
-d{get macro find}
-	v{macro} = f{findMacroInMap}(
+d{get frag find}
+	v{frag} = f{findFragInMap}(
 		v{map}, v{begin}, v{end}
 	);
-	k{if} (v{macro}) {
-		k{return} v{macro};
+	k{if} (v{frag}) {
+		k{return} v{frag};
 	}
-x{get macro find}
+x{get frag find}
 ```
-* Wenn das Makro in der Kollektion vorhanden ist, wird dieses verwendet
+* Wenn das Fragment in der Kollektion vorhanden ist, wird dieses
+  verwendet
 
 ```
-d{get macro alloc}
-	v{macro} = f{allocMacroInMap}(
+d{get frag alloc}
+	v{frag} = f{allocFragInMap}(
 		v{map}, v{begin}, v{end}
 	);
-x{get macro alloc}
+x{get frag alloc}
 ```
-* Sonst wird ein neues Makro angelegt
+* Sonst wird ein neues Fragment angelegt
 
 # Position im Original merken
 

@@ -95,7 +95,7 @@
 <span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">result</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">allocate macro on heap)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">allocate frag on heap)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">result</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
@@ -105,7 +105,7 @@
 <span class="in2"></span>
 <span class="var">result</span>-&gt;<span class="var">multiples</span> = 0;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">copy macro name)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">copy frag name)</span></span>;<br/>
 <span class="in2"></span>
 <span class="keyword">return</span> <span class="var">result</span>;<br/>
 <span class="in1"></span>
@@ -115,7 +115,7 @@
 </code>
 </div>
 <ul><li>
- Die Zeiger werden mit <code><span class="keyword">NULL</span></code> initializiert</li><li>
+ Die Zeiger werden mit <code><span class="keyword">NULL</span></code> initialisiert</li><li>
  <code><span class="var">lastEntry</span></code> wird erst initialisiert, wenn <code><span class="var">firstEntry</span></code> gesetzt
   wird</li><li>
  Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
@@ -155,7 +155,7 @@ __FILE__, __LINE__); \<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">allocate macro on heap)</span></span><br/>
+<span class="add">@def(<span class="name">allocate frag on heap)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">nameBegin</span>);<br/>
 <span class="in1"></span>
@@ -165,19 +165,19 @@ __FILE__, __LINE__); \<br/>
 <span class="in2"></span>
 <span class="var">nameEnd</span> - <span class="var">nameBegin</span>;<br/>
 <span class="in1"></span>
-<span class="type">int</span> <span class="var">macroSize</span> = <span class="keyword">sizeof</span>(<span class="type">struct Frag</span>)<br/>
+<span class="type">int</span> <span class="var">size</span> = <span class="keyword">sizeof</span>(<span class="type">struct Frag</span>)<br/>
 <span class="in2"></span>
 + <span class="var">nameLength</span> + 1;<br/>
 <span class="in1"></span>
-<span class="var">result</span> = <span class="var">malloc</span>(<span class="var">macroSize</span>);<br/>
+<span class="var">result</span> = <span class="var">malloc</span>(<span class="var">size</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">result</span>);<br/>
 
-<span class="end">@end(<span class="name">allocate macro on heap)</span></span><br/>
+<span class="end">@end(<span class="name">allocate frag on heap)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Die Zeiger werden mit <code><span class="keyword">NULL</span></code> initializiert</li><li>
+ Die Zeiger werden mit <code><span class="keyword">NULL</span></code> initialisiert</li><li>
  <code><span class="var">lastEntry</span></code> wird erst initialisiert, wenn <code><span class="var">firstEntry</span></code> gesetzt
   wird</li><li>
  Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
@@ -193,7 +193,7 @@ __FILE__, __LINE__); \<br/>
 
 <br/>
 
-<span class="add">@def(<span class="name">copy macro name)</span></span><br/>
+<span class="add">@def(<span class="name">copy frag name)</span></span><br/>
 <span class="in1"></span>
 <span class="fn">memcpy</span>(<br/>
 <span class="in2"></span>
@@ -205,17 +205,17 @@ __FILE__, __LINE__); \<br/>
 <span class="in1"></span>
 <span class="var">result</span>-&gt;<span class="var">name</span>[<span class="var">nameLength</span>] = <span class="str">'\0'</span>;<br/>
 
-<span class="end">@end(<span class="name">copy macro name)</span></span><br/>
+<span class="end">@end(<span class="name">copy frag name)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Der Name wird direkt in die das Makro kopiert</li><li>
+ Der Name wird direkt in das Fragment kopiert</li><li>
  Der Name wird mit einem Null-Byte abgeschlossen</li></ul></div>
 </div>
-<h1>Makros freigeben</h1>
+<h1>Fragmente freigeben</h1>
 <div class="slides">
 <div><div>
-<h1>Makros freigeben</h1>
+<h1>Fragmente freigeben</h1>
 </div>
 </div>
 <div><div>
@@ -225,17 +225,17 @@ __FILE__, __LINE__); \<br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">freeFragEntries</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span><br/>
+<span class="type">struct Frag *</span><span class="var">frag</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 <span class="in3"></span>
-<span class="expand">@expand(<span class="name">free macros entries)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">free frag entries)</span></span>;<br/>
 <span class="in3"></span>
-<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">firstEntry</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in3"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">lastEntry</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -250,23 +250,23 @@ __FILE__, __LINE__); \<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">freeMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">freeFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span><br/>
+<span class="type">struct Frag *</span><span class="var">f</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="keyword">while</span> (<span class="var">macro</span>) {<br/>
+<span class="keyword">while</span> (<span class="var">f</span>) {<br/>
 <span class="in3"></span>
-<span class="type">struct Frag *</span><span class="var">link</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">l</span> =<br/>
 <span class="in4"></span>
-<span class="var">macro</span>-&gt;<span class="var">link</span>;<br/>
+<span class="var">f</span>-&gt;<span class="var">link</span>;<br/>
 <span class="in3"></span>
-freeFragEntries(macro);<br/>
+freeFragEntries(f);<br/>
 <span class="in3"></span>
-<span class="fn">free</span>(<span class="var">macro</span>);<br/>
+<span class="fn">free</span>(<span class="var">f</span>);<br/>
 <span class="in3"></span>
-<span class="var">macro</span> = <span class="var">link</span>;<br/>
+<span class="var">f</span> = <span class="var">l</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -276,7 +276,7 @@ freeFragEntries(macro);<br/>
 </code>
 </div>
 <ul><li>
- Mit einem Makro werden auch alle verketteten Makros freigegeben</li><li>
+ Mit einem Fragment werden auch alle verketteten Fragmente freigegeben</li><li>
  Die Freigabe der einzelnen Einträge wird später definiert
 		</li></ul></div>
 <div><div>
@@ -284,7 +284,7 @@ freeFragEntries(macro);<br/>
 
 <span class="add">@add(<span class="name">perform unit-tests)</span></span><br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">macro unit tests)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">frag unit tests)</span></span>;<br/>
 
 <span class="end">@end(<span class="name">perform unit-tests)</span></span><br/>
 
@@ -292,7 +292,7 @@ freeFragEntries(macro);<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct Frag *</span><span class="fn">allocTestMacro</span>(<br/>
+<span class="type">struct Frag *</span><span class="fn">allocTestFrag</span>(<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">name</span><br/>
 <span class="in1"></span>
@@ -317,25 +317,25 @@ freeFragEntries(macro);<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">void</span> <span class="fn">testMacroName</span>(<br/>
+<span class="keyword">void</span> <span class="fn">testFragName</span>(<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">name</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">f</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacro</span>(<span class="var">name</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="var">name</span>);<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">f</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="fn">strcmp</span>(<span class="var">macro</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == 0<br/>
+<span class="fn">strcmp</span>(<span class="var">f</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == 0<br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">f</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -343,36 +343,36 @@ freeFragEntries(macro);<br/>
 </code>
 </div>
 <ul><li>
- <code><span class="fn">testMacroName</span></code> prüft, ob der Name korrekt in ein Makro kopiert
+ <code><span class="fn">testFragName</span></code> prüft, ob der Name korrekt in ein Fragment kopiert
   wurde</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@def(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">testMacroName</span>(<span class="str">"abc"</span>);<br/>
+<span class="fn">testFragName</span>(<span class="str">"abc"</span>);<br/>
 <span class="in1"></span>
-<span class="fn">testMacroName</span>(<span class="str">""</span>);<br/>
+<span class="fn">testFragName</span>(<span class="str">""</span>);<br/>
 <span class="in1"></span>
-<span class="fn">testMacroName</span>(<span class="str">"A c"</span>);<br/>
+<span class="fn">testFragName</span>(<span class="str">"A c"</span>);<br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">f</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacro</span>(<span class="str">"ab"</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="str">"ab"</span>);<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">f</span>);<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">macro</span>-&gt;<span class="var">link</span>);<br/>
+<span class="fn">ASSERT</span>(! <span class="var">f</span>-&gt;<span class="var">link</span>);<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">macro</span>-&gt;<span class="var">firstEntry</span>);<br/>
+<span class="fn">ASSERT</span>(! <span class="var">f</span>-&gt;<span class="var">firstEntry</span>);<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">f</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
@@ -383,13 +383,13 @@ freeFragEntries(macro);<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">bool</span> <span class="fn">isPopulatedMacro</span>(<br/>
+<span class="type">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">const struct Frag *</span><span class="var">macro</span><br/>
+<span class="type">const struct Frag *</span><span class="var">f</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-return macro &amp;&amp; macro-&gt;firstEntry;<br/>
+return f &amp;&amp; f-&gt;firstEntry;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -398,10 +398,10 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </div>
 </div>
 </div>
-<h1>Makro Einträge</h1>
+<h1>Fragment-Einträge</h1>
 <div class="slides">
 <div><div>
-<h1>Makro Einträge</h1>
+<h1>Fragment-Einträge</h1>
 </div>
 </div>
 <div><div>
@@ -413,7 +413,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">link</span>;<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span>;<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>;<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">valueEnd</span>;<br/>
 <span class="in2"></span>
@@ -427,12 +427,12 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Ein Eintrag kann entweder auf ein anderes Makro verweisen (wenn dieses
-  an der aktuellen Stelle expandiert werden soll)</li><li>
+ Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
+  dieses an der aktuellen Stelle expandiert werden soll)</li><li>
  Oder er enthält Bytes, die beim Expandieren direkt expandiert werden</li><li>
  Die Länge des Byte-Arrays wird über einen Zeiger angezeigt (damit auch
   Null-Bytes verwendet werden können)</li><li>
- Wenn ein Eintrag sowohl Daten als auch ein Makro enthält, so wird
+ Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
   zuerst der Text ausgegeben
 		</li></ul></div>
 <div><div>
@@ -440,9 +440,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct FragEntry *</span><span class="fn">allocMacroEntry</span>(<br/>
+<span class="type">struct FragEntry *</span><span class="fn">allocFragEntry</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span>,<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>,<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">valueBegin</span>,<br/>
 <span class="in2"></span>
@@ -466,10 +466,10 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Wie beim Macro werden die <code><span class="var">link</span></code> Verweise auf <code><span class="keyword">NULL</span></code>
+ Wie bei einem Fragment werden die <code><span class="var">link</span></code> Verweise auf <code><span class="keyword">NULL</span></code>
   initialisiert</li><li>
- Sowohl <code><span class="var">macro</span></code> als auch <code><span class="var">valueBegin</span></code> sind optional</li><li>
- Die Größe des Eintrags hängt von der Größe der Bytes ab, die kopiert
+ Sowohl <code><span class="var">frag</span></code> als auch <code><span class="var">valueBegin</span></code> sind optional</li><li>
+ Die Größe des Eintrags hängt von der Anzahl der Bytes ab, die kopiert
   werden</li></ul></div>
 <div><div>
 <code>
@@ -524,7 +524,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="var">result</span>-&gt;<span class="var">value</span> + <span class="var">valueLength</span>;<br/>
 <span class="in1"></span>
-<span class="var">result</span>-&gt;<span class="var">macro</span> = <span class="var">macro</span>;<br/>
+<span class="var">result</span>-&gt;<span class="var">frag</span> = <span class="var">frag</span>;<br/>
 
 <span class="end">@end(<span class="name">copy entry values)</span></span><br/>
 </code>
@@ -538,9 +538,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="type">struct FragEntry *</span><br/>
 
-<span class="fn">allocEmptyMacroEntry</span>() {<br/>
+<span class="fn">allocEmptyFragEntry</span>() {<br/>
 <span class="in1"></span>
-<span class="keyword">return</span> <span class="fn">allocMacroEntry</span>(<br/>
+<span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
 <span class="in2"></span>
 <span class="keyword">NULL</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
 <span class="in1"></span>
@@ -554,10 +554,10 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <ul><li>
  Für Tests ist es praktisch, leere Einträge anzulegen</li></ul></div>
 </div>
-<h1>Makro Einträge freigeben</h1>
+<h1>Fragment-Einträge freigeben</h1>
 <div class="slides">
 <div><div>
-<h1>Makro Einträge freigeben</h1>
+<h1>Fragment-Einträge freigeben</h1>
 </div>
 </div>
 <div><div>
@@ -565,21 +565,21 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 
-<span class="keyword">void</span> <span class="fn">freeMacroEntry</span>(<br/>
+<span class="keyword">void</span> <span class="fn">freeFragEntry</span>(<br/>
 <span class="in1"></span>
-<span class="type">struct FragEntry *</span><span class="var">entry</span><br/>
+<span class="type">struct FragEntry *</span><span class="var">e</span><br/>
 
 ) {<br/>
 <span class="in1"></span>
-<span class="keyword">while</span> (<span class="var">entry</span>) {<br/>
+<span class="keyword">while</span> (<span class="var">e</span>) {<br/>
 <span class="in2"></span>
-<span class="type">struct FragEntry *</span><span class="var">link</span> =<br/>
+<span class="type">struct FragEntry *</span><span class="var">l</span> =<br/>
 <span class="in3"></span>
-<span class="var">entry</span>-&gt;<span class="var">link</span>;<br/>
+<span class="var">e</span>-&gt;<span class="var">link</span>;<br/>
 <span class="in2"></span>
-<span class="fn">free</span>(<span class="var">entry</span>);<br/>
+<span class="fn">free</span>(<span class="var">e</span>);<br/>
 <span class="in2"></span>
-<span class="var">entry</span> = <span class="var">link</span>;<br/>
+<span class="var">e</span> = <span class="var">l</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -589,10 +589,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Wenn ein Eintrag freigegeben wird, so werden auch alle verlinkten</li></ul></div>
-<div>
-<ul><li>
- Referenzierte Makros werden nicht mit freigegeben</li></ul></div>
+ Wenn ein Eintrag freigegeben wird, so werden auch alle verlinkten
+  Einträge freigegeben</li><li>
+ Referenzierte Fragmente werden nicht mit freigegeben</li></ul></div>
 <div><div>
 <code>
 
@@ -600,27 +599,30 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="type">struct FragEntry</span>;<br/>
 
-<span class="keyword">void</span> <span class="fn">freeMacroEntry</span>(<br/>
+<span class="keyword">void</span> <span class="fn">freeFragEntry</span>(<br/>
 <span class="in1"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span><br/>
 
 );<br/>
 
 <span class="end">@end(<span class="name">forward declarations)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
 
-<br/>
-
-<span class="add">@def(<span class="name">free macros entries)</span></span><br/>
+<span class="add">@def(<span class="name">free frag entries)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">freeMacroEntry</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span>);<br/>
+<span class="fn">freeFragEntry</span>(<span class="var">frag</span>-&gt;<span class="var">firstEntry</span>);<br/>
 
-<span class="end">@end(<span class="name">free macros entries)</span></span><br/>
+<span class="end">@end(<span class="name">free frag entries)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Wenn ein Makro freigegeben wird, so werden auch die anhängenden
+ Wenn ein Fragment freigegeben wird, so werden auch die anhängenden
   Einträge freigegeben</li><li>
- Damit die Funktion im <code><span class="fn">freeMacro</span></code> sichtbar ist, wird sie in der
+ Damit die Funktion im <code><span class="fn">freeFrag</span></code> sichtbar ist, wird sie in der
   Include-Sektion definiert</li></ul></div>
 </div>
 <h1>Auf Attribute zugreifen</h1>
@@ -634,21 +636,21 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">int</span> <span class="fn">getMacroEntryValueSize</span>(<br/>
+<span class="keyword">int</span> <span class="fn">getFragEntryValueSize</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct FragEntry *</span><span class="var">entry</span><br/>
+<span class="type">struct FragEntry *</span><span class="var">e</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">entry</span>) {<br/>
+<span class="keyword">if</span> (! <span class="var">e</span>) {<br/>
 <span class="in3"></span>
 <span class="keyword">return</span> <span class="num">0</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">entry</span>-&gt;<span class="var">valueEnd</span> -<br/>
+<span class="keyword">return</span> <span class="var">e</span>-&gt;<span class="var">valueEnd</span> -<br/>
 <span class="in3"></span>
-<span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
+<span class="var">e</span>-&gt;<span class="var">value</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -667,13 +669,13 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocEmptyMacroEntry</span>();<br/>
+<span class="fn">allocEmptyFragEntry</span>();<br/>
 
 <br/>
 <span class="in2"></span>
@@ -681,30 +683,30 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">link</span>);<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">macro</span>);<br/>
+<span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">frag</span>);<br/>
 
 <br/>
 <span class="in2"></span>
-<span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+<span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
  Ein leerer Eintrag hat keinen Nachfolger</li><li>
- Und kein Makro</li></ul></div>
+ Und kein Fragment</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocEmptyMacroEntry</span>();<br/>
+<span class="fn">allocEmptyFragEntry</span>();<br/>
 
 <br/>
 <span class="in2"></span>
@@ -712,17 +714,17 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="fn">getMacroEntryValueSize</span>(<br/>
+<span class="fn">getFragEntryValueSize</span>(<br/>
 <span class="in4"></span>
 <span class="var">entry</span>) == <span class="num">0);</span><br/>
 
 <br/>
 <span class="in2"></span>
-<span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+<span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
@@ -734,21 +736,21 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in1"></span>
 <span class="type">struct FragEntry *</span><br/>
 <span class="in1"></span>
-<span class="fn">allocTestMacroEntry</span>(<br/>
+<span class="fn">allocTestFragEntry</span>(<br/>
 <span class="in2"></span>
-<span class="type">const char *</span><span class="var">value</span><br/>
+<span class="type">const char *</span><span class="var">v</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="type">const char *</span><span class="var">end</span> = <span class="var">value</span> +<br/>
+<span class="type">const char *</span><span class="var">e</span> = <span class="var">v</span> +<br/>
 <span class="in3"></span>
-<span class="fn">strlen</span>(<span class="var">value</span>);<br/>
+<span class="fn">strlen</span>(<span class="var">v</span>);<br/>
 
 <br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="fn">allocMacroEntry</span>(<br/>
+<span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
 <span class="in3"></span>
-<span class="keyword">NULL</span>, <span class="var">value</span>, <span class="var">end</span><br/>
+<span class="keyword">NULL</span>, <span class="var">v</span>, <span class="var">e</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -763,13 +765,13 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacroEntry</span>(<span class="str">"abc"</span>);<br/>
+<span class="fn">allocTestFragEntry</span>(<span class="str">"abc"</span>);<br/>
 
 <br/>
 <span class="in2"></span>
@@ -777,17 +779,17 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="fn">getMacroEntryValueSize</span>(<br/>
+<span class="fn">getFragEntryValueSize</span>(<br/>
 <span class="in4"></span>
 <span class="var">entry</span>) == <span class="num">3);</span><br/>
 
 <br/>
 <span class="in2"></span>
-<span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+<span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
@@ -795,13 +797,13 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacroEntry</span>(<span class="str">"abc"</span>);<br/>
+<span class="fn">allocTestFragEntry</span>(<span class="str">"abc"</span>);<br/>
 
 <br/>
 <span class="in2"></span>
@@ -815,20 +817,20 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <br/>
 <span class="in2"></span>
-<span class="fn">freeMacroEntry</span>(<span class="var">entry</span>);<br/>
+<span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
  Die Bytes eines Eintrags stimmen überein</li></ul></div>
 </div>
-<h1>Einträge zu Makros hinzufügen</h1>
+<h1>Einträge zu Fragmenten hinzufügen</h1>
 <div class="slides">
 <div><div>
-<h1>Einträge zu Makros hinzufügen</h1>
+<h1>Einträge zu Fragmenten hinzufügen</h1>
 </div>
 </div>
 <div><div>
@@ -836,9 +838,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">addEntryToMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">addEntryToFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span>,<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>,<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span><br/>
 <span class="in1"></span>
@@ -846,7 +848,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">assert add entry)</span></span>;<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">firstEntry</span>) {<br/>
 <span class="in3"></span>
 <span class="expand">@expand(<span class="name">append entry)</span></span>;<br/>
 <span class="in2"></span>
@@ -869,7 +871,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@def(<span class="name">assert add entry)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">frag</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
 <span class="in1"></span>
@@ -879,7 +881,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Makro darf nicht <code><span class="keyword">NULL</span></code> sein</li><li>
+ Fragment darf nicht <code><span class="keyword">NULL</span></code> sein</li><li>
  Eintrag darf nicht <code><span class="keyword">NULL</span></code> sein</li><li>
  Eintrag darf noch nicht in einer anderen Liste hängen</li></ul></div>
 <div><div>
@@ -887,9 +889,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@def(<span class="name">append entry)</span></span><br/>
 <span class="in1"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">link</span> = <span class="var">entry</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">link</span> = <span class="var">entry</span>;<br/>
 <span class="in1"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span> = <span class="var">entry</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">lastEntry</span> = <span class="var">entry</span>;<br/>
 
 <span class="end">@end(<span class="name">append entry)</span></span><br/>
 </code>
@@ -904,9 +906,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@def(<span class="name">set first entry)</span></span><br/>
 <span class="in1"></span>
-<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> = <span class="var">entry</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">firstEntry</span> = <span class="var">entry</span>;<br/>
 <span class="in1"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span> = <span class="var">entry</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">lastEntry</span> = <span class="var">entry</span>;<br/>
 
 <span class="end">@end(<span class="name">set first entry)</span></span><br/>
 </code>
@@ -917,75 +919,75 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">f</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
+<span class="type">struct FragEntry *</span><span class="var">e</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocEmptyMacroEntry</span>();<br/>
+<span class="fn">allocEmptyFragEntry</span>();<br/>
 <span class="in2"></span>
-<span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+<span class="fn">addEntryToFrag</span>(<span class="var">f</span>, <span class="var">e</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">entry</span><br/>
+<span class="var">f</span>-&gt;<span class="var">firstEntry</span> == <span class="var">e</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">f</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Der erste Eintrag im Makro wird gesetzt</li></ul></div>
+ Der erste Eintrag im Fragment wird gesetzt</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">f</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
+<span class="type">struct FragEntry *</span><span class="var">e</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocEmptyMacroEntry</span>();<br/>
+<span class="fn">allocEmptyFragEntry</span>();<br/>
 <span class="in2"></span>
-<span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+<span class="fn">addEntryToFrag</span>(<span class="var">f</span>, <span class="var">e</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span> == <span class="var">entry</span><br/>
+<span class="var">f</span>-&gt;<span class="var">lastEntry</span> == <span class="var">e</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">f</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Der letzte Eintrag im Makro wird gesetzt</li></ul></div>
+ Der letzte Eintrag im Fragment wird gesetzt</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">first</span>;<br/>
 <span class="in2"></span>
@@ -995,32 +997,32 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">check first of 2)</span></span>;<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">frag</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Zwei Einträge werden an ein Makro angehängt</li><li>
+ Zwei Einträge werden an ein Fragment angehängt</li><li>
  Der erste Eintrag muss gesetzt bleiben</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">add two entries)</span></span><br/>
 <span class="in1"></span>
-<span class="var">macro</span> = <span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+<span class="var">frag</span> = <span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 <span class="in1"></span>
-<span class="var">first</span> = <span class="fn">allocEmptyMacroEntry</span>();<br/>
+<span class="var">first</span> = <span class="fn">allocEmptyFragEntry</span>();<br/>
 <span class="in1"></span>
-<span class="var">second</span> = <span class="fn">allocEmptyMacroEntry</span>();<br/>
+<span class="var">second</span> = <span class="fn">allocEmptyFragEntry</span>();<br/>
 
 <br/>
 <span class="in1"></span>
-<span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">first</span>);<br/>
+<span class="fn">addEntryToFrag</span>(<span class="var">frag</span>, <span class="var">first</span>);<br/>
 <span class="in1"></span>
-<span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">second</span>);<br/>
+<span class="fn">addEntryToFrag</span>(<span class="var">frag</span>, <span class="var">second</span>);<br/>
 
 <span class="end">@end(<span class="name">add two entries)</span></span><br/>
 
@@ -1028,22 +1030,22 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@def(<span class="name">check first of 2)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> == <span class="var">first</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">frag</span>-&gt;<span class="var">firstEntry</span> == <span class="var">first</span>);<br/>
 
 <span class="end">@end(<span class="name">check first of 2)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Zwei Einträge werden an ein Makro angehängt</li><li>
+ Zwei Einträge werden an ein Fragment angehängt</li><li>
  Der erste Eintrag muss gesetzt bleiben</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> = <span class="keyword">NULL</span>;<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">first</span>;<br/>
 <span class="in2"></span>
@@ -1053,28 +1055,28 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span> == <span class="var">second</span><br/>
+<span class="var">frag</span>-&gt;<span class="var">lastEntry</span> == <span class="var">second</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">frag</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Zwei Einträge werden an ein Makro angehängt</li><li>
+ Zwei Einträge werden an ein Fragment angehängt</li><li>
  Der letzte Eintrag muss gesetzt werden</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">addBytesToMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">addBytesToFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span>,<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>,<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">value</span>,<br/>
 <span class="in2"></span>
@@ -1088,7 +1090,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocMacroEntry</span>(<br/>
+<span class="fn">allocFragEntry</span>(<br/>
 <span class="in4"></span>
 <span class="keyword">NULL</span>, <span class="var">value</span>, <span class="var">valueEnd</span><br/>
 <span class="in3"></span>
@@ -1096,7 +1098,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">populate additional entry fields)</span></span>;<br/>
 <span class="in2"></span>
-<span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+<span class="fn">addEntryToFrag</span>(<span class="var">frag</span>, <span class="var">entry</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1105,7 +1107,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </div>
 <ul><li>
  Für die Daten wird ein neuer Eintrag angelegt</li><li>
- Dieser wird an das Makro angehängt</li></ul></div>
+ Dieser wird an das Fragment angehängt</li></ul></div>
 <div><div>
 <code>
 
@@ -1113,23 +1115,23 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">define cycle check)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">addMacroToMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">addFragToFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span>,<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>,<br/>
 <span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">child</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">frag</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">avoid macro cycles)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">avoid frag cycles)</span></span>;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">reuse last entry)</span></span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">add macro entry)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">add frag entry)</span></span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1137,24 +1139,24 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Bevor ein Makro hinzugefügt werden kann, muss sichergestellt werden,
+ Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
   dass kein Zykel entsteht</li><li>
- Ein Zykel liegt vor, wenn <code><span class="var">macro</span></code> gleich <code><span class="var">child</span></code> ist</li><li>
+ Ein Zykel liegt vor, wenn <code><span class="var">frag</span></code> gleich <code><span class="var">child</span></code> ist</li><li>
  Oder bereits direkt oder indirekt zu <code><span class="var">child</span></code> hinzugefügt wurde</li><li>
- Falls der letzte Eintrag noch kein Makro hat, wird dieser Eintrag
+ Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
   verwendet</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">reuse last entry)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">macro</span>-&gt;<span class="var">firstEntry</span> &amp;&amp;<br/>
+<span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">firstEntry</span> &amp;&amp;<br/>
 <span class="in2"></span>
-! <span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">macro</span><br/>
+! <span class="var">frag</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">frag</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="var">macro</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">macro</span> = <span class="var">child</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">lastEntry</span>-&gt;<span class="var">frag</span> = <span class="var">child</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">return</span>;<br/>
 <span class="in1"></span>
@@ -1164,33 +1166,33 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Wenn das Makro-Attribut im letzten Eintrag noch nicht benutzt wird,
+ Wenn das Fragment-Attribut im letzten Eintrag noch nicht benutzt wird,
   kann dieses verwendet werden</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">add macro entry)</span></span><br/>
+<span class="add">@def(<span class="name">add frag entry)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in2"></span>
-<span class="fn">allocMacroEntry</span>(<br/>
+<span class="fn">allocFragEntry</span>(<br/>
 <span class="in3"></span>
 <span class="var">child</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
-<span class="fn">addEntryToMacro</span>(<span class="var">macro</span>, <span class="var">entry</span>);<br/>
+<span class="fn">addEntryToFrag</span>(<span class="var">frag</span>, <span class="var">entry</span>);<br/>
 
-<span class="end">@end(<span class="name">add macro entry)</span></span><br/>
+<span class="end">@end(<span class="name">add frag entry)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Sonst muss ein neuer Eintrag mit dem Makro angelegt werden</li></ul></div>
+ Sonst muss ein neuer Eintrag in dem Fragment angelegt werden</li></ul></div>
 </div>
-<h1>Makros serialisieren</h1>
+<h1>Fragmente serialisieren</h1>
 <div class="slides">
 <div><div>
-<h1>Makros serialisieren</h1>
+<h1>Fragmente serialisieren</h1>
 </div>
 </div>
 <div><div>
@@ -1200,9 +1202,9 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">serialize test defines)</span></span>;<br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">serializeMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro,</span><br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>,<br/>
 <span class="in2"></span>
 <span class="type">FILE *</span><span class="var">out</span>,<br/>
 <span class="in2"></span>
@@ -1210,7 +1212,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">macro</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">frag</span>);<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 <span class="in2"></span>
@@ -1223,7 +1225,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </div>
 <ul><li>
  Jeder Eintrag wird nacheinander bearbeitet</li><li>
- Makros in Einträgen werden rekursiv ausgegeben</li></ul></div>
+ Fragmente in Einträgen werden rekursiv ausgegeben</li></ul></div>
 <div><div>
 <code>
 
@@ -1231,17 +1233,17 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in1"></span>
 <span class="type">struct FragEntry *</span><span class="var">entry</span> =<br/>
 <span class="in2"></span>
-<span class="var">macro</span>-&gt;<span class="var">firstEntry</span>;<br/>
+<span class="var">frag</span>-&gt;<span class="var">firstEntry</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">for</span> (; <span class="var">entry</span>; <span class="var">entry</span> = <span class="var">entry</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">serialize bytes)</span></span>;<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="var">entry</span>-&gt;<span class="var">macro</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">entry</span>-&gt;<span class="var">frag</span>) {<br/>
 <span class="in3"></span>
-<span class="fn">serializeMacro</span>(<br/>
+<span class="fn">serializeFrag</span>(<br/>
 <span class="in4"></span>
-<span class="var">entry</span>-&gt;<span class="var">macro</span>, <span class="var">out</span>,<br/>
+<span class="var">entry</span>-&gt;<span class="var">frag</span>, <span class="var">out</span>,<br/>
 <span class="in4"></span>
 <span class="var">writeLineMacros</span><br/>
 <span class="in3"></span>
@@ -1256,15 +1258,15 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </div>
 <ul><li>
  Für jeden Eintrag werden zuerst die Bytes ausgegeben</li><li>
- Dann wird rekursiv das Makro ausgegeben, falls vorhanden</li></ul></div>
+ Dann wird rekursiv das Fragment ausgegeben, falls vorhanden</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">serialize test defines)</span></span><br/>
 <span class="in1"></span>
-<span class="type">char *</span><span class="var">macroTestBufferCur</span> = <span class="keyword">NULL</span>;<br/>
+<span class="type">char *</span><span class="var">fragTestBufferCur</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
-<span class="type">const char *</span><span class="var">macroTestBufferEnd</span> = <span class="keyword">NULL</span>;<br/>
+<span class="type">const char *</span><span class="var">fragTestBufferEnd</span> = <span class="keyword">NULL</span>;<br/>
 
 <span class="end">@end(<span class="name">serialize test defines)</span></span><br/>
 </code>
@@ -1275,7 +1277,7 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@def(<span class="name">serialize bytes)</span></span><br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">getMacroEntryValueSize</span>(<span class="var">entry</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">getFragEntryValueSize</span>(<span class="var">entry</span>)) {<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">cur</span> = <span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
 <span class="in2"></span>
@@ -1283,19 +1285,19 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 <span class="in2"></span>
 <span class="type">int</span> <span class="var">len</span> = <span class="var">end</span> - <span class="var">cur</span>;<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">macroTestBufferCur</span>) {<br/>
+<span class="keyword">if</span> (! <span class="var">fragTestBufferCur</span>) {<br/>
 <span class="in3"></span>
 <span class="fn">ASSERT</span>(<span class="fn">fwrite</span>(<span class="var">cur</span>, 1, <span class="var">len</span>, <span class="var">out</span>) == <span class="var">len</span>);<br/>
 <span class="in2"></span>
 } <span class="keyword">else</span> {<br/>
 <span class="in3"></span>
-<span class="fn">ASSERT</span>(<span class="var">macroTestBufferCur</span> + <span class="var">len</span> &lt; <span class="var">macroTestBufferEnd</span>);<br/>
+<span class="fn">ASSERT</span>(<span class="var">fragTestBufferCur</span> + <span class="var">len</span> &lt; <span class="var">fragTestBufferEnd</span>);<br/>
 <span class="in3"></span>
-<span class="fn">memcpy</span>(<span class="var">macroTestBufferCur</span>, <span class="var">cur</span>, <span class="var">len</span>);<br/>
+<span class="fn">memcpy</span>(<span class="var">fragTestBufferCur</span>, <span class="var">cur</span>, <span class="var">len</span>);<br/>
 <span class="in3"></span>
-<span class="var">macroTestBufferCur</span> += <span class="var">len</span>;<br/>
+<span class="var">fragTestBufferCur</span> += <span class="var">len</span>;<br/>
 <span class="in3"></span>
-*<span class="var">macroTestBufferCur</span> = <span class="str">'\0'</span>;<br/>
+*<span class="var">fragTestBufferCur</span> = <span class="str">'\0'</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -1312,13 +1314,13 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">testMacro</span>(<span class="type">struct Frag *</span><br/>
+<span class="type">void</span> <span class="fn">testFrag</span>(<span class="type">struct Frag *</span><br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="type">const char *</span><span class="var">expected</span><br/>
+<span class="var">frag</span>, <span class="type">const char *</span><span class="var">expected</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">serialize test macro)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">serialize test frag)</span></span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1326,20 +1328,20 @@ return macro &amp;&amp; macro-&gt;firstEntry;<br/>
 </code>
 </div>
 <ul><li>
- Diese Hilfsfunktion prüft ob die Serialisierung eines Makros der
+ Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
   Erwartung entspricht</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">serialize test macro)</span></span><br/>
+<span class="add">@def(<span class="name">serialize test frag)</span></span><br/>
 <span class="in1"></span>
 char buffer[100];<br/>
 <span class="in1"></span>
-macroTestBufferCur = buffer;<br/>
+fragTestBufferCur = buffer;<br/>
 <span class="in1"></span>
-macroTestBufferEnd = buffer + sizeof(buffer);<br/>
+fragTestBufferEnd = buffer + sizeof(buffer);<br/>
 <span class="in1"></span>
-<span class="fn">serializeMacro</span>(<span class="var">macro</span>, (void *) buffer, <span class="keyword">false</span>);<br/>
+<span class="fn">serializeFrag</span>(<span class="var">frag</span>, (void *) buffer, <span class="keyword">false</span>);<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="fn">strcmp</span>(<br/>
 <span class="in2"></span>
@@ -1347,24 +1349,24 @@ macroTestBufferEnd = buffer + sizeof(buffer);<br/>
 <span class="in1"></span>
 ) == 0);<br/>
 <span class="in1"></span>
-macroTestBufferCur = NULL;<br/>
+fragTestBufferCur = NULL;<br/>
 <span class="in1"></span>
-macroTestBufferEnd = NULL;<br/>
+fragTestBufferEnd = NULL;<br/>
 
-<span class="end">@end(<span class="name">serialize test macro)</span></span><br/>
+<span class="end">@end(<span class="name">serialize test frag)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Serialisiert das Makro</li><li>
+ Serialisiert das Fragment</li><li>
  Der Buffer muss die erwarteten Werte enthalten</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">addStringToMacro</span>(<br/>
+<span class="type">void</span> <span class="fn">addStringToFrag</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span>,<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span>,<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">str</span><br/>
 <span class="in1"></span>
@@ -1372,9 +1374,9 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="type">int</span> <span class="var">size</span> = <span class="fn">strlen</span>(<span class="var">str</span>);<br/>
 <span class="in2"></span>
-<span class="fn">addBytesToMacro</span>(<br/>
+<span class="fn">addBytesToFrag</span>(<br/>
 <span class="in3"></span>
-<span class="var">macro</span>, <span class="var">str</span>, <span class="var">str</span> + <span class="var">size</span>,<br/>
+<span class="var">frag</span>, <span class="var">str</span>, <span class="var">str</span> + <span class="var">size</span>,<br/>
 <span class="in3"></span>
 <span class="keyword">NULL</span>, <span class="num">0</span><br/>
 <span class="in2"></span>
@@ -1391,25 +1393,25 @@ macroTestBufferEnd = NULL;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span><br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span><br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> =<br/>
 <span class="in3"></span>
-<span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 <span class="in2"></span>
-<span class="fn">addStringToMacro</span>(<span class="var">macro</span>, <span class="str">"abc"</span>);<br/>
+<span class="fn">addStringToFrag</span>(<span class="var">frag</span>, <span class="str">"abc"</span>);<br/>
 <span class="in2"></span>
-<span class="fn">addStringToMacro</span>(<span class="var">macro</span>, <span class="str">"def"</span>);<br/>
+<span class="fn">addStringToFrag</span>(<span class="var">frag</span>, <span class="str">"def"</span>);<br/>
 <span class="in2"></span>
-<span class="fn">testMacro</span>(<span class="var">macro</span>, <span class="str">"abcdef"</span>);<br/>
+<span class="fn">testFrag</span>(<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
 <span class="in2"></span>
-<span class="fn">freeMacro</span>(<span class="var">macro</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">frag</span>);<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+<span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
@@ -1417,38 +1419,38 @@ macroTestBufferEnd = NULL;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">macro unit tests)</span></span> {<br/>
+<span class="add">@add(<span class="name">frag unit tests)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Frag *</span><span class="var">a</span> =<br/>
 <span class="in2"></span>
-<span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 <span class="in1"></span>
 <span class="type">struct Frag *</span><span class="var">b</span> =<br/>
 <span class="in2"></span>
-<span class="fn">allocTestMacro</span>(<span class="str">""</span>);<br/>
+<span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 <span class="in1"></span>
-<span class="fn">addStringToMacro</span>(<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
+<span class="fn">addStringToFrag</span>(<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
 <span class="in1"></span>
-<span class="fn">addMacroToMacro</span>(<span class="var">b</span>, <span class="var">a</span>);<br/>
+<span class="fn">addFragToFrag</span>(<span class="var">b</span>, <span class="var">a</span>);<br/>
 <span class="in1"></span>
-<span class="fn">addStringToMacro</span>(<span class="var">b</span>, <span class="str">"def"</span>);<br/>
+<span class="fn">addStringToFrag</span>(<span class="var">b</span>, <span class="str">"def"</span>);<br/>
 <span class="in1"></span>
-<span class="fn">addMacroToMacro</span>(<span class="var">b</span>, <span class="var">a</span>);<br/>
+<span class="fn">addFragToFrag</span>(<span class="var">b</span>, <span class="var">a</span>);<br/>
 <span class="in1"></span>
-<span class="fn">testMacro</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
+<span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 <span class="in1"></span>
-<span class="fn">freeMacro</span>(<span class="var">a</span>); <span class="fn">freeMacro</span>(<span class="var">b</span>);<br/>
+<span class="fn">freeFrag</span>(<span class="var">a</span>); <span class="fn">freeFrag</span>(<span class="var">b</span>);<br/>
 
-} <span class="end">@end(<span class="name">macro unit tests)</span></span><br/>
+} <span class="end">@end(<span class="name">frag unit tests)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Prüft, ob Makros expandiert werden</li></ul></div>
+ Prüft, ob Fragmente expandiert werden</li></ul></div>
 </div>
-<h1>Zykel im Makro-Graph finden</h1>
+<h1>Zykel im Fragment-Graph finden</h1>
 <div class="slides">
 <div><div>
-<h1>Zykel im Makro-Graph finden</h1>
+<h1>Zykel im Fragment-Graph finden</h1>
 </div>
 </div>
 <div><div>
@@ -1468,7 +1470,7 @@ macroTestBufferEnd = NULL;<br/>
 
 <span class="add">@def(<span class="name">define cycle check)</span></span><br/>
 <span class="in1"></span>
-<span class="type">bool</span> <span class="fn">isMacroInMacro</span>(<br/>
+<span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
 <span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">needle</span>,<br/>
 <span class="in2"></span>
@@ -1480,7 +1482,7 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">haystack</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">check cycle macro)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">check cycle frag)</span></span>;<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">check cycle entries)</span></span>;<br/>
 <span class="in2"></span>
@@ -1492,30 +1494,31 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Wenn das Makro das gesuchte ist, dann wurde ein Zykel gefunden</li><li>
+ Wenn das Fragment das gesuchte ist, dann wurde ein Zykel gefunden</li><li>
  Danach wird über alle Einträge gesucht</li><li>
- Wenn das Makro dort nicht gefunden wurde, dann ist es nicht enthalten</li></ul></div>
+ Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht
+  enthalten</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">avoid macro cycles)</span></span><br/>
+<span class="add">@def(<span class="name">avoid frag cycles)</span></span><br/>
 <span class="in1"></span>
-<span class="fn">ASSERT</span>(! <span class="fn">isMacroInMacro</span>(<br/>
+<span class="fn">ASSERT</span>(! <span class="fn">isFragInFrag</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="var">child</span><br/>
+<span class="var">frag</span>, <span class="var">child</span><br/>
 <span class="in1"></span>
 ));<br/>
 
-<span class="end">@end(<span class="name">avoid macro cycles)</span></span><br/>
+<span class="end">@end(<span class="name">avoid frag cycles)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Ein Makro darf nur hinzugefügt werden, wenn es den Container nicht
+ Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht
   bereits enthält</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">check cycle macro)</span></span><br/>
+<span class="add">@def(<span class="name">check cycle frag)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">haystack</span>) {<br/>
 <span class="in2"></span>
@@ -1523,12 +1526,12 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">check cycle macro)</span></span><br/>
+<span class="end">@end(<span class="name">check cycle frag)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Wenn der Container selbst das gesuchte Makro ist, liefert die Funktion
-  <code><span class="keyword">true</span></code> zurück</li></ul></div>
+ Wenn der Container selbst das gesuchte Fragment ist, liefert die
+  Funktion <code><span class="keyword">true</span></code> zurück</li></ul></div>
 <div><div>
 <code>
 
@@ -1540,11 +1543,11 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in1"></span>
 <span class="keyword">for</span> (; <span class="var">entry</span>; <span class="var">entry</span> = <span class="var">entry</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">entry</span>-&gt;<span class="var">macro</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="keyword">if</span> (! <span class="var">entry</span>-&gt;<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
 <span class="in2"></span>
-<span class="keyword">if</span> (<span class="fn">isMacroInMacro</span>(<br/>
+<span class="keyword">if</span> (<span class="fn">isFragInFrag</span>(<br/>
 <span class="in3"></span>
-<span class="var">needle</span>, <span class="var">entry</span>-&gt;<span class="var">macro</span><br/>
+<span class="var">needle</span>, <span class="var">entry</span>-&gt;<span class="var">frag</span><br/>
 <span class="in2"></span>
 )) {<br/>
 <span class="in3"></span>
@@ -1558,13 +1561,13 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Alle Makros in den Einträgen werden rekursiv untersucht</li><li>
+ Alle Fragment in den Einträgen werden rekursiv untersucht</li><li>
  Damit wird der ganze Graph durchsucht</li></ul></div>
 </div>
-<h1>Makro-Kollektion</h1>
+<h1>Fragment-Kollektion</h1>
 <div class="slides">
 <div><div>
-<h1>Makro-Kollektion</h1>
+<h1>Fragment-Kollektion</h1>
 </div>
 </div>
 <div><div>
@@ -1572,15 +1575,15 @@ macroTestBufferEnd = NULL;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-#define MACRO_SLOTS 128<br/>
+#define FRAG_SLOTS 128<br/>
 
 <br/>
 <span class="in1"></span>
-<span class="type">struct MacroMap</span> {<br/>
+<span class="type">struct FragMap</span> {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macros</span><span class="type">[</span><br/>
+<span class="type">struct Frag *</span><span class="var">frags</span><span class="type">[</span><br/>
 <span class="in3"></span>
-<span class="type">MACRO_SLOTS</span><br/>
+<span class="type">FRAG_SLOTS</span><br/>
 <span class="in2"></span>
 <span class="type">]</span>;<br/>
 <span class="in1"></span>
@@ -1590,28 +1593,28 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Eine Kollektion von Makros ist ein Array von Makro-Ketten</li><li>
+ Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten</li><li>
  Alle Felder müssen mit <code><span class="keyword">NULL</span></code> initialisiert werden</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">void</span> <span class="fn">clearMacroMap</span>(<br/>
+<span class="type">void</span> <span class="fn">clearFragMap</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct MacroMap *</span><span class="var">map</span><br/>
+<span class="type">struct FragMap *</span><span class="var">map</span><br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">map</span>-&gt;<span class="var">macros</span>;<br/>
+<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>;<br/>
 <span class="in2"></span>
 <span class="type">struct Frag **</span><span class="var">end</span> =<br/>
 <span class="in3"></span>
-<span class="var">cur</span> + <span class="var">MACRO_SLOTS</span>;<br/>
+<span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 <span class="in3"></span>
-<span class="fn">freeMacro</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="keyword">NULL</span>;<br/>
+<span class="fn">freeFrag</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -1646,7 +1649,7 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">hash</span> % <span class="var">MACRO_SLOTS</span>;<br/>
+<span class="keyword">return</span> <span class="var">hash</span> % <span class="var">FRAG_SLOTS</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1654,7 +1657,7 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Der Hash wird über den Namen des Makros erstellt</li><li>
+ Der Hash wird über den Namen des Fragments erstellt</li><li>
  Der Name kann entweder durch ein Null-Byte abgeschlossen werden</li><li>
  Oder ein Ende wird direkt angegeben</li></ul></div>
 <div><div>
@@ -1662,9 +1665,9 @@ macroTestBufferEnd = NULL;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct Frag *</span><span class="fn">allocMacroInMap</span>(<br/>
+<span class="type">struct Frag *</span><span class="fn">allocFragInMap</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct MacroMap *</span><span class="var">map</span>,<br/>
+<span class="type">struct FragMap *</span><span class="var">map</span>,<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">begin</span>,<br/>
 <span class="in2"></span>
@@ -1674,13 +1677,13 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> =<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> =<br/>
 <span class="in3"></span>
 <span class="fn">allocFrag</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">insert in slot)</span></span>;<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">macro</span>;<br/>
+<span class="keyword">return</span> <span class="var">frag</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1688,7 +1691,7 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Ein neues Makro wird erstellt</li><li>
+ Ein neues Fragment wird erstellt</li><li>
  Und in der Hash-Map abgelegt</li></ul></div>
 <div><div>
 <code>
@@ -1697,24 +1700,24 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
-<span class="var">macro</span>-&gt;<span class="var">link</span> = <span class="var">map</span>-&gt;<span class="var">macros</span>[<span class="var">hash</span>];<br/>
+<span class="var">frag</span>-&gt;<span class="var">link</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
 <span class="in1"></span>
-<span class="var">map</span>-&gt;<span class="var">macros</span>[<span class="var">hash</span>] = <span class="var">macro</span>;<br/>
+<span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>] = <span class="var">frag</span>;<br/>
 
 <span class="end">@end(<span class="name">insert in slot)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Makros werden im Slot eingefügt</li><li>
- Neue Makros überlagern alte Slots mit gleichem Namen</li></ul></div>
+ Fragment wird im Slot eingefügt</li><li>
+ Neue Fragmente überlagern alte Fragmente mit gleichem Namen</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct Frag *</span><span class="fn">findMacroInMap</span>(<br/>
+<span class="type">struct Frag *</span><span class="fn">findFragInMap</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct MacroMap *</span><span class="var">map</span>,<br/>
+<span class="type">struct FragMap *</span><span class="var">map</span>,<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">begin</span>,<br/>
 <span class="in2"></span>
@@ -1724,11 +1727,11 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> = <span class="fn">NULL</span>;<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> = <span class="fn">NULL</span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">find macro in slot)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">find frag in slot)</span></span>;<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">macro</span>;<br/>
+<span class="keyword">return</span> <span class="var">frag</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1736,21 +1739,21 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Liefert das erste Makro mit dem übergebenen Namen</li></ul></div>
+ Liefert das erste Fragment mit dem übergebenen Namen</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">find macro in slot)</span></span><br/>
+<span class="add">@def(<span class="name">find frag in slot)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
-<span class="var">macro</span> = <span class="var">map</span>-&gt;<span class="var">macros</span>[<span class="var">hash</span>];<br/>
+<span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
 <span class="in1"></span>
-<span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="keyword">for</span> (; <span class="var">frag</span>; <span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">a</span> = <span class="var">begin</span>;<br/>
 <span class="in2"></span>
-<span class="type">const char *</span><span class="var">b</span> = <span class="var">macro</span>-&gt;<span class="var">name</span>;<br/>
+<span class="type">const char *</span><span class="var">b</span> = <span class="var">frag</span>-&gt;<span class="var">name</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">while</span> (<span class="var">a</span> != <span class="var">end</span>) {<br/>
 <span class="in3"></span>
@@ -1760,23 +1763,23 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (<span class="var">a</span> == <span class="var">end</span> &amp;&amp; ! *<span class="var">b</span>) {<br/>
 <span class="in3"></span>
-<span class="keyword">return</span> <span class="var">macro</span>; }<br/>
+<span class="keyword">return</span> <span class="var">frag</span>; }<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">find macro in slot)</span></span><br/>
+<span class="end">@end(<span class="name">find frag in slot)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Im passenden Hash-Slot werden die Namen der Makros verglichen</li></ul></div>
+ Im passenden Hash-Slot werden die Namen der Fragmente verglichen</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">struct Frag *</span><span class="fn">getMacroInMap</span>(<br/>
+<span class="type">struct Frag *</span><span class="fn">getFragInMap</span>(<br/>
 <span class="in2"></span>
-<span class="type">struct MacroMap *</span><span class="var">map</span>,<br/>
+<span class="type">struct FragMap *</span><span class="var">map</span>,<br/>
 <span class="in2"></span>
 <span class="type">const char *</span><span class="var">begin</span>,<br/>
 <span class="in2"></span>
@@ -1784,13 +1787,13 @@ macroTestBufferEnd = NULL;<br/>
 <span class="in1"></span>
 ) {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">macro</span> = NULL;<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> = NULL;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">get macro find)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">get frag find)</span></span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">get macro alloc)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">get frag alloc)</span></span>;<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">macro</span>;<br/>
+<span class="keyword">return</span> <span class="var">frag</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1798,46 +1801,47 @@ macroTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Liefert Makro mit angegebenen Namen oder legt ein neues Makro mit
+ Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment mit
   diesem Namen an</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">get macro find)</span></span><br/>
+<span class="add">@def(<span class="name">get frag find)</span></span><br/>
 <span class="in1"></span>
-<span class="var">macro</span> = <span class="fn">findMacroInMap</span>(<br/>
+<span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in2"></span>
 <span class="var">map</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
+<span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">macro</span>;<br/>
+<span class="keyword">return</span> <span class="var">frag</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">get macro find)</span></span><br/>
+<span class="end">@end(<span class="name">get frag find)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Wenn das Makro in der Kollektion vorhanden ist, wird dieses verwendet</li></ul></div>
+ Wenn das Fragment in der Kollektion vorhanden ist, wird dieses
+  verwendet</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">get macro alloc)</span></span><br/>
+<span class="add">@def(<span class="name">get frag alloc)</span></span><br/>
 <span class="in1"></span>
-<span class="var">macro</span> = <span class="fn">allocMacroInMap</span>(<br/>
+<span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
 <span class="in2"></span>
 <span class="var">map</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
 <span class="in1"></span>
 );<br/>
 
-<span class="end">@end(<span class="name">get macro alloc)</span></span><br/>
+<span class="end">@end(<span class="name">get frag alloc)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Sonst wird ein neues Makro angelegt</li></ul></div>
+ Sonst wird ein neues Fragment angelegt</li></ul></div>
 </div>
 <h1>Position im Original merken</h1>
 <div class="slides">
