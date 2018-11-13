@@ -4,6 +4,12 @@
   Source-Code Dateien
 
 ```
+i{hash.x}
+```
+* Hash-Funktion wird benötigt
+* Und in der Datei als `f{calcHash}` definiiert
+
+```
 a{global elements}
 	e{define frag};
 x{global elements}
@@ -889,22 +895,16 @@ x{define frag}
 
 ```
 a{define frag}
-	t{int} f{calcHash}(t{const char *}v{begin},
-		t{const char *}v{end}) {
-		f{ASSERT}(v{begin});
-		t{unsigned} v{hash} = n{0xf1e2d3c4};
-		k{while} (*v{begin} && v{begin} != v{end}) {
-			v{hash} ^= *v{begin}++;
-			v{hash} = (v{hash} << 3) |
-				(v{hash} >> 29);
-		}
+	t{int} f{calcFragHash}(
+		t{const char *}v{begin}, t{const char *}v{end}
+	) {
+		t{int} v{hash} = f{calcHash}(v{begin}, v{end});
 		k{return} v{hash} % v{FRAG_SLOTS};
 	}
 x{define frag}
 ```
 * Der Hash wird über den Namen des Fragments erstellt
-* Der Name kann entweder durch ein Null-Byte abgeschlossen werden
-* Oder ein Ende wird direkt angegeben
+* Und auf die Anzahl der möglichen Slots beschränkt
 
 ```
 a{define frag}
@@ -926,7 +926,7 @@ x{define frag}
 
 ```
 d{insert in slot}
-	t{int} v{hash} = f{calcHash}(v{begin}, v{end});
+	t{int} v{hash} = f{calcFragHash}(v{begin}, v{end});
 	v{frag}->v{link} = v{map}->v{frags}[v{hash}];
 	v{map}->v{frags}[v{hash}] = v{frag};
 x{insert in slot}
@@ -952,7 +952,7 @@ x{define frag}
 
 ```
 d{find frag in slot}
-	t{int} v{hash} = f{calcHash}(v{begin}, v{end});
+	t{int} v{hash} = f{calcFragHash}(v{begin}, v{end});
 	v{frag} = v{map}->v{frags}[v{hash}];
 	k{for} (; v{frag}; v{frag} = v{frag}->v{link}) {
 		t{const char *}v{a} = v{begin};

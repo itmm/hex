@@ -676,10 +676,28 @@ x{process macro name}
 ```
 d{process private macro}
 	t{static char} v{prefix}t{[]} = s{"_private_"};
+	t{static char} v{rnd}t{[12]};
+	t{char *}v{end} = v{rnd} + f{sizeof}(v{rnd});
+	t{char *}v{head} = v{end};
+	*--head = '_';
+	unsigned cur = initHash();
+	cur = addTerminatedToHash(cur, input->name);
+	cur = addRangeToHash(cur, name.buffer, name.current);
+	cur &= 0x7fffffff;
+	for (;;) {
+		ASSERT(head > rnd);
+		*--head = (cur % 10) + '0';
+		cur /= 10;
+		if (! cur) { break; }
+	}
 	E{flush macro buffer};
 	f{addBytesToFrag}(
 		v{macro}, v{prefix},
 		v{prefix} + f{sizeof}(v{prefix}) - n{1},
+		v{input}, v{nameLine}
+	);
+	f{addBytesToFrag}(
+		v{macro}, v{head}, v{end},
 		v{input}, v{nameLine}
 	);
 	f{addBytesToFrag}(
@@ -708,10 +726,22 @@ x{process macro name}
 
 ```
 d{process magic macro}
-	t{static char} v{magic}t{[]} = s{"2478325"};
+	t{static char} v{magic}t{[12]};
+	t{char *}v{end} = v{magic} + f{sizeof}(v{magic});
+	t{char *}v{head} = v{end};
+	unsigned cur = initHash();
+	cur = addTerminatedToHash(cur, input->name);
+	cur = addRangeToHash(cur, name.buffer, name.current);
+	cur &= 0x7fffffff;
+	for (;;) {
+		ASSERT(head > magic);
+		*--head = (cur % 10) + '0';
+		cur /= 10;
+		if (! cur) { break; }
+	}
 	E{flush macro buffer};
 	f{addBytesToFrag}(
-		v{macro}, v{magic}, v{magic} + f{sizeof}(v{magic}) - n{1},
+		v{macro}, v{head}, v{end},
 		v{input}, v{nameLine}
 	);
 x{process magic macro}

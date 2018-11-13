@@ -201,6 +201,52 @@ void freeFragEntry(
 ;
 
 	
+	static inline unsigned initHash() {
+		return 0x3d9a73b5;
+	}
+
+	unsigned addRangeToHash(
+		unsigned hash,
+		const char *begin,
+		const char *end
+	) {
+		ASSERT(begin);
+		for (; begin < end; ++begin) {
+			
+	hash ^= *begin++;
+	hash = (hash << 3) | (hash >> 29);
+;
+		}
+		return hash;
+	}
+
+	unsigned addTerminatedToHash(
+		unsigned hash,
+		const char *begin
+	) {
+		ASSERT(begin);
+		for (; *begin; ++begin) {
+			
+	hash ^= *begin++;
+	hash = (hash << 3) | (hash >> 29);
+;
+		}
+		return hash;
+	}
+
+	int calcHash(
+		const char *begin,
+		const char *end
+	) {
+		unsigned hash = initHash();
+		hash = addRangeToHash(
+			hash, begin, end
+		);
+		return hash & 0x7ffffff;
+	}
+;
+
+	
 	struct FragEntry;
 
 	struct Frag {
@@ -556,15 +602,10 @@ void freeFragEntry(
 		}
 	}
 
-	int calcHash(const char *begin,
-		const char *end) {
-		ASSERT(begin);
-		unsigned hash = 0xf1e2d3c4;
-		while (*begin && begin != end) {
-			hash ^= *begin++;
-			hash = (hash << 3) |
-				(hash >> 29);
-		}
+	int calcFragHash(
+		const char *begin, const char *end
+	) {
+		int hash = calcHash(begin, end);
 		return hash % FRAG_SLOTS;
 	}
 
@@ -577,7 +618,7 @@ void freeFragEntry(
 		struct Frag *frag =
 			allocFrag(begin, end);
 		
-	int hash = calcHash(begin, end);
+	int hash = calcFragHash(begin, end);
 	frag->link = map->frags[hash];
 	map->frags[hash] = frag;
 ;
@@ -592,7 +633,7 @@ void freeFragEntry(
 		ASSERT(map);
 		struct Frag *frag = NULL;
 		
-	int hash = calcHash(begin, end);
+	int hash = calcFragHash(begin, end);
 	frag = map->frags[hash];
 	for (; frag; frag = frag->link) {
 		const char *a = begin;
@@ -1153,6 +1194,20 @@ void freeFragEntry(
 		ASSERT(macro, "private not in macro");
 		
 	static char prefix[] = "_private_";
+	static char rnd[12];
+	char *end = rnd + sizeof(rnd);
+	char *head = end;
+	*--head = '_';
+	unsigned cur = initHash();
+	cur = addTerminatedToHash(cur, input->name);
+	cur = addRangeToHash(cur, name.buffer, name.current);
+	cur &= 0x7fffffff;
+	for (;;) {
+		ASSERT(head > rnd);
+		*--head = (cur % 10) + '0';
+		cur /= 10;
+		if (! cur) { break; }
+	}
 	
 	if (
 		buffer.buffer != buffer.current
@@ -1171,6 +1226,10 @@ void freeFragEntry(
 		input, nameLine
 	);
 	addBytesToFrag(
+		macro, head, end,
+		input, nameLine
+	);
+	addBytesToFrag(
 		macro, name.buffer, name.current - 1,
 		input, nameLine
 	);
@@ -1181,7 +1240,19 @@ void freeFragEntry(
 	if (openCh == 'm') {
 		ASSERT(macro, "magic not in macro");
 		
-	static char magic[] = "2478325";
+	static char magic[12];
+	char *end = magic + sizeof(magic);
+	char *head = end;
+	unsigned cur = initHash();
+	cur = addTerminatedToHash(cur, input->name);
+	cur = addRangeToHash(cur, name.buffer, name.current);
+	cur &= 0x7fffffff;
+	for (;;) {
+		ASSERT(head > magic);
+		*--head = (cur % 10) + '0';
+		cur /= 10;
+		if (! cur) { break; }
+	}
 	
 	if (
 		buffer.buffer != buffer.current
@@ -1195,7 +1266,7 @@ void freeFragEntry(
 	}
 ;
 	addBytesToFrag(
-		macro, magic, magic + sizeof(magic) - 1,
+		macro, head, end,
 		input, nameLine
 	);
 ;

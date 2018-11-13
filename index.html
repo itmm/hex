@@ -1183,6 +1183,34 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"_private_"</span>;<br/>
 <span class="in1"></span>
+<span class="type">static char</span> <span class="var">rnd</span><span class="type">[12]</span>;<br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">end</span> = <span class="var">rnd</span> + <span class="fn">sizeof</span>(<span class="var">rnd</span>);<br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
+<span class="in1"></span>
+*--head = '_';<br/>
+<span class="in1"></span>
+unsigned cur = initHash();<br/>
+<span class="in1"></span>
+cur = addTerminatedToHash(cur, input-&gt;name);<br/>
+<span class="in1"></span>
+cur = addRangeToHash(cur, name.buffer, name.current);<br/>
+<span class="in1"></span>
+cur &amp;= 0x7fffffff;<br/>
+<span class="in1"></span>
+for (;;) {<br/>
+<span class="in2"></span>
+ASSERT(head &gt; rnd);<br/>
+<span class="in2"></span>
+*--head = (cur % 10) + '0';<br/>
+<span class="in2"></span>
+cur /= 10;<br/>
+<span class="in2"></span>
+if (! cur) { break; }<br/>
+<span class="in1"></span>
+}<br/>
+<span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToFrag</span>(<br/>
@@ -1190,6 +1218,14 @@ bufferLine = input-&gt;line;<br/>
 <span class="var">macro</span>, <span class="var">prefix</span>,<br/>
 <span class="in2"></span>
 <span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>,<br/>
+<span class="in2"></span>
+<span class="var">input</span>, <span class="var">nameLine</span><br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+<span class="fn">addBytesToFrag</span>(<br/>
+<span class="in2"></span>
+<span class="var">macro</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
 <span class="in2"></span>
 <span class="var">input</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
@@ -1238,13 +1274,37 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">process magic macro)</span></span><br/>
 <span class="in1"></span>
-<span class="type">static char</span> <span class="var">magic</span><span class="type">[]</span> = <span class="str">"2478325"</span>;<br/>
+<span class="type">static char</span> <span class="var">magic</span><span class="type">[12]</span>;<br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">end</span> = <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>);<br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
+<span class="in1"></span>
+unsigned cur = initHash();<br/>
+<span class="in1"></span>
+cur = addTerminatedToHash(cur, input-&gt;name);<br/>
+<span class="in1"></span>
+cur = addRangeToHash(cur, name.buffer, name.current);<br/>
+<span class="in1"></span>
+cur &amp;= 0x7fffffff;<br/>
+<span class="in1"></span>
+for (;;) {<br/>
+<span class="in2"></span>
+ASSERT(head &gt; magic);<br/>
+<span class="in2"></span>
+*--head = (cur % 10) + '0';<br/>
+<span class="in2"></span>
+cur /= 10;<br/>
+<span class="in2"></span>
+if (! cur) { break; }<br/>
+<span class="in1"></span>
+}<br/>
 <span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToFrag</span>(<br/>
 <span class="in2"></span>
-<span class="var">macro</span>, <span class="var">magic</span>, <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>) - <span class="num">1</span>,<br/>
+<span class="var">macro</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
 <span class="in2"></span>
 <span class="var">input</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>

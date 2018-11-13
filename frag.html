@@ -16,6 +16,15 @@
 <div><div>
 <code>
 
+<span class="include">@include(<span class="name"><a href="hash.html">hash.x</a>)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Hash-Funktion wird benötigt</li><li>
+ Und in der Datei als <code><span class="fn">calcHash</span></code> definiiert</li></ul></div>
+<div><div>
+<code>
+
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">define frag)</span></span>;<br/>
@@ -1631,23 +1640,13 @@ fragTestBufferEnd = NULL;<br/>
 
 <span class="add">@add(<span class="name">define frag)</span></span><br/>
 <span class="in1"></span>
-<span class="type">int</span> <span class="fn">calcHash</span>(<span class="type">const char *</span><span class="var">begin</span>,<br/>
+<span class="type">int</span> <span class="fn">calcFragHash</span>(<br/>
 <span class="in2"></span>
-<span class="type">const char *</span><span class="var">end</span>) {<br/>
+<span class="type">const char *</span><span class="var">begin</span>, <span class="type">const char *</span><span class="var">end</span><br/>
+<span class="in1"></span>
+) {<br/>
 <span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
-<span class="in2"></span>
-<span class="type">unsigned</span> <span class="var">hash</span> = <span class="num">0xf1e2d3c4</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">while</span> (*<span class="var">begin</span> &amp;&amp; <span class="var">begin</span> != <span class="var">end</span>) {<br/>
-<span class="in3"></span>
-<span class="var">hash</span> ^= *<span class="var">begin</span>++;<br/>
-<span class="in3"></span>
-<span class="var">hash</span> = (<span class="var">hash</span> &lt;&lt; 3) |<br/>
-<span class="in4"></span>
-(<span class="var">hash</span> &gt;&gt; 29);<br/>
-<span class="in2"></span>
-}<br/>
+<span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in2"></span>
 <span class="keyword">return</span> <span class="var">hash</span> % <span class="var">FRAG_SLOTS</span>;<br/>
 <span class="in1"></span>
@@ -1658,8 +1657,7 @@ fragTestBufferEnd = NULL;<br/>
 </div>
 <ul><li>
  Der Hash wird über den Namen des Fragments erstellt</li><li>
- Der Name kann entweder durch ein Null-Byte abgeschlossen werden</li><li>
- Oder ein Ende wird direkt angegeben</li></ul></div>
+ Und auf die Anzahl der möglichen Slots beschränkt</li></ul></div>
 <div><div>
 <code>
 
@@ -1698,7 +1696,7 @@ fragTestBufferEnd = NULL;<br/>
 
 <span class="add">@def(<span class="name">insert in slot)</span></span><br/>
 <span class="in1"></span>
-<span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
+<span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcFragHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
 <span class="var">frag</span>-&gt;<span class="var">link</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
 <span class="in1"></span>
@@ -1745,7 +1743,7 @@ fragTestBufferEnd = NULL;<br/>
 
 <span class="add">@def(<span class="name">find frag in slot)</span></span><br/>
 <span class="in1"></span>
-<span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
+<span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcFragHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
 <span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
 <span class="in1"></span>
