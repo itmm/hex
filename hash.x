@@ -54,7 +54,7 @@ x{define hash}
 
 ```
 d{hash next ch}
-	v{hash} ^= *v{begin}++;
+	v{hash} ^= *v{begin};
 	v{hash} = (v{hash} << 3) | (v{hash} >> 29);
 x{hash next ch}
 ```

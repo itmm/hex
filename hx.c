@@ -213,7 +213,7 @@ void freeFragEntry(
 		ASSERT(begin);
 		for (; begin < end; ++begin) {
 			
-	hash ^= *begin++;
+	hash ^= *begin;
 	hash = (hash << 3) | (hash >> 29);
 ;
 		}
@@ -227,7 +227,7 @@ void freeFragEntry(
 		ASSERT(begin);
 		for (; *begin; ++begin) {
 			
-	hash ^= *begin++;
+	hash ^= *begin;
 	hash = (hash << 3) | (hash >> 29);
 ;
 		}
