@@ -3,14 +3,14 @@
 * Die Länge dieser Buffer kann dynamisch wachsen
 
 ```
-a{global elements}
+A{global elements}
 	e{define buffer};
 x{global elements}
 ```
 * Buffer sind global sichtbare Strukturen
 
 ```
-d{perform unit-tests}
+D{perform unit-tests}
 	e{buffer unit tests};
 x{perform unit-tests}
 ```

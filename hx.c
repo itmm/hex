@@ -1045,7 +1045,7 @@ void freeFragEntry(
 		
 	if (openCh == 'd') {
 		ASSERT(! macro, "def in macro");
-		struct FragMap *fm = &root;
+		struct FragMap *fm = &input->frags;
 		
 	macro = findFragInMap(
 		fm, name.buffer,
@@ -1093,7 +1093,7 @@ void freeFragEntry(
 
 	if (openCh == 'a') {
 		ASSERT(! macro, "add in macro");
-		struct FragMap *fm = &root;
+		struct FragMap *fm = &input->frags;
 		macro = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
@@ -1138,7 +1138,7 @@ void freeFragEntry(
 	if (openCh == 'r') {
 		ASSERT(! macro, "replace in macro");
 		macro = getFragInMap(
-			&root, name.buffer,
+			&input->frags, name.buffer,
 			name.current - 1
 		);
 		ASSERT(
@@ -1211,7 +1211,7 @@ void freeFragEntry(
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			&root, name.buffer,
+			&input->frags, name.buffer,
 			name.current - 1
 		);
 		
@@ -1286,7 +1286,7 @@ void freeFragEntry(
 ;
 		struct Frag *sub =
 			getFragInMap(
-				&root, name.buffer,
+				&input->frags, name.buffer,
 				name.current - 1
 			);
 		

@@ -32,8 +32,8 @@
 * Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 
 ```
-d{file: hx.c}
-	e{global elements}
+D{file: hx.c}
+	g{global elements}
 	t{int} f{main}(
 		t{int} v{argc}, t{const char **}v{argv}
 	) {
@@ -47,11 +47,11 @@ x{file: hx.c}
 
 ```
 d{main body}
-	e{perform unit-tests};
+	g{perform unit-tests};
 	e{process arguments};
 	e{read source file};
 	e{serialize fragments};
-	e{write HTML file};
+	g{write HTML file};
 x{main body}
 ```
 * Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
@@ -73,10 +73,10 @@ x{main body}
 * Für mehrfache Auflösungen muss `@mulitple` verwendet werden
 
 ```
-d{global elements}
-	e{includes};
-	e{define logging};
-	e{forward declarations};
+D{global elements}
+	g{includes};
+	g{define logging};
+	g{forward declarations};
 x{global elements}
 ```
 * System-Dateien werden vor der Definition von Strukturen und Funktionen
@@ -92,7 +92,7 @@ x{global elements}
   eine weitere Datei gelesen werden
 
 ```
-d{includes}
+D{includes}
 	#include <stdio.h>
 	#include <stdlib.h>
 x{includes}
@@ -122,7 +122,7 @@ i{frag.x}
 * Fragment-Behandlung wird in einer eigenen Datei definiert
 
 ```
-a{global elements}
+A{global elements}
 	t{struct Input} {
 		t{struct Input *}v{link};
 		t{FILE *}v{file};
@@ -145,7 +145,7 @@ x{global elements}
   werden müssen
 
 ```
-a{global elements}
+A{global elements}
 	t{struct FragMap} v{root} = {};
 x{global elements}
 ```
@@ -153,7 +153,7 @@ x{global elements}
   angelegt
 
 ```
-a{global elements}
+A{global elements}
 	t{void} f{pushPath}(t{const char *}v{path}) {
 		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
 		e{check file for path};
@@ -199,7 +199,7 @@ x{check memory for input}
 * Die Kommandozeile wird Element für Element abgearbeitet
 
 ```
-a{global elements}
+A{global elements}
 	t{const char *}v{stylesheet} =
 		s{"slides/slides.css"};
 x{global elements}
@@ -267,7 +267,7 @@ x{process arguments}
   zurück geliefert
 
 ```
-a{global elements}
+A{global elements}
 	t{int} f{nextCh}() {
 		t{int} v{ch} = k{EOF};
 		k{while} (v{input}) {
@@ -455,7 +455,7 @@ d{process open brace} {
 d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, s{"def in macro"});
-		t{struct FragMap *}v{fm} = &v{root};
+		t{struct FragMap *}v{fm} = &v{input}->v{frags};
 		E{check for double def};
 		k{if} (! v{macro}) {
 			v{macro} = f{allocFragInMap}(
@@ -510,7 +510,7 @@ x{check for double def}
 a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
 		f{ASSERT}(! v{macro}, s{"add in macro"});
-		t{struct FragMap *}v{fm} = &v{root};
+		t{struct FragMap *}v{fm} = &v{input}->v{frags};
 		v{macro} = f{findFragInMap}(
 			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
@@ -559,7 +559,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
 		f{ASSERT}(! v{macro}, s{"replace in macro"});
 		v{macro} = f{getFragInMap}(
-			&v{root}, v{name}.v{buffer},
+			&v{input}->v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		f{ASSERT}(
@@ -662,7 +662,7 @@ a{process macro name}
 		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} = f{getFragInMap}(
-			&v{root}, v{name}.buffer,
+			&v{input}->v{frags}, v{name}.buffer,
 			v{name}.v{current} - n{1}
 		);
 		E{check macro expand count};
@@ -722,7 +722,7 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} =
 			f{getFragInMap}(
-				&v{root}, v{name}.v{buffer},
+				&v{input}->v{frags}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		E{check for prev expands};

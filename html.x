@@ -3,7 +3,7 @@
   HTML-Präsentationen zu erzeugen
 
 ```
-d{write HTML file}
+D{write HTML file}
 	t{struct Input *}v{cur} = v{used};
 	k{while} (v{cur}) {
 		e{write cur HTML file};
@@ -16,7 +16,7 @@ x{write HTML file}
 * Alle bisher prozessierten Dateien werden erneut durchgegangen
 
 ```
-a{global elements}
+A{global elements}
 	k{bool} f{hasSuffix}(
 		t{const char *}v{str},
 		t{const char *}v{suff}
@@ -66,7 +66,7 @@ x{write cur HTML file to out}
 * Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 
 ```
-a{global elements}
+A{global elements}
 	t{enum HtmlState} {
 		v{hs_NOTHING_WRITTEN},
 		v{hs_IN_SLIDE},
@@ -82,7 +82,7 @@ x{global elements}
 * Oder ob gerade keine Folie offen ist
 
 ```
-a{global elements}
+A{global elements}
 	t{struct HtmlStatus} {
 		e{html state elements}
 	};
@@ -135,7 +135,7 @@ x{html state enums}
 * Es gibt einen eigenen Zustand, wenn eine Überschrift gelesen wird
 
 ```
-a{global elements}
+A{global elements}
 	t{bool} f{isOutOfHtmlSpecial}(
 		t{struct HtmlStatus *}v{s}
 	) {
@@ -250,7 +250,7 @@ x{process header in HTML}
 ```
 
 ```
-a{global elements} 
+A{global elements} 
 	t{void} f{writeEscaped}(
 		t{FILE *}v{out}, t{const char *}v{str}, const char *end
 	) {

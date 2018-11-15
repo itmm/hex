@@ -10,7 +10,7 @@ i{hash.x}
 * Und in der Datei als `f{calcHash}` definiiert
 
 ```
-a{global elements}
+A{global elements}
 	e{define frag};
 x{global elements}
 ```
@@ -39,7 +39,7 @@ x{define frag}
   Heap angefordert
 
 ```
-a{includes}
+A{includes}
 	#include <stdlib.h>
 x{includes}
 ```
@@ -71,7 +71,7 @@ x{define frag}
   Null-Byte terminiert sein
 
 ```
-d{define logging}
+D{define logging}
 	#define ASSERT(v{COND}, ...) \
 		k{if} (! (v{COND})) { \
 			f{fprintf}(v{stderr}, \
@@ -107,7 +107,7 @@ x{allocate frag on heap}
   Null-Byte terminiert sein
 
 ```
-a{includes}
+A{includes}
 	#include <string.h>
 x{includes}
 
@@ -159,7 +159,7 @@ x{define frag}
 # Unit Tests
 
 ```
-a{perform unit-tests}
+A{perform unit-tests}
 	e{frag unit tests};
 x{perform unit-tests}
 
@@ -332,7 +332,7 @@ x{define frag}
 * Referenzierte Fragmente werden nicht mit freigegeben
 
 ```
-d{forward declarations}
+D{forward declarations}
 t{struct FragEntry};
 k{void} f{freeFragEntry}(
 	t{struct FragEntry *}v{entry}
@@ -798,7 +798,7 @@ a{frag unit tests} {
 # Zykel im Fragment-Graph finden
 
 ```
-a{includes}
+A{includes}
 	#include <stdbool.h>
 x{includes}
 ```
