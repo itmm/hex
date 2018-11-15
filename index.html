@@ -1750,7 +1750,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in3"></span>
-<span class="expand">@expand(<span class="name">serialize macro)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">serialize macro)</span></span>;<br/>
 <span class="in2"></span>
 }<br/>
 <span class="in1"></span>
@@ -1764,6 +1764,42 @@ bufferLine = input-&gt;line;<br/>
   Dateien rausgeschrieben</li><li>
  Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft expandiert
   wurden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">serialize fragments)</span></span> {<br/>
+<span class="in1"></span>
+<span class="keyword">for</span> (<span class="var">input</span> = <span class="var">used</span>; <span class="var">input</span>; <span class="var">input</span> = <span class="var">input</span>-&gt;<span class="var">link</span>)<br/>
+<span class="in1"></span>
+{<br/>
+<span class="in2"></span>
+<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
+<span class="in2"></span>
+<span class="type">struct Frag **</span><span class="var">end</span> =<br/>
+<span class="in3"></span>
+<span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
+<span class="in2"></span>
+<span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+<span class="in3"></span>
+<span class="type">struct Frag *</span><span class="var">macro</span> = *<span class="var">cur</span>;<br/>
+<span class="in3"></span>
+<span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="in4"></span>
+<span class="expand">@multiple(<span class="name">serialize macro)</span></span>;<br/>
+<span class="in3"></span>
+}<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in1"></span>
+}<br/>
+
+}<br/>
+
+<span class="end">@end(<span class="name">serialize fragments)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Auch alle lokalen Fragmente bearbeiten</li></ul></div>
 <div><div>
 <code>
 

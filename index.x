@@ -981,7 +981,7 @@ d{serialize fragments} {
 	k{for} (; v{cur} < v{end}; ++v{cur}) {
 		t{struct Frag *}v{macro} = *v{cur};
 		k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
-			e{serialize macro};
+			E{serialize macro};
 		}
 	}
 } x{serialize fragments}
@@ -990,6 +990,25 @@ d{serialize fragments} {
   Dateien rausgeschrieben
 * Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft expandiert
   wurden
+
+```
+a{serialize fragments} {
+	k{for} (v{input} = v{used}; v{input}; v{input} = v{input}->v{link})
+	{
+		t{struct Frag **}v{cur} = v{input}->v{frags}.v{frags};
+		t{struct Frag **}v{end} =
+			v{cur} + v{FRAG_SLOTS};
+		k{for} (; v{cur} < v{end}; ++v{cur}) {
+			t{struct Frag *}v{macro} = *v{cur};
+			k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
+				E{serialize macro};
+			}
+		}
+	}
+}
+x{serialize fragments}
+```
+* Auch alle lokalen Fragmente bearbeiten
 
 ```
 d{serialize macro}

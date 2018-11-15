@@ -1533,7 +1533,61 @@ void freeFragEntry(
 ;
 		}
 	}
-} ;
+}  {
+	for (input = used; input; input = input->link)
+	{
+		struct Frag **cur = input->frags.frags;
+		struct Frag **end =
+			cur + FRAG_SLOTS;
+		for (; cur < end; ++cur) {
+			struct Frag *macro = *cur;
+			for (; macro; macro = macro->link) {
+				
+	if (! memcmp(
+		"file: ", macro->name, 6
+	)) {
+		++macro->expands;
+		
+	FILE *f =
+		fopen(macro->name + 6, "w");
+	ASSERT(
+		f, "can't open %s",
+		macro->name + 6
+	);
+	serializeFrag(macro, f, false);
+	fclose(f);
+;
+	}
+ {
+	int sum =
+		macro->expands + macro->multiples;
+	if (sum <= 0) {
+		printf(
+			"macro [%s] not called\n",
+			macro->name
+		);
+	}
+} 
+	if (macro->multiples == 1) {
+		printf(
+			"multiple macro [%s] only "
+				"used once\n",
+			macro->name
+		);
+	}
+
+	if (! isPopulatedFrag(macro)) {
+		printf(
+			"macro [%s] not populated\n",
+			macro->name
+		);
+	}
+;
+			}
+		}
+	}
+}
+;
 	
 	struct Input *cur = used;
 	while (cur) {
