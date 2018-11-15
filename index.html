@@ -250,6 +250,8 @@ A{global elements}<br/>
 A{global elements}<br/>
 <span class="in1"></span>
 <span class="type">struct FragMap</span> <span class="var">root</span> = {};<br/>
+<span class="in1"></span>
+<span class="type">struct FragMap *</span><span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
@@ -285,6 +287,14 @@ A{global elements}<br/>
 <span class="fn">memcpy</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
 <span class="in2"></span>
 <span class="expand">@expand(<span class="name">init additional input elements)</span></span>;<br/>
+<span class="in2"></span>
+if (input) {<br/>
+<span class="in3"></span>
+input-&gt;frags.link = frags;<br/>
+<span class="in3"></span>
+frags = &amp;input-&gt;frags;<br/>
+<span class="in2"></span>
+}<br/>
 <span class="in2"></span>
 <span class="var">input</span> = <span class="var">i</span>;<br/>
 <span class="in1"></span>
@@ -507,6 +517,12 @@ A{global elements}<br/>
 <span class="var">used</span> = <span class="var">input</span>;<br/>
 <span class="in1"></span>
 <span class="var">input</span> = <span class="var">n</span>;<br/>
+<span class="in1"></span>
+struct FragMap *nxt = frags-&gt;link;<br/>
+<span class="in1"></span>
+frags-&gt;link = NULL;<br/>
+<span class="in1"></span>
+frags = nxt;<br/>
 
 <span class="end">@end(<span class="name">get next input file)</span></span><br/>
 </code>
@@ -825,7 +841,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"def in macro"</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">root</span>;<br/>
+<span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
 <span class="in2"></span>
 <span class="expand">@multiple(<span class="name">check for double def)</span></span>;<br/>
 <span class="in2"></span>
@@ -893,6 +909,8 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
 <span class="in2"></span>
+<span class="type">struct FragMap *</span><span class="var">ins</span> = <span class="var">fm</span>;<br/>
+<span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in3"></span>
 <span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
@@ -922,7 +940,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"add in macro"</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">root</span>;<br/>
+<span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span>
+<span class="type">struct FragMap *</span><span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in3"></span>
@@ -961,7 +981,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in3"></span>
 <span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
+<span class="in3"></span>
+<span class="var">ins</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in1"></span>
@@ -985,7 +1007,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in3"></span>
 &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1020,9 +1042,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1172,7 +1194,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in3"></span>
 &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1207,9 +1229,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">root</span>, <span class="var">name</span>.buffer,<br/>
+<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1281,7 +1303,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in4"></span>
 &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>
@@ -1318,9 +1340,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="in3"></span>
 <span class="fn">getFragInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>

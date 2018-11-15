@@ -989,7 +989,8 @@ a{define frag}
 	t{struct Frag *}f{getFragInMap}(
 		t{struct FragMap *}v{map},
 		t{const char *}v{begin},
-		t{const char *}v{end}
+		t{const char *}v{end},
+		t{struct FragMap *}v{insert}
 	) {
 		t{struct Frag *}v{frag} = NULL;
 		e{get frag find};

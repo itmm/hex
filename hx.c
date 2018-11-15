@@ -597,7 +597,8 @@ void freeFragEntry(
 	struct Frag *getFragInMap(
 		struct FragMap *map,
 		const char *begin,
-		const char *end
+		const char *end,
+		struct FragMap *insert
 	) {
 		struct Frag *frag = NULL;
 		
@@ -632,6 +633,7 @@ void freeFragEntry(
 	struct Input *used = NULL;
 
 	struct FragMap root = {};
+	struct FragMap *frags = &root;
 
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
@@ -661,6 +663,10 @@ void freeFragEntry(
 
 	i->line = 1;
 ;
+		if (input) {
+			input->frags.link = frags;
+			frags = &input->frags;
+		}
 		input = i;
 	}
 
@@ -683,6 +689,9 @@ void freeFragEntry(
 	input->link = used;
 	used = input;
 	input = n;
+	struct FragMap *nxt = frags->link;
+	frags->link = NULL;
+	frags = nxt;
 ;
 		}
 		return ch;
@@ -1069,7 +1078,7 @@ void freeFragEntry(
 
 	if (openCh == 'D') {
 		ASSERT(! macro, "def in macro");
-		struct FragMap *fm = &root;
+		struct FragMap *fm = frags;
 		
 	macro = findFragInMap(
 		fm, name.buffer,
@@ -1094,6 +1103,7 @@ void freeFragEntry(
 	if (openCh == 'a') {
 		ASSERT(! macro, "add in macro");
 		struct FragMap *fm = &input->frags;
+		struct FragMap *ins = fm;
 		macro = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
@@ -1106,7 +1116,8 @@ void freeFragEntry(
 		);
 		macro = getFragInMap(
 			fm, name.buffer,
-			name.current - 1
+			name.current - 1,
+			ins
 		);
 	}
 ;
@@ -1115,7 +1126,8 @@ void freeFragEntry(
 
 	if (openCh == 'A') {
 		ASSERT(! macro, "add in macro");
-		struct FragMap *fm = &root;
+		struct FragMap *fm = frags;
+		struct FragMap *ins = &root;
 		macro = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
@@ -1128,7 +1140,8 @@ void freeFragEntry(
 		);
 		macro = getFragInMap(
 			fm, name.buffer,
-			name.current - 1
+			name.current - 1,
+			ins
 		);
 	}
 ;
@@ -1139,7 +1152,7 @@ void freeFragEntry(
 		ASSERT(! macro, "replace in macro");
 		macro = getFragInMap(
 			&input->frags, name.buffer,
-			name.current - 1
+			name.current - 1, &input->frags
 		);
 		ASSERT(
 			macro, "macro %s not defined",
@@ -1152,8 +1165,8 @@ void freeFragEntry(
 	if (openCh == 'R') {
 		ASSERT(! macro, "replace in macro");
 		macro = getFragInMap(
-			&root, name.buffer,
-			name.current - 1
+			frags, name.buffer,
+			name.current - 1, &root
 		);
 		ASSERT(
 			macro, "macro %s not defined",
@@ -1212,7 +1225,7 @@ void freeFragEntry(
 ;
 		struct Frag *sub = getFragInMap(
 			&input->frags, name.buffer,
-			name.current - 1
+			name.current - 1, &input->frags
 		);
 		
 	if (sub->expands) {
@@ -1248,8 +1261,8 @@ void freeFragEntry(
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			&root, name.buffer,
-			name.current - 1
+			frags, name.buffer,
+			name.current - 1, &root
 		);
 		
 	if (sub->expands) {
@@ -1287,7 +1300,7 @@ void freeFragEntry(
 		struct Frag *sub =
 			getFragInMap(
 				&input->frags, name.buffer,
-				name.current - 1
+				name.current - 1, &input->frags
 			);
 		
 	if (sub->expands) {
@@ -1320,8 +1333,8 @@ void freeFragEntry(
 ;
 		struct Frag *sub =
 			getFragInMap(
-				&root, name.buffer,
-				name.current - 1
+				frags, name.buffer,
+				name.current - 1, &root
 			);
 		
 	if (sub->expands) {
