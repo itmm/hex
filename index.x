@@ -167,9 +167,11 @@ a{global elements}
 		v{i}->v{file} = v{f};
 		f{memcpy}(v{i}->v{name}, v{path}, v{len});
 		e{init additional input elements};
+		k{if} (v{input}) {
+			v{input}->v{frags}.v{link} = v{frags};
+			v{frags} = &v{input}->v{frags};
+		}
 		v{input} = v{i};
-		v{i}->v{frags}.v{link} = v{frags};
-		v{frags} = &v{i}->v{frags};
 	}
 x{global elements}
 ```

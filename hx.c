@@ -662,9 +662,11 @@ void freeFragEntry(
 
 	i->line = 1;
 ;
+		if (input) {
+			input->frags.link = frags;
+			frags = &input->frags;
+		}
 		input = i;
-		i->frags.link = frags;
-		frags = &i->frags;
 	}
 
 	const char *stylesheet =
@@ -1860,6 +1862,8 @@ void freeFragEntry(
 				break;
 			}
 			case 'a': case 'e': case 'E': case 'x':
+			case 'g': case 'G': case 'A': case 'D':
+			case 'R':
 			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
 			}
@@ -2049,6 +2053,8 @@ void freeFragEntry(
 				break;
 			}
 			case 'a': case 'e': case 'E': case 'x':
+			case 'g': case 'G': case 'A': case 'D':
+			case 'R':
 			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
 			}

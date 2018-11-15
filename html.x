@@ -492,6 +492,8 @@ a{escape HTML code tag}
 				break;
 			}
 			case 'a': case 'e': case 'E': case 'x':
+			case 'g': case 'G': case 'A': case 'D':
+			case 'R':
 			case 'r': case 'd': case 'p': case 'm': {
 				fprintf(out, ")</span>");
 			}
