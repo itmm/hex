@@ -29,68 +29,6 @@ void freeFragEntry(
 );
 ;
 
-	struct Input {
-		struct Input *link;
-		FILE *file;
-		
-	int line;
-;
-		char name[];
-	};
-
-	struct Input *input = NULL;
-	struct Input *used = NULL;
-
-	void pushPath(const char *path) {
-		FILE *f = fopen(path, "r");
-		
-	ASSERT(
-		f, "can't open [%s]", path
-	);
-;
-		int len = strlen(path) + 1;
-		struct Input *i = malloc(
-			sizeof(struct Input) + len
-		);
-		
-	ASSERT(
-		i,
-		"no memory for input"
-	);
-;
-		i->link = input;
-		i->file = f;
-		memcpy(i->name, path, len);
-		
-	i->line = 1;
-;
-		input = i;
-	}
-
-	const char *stylesheet =
-		"slides/slides.css";
-
-	int nextCh() {
-		int ch = EOF;
-		while (input) {
-			ch = fgetc(input->file);
-			
-	if (ch == '\n') {
-		++input->line;
-	}
-;
-			if (ch != EOF) { break; }
-			
-	struct Input *n = input->link;
-	fclose(input->file);
-	input->link = used;
-	used = input;
-	input = n;
-;
-		}
-		return ch;
-	}
-
 	
 	#define INIT_BUFFER_SIZE 16
 	struct Buffer {
@@ -342,7 +280,7 @@ void freeFragEntry(
 		struct Frag *frag;
 		const char *valueEnd;
 		
-	struct Input *input;
+	const char *source;
 	int line;
 ;
 		char value[];
@@ -447,7 +385,7 @@ void freeFragEntry(
 		struct Frag *frag,
 		const char *value,
 		const char *valueEnd,
-		struct Input *input,
+		const char *source,
 		int line
 	) {
 		struct FragEntry *entry =
@@ -455,7 +393,7 @@ void freeFragEntry(
 				NULL, value, valueEnd
 			);
 		
-	entry->input = input;
+	entry->source = source;
 	entry->line = line;
 ;
 		addEntryToFrag(frag, entry);
@@ -649,7 +587,7 @@ void freeFragEntry(
 		
 	if (map->link) {
 		return findFragInMap(
-			map, begin, end
+			map->link, begin, end
 		);
 	}
 ;
@@ -678,6 +616,81 @@ void freeFragEntry(
 		return frag;
 	}
 ;
+
+	struct Input {
+		struct Input *link;
+		FILE *file;
+		
+	struct FragMap frags;
+
+	int line;
+;
+		char name[];
+	};
+
+	struct Input *input = NULL;
+	struct Input *used = NULL;
+
+	struct FragMap root = {};
+	struct FragMap *frags = &root;
+
+	void pushPath(const char *path) {
+		FILE *f = fopen(path, "r");
+		
+	ASSERT(
+		f, "can't open [%s]", path
+	);
+;
+		int len = strlen(path) + 1;
+		struct Input *i = malloc(
+			sizeof(struct Input) + len
+		);
+		
+	ASSERT(
+		i,
+		"no memory for input"
+	);
+;
+		i->link = input;
+		i->file = f;
+		memcpy(i->name, path, len);
+		
+	memset(
+		&i->frags, 0,
+		sizeof(i->frags)
+	);
+
+	i->line = 1;
+;
+		input = i;
+		i->frags.link = frags;
+		frags = &i->frags;
+	}
+
+	const char *stylesheet =
+		"slides/slides.css";
+
+	int nextCh() {
+		int ch = EOF;
+		while (input) {
+			ch = fgetc(input->file);
+			
+	if (ch == '\n') {
+		++input->line;
+	}
+;
+			if (ch != EOF) { break; }
+			
+	struct Input *n = input->link;
+	fclose(input->file);
+	input->link = used;
+	used = input;
+	input = n;
+	frags = frags->link;
+;
+		}
+		return ch;
+	}
 
 	bool hasSuffix(
 		const char *str,
@@ -961,8 +974,6 @@ void freeFragEntry(
 ;
 	
 	
-	struct FragMap frags = {};
-
 	bool alreadyUsed(const char *name) {
 		struct Input *i = input;
 		for (; i; i = i->link) {
@@ -997,7 +1008,7 @@ void freeFragEntry(
 		case '{':
 			 {
 	if (! macro) {
-		static const char valids[] = "adir";
+		static const char valids[] = "aAdDirR";
 		if (strchr(valids, last)) {
 			openCh = last;
 			activateBuffer(&name);
@@ -1009,7 +1020,7 @@ void freeFragEntry(
 		bool valid = false;
 		
 	static const char valids[] =
-		"fvsntkxeEpm";
+		"fvsntkxeEgGpm";
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -1038,9 +1049,10 @@ void freeFragEntry(
 		
 	if (openCh == 'd') {
 		ASSERT(! macro, "def in macro");
+		struct FragMap *fm = &input->frags;
 		
 	macro = findFragInMap(
-		&frags, name.buffer,
+		fm, name.buffer,
 		name.current - 1
 	);
 	if (isPopulatedFrag(macro)) {
@@ -1052,7 +1064,31 @@ void freeFragEntry(
 ;
 		if (! macro) {
 			macro = allocFragInMap(
-				&frags, name.buffer,
+				fm, name.buffer,
+				name.current - 1
+			);
+		}
+		processed = true;
+	}
+
+	if (openCh == 'D') {
+		ASSERT(! macro, "def in macro");
+		struct FragMap *fm = frags;
+		
+	macro = findFragInMap(
+		fm, name.buffer,
+		name.current - 1
+	);
+	if (isPopulatedFrag(macro)) {
+		printf(
+			"macro [%s] already defined\n",
+			name.buffer
+		);
+	}
+;
+		if (! macro) {
+			macro = allocFragInMap(
+				&root, name.buffer,
 				name.current - 1
 			);
 		}
@@ -1061,8 +1097,9 @@ void freeFragEntry(
 
 	if (openCh == 'a') {
 		ASSERT(! macro, "add in macro");
+		struct FragMap *fm = &input->frags;
 		macro = findFragInMap(
-			&frags, name.buffer,
+			fm, name.buffer,
 			name.current - 1
 		);
 		
@@ -1072,7 +1109,29 @@ void freeFragEntry(
 			name.buffer
 		);
 		macro = getFragInMap(
-			&frags, name.buffer,
+			fm, name.buffer,
+			name.current - 1
+		);
+	}
+;
+		processed = true;
+	}
+
+	if (openCh == 'A') {
+		ASSERT(! macro, "add in macro");
+		struct FragMap *fm = frags;
+		macro = findFragInMap(
+			fm, name.buffer,
+			name.current - 1
+		);
+		
+	if (! isPopulatedFrag(macro)) {
+		printf(
+			"macro [%s] not defined\n",
+			name.buffer
+		);
+		macro = getFragInMap(
+			fm, name.buffer,
 			name.current - 1
 		);
 	}
@@ -1083,7 +1142,21 @@ void freeFragEntry(
 	if (openCh == 'r') {
 		ASSERT(! macro, "replace in macro");
 		macro = getFragInMap(
-			&frags, name.buffer,
+			&input->frags, name.buffer,
+			name.current - 1
+		);
+		ASSERT(
+			macro, "macro %s not defined",
+			name.buffer
+		);
+		freeFragEntries(macro);
+		processed = true;
+	}
+
+	if (openCh == 'R') {
+		ASSERT(! macro, "replace in macro");
+		macro = getFragInMap(
+			frags, name.buffer,
 			name.current - 1
 		);
 		ASSERT(
@@ -1110,7 +1183,7 @@ void freeFragEntry(
 		addBytesToFrag(
 			macro, buffer.buffer,
 			buffer.current,
-			input, bufferLine
+			input->name, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
@@ -1136,13 +1209,50 @@ void freeFragEntry(
 		addBytesToFrag(
 			macro, buffer.buffer,
 			buffer.current,
-			input, bufferLine
+			input->name, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			&frags, name.buffer,
+			&input->frags, name.buffer,
+			name.current - 1
+		);
+		
+	if (sub->expands) {
+		printf(
+			"multiple expands of [%s]\n",
+			sub->name
+		);
+	}
+	if (sub->multiples) {
+		printf(
+			"expand after mult of [%s]\n",
+			sub->name
+		);
+	}
+;
+		++sub->expands;
+		addFragToFrag(macro, sub);
+		processed = true;
+	}
+
+	if (openCh == 'g') {
+		ASSERT(macro, "expand not in macro");
+		
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToFrag(
+			macro, buffer.buffer,
+			buffer.current,
+			input->name, bufferLine
+		);
+		resetBuffer(&buffer);
+	}
+;
+		struct Frag *sub = getFragInMap(
+			frags, name.buffer,
 			name.current - 1
 		);
 		
@@ -1173,14 +1283,48 @@ void freeFragEntry(
 		addBytesToFrag(
 			macro, buffer.buffer,
 			buffer.current,
-			input, bufferLine
+			input->name, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
 ;
 		struct Frag *sub =
 			getFragInMap(
-				&frags, name.buffer,
+				frags, name.buffer,
+				name.current - 1
+			);
+		
+	if (sub->expands) {
+		printf(
+			"multiple after expand "
+				"of [%s]\n",
+			sub->name
+		);
+	}
+;
+		++sub->multiples;
+		addFragToFrag(
+			macro, sub);
+		processed = true;
+	}
+
+	if (openCh == 'G') {
+		ASSERT(macro, "multiple not in macro");
+		
+	if (
+		buffer.buffer != buffer.current
+	) {
+		addBytesToFrag(
+			macro, buffer.buffer,
+			buffer.current,
+			input->name, bufferLine
+		);
+		resetBuffer(&buffer);
+	}
+;
+		struct Frag *sub =
+			getFragInMap(
+				frags, name.buffer,
 				name.current - 1
 			);
 		
@@ -1223,7 +1367,7 @@ void freeFragEntry(
 		addBytesToFrag(
 			macro, buffer.buffer,
 			buffer.current,
-			input, bufferLine
+			input->name, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
@@ -1231,15 +1375,15 @@ void freeFragEntry(
 	addBytesToFrag(
 		macro, prefix,
 		prefix + sizeof(prefix) - 1,
-		input, nameLine
+		input->name, nameLine
 	);
 	addBytesToFrag(
 		macro, head, end,
-		input, nameLine
+		input->name, nameLine
 	);
 	addBytesToFrag(
 		macro, name.buffer, name.current - 1,
-		input, nameLine
+		input->name, nameLine
 	);
 ;
 		processed = true;
@@ -1268,14 +1412,14 @@ void freeFragEntry(
 		addBytesToFrag(
 			macro, buffer.buffer,
 			buffer.current,
-			input, bufferLine
+			input->name, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
 ;
 	addBytesToFrag(
 		macro, head, end,
-		input, nameLine
+		input->name, nameLine
 	);
 ;
 		processed = true;
@@ -1331,7 +1475,7 @@ void freeFragEntry(
 	}
 ;
 	 {
-	struct Frag **cur = frags.frags;
+	struct Frag **cur = root.frags;
 	struct Frag **end =
 		cur + FRAG_SLOTS;
 	for (; cur < end; ++cur) {

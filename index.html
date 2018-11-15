@@ -171,6 +171,43 @@
 <ul><li>
  Standard File-Funktionen werden vom Programm benötigt</li><li>
  Standard Bibliothek wird für dynamische Speicherverwaltung benötigt</li></ul></div>
+</div>
+<h1>Buffer</h1>
+<div class="slides">
+<div><div>
+<h1>Buffer</h1>
+</div>
+<ul><li>
+ Einfache Implementierung in C eines Byte-Vektors</li><li>
+ Der dynamisch wachsen kann</li></ul></div>
+<div><div>
+<code>
+
+<span class="include">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Buffer werden in einer eigenen Datei definiert</li></ul></div>
+</div>
+<h1>Fragmente</h1>
+<div class="slides">
+<div><div>
+<h1>Fragmente</h1>
+</div>
+<ul><li>
+ Fragmenten können während des Parsens erweitert, ersetzt und
+  angewendet werden</li><li>
+ Ein Haupt-Vorteil von <code>hx</code> gegenüber anderen Makro-Präprozessoren ist
+  die Möglichkeit, Fragmente vor der Definition zu verwenden</li><li>
+ Und Fragment an mehreren Stellen zu erweitern</li></ul></div>
+<div><div>
+<code>
+
+<span class="include">@include(<span class="name"><a href="frag.html">frag.x</a>)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Fragment-Behandlung wird in einer eigenen Datei definiert</li></ul></div>
 <div><div>
 <code>
 
@@ -212,6 +249,21 @@
 
 <span class="add">@add(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
+<span class="type">struct FragMap</span> <span class="var">root</span> = {};<br/>
+<span class="in1"></span>
+<span class="type">struct FragMap *</span><span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
+
+<span class="end">@end(<span class="name">global elements)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Kollektion mit allen Makros wird für folgende Schritte sichtbar
+  angelegt</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">global elements)</span></span><br/>
+<span class="in1"></span>
 <span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const char *</span><span class="var">path</span>) {<br/>
 <span class="in2"></span>
 <span class="type">FILE *</span><span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">path</span>, <span class="str">"r"</span>);<br/>
@@ -237,6 +289,10 @@
 <span class="expand">@expand(<span class="name">init additional input elements)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">input</span> = <span class="var">i</span>;<br/>
+<span class="in2"></span>
+<span class="var">i</span>-&gt;<span class="var">frags</span>.<span class="var">link</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span>
+<span class="var">frags</span> = &amp;<span class="var">i</span>-&gt;<span class="var">frags</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -444,6 +500,8 @@
 <div><div>
 <code>
 
+<br/>
+
 <span class="add">@def(<span class="name">get next input file)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Input *</span><span class="var">n</span> = <span class="var">input</span>-&gt;<span class="var">link</span>;<br/>
@@ -455,6 +513,8 @@
 <span class="var">used</span> = <span class="var">input</span>;<br/>
 <span class="in1"></span>
 <span class="var">input</span> = <span class="var">n</span>;<br/>
+<span class="in1"></span>
+<span class="var">frags</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
 
 <span class="end">@end(<span class="name">get next input file)</span></span><br/>
 </code>
@@ -464,42 +524,44 @@
   verarbeiteten Dateien eingereiht</li><li>
  Dann wird der Vorgänger zur aktuellen Datei erklärt</li></ul></div>
 </div>
-<h1>Buffer</h1>
+<h1>Lokale Fragmente</h1>
 <div class="slides">
 <div><div>
-<h1>Buffer</h1>
+<h1>Lokale Fragmente</h1>
 </div>
-<ul><li>
- Einfache Implementierung in C eines Byte-Vektors</li><li>
- Der dynamisch wachsen kann</li></ul></div>
+</div>
 <div><div>
 <code>
 
-<span class="include">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
+<span class="add">@def(<span class="name">additional input elements)</span></span><br/>
+<span class="in1"></span>
+<span class="type">struct FragMap</span> <span class="var">frags</span>;<br/>
+
+<span class="end">@end(<span class="name">additional input elements)</span></span><br/>
 </code>
 </div>
 <ul><li>
- Buffer werden in einer eigenen Datei definiert</li></ul></div>
-</div>
-<h1>Fragmente</h1>
-<div class="slides">
-<div><div>
-<h1>Fragmente</h1>
-</div>
-<ul><li>
- Fragmenten können während des Parsens erweitert, ersetzt und
-  angewendet werden</li><li>
- Ein Haupt-Vorteil von <code>hx</code> gegenüber anderen Makro-Präprozessoren ist
-  die Möglichkeit, Fragmente vor der Definition zu verwenden</li><li>
- Und Fragment an mehreren Stellen zu erweitern</li></ul></div>
+ Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
+  Definitionen</li></ul></div>
 <div><div>
 <code>
 
-<span class="include">@include(<span class="name"><a href="frag.html">frag.x</a>)</span></span><br/>
+<span class="add">@def(<span class="name">init additional input elements)</span></span><br/>
+<span class="in1"></span>
+memset(<br/>
+<span class="in2"></span>
+&amp;<span class="var">i</span>-&gt;<span class="var">frags</span>, <span class="num">0</span>,<br/>
+<span class="in2"></span>
+<span class="fn">sizeof</span>(<span class="var">i</span>-&gt;<span class="var">frags</span>)<br/>
+<span class="in1"></span>
+);<br/>
+
+<span class="end">@end(<span class="name">init additional input elements)</span></span>;<br/>
 </code>
 </div>
 <ul><li>
- Fragment-Behandlung wird in einer eigenen Datei definiert</li></ul></div>
+ Eine Map kann initialisiert werden, indem alle Bytes auf <code><span class="num">0</span></code>
+  gesetzt werden</li></ul></div>
 </div>
 <h1>Eingabe-Dateien lesen</h1>
 <div class="slides">
@@ -703,7 +765,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-<span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span><span class="type">[]</span> = <span class="str">"adir"</span>;<br/>
+<span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span><span class="type">[]</span> = <span class="str">"aAdDirR"</span>;<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 <span class="in3"></span>
@@ -730,32 +792,21 @@ bufferLine = input-&gt;line;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">global source vars)</span></span><br/>
-<span class="in1"></span>
-<span class="type">struct FragMap</span> <span class="var">frags</span> = {};<br/>
-
-<span class="end">@end(<span class="name">global source vars)</span></span><br/>
-</code>
-</div>
-<ul><li>
- Kollektion mit allen Makros wird für folgende Schritte sichtbar
-  angelegt</li></ul></div>
-<div><div>
-<code>
-
 <span class="add">@def(<span class="name">process macro name)</span></span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"def in macro"</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">check for double def)</span></span>;<br/>
+<span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">check for double def)</span></span>;<br/>
 <span class="in2"></span>
 <span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
 <span class="in3"></span>
 <span class="var">macro</span> = <span class="fn">allocFragInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in3"></span>
@@ -776,11 +827,44 @@ bufferLine = input-&gt;line;<br/>
 <div><div>
 <code>
 
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"def in macro"</span>);<br/>
+<span class="in2"></span>
+<span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">check for double def)</span></span>;<br/>
+<span class="in2"></span>
+<span class="keyword">if</span> (! <span class="var">macro</span>) {<br/>
+<span class="in3"></span>
+<span class="var">macro</span> = <span class="fn">allocFragInMap</span>(<br/>
+<span class="in4"></span>
+&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in4"></span>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in3"></span>
+);<br/>
+<span class="in2"></span>
+}<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
 <span class="add">@def(<span class="name">check for double def)</span></span><br/>
 <span class="in1"></span>
 <span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in2"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in2"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in1"></span>
@@ -815,15 +899,17 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"add in macro"</span>);<br/>
 <span class="in2"></span>
+<span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">check for add without def)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">check for add without def)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">processed</span> = <span class="keyword">true</span>;<br/>
 <span class="in1"></span>
@@ -835,6 +921,35 @@ bufferLine = input-&gt;line;<br/>
 <ul><li>
  Bei einem öffnenden Makro wird das passende Makro gesucht</li><li>
  Weitere Bytes können zu diesem Makro hinzugefügt werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'A'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"add in macro"</span>);<br/>
+<span class="in2"></span>
+<span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span>
+<span class="var">macro</span> = <span class="fn">findFragInMap</span>(<br/>
+<span class="in3"></span>
+<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">check for add without def)</span></span>;<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+</div>
 <div><div>
 <code>
 
@@ -852,7 +967,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
@@ -876,7 +991,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="var">macro</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
@@ -902,6 +1017,41 @@ bufferLine = input-&gt;line;<br/>
 <ul><li>
  Bei einem <code>@replace</code> wird der Inhalt eines Makros zurückgesetzt</li><li>
  Das Makro muss bereits vorhanden sein</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'R'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(! <span class="var">macro</span>, <span class="str">"replace in macro"</span>);<br/>
+<span class="in2"></span>
+<span class="var">macro</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in3"></span>
+<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<br/>
+<span class="in3"></span>
+<span class="var">macro</span>, <span class="str">"macro %s not defined"</span>,<br/>
+<span class="in3"></span>
+<span class="var">name</span>.<span class="var">buffer</span><br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+<span class="fn">freeFragEntries</span>(<span class="var">macro</span>);<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+</div>
 <div><div>
 <code>
 
@@ -950,7 +1100,7 @@ bufferLine = input-&gt;line;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">global source vars)</span></span><br/>
+<span class="add">@def(<span class="name">global source vars)</span></span><br/>
 <span class="in1"></span>
 <span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const char *</span><span class="var">name</span>) {<br/>
 <span class="in2"></span>
@@ -1028,13 +1178,13 @@ bufferLine = input-&gt;line;<br/>
 <span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 <span class="in3"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
+&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
 <span class="in3"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">check macro expand count)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">check macro expand count)</span></span>;<br/>
 <span class="in2"></span>
 ++sub-&gt;expands;<br/>
 <span class="in2"></span>
@@ -1052,6 +1202,39 @@ bufferLine = input-&gt;line;<br/>
  Ggf. wird das Makro dabei auch erzeugt, um später befüllt zu werden</li><li>
  Das Attribut <code><span class="var">expands</span></code> zählt, wie häufig das Makro expandiert
   wurde</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'g'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, <span class="str">"expand not in macro"</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="in2"></span>
+<span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in3"></span>
+<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
+<span class="in3"></span>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in2"></span>
+);<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">check macro expand count)</span></span>;<br/>
+<span class="in2"></span>
+++sub-&gt;expands;<br/>
+<span class="in2"></span>
+<span class="fn">addFragToFrag</span>(<span class="var">macro</span>, <span class="var">sub</span>);<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+</div>
 <div><div>
 <code>
 
@@ -1104,13 +1287,13 @@ bufferLine = input-&gt;line;<br/>
 <span class="in3"></span>
 <span class="fn">getFragInMap</span>(<br/>
 <span class="in4"></span>
-&amp;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
 <span class="in4"></span>
 <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
 <span class="in3"></span>
 );<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">check for prev expands)</span></span>;<br/>
+<span class="expand">@multiple(<span class="name">check for prev expands)</span></span>;<br/>
 <span class="in2"></span>
 ++sub-&gt;multiples;<br/>
 <span class="in2"></span>
@@ -1128,6 +1311,43 @@ bufferLine = input-&gt;line;<br/>
 <ul><li>
  Mit einem <code>@multiple</code> Befehl kann ein Fragment an mehreren Stellen
   expandiert werden</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process macro name)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'G'</span>) {<br/>
+<span class="in2"></span>
+<span class="fn">ASSERT</span>(<span class="var">macro</span>, <span class="str">"multiple not in macro"</span>);<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="in2"></span>
+<span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
+<span class="in3"></span>
+<span class="fn">getFragInMap</span>(<br/>
+<span class="in4"></span>
+<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in4"></span>
+<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in3"></span>
+);<br/>
+<span class="in2"></span>
+<span class="expand">@multiple(<span class="name">check for prev expands)</span></span>;<br/>
+<span class="in2"></span>
+++sub-&gt;multiples;<br/>
+<span class="in2"></span>
+<span class="fn">addFragToFrag</span>(<br/>
+<span class="in3"></span>
+<span class="var">macro</span>, <span class="var">sub</span>);<br/>
+<span class="in2"></span>
+<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">process macro name)</span></span><br/>
+</code>
+</div>
+</div>
 <div><div>
 <code>
 
@@ -1219,7 +1439,7 @@ if (! cur) { break; }<br/>
 <span class="in2"></span>
 <span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>,<br/>
 <span class="in2"></span>
-<span class="var">input</span>, <span class="var">nameLine</span><br/>
+<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
@@ -1227,7 +1447,7 @@ if (! cur) { break; }<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
 <span class="in2"></span>
-<span class="var">input</span>, <span class="var">nameLine</span><br/>
+<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 <span class="in1"></span>
@@ -1235,7 +1455,7 @@ if (! cur) { break; }<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
 <span class="in2"></span>
-<span class="keyword">input</span>, <span class="var">nameLine</span><br/>
+<span class="keyword">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1306,7 +1526,7 @@ if (! cur) { break; }<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
 <span class="in2"></span>
-<span class="var">input</span>, <span class="var">nameLine</span><br/>
+<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1334,7 +1554,7 @@ if (! cur) { break; }<br/>
 <span class="in3"></span>
 <span class="var">buffer</span>.<span class="var">current</span>,<br/>
 <span class="in3"></span>
-<span class="var">input</span>, <span class="var">bufferLine</span><br/>
+<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
 <span class="in2"></span>
 );<br/>
 <span class="in2"></span>
@@ -1389,7 +1609,7 @@ if (! cur) { break; }<br/>
 <span class="in1"></span>
 <span class="type">static const char</span> <span class="var">valids</span><span class="type">[]</span> =<br/>
 <span class="in2"></span>
-<span class="str">"fvsntkxeEpm"</span>;<br/>
+<span class="str">"fvsntkxeEgGpm"</span>;<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 <span class="in2"></span>
@@ -1504,7 +1724,7 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@def(<span class="name">serialize fragments)</span></span> {<br/>
 <span class="in1"></span>
-<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">frags</span>.<span class="var">frags</span>;<br/>
+<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">root</span>.<span class="var">frags</span>;<br/>
 <span class="in1"></span>
 <span class="type">struct Frag **</span><span class="var">end</span> =<br/>
 <span class="in2"></span>
@@ -1665,7 +1885,7 @@ bufferLine = input-&gt;line;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">additional input elements)</span></span><br/>
+<span class="add">@add(<span class="name">additional input elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">line</span>;<br/>
 
@@ -1677,7 +1897,7 @@ bufferLine = input-&gt;line;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">init additional input elements)</span></span><br/>
+<span class="add">@add(<span class="name">init additional input elements)</span></span><br/>
 <span class="in1"></span>
 <span class="var">i</span>-&gt;<span class="var">line</span> = <span class="num">1</span>;<br/>
 

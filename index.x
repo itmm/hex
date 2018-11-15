@@ -100,6 +100,27 @@ x{includes}
 * Standard File-Funktionen werden vom Programm benötigt
 * Standard Bibliothek wird für dynamische Speicherverwaltung benötigt
 
+# Buffer
+* Einfache Implementierung in C eines Byte-Vektors
+* Der dynamisch wachsen kann
+
+```
+i{buf.x}
+```
+* Buffer werden in einer eigenen Datei definiert
+
+# Fragmente
+* Fragmenten können während des Parsens erweitert, ersetzt und
+  angewendet werden
+* Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren ist
+  die Möglichkeit, Fragmente vor der Definition zu verwenden
+* Und Fragment an mehreren Stellen zu erweitern
+
+```
+i{frag.x}
+```
+* Fragment-Behandlung wird in einer eigenen Datei definiert
+
 ```
 a{global elements}
 	t{struct Input} {
@@ -125,6 +146,15 @@ x{global elements}
 
 ```
 a{global elements}
+	t{struct FragMap} v{root} = {};
+	t{struct FragMap *}v{frags} = &v{root};
+x{global elements}
+```
+* Kollektion mit allen Makros wird für folgende Schritte sichtbar
+  angelegt
+
+```
+a{global elements}
 	t{void} f{pushPath}(t{const char *}v{path}) {
 		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
 		e{check file for path};
@@ -138,6 +168,8 @@ a{global elements}
 		f{memcpy}(v{i}->v{name}, v{path}, v{len});
 		e{init additional input elements};
 		v{input} = v{i};
+		v{i}->v{frags}.v{link} = v{frags};
+		v{frags} = &v{i}->v{frags};
 	}
 x{global elements}
 ```
@@ -256,38 +288,40 @@ x{global elements}
 * Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
 
 ```
+
 d{get next input file}
 	t{struct Input *}v{n} = v{input}->v{link};
 	f{fclose}(v{input}->v{file});
 	v{input}->v{link} = v{used};
 	v{used} = v{input};
 	v{input} = v{n};
+	v{frags} = v{frags}->v{link};
 x{get next input file}
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
   verarbeiteten Dateien eingereiht
 * Dann wird der Vorgänger zur aktuellen Datei erklärt
 
-# Buffer
-* Einfache Implementierung in C eines Byte-Vektors
-* Der dynamisch wachsen kann
+# Lokale Fragmente
 
 ```
-i{buf.x}
+d{additional input elements}
+	t{struct FragMap} v{frags};
+x{additional input elements}
 ```
-* Buffer werden in einer eigenen Datei definiert
-
-# Fragmente
-* Fragmenten können während des Parsens erweitert, ersetzt und
-  angewendet werden
-* Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren ist
-  die Möglichkeit, Fragmente vor der Definition zu verwenden
-* Und Fragment an mehreren Stellen zu erweitern
+* Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
+  Definitionen
 
 ```
-i{frag.x}
+d{init additional input elements}
+	memset(
+		&v{i}->v{frags}, n{0},
+		f{sizeof}(v{i}->v{frags})
+	);
+x{init additional input elements};
 ```
-* Fragment-Behandlung wird in einer eigenen Datei definiert
+* Eine Map kann initialisiert werden, indem alle Bytes auf `n{0}`
+  gesetzt werden
 
 # Eingabe-Dateien lesen
 * In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die Makros
@@ -405,7 +439,7 @@ a{process other char} {
 ```
 d{process open brace} {
 	k{if} (! v{macro}) {
-		k{static} t{const char} v{valids}t{[]} = s{"adir"};
+		k{static} t{const char} v{valids}t{[]} = s{"aAdDirR"};
 		k{if} (f{strchr}(v{valids}, v{last})) {
 			v{openCh} = v{last};
 			f{activateBuffer}(&v{name});
@@ -422,21 +456,14 @@ d{process open brace} {
   `}`
 
 ```
-d{global source vars}
-	t{struct FragMap} v{frags} = {};
-x{global source vars}
-```
-* Kollektion mit allen Makros wird für folgende Schritte sichtbar
-  angelegt
-
-```
 d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, s{"def in macro"});
-		e{check for double def};
+		t{struct FragMap *}v{fm} = &v{input}->v{frags};
+		E{check for double def};
 		k{if} (! v{macro}) {
 			v{macro} = f{allocFragInMap}(
-				&v{frags}, v{name}.v{buffer},
+				v{fm}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		}
@@ -448,9 +475,26 @@ x{process macro name}
 * Das Makro darf nicht mehrfach definiert werden
 
 ```
+a{process macro name}
+	k{if} (v{openCh} == s{'D'}) {
+		f{ASSERT}(! v{macro}, s{"def in macro"});
+		t{struct FragMap *}v{fm} = v{frags};
+		E{check for double def};
+		k{if} (! v{macro}) {
+			v{macro} = f{allocFragInMap}(
+				&v{root}, v{name}.v{buffer},
+				v{name}.v{current} - n{1}
+			);
+		}
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
+
+```
 d{check for double def}
 	v{macro} = f{findFragInMap}(
-		&v{frags}, v{name}.v{buffer},
+		v{fm}, v{name}.v{buffer},
 		v{name}.v{current} - n{1}
 	);
 	k{if} (f{isPopulatedFrag}(v{macro})) {
@@ -470,17 +514,33 @@ x{check for double def}
 a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
 		f{ASSERT}(! v{macro}, s{"add in macro"});
+		t{struct FragMap *}v{fm} = &v{input}->v{frags};
 		v{macro} = f{findFragInMap}(
-			&v{frags}, v{name}.v{buffer},
+			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
-		e{check for add without def};
+		E{check for add without def};
 		v{processed} = k{true};
 	}
 x{process macro name}
 ```
 * Bei einem öffnenden Makro wird das passende Makro gesucht
 * Weitere Bytes können zu diesem Makro hinzugefügt werden
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'A'}) {
+		f{ASSERT}(! v{macro}, s{"add in macro"});
+		t{struct FragMap *}v{fm} = v{frags};
+		v{macro} = f{findFragInMap}(
+			v{fm}, v{name}.v{buffer},
+			v{name}.v{current} - n{1}
+		);
+		E{check for add without def};
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
 
 ```
 d{check for add without def}
@@ -490,7 +550,7 @@ d{check for add without def}
 			v{name}.v{buffer}
 		);
 		v{macro} = f{getFragInMap}(
-			&v{frags}, v{name}.v{buffer},
+			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 	}
@@ -503,7 +563,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
 		f{ASSERT}(! v{macro}, s{"replace in macro"});
 		v{macro} = f{getFragInMap}(
-			&v{frags}, v{name}.v{buffer},
+			&v{input}->v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		f{ASSERT}(
@@ -517,6 +577,24 @@ x{process macro name}
 ```
 * Bei einem `@replace` wird der Inhalt eines Makros zurückgesetzt
 * Das Makro muss bereits vorhanden sein
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'R'}) {
+		f{ASSERT}(! v{macro}, s{"replace in macro"});
+		v{macro} = f{getFragInMap}(
+			v{frags}, v{name}.v{buffer},
+			v{name}.v{current} - n{1}
+		);
+		f{ASSERT}(
+			v{macro}, s{"macro %s not defined"},
+			v{name}.v{buffer}
+		);
+		f{freeFragEntries}(v{macro});
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
 
 ```
 a{process macro name}
@@ -544,7 +622,7 @@ x{macro names must match}
   Abarbeitung abgebrochen
 
 ```
-a{global source vars}
+d{global source vars}
 	t{bool} f{alreadyUsed}(t{const char *}v{name}) {
 		t{struct Input *}v{i} = v{input};
 		k{for} (; v{i}; v{i} = v{i}->v{link}) {
@@ -588,10 +666,10 @@ a{process macro name}
 		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} = f{getFragInMap}(
-			&v{frags}, v{name}.buffer,
+			&v{input}->v{frags}, v{name}.buffer,
 			v{name}.v{current} - n{1}
 		);
-		e{check macro expand count};
+		E{check macro expand count};
 		++sub->expands;
 		f{addFragToFrag}(v{macro}, v{sub});
 		v{processed} = k{true};
@@ -602,6 +680,23 @@ x{process macro name}
 * Ggf. wird das Makro dabei auch erzeugt, um später befüllt zu werden
 * Das Attribut `v{expands}` zählt, wie häufig das Makro expandiert
   wurde
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'g'}) {
+		f{ASSERT}(v{macro}, s{"expand not in macro"});
+		E{flush macro buffer};
+		t{struct Frag *}v{sub} = f{getFragInMap}(
+			v{frags}, v{name}.buffer,
+			v{name}.v{current} - n{1}
+		);
+		E{check macro expand count};
+		++sub->expands;
+		f{addFragToFrag}(v{macro}, v{sub});
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
 
 ```
 d{check macro expand count}
@@ -631,10 +726,10 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} =
 			f{getFragInMap}(
-				&v{frags}, v{name}.v{buffer},
+				v{frags}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
-		e{check for prev expands};
+		E{check for prev expands};
 		++sub->multiples;
 		f{addFragToFrag}(
 			v{macro}, v{sub});
@@ -644,6 +739,25 @@ x{process macro name}
 ```
 * Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
+
+```
+a{process macro name}
+	k{if} (v{openCh} == s{'G'}) {
+		f{ASSERT}(v{macro}, s{"multiple not in macro"});
+		E{flush macro buffer};
+		t{struct Frag *}v{sub} =
+			f{getFragInMap}(
+				v{frags}, v{name}.v{buffer},
+				v{name}.v{current} - n{1}
+			);
+		E{check for prev expands};
+		++sub->multiples;
+		f{addFragToFrag}(
+			v{macro}, v{sub});
+		v{processed} = k{true};
+	}
+x{process macro name}
+```
 
 ```
 d{check for prev expands}
@@ -694,15 +808,15 @@ d{process private macro}
 	f{addBytesToFrag}(
 		v{macro}, v{prefix},
 		v{prefix} + f{sizeof}(v{prefix}) - n{1},
-		v{input}, v{nameLine}
+		v{input}->v{name}, v{nameLine}
 	);
 	f{addBytesToFrag}(
 		v{macro}, v{head}, v{end},
-		v{input}, v{nameLine}
+		v{input}->v{name}, v{nameLine}
 	);
 	f{addBytesToFrag}(
 		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1},
-		k{input}, v{nameLine}
+		k{input}->v{name}, v{nameLine}
 	);
 x{process private macro}
 ```
@@ -742,7 +856,7 @@ d{process magic macro}
 	E{flush macro buffer};
 	f{addBytesToFrag}(
 		v{macro}, v{head}, v{end},
-		v{input}, v{nameLine}
+		v{input}->v{name}, v{nameLine}
 	);
 x{process magic macro}
 ```
@@ -758,7 +872,7 @@ d{flush macro buffer}
 		f{addBytesToFrag}(
 			v{macro}, v{buffer}.v{buffer},
 			v{buffer}.v{current},
-			v{input}, v{bufferLine}
+			v{input}->v{name}, v{bufferLine}
 		);
 		f{resetBuffer}(&v{buffer});
 	}
@@ -790,7 +904,7 @@ a{process open brace} {
 ```
 d{check valid names}
 	t{static const char} v{valids}t{[]} =
-		s{"fvsntkxeEpm"};
+		s{"fvsntkxeEgGpm"};
 	k{if} (f{strchr}(v{valids}, v{last})) {
 		v{valid} = k{true};
 	}
@@ -854,7 +968,7 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	t{struct Frag **}v{cur} = v{frags}.v{frags};
+	t{struct Frag **}v{cur} = v{root}.v{frags};
 	t{struct Frag **}v{end} =
 		v{cur} + v{FRAG_SLOTS};
 	k{for} (; v{cur} < v{end}; ++v{cur}) {
@@ -943,14 +1057,14 @@ x{write in file}
 # Zeilennummern
 
 ```
-d{additional input elements}
+a{additional input elements}
 	t{int} v{line};
 x{additional input elements}
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
 
 ```
-d{init additional input elements}
+a{init additional input elements}
 	v{i}->v{line} = n{1};
 x{init additional input elements}
 ```

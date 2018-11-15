@@ -595,7 +595,7 @@ a{define frag}
 		t{struct Frag *}v{frag},
 		t{const char *}v{value},
 		t{const char *}v{valueEnd},
-		t{struct Input *}v{input},
+		t{const char *}v{source},
 		t{int} v{line}
 	) {
 		t{struct FragEntry *}v{entry} =
@@ -976,7 +976,7 @@ d{find frag in slot} {
 d{find frag in linked map}
 	k{if} (v{map}->v{link}) {
 		k{return} f{findFragInMap}(
-			v{map}, v{begin}, v{end}
+			v{map}->v{link}, v{begin}, v{end}
 		);
 	}
 x{find frag in linked map}
@@ -1027,7 +1027,7 @@ x{get frag alloc}
 
 ```
 d{additional entry attributes}
-	struct Input *input;
+	const char *source;
 	int line;
 x{additional entry attributes}
 ```
@@ -1039,7 +1039,7 @@ x{additional entry attributes}
 
 ```
 d{populate additional entry fields}
-	v{entry}->v{input} = v{input};
+	v{entry}->v{source} = v{source};
 	v{entry}->v{line} = v{line};
 x{populate additional entry fields}
 ```

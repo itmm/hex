@@ -16,7 +16,7 @@ install: hx
 	cp hx ~/bin
 
 test: hx
-	./hx </dev/null
+	./hx
 
 clean:
 	rm -f hx.c ${HTMLs}
