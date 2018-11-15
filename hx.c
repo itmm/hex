@@ -586,6 +586,7 @@ void freeFragEntry(
 	#define FRAG_SLOTS 128
 
 	struct FragMap {
+		struct FragMap *link;
 		struct Frag *frags[
 			FRAG_SLOTS
 		];
@@ -600,6 +601,7 @@ void freeFragEntry(
 		for (; cur < end; ++cur) {
 			freeFrag(*cur); *cur = NULL;
 		}
+		map->link = NULL;
 	}
 
 	int calcFragHash(
@@ -631,10 +633,9 @@ void freeFragEntry(
 		const char *end
 	) {
 		ASSERT(map);
-		struct Frag *frag = NULL;
-		
+		 {
 	int hash = calcFragHash(begin, end);
-	frag = map->frags[hash];
+	struct Frag *frag = map->frags[hash];
 	for (; frag; frag = frag->link) {
 		const char *a = begin;
 		const char *b = frag->name;
@@ -644,8 +645,15 @@ void freeFragEntry(
 		if (a == end && ! *b) {
 			return frag; }
 	}
+} ;
+		
+	if (map->link) {
+		return findFragInMap(
+			map, begin, end
+		);
+	}
 ;
-		return frag;
+		return NULL;
 	}
 
 	struct Frag *getFragInMap(

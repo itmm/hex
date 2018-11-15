@@ -1590,6 +1590,8 @@ fragTestBufferEnd = NULL;<br/>
 <span class="in1"></span>
 <span class="type">struct FragMap</span> {<br/>
 <span class="in2"></span>
+<span class="type">struct FragMap *</span><span class="var">link</span>;<br/>
+<span class="in2"></span>
 <span class="type">struct Frag *</span><span class="var">frags</span><span class="type">[</span><br/>
 <span class="in3"></span>
 <span class="type">FRAG_SLOTS</span><br/>
@@ -1626,6 +1628,8 @@ fragTestBufferEnd = NULL;<br/>
 <span class="fn">freeFrag</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
 }<br/>
+<span class="in2"></span>
+<span class="var">map</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1634,7 +1638,10 @@ fragTestBufferEnd = NULL;<br/>
 </div>
 <ul><li>
  Um den Speicher freizugeben, wird jeder Slot gelöscht</li><li>
- und auf &lt;code class="keyword"&gt;NULL&lt;/code&gt; gesetzt um wieder verwendet</li></ul></div>
+ und auf &lt;code class="keyword"&gt;NULL&lt;/code&gt; gesetzt um wieder verwendet
+  zu werden</li><li>
+ Wenn es einen Link auf ein andere Map gibt, wird diese zurückgesetzt</li><li>
+ Die referenzierte Map wird jedoch nicht gelöscht</li></ul></div>
 <div><div>
 <code>
 
@@ -1725,11 +1732,11 @@ fragTestBufferEnd = NULL;<br/>
 <span class="in2"></span>
 <span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
 <span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">frag</span> = <span class="fn">NULL</span>;<br/>
-<span class="in2"></span>
 <span class="expand">@expand(<span class="name">find frag in slot)</span></span>;<br/>
 <span class="in2"></span>
-<span class="keyword">return</span> <span class="var">frag</span>;<br/>
+<span class="expand">@expand(<span class="name">find frag in linked map)</span></span>;<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
@@ -1741,11 +1748,11 @@ fragTestBufferEnd = NULL;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">find frag in slot)</span></span><br/>
+<span class="add">@def(<span class="name">find frag in slot)</span></span> {<br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcFragHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>
-<span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
+<span class="type">struct Frag *</span><span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
 <span class="in1"></span>
 <span class="keyword">for</span> (; <span class="var">frag</span>; <span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>) {<br/>
 <span class="in2"></span>
@@ -1765,11 +1772,32 @@ fragTestBufferEnd = NULL;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">find frag in slot)</span></span><br/>
+} <span class="end">@end(<span class="name">find frag in slot)</span></span><br/>
 </code>
 </div>
 <ul><li>
  Im passenden Hash-Slot werden die Namen der Fragmente verglichen</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">find frag in linked map)</span></span><br/>
+<span class="in1"></span>
+<span class="keyword">if</span> (<span class="var">map</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="in2"></span>
+<span class="keyword">return</span> <span class="fn">findFragInMap</span>(<br/>
+<span class="in3"></span>
+<span class="var">map</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
+<span class="in2"></span>
+);<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">find frag in linked map)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Wenn es einen verlinkten Kontext gibt, so kann das Element auch in
+  diesem liegen</li></ul></div>
 <div><div>
 <code>
 
@@ -1799,8 +1827,8 @@ fragTestBufferEnd = NULL;<br/>
 </code>
 </div>
 <ul><li>
- Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment mit
-  diesem Namen an</li></ul></div>
+ Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment
+  mit diesem Namen an</li></ul></div>
 <div><div>
 <code>
 

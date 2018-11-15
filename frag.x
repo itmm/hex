@@ -867,6 +867,7 @@ a{define frag}
 	#define FRAG_SLOTS 128
 
 	t{struct FragMap} {
+		t{struct FragMap *}v{link};
 		t{struct Frag *}v{frags}t{[}
 			t{FRAG_SLOTS}
 		t{]};
@@ -887,11 +888,15 @@ a{define frag}
 		k{for} (; v{cur} < v{end}; ++v{cur}) {
 			f{freeFrag}(*v{cur}); *v{cur} = k{NULL};
 		}
+		v{map}->v{link} = k{NULL};
 	}
 x{define frag}
 ```
 * Um den Speicher freizugeben, wird jeder Slot gelöscht
 * und auf <code class="keyword">NULL</code> gesetzt um wieder verwendet
+  zu werden
+* Wenn es einen Link auf ein andere Map gibt, wird diese zurückgesetzt
+* Die referenzierte Map wird jedoch nicht gelöscht
 
 ```
 a{define frag}
@@ -942,18 +947,18 @@ a{define frag}
 		t{const char *}v{end}
 	) {
 		f{ASSERT}(v{map});
-		t{struct Frag *}v{frag} = f{NULL};
 		e{find frag in slot};
-		k{return} v{frag};
+		e{find frag in linked map};
+		k{return} k{NULL};
 	}
 x{define frag}
 ```
 * Liefert das erste Fragment mit dem übergebenen Namen
 
 ```
-d{find frag in slot}
+d{find frag in slot} {
 	t{int} v{hash} = f{calcFragHash}(v{begin}, v{end});
-	v{frag} = v{map}->v{frags}[v{hash}];
+	t{struct Frag *}v{frag} = v{map}->v{frags}[v{hash}];
 	k{for} (; v{frag}; v{frag} = v{frag}->v{link}) {
 		t{const char *}v{a} = v{begin};
 		t{const char *}v{b} = v{frag}->v{name};
@@ -963,9 +968,21 @@ d{find frag in slot}
 		k{if} (v{a} == v{end} && ! *v{b}) {
 			k{return} v{frag}; }
 	}
-x{find frag in slot}
+} x{find frag in slot}
 ```
 * Im passenden Hash-Slot werden die Namen der Fragmente verglichen
+
+```
+d{find frag in linked map}
+	k{if} (v{map}->v{link}) {
+		k{return} f{findFragInMap}(
+			v{map}, v{begin}, v{end}
+		);
+	}
+x{find frag in linked map}
+```
+* Wenn es einen verlinkten Kontext gibt, so kann das Element auch in
+  diesem liegen
 
 ```
 a{define frag}
@@ -981,8 +998,8 @@ a{define frag}
 	}
 x{define frag}
 ```
-* Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment mit
-  diesem Namen an
+* Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment
+  mit diesem Namen an
 
 ```
 d{get frag find}
