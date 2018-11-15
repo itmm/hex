@@ -632,7 +632,6 @@ void freeFragEntry(
 	struct Input *used = NULL;
 
 	struct FragMap root = {};
-	struct FragMap *frags = &root;
 
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
@@ -662,10 +661,6 @@ void freeFragEntry(
 
 	i->line = 1;
 ;
-		if (input) {
-			input->frags.link = frags;
-			frags = &input->frags;
-		}
 		input = i;
 	}
 
@@ -688,7 +683,6 @@ void freeFragEntry(
 	input->link = used;
 	used = input;
 	input = n;
-	frags = frags->link;
 ;
 		}
 		return ch;
@@ -1051,7 +1045,7 @@ void freeFragEntry(
 		
 	if (openCh == 'd') {
 		ASSERT(! macro, "def in macro");
-		struct FragMap *fm = &input->frags;
+		struct FragMap *fm = &root;
 		
 	macro = findFragInMap(
 		fm, name.buffer,
@@ -1075,7 +1069,7 @@ void freeFragEntry(
 
 	if (openCh == 'D') {
 		ASSERT(! macro, "def in macro");
-		struct FragMap *fm = frags;
+		struct FragMap *fm = &root;
 		
 	macro = findFragInMap(
 		fm, name.buffer,
@@ -1099,7 +1093,7 @@ void freeFragEntry(
 
 	if (openCh == 'a') {
 		ASSERT(! macro, "add in macro");
-		struct FragMap *fm = &input->frags;
+		struct FragMap *fm = &root;
 		macro = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
@@ -1121,7 +1115,7 @@ void freeFragEntry(
 
 	if (openCh == 'A') {
 		ASSERT(! macro, "add in macro");
-		struct FragMap *fm = frags;
+		struct FragMap *fm = &root;
 		macro = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
@@ -1144,7 +1138,7 @@ void freeFragEntry(
 	if (openCh == 'r') {
 		ASSERT(! macro, "replace in macro");
 		macro = getFragInMap(
-			&input->frags, name.buffer,
+			&root, name.buffer,
 			name.current - 1
 		);
 		ASSERT(
@@ -1158,7 +1152,7 @@ void freeFragEntry(
 	if (openCh == 'R') {
 		ASSERT(! macro, "replace in macro");
 		macro = getFragInMap(
-			frags, name.buffer,
+			&root, name.buffer,
 			name.current - 1
 		);
 		ASSERT(
@@ -1217,7 +1211,7 @@ void freeFragEntry(
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			&input->frags, name.buffer,
+			&root, name.buffer,
 			name.current - 1
 		);
 		
@@ -1254,7 +1248,7 @@ void freeFragEntry(
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			frags, name.buffer,
+			&root, name.buffer,
 			name.current - 1
 		);
 		
@@ -1292,7 +1286,7 @@ void freeFragEntry(
 ;
 		struct Frag *sub =
 			getFragInMap(
-				frags, name.buffer,
+				&root, name.buffer,
 				name.current - 1
 			);
 		
@@ -1326,7 +1320,7 @@ void freeFragEntry(
 ;
 		struct Frag *sub =
 			getFragInMap(
-				frags, name.buffer,
+				&root, name.buffer,
 				name.current - 1
 			);
 		

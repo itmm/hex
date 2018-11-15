@@ -147,7 +147,6 @@ x{global elements}
 ```
 a{global elements}
 	t{struct FragMap} v{root} = {};
-	t{struct FragMap *}v{frags} = &v{root};
 x{global elements}
 ```
 * Kollektion mit allen Makros wird für folgende Schritte sichtbar
@@ -167,10 +166,6 @@ a{global elements}
 		v{i}->v{file} = v{f};
 		f{memcpy}(v{i}->v{name}, v{path}, v{len});
 		e{init additional input elements};
-		k{if} (v{input}) {
-			v{input}->v{frags}.v{link} = v{frags};
-			v{frags} = &v{input}->v{frags};
-		}
 		v{input} = v{i};
 	}
 x{global elements}
@@ -297,7 +292,6 @@ d{get next input file}
 	v{input}->v{link} = v{used};
 	v{used} = v{input};
 	v{input} = v{n};
-	v{frags} = v{frags}->v{link};
 x{get next input file}
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
@@ -461,7 +455,7 @@ d{process open brace} {
 d{process macro name}
 	k{if} (v{openCh} == s{'d'}) {
 		f{ASSERT}(! v{macro}, s{"def in macro"});
-		t{struct FragMap *}v{fm} = &v{input}->v{frags};
+		t{struct FragMap *}v{fm} = &v{root};
 		E{check for double def};
 		k{if} (! v{macro}) {
 			v{macro} = f{allocFragInMap}(
@@ -480,7 +474,7 @@ x{process macro name}
 a{process macro name}
 	k{if} (v{openCh} == s{'D'}) {
 		f{ASSERT}(! v{macro}, s{"def in macro"});
-		t{struct FragMap *}v{fm} = v{frags};
+		t{struct FragMap *}v{fm} = &v{root};
 		E{check for double def};
 		k{if} (! v{macro}) {
 			v{macro} = f{allocFragInMap}(
@@ -516,7 +510,7 @@ x{check for double def}
 a{process macro name}
 	k{if} (v{openCh} == s{'a'}) {
 		f{ASSERT}(! v{macro}, s{"add in macro"});
-		t{struct FragMap *}v{fm} = &v{input}->v{frags};
+		t{struct FragMap *}v{fm} = &v{root};
 		v{macro} = f{findFragInMap}(
 			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
@@ -533,7 +527,7 @@ x{process macro name}
 a{process macro name}
 	k{if} (v{openCh} == s{'A'}) {
 		f{ASSERT}(! v{macro}, s{"add in macro"});
-		t{struct FragMap *}v{fm} = v{frags};
+		t{struct FragMap *}v{fm} = &v{root};
 		v{macro} = f{findFragInMap}(
 			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
@@ -565,7 +559,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'r'}) {
 		f{ASSERT}(! v{macro}, s{"replace in macro"});
 		v{macro} = f{getFragInMap}(
-			&v{input}->v{frags}, v{name}.v{buffer},
+			&v{root}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		f{ASSERT}(
@@ -585,7 +579,7 @@ a{process macro name}
 	k{if} (v{openCh} == s{'R'}) {
 		f{ASSERT}(! v{macro}, s{"replace in macro"});
 		v{macro} = f{getFragInMap}(
-			v{frags}, v{name}.v{buffer},
+			&v{root}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		f{ASSERT}(
@@ -668,7 +662,7 @@ a{process macro name}
 		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} = f{getFragInMap}(
-			&v{input}->v{frags}, v{name}.buffer,
+			&v{root}, v{name}.buffer,
 			v{name}.v{current} - n{1}
 		);
 		E{check macro expand count};
@@ -689,7 +683,7 @@ a{process macro name}
 		f{ASSERT}(v{macro}, s{"expand not in macro"});
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} = f{getFragInMap}(
-			v{frags}, v{name}.buffer,
+			&v{root}, v{name}.buffer,
 			v{name}.v{current} - n{1}
 		);
 		E{check macro expand count};
@@ -728,7 +722,7 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} =
 			f{getFragInMap}(
-				v{frags}, v{name}.v{buffer},
+				&v{root}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		E{check for prev expands};
@@ -749,7 +743,7 @@ a{process macro name}
 		E{flush macro buffer};
 		t{struct Frag *}v{sub} =
 			f{getFragInMap}(
-				v{frags}, v{name}.v{buffer},
+				&v{root}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		E{check for prev expands};
