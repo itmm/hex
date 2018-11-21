@@ -544,13 +544,28 @@ d{escape html macro}
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;
+	case 'D':
+		fprintf(out, "<span class=\"add\">@globdef(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
 	case 'a':
 		fprintf(out, "<span class=\"add\">@add(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;
+	case 'A':
+		fprintf(out, "<span class=\"add\">@globadd(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
 	case 'r':
 		fprintf(out, "<span class=\"add\">@replace(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'R':
+		fprintf(out, "<span class=\"add\">@globreplace(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;
@@ -576,6 +591,21 @@ a{escape html macro}
 		break;
 	case 'E':
 		fprintf(out, "<span class=\"expand\">@multiple(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
+	case 'g':
+		fprintf(out, "<span class=\"expand\">@globexpand(");
+		fprintf(out, "<span class=\"name\">");
+		status.codeSpecial = last;
+		break;
+	case 'G':
+		fprintf(out, "<span class=\"expand\">@globmult(");
 		fprintf(out, "<span class=\"name\">");
 		status.codeSpecial = last;
 		break;

@@ -1031,6 +1031,16 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 <span class="in1"></span>
+case 'D':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"add\"&gt;@globdef(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
 case 'a':<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"add\"&gt;@add(");<br/>
@@ -1041,9 +1051,29 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 <span class="in1"></span>
+case 'A':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"add\"&gt;@globadd(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
 case 'r':<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"add\"&gt;@replace(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
+case 'R':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"add\"&gt;@globreplace(");<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
 <span class="in2"></span>
@@ -1092,6 +1122,35 @@ break;<br/>
 case 'E':<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"expand\"&gt;@multiple(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+
+<span class="end">@end(<span class="name">escape html macro)</span></span><br/>
+</code>
+</div>
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">escape html macro)</span></span><br/>
+<span class="in1"></span>
+case 'g':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"expand\"&gt;@globexpand(");<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
+<span class="in2"></span>
+status.codeSpecial = last;<br/>
+<span class="in2"></span>
+break;<br/>
+<span class="in1"></span>
+case 'G':<br/>
+<span class="in2"></span>
+fprintf(out, "&lt;span class=\"expand\"&gt;@globmult(");<br/>
 <span class="in2"></span>
 fprintf(out, "&lt;span class=\"name\"&gt;");<br/>
 <span class="in2"></span>
