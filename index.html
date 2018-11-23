@@ -64,9 +64,9 @@
 <div><div>
 <code>
 
-D{file: hx.c}<br/>
+<span class="add">@globdef(<span class="name">file: hx.c)</span></span><br/>
 <span class="in1"></span>
-g{global elements}<br/>
+<span class="expand">@globexpand(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="fn">main</span>(<br/>
 <span class="in2"></span>
@@ -90,7 +90,7 @@ g{global elements}<br/>
 
 <span class="add">@def(<span class="name">main body)</span></span><br/>
 <span class="in1"></span>
-g{perform unit-tests};<br/>
+<span class="expand">@globexpand(<span class="name">perform unit-tests)</span></span>;<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">process arguments)</span></span>;<br/>
 <span class="in1"></span>
@@ -98,7 +98,7 @@ g{perform unit-tests};<br/>
 <span class="in1"></span>
 <span class="expand">@expand(<span class="name">serialize fragments)</span></span>;<br/>
 <span class="in1"></span>
-g{write HTML file};<br/>
+<span class="expand">@globexpand(<span class="name">write HTML file)</span></span>;<br/>
 
 <span class="end">@end(<span class="name">main body)</span></span><br/>
 </code>
@@ -129,13 +129,13 @@ g{write HTML file};<br/>
 <div><div>
 <code>
 
-D{global elements}<br/>
+<span class="add">@globdef(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
-g{includes};<br/>
+<span class="expand">@globexpand(<span class="name">includes)</span></span>;<br/>
 <span class="in1"></span>
-g{define logging};<br/>
+<span class="expand">@globexpand(<span class="name">define logging)</span></span>;<br/>
 <span class="in1"></span>
-g{forward declarations};<br/>
+<span class="expand">@globexpand(<span class="name">forward declarations)</span></span>;<br/>
 
 <span class="end">@end(<span class="name">global elements)</span></span><br/>
 </code>
@@ -159,7 +159,7 @@ g{forward declarations};<br/>
 <div><div>
 <code>
 
-D{includes}<br/>
+<span class="add">@globdef(<span class="name">includes)</span></span><br/>
 <span class="in1"></span>
 #include &lt;stdio.h&gt;<br/>
 <span class="in1"></span>
@@ -211,7 +211,7 @@ D{includes}<br/>
 <div><div>
 <code>
 
-A{global elements}<br/>
+<span class="add">@globadd(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct Input</span> {<br/>
 <span class="in2"></span>
@@ -247,7 +247,7 @@ A{global elements}<br/>
 <div><div>
 <code>
 
-A{global elements}<br/>
+<span class="add">@globadd(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">struct FragMap</span> <span class="var">root</span> = {};<br/>
 <span class="in1"></span>
@@ -262,7 +262,7 @@ A{global elements}<br/>
 <div><div>
 <code>
 
-A{global elements}<br/>
+<span class="add">@globadd(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const char *</span><span class="var">path</span>) {<br/>
 <span class="in2"></span>
@@ -354,7 +354,7 @@ frags = &amp;input-&gt;frags;<br/>
 <div><div>
 <code>
 
-A{global elements}<br/>
+<span class="add">@globadd(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">const char *</span><span class="var">stylesheet</span> =<br/>
 <span class="in2"></span>
@@ -472,7 +472,7 @@ A{global elements}<br/>
 <div><div>
 <code>
 
-A{global elements}<br/>
+<span class="add">@globadd(<span class="name">global elements)</span></span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
 <span class="in2"></span>
