@@ -161,8 +161,9 @@ d{process ch for HTML}
 			v{status}.v{state} == v{hs_IN_HEADER}
 		) {
 			++v{status}.v{headerLevel};
-			if (status.state != hs_IN_HEADER) {
-				status.headerState = status.state;
+			k{if} (v{status}.v{state} != v{hs_IN_HEADER}) {
+				v{status}.v{headerState} =
+					v{status}.v{state};
 			}
 			v{status}.v{state} = v{hs_IN_HEADER};
 			k{continue};
@@ -204,8 +205,12 @@ x{reset header state}
 ```
 a{process ch for HTML} 
 	k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {
-		k{if} (f{isActiveBuffer}(&v{status}.v{headerName})) {
-			f{addToBuffer}(&v{status}.v{headerName}, v{ch});
+		k{if} (
+			f{isActiveBuffer}(&v{status}.v{headerName})
+		) {
+			f{addToBuffer}(
+				&v{status}.v{headerName}, v{ch}
+			);
 			E{move ch to last};
 			k{continue};
 		}
@@ -218,10 +223,12 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	k{if} (v{status}.v{state} == v{hs_IN_HEADER}) {
-		k{if} (! f{isActiveBuffer}(&v{status}.v{headerName}) &&
-			v{ch} > s{' '}
-		) {
-			f{addToBuffer}(&v{status}.v{headerName}, v{ch});
+		k{if} (v{ch} > s{' '} && ! f{isActiveBuffer}(
+			&v{status}.v{headerName}
+		)) {
+			f{addToBuffer}(
+				&v{status}.v{headerName}, v{ch}
+			);
 			E{move ch to last};
 			k{continue};
 		}
@@ -248,24 +255,37 @@ x{process header in HTML}
 ```
 A{global elements} 
 	t{void} f{writeEscaped}(
-		t{FILE *}v{out}, t{const char *}v{str}, const char *end
+		t{FILE *}v{out}, t{const char *}v{str},
+		t{const char *}v{end}
 	) {
 		f{ASSERT}(v{out}); f{ASSERT}(v{str});
-		k{for} (; *v{str} && str != end; ++v{str}) k{switch} (*v{str}) {
-			k{case} s{'<'}:
-				f{fprintf}(v{out}, s{"&lt;"}); k{break};
-			k{case} s{'>'}:
-				f{fprintf}(v{out}, s{"&gt;"}); k{break};
-			k{case} s{'&'}:
-				f{fprintf}(v{out}, s{"&amp;"}); k{break};
-			k{default:}
-				f{fputc}(*v{str}, v{out});
+		k{for} (; *v{str} && str != end; ++v{str}) {
+			k{switch} (*v{str}) {
+				e{escape special}
+				k{default:}
+					f{fputc}(*v{str}, v{out});
+			}
 		}
 	}
 x{global elements}
 ```
 * Zeichen, die einen HTML-Befehl einleiten können, werden durch passende
   Entitäten ersetzt
+
+```
+d{escape special}
+	k{case} s{'<'}:
+		f{fprintf}(v{out}, s{"&lt;"});
+		k{break};
+	k{case} s{'>'}:
+		f{fprintf}(v{out}, s{"&gt;"});
+		k{break};
+	k{case} s{'&'}:
+		f{fprintf}(v{out}, s{"&amp;"});
+		k{break};
+x{escape special}
+```
+* Die Zeichen `<`, `>` und `&` müssen ersetzt werden
 
 ```
 d{write header tag} 
@@ -329,8 +349,7 @@ d{write HTML header entries}
 	f{fprintf}(v{out}, s{"</title>"});
 	f{fprintf}(
 		v{out}, s{"<link rel=\"stylesheet\" "}
-		s{"type=\"text/css\" "}
-		s{"href=\"%s\">"},
+		s{"type=\"text/css\" href=\"%s\">"},
 		v{stylesheet}
 	);
 x{write HTML header entries}
@@ -392,24 +411,17 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	k{if} (v{ch} == s{'\n'} && v{status}.v{codeOpening} == n{3}) {
+	k{if} (
+		v{ch} == s{'\n'} && v{status}.v{codeOpening} == n{3}
+	) {
 		v{status}.v{codeOpening} = n{0};
 		k{if} (f{isOutOfHtmlSpecial}(&v{status})) {
-			k{if} (v{status}.v{state} == v{hs_IN_SLIDE}) {
-				fprintf(out, "</div>\n");
-			}
-			fprintf(out, "<div><div>\n");
-			fprintf(out, "<code>\n");
-			v{status}.v{state} = v{hs_IN_CODE};
-			E{move ch to last};
+			e{open code page};
 			k{continue};
-		} k{else} k{if} (v{status}.v{state} == v{hs_IN_CODE}) {
-			fprintf(out, "</code>\n");
-			fprintf(out, "</div>\n");
-			v{status}.v{state} = v{hs_IN_SLIDE};
-			v{status}.v{codeIndent} = 0;
-			v{status}.v{codeSpecial} = s{'\0'};
-			E{move ch to last};
+		} k{else} k{if} (
+			v{status}.v{state} == v{hs_IN_CODE}
+		) {
+			e{close code page};
 			k{continue};
 		}
 	}
@@ -418,11 +430,37 @@ x{process ch for HTML}
 ```
 
 ```
+d{open code page}
+	k{if} (v{status}.v{state} == v{hs_IN_SLIDE}) {
+		f{fprintf}(v{out}, s{"</div>\n"});
+	}
+	f{fprintf}(v{out}, s{"<div><div>\n"});
+	f{fprintf}(v{out}, s{"<code>\n"});
+	v{status}.v{state} = v{hs_IN_CODE};
+	E{move ch to last};
+x{open code page}
+```
+
+```
+d{close code page}
+	f{fprintf}(v{out}, s{"</code>\n"});
+	f{fprintf}(v{out}, s{"</div>\n"});
+	v{status}.v{state} = v{hs_IN_SLIDE};
+	v{status}.v{codeIndent} = 0;
+	v{status}.v{codeSpecial} = s{'\0'};
+	E{move ch to last};
+x{close code page}
+```
+
+```
 a{process ch for HTML}
-	k{if} (status.state == hs_IN_CODE) {
-		k{if} (ch == EOF) {
-			fprintf(stderr, "unterminated code block\n");
-			break;
+	k{if} (v{status}.v{state} == v{hs_IN_CODE}) {
+		k{if} (v{ch} == k{EOF}) {
+			f{fprintf}(
+				v{stderr},
+				s{"unterminated code block\n"}
+			);
+			k{break};
 		}
 	}
 x{process ch for HTML}
@@ -430,13 +468,15 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML}
-	k{if} (status.state == hs_IN_CODE) {
+	k{if} (v{status}.v{state} == v{hs_IN_CODE}) {
 		e{process ch in HTML code};
-		if (last) {
-			writeEscaped(out, &last, &last + 1);
+		k{if} (v{last}) {
+			f{writeEscaped}(
+				v{out}, &v{last}, &v{last} + n{1}
+			);
 		}
 		E{move ch to last};
-		continue;
+		k{continue};
 	}
 x{process ch for HTML}
 ```
@@ -445,7 +485,9 @@ x{process ch for HTML}
 d{process ch in HTML code} 
 	k{if} (v{ch} == s{'\n'}) {
 		if (last) {
-			writeEscaped(out, &last, &last + 1);
+			writeEscaped(
+				out, &last, &last + 1
+			);
 		}
 		fprintf(out, "<br/>\n");
 		E{move ch to last};
@@ -461,8 +503,9 @@ a{process ch in HTML code}
 		k{continue};
 	}
 	if (status.codeIndent) {
-		fprintf(
-			out, "<span class=\"in%d\"></span>", status.codeIndent
+		fprintf(out,
+			"<span class=\"in%d\"></span>",
+			status.codeIndent
 		);
 		status.codeIndent = 0;
 	}
@@ -499,16 +542,7 @@ a{escape HTML code tag}
 			last = 0;
 		}
 		switch (status.codeSpecial) {
-			case 'i': {
-				e{handle html include};
-				break;
-			}
-			case 'a': case 'e': case 'E': case 'x':
-			case 'g': case 'G': case 'A': case 'D':
-			case 'R':
-			case 'r': case 'd': case 'p': case 'm': {
-				fprintf(out, ")</span>");
-			}
+			e{handle special codes}
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
@@ -518,30 +552,63 @@ x{escape HTML code tag}
 ```
 
 ```
+d{handle special codes}
+	case 'i': {
+		e{handle html include};
+		break;
+	}
+	case 'a': case 'e': case 'E': case 'x':
+	case 'g': case 'G': case 'A': case 'D':
+	case 'R':
+	case 'r': case 'd': case 'p': case 'm': {
+		fprintf(out, "</span>)");
+	}
+x{handle special codes}
+```
+
+```
 d{handle html include}
-	ASSERT(status.codeNameEnd <
-		status.codeName + sizeof(status.codeName)
+	ASSERT(
+		status.codeNameEnd <
+		status.codeName +
+			sizeof(status.codeName)
 	);
 	*status.codeNameEnd = '\0';
-	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
-		!= '.') {
+	while (
+		status.codeNameEnd >= status.codeName
+		&& *status.codeNameEnd != '.'
+	) {
 		--status.codeNameEnd;
 	}
-	ASSERT(status.codeNameEnd >= status.codeName, "no period");
-	*status.codeNameEnd = '\0';
-	fprintf(out, "<a href=\"%s.html\">", status.codeName);
-	*status.codeNameEnd = '.';
-	fprintf(out, "%s</a>)</span>", status.codeName);
-	status.codeNameEnd = NULL;
+x{handle html include}
+```
 
+```
+d{handle html include}
+	ASSERT(
+		status.codeNameEnd >= status.codeName,
+		"no period"
+	);
+	*status.codeNameEnd = '\0';
+	fprintf(out,
+		"<a href=\"%s.html\">",
+		status.codeName
+	);
+	*status.codeNameEnd = '.';
+	fprintf(out,
+		"%s</a>)</span>", status.codeName
+	);
+	status.codeNameEnd = NULL;
 x{handle html include}
 ```
 
 ```
 a{process ch in HTML code}
 	if (ch != EOF && status.codeNameEnd) {
-		ASSERT(status.codeNameEnd <
-			status.codeName + sizeof(status.codeName)
+		ASSERT(
+			status.codeNameEnd <
+				status.codeName +
+					sizeof(status.codeName)
 		);
 		*status.codeNameEnd++ = ch;
 		continue;
@@ -552,33 +619,82 @@ x{process ch in HTML code}
 ```
 d{escape html macro}
 	case 'd':
-		fprintf(out, "<span class=\"add\">@def(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@def("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'D':
-		fprintf(out, "<span class=\"add\">@globdef(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globdef("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'a':
-		fprintf(out, "<span class=\"add\">@add(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@add("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'A':
-		fprintf(out, "<span class=\"add\">@globadd(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globadd("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'r':
-		fprintf(out, "<span class=\"add\">@replace(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@replace("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'R':
-		fprintf(out, "<span class=\"add\">@globreplace(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globreplace("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 x{escape html macro}
@@ -587,8 +703,12 @@ x{escape html macro}
 ```
 a{escape html macro}
 	case 'x':
-		fprintf(out, "<span class=\"end\">@end(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"end\">@end("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 x{escape html macro}
@@ -597,13 +717,26 @@ x{escape html macro}
 ```
 a{escape html macro}
 	case 'e':
-		fprintf(out, "<span class=\"expand\">@expand(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">@expand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'E':
-		fprintf(out, "<span class=\"expand\">@multiple(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">@multiple("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 x{escape html macro}
@@ -612,13 +745,28 @@ x{escape html macro}
 ```
 a{escape html macro}
 	case 'g':
-		fprintf(out, "<span class=\"expand\">@globexpand(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globexpand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+x{escape html macro}
+```
+
+```
+a{escape html macro}
 	case 'G':
-		fprintf(out, "<span class=\"expand\">@globmult(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globmult("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 x{escape html macro}
@@ -627,8 +775,12 @@ x{escape html macro}
 ```
 a{escape html macro}
 	case 'i':
-		fprintf(out, "<span class=\"include\">@include(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"include\">@include("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		status.codeNameEnd = status.codeName;
 		break;
@@ -692,7 +844,10 @@ x{escape html macro}
 ```
 a{escape html macro}
 	case 'p':
-		fprintf(out, "<span class=\"type\">@priv(<span>");
+		fprintf(out,
+			"<span class=\"type\">"
+				"@priv(<span>"
+		);
 		status.codeSpecial = last;
 		break;
 x{escape html macro}
@@ -700,12 +855,19 @@ x{escape html macro}
 
 ```
 a{escape html macro}
-	case 'm':
-		fprintf(out, "<span class=\"num\">@magic(<span>");
-		status.codeSpecial = last;
-		break;
+	k{case} s{'m'}:
+		f{fprintf}(
+			v{out},
+			s{"<span class=\"num\">"}
+				s{"@magic(<span>"}
+		);
+		v{status}.v{codeSpecial} = v{last};
+		k{break};
 x{escape html macro}
 ```
+* `@magic`-Befehle werden als Zahlen formatiert
+
+# Notizen
 
 ```
 a{html state elements}
@@ -737,7 +899,10 @@ x{check html special state}
 
 ```
 a{process ch for HTML} 
-	k{if} (v{last} == s{'\n'} && v{status}.v{state} == v{hs_IN_NOTES}) {
+	k{if} (
+		v{last} == s{'\n'} &&
+		v{status}.v{state} == v{hs_IN_NOTES}
+	) {
 		k{if} (ch == s{'*'}) {
 			f{fprintf}(v{out}, s{"</li><li>\n"});
 			v{last} = 0;
@@ -770,7 +935,10 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	k{if} (v{ch} == s{'`'} && v{status}.v{state} == v{hs_IN_NOTES}) {
+	k{if} (
+		v{ch} == s{'`'} &&
+		v{status}.v{state} == v{hs_IN_NOTES}
+	) {
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
 		}
@@ -780,8 +948,7 @@ a{process ch for HTML}
 			f{fprintf}(v{out}, s{"<code>"});
 		}
 		v{status}.v{noteInCode} = ! v{status}.v{noteInCode};
-		v{last} = 0;
-		v{continue};
+		v{last} = 0; v{continue};
 	}
 x{process ch for HTML}
 ```
@@ -797,13 +964,17 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	k{if} (v{ch} == s{'*'} && v{last} == s{'*'} && v{status}.v{state} == v{hs_IN_NOTES}) {
+	k{if} (
+		v{ch} == s{'*'} && v{last} == s{'*'} &&
+		v{status}.v{state} == v{hs_IN_NOTES}
+	) {
 		k{if} (v{status}.v{noteInBold}) {
 			f{fprintf}(v{out}, s{"</b>"});
 		} k{else} {
 			f{fprintf}(v{out}, s{"<b>"});
 		}
-		v{status}.v{noteInBold} = ! v{status}.v{noteInBold};
+		v{status}.v{noteInBold} =
+			! v{status}.v{noteInBold};
 		v{last} = 0;
 		v{continue};
 	}
@@ -814,7 +985,9 @@ x{process ch for HTML}
 a{process ch for HTML} 
 	k{if} (v{status}.v{state} == v{hs_IN_NOTES}) {
 		k{if} (v{last}) {
-			writeEscaped(out, &last, &last + 1);
+			writeEscaped(
+				out, &last, &last + 1
+			);
 		}
 		E{move ch to last};
 		v{continue};

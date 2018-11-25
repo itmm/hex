@@ -750,18 +750,26 @@ void freeFragEntry(
 	}
  
 	void writeEscaped(
-		FILE *out, const char *str, const char *end
+		FILE *out, const char *str,
+		const char *end
 	) {
 		ASSERT(out); ASSERT(str);
-		for (; *str && str != end; ++str) switch (*str) {
-			case '<':
-				fprintf(out, "&lt;"); break;
-			case '>':
-				fprintf(out, "&gt;"); break;
-			case '&':
-				fprintf(out, "&amp;"); break;
-			default:
-				fputc(*str, out);
+		for (; *str && str != end; ++str) {
+			switch (*str) {
+				
+	case '<':
+		fprintf(out, "&lt;");
+		break;
+	case '>':
+		fprintf(out, "&gt;");
+		break;
+	case '&':
+		fprintf(out, "&amp;");
+		break;
+
+				default:
+					fputc(*str, out);
+			}
 		}
 	}
 
@@ -1630,7 +1638,8 @@ void freeFragEntry(
 		) {
 			++status.headerLevel;
 			if (status.state != hs_IN_HEADER) {
-				status.headerState = status.state;
+				status.headerState =
+					status.state;
 			}
 			status.state = hs_IN_HEADER;
 			continue;
@@ -1661,8 +1670,7 @@ void freeFragEntry(
 	fprintf(out, "</title>");
 	fprintf(
 		out, "<link rel=\"stylesheet\" "
-		"type=\"text/css\" "
-		"href=\"%s\">",
+		"type=\"text/css\" href=\"%s\">",
 		stylesheet
 	);
 ;
@@ -1717,8 +1725,12 @@ void freeFragEntry(
 	}
  
 	if (status.state == hs_IN_HEADER) {
-		if (isActiveBuffer(&status.headerName)) {
-			addToBuffer(&status.headerName, ch);
+		if (
+			isActiveBuffer(&status.headerName)
+		) {
+			addToBuffer(
+				&status.headerName, ch
+			);
 			
 	last = ch == EOF ? '\0' : ch;
 ;
@@ -1727,10 +1739,12 @@ void freeFragEntry(
 	}
  
 	if (status.state == hs_IN_HEADER) {
-		if (! isActiveBuffer(&status.headerName) &&
-			ch > ' '
-		) {
-			addToBuffer(&status.headerName, ch);
+		if (ch > ' ' && ! isActiveBuffer(
+			&status.headerName
+		)) {
+			addToBuffer(
+				&status.headerName, ch
+			);
 			
 	last = ch == EOF ? '\0' : ch;
 ;
@@ -1747,27 +1761,35 @@ void freeFragEntry(
 		}
 	}
  
-	if (ch == '\n' && status.codeOpening == 3) {
+	if (
+		ch == '\n' && status.codeOpening == 3
+	) {
 		status.codeOpening = 0;
 		if (isOutOfHtmlSpecial(&status)) {
-			if (status.state == hs_IN_SLIDE) {
-				fprintf(out, "</div>\n");
-			}
-			fprintf(out, "<div><div>\n");
-			fprintf(out, "<code>\n");
-			status.state = hs_IN_CODE;
 			
+	if (status.state == hs_IN_SLIDE) {
+		fprintf(out, "</div>\n");
+	}
+	fprintf(out, "<div><div>\n");
+	fprintf(out, "<code>\n");
+	status.state = hs_IN_CODE;
+	
 	last = ch == EOF ? '\0' : ch;
 ;
+;
 			continue;
-		} else if (status.state == hs_IN_CODE) {
-			fprintf(out, "</code>\n");
-			fprintf(out, "</div>\n");
-			status.state = hs_IN_SLIDE;
-			status.codeIndent = 0;
-			status.codeSpecial = '\0';
+		} else if (
+			status.state == hs_IN_CODE
+		) {
 			
+	fprintf(out, "</code>\n");
+	fprintf(out, "</div>\n");
+	status.state = hs_IN_SLIDE;
+	status.codeIndent = 0;
+	status.codeSpecial = '\0';
+	
 	last = ch == EOF ? '\0' : ch;
+;
 ;
 			continue;
 		}
@@ -1776,7 +1798,10 @@ void freeFragEntry(
 
 	if (status.state == hs_IN_CODE) {
 		if (ch == EOF) {
-			fprintf(stderr, "unterminated code block\n");
+			fprintf(
+				stderr,
+				"unterminated code block\n"
+			);
 			break;
 		}
 	}
@@ -1785,7 +1810,9 @@ void freeFragEntry(
 		 
 	if (ch == '\n') {
 		if (last) {
-			writeEscaped(out, &last, &last + 1);
+			writeEscaped(
+				out, &last, &last + 1
+			);
 		}
 		fprintf(out, "<br/>\n");
 		
@@ -1799,8 +1826,9 @@ void freeFragEntry(
 		continue;
 	}
 	if (status.codeIndent) {
-		fprintf(
-			out, "<span class=\"in%d\"></span>", status.codeIndent
+		fprintf(out,
+			"<span class=\"in%d\"></span>",
+			status.codeIndent
 		);
 		status.codeIndent = 0;
 	}
@@ -1810,67 +1838,124 @@ void freeFragEntry(
 		switch (last) {
 			
 	case 'd':
-		fprintf(out, "<span class=\"add\">@def(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@def("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'D':
-		fprintf(out, "<span class=\"add\">@globdef(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globdef("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'a':
-		fprintf(out, "<span class=\"add\">@add(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@add("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'A':
-		fprintf(out, "<span class=\"add\">@globadd(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globadd("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'r':
-		fprintf(out, "<span class=\"add\">@replace(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@replace("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'R':
-		fprintf(out, "<span class=\"add\">@globreplace(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globreplace("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'x':
-		fprintf(out, "<span class=\"end\">@end(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"end\">@end("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'e':
-		fprintf(out, "<span class=\"expand\">@expand(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">@expand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'E':
-		fprintf(out, "<span class=\"expand\">@multiple(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">@multiple("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'g':
-		fprintf(out, "<span class=\"expand\">@globexpand(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globexpand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'G':
-		fprintf(out, "<span class=\"expand\">@globmult(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globmult("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'i':
-		fprintf(out, "<span class=\"include\">@include(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"include\">@include("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		status.codeNameEnd = status.codeName;
 		break;
@@ -1906,12 +1991,19 @@ void freeFragEntry(
 		break;
 
 	case 'p':
-		fprintf(out, "<span class=\"type\">@priv(<span>");
+		fprintf(out,
+			"<span class=\"type\">"
+				"@priv(<span>"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'm':
-		fprintf(out, "<span class=\"num\">@magic(<span>");
+		fprintf(
+			out,
+			"<span class=\"num\">"
+				"@magic(<span>"
+		);
 		status.codeSpecial = last;
 		break;
 
@@ -1929,32 +2021,46 @@ void freeFragEntry(
 			last = 0;
 		}
 		switch (status.codeSpecial) {
-			case 'i': {
-				
-	ASSERT(status.codeNameEnd <
-		status.codeName + sizeof(status.codeName)
+			
+	case 'i': {
+		
+	ASSERT(
+		status.codeNameEnd <
+		status.codeName +
+			sizeof(status.codeName)
 	);
 	*status.codeNameEnd = '\0';
-	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
-		!= '.') {
+	while (
+		status.codeNameEnd >= status.codeName
+		&& *status.codeNameEnd != '.'
+	) {
 		--status.codeNameEnd;
 	}
-	ASSERT(status.codeNameEnd >= status.codeName, "no period");
-	*status.codeNameEnd = '\0';
-	fprintf(out, "<a href=\"%s.html\">", status.codeName);
-	*status.codeNameEnd = '.';
-	fprintf(out, "%s</a>)</span>", status.codeName);
-	status.codeNameEnd = NULL;
 
+	ASSERT(
+		status.codeNameEnd >= status.codeName,
+		"no period"
+	);
+	*status.codeNameEnd = '\0';
+	fprintf(out,
+		"<a href=\"%s.html\">",
+		status.codeName
+	);
+	*status.codeNameEnd = '.';
+	fprintf(out,
+		"%s</a>)</span>", status.codeName
+	);
+	status.codeNameEnd = NULL;
 ;
-				break;
-			}
-			case 'a': case 'e': case 'E': case 'x':
-			case 'g': case 'G': case 'A': case 'D':
-			case 'R':
-			case 'r': case 'd': case 'p': case 'm': {
-				fprintf(out, ")</span>");
-			}
+		break;
+	}
+	case 'a': case 'e': case 'E': case 'x':
+	case 'g': case 'G': case 'A': case 'D':
+	case 'R':
+	case 'r': case 'd': case 'p': case 'm': {
+		fprintf(out, "</span>)");
+	}
+
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
@@ -1963,15 +2069,19 @@ void freeFragEntry(
 ;
 
 	if (ch != EOF && status.codeNameEnd) {
-		ASSERT(status.codeNameEnd <
-			status.codeName + sizeof(status.codeName)
+		ASSERT(
+			status.codeNameEnd <
+				status.codeName +
+					sizeof(status.codeName)
 		);
 		*status.codeNameEnd++ = ch;
 		continue;
 	}
 ;
 		if (last) {
-			writeEscaped(out, &last, &last + 1);
+			writeEscaped(
+				out, &last, &last + 1
+			);
 		}
 		
 	last = ch == EOF ? '\0' : ch;
@@ -1979,7 +2089,10 @@ void freeFragEntry(
 		continue;
 	}
  
-	if (last == '\n' && status.state == hs_IN_NOTES) {
+	if (
+		last == '\n' &&
+		status.state == hs_IN_NOTES
+	) {
 		if (ch == '*') {
 			fprintf(out, "</li><li>\n");
 			last = 0;
@@ -2006,7 +2119,10 @@ void freeFragEntry(
 		}
 	}
  
-	if (ch == '`' && status.state == hs_IN_NOTES) {
+	if (
+		ch == '`' &&
+		status.state == hs_IN_NOTES
+	) {
 		if (last) {
 			writeEscaped(out, &last, &last + 1);
 		}
@@ -2016,8 +2132,7 @@ void freeFragEntry(
 			fprintf(out, "<code>");
 		}
 		status.noteInCode = ! status.noteInCode;
-		last = 0;
-		continue;
+		last = 0; continue;
 	}
  
 	if (status.state == hs_IN_NOTES &&
@@ -2027,67 +2142,124 @@ void freeFragEntry(
 		switch (last) {
 			
 	case 'd':
-		fprintf(out, "<span class=\"add\">@def(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@def("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'D':
-		fprintf(out, "<span class=\"add\">@globdef(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globdef("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'a':
-		fprintf(out, "<span class=\"add\">@add(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@add("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'A':
-		fprintf(out, "<span class=\"add\">@globadd(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globadd("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'r':
-		fprintf(out, "<span class=\"add\">@replace(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@replace("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'R':
-		fprintf(out, "<span class=\"add\">@globreplace(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"add\">@globreplace("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'x':
-		fprintf(out, "<span class=\"end\">@end(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"end\">@end("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'e':
-		fprintf(out, "<span class=\"expand\">@expand(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">@expand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'E':
-		fprintf(out, "<span class=\"expand\">@multiple(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">@multiple("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'g':
-		fprintf(out, "<span class=\"expand\">@globexpand(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globexpand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
+
 	case 'G':
-		fprintf(out, "<span class=\"expand\">@globmult(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globmult("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'i':
-		fprintf(out, "<span class=\"include\">@include(");
-		fprintf(out, "<span class=\"name\">");
+		fprintf(out,
+			"<span class=\"include\">@include("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
 		status.codeSpecial = last;
 		status.codeNameEnd = status.codeName;
 		break;
@@ -2123,12 +2295,19 @@ void freeFragEntry(
 		break;
 
 	case 'p':
-		fprintf(out, "<span class=\"type\">@priv(<span>");
+		fprintf(out,
+			"<span class=\"type\">"
+				"@priv(<span>"
+		);
 		status.codeSpecial = last;
 		break;
 
 	case 'm':
-		fprintf(out, "<span class=\"num\">@magic(<span>");
+		fprintf(
+			out,
+			"<span class=\"num\">"
+				"@magic(<span>"
+		);
 		status.codeSpecial = last;
 		break;
 
@@ -2146,32 +2325,46 @@ void freeFragEntry(
 			last = 0;
 		}
 		switch (status.codeSpecial) {
-			case 'i': {
-				
-	ASSERT(status.codeNameEnd <
-		status.codeName + sizeof(status.codeName)
+			
+	case 'i': {
+		
+	ASSERT(
+		status.codeNameEnd <
+		status.codeName +
+			sizeof(status.codeName)
 	);
 	*status.codeNameEnd = '\0';
-	while (status.codeNameEnd >= status.codeName && *status.codeNameEnd
-		!= '.') {
+	while (
+		status.codeNameEnd >= status.codeName
+		&& *status.codeNameEnd != '.'
+	) {
 		--status.codeNameEnd;
 	}
-	ASSERT(status.codeNameEnd >= status.codeName, "no period");
-	*status.codeNameEnd = '\0';
-	fprintf(out, "<a href=\"%s.html\">", status.codeName);
-	*status.codeNameEnd = '.';
-	fprintf(out, "%s</a>)</span>", status.codeName);
-	status.codeNameEnd = NULL;
 
+	ASSERT(
+		status.codeNameEnd >= status.codeName,
+		"no period"
+	);
+	*status.codeNameEnd = '\0';
+	fprintf(out,
+		"<a href=\"%s.html\">",
+		status.codeName
+	);
+	*status.codeNameEnd = '.';
+	fprintf(out,
+		"%s</a>)</span>", status.codeName
+	);
+	status.codeNameEnd = NULL;
 ;
-				break;
-			}
-			case 'a': case 'e': case 'E': case 'x':
-			case 'g': case 'G': case 'A': case 'D':
-			case 'R':
-			case 'r': case 'd': case 'p': case 'm': {
-				fprintf(out, ")</span>");
-			}
+		break;
+	}
+	case 'a': case 'e': case 'E': case 'x':
+	case 'g': case 'G': case 'A': case 'D':
+	case 'R':
+	case 'r': case 'd': case 'p': case 'm': {
+		fprintf(out, "</span>)");
+	}
+
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
@@ -2180,20 +2373,26 @@ void freeFragEntry(
 ;
 	}
  
-	if (ch == '*' && last == '*' && status.state == hs_IN_NOTES) {
+	if (
+		ch == '*' && last == '*' &&
+		status.state == hs_IN_NOTES
+	) {
 		if (status.noteInBold) {
 			fprintf(out, "</b>");
 		} else {
 			fprintf(out, "<b>");
 		}
-		status.noteInBold = ! status.noteInBold;
+		status.noteInBold =
+			! status.noteInBold;
 		last = 0;
 		continue;
 	}
  
 	if (status.state == hs_IN_NOTES) {
 		if (last) {
-			writeEscaped(out, &last, &last + 1);
+			writeEscaped(
+				out, &last, &last + 1
+			);
 		}
 		
 	last = ch == EOF ? '\0' : ch;

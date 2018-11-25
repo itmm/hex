@@ -15,11 +15,11 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements)</span></span><br/>
+<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">define buffer)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">define buffer</span>)</span>;<br/>
 
-<span class="end">@end(<span class="name">global elements)</span></span><br/>
+<span class="end">@end(<span class="name">global elements</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -27,11 +27,11 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">perform unit-tests)</span></span><br/>
+<span class="add">@globdef(<span class="name">perform unit-tests</span>)</span><br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">buffer unit tests)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">buffer unit tests</span>)</span>;<br/>
 
-<span class="end">@end(<span class="name">perform unit-tests)</span></span><br/>
+<span class="end">@end(<span class="name">perform unit-tests</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -46,7 +46,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">define buffer)</span></span><br/>
+<span class="add">@def(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 #define INIT_BUFFER_SIZE 16<br/>
 <span class="in1"></span>
@@ -62,7 +62,7 @@
 <span class="in1"></span>
 };<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -78,7 +78,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">static inline void</span> <span class="fn">bufferInvariant</span>(<br/>
 <span class="in2"></span>
@@ -98,7 +98,7 @@
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -106,13 +106,13 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="add">@def(<span class="name">buffer unit tests</span>)</span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> b = {};<br/>
 <span class="in1"></span>
 <span class="fn">bufferInvariant</span>(&amp;b);<br/>
 
-} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+} <span class="end">@end(<span class="name">buffer unit tests</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -134,7 +134,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">static inline bool</span> <span class="fn">isActiveBuffer</span>(<br/>
 <span class="in2"></span>
@@ -148,7 +148,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -156,13 +156,13 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="add">@add(<span class="name">buffer unit tests</span>)</span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> b = {};<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(! <span class="fn">isActiveBuffer</span>(&amp;b));<br/>
 
-} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+} <span class="end">@end(<span class="name">buffer unit tests</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -177,7 +177,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">activateBuffer</span>(<span class="type">struct Buffer</span> *b) {<br/>
 <span class="in2"></span>
@@ -201,7 +201,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -215,7 +215,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="add">@add(<span class="name">buffer unit tests</span>)</span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> b = {};<br/>
 <span class="in1"></span>
@@ -223,7 +223,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="fn">isActiveBuffer</span>(&amp;b));<br/>
 
-} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+} <span class="end">@end(<span class="name">buffer unit tests</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -231,7 +231,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">addToBuffer</span>(<br/>
 <span class="in2"></span>
@@ -243,13 +243,13 @@ return b-&gt;current;<br/>
 <span class="in2"></span>
 <span class="fn">activateBuffer</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">assure buffer size)</span></span><br/>
+<span class="expand">@expand(<span class="name">assure buffer size</span>)</span><br/>
 <span class="in2"></span>
 *<span class="var">buffer</span>-&gt;<span class="var">current</span>++ = <span class="var">ch</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -262,7 +262,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">assure buffer size)</span></span><br/>
+<span class="add">@def(<span class="name">assure buffer size</span>)</span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">current</span> &gt;= <span class="var">buffer</span>-&gt;<span class="var">end</span>) {<br/>
 <span class="in2"></span>
@@ -272,11 +272,11 @@ return b-&gt;current;<br/>
 <span class="in2"></span>
 <span class="type">int</span> <span class="var">newSize</span> = <span class="num">2</span> * <span class="var">size</span>;<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">reallocate buffer)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">reallocate buffer</span>)</span>;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">assure buffer size)</span></span><br/>
+<span class="end">@end(<span class="name">assure buffer size</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -284,7 +284,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">reallocate buffer)</span></span><br/>
+<span class="add">@def(<span class="name">reallocate buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">char *</span><span class="var">newBuffer</span>;<br/>
 <span class="in1"></span>
@@ -292,7 +292,7 @@ return b-&gt;current;<br/>
 <span class="in2"></span>
 <span class="var">newBuffer</span> = <span class="fn">malloc</span>(<span class="var">newSize</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">copy initial buffer)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">copy initial buffer</span>)</span>;<br/>
 <span class="in1"></span>
 } <span class="keyword">else</span> {<br/>
 <span class="in2"></span>
@@ -304,9 +304,9 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 <span class="in1"></span>
-<span class="expand">@expand(<span class="name">adjust buffer pointers)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">adjust buffer pointers</span>)</span>;<br/>
 
-<span class="end">@end(<span class="name">reallocate buffer)</span></span><br/>
+<span class="end">@end(<span class="name">reallocate buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -316,7 +316,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">copy initial buffer)</span></span><br/>
+<span class="add">@def(<span class="name">copy initial buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">newBuffer</span>);<br/>
 <span class="in1"></span>
@@ -326,7 +326,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 );<br/>
 
-<span class="end">@end(<span class="name">copy initial buffer)</span></span><br/>
+<span class="end">@end(<span class="name">copy initial buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -334,7 +334,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">adjust buffer pointers)</span></span><br/>
+<span class="add">@def(<span class="name">adjust buffer pointers</span>)</span><br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">newBuffer</span>);<br/>
 <span class="in1"></span>
@@ -344,7 +344,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 <span class="var">buffer</span>-&gt;<span class="var">end</span> = <span class="var">newBuffer</span> + <span class="var">newSize</span>;<br/>
 
-<span class="end">@end(<span class="name">adjust buffer pointers)</span></span><br/>
+<span class="end">@end(<span class="name">adjust buffer pointers</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -359,7 +359,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">resetBuffer</span>(<br/>
 <span class="in2"></span>
@@ -373,7 +373,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -385,7 +385,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">eraseBuffer</span>(<br/>
 <span class="in2"></span>
@@ -395,7 +395,7 @@ return b-&gt;current;<br/>
 <span class="in2"></span>
 <span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">erase heap buffer)</span></span>;<br/>
+<span class="expand">@expand(<span class="name">erase heap buffer</span>)</span>;<br/>
 <span class="in2"></span>
 <span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in2"></span>
@@ -403,7 +403,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -414,7 +414,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">erase heap buffer)</span></span><br/>
+<span class="add">@def(<span class="name">erase heap buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">buffer</span>-&gt;<span class="var">buffer</span> &amp;&amp;<br/>
 <span class="in2"></span>
@@ -426,7 +426,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">erase heap buffer)</span></span><br/>
+<span class="end">@end(<span class="name">erase heap buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -442,7 +442,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="add">@add(<span class="name">buffer unit tests</span>)</span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">b</span> = {};<br/>
 <span class="in1"></span>
@@ -454,7 +454,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="var">buffer</span> == <span class="var">b</span>.<span class="var">initial</span>);<br/>
 
-} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+} <span class="end">@end(<span class="name">buffer unit tests</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -464,7 +464,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define buffer)</span></span><br/>
+<span class="add">@add(<span class="name">define buffer</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">void</span> <span class="fn">addCharsToBuffer</span>(<br/>
 <span class="in2"></span>
@@ -486,7 +486,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 }<br/>
 
-<span class="end">@end(<span class="name">define buffer)</span></span><br/>
+<span class="end">@end(<span class="name">define buffer</span>)</span><br/>
 </code>
 </div>
 <ul><li>
@@ -494,7 +494,7 @@ return b-&gt;current;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">buffer unit tests)</span></span> {<br/>
+<span class="add">@add(<span class="name">buffer unit tests</span>)</span> {<br/>
 <span class="in1"></span>
 <span class="type">struct Buffer</span> <span class="var">b</span> = {};<br/>
 <span class="in1"></span>
@@ -512,7 +512,7 @@ return b-&gt;current;<br/>
 <span class="in1"></span>
 <span class="fn">ASSERT</span>(! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">b</span>));<br/>
 
-} <span class="end">@end(<span class="name">buffer unit tests)</span></span><br/>
+} <span class="end">@end(<span class="name">buffer unit tests</span>)</span><br/>
 </code>
 </div>
 <ul><li>
