@@ -698,18 +698,6 @@ void freeFragEntry(
 		return ch;
 	}
 
-	bool hasSuffix(
-		const char *str,
-		const char *suff
-	) {
-		ASSERT(str); ASSERT(suff);
-		int sl = strlen(str);
-		int su = strlen(suff);
-		return sl >= su && 0 == memcmp(
-			str + sl - su, suff, su
-		);
-	}
-
 	enum HtmlState {
 		hs_NOTHING_WRITTEN,
 		hs_IN_SLIDE,
@@ -1606,15 +1594,14 @@ void freeFragEntry(
 	struct Input *cur = used;
 	while (cur) {
 		
-	if (hasSuffix(cur->name, ".x")) {
-		int len = strlen(cur->name) + 4;
-		char *outPath = malloc(len);
-		ASSERT(outPath);
-		memcpy(outPath, cur->name, len - 6);
-		strcpy(outPath + len - 6, ".html");
-		FILE *out = fopen(outPath, "w");
-		ASSERT(out);
-		 
+	int len = strlen(cur->name) + 4;
+	char *outPath = malloc(len);
+	ASSERT(outPath);
+	memcpy(outPath, cur->name, len - 6);
+	strcpy(outPath + len - 6, ".html");
+	FILE *out = fopen(outPath, "w");
+	ASSERT(out);
+	 
 	FILE *in = fopen(cur->name, "r");
 	ASSERT(in);
 	 {
@@ -2222,9 +2209,8 @@ void freeFragEntry(
 } ;
 	fclose(in);
 ;
-		fclose(out);
-		free(outPath);
-	}
+	fclose(out);
+	free(outPath);
 ;
 		struct Input *next = cur->link;
 		free(cur);

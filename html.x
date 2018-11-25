@@ -14,46 +14,23 @@ D{write HTML file}
 x{write HTML file}
 ```
 * Alle bisher prozessierten Dateien werden erneut durchgegangen
-
-```
-A{global elements}
-	k{bool} f{hasSuffix}(
-		t{const char *}v{str},
-		t{const char *}v{suff}
-	) {
-		f{ASSERT}(v{str}); f{ASSERT}(v{suff});
-		t{int} v{sl} = f{strlen}(v{str});
-		t{int} v{su} = f{strlen}(v{suff});
-		k{return} v{sl} >= v{su} && n{0} == f{memcmp}(
-			v{str} + v{sl} - v{su}, v{suff}, v{su}
-		);
-	}
-x{global elements}
-```
-* Um zu prüfen, ob Dateinamen die richtige Endung haben, gibt es eine
-  extra Funktion
+* Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
 
 ```
 d{write cur HTML file}
-	k{if} (f{hasSuffix}(v{cur}->v{name}, s{".x"})) {
-		t{int} v{len} = f{strlen}(v{cur}->v{name}) + n{4};
-		t{char *}v{outPath} = f{malloc}(v{len});
-		f{ASSERT}(v{outPath});
-		f{memcpy}(v{outPath}, v{cur}->v{name}, v{len} - n{6});
-		f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
-		t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
-		f{ASSERT}(v{out});
-		e{write cur HTML file to out};
-		f{fclose}(v{out});
-		f{free}(v{outPath});
-	}
+	t{int} v{len} = f{strlen}(v{cur}->v{name}) + n{4};
+	t{char *}v{outPath} = f{malloc}(v{len});
+	f{ASSERT}(v{outPath});
+	f{memcpy}(v{outPath}, v{cur}->v{name}, v{len} - n{6});
+	f{strcpy}(v{outPath} + v{len} - n{6}, s{".html"});
+	t{FILE *}v{out} = f{fopen}(v{outPath}, s{"w"});
+	f{ASSERT}(v{out});
+	e{write cur HTML file to out};
+	f{fclose}(v{out});
+	f{free}(v{outPath});
 x{write cur HTML file}
 ```
-* Nur `.x`-Dateien werden in HTML konvertiert
-* Die HTML hat den gleichen Pfad mit der Endung `.html`
-* Es sollte zwar keine anderen Dateien geben,
-* Aber um komische Dateinamen durch das ersetzen des letzten Buchstabens
-  zu vermeiden, wird noch einmal geprüft
+* Die HTML hat den gleichen Pfad mit der Endung `.html` anstatt `.x`
 
 ```
 d{write cur HTML file to out} 
@@ -103,7 +80,7 @@ d{write HTML file from in to out} {
 		.v{state} = v{hs_NOTHING_WRITTEN}
 		e{init html status}
 	};
-	char last = '\n';
+	t{char} v{last} = s{'\n'};
 	k{for} (;;) {
 		t{int} v{ch} = f{fgetc}(v{in});
 		e{process ch for HTML};
@@ -125,7 +102,7 @@ x{move ch to last}
 ```
 * Beim Kopieren des Zeichens wird `k{EOF}` durch `s{'\0'}` ersetzt
 
-## Überschriften
+# Überschriften
 
 ```
 d{html state enums}
@@ -164,13 +141,18 @@ a{html state elements}
 	t{enum HtmlState} v{headerState};
 x{html state elements}
 ```
+* Für Überschriften wird abgelegt, auf welchem Level sie vorkommen
+* Und der Titel der Überschrift wird gespeichert
+* Und der Zustand in dem sich der Parser beim Auftreten der Überschrift
+  befunden hat
 
 ```
 d{init html status}
-	, .v{headerLevel} = 0
+	, .v{headerLevel} = n{0}
 	, .v{headerName} = {}
 x{init html status}
 ```
+* Level und Name werden leer initialisiert
 
 ```
 d{process ch for HTML} 
@@ -188,6 +170,10 @@ d{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Wenn am Anfang einer Zeile eine Raute gelesen wird, dann beginnt eine
+  Überschrift
+* Solange weitere Rauten folgen, wird der Level erhöht
+* Bei der ersten Raute muss der alte Zustand gesichert werden
 
 ```
 a{process ch for HTML} 
@@ -201,6 +187,8 @@ a{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Wenn die Zeile mit der Überschrift beendet wurde, wird die
+  Überschrift ausgegeben
 
 ```
 d{reset header state} 
@@ -210,6 +198,8 @@ d{reset header state}
 	status.headerState = hs_IN_SLIDE;
 x{reset header state}
 ```
+* Beim Zurücksetzen des Zustands wird sichergestellt, das der Level und
+  Name der Überschrift zurückgesetzt sind
 
 ```
 a{process ch for HTML} 
@@ -222,6 +212,8 @@ a{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Innerhalb der Überschrift wird das aktuelle Zeichen zur Überschrift
+  hinzugefügt
 
 ```
 a{process ch for HTML} 
@@ -236,6 +228,7 @@ a{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Leerzeichen zwischen den Rauten und der Überschrift werden ignoriert
 
 ```
 d{process header in HTML} 
@@ -248,6 +241,9 @@ d{process header in HTML}
 	f{fprintf}(v{out}, s{"</div>\n"});
 x{process header in HTML}
 ```
+* Falls schon eine Seite offen ist, dann wird diese geschlossen
+* Dann wird eine HTML-Überschrift ausgegeben
+* Und eine Folie mit einer HTML-Überschrift wird erzeugt
 
 ```
 A{global elements} 
@@ -268,6 +264,8 @@ A{global elements}
 	}
 x{global elements}
 ```
+* Zeichen, die einen HTML-Befehl einleiten können, werden durch passende
+  Entitäten ersetzt
 
 ```
 d{write header tag} 
@@ -280,6 +278,7 @@ d{write header tag}
 	f{fprintf}(v{out}, s{"</h%d>\n"}, v{status}.v{headerLevel});
 x{write header tag}
 ```
+* Die HTML-Überschrift enthält den eingelesenen Level
 
 ```
 d{close previous HTML page} 
@@ -299,6 +298,8 @@ d{close previous HTML page}
 	}
 x{close previous HTML page}
 ```
+* Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen
+  werden
 
 ```
 d{write HTML header} 
@@ -310,6 +311,9 @@ d{write HTML header}
 	f{fprintf}(v{out}, s{"<body>\n"});
 x{write HTML header}
 ```
+* Dies wird am Anfang der HTML-Datei ausgegeben
+* Dafür muss jede `.x`-Datei mit einer Überschrift beginnen
+* Diese Überschrift ist dann auch der Titel der HTML-Datei
 
 ```
 d{write HTML header entries} 
@@ -331,12 +335,19 @@ d{write HTML header entries}
 	);
 x{write HTML header entries}
 ```
+* Im Header wird das Zeichenformat auf UTF-8 gesetzt
+* Und der Titel ausgegeben
+* Und die Stylesheet-Datei eingebunden
+
+# Code formatieren
+* Code kann auf Seiten oder in den Notizen ausgegeben werden
 
 ```
 a{html state enums}
 	, v{hs_IN_CODE}
 x{html state enums}
 ```
+* Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
 
 ```
 a{check html special state}
@@ -345,6 +356,7 @@ a{check html special state}
 	}
 x{check html special state}
 ```
+* Die Code-Ausgabe ist ein besonderer Zustand
 
 ```
 a{html state elements}
