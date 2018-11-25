@@ -997,7 +997,7 @@ void freeFragEntry(
 ;
 	{
 		
-	struct Frag *macro = NULL;
+	struct Frag *frag = NULL;
 	struct Buffer buffer = {};
 	int bufferLine = 0;
 
@@ -1013,7 +1013,7 @@ void freeFragEntry(
 	switch (ch) {
 		case '{':
 			 {
-	if (! macro) {
+	if (! frag) {
 		static const char valids[] = "aAdDirR";
 		if (strchr(valids, last)) {
 			openCh = last;
@@ -1022,7 +1022,7 @@ void freeFragEntry(
 		}
 	}
 }  {
-	if (macro) {
+	if (frag) {
 		bool valid = false;
 		
 	static const char valids[] =
@@ -1039,7 +1039,7 @@ void freeFragEntry(
 		}
 	}
 } 
-	if (macro) {
+	if (frag) {
 		if (! isActiveBuffer(& buffer)) 
 			bufferLine = input->line;
 		
@@ -1054,22 +1054,22 @@ void freeFragEntry(
 		addToBuffer(&name, '\0');
 		
 	if (openCh == 'd') {
-		ASSERT(! macro, "def in macro");
+		ASSERT(! frag, "def in frag");
 		struct FragMap *fm = &input->frags;
 		
-	macro = findFragInMap(
+	frag = findFragInMap(
 		fm, name.buffer,
 		name.current - 1
 	);
-	if (isPopulatedFrag(macro)) {
+	if (isPopulatedFrag(frag)) {
 		printf(
-			"macro [%s] already defined\n",
+			"frag [%s] already defined\n",
 			name.buffer
 		);
 	}
 ;
-		if (! macro) {
-			macro = allocFragInMap(
+		if (! frag) {
+			frag = allocFragInMap(
 				fm, name.buffer,
 				name.current - 1
 			);
@@ -1078,22 +1078,22 @@ void freeFragEntry(
 	}
 
 	if (openCh == 'D') {
-		ASSERT(! macro, "def in macro");
+		ASSERT(! frag, "def in frag");
 		struct FragMap *fm = frags;
 		
-	macro = findFragInMap(
+	frag = findFragInMap(
 		fm, name.buffer,
 		name.current - 1
 	);
-	if (isPopulatedFrag(macro)) {
+	if (isPopulatedFrag(frag)) {
 		printf(
-			"macro [%s] already defined\n",
+			"frag [%s] already defined\n",
 			name.buffer
 		);
 	}
 ;
-		if (! macro) {
-			macro = allocFragInMap(
+		if (! frag) {
+			frag = allocFragInMap(
 				&root, name.buffer,
 				name.current - 1
 			);
@@ -1102,20 +1102,20 @@ void freeFragEntry(
 	}
 
 	if (openCh == 'a') {
-		ASSERT(! macro, "add in macro");
+		ASSERT(! frag, "add in frag");
 		struct FragMap *fm = &input->frags;
 		struct FragMap *ins = fm;
-		macro = findFragInMap(
+		frag = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
 		);
 		
-	if (! isPopulatedFrag(macro)) {
+	if (! isPopulatedFrag(frag)) {
 		printf(
-			"macro [%s] not defined\n",
+			"frag [%s] not defined\n",
 			name.buffer
 		);
-		macro = getFragInMap(
+		frag = getFragInMap(
 			fm, name.buffer,
 			name.current - 1,
 			ins
@@ -1126,20 +1126,20 @@ void freeFragEntry(
 	}
 
 	if (openCh == 'A') {
-		ASSERT(! macro, "add in macro");
+		ASSERT(! frag, "add in frag");
 		struct FragMap *fm = frags;
 		struct FragMap *ins = &root;
-		macro = findFragInMap(
+		frag = findFragInMap(
 			fm, name.buffer,
 			name.current - 1
 		);
 		
-	if (! isPopulatedFrag(macro)) {
+	if (! isPopulatedFrag(frag)) {
 		printf(
-			"macro [%s] not defined\n",
+			"frag [%s] not defined\n",
 			name.buffer
 		);
-		macro = getFragInMap(
+		frag = getFragInMap(
 			fm, name.buffer,
 			name.current - 1,
 			ins
@@ -1150,40 +1150,40 @@ void freeFragEntry(
 	}
 
 	if (openCh == 'r') {
-		ASSERT(! macro, "replace in macro");
-		macro = getFragInMap(
+		ASSERT(! frag, "replace in frag");
+		frag = getFragInMap(
 			&input->frags, name.buffer,
 			name.current - 1, &input->frags
 		);
 		ASSERT(
-			macro, "macro %s not defined",
+			frag, "frag %s not defined",
 			name.buffer
 		);
-		freeFragEntries(macro);
+		freeFragEntries(frag);
 		processed = true;
 	}
 
 	if (openCh == 'R') {
-		ASSERT(! macro, "replace in macro");
-		macro = getFragInMap(
+		ASSERT(! frag, "replace in frag");
+		frag = getFragInMap(
 			frags, name.buffer,
 			name.current - 1, &root
 		);
 		ASSERT(
-			macro, "macro %s not defined",
+			frag, "frag %s not defined",
 			name.buffer
 		);
-		freeFragEntries(macro);
+		freeFragEntries(frag);
 		processed = true;
 	}
 
 	if (openCh == 'x') {
-		ASSERT(macro, "end not in macro");
+		ASSERT(frag, "end not in frag");
 		
 	ASSERT(
-		! strcmp(macro->name, name.buffer),
+		! strcmp(frag->name, name.buffer),
 		"closing [%s] != [%s]",
-		name.buffer, macro->name
+		name.buffer, frag->name
 	);
 ;
 		
@@ -1191,19 +1191,19 @@ void freeFragEntry(
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
 		resetBuffer(&buffer);
 	}
 ;
-		macro = NULL;
+		frag = NULL;
 		processed = true;
 	}
 
 	if (openCh == 'i') {
-		ASSERT(! macro, "include in macro");
+		ASSERT(! frag, "include in frag");
 		if (! alreadyUsed(name.buffer)) {
 			pushPath(name.buffer);
 		}
@@ -1211,13 +1211,13 @@ void freeFragEntry(
 	}
 
 	if (openCh == 'e') {
-		ASSERT(macro, "expand not in macro");
+		ASSERT(frag, "expand not in frag");
 		
 	if (
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
@@ -1243,18 +1243,18 @@ void freeFragEntry(
 	}
 ;
 		++sub->expands;
-		addFragToFrag(macro, sub);
+		addFragToFrag(frag, sub);
 		processed = true;
 	}
 
 	if (openCh == 'g') {
-		ASSERT(macro, "expand not in macro");
+		ASSERT(frag, "expand not in frag");
 		
 	if (
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
@@ -1280,18 +1280,18 @@ void freeFragEntry(
 	}
 ;
 		++sub->expands;
-		addFragToFrag(macro, sub);
+		addFragToFrag(frag, sub);
 		processed = true;
 	}
 
 	if (openCh == 'E') {
-		ASSERT(macro, "multiple not in macro");
+		ASSERT(frag, "multiple not in frag");
 		
 	if (
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
@@ -1314,18 +1314,18 @@ void freeFragEntry(
 ;
 		++sub->multiples;
 		addFragToFrag(
-			macro, sub);
+			frag, sub);
 		processed = true;
 	}
 
 	if (openCh == 'G') {
-		ASSERT(macro, "multiple not in macro");
+		ASSERT(frag, "multiple not in frag");
 		
 	if (
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
@@ -1348,12 +1348,12 @@ void freeFragEntry(
 ;
 		++sub->multiples;
 		addFragToFrag(
-			macro, sub);
+			frag, sub);
 		processed = true;
 	}
 
 	if (openCh == 'p') {
-		ASSERT(macro, "private not in macro");
+		ASSERT(frag, "private not in frag");
 		
 	unsigned cur = initHash();
 	cur = addTerminatedToHash(
@@ -1380,7 +1380,7 @@ void freeFragEntry(
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
@@ -1389,16 +1389,16 @@ void freeFragEntry(
 ;
 	static char prefix[] = "_private_";
 	addBytesToFrag(
-		macro, prefix,
+		frag, prefix,
 		prefix + sizeof(prefix) - 1,
 		input->name, nameLine
 	);
 	addBytesToFrag(
-		macro, head, end,
+		frag, head, end,
 		input->name, nameLine
 	);
 	addBytesToFrag(
-		macro, name.buffer, name.current - 1,
+		frag, name.buffer, name.current - 1,
 		input->name, nameLine
 	);
 ;
@@ -1406,7 +1406,7 @@ void freeFragEntry(
 	}
 
 	if (openCh == 'm') {
-		ASSERT(macro, "magic not in macro");
+		ASSERT(frag, "magic not in frag");
 		
 	unsigned cur = initHash();
 	cur = addTerminatedToHash(
@@ -1431,7 +1431,7 @@ void freeFragEntry(
 		buffer.buffer != buffer.current
 	) {
 		addBytesToFrag(
-			macro, buffer.buffer,
+			frag, buffer.buffer,
 			buffer.current,
 			input->name, bufferLine
 		);
@@ -1439,7 +1439,7 @@ void freeFragEntry(
 	}
 ;
 	addBytesToFrag(
-		macro, head, end,
+		frag, head, end,
 		input->name, nameLine
 	);
 ;
@@ -1448,7 +1448,7 @@ void freeFragEntry(
 
 	if (! processed) {
 		ASSERT(
-			macro, "unknown macro %s",
+			frag, "unknown frag %s",
 			name.buffer
 		);
 		const char *c = name.buffer;
@@ -1466,7 +1466,7 @@ void freeFragEntry(
 		ch = nextCh();
 	}
 } 
-	if (macro && ! processed) {
+	if (frag && ! processed) {
 		if (! isActiveBuffer(& buffer)) 
 			bufferLine = input->line;
 		
@@ -1482,9 +1482,9 @@ void freeFragEntry(
 		break;
 	}
 }  {
-	if (macro) {
-		if (! isActiveBuffer(& buffer)) 
-			vbufferLine = input->line;
+	if (frag) {
+		if (! isActiveBuffer(&buffer)) {
+			bufferLine = input->line;
 		}
 		addToBuffer(&buffer, last);
 	}
@@ -1500,46 +1500,46 @@ void freeFragEntry(
 	struct Frag **end =
 		cur + FRAG_SLOTS;
 	for (; cur < end; ++cur) {
-		struct Frag *macro = *cur;
-		for (; macro; macro = macro->link) {
+		struct Frag *frag = *cur;
+		for (; frag; frag = frag->link) {
 			
 	if (! memcmp(
-		"file: ", macro->name, 6
+		"file: ", frag->name, 6
 	)) {
-		++macro->expands;
+		++frag->expands;
 		
 	FILE *f =
-		fopen(macro->name + 6, "w");
+		fopen(frag->name + 6, "w");
 	ASSERT(
 		f, "can't open %s",
-		macro->name + 6
+		frag->name + 6
 	);
-	serializeFrag(macro, f, false);
+	serializeFrag(frag, f, false);
 	fclose(f);
 ;
 	}
  {
 	int sum =
-		macro->expands + macro->multiples;
+		frag->expands + frag->multiples;
 	if (sum <= 0) {
 		printf(
-			"macro [%s] not called\n",
-			macro->name
+			"frag [%s] not called\n",
+			frag->name
 		);
 	}
 } 
-	if (macro->multiples == 1) {
+	if (frag->multiples == 1) {
 		printf(
-			"multiple macro [%s] only "
+			"multiple frag [%s] only "
 				"used once\n",
-			macro->name
+			frag->name
 		);
 	}
 
-	if (! isPopulatedFrag(macro)) {
+	if (! isPopulatedFrag(frag)) {
 		printf(
-			"macro [%s] not populated\n",
-			macro->name
+			"frag [%s] not populated\n",
+			frag->name
 		);
 	}
 ;
@@ -1554,50 +1554,50 @@ void freeFragEntry(
 		struct Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
-			struct Frag *macro = *cur;
-			while (macro) {
+			struct Frag *frag = *cur;
+			while (frag) {
 				
 	if (! memcmp(
-		"file: ", macro->name, 6
+		"file: ", frag->name, 6
 	)) {
-		++macro->expands;
+		++frag->expands;
 		
 	FILE *f =
-		fopen(macro->name + 6, "w");
+		fopen(frag->name + 6, "w");
 	ASSERT(
 		f, "can't open %s",
-		macro->name + 6
+		frag->name + 6
 	);
-	serializeFrag(macro, f, false);
+	serializeFrag(frag, f, false);
 	fclose(f);
 ;
 	}
  {
 	int sum =
-		macro->expands + macro->multiples;
+		frag->expands + frag->multiples;
 	if (sum <= 0) {
 		printf(
-			"macro [%s] not called\n",
-			macro->name
+			"frag [%s] not called\n",
+			frag->name
 		);
 	}
 } 
-	if (macro->multiples == 1) {
+	if (frag->multiples == 1) {
 		printf(
-			"multiple macro [%s] only "
+			"multiple frag [%s] only "
 				"used once\n",
-			macro->name
+			frag->name
 		);
 	}
 
-	if (! isPopulatedFrag(macro)) {
+	if (! isPopulatedFrag(frag)) {
 		printf(
-			"macro [%s] not populated\n",
-			macro->name
+			"frag [%s] not populated\n",
+			frag->name
 		);
 	}
 ;
-				macro = macro->link;
+				frag = frag->link;
 			}
 		}
 	}

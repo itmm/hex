@@ -382,7 +382,7 @@ x{process current char}
 
 ```
 d{additional read vars}
-	t{struct Frag *}v{macro} = k{NULL};
+	t{struct Frag *}v{frag} = k{NULL};
 	t{struct Buffer} v{buffer} = {};
 	t{int} v{bufferLine} = n{0};
 x{additional read vars}
@@ -391,7 +391,7 @@ x{additional read vars}
 * In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
   gelesen wird
 * Am Anfang sind wir außerhalb eines Code-Blocks
-* In einem Code-Block ist `v{macro}` nicht `k{NULL}`
+* In einem Code-Block ist `v{frag}` nicht `k{NULL}`
 
 ```
 a{additional read vars}
@@ -414,7 +414,7 @@ x{additional read vars}
 d{process close brace} {
 	k{if} (f{isActiveBuffer}(&v{name})) {
 		f{addToBuffer}(&v{name}, s{'\0'});
-		e{process macro name};
+		e{process frag name};
 		f{resetBuffer}(&v{name});
 		v{last} = v{ch};
 		v{ch} = f{nextCh}();
@@ -437,8 +437,8 @@ d{process other char} {
 
 ```
 a{process other char} {
-	k{if} (v{macro}) {
-		if (! f{isActiveBuffer}(&v{buffer)) {
+	k{if} (v{frag}) {
+		if (! f{isActiveBuffer}(&v{buffer})) {
 			v{bufferLine} = v{input}->v{line};
 		}
 		f{addToBuffer}(&v{buffer}, v{last});
@@ -450,7 +450,7 @@ a{process other char} {
 
 ```
 d{process open brace} {
-	k{if} (! v{macro}) {
+	k{if} (! v{frag}) {
 		k{static} t{const char} v{valids}t{[]} = s{"aAdDirR"};
 		k{if} (f{strchr}(v{valids}, v{last})) {
 			v{openCh} = v{last};
@@ -468,52 +468,52 @@ d{process open brace} {
   nächsten `}`
 
 ```
-d{process macro name}
+d{process frag name}
 	k{if} (v{openCh} == s{'d'}) {
-		f{ASSERT}(! v{macro}, s{"def in macro"});
+		f{ASSERT}(! v{frag}, s{"def in frag"});
 		t{struct FragMap *}v{fm} = &v{input}->v{frags};
 		E{check for double def};
-		k{if} (! v{macro}) {
-			v{macro} = f{allocFragInMap}(
+		k{if} (! v{frag}) {
+			v{frag} = f{allocFragInMap}(
 				v{fm}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		}
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Erzeugt ein neues Fragment
 * Das Fragment darf nicht mehrfach definiert werden
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'D'}) {
-		f{ASSERT}(! v{macro}, s{"def in macro"});
+		f{ASSERT}(! v{frag}, s{"def in frag"});
 		t{struct FragMap *}v{fm} = v{frags};
 		E{check for double def};
-		k{if} (! v{macro}) {
-			v{macro} = f{allocFragInMap}(
+		k{if} (! v{frag}) {
+			v{frag} = f{allocFragInMap}(
 				&v{root}, v{name}.v{buffer},
 				v{name}.v{current} - n{1}
 			);
 		}
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Erzeugt ein neues Fragment im globalen Namensraum
 * Das Fragment darf nicht mehrfach definiert werden
 
 ```
 d{check for double def}
-	v{macro} = f{findFragInMap}(
+	v{frag} = f{findFragInMap}(
 		v{fm}, v{name}.v{buffer},
 		v{name}.v{current} - n{1}
 	);
-	k{if} (f{isPopulatedFrag}(v{macro})) {
+	k{if} (f{isPopulatedFrag}(v{frag})) {
 		f{printf}(
-			s{"macro [%s] already defined\n"},
+			s{"frag [%s] already defined\n"},
 			v{name}.v{buffer}
 		);
 	}
@@ -525,48 +525,48 @@ x{check for double def}
 * Bricht aber die Abarbeitung nicht ab
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'a'}) {
-		f{ASSERT}(! v{macro}, s{"add in macro"});
+		f{ASSERT}(! v{frag}, s{"add in frag"});
 		t{struct FragMap *}v{fm} = &v{input}->v{frags};
 		t{struct FragMap *}v{ins} = v{fm};
-		v{macro} = f{findFragInMap}(
+		v{frag} = f{findFragInMap}(
 			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		E{check for add without def};
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Bei einem öffnenden Befehl wird das passende Fragment gesucht
 * Weitere Bytes können zu diesem Fragment hinzugefügt werden
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'A'}) {
-		f{ASSERT}(! v{macro}, s{"add in macro"});
+		f{ASSERT}(! v{frag}, s{"add in frag"});
 		t{struct FragMap *}v{fm} = v{frags};
 		t{struct FragMap *}v{ins} = &v{root};
-		v{macro} = f{findFragInMap}(
+		v{frag} = f{findFragInMap}(
 			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}
 		);
 		E{check for add without def};
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Erweitert ein global definiertes Fragment
 
 ```
 d{check for add without def}
-	k{if} (! f{isPopulatedFrag}(v{macro})) {
+	k{if} (! f{isPopulatedFrag}(v{frag})) {
 		f{printf}(
-			s{"macro [%s] not defined\n"},
+			s{"frag [%s] not defined\n"},
 			v{name}.v{buffer}
 		);
-		v{macro} = f{getFragInMap}(
+		v{frag} = f{getFragInMap}(
 			v{fm}, v{name}.v{buffer},
 			v{name}.v{current} - n{1},
 			v{ins}
@@ -577,65 +577,65 @@ x{check for add without def}
 * Das Fragment muss bereits vorhanden und nicht leer sein
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'r'}) {
-		f{ASSERT}(! v{macro}, s{"replace in macro"});
-		v{macro} = f{getFragInMap}(
+		f{ASSERT}(! v{frag}, s{"replace in frag"});
+		v{frag} = f{getFragInMap}(
 			&v{input}->v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}, &v{input}->v{frags}
 		);
 		f{ASSERT}(
-			v{macro}, s{"macro %s not defined"},
+			v{frag}, s{"frag %s not defined"},
 			v{name}.v{buffer}
 		);
-		f{freeFragEntries}(v{macro});
+		f{freeFragEntries}(v{frag});
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Bei einem `@replace` wird der Inhalt eines Fragments zurückgesetzt
 * Das Fragment muss bereits vorhanden sein
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'R'}) {
-		f{ASSERT}(! v{macro}, s{"replace in macro"});
-		v{macro} = f{getFragInMap}(
+		f{ASSERT}(! v{frag}, s{"replace in frag"});
+		v{frag} = f{getFragInMap}(
 			v{frags}, v{name}.v{buffer},
 			v{name}.v{current} - n{1}, &v{root}
 		);
 		f{ASSERT}(
-			v{macro}, s{"macro %s not defined"},
+			v{frag}, s{"frag %s not defined"},
 			v{name}.v{buffer}
 		);
-		f{freeFragEntries}(v{macro});
+		f{freeFragEntries}(v{frag});
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Ersetzt ein global definiertes Fragment
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'x'}) {
-		f{ASSERT}(v{macro}, s{"end not in macro"});
-		e{macro names must match};
-		E{flush macro buffer};
-		v{macro} = k{NULL};
+		f{ASSERT}(v{frag}, s{"end not in frag"});
+		e{frag names must match};
+		E{flush frag buffer};
+		v{frag} = k{NULL};
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
 
 ```
-d{macro names must match}
+d{frag names must match}
 	f{ASSERT}(
-		! f{strcmp}(v{macro}->v{name}, v{name}.v{buffer}),
+		! f{strcmp}(v{frag}->v{name}, v{name}.v{buffer}),
 		s{"closing [%s] != [%s]"},
-		v{name}.v{buffer}, v{macro}->v{name}
+		v{name}.v{buffer}, v{frag}->v{name}
 	);
-x{macro names must match}
+x{frag names must match}
 ```
 * Wenn der öffnende und schließende Name nicht passt, wird die
   Abarbeitung abgebrochen
@@ -665,35 +665,35 @@ x{global source vars}
   verarbeitet wird
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'i'}) {
-		f{ASSERT}(! v{macro}, s{"include in macro"});
+		f{ASSERT}(! v{frag}, s{"include in frag"});
 		k{if} (! f{alreadyUsed}(v{name}.v{buffer})) {
 			f{pushPath}(v{name}.v{buffer});
 		}
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
   auf den Stapel der offenen Dateien gelegt
 * Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'e'}) {
-		f{ASSERT}(v{macro}, s{"expand not in macro"});
-		E{flush macro buffer};
+		f{ASSERT}(v{frag}, s{"expand not in frag"});
+		E{flush frag buffer};
 		t{struct Frag *}v{sub} = f{getFragInMap}(
 			&v{input}->v{frags}, v{name}.buffer,
 			v{name}.v{current} - n{1}, &v{input}->v{frags}
 		);
-		E{check macro expand count};
+		E{check frag expand count};
 		++sub->expands;
-		f{addFragToFrag}(v{macro}, v{sub});
+		f{addFragToFrag}(v{frag}, v{sub});
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Bei einem `@expand` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
@@ -701,24 +701,24 @@ x{process macro name}
   wurde
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'g'}) {
-		f{ASSERT}(v{macro}, s{"expand not in macro"});
-		E{flush macro buffer};
+		f{ASSERT}(v{frag}, s{"expand not in frag"});
+		E{flush frag buffer};
 		t{struct Frag *}v{sub} = f{getFragInMap}(
 			v{frags}, v{name}.buffer,
 			v{name}.v{current} - n{1}, &v{root}
 		);
-		E{check macro expand count};
+		E{check frag expand count};
 		++sub->expands;
-		f{addFragToFrag}(v{macro}, v{sub});
+		f{addFragToFrag}(v{frag}, v{sub});
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 
 ```
-d{check macro expand count}
+d{check frag expand count}
 	k{if} (v{sub}->v{expands}) {
 		f{printf}(
 			s{"multiple expands of [%s]\n"},
@@ -731,7 +731,7 @@ d{check macro expand count}
 			v{sub}->v{name}
 		);
 	}
-x{check macro expand count}
+x{check frag expand count}
 ```
 * Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
   ausgegeben
@@ -739,10 +739,10 @@ x{check macro expand count}
   ebenfalls eine Meldung ausgegeben
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'E'}) {
-		f{ASSERT}(v{macro}, s{"multiple not in macro"});
-		E{flush macro buffer};
+		f{ASSERT}(v{frag}, s{"multiple not in frag"});
+		E{flush frag buffer};
 		t{struct Frag *}v{sub} =
 			f{getFragInMap}(
 				&v{input}->v{frags}, v{name}.v{buffer},
@@ -751,19 +751,19 @@ a{process macro name}
 		E{check for prev expands};
 		++sub->multiples;
 		f{addFragToFrag}(
-			v{macro}, v{sub});
+			v{frag}, v{sub});
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'G'}) {
-		f{ASSERT}(v{macro}, s{"multiple not in macro"});
-		E{flush macro buffer};
+		f{ASSERT}(v{frag}, s{"multiple not in frag"});
+		E{flush frag buffer};
 		t{struct Frag *}v{sub} =
 			f{getFragInMap}(
 				v{frags}, v{name}.v{buffer},
@@ -772,10 +772,10 @@ a{process macro name}
 		E{check for prev expands};
 		++sub->multiples;
 		f{addFragToFrag}(
-			v{macro}, v{sub});
+			v{frag}, v{sub});
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 
 ```
@@ -793,19 +793,19 @@ x{check for prev expands}
   wurde
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'p'}) {
-		f{ASSERT}(v{macro}, s{"private not in macro"});
-		e{process private macro};
+		f{ASSERT}(v{frag}, s{"private not in frag"});
+		e{process private frag};
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Private Bezeichner werden durch einen Hash erweitert
 * Um sie global unique zu machen
 
 ```
-d{process private macro}
+d{process private frag}
 	t{unsigned} v{cur} = f{initHash}();
 	v{cur} = f{addTerminatedToHash}(
 		v{cur}, v{input}->v{name}
@@ -814,14 +814,14 @@ d{process private macro}
 		v{cur}, v{name}.v{buffer}, v{name}.v{current}
 	);
 	v{cur} &= n{0x7fffffff};
-x{process private macro}
+x{process private frag}
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
 * Und dem aktuellen Bezeichner berechnet
 * Zum Schluss wird er auf eine positive Zahl maskiert
 
 ```
-a{process private macro}
+a{process private frag}
 	t{static char} v{hash}t{[12]};
 	t{char *}v{end} = v{hash} + f{sizeof}(v{hash});
 	t{char *}v{head} = v{end};
@@ -832,30 +832,30 @@ a{process private macro}
 		v{cur} /= n{10};
 		k{if} (! v{cur}) { k{break}; }
 	}
-x{process private macro}
+x{process private frag}
 ```
 * Das Textfeld mit dem Hash-Wert wird von hinten aus gefüllt
 * Das erleichtert das extrahieren der einzelnen Dezimal-Stellen
 * Zusätzlich wird noch ein Unterstrich an den Hash angehängt
 
 ```
-a{process private macro}
-	E{flush macro buffer};
+a{process private frag}
+	E{flush frag buffer};
 	t{static char} v{prefix}t{[]} = s{"_private_"};
 	f{addBytesToFrag}(
-		v{macro}, v{prefix},
+		v{frag}, v{prefix},
 		v{prefix} + f{sizeof}(v{prefix}) - n{1},
 		v{input}->v{name}, v{nameLine}
 	);
 	f{addBytesToFrag}(
-		v{macro}, v{head}, v{end},
+		v{frag}, v{head}, v{end},
 		v{input}->v{name}, v{nameLine}
 	);
 	f{addBytesToFrag}(
-		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1},
+		v{frag}, v{name}.v{buffer}, v{name}.v{current} - n{1},
 		v{input}->v{name}, v{nameLine}
 	);
-x{process private macro}
+x{process private frag}
 ```
 * Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
 * Dann kommt der neue Bezeichner
@@ -864,20 +864,20 @@ x{process private macro}
 * Und dem alten Bezeichner
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (v{openCh} == s{'m'}) {
-		f{ASSERT}(v{macro}, "magic not in macro");
-		e{process magic macro};
+		f{ASSERT}(v{frag}, "magic not in frag");
+		e{process magic frag};
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Der `@magic`-Befehl erzeugt einen Hash-Wert
 * Der sich aus dem Dateinamen und dem Argument des Befehls
   zusammen setzt
 
 ```
-d{process magic macro}
+d{process magic frag}
 	t{unsigned} v{cur} = f{initHash}();
 	v{cur} = f{addTerminatedToHash}(
 		v{cur}, v{input}->v{name}
@@ -886,12 +886,12 @@ d{process magic macro}
 		v{cur}, v{name}.v{buffer}, v{name}.v{current}
 	);
 	v{cur} &= n{0x7fffffff};
-x{process magic macro}
+x{process magic frag}
 ```
 * Berechnet Hash-Wert
 
 ```
-a{process magic macro}
+a{process magic frag}
 	t{static char} v{magic}t{[12]};
 	t{char *}v{end} = v{magic} + f{sizeof}(v{magic});
 	t{char *}v{head} = v{end};
@@ -901,36 +901,36 @@ a{process magic macro}
 		v{cur} /= n{10};
 		k{if} (! v{cur}) { k{break}; }
 	}
-	E{flush macro buffer};
+	E{flush frag buffer};
 	f{addBytesToFrag}(
-		v{macro}, v{head}, v{end},
+		v{frag}, v{head}, v{end},
 		v{input}->v{name}, v{nameLine}
 	);
-x{process magic macro}
+x{process magic frag}
 ```
 * Gibt den Hash-Wert aus
 * Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 
 ```
-d{flush macro buffer}
+d{flush frag buffer}
 	k{if} (
 		v{buffer}.v{buffer} != v{buffer}.v{current}
 	) {
 		f{addBytesToFrag}(
-			v{macro}, v{buffer}.v{buffer},
+			v{frag}, v{buffer}.v{buffer},
 			v{buffer}.v{current},
 			v{input}->v{name}, v{bufferLine}
 		);
 		f{resetBuffer}(&v{buffer});
 	}
-x{flush macro buffer}
+x{flush frag buffer}
 ```
 * Das Fragment fügt alle Bytes im Buffer an ein Fragment an
 * Danach wird der Buffer zurück gesetzt
 
 ```
 a{process open brace} {
-	k{if} (v{macro}) {
+	k{if} (v{frag}) {
 		t{bool} v{valid} = k{false};
 		e{check valid names};
 		k{if} (v{valid}) {
@@ -961,10 +961,10 @@ x{check valid names}
 * Wenn das Zeichen im String vorkommt, dann ist es gültig
 
 ```
-a{process macro name}
+a{process frag name}
 	k{if} (! v{processed}) {
 		f{ASSERT}(
-			v{macro}, s{"unknown macro %s"},
+			v{frag}, s{"unknown frag %s"},
 			v{name}.v{buffer}
 		);
 		t{const char *}v{c} = v{name}.v{buffer};
@@ -976,7 +976,7 @@ a{process macro name}
 		}
 		v{processed} = k{true};
 	}
-x{process macro name}
+x{process frag name}
 ```
 * Wenn kein bekannter Befehl erkannt wurde, dann ist die
   befehlsähnliche Eingabe Teil des Programms
@@ -984,7 +984,7 @@ x{process macro name}
 
 ```
 a{process open brace}
-	k{if} (v{macro}) {
+	k{if} (v{frag}) {
 		if (! isActiveBuffer(&v{buffer)) {
 			bufferLine = input->line;
 		}
@@ -998,7 +998,7 @@ x{process open brace}
 
 ```
 a{process close brace}
-	k{if} (v{macro} && ! v{processed}) {
+	k{if} (v{frag} && ! v{processed}) {
 		if (! isActiveBuffer(&v{buffer)) {
 			bufferLine = input->line;
 		}
@@ -1020,9 +1020,9 @@ d{serialize fragments} {
 	t{struct Frag **}v{end} =
 		v{cur} + v{FRAG_SLOTS};
 	k{for} (; v{cur} < v{end}; ++v{cur}) {
-		t{struct Frag *}v{macro} = *v{cur};
-		k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
-			E{serialize macro};
+		t{struct Frag *}v{frag} = *v{cur};
+		k{for} (; v{frag}; v{frag} = v{frag}->v{link}) {
+			E{serialize frag};
 		}
 	}
 } x{serialize fragments}
@@ -1042,10 +1042,10 @@ a{serialize fragments} {
 		t{struct Frag **}v{end} =
 			v{cur} + v{FRAG_SLOTS};
 		k{for} (; v{cur} < v{end}; ++v{cur}) {
-			t{struct Frag *}v{macro} = *v{cur};
-			k{while} (v{macro}) {
-				E{serialize macro};
-				v{macro} = v{macro}->v{link};
+			t{struct Frag *}v{frag} = *v{cur};
+			k{while} (v{frag}) {
+				E{serialize frag};
+				v{frag} = v{frag}->v{link};
 			}
 		}
 	}
@@ -1054,58 +1054,58 @@ a{serialize fragments} {
 * Auch alle lokalen Fragmente bearbeiten
 
 ```
-d{serialize macro}
+d{serialize frag}
 	k{if} (! f{memcmp}(
-		s{"file: "}, macro->name, n{6}
+		s{"file: "}, frag->name, n{6}
 	)) {
-		++v{macro}->v{expands};
+		++v{frag}->v{expands};
 		e{write in file};
 	}
-x{serialize macro}
+x{serialize frag}
 ```
 * Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in die
   passende Datei geschrieben
 * Zusätzlich zählt das als eine Expansion
 
 ```
-a{serialize macro} {
+a{serialize frag} {
 	t{int} v{sum} =
-		v{macro}->v{expands} + v{macro}->v{multiples};
+		v{frag}->v{expands} + v{frag}->v{multiples};
 	k{if} (v{sum} <= n{0}) {
 		f{printf}(
-			s{"macro [%s] not called\n"},
-			v{macro}->v{name}
+			s{"frag [%s] not called\n"},
+			v{frag}->v{name}
 		);
 	}
-} x{serialize macro}
+} x{serialize frag}
 ```
 * Ein Fragment wurde nicht aufgerufen
 * Dies wird mit einer Meldung quittiert
 
 ```
-a{serialize macro}
-	k{if} (v{macro}->v{multiples} == n{1}) {
+a{serialize frag}
+	k{if} (v{frag}->v{multiples} == n{1}) {
 		f{printf}(
-			s{"multiple macro [%s] only "}
+			s{"multiple frag [%s] only "}
 				s{"used once\n"},
-			v{macro}->v{name}
+			v{frag}->v{name}
 		);
 	}
-x{serialize macro}
+x{serialize frag}
 ```
 * Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur
   einmal verwendet
 * Dies wird mit einer Meldung quittiert
 
 ```
-a{serialize macro}
-	k{if} (! f{isPopulatedFrag}(v{macro})) {
+a{serialize frag}
+	k{if} (! f{isPopulatedFrag}(v{frag})) {
 		f{printf}(
-			s{"macro [%s] not populated\n"},
-			v{macro}->v{name}
+			s{"frag [%s] not populated\n"},
+			v{frag}->v{name}
 		);
 	}
-x{serialize macro}
+x{serialize frag}
 ```
 * Für jedes Fragment, das nicht befüllt wurde wird eine Meldung
   ausgegeben
@@ -1113,12 +1113,12 @@ x{serialize macro}
 ```
 d{write in file}
 	t{FILE *}v{f} =
-		f{fopen}(v{macro}->v{name} + n{6}, s{"w"});
+		f{fopen}(v{frag}->v{name} + n{6}, s{"w"});
 	f{ASSERT}(
 		v{f}, s{"can't open %s"},
-		v{macro}->v{name} + n{6}
+		v{frag}->v{name} + n{6}
 	);
-	f{serializeFrag}(v{macro}, v{f}, k{false});
+	f{serializeFrag}(v{frag}, v{f}, k{false});
 	f{fclose}(v{f});
 x{write in file}
 ```
