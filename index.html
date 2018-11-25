@@ -286,15 +286,7 @@
 <span class="in2"></span>
 <span class="fn">memcpy</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
 <span class="in2"></span>
-<span class="expand">@expand(<span class="name">init additional input elements)</span></span>;<br/>
-<span class="in2"></span>
-if (input) {<br/>
-<span class="in3"></span>
-input-&gt;frags.link = frags;<br/>
-<span class="in3"></span>
-frags = &amp;input-&gt;frags;<br/>
-<span class="in2"></span>
-}<br/>
+<span class="expand">@expand(<span class="name">init additional input fields)</span></span>;<br/>
 <span class="in2"></span>
 <span class="var">input</span> = <span class="var">i</span>;<br/>
 <span class="in1"></span>
@@ -343,6 +335,25 @@ frags = &amp;input-&gt;frags;<br/>
 <ul><li>
  Wenn kein Speicher für die <code><span class="type">struct Input</span></code> vorhanden ist bricht das
   Programm ab</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">init additional input fields)</span></span><br/>
+<span class="in1"></span>
+if (input) {<br/>
+<span class="in2"></span>
+input-&gt;frags.link = frags;<br/>
+<span class="in2"></span>
+frags = &amp;input-&gt;frags;<br/>
+<span class="in1"></span>
+}<br/>
+
+<span class="end">@end(<span class="name">init additional input fields)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Wenn es bereits eine offene Input-Datei gibt, dann wird deren lokale
+  Fragmente in den globalen Namensraum aufgenommen</li></ul></div>
 </div>
 <h1>Kommandozeile</h1>
 <div class="slides">
@@ -518,11 +529,11 @@ frags = &amp;input-&gt;frags;<br/>
 <span class="in1"></span>
 <span class="var">input</span> = <span class="var">n</span>;<br/>
 <span class="in1"></span>
-struct FragMap *nxt = frags-&gt;link;<br/>
+<span class="type">struct FragMap *</span><span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
 <span class="in1"></span>
-frags-&gt;link = NULL;<br/>
+<span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
 <span class="in1"></span>
-frags = nxt;<br/>
+<span class="var">frags</span> = <span class="var">nxt</span>;<br/>
 
 <span class="end">@end(<span class="name">get next input file)</span></span><br/>
 </code>
@@ -530,7 +541,8 @@ frags = nxt;<br/>
 <ul><li>
  Die aktuelle Datei wird geschlossen und in die Liste der bereits
   verarbeiteten Dateien eingereiht</li><li>
- Dann wird der Vorgänger zur aktuellen Datei erklärt</li></ul></div>
+ Dann wird der Vorgänger zur aktuellen Datei erklärt</li><li>
+ Der Vorgänger wird aus dem globalen Namensraum wieder entfernt</li></ul></div>
 </div>
 <h1>Lokale Fragmente</h1>
 <div class="slides">
@@ -554,9 +566,9 @@ frags = nxt;<br/>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">init additional input elements)</span></span><br/>
+<span class="add">@add(<span class="name">init additional input fields)</span></span><br/>
 <span class="in1"></span>
-memset(<br/>
+<span class="fn">memset</span>(<br/>
 <span class="in2"></span>
 &amp;<span class="var">i</span>-&gt;<span class="var">frags</span>, <span class="num">0</span>,<br/>
 <span class="in2"></span>
@@ -564,7 +576,7 @@ memset(<br/>
 <span class="in1"></span>
 );<br/>
 
-<span class="end">@end(<span class="name">init additional input elements)</span></span>;<br/>
+<span class="end">@end(<span class="name">init additional input fields)</span></span>;<br/>
 </code>
 </div>
 <ul><li>
@@ -704,7 +716,7 @@ memset(<br/>
 
 <span class="add">@def(<span class="name">process close brace)</span></span> {<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (isActiveBuffer(&amp;<span class="var">name</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
 <span class="in2"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="str">'\0'</span>);<br/>
 <span class="in2"></span>
@@ -729,7 +741,7 @@ memset(<br/>
 
 <span class="add">@def(<span class="name">process other char)</span></span> {<br/>
 <span class="in1"></span>
-<span class="keyword">if</span> (isActiveBuffer(&amp;<span class="var">name</span>)) {<br/>
+<span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
 <span class="in2"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="var">ch</span>);<br/>
 <span class="in2"></span>
@@ -750,11 +762,11 @@ memset(<br/>
 <span class="in1"></span>
 <span class="keyword">if</span> (<span class="var">macro</span>) {<br/>
 <span class="in2"></span>
-if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
+if (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer))<br/>
 <span class="in3"></span>
-bufferLine = input-&gt;line;<br/>
+<span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 <span class="in2"></span>
-</span><br/>
+}<br/>
 <span class="in2"></span>
 <span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
 <span class="in1"></span>
@@ -864,7 +876,9 @@ bufferLine = input-&gt;line;<br/>
 <span class="end">@end(<span class="name">process macro name)</span></span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Erzeugt ein neues Makro im globalen Namensraum</li><li>
+ Das Makro darf nicht mehrfach definiert werden</li></ul></div>
 <div><div>
 <code>
 
@@ -1406,46 +1420,76 @@ bufferLine = input-&gt;line;<br/>
 </code>
 </div>
 <ul><li>
- Die Implementierung wird später durch eine sinnvollere ersetzt</li><li>
- Daher ist der zugehörige Code in einem eigenen Fragment gekapselt</li><li>
- Dieses kann später ersetzt werden</li><li>
- Nachdem diese Funktionalität implementiert wurde</li></ul></div>
+ Private Bezeichner werden durch einen Hash erweitert</li><li>
+ Um sie global unique zu machen</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process private macro)</span></span><br/>
 <span class="in1"></span>
-<span class="type">static char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"_private_"</span>;<br/>
+<span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
 <span class="in1"></span>
-<span class="type">static char</span> <span class="var">rnd</span><span class="type">[12]</span>;<br/>
+<span class="var">cur</span> = <span class="fn">addTerminatedToHash</span>(<br/>
+<span class="in2"></span>
+<span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span><br/>
 <span class="in1"></span>
-<span class="type">char *</span><span class="var">end</span> = <span class="var">rnd</span> + <span class="fn">sizeof</span>(<span class="var">rnd</span>);<br/>
+);<br/>
+<span class="in1"></span>
+<span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
+<span class="in2"></span>
+<span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+<span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
+
+<span class="end">@end(<span class="name">process private macro)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Der Hash wird aus dem aktuellen Dateinamen</li><li>
+ Und dem aktuellen Bezeichner berechnet</li><li>
+ Zum Schluss wird er auf eine positive Zahl maskiert</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process private macro)</span></span><br/>
+<span class="in1"></span>
+<span class="type">static char</span> <span class="var">hash</span><span class="type">[12]</span>;<br/>
+<span class="in1"></span>
+<span class="type">char *</span><span class="var">end</span> = <span class="var">hash</span> + <span class="fn">sizeof</span>(<span class="var">hash</span>);<br/>
 <span class="in1"></span>
 <span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
 <span class="in1"></span>
-*--head = '_';<br/>
+*--<span class="var">head</span> = '_';<br/>
 <span class="in1"></span>
-unsigned cur = initHash();<br/>
-<span class="in1"></span>
-cur = addTerminatedToHash(cur, input-&gt;name);<br/>
-<span class="in1"></span>
-cur = addRangeToHash(cur, name.buffer, name.current);<br/>
-<span class="in1"></span>
-cur &amp;= 0x7fffffff;<br/>
-<span class="in1"></span>
-for (;;) {<br/>
+<span class="keyword">for</span> (;;) {<br/>
 <span class="in2"></span>
-ASSERT(head &gt; rnd);<br/>
+<span class="fn">ASSERT</span>(<span class="var">head</span> &gt; <span class="var">hash</span>);<br/>
 <span class="in2"></span>
-*--head = (cur % 10) + '0';<br/>
+*--<span class="var">head</span> = (<span class="var">cur</span> % <span class="num">10</span>) + <span class="str">'0'</span>;<br/>
 <span class="in2"></span>
-cur /= 10;<br/>
+<span class="var">cur</span> /= <span class="num">10</span>;<br/>
 <span class="in2"></span>
-if (! cur) { break; }<br/>
+<span class="keyword">if</span> (! <span class="var">cur</span>) { <span class="keyword">break</span>; }<br/>
 <span class="in1"></span>
 }<br/>
+
+<span class="end">@end(<span class="name">process private macro)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Das Textfeld mit dem Hash-Wert wird von hinten aus gefüllt</li><li>
+ Das erleichtert das extrahieren der einzelnen Dezimal-Stellen</li><li>
+ Zusätzlich wird noch ein Unterstrich an den Hash angehängt</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process private macro)</span></span><br/>
 <span class="in1"></span>
 <span class="expand">@multiple(<span class="name">flush macro buffer)</span></span>;<br/>
+<span class="in1"></span>
+<span class="type">static char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"_private_"</span>;<br/>
 <span class="in1"></span>
 <span class="fn">addBytesToFrag</span>(<br/>
 <span class="in2"></span>
@@ -1469,7 +1513,7 @@ if (! cur) { break; }<br/>
 <span class="in2"></span>
 <span class="var">macro</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
 <span class="in2"></span>
-<span class="keyword">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
+<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 <span class="in1"></span>
 );<br/>
 
@@ -1477,10 +1521,11 @@ if (! cur) { break; }<br/>
 </code>
 </div>
 <ul><li>
- Erstmal nur ein konstanter String, um private Bezeichner zu
-  verstecken</li><li>
- Später soll ein individueller Hash integriert werden</li><li>
- Der vom Dateinamen abhängt</li></ul></div>
+ Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben</li><li>
+ Dann kommt der neue Bezeichner</li><li>
+ Dieser besteht aus einem konstanten Präfix</li><li>
+ Dem Hash-Wert</li><li>
+ Und dem alten Bezeichner</li></ul></div>
 <div><div>
 <code>
 
@@ -1500,13 +1545,39 @@ if (! cur) { break; }<br/>
 </code>
 </div>
 <ul><li>
- Auch die Implementierung des <code>@magic</code>-Befehls soll später ersetzt
-  werden</li><li>
- Daher wird es in einem eigenen Fragment gekapselt</li></ul></div>
+ Der <code>@magic</code>-Befehl erzeugt einen Hash-Wert</li><li>
+ Der sich aus dem Dateinamen und dem Argument des Befehls
+  zusammen setzt</li></ul></div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process magic macro)</span></span><br/>
+<span class="in1"></span>
+<span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
+<span class="in1"></span>
+<span class="var">cur</span> = <span class="fn">addTerminatedToHash</span>(<br/>
+<span class="in2"></span>
+<span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span><br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+<span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
+<span class="in2"></span>
+<span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
+<span class="in1"></span>
+);<br/>
+<span class="in1"></span>
+<span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
+
+<span class="end">@end(<span class="name">process magic macro)</span></span><br/>
+</code>
+</div>
+<ul><li>
+ Berechnet Hash-Wert</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process magic macro)</span></span><br/>
 <span class="in1"></span>
 <span class="type">static char</span> <span class="var">magic</span><span class="type">[12]</span>;<br/>
 <span class="in1"></span>
@@ -1514,23 +1585,15 @@ if (! cur) { break; }<br/>
 <span class="in1"></span>
 <span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
 <span class="in1"></span>
-unsigned cur = initHash();<br/>
-<span class="in1"></span>
-cur = addTerminatedToHash(cur, input-&gt;name);<br/>
-<span class="in1"></span>
-cur = addRangeToHash(cur, name.buffer, name.current);<br/>
-<span class="in1"></span>
-cur &amp;= 0x7fffffff;<br/>
-<span class="in1"></span>
-for (;;) {<br/>
+<span class="keyword">for</span> (;;) {<br/>
 <span class="in2"></span>
-ASSERT(head &gt; magic);<br/>
+<span class="fn">ASSERT</span>(<span class="var">head</span> &gt; <span class="var">magic</span>);<br/>
 <span class="in2"></span>
-*--head = (cur % 10) + '0';<br/>
+*--<span class="var">head</span> = (<span class="var">cur</span> % <span class="num">10</span>) + <span class="str">'0'</span>;<br/>
 <span class="in2"></span>
-cur /= 10;<br/>
+<span class="var">cur</span> /= <span class="num">10</span>;<br/>
 <span class="in2"></span>
-if (! cur) { break; }<br/>
+<span class="keyword">if</span> (! <span class="var">cur</span>) { <span class="keyword">break</span>; }<br/>
 <span class="in1"></span>
 }<br/>
 <span class="in1"></span>
@@ -1548,9 +1611,8 @@ if (! cur) { break; }<br/>
 </code>
 </div>
 <ul><li>
- Die provisorische Version liefert nur eine konstante Zahl</li><li>
- Aber auch hier sollte eigentlich ein Hash geliefert werden</li><li>
- Der vom Dateinamen und vom Argument abhängt</li></ul></div>
+ Gibt den Hash-Wert aus</li><li>
+ Vorher wird noch eventuell gespeicherte Zeichen ausgegeben</li></ul></div>
 <div><div>
 <code>
 
@@ -1769,11 +1831,15 @@ bufferLine = input-&gt;line;<br/>
 
 <span class="add">@add(<span class="name">serialize fragments)</span></span> {<br/>
 <span class="in1"></span>
-<span class="keyword">for</span> (<span class="var">input</span> = <span class="var">used</span>; <span class="var">input</span>; <span class="var">input</span> = <span class="var">input</span>-&gt;<span class="var">link</span>)<br/>
+<span class="var">input</span> = <span class="var">used</span>;<br/>
+<span class="in1"></span>
+<span class="keyword">for</span> (; <span class="var">input</span>; <span class="var">input</span> = <span class="var">input</span>-&gt;<span class="var">link</span>)<br/>
 <span class="in1"></span>
 {<br/>
 <span class="in2"></span>
-<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
+<span class="type">struct Frag **</span><span class="var">cur</span> =<br/>
+<span class="in3"></span>
+<span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
 <span class="in2"></span>
 <span class="type">struct Frag **</span><span class="var">end</span> =<br/>
 <span class="in3"></span>
@@ -1783,9 +1849,11 @@ bufferLine = input-&gt;line;<br/>
 <span class="in3"></span>
 <span class="type">struct Frag *</span><span class="var">macro</span> = *<span class="var">cur</span>;<br/>
 <span class="in3"></span>
-<span class="keyword">for</span> (; <span class="var">macro</span>; <span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="keyword">while</span> (<span class="var">macro</span>) {<br/>
 <span class="in4"></span>
 <span class="expand">@multiple(<span class="name">serialize macro)</span></span>;<br/>
+<span class="in4"></span>
+<span class="var">macro</span> = <span class="var">macro</span>-&gt;<span class="var">link</span>;<br/>
 <span class="in3"></span>
 }<br/>
 <span class="in2"></span>
@@ -1793,9 +1861,7 @@ bufferLine = input-&gt;line;<br/>
 <span class="in1"></span>
 }<br/>
 
-}<br/>
-
-<span class="end">@end(<span class="name">serialize fragments)</span></span><br/>
+} <span class="end">@end(<span class="name">serialize fragments)</span></span><br/>
 </code>
 </div>
 <ul><li>
@@ -1947,11 +2013,11 @@ bufferLine = input-&gt;line;<br/>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">init additional input elements)</span></span><br/>
+<span class="add">@add(<span class="name">init additional input fields)</span></span><br/>
 <span class="in1"></span>
 <span class="var">i</span>-&gt;<span class="var">line</span> = <span class="num">1</span>;<br/>
 
-<span class="end">@end(<span class="name">init additional input elements)</span></span><br/>
+<span class="end">@end(<span class="name">init additional input fields)</span></span><br/>
 </code>
 </div>
 <ul><li>

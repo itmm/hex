@@ -656,6 +656,11 @@ void freeFragEntry(
 		i->file = f;
 		memcpy(i->name, path, len);
 		
+	if (input) {
+		input->frags.link = frags;
+		frags = &input->frags;
+	}
+
 	memset(
 		&i->frags, 0,
 		sizeof(i->frags)
@@ -663,10 +668,6 @@ void freeFragEntry(
 
 	i->line = 1;
 ;
-		if (input) {
-			input->frags.link = frags;
-			frags = &input->frags;
-		}
 		input = i;
 	}
 
@@ -1354,21 +1355,26 @@ void freeFragEntry(
 	if (openCh == 'p') {
 		ASSERT(macro, "private not in macro");
 		
-	static char prefix[] = "_private_";
-	static char rnd[12];
-	char *end = rnd + sizeof(rnd);
+	unsigned cur = initHash();
+	cur = addTerminatedToHash(
+		cur, input->name
+	);
+	cur = addRangeToHash(
+		cur, name.buffer, name.current
+	);
+	cur &= 0x7fffffff;
+
+	static char hash[12];
+	char *end = hash + sizeof(hash);
 	char *head = end;
 	*--head = '_';
-	unsigned cur = initHash();
-	cur = addTerminatedToHash(cur, input->name);
-	cur = addRangeToHash(cur, name.buffer, name.current);
-	cur &= 0x7fffffff;
 	for (;;) {
-		ASSERT(head > rnd);
+		ASSERT(head > hash);
 		*--head = (cur % 10) + '0';
 		cur /= 10;
 		if (! cur) { break; }
 	}
+
 	
 	if (
 		buffer.buffer != buffer.current
@@ -1381,6 +1387,7 @@ void freeFragEntry(
 		resetBuffer(&buffer);
 	}
 ;
+	static char prefix[] = "_private_";
 	addBytesToFrag(
 		macro, prefix,
 		prefix + sizeof(prefix) - 1,
@@ -1401,13 +1408,18 @@ void freeFragEntry(
 	if (openCh == 'm') {
 		ASSERT(macro, "magic not in macro");
 		
+	unsigned cur = initHash();
+	cur = addTerminatedToHash(
+		cur, input->name
+	);
+	cur = addRangeToHash(
+		cur, name.buffer, name.current
+	);
+	cur &= 0x7fffffff;
+
 	static char magic[12];
 	char *end = magic + sizeof(magic);
 	char *head = end;
-	unsigned cur = initHash();
-	cur = addTerminatedToHash(cur, input->name);
-	cur = addRangeToHash(cur, name.buffer, name.current);
-	cur &= 0x7fffffff;
 	for (;;) {
 		ASSERT(head > magic);
 		*--head = (cur % 10) + '0';
@@ -1472,8 +1484,8 @@ void freeFragEntry(
 }  {
 	if (macro) {
 		if (! isActiveBuffer(& buffer)) 
-			bufferLine = input->line;
-		
+			vbufferLine = input->line;
+		}
 		addToBuffer(&buffer, last);
 	}
 } ;
@@ -1534,14 +1546,16 @@ void freeFragEntry(
 		}
 	}
 }  {
-	for (input = used; input; input = input->link)
+	input = used;
+	for (; input; input = input->link)
 	{
-		struct Frag **cur = input->frags.frags;
+		struct Frag **cur =
+			input->frags.frags;
 		struct Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
 			struct Frag *macro = *cur;
-			for (; macro; macro = macro->link) {
+			while (macro) {
 				
 	if (! memcmp(
 		"file: ", macro->name, 6
@@ -1583,11 +1597,11 @@ void freeFragEntry(
 		);
 	}
 ;
+				macro = macro->link;
 			}
 		}
 	}
-}
-;
+} ;
 	
 	struct Input *cur = used;
 	while (cur) {

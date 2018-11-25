@@ -23,7 +23,7 @@
 * Sondern wie das Programm aufgebaut wird
 * Zu jedem Zeitpunkt muss das bisher beschriebene Programm ausführbar
   sein
-* Nicht definierte Makros werden zu nichts expandieren
+* Nicht definierte Fragmente werden zu nichts expandieren
 * So kann das Verständnis für ein Programm schrittweise erarbeitet
   werden
 
@@ -63,10 +63,10 @@ x{main body}
   Durchgang herausgeschrieben
 
 ## Was macht `@expand`?
-* `@expand`-Blöcke beschreiben Makro-Aufrufe
-* Der Wert des Makros mit dem Namen in Klammern wird anstelle des
+* `@expand`-Blöcke beschreiben Fragment-Aufrufe
+* Der Wert des Fragments mit dem Namen in Klammern wird anstelle des
   Aufrufs im endgültigen Programm gesetzt
-* Diese Makros bilden ein zentrales Element von `hx`
+* Diese Fragmente bilden ein zentrales Element von `hx`
 * Sie können mit `@def`-`@end`-Sequenzen definiert werden
 * Oder mit `@add`-`@end` erweitert werden
 * Ein `@expand` darf nur einmal aufgelöst werden
@@ -150,7 +150,7 @@ A{global elements}
 	t{struct FragMap *}v{frags} = &v{root};
 x{global elements}
 ```
-* Kollektion mit allen Makros wird für folgende Schritte sichtbar
+* Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
   angelegt
 
 ```
@@ -166,11 +166,7 @@ A{global elements}
 		v{i}->v{link} = v{input};
 		v{i}->v{file} = v{f};
 		f{memcpy}(v{i}->v{name}, v{path}, v{len});
-		e{init additional input elements};
-		if (input) {
-			input->frags.link = frags;
-			frags = &input->frags;
-		}
+		e{init additional input fields};
 		v{input} = v{i};
 	}
 x{global elements}
@@ -199,6 +195,17 @@ x{check memory for input}
 ```
 * Wenn kein Speicher für die `t{struct Input}` vorhanden ist bricht das
   Programm ab
+
+```
+d{init additional input fields}
+	if (input) {
+		input->frags.link = frags;
+		frags = &input->frags;
+	}
+x{init additional input fields}
+```
+* Wenn es bereits eine offene Input-Datei gibt, dann wird deren lokale
+  Fragmente in den globalen Namensraum aufgenommen
 
 # Kommandozeile
 * Die Kommandozeile wird Element für Element abgearbeitet
@@ -297,14 +304,15 @@ d{get next input file}
 	v{input}->v{link} = v{used};
 	v{used} = v{input};
 	v{input} = v{n};
-	struct FragMap *nxt = frags->link;
-	frags->link = NULL;
-	frags = nxt;
+	t{struct FragMap *}v{nxt} = v{frags}->v{link};
+	v{frags}->v{link} = k{NULL};
+	v{frags} = v{nxt};
 x{get next input file}
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
   verarbeiteten Dateien eingereiht
 * Dann wird der Vorgänger zur aktuellen Datei erklärt
+* Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
 
 # Lokale Fragmente
 
@@ -317,20 +325,20 @@ x{additional input elements}
   Definitionen
 
 ```
-d{init additional input elements}
-	memset(
+a{init additional input fields}
+	f{memset}(
 		&v{i}->v{frags}, n{0},
 		f{sizeof}(v{i}->v{frags})
 	);
-x{init additional input elements};
+x{init additional input fields};
 ```
 * Eine Map kann initialisiert werden, indem alle Bytes auf `n{0}`
   gesetzt werden
 
 # Eingabe-Dateien lesen
-* In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die Makros
-  aufzubauen und alle notwendigen Beziehungen zwischen den einzelnen
-  Folien zu finden
+* In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
+  Fragmente aufzubauen und alle notwendigen Beziehungen zwischen den
+  einzelnen Folien zu finden
 
 ```
 d{read source file}
@@ -369,7 +377,7 @@ x{process current char}
 ```
 * Beim Parsen kommt es nur auf das Öffnen und Schließen von
   Mengenklammern an
-* Diese bestimmen den Anfang und das Ende von Makro-Sequenzen
+* Diese bestimmen den Anfang und das Ende von Befehls-Sequenzen
 * Welche die Bearbeitung der sonstigen Zeichen steuern
 
 ```
@@ -380,7 +388,7 @@ d{additional read vars}
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
-* In einem Code sind wir sogar in einem Makro, dessen Inhalt gerade
+* In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
   gelesen wird
 * Am Anfang sind wir außerhalb eines Code-Blocks
 * In einem Code-Block ist `v{macro}` nicht `k{NULL}`
@@ -404,7 +412,7 @@ x{additional read vars}
 
 ```
 d{process close brace} {
-	k{if} (isActiveBuffer(&v{name})) {
+	k{if} (f{isActiveBuffer}(&v{name})) {
 		f{addToBuffer}(&v{name}, s{'\0'});
 		e{process macro name};
 		f{resetBuffer}(&v{name});
@@ -413,12 +421,12 @@ d{process close brace} {
 	}
 } x{process close brace}
 ```
-* Bei einer schließenden Mengenklammer wird der Makro-Name ausgewertet
+* Bei einer schließenden Mengenklammer wird der Befehls-Name ausgewertet
 * Danach wird der Namenszeiger zurückgesetzt
 
 ```
 d{process other char} {
-	k{if} (isActiveBuffer(&v{name})) {
+	k{if} (f{isActiveBuffer}(&v{name})) {
 		f{addToBuffer}(&v{name}, v{ch});
 		k{break};
 	}
@@ -430,14 +438,14 @@ d{process other char} {
 ```
 a{process other char} {
 	k{if} (v{macro}) {
-		if (! isActiveBuffer(&v{buffer)) {
-			bufferLine = input->line;
+		if (! f{isActiveBuffer}(&v{buffer)) {
+			v{bufferLine} = v{input}->v{line};
 		}
 		f{addToBuffer}(&v{buffer}, v{last});
 	}
 } x{process other char}
 ```
-* Wenn es ein aktuelles Makro gibt, dann müssen sonstige Zeichen dort
+* Wenn es ein aktuelles Fragment gibt, dann müssen sonstige Zeichen dort
   angefügt werden
 
 ```
@@ -452,12 +460,12 @@ d{process open brace} {
 	}
 } x{process open brace}
 ```
-* Wenn außerhalb eines Makros die Folge `a`, `{` gelesen wird, dann
+* Wenn außerhalb eines Fragments die Folge `a`, `{` gelesen wird, dann
   beginnt ein `@add`-Fragment
 * Falls ein `i`, `{` gelesen wird, dann muss eine andere Datei mit
   `@include` eingebunden werden
-* Es folgt der Name des Makros oder der Pfad der Datei bis zum nächsten
-  `}`
+* Es folgt der Name des Fragments oder der Pfad der Datei bis zum
+  nächsten `}`
 
 ```
 d{process macro name}
@@ -475,8 +483,8 @@ d{process macro name}
 	}
 x{process macro name}
 ```
-* Erzeugt ein neues Makro
-* Das Makro darf nicht mehrfach definiert werden
+* Erzeugt ein neues Fragment
+* Das Fragment darf nicht mehrfach definiert werden
 
 ```
 a{process macro name}
@@ -494,6 +502,8 @@ a{process macro name}
 	}
 x{process macro name}
 ```
+* Erzeugt ein neues Fragment im globalen Namensraum
+* Das Fragment darf nicht mehrfach definiert werden
 
 ```
 d{check for double def}
@@ -509,7 +519,7 @@ d{check for double def}
 	}
 x{check for double def}
 ```
-* Wenn das Makro bereits existiert, wird es vielleicht nur verwendet
+* Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
 * Es muss geprüft werden, ob es schon Inhalt hat
 * Das wäre dann eine Fehlermeldung wert
 * Bricht aber die Abarbeitung nicht ab
@@ -529,8 +539,8 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Bei einem öffnenden Makro wird das passende Makro gesucht
-* Weitere Bytes können zu diesem Makro hinzugefügt werden
+* Bei einem öffnenden Befehl wird das passende Fragment gesucht
+* Weitere Bytes können zu diesem Fragment hinzugefügt werden
 
 ```
 a{process macro name}
@@ -547,6 +557,7 @@ a{process macro name}
 	}
 x{process macro name}
 ```
+* Erweitert ein global definiertes Fragment
 
 ```
 d{check for add without def}
@@ -563,7 +574,7 @@ d{check for add without def}
 	}
 x{check for add without def}
 ```
-* Das Makro muss bereits vorhanden und nicht leer sein
+* Das Fragment muss bereits vorhanden und nicht leer sein
 
 ```
 a{process macro name}
@@ -582,8 +593,8 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Bei einem `@replace` wird der Inhalt eines Makros zurückgesetzt
-* Das Makro muss bereits vorhanden sein
+* Bei einem `@replace` wird der Inhalt eines Fragments zurückgesetzt
+* Das Fragment muss bereits vorhanden sein
 
 ```
 a{process macro name}
@@ -602,6 +613,7 @@ a{process macro name}
 	}
 x{process macro name}
 ```
+* Ersetzt ein global definiertes Fragment
 
 ```
 a{process macro name}
@@ -614,7 +626,7 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Bei einem schließenden Makro wird das aktuelle Makro unterbrochen
+* Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
 
 ```
 d{macro names must match}
@@ -683,9 +695,9 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Bei einem `@expand` wird das Makro gesucht und eingebunden
-* Ggf. wird das Makro dabei auch erzeugt, um später befüllt zu werden
-* Das Attribut `v{expands}` zählt, wie häufig das Makro expandiert
+* Bei einem `@expand` wird das Fragment gesucht und eingebunden
+* Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
+* Das Attribut `v{expands}` zählt, wie häufig das Fragment expandiert
   wurde
 
 ```
@@ -789,29 +801,47 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Die Implementierung wird später durch eine sinnvollere ersetzt
-* Daher ist der zugehörige Code in einem eigenen Fragment gekapselt
-* Dieses kann später ersetzt werden
-* Nachdem diese Funktionalität implementiert wurde
+* Private Bezeichner werden durch einen Hash erweitert
+* Um sie global unique zu machen
 
 ```
 d{process private macro}
-	t{static char} v{prefix}t{[]} = s{"_private_"};
-	t{static char} v{rnd}t{[12]};
-	t{char *}v{end} = v{rnd} + f{sizeof}(v{rnd});
+	t{unsigned} v{cur} = f{initHash}();
+	v{cur} = f{addTerminatedToHash}(
+		v{cur}, v{input}->v{name}
+	);
+	v{cur} = f{addRangeToHash}(
+		v{cur}, v{name}.v{buffer}, v{name}.v{current}
+	);
+	v{cur} &= n{0x7fffffff};
+x{process private macro}
+```
+* Der Hash wird aus dem aktuellen Dateinamen
+* Und dem aktuellen Bezeichner berechnet
+* Zum Schluss wird er auf eine positive Zahl maskiert
+
+```
+a{process private macro}
+	t{static char} v{hash}t{[12]};
+	t{char *}v{end} = v{hash} + f{sizeof}(v{hash});
 	t{char *}v{head} = v{end};
-	*--head = '_';
-	unsigned cur = initHash();
-	cur = addTerminatedToHash(cur, input->name);
-	cur = addRangeToHash(cur, name.buffer, name.current);
-	cur &= 0x7fffffff;
-	for (;;) {
-		ASSERT(head > rnd);
-		*--head = (cur % 10) + '0';
-		cur /= 10;
-		if (! cur) { break; }
+	*--v{head} = '_';
+	k{for} (;;) {
+		f{ASSERT}(v{head} > v{hash});
+		*--v{head} = (v{cur} % n{10}) + s{'0'};
+		v{cur} /= n{10};
+		k{if} (! v{cur}) { k{break}; }
 	}
+x{process private macro}
+```
+* Das Textfeld mit dem Hash-Wert wird von hinten aus gefüllt
+* Das erleichtert das extrahieren der einzelnen Dezimal-Stellen
+* Zusätzlich wird noch ein Unterstrich an den Hash angehängt
+
+```
+a{process private macro}
 	E{flush macro buffer};
+	t{static char} v{prefix}t{[]} = s{"_private_"};
 	f{addBytesToFrag}(
 		v{macro}, v{prefix},
 		v{prefix} + f{sizeof}(v{prefix}) - n{1},
@@ -823,14 +853,15 @@ d{process private macro}
 	);
 	f{addBytesToFrag}(
 		v{macro}, v{name}.v{buffer}, v{name}.v{current} - n{1},
-		k{input}->v{name}, v{nameLine}
+		v{input}->v{name}, v{nameLine}
 	);
 x{process private macro}
 ```
-* Erstmal nur ein konstanter String, um private Bezeichner zu
-  verstecken
-* Später soll ein individueller Hash integriert werden
-* Der vom Dateinamen abhängt
+* Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
+* Dann kommt der neue Bezeichner
+* Dieser besteht aus einem konstanten Präfix
+* Dem Hash-Wert
+* Und dem alten Bezeichner
 
 ```
 a{process macro name}
@@ -841,24 +872,34 @@ a{process macro name}
 	}
 x{process macro name}
 ```
-* Auch die Implementierung des `@magic`-Befehls soll später ersetzt
-  werden
-* Daher wird es in einem eigenen Fragment gekapselt
+* Der `@magic`-Befehl erzeugt einen Hash-Wert
+* Der sich aus dem Dateinamen und dem Argument des Befehls
+  zusammen setzt
 
 ```
 d{process magic macro}
+	t{unsigned} v{cur} = f{initHash}();
+	v{cur} = f{addTerminatedToHash}(
+		v{cur}, v{input}->v{name}
+	);
+	v{cur} = f{addRangeToHash}(
+		v{cur}, v{name}.v{buffer}, v{name}.v{current}
+	);
+	v{cur} &= n{0x7fffffff};
+x{process magic macro}
+```
+* Berechnet Hash-Wert
+
+```
+a{process magic macro}
 	t{static char} v{magic}t{[12]};
 	t{char *}v{end} = v{magic} + f{sizeof}(v{magic});
 	t{char *}v{head} = v{end};
-	unsigned cur = initHash();
-	cur = addTerminatedToHash(cur, input->name);
-	cur = addRangeToHash(cur, name.buffer, name.current);
-	cur &= 0x7fffffff;
-	for (;;) {
-		ASSERT(head > magic);
-		*--head = (cur % 10) + '0';
-		cur /= 10;
-		if (! cur) { break; }
+	k{for} (;;) {
+		f{ASSERT}(v{head} > v{magic});
+		*--v{head} = (v{cur} % n{10}) + s{'0'};
+		v{cur} /= n{10};
+		k{if} (! v{cur}) { k{break}; }
 	}
 	E{flush macro buffer};
 	f{addBytesToFrag}(
@@ -867,9 +908,8 @@ d{process magic macro}
 	);
 x{process magic macro}
 ```
-* Die provisorische Version liefert nur eine konstante Zahl
-* Aber auch hier sollte eigentlich ein Hash geliefert werden
-* Der vom Dateinamen und vom Argument abhängt
+* Gibt den Hash-Wert aus
+* Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 
 ```
 d{flush macro buffer}
@@ -952,8 +992,9 @@ a{process open brace}
 	}
 x{process open brace}
 ```
-* Wenn wir uns in einem Makro befinden und bis hier gekommen sind, dann
-  wird das Zeichen vor der öffnenden Klammer zum Makro hinzu gefügt
+* Wenn wir uns in einem Fragment befinden und bis hier gekommen sind,
+  dann wird das Zeichen vor der öffnenden Klammer zum Fragment hinzu
+  gefügt
 
 ```
 a{process close brace}
@@ -965,7 +1006,7 @@ a{process close brace}
 	}
 x{process close brace}
 ```
-* Wenn schließende Mengenklammern nicht Teil eines Makros sind, können
+* Wenn schließende Mengenklammern nicht Teil eines Befehls sind, können
   sie Teil des Programms sein
 * Und werden daher zum Buffer direkt hinzugefügt
 
@@ -993,20 +1034,22 @@ d{serialize fragments} {
 
 ```
 a{serialize fragments} {
-	k{for} (v{input} = v{used}; v{input}; v{input} = v{input}->v{link})
+	v{input} = v{used};
+	k{for} (; v{input}; v{input} = v{input}->v{link})
 	{
-		t{struct Frag **}v{cur} = v{input}->v{frags}.v{frags};
+		t{struct Frag **}v{cur} =
+			v{input}->v{frags}.v{frags};
 		t{struct Frag **}v{end} =
 			v{cur} + v{FRAG_SLOTS};
 		k{for} (; v{cur} < v{end}; ++v{cur}) {
 			t{struct Frag *}v{macro} = *v{cur};
-			k{for} (; v{macro}; v{macro} = v{macro}->v{link}) {
+			k{while} (v{macro}) {
 				E{serialize macro};
+				v{macro} = v{macro}->v{link};
 			}
 		}
 	}
-}
-x{serialize fragments}
+} x{serialize fragments}
 ```
 * Auch alle lokalen Fragmente bearbeiten
 
@@ -1020,7 +1063,7 @@ d{serialize macro}
 	}
 x{serialize macro}
 ```
-* Wenn der Name eines Makros mit `file: ` beginnt, dann wird es in die
+* Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in die
   passende Datei geschrieben
 * Zusätzlich zählt das als eine Expansion
 
@@ -1036,7 +1079,7 @@ a{serialize macro} {
 	}
 } x{serialize macro}
 ```
-* Ein Makro wurde nicht aufgerufen
+* Ein Fragment wurde nicht aufgerufen
 * Dies wird mit einer Meldung quittiert
 
 ```
@@ -1050,7 +1093,7 @@ a{serialize macro}
 	}
 x{serialize macro}
 ```
-* Ein Makro das zur mehrfachen Verwendung deklariert wurde, wird nur
+* Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur
   einmal verwendet
 * Dies wird mit einer Meldung quittiert
 
@@ -1064,7 +1107,8 @@ a{serialize macro}
 	}
 x{serialize macro}
 ```
-* Für jedes Makro, das nicht befüllt wurde wird eine Meldung ausgegeben
+* Für jedes Fragment, das nicht befüllt wurde wird eine Meldung
+  ausgegeben
 
 ```
 d{write in file}
@@ -1090,9 +1134,9 @@ x{additional input elements}
 * Pro Datei wird die aktuelle Zeile festgehalten
 
 ```
-a{init additional input elements}
+a{init additional input fields}
 	v{i}->v{line} = n{1};
-x{init additional input elements}
+x{init additional input fields}
 ```
 * Beim Öffnen einer neuen `.x`-Datei befinden wir uns in Zeile `n{1}`
 
