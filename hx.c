@@ -720,7 +720,9 @@ void freeFragEntry(
 	enum HtmlState headerState;
 
 	int codeOpening;
+
 	int codeIndent;
+
 	char codeSpecial;
 	char codeName[100];
 	char *codeNameEnd;
@@ -1825,6 +1827,7 @@ void freeFragEntry(
 		++status.codeIndent;
 		continue;
 	}
+ 
 	if (status.codeIndent) {
 		fprintf(out,
 			"<span class=\"in%d\"></span>",

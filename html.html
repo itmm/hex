@@ -691,8 +691,32 @@ default: {<br/>
 <span class="add">@add(<span class="name">html state elements</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">codeOpening</span>;<br/>
+
+<span class="end">@end(<span class="name">html state elements</span>)</span><br/>
+</code>
+</div>
+<ul><li>
+ Der Code-Block wird mit drei Backticks betreten und verlassen</li><li>
+ Die Anzahl der bisher gelesenen Backticks wird in <code><span class="var">codeOpening</span></code>
+  festgehalten</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">html state elements</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">int</span> <span class="var">codeIndent</span>;<br/>
+
+<span class="end">@end(<span class="name">html state elements</span>)</span><br/>
+</code>
+</div>
+<ul><li>
+ Tabs am Anfang der Zeile werden durch passenden HTML-Elemente ersetzt</li><li>
+ Um die Einrückung nachzubilden</li><li>
+ In <code><span class="var">codeIndent</span></code> wird der Einrück-Level gespeichert</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">html state elements</span>)</span><br/>
 <span class="in1"></span>
 <span class="type">char</span> <span class="var">codeSpecial</span>;<br/>
 <span class="in1"></span>
@@ -703,7 +727,10 @@ default: {<br/>
 <span class="end">@end(<span class="name">html state elements</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn ein Befehl gelesen wurde, dann enthält <code><span class="var">codeSpecial</span></code> den
+  Code des Befehls</li><li>
+ In <code><span class="var">codeName</span></code> wird bis zu <code><span class="var">codeEnd</span></code> das Argument abgelegt</li></ul></div>
 <div><div>
 <code>
 
@@ -720,7 +747,9 @@ default: {<br/>
 <span class="end">@end(<span class="name">init html status</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Zur Initialisierung werden die Parameter auf <code><span class="num">0</span></code> gesetzt</li><li>
+ Das Code-Argument <code><span class="var">codeName</span></code> wird nicht zurückgesetzt</li></ul></div>
 <div><div>
 <code>
 
@@ -745,7 +774,8 @@ default: {<br/>
 <span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn am Anfang der Zeile Backticks kommen, dann werden sie gezählt</li></ul></div>
 <div><div>
 <code>
 
@@ -784,7 +814,9 @@ default: {<br/>
 <span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn die Anzahl der Backticks genau <code><span class="num">3</span></code> war, dann wird der
+  Code-Modus betreten oder verlassen</li></ul></div>
 <div><div>
 <code>
 
@@ -807,7 +839,9 @@ default: {<br/>
 <span class="end">@end(<span class="name">open code page</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Beim Betreten wird eine Seite mit einem <code>&lt;code&gt;</code>-Tag geöffnet</li><li>
+ Und der Zustand passend gesetzt</li></ul></div>
 <div><div>
 <code>
 
@@ -828,7 +862,8 @@ default: {<br/>
 <span class="end">@end(<span class="name">close code page</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen</li></ul></div>
 <div><div>
 <code>
 
@@ -855,7 +890,10 @@ default: {<br/>
 <span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann
+  stimmt etwas nicht</li><li>
+ Eine Fehlermeldung wird ausgegeben</li></ul></div>
 <div><div>
 <code>
 
@@ -884,7 +922,8 @@ default: {<br/>
 <span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Zeichen wird im Code-Modus verarbeitet</li></ul></div>
 <div><div>
 <code>
 
@@ -913,7 +952,8 @@ continue;<br/>
 <span class="end">@end(<span class="name">process ch in HTML code</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Bei Zeilen-Umbrüchen wird ein <code>&lt;br/&gt;</code>-Tag gesendet</li></ul></div>
 <div><div>
 <code>
 
@@ -926,6 +966,16 @@ continue;<br/>
 <span class="keyword">continue</span>;<br/>
 <span class="in1"></span>
 }<br/>
+
+<span class="end">@end(<span class="name">process ch in HTML code</span>)</span><br/>
+</code>
+</div>
+<ul><li>
+ Am Anfang der Zeile werden Tabulatoren gezählt</li></ul></div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process ch in HTML code</span>)</span> <br/>
 <span class="in1"></span>
 if (status.codeIndent) {<br/>
 <span class="in2"></span>
@@ -944,7 +994,8 @@ status.codeIndent = 0;<br/>
 <span class="end">@end(<span class="name">process ch in HTML code</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn es Tabulatoren gab, dann werden sie als Span-Element ausgegeben</li></ul></div>
 <div><div>
 <code>
 
@@ -955,7 +1006,8 @@ status.codeIndent = 0;<br/>
 <span class="end">@end(<span class="name">process ch in HTML code</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Ansonsten werden Befehle in HTML-Tags expandiert</li></ul></div>
 <div><div>
 <code>
 
@@ -965,7 +1017,7 @@ if (ch == '{') {<br/>
 <span class="in2"></span>
 switch (last) {<br/>
 <span class="in3"></span>
-<span class="expand">@expand(<span class="name">escape html macro</span>)</span><br/>
+<span class="expand">@expand(<span class="name">escape html frag</span>)</span><br/>
 <span class="in3"></span>
 default: break;<br/>
 <span class="in2"></span>
@@ -984,7 +1036,13 @@ continue;<br/>
 <span class="end">@end(<span class="name">escape HTML code tag</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Bei einer öffnenden Mengenklammer wird geprüft, ob ein bekannter
+  Befehls-Code im vorherigen Zeichen liegt</li><li>
+ In diesem Fall wird die weiter Abarbeitung abgebrochen</li><li>
+ Statt dessen wurden passende Tags generiert und die nächsten Zeichen
+  sind das Argument des Befehls</li><li>
+ Diese werden direkt kopiert</li></ul></div>
 <div><div>
 <code>
 
@@ -1017,7 +1075,10 @@ continue;<br/>
 <span class="end">@end(<span class="name">escape HTML code tag</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Nach dem Lesen eines Arguments muss das HTML-Tag wieder geschlossen
+  werden</li><li>
+ Bei besonderen Befehlen müssen mehrere Tags geschlossen werden</li></ul></div>
 <div><div>
 <code>
 
@@ -1046,7 +1107,11 @@ fprintf(out, "&lt;/span&gt;)");<br/>
 <span class="end">@end(<span class="name">handle special codes</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ <code>@include</code>-Befehle haben eine Sonderbehandlung, da sie einen Link
+  generieren</li><li>
+ Ansonsten werden alle Befehle, die nicht der Formatierung gelten mit
+  zwei schließenden Tags abgeschlossen</li></ul></div>
 <div><div>
 <code>
 
@@ -1079,7 +1144,11 @@ status.codeNameEnd &gt;= status.codeName<br/>
 <span class="end">@end(<span class="name">handle html include</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Bei der Behandlung von Includes wurde der Dateiname in <code><span class="var">codeName</span></code>
+  abgelegt</li><li>
+ Hier wird von hinten alles bis zum ersten Punkt abgeschnitten</li><li>
+ Also wird die Dateiextension aus dem Namen entfernt</li></ul></div>
 <div><div>
 <code>
 
@@ -1116,7 +1185,10 @@ status.codeNameEnd = NULL;<br/>
 <span class="end">@end(<span class="name">handle html include</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Statt der ursprünglichen <code>.x</code>-Datei verweist der Link auf eine
+  HTML-Datei</li><li>
+ Mit dem gleichen Basis-Namen</li></ul></div>
 <div><div>
 <code>
 
@@ -1143,11 +1215,14 @@ continue;<br/>
 <span class="end">@end(<span class="name">process ch in HTML code</span>)</span><br/>
 </code>
 </div>
-</div>
+<ul><li>
+ Wenn das Argument gespeichert werden soll (d.h. wenn <code><span class="var">codeNameEnd</span></code>
+  nicht <code><span class="keyword">NULL</span></code>)</li><li>
+ Wird das aktuelle Zeichen im <code><span class="var">codeName</span></code> gespeichert</li></ul></div>
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@def(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'd':<br/>
 <span class="in2"></span>
@@ -1167,14 +1242,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'D':<br/>
 <span class="in2"></span>
@@ -1194,14 +1269,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'a':<br/>
 <span class="in2"></span>
@@ -1221,14 +1296,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'A':<br/>
 <span class="in2"></span>
@@ -1248,14 +1323,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'r':<br/>
 <span class="in2"></span>
@@ -1275,14 +1350,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'R':<br/>
 <span class="in2"></span>
@@ -1302,14 +1377,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'x':<br/>
 <span class="in2"></span>
@@ -1329,14 +1404,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'e':<br/>
 <span class="in2"></span>
@@ -1356,14 +1431,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'E':<br/>
 <span class="in2"></span>
@@ -1383,14 +1458,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'g':<br/>
 <span class="in2"></span>
@@ -1412,14 +1487,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'G':<br/>
 <span class="in2"></span>
@@ -1441,14 +1516,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'i':<br/>
 <span class="in2"></span>
@@ -1470,14 +1545,14 @@ status.codeNameEnd = status.codeName;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 't':<br/>
 <span class="in2"></span>
@@ -1487,14 +1562,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'v':<br/>
 <span class="in2"></span>
@@ -1504,14 +1579,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'f':<br/>
 <span class="in2"></span>
@@ -1521,14 +1596,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'k':<br/>
 <span class="in2"></span>
@@ -1538,14 +1613,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 's':<br/>
 <span class="in2"></span>
@@ -1555,14 +1630,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'n':<br/>
 <span class="in2"></span>
@@ -1572,14 +1647,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 case 'p':<br/>
 <span class="in2"></span>
@@ -1595,14 +1670,14 @@ status.codeSpecial = last;<br/>
 <span class="in2"></span>
 break;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 </div>
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">escape html macro</span>)</span><br/>
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
 <span class="in1"></span>
 <span class="keyword">case</span> <span class="str">'m'</span>:<br/>
 <span class="in2"></span>
@@ -1620,7 +1695,7 @@ break;<br/>
 <span class="in2"></span>
 <span class="keyword">break</span>;<br/>
 
-<span class="end">@end(<span class="name">escape html macro</span>)</span><br/>
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
 </code>
 </div>
 <ul><li>

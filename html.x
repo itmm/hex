@@ -380,12 +380,31 @@ x{check html special state}
 ```
 a{html state elements}
 	t{int} v{codeOpening};
+x{html state elements}
+```
+* Der Code-Block wird mit drei Backticks betreten und verlassen
+* Die Anzahl der bisher gelesenen Backticks wird in `v{codeOpening}`
+  festgehalten
+
+```
+a{html state elements}
 	t{int} v{codeIndent};
+x{html state elements}
+```
+* Tabs am Anfang der Zeile werden durch passenden HTML-Elemente ersetzt
+* Um die Einrückung nachzubilden
+* In `v{codeIndent}` wird der Einrück-Level gespeichert
+
+```
+a{html state elements}
 	t{char} v{codeSpecial};
 	t{char} v{codeName}[100];
 	t{char *}v{codeNameEnd};
 x{html state elements}
 ```
+* Wenn ein Befehl gelesen wurde, dann enthält `v{codeSpecial}` den
+  Code des Befehls
+* In `v{codeName}` wird bis zu `v{codeEnd}` das Argument abgelegt
 
 ```
 a{init html status}
@@ -395,6 +414,8 @@ a{init html status}
 	, .v{codeNameEnd} = k{NULL}
 x{init html status}
 ```
+* Zur Initialisierung werden die Parameter auf `n{0}` gesetzt
+* Das Code-Argument `v{codeName}` wird nicht zurückgesetzt
 
 ```
 a{process ch for HTML} 
@@ -408,6 +429,7 @@ a{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Wenn am Anfang der Zeile Backticks kommen, dann werden sie gezählt
 
 ```
 a{process ch for HTML} 
@@ -428,6 +450,8 @@ a{process ch for HTML}
 	v{status}.v{codeOpening} = n{0};
 x{process ch for HTML}
 ```
+* Wenn die Anzahl der Backticks genau `n{3}` war, dann wird der
+  Code-Modus betreten oder verlassen
 
 ```
 d{open code page}
@@ -440,6 +464,8 @@ d{open code page}
 	E{move ch to last};
 x{open code page}
 ```
+* Beim Betreten wird eine Seite mit einem `<code>`-Tag geöffnet
+* Und der Zustand passend gesetzt
 
 ```
 d{close code page}
@@ -451,6 +477,7 @@ d{close code page}
 	E{move ch to last};
 x{close code page}
 ```
+* Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
 
 ```
 a{process ch for HTML}
@@ -465,6 +492,9 @@ a{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann
+  stimmt etwas nicht
+* Eine Fehlermeldung wird ausgegeben
 
 ```
 a{process ch for HTML}
@@ -480,6 +510,7 @@ a{process ch for HTML}
 	}
 x{process ch for HTML}
 ```
+* Zeichen wird im Code-Modus verarbeitet
 
 ```
 d{process ch in HTML code} 
@@ -495,6 +526,7 @@ d{process ch in HTML code}
 	}
 x{process ch in HTML code}
 ```
+* Bei Zeilen-Umbrüchen wird ein `<br/>`-Tag gesendet
 
 ```
 a{process ch in HTML code} 
@@ -502,6 +534,12 @@ a{process ch in HTML code}
 		++v{status}.v{codeIndent};
 		k{continue};
 	}
+x{process ch in HTML code}
+```
+* Am Anfang der Zeile werden Tabulatoren gezählt
+
+```
+a{process ch in HTML code} 
 	if (status.codeIndent) {
 		fprintf(out,
 			"<span class=\"in%d\"></span>",
@@ -511,19 +549,20 @@ a{process ch in HTML code}
 	}
 x{process ch in HTML code}
 ```
+* Wenn es Tabulatoren gab, dann werden sie als Span-Element ausgegeben
 
 ```
 a{process ch in HTML code}
 	E{escape HTML code tag};
 x{process ch in HTML code}
 ```
-
+* Ansonsten werden Befehle in HTML-Tags expandiert
 
 ```
 d{escape HTML code tag}
 	if (ch == '{') {
 		switch (last) {
-			e{escape html macro}
+			e{escape html frag}
 			default: break;
 		}
 		if (status.codeSpecial) {
@@ -533,6 +572,12 @@ d{escape HTML code tag}
 	}
 x{escape HTML code tag}
 ```
+* Bei einer öffnenden Mengenklammer wird geprüft, ob ein bekannter
+  Befehls-Code im vorherigen Zeichen liegt
+* In diesem Fall wird die weiter Abarbeitung abgebrochen
+* Statt dessen wurden passende Tags generiert und die nächsten Zeichen
+  sind das Argument des Befehls
+* Diese werden direkt kopiert
 
 ```
 a{escape HTML code tag}
@@ -550,6 +595,9 @@ a{escape HTML code tag}
 	}
 x{escape HTML code tag}
 ```
+* Nach dem Lesen eines Arguments muss das HTML-Tag wieder geschlossen
+  werden
+* Bei besonderen Befehlen müssen mehrere Tags geschlossen werden
 
 ```
 d{handle special codes}
@@ -565,6 +613,10 @@ d{handle special codes}
 	}
 x{handle special codes}
 ```
+* `@include`-Befehle haben eine Sonderbehandlung, da sie einen Link
+  generieren
+* Ansonsten werden alle Befehle, die nicht der Formatierung gelten mit
+  zwei schließenden Tags abgeschlossen
 
 ```
 d{handle html include}
@@ -582,6 +634,10 @@ d{handle html include}
 	}
 x{handle html include}
 ```
+* Bei der Behandlung von Includes wurde der Dateiname in `v{codeName}`
+  abgelegt
+* Hier wird von hinten alles bis zum ersten Punkt abgeschnitten
+* Also wird die Dateiextension aus dem Namen entfernt
 
 ```
 a{handle html include}
@@ -601,6 +657,9 @@ a{handle html include}
 	status.codeNameEnd = NULL;
 x{handle html include}
 ```
+* Statt der ursprünglichen `.x`-Datei verweist der Link auf eine
+  HTML-Datei
+* Mit dem gleichen Basis-Namen
 
 ```
 a{process ch in HTML code}
@@ -615,9 +674,12 @@ a{process ch in HTML code}
 	}
 x{process ch in HTML code}
 ```
+* Wenn das Argument gespeichert werden soll (d.h. wenn `v{codeNameEnd}`
+  nicht `k{NULL}`)
+* Wird das aktuelle Zeichen im `v{codeName}` gespeichert
 
 ```
-d{escape html macro}
+d{escape html frag}
 	case 'd':
 		fprintf(out,
 			"<span class=\"add\">@def("
@@ -627,11 +689,11 @@ d{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'D':
 		fprintf(out,
 			"<span class=\"add\">@globdef("
@@ -641,11 +703,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'a':
 		fprintf(out,
 			"<span class=\"add\">@add("
@@ -655,11 +717,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'A':
 		fprintf(out,
 			"<span class=\"add\">@globadd("
@@ -669,11 +731,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'r':
 		fprintf(out,
 			"<span class=\"add\">@replace("
@@ -683,11 +745,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'R':
 		fprintf(out,
 			"<span class=\"add\">@globreplace("
@@ -697,11 +759,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'x':
 		fprintf(out,
 			"<span class=\"end\">@end("
@@ -711,11 +773,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'e':
 		fprintf(out,
 			"<span class=\"expand\">@expand("
@@ -725,11 +787,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'E':
 		fprintf(out,
 			"<span class=\"expand\">@multiple("
@@ -739,11 +801,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'g':
 		fprintf(out,
 			"<span class=\"expand\">"
@@ -754,11 +816,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'G':
 		fprintf(out,
 			"<span class=\"expand\">"
@@ -769,11 +831,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'i':
 		fprintf(out,
 			"<span class=\"include\">@include("
@@ -784,65 +846,65 @@ a{escape html macro}
 		status.codeSpecial = last;
 		status.codeNameEnd = status.codeName;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 't':
 		fprintf(out, "<span class=\"type\">");
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'v':
 		fprintf(out, "<span class=\"var\">");
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'f':
 		fprintf(out, "<span class=\"fn\">");
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'k':
 		fprintf(out, "<span class=\"keyword\">");
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 's':
 		fprintf(out, "<span class=\"str\">");
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'n':
 		fprintf(out, "<span class=\"num\">");
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	case 'p':
 		fprintf(out,
 			"<span class=\"type\">"
@@ -850,11 +912,11 @@ a{escape html macro}
 		);
 		status.codeSpecial = last;
 		break;
-x{escape html macro}
+x{escape html frag}
 ```
 
 ```
-a{escape html macro}
+a{escape html frag}
 	k{case} s{'m'}:
 		f{fprintf}(
 			v{out},
@@ -863,7 +925,7 @@ a{escape html macro}
 		);
 		v{status}.v{codeSpecial} = v{last};
 		k{break};
-x{escape html macro}
+x{escape html frag}
 ```
 * `@magic`-Befehle werden als Zahlen formatiert
 
