@@ -584,7 +584,7 @@ x{handle html include}
 ```
 
 ```
-d{handle html include}
+a{handle html include}
 	ASSERT(
 		status.codeNameEnd >= status.codeName,
 		"no period"
