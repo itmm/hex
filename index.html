@@ -1,4 +1,4 @@
-<!doctype html>
+ HTML Extractor<!doctype html>
 <html lang="de"l>
 <head>
 <meta charset="utf-8">
@@ -9,2053 +9,2475 @@
 <div><div>
 <h1>HTML Extractor</h1>
 </div>
+
 <ul><li>
  Dieses Dokument ist eine Präsentation, welche die Entwicklung des
-  <b>HTML Extractors</b> (<code>hx</code>) beschreibt</li><li>
- Es enthält zusätzlich den gesamten Source-Code von <code>hx</code></li><li>
+  **HTML Extractors** (<code>hx</code>) beschreibt
+</li><li>
+ Es enthält zusätzlich den gesamten Source-Code von <code>hx</code>
+</li><li>
  Es handelt sich um den Versuch eines neuen Programmier-Konzeptes:
-  das <b>Slideware-Programming</b> (SWP).</li><li>
- Viel Spass.</li></ul></div>
-</div>
+  das **Slideware-Programming** (SWP).
+</li><li>
+ Viel Spass.
+</li></ul></div>
+
+ Funktionsweise von `hx`</div>
 <h2>Funktionsweise von `hx`</h2>
 <div class="slides">
 <div><div>
 <h2>Funktionsweise von `hx`</h2>
 </div>
+
 <ul><li>
  <code>hx</code> generiert Source-Code und HTML-Präsentationen aus einem
-  Basis-Format</li><li>
- Dieses lehnt an Markdown an und hat die Datei-Endung <code>.x</code></li><li>
- Die Präsentationen bauen Schritt für Schritt das Programm auf</li><li>
- <code>hx</code> kann ebenfalls navigierbare Verweise in die Präsentation einbauen</li></ul></div>
-</div>
+  Basis-Format
+</li><li>
+ Dieses lehnt an Markdown an und hat die Datei-Endung <code>.x</code>
+</li><li>
+ Die Präsentationen bauen Schritt für Schritt das Programm auf
+</li><li>
+ <code>hx</code> kann ebenfalls navigierbare Verweise in die Präsentation einbauen
+</li></ul></div>
+
+ Slideware Programming (SWP)</div>
 <h2>Slideware Programming (SWP)</h2>
 <div class="slides">
 <div><div>
 <h2>Slideware Programming (SWP)</h2>
 </div>
+
 <ul><li>
  Aus dem Source-Code, der vollständing in einer HTML-Präsentation
-  enthalten ist, kann ein ausführbares Programm generiert werden</li><li>
- Dabei wird das Programm schrittweise aufgebaut</li></ul></div>
-</div>
+  enthalten ist, kann ein ausführbares Programm generiert werden
+</li><li>
+ Dabei wird das Programm schrittweise aufgebaut
+</li></ul></div>
+
+ SWP ≠ Literate Programming</div>
 <h2>SWP ≠ Literate Programming</h2>
 <div class="slides">
 <div><div>
 <h2>SWP ≠ Literate Programming</h2>
 </div>
+
 <ul><li>
- SWP beschreibt nicht nur ein fertiges Programm</li><li>
- Sondern wie das Programm aufgebaut wird</li><li>
+ SWP beschreibt nicht nur ein fertiges Programm
+</li><li>
+ Sondern wie das Programm aufgebaut wird
+</li><li>
  Zu jedem Zeitpunkt muss das bisher beschriebene Programm ausführbar
-  sein</li><li>
- Nicht definierte Fragmente werden zu nichts expandieren</li><li>
+  sein
+</li><li>
+ Nicht definierte Fragmente werden zu nichts expandieren
+</li><li>
  So kann das Verständnis für ein Programm schrittweise erarbeitet
-  werden</li></ul></div>
-</div>
+  werden
+</li></ul></div>
+
+ Definition des Ablaufs</div>
 <h1>Definition des Ablaufs</h1>
 <div class="slides">
 <div><div>
 <h1>Definition des Ablaufs</h1>
 </div>
+
 <ul><li>
- Zuerst wird das Haupt-Programm in ganz groben Pinselstrichen skizziert</li><li>
- Nach und nach werden die einzelnen Elemente mit Leben gefüllt</li></ul></div>
+ Zuerst wird das Haupt-Programm in ganz groben Pinselstrichen skizziert
+</li><li>
+ Nach und nach werden die einzelnen Elemente mit Leben gefüllt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globdef(<span class="name">file: hx.c</span>)</span><br/>
-<span class="in1"></span>
-<span class="expand">@globexpand(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="fn">main</span>(<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">argc</span>, <span class="type">const char **</span><span class="var">argv</span><br/>
-<span class="in1"></span>
-) {<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">main body</span>)</span><br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="expand">@globexpand(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">argc</span>, <span class="type">const char **</span><span class="var">argv</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">main body</span>)</span><br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">file: hx.c</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Das Hauptprogramm besteht aus der <code><span class="fn">main</span></code>-Funktion</li><li>
+ Das Hauptprogramm besteht aus der <code>f{main}</code>-Funktion
+</li><li>
  Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
-  definiert werden können</li></ul></div>
+  definiert werden können
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">main body</span>)</span><br/>
-<span class="in1"></span>
-<span class="expand">@globexpand(<span class="name">perform unit-tests</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="expand">@expand(<span class="name">process arguments</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="expand">@expand(<span class="name">read source file</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="expand">@expand(<span class="name">serialize fragments</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="expand">@globexpand(<span class="name">write HTML file</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@globexpand(<span class="name">perform unit-tests</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">process arguments</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">read source file</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">serialize fragments</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@globexpand(<span class="name">write HTML file</span>)</span>;<br/>
 
 <span class="end">@end(<span class="name">main body</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
-  umfangreiche Testabdeckung zu sichern)</li><li>
- Parameter von der Kommandozeile werden ausgewertet</li><li>
- Dann wird ein Parse-Graph aus Fragmenten aufgebaut</li><li>
- Und das daraus resultierende Programm generiert und übersetzt</li><li>
+  umfangreiche Testabdeckung zu sichern)
+</li><li>
+ Parameter von der Kommandozeile werden ausgewertet
+</li><li>
+ Dann wird ein Parse-Graph aus Fragmenten aufgebaut
+</li><li>
+ Und das daraus resultierende Programm generiert und übersetzt
+</li><li>
  Zum Schluss wird die HTML-Präsentation der Seiten in einem zweiten
-  Durchgang herausgeschrieben</li></ul></div>
-</div>
+  Durchgang herausgeschrieben
+</li></ul></div>
+
+ Was macht `@expand`?</div>
 <h2>Was macht `@expand`?</h2>
 <div class="slides">
 <div><div>
 <h2>Was macht `@expand`?</h2>
 </div>
+
 <ul><li>
- <code>@expand</code>-Blöcke beschreiben Fragment-Aufrufe</li><li>
+ <code>@expand</code>-Blöcke beschreiben Fragment-Aufrufe
+</li><li>
  Der Wert des Fragments mit dem Namen in Klammern wird anstelle des
-  Aufrufs im endgültigen Programm gesetzt</li><li>
- Diese Fragmente bilden ein zentrales Element von <code>hx</code></li><li>
- Sie können mit <code>@def</code>-<code>@end</code>-Sequenzen definiert werden</li><li>
- Oder mit <code>@add</code>-<code>@end</code> erweitert werden</li><li>
- Ein <code>@expand</code> darf nur einmal aufgelöst werden</li><li>
- Für mehrfache Auflösungen muss <code>@mulitple</code> verwendet werden</li></ul></div>
+  Aufrufs im endgültigen Programm gesetzt
+</li><li>
+ Diese Fragmente bilden ein zentrales Element von <code>hx</code>
+</li><li>
+ Sie können mit <code>@def</code>-<code>@end</code>-Sequenzen definiert werden
+</li><li>
+ Oder mit <code>@add</code>-<code>@end</code> erweitert werden
+</li><li>
+ Ein <code>@expand</code> darf nur einmal aufgelöst werden
+</li><li>
+ Für mehrfache Auflösungen muss <code>@mulitple</code> verwendet werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globdef(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="expand">@globexpand(<span class="name">includes</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="expand">@globexpand(<span class="name">define logging</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="expand">@globexpand(<span class="name">forward declarations</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@globexpand(<span class="name">includes</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@globexpand(<span class="name">define logging</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@globexpand(<span class="name">forward declarations</span>)</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  System-Dateien werden vor der Definition von Strukturen und Funktionen
-  eingebunden</li><li>
+  eingebunden
+</li><li>
  Auch müssen Macros für das Logging vor den Funktionen definiert
-  werden, die sie verwenden</li></ul></div>
-</div>
+  werden, die sie verwenden
+</li></ul></div>
+
+
+ Minimale Vorbereitung für das Parsen</div>
 <h1>Minimale Vorbereitung für das Parsen</h1>
 <div class="slides">
 <div><div>
 <h1>Minimale Vorbereitung für das Parsen</h1>
 </div>
+
 <ul><li>
  In diesem Abschnitt wird die Grundlage gelegt, um Dateien lesen zu
-  können</li><li>
+  können
+</li><li>
  Während des Lesens kann die aktuelle Datei unterbrochen und zuerst
-  eine weitere Datei gelesen werden</li></ul></div>
+  eine weitere Datei gelesen werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globdef(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>
-#include &lt;stdio.h&gt;<br/>
-<span class="in1"></span>
-#include &lt;stdlib.h&gt;<br/>
+
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdio</span>.<span class="var">h</span>&gt;<br/>
+
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdlib</span>.<span class="var">h</span>&gt;<br/>
 
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Standard File-Funktionen werden vom Programm benötigt</li><li>
- Standard Bibliothek wird für dynamische Speicherverwaltung benötigt</li></ul></div>
-</div>
+ Standard File-Funktionen werden vom Programm benötigt
+</li><li>
+ Standard Bibliothek wird für dynamische Speicherverwaltung benötigt
+</li></ul></div>
+
+ Buffer</div>
 <h1>Buffer</h1>
 <div class="slides">
 <div><div>
 <h1>Buffer</h1>
 </div>
+
 <ul><li>
- Einfache Implementierung in C eines Byte-Vektors</li><li>
- Der dynamisch wachsen kann</li></ul></div>
+ Einfache Implementierung in C eines Byte-Vektors
+</li><li>
+ Der dynamisch wachsen kann
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="include">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Buffer werden in einer eigenen Datei definiert</li></ul></div>
-</div>
+ Buffer werden in einer eigenen Datei definiert
+</li></ul></div>
+
+ Fragmente</div>
 <h1>Fragmente</h1>
 <div class="slides">
 <div><div>
 <h1>Fragmente</h1>
 </div>
+
 <ul><li>
  Fragmenten können während des Parsens erweitert, ersetzt und
-  angewendet werden</li><li>
+  angewendet werden
+</li><li>
  Ein Haupt-Vorteil von <code>hx</code> gegenüber anderen Makro-Präprozessoren ist
-  die Möglichkeit, Fragmente vor der Definition zu verwenden</li><li>
- Und Fragment an mehreren Stellen zu erweitern</li></ul></div>
+  die Möglichkeit, Fragmente vor der Definition zu verwenden
+</li><li>
+ Und Fragment an mehreren Stellen zu erweitern
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="include">@include(<span class="name"><a href="frag.html">frag.x</a>)</span></span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Fragment-Behandlung wird in einer eigenen Datei definiert</li></ul></div>
+ Fragment-Behandlung wird in einer eigenen Datei definiert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">struct Input</span> {<br/>
-<span class="in2"></span>
-<span class="type">struct Input *</span><span class="var">link</span>;<br/>
-<span class="in2"></span>
-<span class="type">FILE *</span><span class="var">file</span>;<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">additional input elements</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">char</span> <span class="var">name</span><span class="type">[]</span>;<br/>
-<span class="in1"></span>
-};<br/>
+
+<span class="in1"></span><span class="type">struct Input</span> {<br/>
+
+<span class="in2"></span><span class="type">struct Input *</span><span class="var">link</span>;<br/>
+
+<span class="in2"></span><span class="type">FILE *</span><span class="var">file</span>;<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">additional input elements</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">char</span> <span class="var">name</span><span class="type">[]</span>;<br/>
+
+<span class="in1"></span>};<br/>
 
 <br/>
-<span class="in1"></span>
-<span class="type">struct Input *</span><span class="var">input</span> = <span class="keyword">NULL</span>;<br/>
-<span class="in1"></span>
-<span class="type">struct Input *</span><span class="var">used</span> = <span class="keyword">NULL</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Input *</span><span class="var">input</span> = <span class="keyword">NULL</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Input *</span><span class="var">used</span> = <span class="keyword">NULL</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Es gibt immer eine aktuelle Datei, die gerade gelesen wird</li><li>
+ Es gibt immer eine aktuelle Datei, die gerade gelesen wird
+</li><li>
  Mitten während des Lesens können andere Dateien eingelesen
-  (inkludiert) werden</li><li>
- Daher gibt es einen Stapel offener Dateien</li><li>
- Aus der letzten wird aktuell gelesen</li><li>
- Eine Liste aller gelesenen Dateien wird in <code><span class="var">used</span></code> verwaltet</li><li>
- Damit wird verhindert, dass eine Datei mehrfach gelesen wird</li><li>
+  (inkludiert) werden
+</li><li>
+ Daher gibt es einen Stapel offener Dateien
+</li><li>
+ Aus der letzten wird aktuell gelesen
+</li><li>
+ Eine Liste aller gelesenen Dateien wird in <code>v{used}</code> verwaltet
+</li><li>
+ Damit wird verhindert, dass eine Datei mehrfach gelesen wird
+</li><li>
  Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
-  werden müssen</li></ul></div>
+  werden müssen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">struct FragMap</span> <span class="var">root</span> = {};<br/>
-<span class="in1"></span>
-<span class="type">struct FragMap *</span><span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
+
+<span class="in1"></span><span class="type">struct FragMap</span> <span class="var">root</span> = {};<br/>
+
+<span class="in1"></span><span class="type">struct FragMap *</span><span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
-  angelegt</li></ul></div>
+  angelegt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const char *</span><span class="var">path</span>) {<br/>
-<span class="in2"></span>
-<span class="type">FILE *</span><span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">path</span>, <span class="str">"r"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">check file for path</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct Input *</span><span class="var">i</span> = <span class="fn">malloc</span>(<br/>
-<span class="in3"></span>
-<span class="fn">sizeof</span>(<span class="type">struct Input</span>) + <span class="var">len</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">check memory for input</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">i</span>-&gt;<span class="var">link</span> = <span class="var">input</span>;<br/>
-<span class="in2"></span>
-<span class="var">i</span>-&gt;<span class="var">file</span> = <span class="var">f</span>;<br/>
-<span class="in2"></span>
-<span class="fn">memcpy</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">input</span> = <span class="var">i</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const char *</span><span class="var">path</span>) {<br/>
+
+<span class="in2"></span><span class="type">FILE *</span><span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">path</span>, <span class="str">"r"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">check file for path</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
+
+<span class="in2"></span><span class="type">struct Input *</span><span class="var">i</span> = <span class="fn">malloc</span>(<br/>
+
+<span class="in3"></span><span class="fn">sizeof</span>(<span class="type">struct Input</span>) + <span class="var">len</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">check memory for input</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">i</span>-&gt;<span class="var">link</span> = <span class="var">input</span>;<br/>
+
+<span class="in2"></span><span class="var">i</span>-&gt;<span class="var">file</span> = <span class="var">f</span>;<br/>
+
+<span class="in2"></span><span class="fn">memcpy</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">path</span>, <span class="var">len</span>);<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">input</span> = <span class="var">i</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Dateien werden über ihren Pfad identifiziert</li><li>
- Dieser wird als Name gespeichert</li><li>
+ Dateien werden über ihren Pfad identifiziert
+</li><li>
+ Dieser wird als Name gespeichert
+</li><li>
  Die Struktur wird dynamisch so groß gewählt, dass der Name hinein
-  passt</li></ul></div>
+  passt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check file for path</span>)</span><br/>
-<span class="in1"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span>
-<span class="var">f</span>, <span class="str">"can't open [%s]"</span>, <span class="var">path</span><br/>
-<span class="in1"></span>
-);<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open [%s]"</span>, <span class="var">path</span><br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">check file for path</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab</li></ul></div>
+ Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check memory for input</span>)</span><br/>
-<span class="in1"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span>
-<span class="var">i</span>,<br/>
-<span class="in2"></span>
-<span class="str">"no memory for input"</span><br/>
-<span class="in1"></span>
-);<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span><span class="var">i</span>,<br/>
+
+<span class="in2"></span><span class="str">"no memory for input"</span><br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">check memory for input</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wenn kein Speicher für die <code><span class="type">struct Input</span></code> vorhanden ist bricht das
-  Programm ab</li></ul></div>
+ Wenn kein Speicher für die <code>t{struct Input}</code> vorhanden ist bricht das
+  Programm ab
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">init additional input fields</span>)</span><br/>
-<span class="in1"></span>
-if (input) {<br/>
-<span class="in2"></span>
-input-&gt;frags.link = frags;<br/>
-<span class="in2"></span>
-frags = &amp;input-&gt;frags;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
+
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">link</span> = <span class="var">frags</span>;<br/>
+
+<span class="in2"></span><span class="var">frags</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">init additional input fields</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn es bereits eine offene Input-Datei gibt, dann wird deren lokale
-  Fragmente in den globalen Namensraum aufgenommen</li></ul></div>
-</div>
+  Fragmente in den globalen Namensraum aufgenommen
+</li></ul></div>
+
+ Kommandozeile</div>
 <h1>Kommandozeile</h1>
 <div class="slides">
 <div><div>
 <h1>Kommandozeile</h1>
 </div>
+
 <ul><li>
- Die Kommandozeile wird Element für Element abgearbeitet</li></ul></div>
+ Die Kommandozeile wird Element für Element abgearbeitet
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">const char *</span><span class="var">stylesheet</span> =<br/>
-<span class="in2"></span>
-<span class="str">"slides/slides.css"</span>;<br/>
+
+<span class="in1"></span><span class="type">const char *</span><span class="var">stylesheet</span> =<br/>
+
+<span class="in2"></span><span class="str">"slides/slides.css"</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt</li><li>
- Über die Kommandozeile kann eine alternative Datei angegeben werden</li></ul></div>
+ Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
+</li><li>
+ Über die Kommandozeile kann eine alternative Datei angegeben werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process arguments</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">bool</span> <span class="var">someFile</span> = <span class="keyword">false</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">process argument</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in3"></span>
-<span class="keyword">false</span>,<br/>
-<span class="in3"></span>
-<span class="str">"unknown argument [%s]"</span>,<br/>
-<span class="in3"></span>
-<span class="var">argv</span>[<span class="var">i</span>]<br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> = <span class="keyword">false</span>;<br/>
+
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">process argument</span>)</span>;<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in3"></span><span class="keyword">false</span>,<br/>
+
+<span class="in3"></span><span class="str">"unknown argument [%s]"</span>,<br/>
+
+<span class="in3"></span><span class="var">argv</span>[<span class="var">i</span>]<br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process arguments</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Die Argumente werden einzeln durchgegangen</li><li>
- Wenn sie nicht verwendet werden, bricht das Programm ab</li></ul></div>
+ Die Argumente werden einzeln durchgegangen
+</li><li>
+ Wenn sie nicht verwendet werden, bricht das Programm ab
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process argument</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="type">const char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"--css="</span>;<br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="var">len</span> = <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">memcmp</span>(<span class="var">argv</span>[<span class="var">i</span>], <span class="var">prefix</span>, <span class="var">len</span>) == <span class="num">0</span>) {<br/>
-<span class="in2"></span>
-<span class="var">stylesheet</span> = <span class="var">argv</span>[<span class="var">i</span>] + <span class="var">len</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">continue</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">const char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"--css="</span>;<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>;<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">memcmp</span>(<span class="var">argv</span>[<span class="var">i</span>], <span class="var">prefix</span>, <span class="var">len</span>) == <span class="num">0</span>) {<br/>
+
+<span class="in2"></span><span class="var">stylesheet</span> = <span class="var">argv</span>[<span class="var">i</span>] + <span class="var">len</span>;<br/>
+
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">process argument</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
-  werden</li></ul></div>
+  werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process argument</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">pushPath</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
-<span class="in2"></span>
-<span class="var">someFile</span> = <span class="keyword">true</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">continue</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
+
+<span class="in2"></span><span class="fn">pushPath</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
+
+<span class="in2"></span><span class="var">someFile</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process argument</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Ansonsten wird das Argument als Pfad der <code>.x</code>-Datei interpretiert</li><li>
- Aus dieser werden HTML-Slides und Source-Code generiert</li><li>
- Es kann nur eine Datei angegeben werden</li></ul></div>
+ Ansonsten wird das Argument als Pfad der <code>.x</code>-Datei interpretiert
+</li><li>
+ Aus dieser werden HTML-Slides und Source-Code generiert
+</li><li>
+ Es kann nur eine Datei angegeben werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process arguments</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">pushPath</span>(<span class="str">"index.x"</span>);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
+
+<span class="in2"></span><span class="fn">pushPath</span>(<span class="str">"index.x"</span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process arguments</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wenn kein Pfad angegeben wurde, wird <code>index.x</code> als Vorgabe verwendet</li></ul></div>
-</div>
+ Wenn kein Pfad angegeben wurde, wird <code>index.x</code> als Vorgabe verwendet
+</li></ul></div>
+
+ Nächstes Zeichen</div>
 <h1>Nächstes Zeichen</h1>
 <div class="slides">
 <div><div>
 <h1>Nächstes Zeichen</h1>
 </div>
+
 <ul><li>
- Die Funktion <code><span class="fn">nextCh</span></code> liest das nächste Zeichen aus der aktuellen
-  Datei</li><li>
+ Die Funktion <code>f{nextCh}</code> liest das nächste Zeichen aus der aktuellen
+  Datei
+</li><li>
  Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
-  Stapel der offenen Dateien geholt</li><li>
- Erst wenn die letzte Datei fertig gelesen wurde, wird ein <code><span class="keyword">EOF</span></code>
-  zurück geliefert</li></ul></div>
+  Stapel der offenen Dateien geholt
+</li><li>
+ Erst wenn die letzte Datei fertig gelesen wurde, wird ein <code>k{EOF}</code>
+  zurück geliefert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">ch</span> = <span class="keyword">EOF</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">while</span> (<span class="var">input</span>) {<br/>
-<span class="in3"></span>
-<span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
-<span class="in3"></span>
-<span class="expand">@expand(<span class="name">preprocess char</span>)</span>;<br/>
-<span class="in3"></span>
-<span class="keyword">if</span> (<span class="var">ch</span> != <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
-<span class="in3"></span>
-<span class="expand">@expand(<span class="name">get next input file</span>)</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="var">ch</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="keyword">EOF</span>;<br/>
+
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">input</span>) {<br/>
+
+<span class="in3"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">preprocess char</span>)</span>;<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="keyword">EOF</span>) { <span class="keyword">break</span>; }<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">get next input file</span>)</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wenn kein <code><span class="keyword">EOF</span></code> gelesen wurde, dann wird das Zeichen zurück
-  geliefert</li><li>
- Ansonsten wird aus der nächsten Datei ein Zeichen gelesen</li></ul></div>
+ Wenn kein <code>k{EOF}</code> gelesen wurde, dann wird das Zeichen zurück
+  geliefert
+</li><li>
+ Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <br/>
 
 <span class="add">@def(<span class="name">get next input file</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">struct Input *</span><span class="var">n</span> = <span class="var">input</span>-&gt;<span class="var">link</span>;<br/>
-<span class="in1"></span>
-<span class="fn">fclose</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
-<span class="in1"></span>
-<span class="var">input</span>-&gt;<span class="var">link</span> = <span class="var">used</span>;<br/>
-<span class="in1"></span>
-<span class="var">used</span> = <span class="var">input</span>;<br/>
-<span class="in1"></span>
-<span class="var">input</span> = <span class="var">n</span>;<br/>
-<span class="in1"></span>
-<span class="type">struct FragMap *</span><span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
-<span class="in1"></span>
-<span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
-<span class="in1"></span>
-<span class="var">frags</span> = <span class="var">nxt</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Input *</span><span class="var">n</span> = <span class="var">input</span>-&gt;<span class="var">link</span>;<br/>
+
+<span class="in1"></span><span class="fn">fclose</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
+
+<span class="in1"></span><span class="var">input</span>-&gt;<span class="var">link</span> = <span class="var">used</span>;<br/>
+
+<span class="in1"></span><span class="var">used</span> = <span class="var">input</span>;<br/>
+
+<span class="in1"></span><span class="var">input</span> = <span class="var">n</span>;<br/>
+
+<span class="in1"></span><span class="type">struct FragMap *</span><span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
+
+<span class="in1"></span><span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
+
+<span class="in1"></span><span class="var">frags</span> = <span class="var">nxt</span>;<br/>
 
 <span class="end">@end(<span class="name">get next input file</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Die aktuelle Datei wird geschlossen und in die Liste der bereits
-  verarbeiteten Dateien eingereiht</li><li>
- Dann wird der Vorgänger zur aktuellen Datei erklärt</li><li>
- Der Vorgänger wird aus dem globalen Namensraum wieder entfernt</li></ul></div>
-</div>
+  verarbeiteten Dateien eingereiht
+</li><li>
+ Dann wird der Vorgänger zur aktuellen Datei erklärt
+</li><li>
+ Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
+</li></ul></div>
+
+ Lokale Fragmente</div>
 <h1>Lokale Fragmente</h1>
 <div class="slides">
 <div><div>
 <h1>Lokale Fragmente</h1>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">additional input elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">struct FragMap</span> <span class="var">frags</span>;<br/>
+
+<span class="in1"></span><span class="type">struct FragMap</span> <span class="var">frags</span>;<br/>
 
 <span class="end">@end(<span class="name">additional input elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
-  Definitionen</li></ul></div>
+  Definitionen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">init additional input fields</span>)</span><br/>
-<span class="in1"></span>
-<span class="fn">memset</span>(<br/>
-<span class="in2"></span>
-&amp;<span class="var">i</span>-&gt;<span class="var">frags</span>, <span class="num">0</span>,<br/>
-<span class="in2"></span>
-<span class="fn">sizeof</span>(<span class="var">i</span>-&gt;<span class="var">frags</span>)<br/>
-<span class="in1"></span>
-);<br/>
+
+<span class="in1"></span><span class="fn">memset</span>(<br/>
+
+<span class="in2"></span>&amp;<span class="var">i</span>-&gt;<span class="var">frags</span>, <span class="num">0</span>,<br/>
+
+<span class="in2"></span><span class="fn">sizeof</span>(<span class="var">i</span>-&gt;<span class="var">frags</span>)<br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">init additional input fields</span>)</span>;<br/>
+
 </code>
 </div>
+
 <ul><li>
- Eine Map kann initialisiert werden, indem alle Bytes auf <code><span class="num">0</span></code>
-  gesetzt werden</li></ul></div>
-</div>
+ Eine Map kann initialisiert werden, indem alle Bytes auf <code>n{0}</code>
+  gesetzt werden
+</li></ul></div>
+
+ Eingabe-Dateien lesen</div>
 <h1>Eingabe-Dateien lesen</h1>
 <div class="slides">
 <div><div>
 <h1>Eingabe-Dateien lesen</h1>
 </div>
+
 <ul><li>
  In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
   Fragmente aufzubauen und alle notwendigen Beziehungen zwischen den
-  einzelnen Folien zu finden</li></ul></div>
+  einzelnen Folien zu finden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">read source file</span>)</span><br/>
-<span class="in1"></span>
-<span class="expand">@expand(<span class="name">global source vars</span>)</span>;<br/>
-<span class="in1"></span>
-{<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">additional read vars</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">last</span> = <span class="fn">nextCh</span>();<br/>
-<span class="in2"></span>
-<span class="type">int</span> <span class="var">ch</span> = <span class="var">last</span> != <span class="keyword">EOF</span> ? <span class="fn">nextCh</span>() : <span class="keyword">EOF</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">while</span> (<span class="var">ch</span> != <span class="var">EOF</span>) {<br/>
-<span class="in3"></span>
-<span class="expand">@expand(<span class="name">process current char</span>)</span>;<br/>
-<span class="in3"></span>
-<span class="var">last</span> = <span class="var">ch</span>; <span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">global source vars</span>)</span>;<br/>
+
+<span class="in1"></span>{<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">additional read vars</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">last</span> = <span class="fn">nextCh</span>();<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="var">last</span> != <span class="keyword">EOF</span> ? <span class="fn">nextCh</span>() : <span class="keyword">EOF</span>;<br/>
+
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">ch</span> != <span class="var">EOF</span>) {<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">process current char</span>)</span>;<br/>
+
+<span class="in3"></span><span class="var">last</span> = <span class="var">ch</span>; <span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">read source file</span>)</span><br/>
 
 <br/>
+
 </code>
 </div>
+
 <ul><li>
- Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben</li><li>
+ Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
+</li><li>
  Dabei kann <code>hx</code> auch mit einer leeren Eingabe-Datei umgehen (wenn
-  schon das erste Zeichen ein <code><span class="keyword">EOF</span></code> ist)</li></ul></div>
+  schon das erste Zeichen ein <code>k{EOF}</code> ist)
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process current char</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
-<span class="in2"></span>
-<span class="keyword">case</span> '{':<br/>
-<span class="in3"></span>
-<span class="expand">@expand(<span class="name">process open brace</span>)</span>;<br/>
-<span class="in3"></span>
-<span class="keyword">break</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">case</span> '}': {<br/>
-<span class="in3"></span>
-<span class="type">bool</span> <span class="var">processed</span> = <span class="keyword">false</span>;<br/>
-<span class="in3"></span>
-<span class="expand">@expand(<span class="name">process close brace</span>)</span>;<br/>
-<span class="in3"></span>
-<span class="keyword">break</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="keyword">default</span>:<br/>
-<span class="in3"></span>
-<span class="expand">@expand(<span class="name">process other char</span>)</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">case</span> '{':<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">process open brace</span>)</span>;<br/>
+
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+
+<span class="in2"></span><span class="keyword">case</span> '}': {<br/>
+
+<span class="in3"></span><span class="type">bool</span> <span class="var">processed</span> = <span class="keyword">false</span>;<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">process close brace</span>)</span>;<br/>
+
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">default</span>:<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">process other char</span>)</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process current char</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Beim Parsen kommt es nur auf das Öffnen und Schließen von
-  Mengenklammern an</li><li>
- Diese bestimmen den Anfang und das Ende von Befehls-Sequenzen</li><li>
- Welche die Bearbeitung der sonstigen Zeichen steuern</li></ul></div>
+  Mengenklammern an
+</li><li>
+ Diese bestimmen den Anfang und das Ende von Befehls-Sequenzen
+</li><li>
+ Welche die Bearbeitung der sonstigen Zeichen steuern
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">additional read vars</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">struct Frag *</span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
-<span class="in1"></span>
-<span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="var">bufferLine</span> = <span class="num">0</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Frag *</span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">buffer</span> = {};<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="var">bufferLine</span> = <span class="num">0</span>;<br/>
 
 <span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb</li><li>
+ Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
+</li><li>
  In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
-  gelesen wird</li><li>
- Am Anfang sind wir außerhalb eines Code-Blocks</li><li>
- In einem Code-Block ist <code><span class="var">frag</span></code> nicht <code><span class="keyword">NULL</span></code></li></ul></div>
+  gelesen wird
+</li><li>
+ Am Anfang sind wir außerhalb eines Code-Blocks
+</li><li>
+ In einem Code-Block ist <code>v{frag}</code> nicht <code>k{NULL}</code>
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">additional read vars</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">char</span> <span class="var">openCh</span> = <span class="str">'\0'</span>;<br/>
+
+<span class="in1"></span><span class="type">char</span> <span class="var">openCh</span> = <span class="str">'\0'</span>;<br/>
 
 <span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Das Zeichenvor einer öffnenden Mengenklammer wird in <code><span class="var">openCh</span></code>
-  zwischengespeichert</li><li>
- Es beschreibt, welcher Befehl ausgeführt werden soll</li></ul></div>
+ Das Zeichenvor einer öffnenden Mengenklammer wird in <code>v{openCh}</code>
+  zwischengespeichert
+</li><li>
+ Es beschreibt, welcher Befehl ausgeführt werden soll
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">additional read vars</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">struct Buffer</span> <span class="var">name</span> = {};<br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="var">nameLine</span> = <span class="num">0</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">name</span> = {};<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="var">nameLine</span> = <span class="num">0</span>;<br/>
 
 <span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wenn <code><span class="var">name</span></code> aktiv ist, dann wird ein Name in Buffer gelesen</li></ul></div>
+ Wenn <code>v{name}</code> aktiv ist, dann wird ein Name in Buffer gelesen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process close brace</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
-<span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="str">'\0'</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">process frag name</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="fn">resetBuffer</span>(&amp;<span class="var">name</span>);<br/>
-<span class="in2"></span>
-<span class="var">last</span> = <span class="var">ch</span>;<br/>
-<span class="in2"></span>
-<span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
+
+<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="str">'\0'</span>);<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">process frag name</span>)</span>;<br/>
+
+<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">name</span>);<br/>
+
+<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
+
+<span class="in2"></span><span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">process close brace</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Bei einer schließenden Mengenklammer wird der Befehls-Name ausgewertet</li><li>
- Danach wird der Namenszeiger zurückgesetzt</li></ul></div>
+ Bei einer schließenden Mengenklammer wird der Befehls-Name ausgewertet
+</li><li>
+ Danach wird der Namenszeiger zurückgesetzt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process other char</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
-<span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="var">ch</span>);<br/>
-<span class="in2"></span>
-<span class="keyword">break</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
+
+<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="var">ch</span>);<br/>
+
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">process other char</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn ein Name geparst wird, dann der Namensbuffer entsprechend
-  erweitert</li></ul></div>
+  erweitert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process other char</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in2"></span>
-if (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer</span>)) {<br/>
-<span class="in3"></span>
-<span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer</span>)) {<br/>
+
+<span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">process other char</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn es ein aktuelles Fragment gibt, dann müssen sonstige Zeichen dort
-  angefügt werden</li></ul></div>
+  angefügt werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process open brace</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
-<span class="in2"></span>
-<span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span><span class="type">[]</span> = <span class="str">"aAdDirR"</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
-<span class="in3"></span>
-<span class="var">openCh</span> = <span class="var">last</span>;<br/>
-<span class="in3"></span>
-<span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
-<span class="in3"></span>
-<span class="keyword">break</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const char</span> <span class="var">valids</span><span class="type">[]</span> = <span class="str">"aAdDirR"</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
+
+<span class="in3"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
+
+<span class="in3"></span><span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
+
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">process open brace</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn außerhalb eines Fragments die Folge <code>a</code>, <code>{</code> gelesen wird, dann
-  beginnt ein <code>@add</code>-Fragment</li><li>
+  beginnt ein <code>@add</code>-Fragment
+</li><li>
  Falls ein <code>i</code>, <code>{</code> gelesen wird, dann muss eine andere Datei mit
-  <code>@include</code> eingebunden werden</li><li>
+  <code>@include</code> eingebunden werden
+</li><li>
  Es folgt der Name des Fragments oder der Pfad der Datei bis zum
-  nächsten <code>}</code></li></ul></div>
+  nächsten <code>}</code>
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
-<span class="in3"></span>
-<span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
-<span class="in4"></span>
-<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
-<span class="in3"></span>
-);<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
+
+<span class="in2"></span><span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
+
+<span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
+
+<span class="in4"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+
+<span class="in3"></span>);<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Erzeugt ein neues Fragment</li><li>
- Das Fragment darf nicht mehrfach definiert werden</li></ul></div>
+ Erzeugt ein neues Fragment
+</li><li>
+ Das Fragment darf nicht mehrfach definiert werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
-<span class="in3"></span>
-<span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
-<span class="in4"></span>
-&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
-<span class="in3"></span>
-);<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
+
+<span class="in2"></span><span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
+
+<span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
+
+<span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+
+<span class="in3"></span>);<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Erzeugt ein neues Fragment im globalen Namensraum</li><li>
- Das Fragment darf nicht mehrfach definiert werden</li></ul></div>
+ Erzeugt ein neues Fragment im globalen Namensraum
+</li><li>
+ Das Fragment darf nicht mehrfach definiert werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check for double def</span>)</span><br/>
-<span class="in1"></span>
-<span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-<span class="in2"></span>
-<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in2"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"frag [%s] already defined\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">buffer</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
+
+<span class="in2"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in2"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"frag [%s] already defined\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">check for double def</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet</li><li>
- Es muss geprüft werden, ob es schon Inhalt hat</li><li>
- Das wäre dann eine Fehlermeldung wert</li><li>
- Bricht aber die Abarbeitung nicht ab</li></ul></div>
+ Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
+</li><li>
+ Es muss geprüft werden, ob es schon Inhalt hat
+</li><li>
+ Das wäre dann eine Fehlermeldung wert
+</li><li>
+ Bricht aber die Abarbeitung nicht ab
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'a'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">ins</span> = <span class="var">fm</span>;<br/>
-<span class="in2"></span>
-<span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-<span class="in3"></span>
-<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'a'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
+
+<span class="in2"></span><span class="type">struct FragMap *</span><span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+
+<span class="in2"></span><span class="type">struct FragMap *</span><span class="var">ins</span> = <span class="var">fm</span>;<br/>
+
+<span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
+
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Bei einem öffnenden Befehl wird das passende Fragment gesucht</li><li>
- Weitere Bytes können zu diesem Fragment hinzugefügt werden</li></ul></div>
+ Bei einem öffnenden Befehl wird das passende Fragment gesucht
+</li><li>
+ Weitere Bytes können zu diesem Fragment hinzugefügt werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'A'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct FragMap *</span><span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
-<span class="in2"></span>
-<span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-<span class="in3"></span>
-<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'A'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
+
+<span class="in2"></span><span class="type">struct FragMap *</span><span class="var">fm</span> = <span class="var">frags</span>;<br/>
+
+<span class="in2"></span><span class="type">struct FragMap *</span><span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
+
+<span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
+
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Erweitert ein global definiertes Fragment</li></ul></div>
+ Erweitert ein global definiertes Fragment
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check for add without def</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"frag [%s] not defined\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">buffer</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
-<span class="in3"></span>
-<span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
-<span class="in3"></span>
-<span class="var">ins</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"frag [%s] not defined\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
+
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
+
+<span class="in3"></span><span class="var">ins</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">check for add without def</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Das Fragment muss bereits vorhanden und nicht leer sein</li></ul></div>
+ Das Fragment muss bereits vorhanden und nicht leer sein
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
-<span class="in3"></span>
-&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in3"></span>
-<span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">buffer</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="fn">freeFragEntries</span>(<span class="var">frag</span>);<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
+
+<span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
+
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="fn">freeFragEntries</span>(<span class="var">frag</span>);<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Bei einem <code>@replace</code> wird der Inhalt eines Fragments zurückgesetzt</li><li>
- Das Fragment muss bereits vorhanden sein</li></ul></div>
+ Bei einem <code>@replace</code> wird der Inhalt eines Fragments zurückgesetzt
+</li><li>
+ Das Fragment muss bereits vorhanden sein
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'R'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
-<span class="in3"></span>
-<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in3"></span>
-<span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">buffer</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="fn">freeFragEntries</span>(<span class="var">frag</span>);<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'R'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
+
+<span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
+
+<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="fn">freeFragEntries</span>(<span class="var">frag</span>);<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Ersetzt ein global definiertes Fragment</li></ul></div>
+ Ersetzt ein global definiertes Fragment
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"end not in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">frag names must match</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"end not in frag"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">frag names must match</span>)</span>;<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen</li></ul></div>
+ Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">frag names must match</span>)</span><br/>
-<span class="in1"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span>
-! <span class="fn">strcmp</span>(<span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="var">name</span>.<span class="var">buffer</span>),<br/>
-<span class="in2"></span>
-<span class="str">"closing [%s] != [%s]"</span>,<br/>
-<span class="in2"></span>
-<span class="var">name</span>.<span class="var">buffer</span>, <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
-<span class="in1"></span>
-);<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span>! <span class="fn">strcmp</span>(<span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="var">name</span>.<span class="var">buffer</span>),<br/>
+
+<span class="in2"></span><span class="str">"closing [%s] != [%s]"</span>,<br/>
+
+<span class="in2"></span><span class="var">name</span>.<span class="var">buffer</span>, <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">frag names must match</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn der öffnende und schließende Name nicht passt, wird die
-  Abarbeitung abgebrochen</li></ul></div>
+  Abarbeitung abgebrochen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">global source vars</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const char *</span><span class="var">name</span>) {<br/>
-<span class="in2"></span>
-<span class="type">struct Input *</span><span class="var">i</span> = <span class="var">input</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
-<span class="in3"></span>
-<span class="keyword">if</span> (<span class="fn">strcmp</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == <span class="num">0</span>) {<br/>
-<span class="in4"></span>
-<span class="keyword">return</span> <span class="keyword">true</span>;<br/>
-<span class="in3"></span>
-}<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (<span class="var">i</span> = <span class="var">used</span>; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
-<span class="in3"></span>
-<span class="keyword">if</span> (<span class="fn">strcmp</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == <span class="num">0</span>) {<br/>
-<span class="in4"></span>
-<span class="keyword">return</span> <span class="keyword">true</span>;<br/>
-<span class="in3"></span>
-}<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="keyword">false</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const char *</span><span class="var">name</span>) {<br/>
+
+<span class="in2"></span><span class="type">struct Input *</span><span class="var">i</span> = <span class="var">input</span>;<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="fn">strcmp</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == <span class="num">0</span>) {<br/>
+
+<span class="in4"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (<span class="var">i</span> = <span class="var">used</span>; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="fn">strcmp</span>(<span class="var">i</span>-&gt;<span class="var">name</span>, <span class="var">name</span>) == <span class="num">0</span>) {<br/>
+
+<span class="in4"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="keyword">false</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">global source vars</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Prüft ob eine Datei bereits verwendet wurde</li><li>
+ Prüft ob eine Datei bereits verwendet wurde
+</li><li>
  Sowohl die offenen als auch die bereits prozessierten Dateien werden
-  durchgegangen</li><li>
+  durchgegangen
+</li><li>
  Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
-  verarbeitet wird</li></ul></div>
+  verarbeitet wird
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'i'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"include in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="var">buffer</span>)) {<br/>
-<span class="in3"></span>
-<span class="fn">pushPath</span>(<span class="var">name</span>.<span class="var">buffer</span>);<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'i'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"include in frag"</span>);<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="var">buffer</span>)) {<br/>
+
+<span class="in3"></span><span class="fn">pushPath</span>(<span class="var">name</span>.<span class="var">buffer</span>);<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
-  auf den Stapel der offenen Dateien gelegt</li><li>
- Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert</li></ul></div>
+  auf den Stapel der offenen Dateien gelegt
+</li><li>
+ Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
-<span class="in3"></span>
-&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
-<span class="in2"></span>
-++sub-&gt;expands;<br/>
-<span class="in2"></span>
-<span class="fn">addFragToFrag</span>(<span class="var">frag</span>, <span class="var">sub</span>);<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
+
+<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">expands</span>;<br/>
+
+<span class="in2"></span><span class="fn">addFragToFrag</span>(<span class="var">frag</span>, <span class="var">sub</span>);<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Bei einem <code>@expand</code> wird das Fragment gesucht und eingebunden</li><li>
- Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden</li><li>
- Das Attribut <code><span class="var">expands</span></code> zählt, wie häufig das Fragment expandiert
-  wurde</li></ul></div>
+ Bei einem <code>@expand</code> wird das Fragment gesucht und eingebunden
+</li><li>
+ Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
+</li><li>
+ Das Attribut <code>v{expands}</code> zählt, wie häufig das Fragment expandiert
+  wurde
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'g'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
-<span class="in3"></span>
-<span class="var">frags</span>, <span class="var">name</span>.buffer,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
-<span class="in2"></span>
-++sub-&gt;expands;<br/>
-<span class="in2"></span>
-<span class="fn">addFragToFrag</span>(<span class="var">frag</span>, <span class="var">sub</span>);<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'g'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+
+<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
+
+<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">expands</span>;<br/>
+
+<span class="in2"></span><span class="fn">addFragToFrag</span>(<span class="var">frag</span>, <span class="var">sub</span>);<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check frag expand count</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"multiple expands of [%s]\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">sub</span>-&gt;<span class="var">name</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">multiples</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"expand after mult of [%s]\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">sub</span>-&gt;<span class="var">name</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"multiple expands of [%s]\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">sub</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">multiples</span>) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"expand after mult of [%s]\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">sub</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">check frag expand count</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
-  ausgegeben</li><li>
+  ausgegeben
+</li><li>
  Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
-  ebenfalls eine Meldung ausgegeben</li></ul></div>
+  ebenfalls eine Meldung ausgegeben
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
-<span class="in3"></span>
-<span class="fn">getFragInMap</span>(<br/>
-<span class="in4"></span>
-&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
-<span class="in3"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
-<span class="in2"></span>
-++sub-&gt;multiples;<br/>
-<span class="in2"></span>
-<span class="fn">addFragToFrag</span>(<br/>
-<span class="in3"></span>
-<span class="var">frag</span>, <span class="var">sub</span>);<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
+
+<span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
+
+<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+
+<span class="in3"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
+
+<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">multiples</span>;<br/>
+
+<span class="in2"></span><span class="fn">addFragToFrag</span>(<br/>
+
+<span class="in3"></span><span class="var">frag</span>, <span class="var">sub</span>);<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Mit einem <code>@multiple</code> Befehl kann ein Fragment an mehreren Stellen
-  expandiert werden</li></ul></div>
+  expandiert werden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'G'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
-<span class="in3"></span>
-<span class="fn">getFragInMap</span>(<br/>
-<span class="in4"></span>
-<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
-<span class="in4"></span>
-<span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
-<span class="in3"></span>
-);<br/>
-<span class="in2"></span>
-<span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
-<span class="in2"></span>
-++sub-&gt;multiples;<br/>
-<span class="in2"></span>
-<span class="fn">addFragToFrag</span>(<br/>
-<span class="in3"></span>
-<span class="var">frag</span>, <span class="var">sub</span>);<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'G'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">sub</span> =<br/>
+
+<span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
+
+<span class="in4"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
+
+<span class="in3"></span>);<br/>
+
+<span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
+
+<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">multiples</span>;<br/>
+
+<span class="in2"></span><span class="fn">addFragToFrag</span>(<br/>
+
+<span class="in3"></span><span class="var">frag</span>, <span class="var">sub</span>);<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check for prev expands</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"multiple after expand "</span><br/>
-<span class="in4"></span>
-<span class="str">"of [%s]\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">sub</span>-&gt;<span class="var">name</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"multiple after expand "</span><br/>
+
+<span class="in4"></span><span class="str">"of [%s]\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">sub</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">check for prev expands</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Es ist ein Fehler, wenn das Fragment bereits normal <code>@expand</code>iert
-  wurde</li></ul></div>
+  wurde
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"private not in frag"</span>);<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">process private frag</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"private not in frag"</span>);<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">process private frag</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Private Bezeichner werden durch einen Hash erweitert</li><li>
- Um sie global unique zu machen</li></ul></div>
+ Private Bezeichner werden durch einen Hash erweitert
+</li><li>
+ Um sie global unique zu machen
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process private frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
-<span class="in1"></span>
-<span class="var">cur</span> = <span class="fn">addTerminatedToHash</span>(<br/>
-<span class="in2"></span>
-<span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
-<span class="in2"></span>
-<span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
+
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
+
+<span class="in1"></span><span class="var">cur</span> = <span class="fn">addTerminatedToHash</span>(<br/>
+
+<span class="in2"></span><span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
+
+<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
 
 <span class="end">@end(<span class="name">process private frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Der Hash wird aus dem aktuellen Dateinamen</li><li>
- Und dem aktuellen Bezeichner berechnet</li><li>
- Zum Schluss wird er auf eine positive Zahl maskiert</li></ul></div>
+ Der Hash wird aus dem aktuellen Dateinamen
+</li><li>
+ Und dem aktuellen Bezeichner berechnet
+</li><li>
+ Zum Schluss wird er auf eine positive Zahl maskiert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process private frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">static char</span> <span class="var">hash</span><span class="type">[12]</span>;<br/>
-<span class="in1"></span>
-<span class="type">char *</span><span class="var">end</span> = <span class="var">hash</span> + <span class="fn">sizeof</span>(<span class="var">hash</span>);<br/>
-<span class="in1"></span>
-<span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
-<span class="in1"></span>
-*--<span class="var">head</span> = '_';<br/>
-<span class="in1"></span>
-<span class="keyword">for</span> (;;) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">head</span> &gt; <span class="var">hash</span>);<br/>
-<span class="in2"></span>
-*--<span class="var">head</span> = (<span class="var">cur</span> % <span class="num">10</span>) + <span class="str">'0'</span>;<br/>
-<span class="in2"></span>
-<span class="var">cur</span> /= <span class="num">10</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">cur</span>) { <span class="keyword">break</span>; }<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">static char</span> <span class="var">hash</span><span class="type">[12]</span>;<br/>
+
+<span class="in1"></span><span class="type">char *</span><span class="var">end</span> = <span class="var">hash</span> + <span class="fn">sizeof</span>(<span class="var">hash</span>);<br/>
+
+<span class="in1"></span><span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
+
+<span class="in1"></span>*--<span class="var">head</span> = '_';<br/>
+
+<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">head</span> &gt; <span class="var">hash</span>);<br/>
+
+<span class="in2"></span>*--<span class="var">head</span> = (<span class="var">cur</span> % <span class="num">10</span>) + <span class="str">'0'</span>;<br/>
+
+<span class="in2"></span><span class="var">cur</span> /= <span class="num">10</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">cur</span>) { <span class="keyword">break</span>; }<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process private frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Das Textfeld mit dem Hash-Wert wird von hinten aus gefüllt</li><li>
- Das erleichtert das extrahieren der einzelnen Dezimal-Stellen</li><li>
- Zusätzlich wird noch ein Unterstrich an den Hash angehängt</li></ul></div>
+ Das Textfeld mit dem Hash-Wert wird von hinten aus gefüllt
+</li><li>
+ Das erleichtert das extrahieren der einzelnen Dezimal-Stellen
+</li><li>
+ Zusätzlich wird noch ein Unterstrich an den Hash angehängt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process private frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="type">static char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"_private_"</span>;<br/>
-<span class="in1"></span>
-<span class="fn">addBytesToFrag</span>(<br/>
-<span class="in2"></span>
-<span class="var">frag</span>, <span class="var">prefix</span>,<br/>
-<span class="in2"></span>
-<span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>,<br/>
-<span class="in2"></span>
-<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="fn">addBytesToFrag</span>(<br/>
-<span class="in2"></span>
-<span class="var">frag</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
-<span class="in2"></span>
-<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="fn">addBytesToFrag</span>(<br/>
-<span class="in2"></span>
-<span class="var">frag</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
-<span class="in2"></span>
-<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
-<span class="in1"></span>
-);<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in1"></span><span class="type">static char</span> <span class="var">prefix</span><span class="type">[]</span> = <span class="str">"_private_"</span>;<br/>
+
+<span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
+
+<span class="in2"></span><span class="var">frag</span>, <span class="var">prefix</span>,<br/>
+
+<span class="in2"></span><span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>,<br/>
+
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
+
+<span class="in2"></span><span class="var">frag</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
+
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
+
+<span class="in2"></span><span class="var">frag</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
+
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">process private frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben</li><li>
- Dann kommt der neue Bezeichner</li><li>
- Dieser besteht aus einem konstanten Präfix</li><li>
- Dem Hash-Wert</li><li>
- Und dem alten Bezeichner</li></ul></div>
+ Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
+</li><li>
+ Dann kommt der neue Bezeichner
+</li><li>
+ Dieser besteht aus einem konstanten Präfix
+</li><li>
+ Dem Hash-Wert
+</li><li>
+ Und dem alten Bezeichner
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'m'</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">frag</span>, "magic not in frag");<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">process magic frag</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'m'</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, "<span class="var">magic</span> <span class="var">not</span> <span class="var">in</span> <span class="var">frag</span>");<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">process magic frag</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Der <code>@magic</code>-Befehl erzeugt einen Hash-Wert</li><li>
+ Der <code>@magic</code>-Befehl erzeugt einen Hash-Wert
+</li><li>
  Der sich aus dem Dateinamen und dem Argument des Befehls
-  zusammen setzt</li></ul></div>
+  zusammen setzt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">process magic frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
-<span class="in1"></span>
-<span class="var">cur</span> = <span class="fn">addTerminatedToHash</span>(<br/>
-<span class="in2"></span>
-<span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
-<span class="in2"></span>
-<span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
+
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
+
+<span class="in1"></span><span class="var">cur</span> = <span class="fn">addTerminatedToHash</span>(<br/>
+
+<span class="in2"></span><span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
+
+<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
 
 <span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Berechnet Hash-Wert</li></ul></div>
+ Berechnet Hash-Wert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process magic frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">static char</span> <span class="var">magic</span><span class="type">[12]</span>;<br/>
-<span class="in1"></span>
-<span class="type">char *</span><span class="var">end</span> = <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>);<br/>
-<span class="in1"></span>
-<span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">for</span> (;;) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">head</span> &gt; <span class="var">magic</span>);<br/>
-<span class="in2"></span>
-*--<span class="var">head</span> = (<span class="var">cur</span> % <span class="num">10</span>) + <span class="str">'0'</span>;<br/>
-<span class="in2"></span>
-<span class="var">cur</span> /= <span class="num">10</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (! <span class="var">cur</span>) { <span class="keyword">break</span>; }<br/>
-<span class="in1"></span>
-}<br/>
-<span class="in1"></span>
-<span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-<span class="in1"></span>
-<span class="fn">addBytesToFrag</span>(<br/>
-<span class="in2"></span>
-<span class="var">frag</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
-<span class="in2"></span>
-<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
-<span class="in1"></span>
-);<br/>
+
+<span class="in1"></span><span class="type">static char</span> <span class="var">magic</span><span class="type">[12]</span>;<br/>
+
+<span class="in1"></span><span class="type">char *</span><span class="var">end</span> = <span class="var">magic</span> + <span class="fn">sizeof</span>(<span class="var">magic</span>);<br/>
+
+<span class="in1"></span><span class="type">char *</span><span class="var">head</span> = <span class="var">end</span>;<br/>
+
+<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">head</span> &gt; <span class="var">magic</span>);<br/>
+
+<span class="in2"></span>*--<span class="var">head</span> = (<span class="var">cur</span> % <span class="num">10</span>) + <span class="str">'0'</span>;<br/>
+
+<span class="in2"></span><span class="var">cur</span> /= <span class="num">10</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">cur</span>) { <span class="keyword">break</span>; }<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
+
+<span class="in2"></span><span class="var">frag</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
+
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Gibt den Hash-Wert aus</li><li>
- Vorher wird noch eventuell gespeicherte Zeichen ausgegeben</li></ul></div>
+ Gibt den Hash-Wert aus
+</li><li>
+ Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">flush frag buffer</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<br/>
-<span class="in2"></span>
-<span class="var">buffer</span>.<span class="var">buffer</span> != <span class="var">buffer</span>.<span class="var">current</span><br/>
-<span class="in1"></span>
-) {<br/>
-<span class="in2"></span>
-<span class="fn">addBytesToFrag</span>(<br/>
-<span class="in3"></span>
-<span class="var">frag</span>, <span class="var">buffer</span>.<span class="var">buffer</span>,<br/>
-<span class="in3"></span>
-<span class="var">buffer</span>.<span class="var">current</span>,<br/>
-<span class="in3"></span>
-<span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="fn">resetBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+
+<span class="in2"></span><span class="var">buffer</span>.<span class="var">buffer</span> != <span class="var">buffer</span>.<span class="var">current</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="fn">addBytesToFrag</span>(<br/>
+
+<span class="in3"></span><span class="var">frag</span>, <span class="var">buffer</span>.<span class="var">buffer</span>,<br/>
+
+<span class="in3"></span><span class="var">buffer</span>.<span class="var">current</span>,<br/>
+
+<span class="in3"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">flush frag buffer</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Das Fragment fügt alle Bytes im Buffer an ein Fragment an</li><li>
- Danach wird der Buffer zurück gesetzt</li></ul></div>
+ Das Fragment fügt alle Bytes im Buffer an ein Fragment an
+</li><li>
+ Danach wird der Buffer zurück gesetzt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process open brace</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in2"></span>
-<span class="type">bool</span> <span class="var">valid</span> = <span class="keyword">false</span>;<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">check valid names</span>)</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">if</span> (<span class="var">valid</span>) {<br/>
-<span class="in3"></span>
-<span class="var">openCh</span> = <span class="var">last</span>;<br/>
-<span class="in3"></span>
-<span class="var">nameLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-<span class="in3"></span>
-<span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
-<span class="in3"></span>
-<span class="keyword">break</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
+
+<span class="in2"></span><span class="type">bool</span> <span class="var">valid</span> = <span class="keyword">false</span>;<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">check valid names</span>)</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">valid</span>) {<br/>
+
+<span class="in3"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
+
+<span class="in3"></span><span class="var">nameLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
+
+<span class="in3"></span><span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
+
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">process open brace</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Prüft, ob ein Befehl innerhalb eines Fragments mit einem gültigen
-  Zeichen beginnt</li><li>
+  Zeichen beginnt
+</li><li>
  In diesem Fall wird das Zeichen als Befehls-Opcode gesichert und der
   Buffer aktiviert um alle Zeichen bis zu eine schließenden
-  Mengenklammer zu speichern</li></ul></div>
+  Mengenklammer zu speichern
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">check valid names</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">static const char</span> <span class="var">valids</span><span class="type">[]</span> =<br/>
-<span class="in2"></span>
-<span class="str">"fvsntkxeEgGpm"</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
-<span class="in2"></span>
-<span class="var">valid</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">static const char</span> <span class="var">valids</span><span class="type">[]</span> =<br/>
+
+<span class="in2"></span><span class="str">"fvsntkxeEgGpm"</span>;<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
+
+<span class="in2"></span><span class="var">valid</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">check valid names</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Gültige Kommando-Zeichen sind in einem String abgelegt</li><li>
- Wenn das Zeichen im String vorkommt, dann ist es gültig</li></ul></div>
+ Gültige Kommando-Zeichen sind in einem String abgelegt
+</li><li>
+ Wenn das Zeichen im String vorkommt, dann ist es gültig
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process frag name</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in3"></span>
-<span class="var">frag</span>, <span class="str">"unknown frag %s"</span>,<br/>
-<span class="in3"></span>
-<span class="var">name</span>.<span class="var">buffer</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">c</span> = <span class="var">name</span>.<span class="var">buffer</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name.current</span> - <span class="num">1</span>; ++<span class="var">c</span>) {<br/>
-<span class="in3"></span>
-if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
-<span class="in4"></span>
-bufferLine = input-&gt;line;<br/>
-<span class="in3"></span>
-</span><br/>
-<span class="in3"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="var">processed</span> = <span class="keyword">true</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in3"></span><span class="var">frag</span>, <span class="str">"unknown frag %s"</span>,<br/>
+
+<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="type">const char *</span><span class="var">c</span> = <span class="var">name</span>.<span class="var">buffer</span>;<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name.current</span> - <span class="num">1</span>; ++<span class="var">c</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var"><br/>
+
+<span class="in4"></span><br/>
+
+<span class="in3"></span>buffer)) {bufferLine = input-&gt;line;</span><br/>
+
+<span class="in3"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="var">processed</span> = <span class="keyword">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn kein bekannter Befehl erkannt wurde, dann ist die
-  befehlsähnliche Eingabe Teil des Programms</li><li>
- Und wird daher in den entsprechenden Buffer kopiert</li></ul></div>
+  befehlsähnliche Eingabe Teil des Programms
+</li><li>
+ Und wird daher in den entsprechenden Buffer kopiert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process open brace</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in2"></span>
-if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
-<span class="in3"></span>
-bufferLine = input-&gt;line;<br/>
-<span class="in2"></span>
-</span><br/>
-<span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var"><br/>
+
+<span class="in3"></span><br/>
+
+<span class="in2"></span>buffer)) {bufferLine = input-&gt;line;</span><br/>
+
+<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process open brace</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn wir uns in einem Fragment befinden und bis hier gekommen sind,
   dann wird das Zeichen vor der öffnenden Klammer zum Fragment hinzu
-  gefügt</li></ul></div>
+  gefügt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">process close brace</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
-<span class="in2"></span>
-if (! isActiveBuffer(&amp;<span class="var">buffer))<br/>
-<span class="in3"></span>
-bufferLine = input-&gt;line;<br/>
-<span class="in2"></span>
-</span><br/>
-<span class="in2"></span>
-<span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var"><br/>
+
+<span class="in3"></span><br/>
+
+<span class="in2"></span>buffer)) {bufferLine = input-&gt;line;</span><br/>
+
+<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">process close brace</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn schließende Mengenklammern nicht Teil eines Befehls sind, können
-  sie Teil des Programms sein</li><li>
- Und werden daher zum Buffer direkt hinzugefügt</li></ul></div>
-</div>
+  sie Teil des Programms sein
+</li><li>
+ Und werden daher zum Buffer direkt hinzugefügt
+</li></ul></div>
+
+ Fragmente serialisieren</div>
 <h1>Fragmente serialisieren</h1>
 <div class="slides">
 <div><div>
 <h1>Fragmente serialisieren</h1>
 </div>
+
 <ul><li>
  Fragmente, die Dateien spezifizieren werden in diese Dateien
-  rausgeschrieben</li></ul></div>
+  rausgeschrieben
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">serialize fragments</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">root</span>.<span class="var">frags</span>;<br/>
-<span class="in1"></span>
-<span class="type">struct Frag **</span><span class="var">end</span> =<br/>
-<span class="in2"></span>
-<span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
-<span class="in2"></span>
-<span class="type">struct Frag *</span><span class="var">frag</span> = *<span class="var">cur</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">frag</span>; <span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>) {<br/>
-<span class="in3"></span>
-<span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">struct Frag **</span><span class="var">cur</span> = <span class="var">root</span>.<span class="var">frags</span>;<br/>
+
+<span class="in1"></span><span class="type">struct Frag **</span><span class="var">end</span> =<br/>
+
+<span class="in2"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
+
+<span class="in1"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frag</span> = *<span class="var">cur</span>;<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">frag</span>; <span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>) {<br/>
+
+<span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">serialize fragments</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Fragmente, die mit <code>file:</code> beginnen, werden in die entsprechenden
-  Dateien rausgeschrieben</li><li>
+  Dateien rausgeschrieben
+</li><li>
  Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft expandiert
-  wurden</li></ul></div>
+  wurden
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">serialize fragments</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="var">input</span> = <span class="var">used</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">for</span> (; <span class="var">input</span>; <span class="var">input</span> = <span class="var">input</span>-&gt;<span class="var">link</span>)<br/>
-<span class="in1"></span>
-{<br/>
-<span class="in2"></span>
-<span class="type">struct Frag **</span><span class="var">cur</span> =<br/>
-<span class="in3"></span>
-<span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
-<span class="in2"></span>
-<span class="type">struct Frag **</span><span class="var">end</span> =<br/>
-<span class="in3"></span>
-<span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
-<span class="in3"></span>
-<span class="type">struct Frag *</span><span class="var">frag</span> = *<span class="var">cur</span>;<br/>
-<span class="in3"></span>
-<span class="keyword">while</span> (<span class="var">frag</span>) {<br/>
-<span class="in4"></span>
-<span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
-<span class="in4"></span>
-<span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>;<br/>
-<span class="in3"></span>
-}<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="var">input</span> = <span class="var">used</span>;<br/>
+
+<span class="in1"></span><span class="keyword">for</span> (; <span class="var">input</span>; <span class="var">input</span> = <span class="var">input</span>-&gt;<span class="var">link</span>)<br/>
+
+<span class="in1"></span>{<br/>
+
+<span class="in2"></span><span class="type">struct Frag **</span><span class="var">cur</span> =<br/>
+
+<span class="in3"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
+
+<span class="in2"></span><span class="type">struct Frag **</span><span class="var">end</span> =<br/>
+
+<span class="in3"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
+
+<span class="in3"></span><span class="type">struct Frag *</span><span class="var">frag</span> = *<span class="var">cur</span>;<br/>
+
+<span class="in3"></span><span class="keyword">while</span> (<span class="var">frag</span>) {<br/>
+
+<span class="in4"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
+
+<span class="in4"></span><span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">serialize fragments</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Auch alle lokalen Fragmente bearbeiten</li></ul></div>
+ Auch alle lokalen Fragmente bearbeiten
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">serialize frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="fn">memcmp</span>(<br/>
-<span class="in2"></span>
-<span class="str">"file: "</span>, frag-&gt;name, <span class="num">6</span><br/>
-<span class="in1"></span>
-)) {<br/>
-<span class="in2"></span>
-++<span class="var">frag</span>-&gt;<span class="var">expands</span>;<br/>
-<span class="in2"></span>
-<span class="expand">@expand(<span class="name">write in file</span>)</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="fn">memcmp</span>(<br/>
+
+<span class="in2"></span><span class="str">"file: "</span>, <span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="num">6</span><br/>
+
+<span class="in1"></span>)) {<br/>
+
+<span class="in2"></span>++<span class="var">frag</span>-&gt;<span class="var">expands</span>;<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">write in file</span>)</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn der Name eines Fragments mit <code>file: </code> beginnt, dann wird es in die
-  passende Datei geschrieben</li><li>
- Zusätzlich zählt das als eine Expansion</li></ul></div>
+  passende Datei geschrieben
+</li><li>
+ Zusätzlich zählt das als eine Expansion
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">serialize frag</span>)</span> {<br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="var">sum</span> =<br/>
-<span class="in2"></span>
-<span class="var">frag</span>-&gt;<span class="var">expands</span> + <span class="var">frag</span>-&gt;<span class="var">multiples</span>;<br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">sum</span> &lt;= <span class="num">0</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"frag [%s] not called\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">frag</span>-&gt;<span class="var">name</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="var">sum</span> =<br/>
+
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">expands</span> + <span class="var">frag</span>-&gt;<span class="var">multiples</span>;<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sum</span> &lt;= <span class="num">0</span>) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"frag [%s] not called\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 } <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Ein Fragment wurde nicht aufgerufen</li><li>
- Dies wird mit einer Meldung quittiert</li></ul></div>
+ Ein Fragment wurde nicht aufgerufen
+</li><li>
+ Dies wird mit einer Meldung quittiert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">serialize frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">multiples</span> == <span class="num">1</span>) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"multiple frag [%s] only "</span><br/>
-<span class="in4"></span>
-<span class="str">"used once\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">frag</span>-&gt;<span class="var">name</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">multiples</span> == <span class="num">1</span>) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"multiple frag [%s] only "</span><br/>
+
+<span class="in4"></span><span class="str">"used once\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur
-  einmal verwendet</li><li>
- Dies wird mit einer Meldung quittiert</li></ul></div>
+  einmal verwendet
+</li><li>
+ Dies wird mit einer Meldung quittiert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">serialize frag</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in2"></span>
-<span class="fn">printf</span>(<br/>
-<span class="in3"></span>
-<span class="str">"frag [%s] not populated\n"</span>,<br/>
-<span class="in3"></span>
-<span class="var">frag</span>-&gt;<span class="var">name</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
+
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+
+<span class="in3"></span><span class="str">"frag [%s] not populated\n"</span>,<br/>
+
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Für jedes Fragment, das nicht befüllt wurde wird eine Meldung
-  ausgegeben</li></ul></div>
+  ausgegeben
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">write in file</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">FILE *</span><span class="var">f</span> =<br/>
-<span class="in2"></span>
-<span class="fn">fopen</span>(<span class="var">frag</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, <span class="str">"w"</span>);<br/>
-<span class="in1"></span>
-<span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span>
-<span class="var">f</span>, <span class="str">"can't open %s"</span>,<br/>
-<span class="in2"></span>
-<span class="var">frag</span>-&gt;<span class="var">name</span> + <span class="num">6</span><br/>
-<span class="in1"></span>
-);<br/>
-<span class="in1"></span>
-<span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">f</span>, <span class="keyword">false</span>);<br/>
-<span class="in1"></span>
-<span class="fn">fclose</span>(<span class="var">f</span>);<br/>
+
+<span class="in1"></span><span class="type">FILE *</span><span class="var">f</span> =<br/>
+
+<span class="in2"></span><span class="fn">fopen</span>(<span class="var">frag</span>-&gt;<span class="var">name</span> + <span class="num">6</span>, <span class="str">"w"</span>);<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open %s"</span>,<br/>
+
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span> + <span class="num">6</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">f</span>, <span class="keyword">false</span>);<br/>
+
+<span class="in1"></span><span class="fn">fclose</span>(<span class="var">f</span>);<br/>
 
 <span class="end">@end(<span class="name">write in file</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Das Fragment wird in die entsprechende Datei geschrieben</li></ul></div>
-</div>
+ Das Fragment wird in die entsprechende Datei geschrieben
+</li></ul></div>
+
+ Zeilennummern</div>
 <h1>Zeilennummern</h1>
 <div class="slides">
 <div><div>
 <h1>Zeilennummern</h1>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">additional input elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="var">line</span>;<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="var">line</span>;<br/>
 
 <span class="end">@end(<span class="name">additional input elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Pro Datei wird die aktuelle Zeile festgehalten</li></ul></div>
+ Pro Datei wird die aktuelle Zeile festgehalten
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">init additional input fields</span>)</span><br/>
-<span class="in1"></span>
-<span class="var">i</span>-&gt;<span class="var">line</span> = <span class="num">1</span>;<br/>
+
+<span class="in1"></span><span class="var">i</span>-&gt;<span class="var">line</span> = <span class="num">1</span>;<br/>
 
 <span class="end">@end(<span class="name">init additional input fields</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Beim Öffnen einer neuen <code>.x</code>-Datei befinden wir uns in Zeile <code><span class="num">1</span></code></li></ul></div>
+ Beim Öffnen einer neuen <code>.x</code>-Datei befinden wir uns in Zeile <code>n{1}</code>
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">preprocess char</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
-<span class="in2"></span>
-++<span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+
+<span class="in2"></span>++<span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">preprocess char</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Wenn ein Zeilenumbruch gelesen wird, wird die aktuelle Zeile
-  erhöht</li></ul></div>
-</div>
+  erhöht
+</li></ul></div>
+
+ HTML generieren</div>
 <h1>HTML generieren</h1>
 <div class="slides">
 <div><div>
 <h1>HTML generieren</h1>
 </div>
+
 <ul><li>
- Aus <code>hx</code>-Dateien wird ein HTML-Foliensatz generiert</li></ul></div>
+ Aus <code>hx</code>-Dateien wird ein HTML-Foliensatz generiert
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="include">@include(<span class="name"><a href="html.html">html.x</a>)</span></span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Die Generierung liegt in einer eigenen Datei</li></ul></div>
+ Die Generierung liegt in einer eigenen Datei
+</li></ul></div>
+

@@ -9,6 +9,8 @@
 	#include <string.h>
 
 	#include <stdbool.h>
+
+	#include <ctype.h>
 ;
 	
 	#define ASSERT(COND, ...) \
@@ -773,6 +775,67 @@ void freeFragEntry(
 					fputc(*str, out);
 			}
 		}
+	}
+
+	int compareBuffer(const char *s, const struct Buffer *b) {
+		const char *x = b->buffer;
+		while (*s && x != b->current) {
+			if (*s == *x) {
+				++s; ++x;
+			} else if (*s < *x) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+		if (*s) { return 1; }
+		if (x != b->current) { return -1; }
+		return 0;
+	}
+
+	void escapeIdent(
+		FILE *out,
+		const char *cls,
+		const struct Buffer *b
+	) {
+		fprintf(
+			out,
+			"<span class=\"%s\">%.*s</span>",
+			cls,
+			(int) (b->current - b->buffer),
+			b->buffer
+		);
+	}
+
+	bool contains(
+		const char **begin,
+		const char **end,
+		const struct Buffer *b
+	) {
+		for (; begin != end; ++begin) {
+			if (compareBuffer(*begin, b) == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool isKeyword(const struct Buffer *b) {
+		static const char *begin[] = {
+			"break",
+			"case",
+			"continue",
+			"default",
+			"else",
+			"for",
+			"if",
+			"return",
+			"static",
+			"switch",
+			"while"
+		};
+		static const char **end = (void *) begin + sizeof(begin);
+		return contains(begin, end, b);
 	}
 
 	int main(
@@ -1630,11 +1693,12 @@ void freeFragEntry(
 	, .noteInBold = false
 
 	};
-	char last = '\n';
+	bool newline = true;
+	struct Buffer ident = {};
 	for (;;) {
 		int ch = fgetc(in);
 		 
-	if (ch == '#' && last == '\n') {
+	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||
 			status.state == hs_IN_HEADER
 		) {
@@ -1720,7 +1784,9 @@ void freeFragEntry(
 	status.headerState = hs_IN_SLIDE;
 ;
 			
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 			continue;
 		}
@@ -1734,7 +1800,9 @@ void freeFragEntry(
 				&status.headerName, ch
 			);
 			
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 			continue;
 		}
@@ -1748,13 +1816,15 @@ void freeFragEntry(
 				&status.headerName, ch
 			);
 			
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 			continue;
 		}
 	}
  
-	if (last == '\n' && ch == '`') {
+	if (newline && ch == '`') {
 		if (isOutOfHtmlSpecial(&status) ||
 			status.state == hs_IN_CODE
 		) {
@@ -1776,7 +1846,9 @@ void freeFragEntry(
 	fprintf(out, "<code>\n");
 	status.state = hs_IN_CODE;
 	
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 ;
 			continue;
@@ -1790,7 +1862,9 @@ void freeFragEntry(
 	status.codeIndent = 0;
 	status.codeSpecial = '\0';
 	
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 ;
 			continue;
@@ -1809,27 +1883,44 @@ void freeFragEntry(
 	}
 
 	if (status.state == hs_IN_CODE) {
+		if (! status.codeNameEnd && isalnum(ch)) {
+			addToBuffer(&ident, ch);
+			continue;
+		}
+	}
+
+	if (status.state == hs_IN_CODE) {
 		 
 	if (ch == '\n') {
-		if (last) {
-			writeEscaped(
-				out, &last, &last + 1
-			);
+		
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
 		}
+		resetBuffer(&ident);
+	}
+;
 		fprintf(out, "<br/>\n");
 		
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 		continue;
 	}
  
-	if (last == '\n' && ch == '\t') {
+	if (newline && ch == '\t') {
 		++status.codeIndent;
 		continue;
 	}
  
 	if (status.codeIndent) {
-		fprintf(out,
+		fprintf(
+			out,
 			"<span class=\"in%d\"></span>",
 			status.codeIndent
 		);
@@ -1837,8 +1928,9 @@ void freeFragEntry(
 	}
 
 	
-	if (ch == '{') {
-		switch (last) {
+	if (ch == '{' && ident.current - ident.buffer == 1) {
+		char lc = *ident.buffer;
+		switch (lc) {
 			
 	case 'd':
 		fprintf(out,
@@ -1847,7 +1939,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'D':
@@ -1857,7 +1950,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'a':
@@ -1867,7 +1961,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'A':
@@ -1877,7 +1972,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'r':
@@ -1887,7 +1983,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'R':
@@ -1897,7 +1994,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'x':
@@ -1907,7 +2005,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'e':
@@ -1917,7 +2016,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'E':
@@ -1927,7 +2027,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'g':
@@ -1938,7 +2039,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'G':
@@ -1949,7 +2051,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'i':
@@ -1959,38 +2062,44 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 't':
 		fprintf(out, "<span class=\"type\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'v':
 		fprintf(out, "<span class=\"var\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'f':
 		fprintf(out, "<span class=\"fn\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'k':
 		fprintf(out, "<span class=\"keyword\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 's':
 		fprintf(out, "<span class=\"str\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'n':
 		fprintf(out, "<span class=\"num\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'p':
@@ -1998,7 +2107,8 @@ void freeFragEntry(
 			"<span class=\"type\">"
 				"@priv(<span>"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'm':
@@ -2007,21 +2117,36 @@ void freeFragEntry(
 			"<span class=\"num\">"
 				"@magic(<span>"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 			default: break;
 		}
 		if (status.codeSpecial) {
-			last = 0;
+			resetBuffer(&ident);
+			newline = false;
 			continue;
 		}
 	}
 
 	if (ch == '}' && status.codeSpecial) {
-		if (last) {
-			writeEscaped(out, &last, &last + 1);
-			last = 0;
+		
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
+		}
+		resetBuffer(&ident);
+	}
+;
+		resetBuffer(&ident);
+		newline = false;
+		if (status.codeSpecial != 'i') {
+			writeEscaped(out, status.codeName, status.codeNameEnd);
 		}
 		switch (status.codeSpecial) {
 			
@@ -2067,6 +2192,7 @@ void freeFragEntry(
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
+		status.codeNameEnd = NULL;
 		continue;
 	}
 ;
@@ -2081,43 +2207,56 @@ void freeFragEntry(
 		continue;
 	}
 ;
-		if (last) {
-			writeEscaped(
-				out, &last, &last + 1
-			);
-		}
 		
-	last = ch == EOF ? '\0' : ch;
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
+		}
+		resetBuffer(&ident);
+	}
+;
+		
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 		continue;
 	}
  
 	if (
-		last == '\n' &&
+		newline &&
 		status.state == hs_IN_NOTES
 	) {
 		if (ch == '*') {
 			fprintf(out, "</li><li>\n");
-			last = 0;
+			resetBuffer(&ident);
+			newline = false;
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
 			fprintf(out, "</li></ul></div>\n");
 			status.state = hs_AFTER_SLIDE;
 			
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 			continue;
 		}
 	}
  
-	if (last == '\n' && ch == '*') {
+	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
-			if(status.state != hs_IN_SLIDE) {
+			if (status.state != hs_IN_SLIDE) {
 				fprintf(out, "<div>\n");
 			}
 			status.state = hs_IN_NOTES;
 			fprintf(out, "<ul><li>\n");
-			last = '\0';
+			resetBuffer(&ident);
+			newline = false;
 			continue;
 		}
 	}
@@ -2126,23 +2265,35 @@ void freeFragEntry(
 		ch == '`' &&
 		status.state == hs_IN_NOTES
 	) {
-		if (last) {
-			writeEscaped(out, &last, &last + 1);
+		
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
 		}
+		resetBuffer(&ident);
+	}
+;
 		if (status.noteInCode) {
 			fprintf(out, "</code>");
 		} else {
 			fprintf(out, "<code>");
 		}
 		status.noteInCode = ! status.noteInCode;
-		last = 0; continue;
+		resetBuffer(&ident);
+		newline = false;
+		continue;
 	}
  
 	if (status.state == hs_IN_NOTES &&
 	status.noteInCode) {
 		
-	if (ch == '{') {
-		switch (last) {
+	if (ch == '{' && ident.current - ident.buffer == 1) {
+		char lc = *ident.buffer;
+		switch (lc) {
 			
 	case 'd':
 		fprintf(out,
@@ -2151,7 +2302,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'D':
@@ -2161,7 +2313,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'a':
@@ -2171,7 +2324,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'A':
@@ -2181,7 +2335,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'r':
@@ -2191,7 +2346,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'R':
@@ -2201,7 +2357,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'x':
@@ -2211,7 +2368,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'e':
@@ -2221,7 +2379,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'E':
@@ -2231,7 +2390,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'g':
@@ -2242,7 +2402,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'G':
@@ -2253,7 +2414,8 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'i':
@@ -2263,38 +2425,44 @@ void freeFragEntry(
 		fprintf(out,
 			"<span class=\"name\">"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 't':
 		fprintf(out, "<span class=\"type\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'v':
 		fprintf(out, "<span class=\"var\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'f':
 		fprintf(out, "<span class=\"fn\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'k':
 		fprintf(out, "<span class=\"keyword\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 's':
 		fprintf(out, "<span class=\"str\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'n':
 		fprintf(out, "<span class=\"num\">");
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'p':
@@ -2302,7 +2470,8 @@ void freeFragEntry(
 			"<span class=\"type\">"
 				"@priv(<span>"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'm':
@@ -2311,21 +2480,36 @@ void freeFragEntry(
 			"<span class=\"num\">"
 				"@magic(<span>"
 		);
-		status.codeSpecial = last;
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
 		break;
 
 			default: break;
 		}
 		if (status.codeSpecial) {
-			last = 0;
+			resetBuffer(&ident);
+			newline = false;
 			continue;
 		}
 	}
 
 	if (ch == '}' && status.codeSpecial) {
-		if (last) {
-			writeEscaped(out, &last, &last + 1);
-			last = 0;
+		
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
+		}
+		resetBuffer(&ident);
+	}
+;
+		resetBuffer(&ident);
+		newline = false;
+		if (status.codeSpecial != 'i') {
+			writeEscaped(out, status.codeName, status.codeNameEnd);
 		}
 		switch (status.codeSpecial) {
 			
@@ -2371,13 +2555,15 @@ void freeFragEntry(
 		}
 		fprintf(out, "</span>");
 		status.codeSpecial = 0;
+		status.codeNameEnd = NULL;
 		continue;
 	}
 ;
 	}
  
 	if (
-		ch == '*' && last == '*' &&
+		false &&
+		ch == '*' && /*last == '*' && */
 		status.state == hs_IN_NOTES
 	) {
 		if (status.noteInBold) {
@@ -2387,25 +2573,36 @@ void freeFragEntry(
 		}
 		status.noteInBold =
 			! status.noteInBold;
-		last = 0;
+		newline = false;
 		continue;
 	}
  
 	if (status.state == hs_IN_NOTES) {
-		if (last) {
-			writeEscaped(
-				out, &last, &last + 1
-			);
-		}
 		
-	last = ch == EOF ? '\0' : ch;
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
+		}
+		resetBuffer(&ident);
+	}
+;
+		
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 		continue;
 	}
 ;
 		if (ch == EOF) { break; }
 		
-	last = ch == EOF ? '\0' : ch;
+	newline = ch == '\n';
+	char xx = ch;
+	writeEscaped(out, &xx, &xx + 1);
 ;
 	}
 } ;

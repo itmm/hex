@@ -1,4 +1,4 @@
-<!doctype html>
+ Schnelle Hash-Funktion<!doctype html>
 <html lang="de"l>
 <head>
 <meta charset="utf-8">
@@ -9,143 +9,173 @@
 <div><div>
 <h1>Schnelle Hash-Funktion</h1>
 </div>
+
 <ul><li>
- Nicht super sicher</li><li>
- Nicht super toll</li><li>
- Aber schnell</li></ul></div>
+ Nicht super sicher
+</li><li>
+ Nicht super toll
+</li><li>
+ Aber schnell
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span>
-<span class="expand">@expand(<span class="name">define hash</span>)</span>;<br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">define hash</span>)</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Hash-Berechnung ist eine global sichtbare Funktion</li></ul></div>
+ Hash-Berechnung ist eine global sichtbare Funktion
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">define hash</span>)</span><br/>
-<span class="in1"></span>
-<span class="keyword">static inline</span> <span class="type">unsigned</span> <span class="fn">initHash</span>() {<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="num">0x3d9a73b5</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="keyword">static inline</span> <span class="type">unsigned</span> <span class="fn">initHash</span>() {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="num">0x3d9a73b5</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">define hash</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
  Um deterministisch zu sein, werden Hashes mit einer festen Zahl
-  initialisiert</li><li>
- Diese Zahl wurde zufällig gewählt</li></ul></div>
+  initialisiert
+</li><li>
+ Diese Zahl wurde zufällig gewählt
+</li></ul></div>
+
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define hash</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">unsigned</span> <span class="fn">addRangeToHash</span>(<br/>
-<span class="in2"></span>
-<span class="type">unsigned</span> <span class="var">hash</span>,<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">begin</span>,<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">end</span><br/>
-<span class="in1"></span>
-) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (; <span class="var">begin</span> &lt; <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
-<span class="in3"></span>
-<span class="expand">@multiple(<span class="name">hash next ch</span>)</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="var">hash</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">unsigned</span> <span class="fn">addRangeToHash</span>(<br/>
+
+<span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span>,<br/>
+
+<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+
+<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">begin</span> &lt; <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
+
+<span class="in3"></span><span class="expand">@multiple(<span class="name">hash next ch</span>)</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">define hash</span>)</span><br/>
+
 </code>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define hash</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">unsigned</span> <span class="fn">addTerminatedToHash</span>(<br/>
-<span class="in2"></span>
-<span class="type">unsigned</span> <span class="var">hash</span>,<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">begin</span><br/>
-<span class="in1"></span>
-) {<br/>
-<span class="in2"></span>
-<span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
-<span class="in2"></span>
-<span class="keyword">for</span> (; *<span class="var">begin</span>; ++<span class="var">begin</span>) {<br/>
-<span class="in3"></span>
-<span class="expand">@multiple(<span class="name">hash next ch</span>)</span>;<br/>
-<span class="in2"></span>
-}<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="var">hash</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">unsigned</span> <span class="fn">addTerminatedToHash</span>(<br/>
+
+<span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span>,<br/>
+
+<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">begin</span>; ++<span class="var">begin</span>) {<br/>
+
+<span class="in3"></span><span class="expand">@multiple(<span class="name">hash next ch</span>)</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">define hash</span>)</span><br/>
+
 </code>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@def(<span class="name">hash next ch</span>)</span><br/>
-<span class="in1"></span>
-<span class="var">hash</span> ^= *<span class="var">begin</span>;<br/>
-<span class="in1"></span>
-<span class="var">hash</span> = (<span class="var">hash</span> &lt;&lt; 3) | (<span class="var">hash</span> &gt;&gt; 29);<br/>
+
+<span class="in1"></span><span class="var">hash</span> ^= *<span class="var">begin</span>;<br/>
+
+<span class="in1"></span><span class="var">hash</span> = (<span class="var">hash</span> &lt;&lt; <span class="var">3</span>) | (<span class="var">hash</span> &gt;&gt; <span class="var">29</span>);<br/>
 
 <span class="end">@end(<span class="name">hash next ch</span>)</span><br/>
+
 </code>
 </div>
+
+
 </div>
 <div><div>
 <code>
 
 <span class="add">@add(<span class="name">define hash</span>)</span><br/>
-<span class="in1"></span>
-<span class="type">int</span> <span class="fn">calcHash</span>(<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">begin</span>,<br/>
-<span class="in2"></span>
-<span class="type">const char *</span><span class="var">end</span><br/>
-<span class="in1"></span>
-) {<br/>
-<span class="in2"></span>
-<span class="type">unsigned</span> <span class="var">hash</span> = <span class="fn">initHash</span>();<br/>
-<span class="in2"></span>
-<span class="var">hash</span> = <span class="fn">addRangeToHash</span>(<br/>
-<span class="in3"></span>
-<span class="var">hash</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
-<span class="in2"></span>
-);<br/>
-<span class="in2"></span>
-<span class="keyword">return</span> <span class="var">hash</span> &amp; <span class="num">0x7ffffff</span>;<br/>
-<span class="in1"></span>
-}<br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">calcHash</span>(<br/>
+
+<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+
+<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span> = <span class="fn">initHash</span>();<br/>
+
+<span class="in2"></span><span class="var">hash</span> = <span class="fn">addRangeToHash</span>(<br/>
+
+<span class="in3"></span><span class="var">hash</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span> &amp; <span class="num">0x7ffffff</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">define hash</span>)</span><br/>
+
 </code>
 </div>
+
 <ul><li>
- Der Hash wird über den Namen des Fragments erstellt</li><li>
- Der Name kann entweder durch ein Null-Byte abgeschlossen werden</li><li>
- Oder ein Ende wird direkt angegeben</li><li>
- Das Resultat ist eine positive 32-Bit Zahl</li></ul></div>
+ Der Hash wird über den Namen des Fragments erstellt
+</li><li>
+ Der Name kann entweder durch ein Null-Byte abgeschlossen werden
+</li><li>
+ Oder ein Ende wird direkt angegeben
+</li><li>
+ Das Resultat ist eine positive 32-Bit Zahl
+</li></ul></div>
+�
