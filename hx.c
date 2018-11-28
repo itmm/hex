@@ -1905,14 +1905,56 @@
 			continue;
 		}
 	}
+
 	if (status.codeOpening == 1) {
-		if (! status.codeSpecial) {
+		if (! status.codeSpecial && status.state == hs_IN_CODE) {
 			status.codeSpecial = '`';
 			status.codeNameEnd = status.codeName;
+			
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
+		}
+		resetBuffer(&ident);
+	}
+;
+			if (status.codeIndent) {
+				fprintf(
+					out,
+					"<span class=\"in%d\"></span>",
+					status.codeIndent
+				);
+				status.codeIndent = 0;
+			}
 			fprintf(out, "<span class=\"str\">`");
 		} else if (
 			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
 		) {
+			
+	if (isActiveBuffer(&ident)) {
+		if (ch == '(') {
+			escapeIdent(out, "fn", &ident);
+		} else if (isKeyword(&ident)) {
+			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
+		} else {
+			escapeIdent(out, "var", &ident);
+		}
+		resetBuffer(&ident);
+	}
+;
+			writeEscaped(out, status.codeName, status.codeNameEnd);
 			fprintf(out, "`</span>");
 			status.codeSpecial = 0;
 			status.codeNameEnd = NULL;

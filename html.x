@@ -451,25 +451,45 @@ a{process ch for HTML}
 			continue;
 		}
 	}
+x{process ch for HTML}
+```
+* Wenn die Anzahl der Backticks genau `3` war, dann wird der
+  Code-Modus betreten oder verlassen
+
+```
+a{process ch for HTML}
 	if (status.codeOpening == 1) {
-		if (! status.codeSpecial) {
+		if (! status.codeSpecial && status.state == hs_IN_CODE) {
 			status.codeSpecial = '`';
 			status.codeNameEnd = status.codeName;
+			E{flush pending};
+			if (status.codeIndent) {
+				fprintf(
+					out,
+					"<span class=\"in%d\"></span>",
+					status.codeIndent
+				);
+				status.codeIndent = 0;
+			}
 			fprintf(out, "<span class=\"str\">`");
 		} else if (
 			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
 		) {
+			E{flush pending};
+			writeEscaped(out, status.codeName, status.codeNameEnd);
 			fprintf(out, "`</span>");
 			status.codeSpecial = 0;
 			status.codeNameEnd = NULL;
 		}
 	}
+x{process ch for HTML}
+```
 
+```
+a{process ch for HTML}
 	status.codeOpening = 0;
 x{process ch for HTML}
 ```
-* Wenn die Anzahl der Backticks genau `3` war, dann wird der
-  Code-Modus betreten oder verlassen
 
 ```
 d{open code page}

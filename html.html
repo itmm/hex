@@ -976,13 +976,46 @@
 
 <span class="in1"></span>}<br/>
 
+<span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Wenn die Anzahl der Backticks genau <code>3</code> war, dann wird der
+  Code-Modus betreten oder verlassen
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
+
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">1</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'`'</span>;<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+
+<span class="in3"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeIndent</span>) {<br/>
+
+<span class="in4"></span><span class="fn">fprintf</span>(<br/>
+
+<span class="in5"></span><span class="var">out</span>,<br/>
+
+<span class="in5"></span><span class="str">"&lt;span class=\"in%d\"&gt;&lt;/span&gt;"</span>,<br/>
+
+<span class="in5"></span><span class="var">status</span>.<span class="var">codeIndent</span><br/>
+
+<span class="in4"></span>);<br/>
+
+<span class="in4"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="num">0</span>;<br/>
+
+<span class="in3"></span>}<br/>
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"str\"&gt;`"</span>);<br/>
 
@@ -991,6 +1024,10 @@
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'`'</span> &amp;&amp; <span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'\x5c'</span><br/>
 
 <span class="in2"></span>) {<br/>
+
+<span class="in3"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
+
+<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span>);<br/>
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"`&lt;/span&gt;"</span>);<br/>
 
@@ -1002,7 +1039,17 @@
 
 <span class="in1"></span>}<br/>
 
-<br/>
+<span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
 
@@ -1011,11 +1058,8 @@
 </code>
 </div>
 
-<ul><li>
- Wenn die Anzahl der Backticks genau <code>3</code> war, dann wird der
-  Code-Modus betreten oder verlassen
-</li></ul></div>
 
+</div>
 <div><div>
 <code>
 
