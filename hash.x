@@ -12,8 +12,8 @@ x{global elements}
 
 ```
 d{define hash}
-	k{static inline} t{unsigned} f{initHash}() {
-		k{return} n{0x3d9a73b5};
+	static inline t{unsigned} initHash() {
+		return n{0x3d9a73b5};
 	}
 x{define hash}
 ```
@@ -23,53 +23,53 @@ x{define hash}
 
 ```
 a{define hash}
-	t{unsigned} f{addRangeToHash}(
-		t{unsigned} v{hash},
-		t{const char *}v{begin},
-		t{const char *}v{end}
+	t{unsigned} addRangeToHash(
+		t{unsigned} hash,
+		t{const char *}begin,
+		t{const char *}end
 	) {
-		f{ASSERT}(v{begin});
-		k{for} (; v{begin} < v{end}; ++v{begin}) {
+		ASSERT(begin);
+		for (; begin < end; ++begin) {
 			E{hash next ch};
 		}
-		k{return} v{hash};
+		return hash;
 	}
 x{define hash}
 ```
 
 ```
 a{define hash}
-	t{unsigned} f{addTerminatedToHash}(
-		t{unsigned} v{hash},
-		t{const char *}v{begin}
+	t{unsigned} addTerminatedToHash(
+		t{unsigned} hash,
+		t{const char *}begin
 	) {
-		f{ASSERT}(v{begin});
-		k{for} (; *v{begin}; ++v{begin}) {
+		ASSERT(begin);
+		for (; *begin; ++begin) {
 			E{hash next ch};
 		}
-		k{return} v{hash};
+		return hash;
 	}
 x{define hash}
 ```
 
 ```
 d{hash next ch}
-	v{hash} ^= *v{begin};
-	v{hash} = (v{hash} << 3) | (v{hash} >> 29);
+	hash ^= *begin;
+	hash = (hash << 3) | (hash >> 29);
 x{hash next ch}
 ```
 
 ```
 a{define hash}
-	t{int} f{calcHash}(
-		t{const char *}v{begin},
-		t{const char *}v{end}
+	t{int} calcHash(
+		t{const char *}begin,
+		t{const char *}end
 	) {
-		t{unsigned} v{hash} = f{initHash}();
-		v{hash} = f{addRangeToHash}(
-			v{hash}, v{begin}, v{end}
+		t{unsigned} hash = initHash();
+		hash = addRangeToHash(
+			hash, begin, end
 		);
-		k{return} v{hash} & n{0x7ffffff};
+		return hash & n{0x7ffffff};
 	}
 x{define hash}
 ```

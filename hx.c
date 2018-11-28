@@ -25,10 +25,10 @@
 		}
 ;
 	
-struct FragEntry;
-void freeFragEntry(
-	struct FragEntry *entry
-);
+	struct FragEntry;
+	void freeFragEntry(
+		struct FragEntry *entry
+	);
 ;
 
 	
@@ -321,12 +321,12 @@ void freeFragEntry(
 		return result;
 	}
 
-struct FragEntry *
-allocEmptyFragEntry() {
-	return allocFragEntry(
-		NULL, NULL, NULL
-	);
-}
+	struct FragEntry *
+		allocEmptyFragEntry() {
+			return allocFragEntry(
+				NULL, NULL, NULL
+			);
+		}
 
 void freeFragEntry(
 	struct FragEntry *e
@@ -1101,9 +1101,9 @@ void freeFragEntry(
 	}
 } 
 	if (frag) {
-		if (! isActiveBuffer(& buffer)) 
+		if (! isActiveBuffer(&buffer)) {
 			bufferLine = input->line;
-		
+		}
 		addToBuffer(&buffer, last);
 	}
 ;
@@ -1514,9 +1514,9 @@ void freeFragEntry(
 		);
 		const char *c = name.buffer;
 		for (; c != name.current - 1; ++c) {
-			if (! isActiveBuffer(& buffer)) 
+			if (! isActiveBuffer(&buffer)) {
 				bufferLine = input->line;
-			
+			}
 			addToBuffer(&buffer, *c);
 		}
 		processed = true;
@@ -1528,9 +1528,9 @@ void freeFragEntry(
 	}
 } 
 	if (frag && ! processed) {
-		if (! isActiveBuffer(& buffer)) 
+		if (! isActiveBuffer(&buffer)) {
 			bufferLine = input->line;
-		
+		}
 		addToBuffer(&buffer, last);
 	}
 ;

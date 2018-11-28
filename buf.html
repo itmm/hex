@@ -66,7 +66,7 @@
 
 <span class="in1"></span><span class="type">struct Buffer</span> {<br/>
 
-<span class="in2"></span><span class="type">char</span> <span class="var">initial</span><span class="type">[INIT_BUFFER_SIZE]</span>;<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">initial</span>[<span class="var">INIT</span>_<span class="var">BUFFER</span>_<span class="var">SIZE</span>];<br/>
 
 <span class="in2"></span><span class="type">char *</span><span class="var">buffer</span>;<br/>
 
@@ -86,17 +86,17 @@
 </li><li>
  Bei weiteren Bytes wird der Speicher im Heap angelegt
 </li><li>
- <code>v{initial}</code> kann die ersten Bytes aufnehmen, ohne Speicher auf dem
+ <code>initial</code> kann die ersten Bytes aufnehmen, ohne Speicher auf dem
   Heap anzufordern
 </li><li>
- <code>v{buffer}</code> zeigt auf den Anfang des zu nutzenden Byte-Blocks
+ <code>buffer</code> zeigt auf den Anfang des zu nutzenden Byte-Blocks
 </li><li>
- <code>v{current}</code> zeigt auf das erste freie Zeichen im Byte-Block
+ <code>current</code> zeigt auf das erste freie Zeichen im Byte-Block
 </li><li>
- <code>v{current}</code> kann auch <code>k{NULL}</code> sein, um anzuzeigen, dass der Buffer
+ <code>current</code> kann auch <code>n{NULL}</code> sein, um anzuzeigen, dass der Buffer
   momentan nicht aktiv ist
 </li><li>
- <code>v{end}</code> zeigt auf das erste nicht mehr zum Buffer gehörende Byte
+ <code>end</code> zeigt auf das erste nicht mehr zum Buffer gehörende Byte
 </li></ul></div>
 
 <div><div>
@@ -163,11 +163,11 @@
 </li><li>
  Ein aktiver Buffer kann auch leer sein
 </li><li>
- Als Unterscheidung dient, ob <code>v{current}</code> <code>k{NULL}</code> ist
+ Als Unterscheidung dient, ob <code>current</code> <code>n{NULL}</code> ist
 </li><li>
  Ein in aktiver Buffer wird durch das Hinzufügen eines Zeichens aktiv
 </li><li>
- Oder durch Aufruf von <code>f{activateBuffer}</code>
+ Oder durch Aufruf von <code>activateBuffer</code>
 </li><li>
  Ein Buffer wird durch Zurücksetzen oder Löschen inaktiv
 </li></ul></div>
@@ -195,7 +195,7 @@
 </div>
 
 <ul><li>
- Ein Buffer ist aktiv, wenn der Zeiger <code>v{current}</code> gesetzt ist
+ Ein Buffer ist aktiv, wenn der Zeiger <code>current</code> gesetzt ist
 </li></ul></div>
 
 <div><div>
@@ -264,7 +264,7 @@
  Das stellt sicher, dass ein initialisierter Buffer keinen Speicher im
   Heap belegt
 </li><li>
- Mit <code>f{eraseBuffer}</code> kann ggf. vorhandener Heap-Speicher freigegeben
+ Mit <code>eraseBuffer</code> kann ggf. vorhandener Heap-Speicher freigegeben
   werden
 </li><li>
  Und der Buffer trotzdem weiter benutzt werden
@@ -457,7 +457,7 @@
 
 <span class="in2"></span><span class="fn">bufferInvariant</span>(<span class="var">buffer</span>);<br/>
 
-<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -467,12 +467,12 @@
 </div>
 
 <ul><li>
- Um einen Buffer wieder zu verwenden, der <code>v{current}</code> muss auf
-  <code>v{buffer}</code> zurück gesetzt werden
+ Um einen Buffer wieder zu verwenden, der <code>current</code> muss auf
+  <code>buffer</code> zurück gesetzt werden
 </li><li>
  Das funktioniert auch, wenn der initiale Buffer verwendet wird
 </li><li>
- Oder die Zeiger noch <code>k{NULL}</code> sind
+ Oder die Zeiger noch <code>n{NULL}</code> sind
 </li><li>
  Es wird kein Speicher freigegeben
 </li></ul></div>
@@ -492,9 +492,9 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">erase heap buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">buffer</span> = <span class="num">NULL</span>;<br/>
 
-<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">buffer</span>-&gt;<span class="var">current</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -506,9 +506,9 @@
 <ul><li>
  Wenn ein Buffer auf dem Heap angelegt wurde, wird dieser freigegeben
 </li><li>
- Die Zeiger werden auf <code>k{NULL}</code> gesetzt
+ Die Zeiger werden auf <code>n{NULL}</code> gesetzt
 </li><li>
- Nur <code>v{end}</code> muss nicht aktualisiert werden, da es bei der
+ Nur <code>end</code> muss nicht aktualisiert werden, da es bei der
   Initialisierung gesetzt wird
 </li></ul></div>
 

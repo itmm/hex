@@ -34,14 +34,14 @@
 ```
 D{file: hx.c}
 	g{global elements}
-	t{int} f{main}(
-		t{int} v{argc}, t{const char **}v{argv}
+	t{int} main(
+		t{int} argc, t{const char **}argv
 	) {
 		e{main body}
 	}
 x{file: hx.c}
 ```
-* Das Hauptprogramm besteht aus der `f{main}`-Funktion
+* Das Hauptprogramm besteht aus der `main`-Funktion
 * Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
   definiert werden können
 
@@ -124,14 +124,14 @@ i{frag.x}
 ```
 A{global elements}
 	t{struct Input} {
-		t{struct Input *}v{link};
-		t{FILE *}v{file};
+		t{struct Input *}link;
+		t{FILE *}file;
 		e{additional input elements};
-		t{char} v{name}t{[]};
+		t{char} name[];
 	};
 
-	t{struct Input *}v{input} = k{NULL};
-	t{struct Input *}v{used} = k{NULL};
+	t{struct Input *}input = n{NULL};
+	t{struct Input *}used = n{NULL};
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -139,15 +139,15 @@ x{global elements}
   (inkludiert) werden
 * Daher gibt es einen Stapel offener Dateien
 * Aus der letzten wird aktuell gelesen
-* Eine Liste aller gelesenen Dateien wird in `v{used}` verwaltet
+* Eine Liste aller gelesenen Dateien wird in `used` verwaltet
 * Damit wird verhindert, dass eine Datei mehrfach gelesen wird
 * Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
   werden müssen
 
 ```
 A{global elements}
-	t{struct FragMap} v{root} = {};
-	t{struct FragMap *}v{frags} = &v{root};
+	t{struct FragMap} root = {};
+	t{struct FragMap *}frags = &root;
 x{global elements}
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
@@ -155,19 +155,19 @@ x{global elements}
 
 ```
 A{global elements}
-	t{void} f{pushPath}(t{const char *}v{path}) {
-		t{FILE *}v{f} = f{fopen}(v{path}, s{"r"});
+	t{void} pushPath(t{const char *}path) {
+		t{FILE *}f = fopen(path, s{"r"});
 		e{check file for path};
-		t{int} v{len} = f{strlen}(v{path}) + n{1};
-		t{struct Input *}v{i} = f{malloc}(
-			f{sizeof}(t{struct Input}) + v{len}
+		t{int} len = strlen(path) + n{1};
+		t{struct Input *}i = malloc(
+			sizeof(t{struct Input}) + len
 		);
 		e{check memory for input};
-		v{i}->v{link} = v{input};
-		v{i}->v{file} = v{f};
-		f{memcpy}(v{i}->v{name}, v{path}, v{len});
+		i->link = input;
+		i->file = f;
+		memcpy(i->name, path, len);
 		e{init additional input fields};
-		v{input} = v{i};
+		input = i;
 	}
 x{global elements}
 ```
@@ -178,8 +178,8 @@ x{global elements}
 
 ```
 d{check file for path}
-	f{ASSERT}(
-		v{f}, s{"can't open [%s]"}, v{path}
+	ASSERT(
+		f, s{"can't open [%s]"}, path
 	);
 x{check file for path}
 ```
@@ -187,8 +187,8 @@ x{check file for path}
 
 ```
 d{check memory for input}
-	f{ASSERT}(
-		v{i},
+	ASSERT(
+		i,
 		s{"no memory for input"}
 	);
 x{check memory for input}
@@ -212,7 +212,7 @@ x{init additional input fields}
 
 ```
 A{global elements}
-	t{const char *}v{stylesheet} =
+	t{const char *}stylesheet =
 		s{"slides/slides.css"};
 x{global elements}
 ```
@@ -221,13 +221,13 @@ x{global elements}
 
 ```
 d{process arguments}
-	t{bool} v{someFile} = k{false};
-	k{for} (t{int} v{i} = n{1}; v{i} < v{argc}; ++v{i}) {
+	t{bool} someFile = n{false};
+	for (t{int} i = n{1}; i < argc; ++i) {
 		e{process argument};
-		f{ASSERT}(
-			k{false},
+		ASSERT(
+			n{false},
 			s{"unknown argument [%s]"},
-			v{argv}[v{i}]
+			argv[i]
 		);
 	}
 x{process arguments}
@@ -237,11 +237,11 @@ x{process arguments}
 
 ```
 d{process argument} {
-	t{const char} v{prefix}t{[]} = s{"--css="};
-	t{int} v{len} = f{sizeof}(v{prefix}) - n{1};
-	k{if} (f{memcmp}(v{argv}[v{i}], v{prefix}, v{len}) == n{0}) {
-		v{stylesheet} = v{argv}[v{i}] + v{len};
-		k{continue};
+	t{const char} prefix[] = s{"--css="};
+	t{int} len = sizeof(prefix) - n{1};
+	if (memcmp(argv[i], prefix, len) == n{0}) {
+		stylesheet = argv[i] + len;
+		continue;
 	}
 } x{process argument}
 ```
@@ -250,10 +250,10 @@ d{process argument} {
 
 ```
 a{process argument}
-	k{if} (! v{someFile}) {
-		f{pushPath}(v{argv}[n{1}]);
-		v{someFile} = k{true};
-		k{continue};
+	if (! someFile) {
+		pushPath(argv[n{1}]);
+		someFile = n{true};
+		continue;
 	}
 x{process argument}
 ```
@@ -263,50 +263,50 @@ x{process argument}
 
 ```
 a{process arguments}
-	k{if} (! v{someFile}) {
-		f{pushPath}(s{"index.x"});
+	if (! someFile) {
+		pushPath(s{"index.x"});
 	}
 x{process arguments}
 ```
 * Wenn kein Pfad angegeben wurde, wird `index.x` als Vorgabe verwendet
 
 # Nächstes Zeichen
-* Die Funktion `f{nextCh}` liest das nächste Zeichen aus der aktuellen
+* Die Funktion `nextCh` liest das nächste Zeichen aus der aktuellen
   Datei
 * Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
   Stapel der offenen Dateien geholt
-* Erst wenn die letzte Datei fertig gelesen wurde, wird ein `k{EOF}`
+* Erst wenn die letzte Datei fertig gelesen wurde, wird ein `n{EOF}`
   zurück geliefert
 
 ```
 A{global elements}
-	t{int} f{nextCh}() {
-		t{int} v{ch} = k{EOF};
-		k{while} (v{input}) {
-			v{ch} = f{fgetc}(v{input}->v{file});
+	t{int} nextCh() {
+		t{int} ch = n{EOF};
+		while (input) {
+			ch = fgetc(input->file);
 			e{preprocess char};
-			k{if} (v{ch} != k{EOF}) { k{break}; }
+			if (ch != n{EOF}) { break; }
 			e{get next input file};
 		}
-		k{return} v{ch};
+		return ch;
 	}
 x{global elements}
 ```
-* Wenn kein `k{EOF}` gelesen wurde, dann wird das Zeichen zurück
+* Wenn kein `n{EOF}` gelesen wurde, dann wird das Zeichen zurück
   geliefert
 * Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
 
 ```
 
 d{get next input file}
-	t{struct Input *}v{n} = v{input}->v{link};
-	f{fclose}(v{input}->v{file});
-	v{input}->v{link} = v{used};
-	v{used} = v{input};
-	v{input} = v{n};
-	t{struct FragMap *}v{nxt} = v{frags}->v{link};
-	v{frags}->v{link} = k{NULL};
-	v{frags} = v{nxt};
+	t{struct Input *}n = input->link;
+	fclose(input->file);
+	input->link = used;
+	used = input;
+	input = n;
+	t{struct FragMap *}nxt = frags->link;
+	frags->link = n{NULL};
+	frags = nxt;
 x{get next input file}
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
@@ -318,7 +318,7 @@ x{get next input file}
 
 ```
 d{additional input elements}
-	t{struct FragMap} v{frags};
+	t{struct FragMap} frags;
 x{additional input elements}
 ```
 * Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
@@ -326,9 +326,9 @@ x{additional input elements}
 
 ```
 a{init additional input fields}
-	f{memset}(
-		&v{i}->v{frags}, n{0},
-		f{sizeof}(v{i}->v{frags})
+	memset(
+		&i->frags, n{0},
+		sizeof(i->frags)
 	);
 x{init additional input fields};
 ```
@@ -345,11 +345,11 @@ d{read source file}
 	e{global source vars};
 	{
 		e{additional read vars};
-		t{int} v{last} = f{nextCh}();
-		t{int} v{ch} = v{last} != k{EOF} ? f{nextCh}() : k{EOF};
-		k{while} (v{ch} != v{EOF}) {
+		t{int} last = nextCh();
+		t{int} ch = last != n{EOF} ? nextCh() : n{EOF};
+		while (ch != n{EOF}) {
 			e{process current char};
-			v{last} = v{ch}; v{ch} = f{nextCh}();
+			last = ch; ch = nextCh();
 		}
 	}
 x{read source file}
@@ -357,20 +357,20 @@ x{read source file}
 ```
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
-  schon das erste Zeichen ein `k{EOF}` ist)
+  schon das erste Zeichen ein `n{EOF}` ist)
 
 ```
 d{process current char}
-	k{switch} (v{ch}) {
-		k{case} '{':
+	switch (ch) {
+		case '{':
 			e{process open brace};
-			k{break};
-		k{case} '}': {
-			t{bool} v{processed} = k{false};
+			break;
+		case '}': {
+			t{bool} processed = n{false};
 			e{process close brace};
-			k{break};
+			break;
 		}
-		k{default}:
+		default:
 			e{process other char};
 	}
 x{process current char}
@@ -382,42 +382,42 @@ x{process current char}
 
 ```
 d{additional read vars}
-	t{struct Frag *}v{frag} = k{NULL};
-	t{struct Buffer} v{buffer} = {};
-	t{int} v{bufferLine} = n{0};
+	t{struct Frag *}frag = n{NULL};
+	t{struct Buffer} buffer = {};
+	t{int} bufferLine = n{0};
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
 * In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
   gelesen wird
 * Am Anfang sind wir außerhalb eines Code-Blocks
-* In einem Code-Block ist `v{frag}` nicht `k{NULL}`
+* In einem Code-Block ist `frag` nicht `n{NULL}`
 
 ```
 a{additional read vars}
-	t{char} v{openCh} = s{'\0'};
+	t{char} openCh = s{'\0'};
 x{additional read vars}
 ```
-* Das Zeichenvor einer öffnenden Mengenklammer wird in `v{openCh}`
+* Das Zeichenvor einer öffnenden Mengenklammer wird in `openCh`
   zwischengespeichert
 * Es beschreibt, welcher Befehl ausgeführt werden soll
 
 ```
 a{additional read vars}
-	t{struct Buffer} v{name} = {};
-	t{int} v{nameLine} = n{0};
+	t{struct Buffer} name = {};
+	t{int} nameLine = n{0};
 x{additional read vars}
 ```
-* Wenn `v{name}` aktiv ist, dann wird ein Name in Buffer gelesen
+* Wenn `name` aktiv ist, dann wird ein Name in Buffer gelesen
 
 ```
 d{process close brace} {
-	k{if} (f{isActiveBuffer}(&v{name})) {
-		f{addToBuffer}(&v{name}, s{'\0'});
+	if (isActiveBuffer(&name)) {
+		addToBuffer(&name, s{'\0'});
 		e{process frag name};
-		f{resetBuffer}(&v{name});
-		v{last} = v{ch};
-		v{ch} = f{nextCh}();
+		resetBuffer(&name);
+		last = ch;
+		ch = nextCh();
 	}
 } x{process close brace}
 ```
@@ -426,9 +426,9 @@ d{process close brace} {
 
 ```
 d{process other char} {
-	k{if} (f{isActiveBuffer}(&v{name})) {
-		f{addToBuffer}(&v{name}, v{ch});
-		k{break};
+	if (isActiveBuffer(&name)) {
+		addToBuffer(&name, ch);
+		break;
 	}
 } x{process other char}
 ```
@@ -437,11 +437,11 @@ d{process other char} {
 
 ```
 a{process other char} {
-	k{if} (v{frag}) {
-		if (! f{isActiveBuffer}(&v{buffer})) {
-			v{bufferLine} = v{input}->v{line};
+	if (frag) {
+		if (! isActiveBuffer(&buffer)) {
+			bufferLine = input->line;
 		}
-		f{addToBuffer}(&v{buffer}, v{last});
+		addToBuffer(&buffer, last);
 	}
 } x{process other char}
 ```
@@ -450,12 +450,12 @@ a{process other char} {
 
 ```
 d{process open brace} {
-	k{if} (! v{frag}) {
-		k{static} t{const char} v{valids}t{[]} = s{"aAdDirR"};
-		k{if} (f{strchr}(v{valids}, v{last})) {
-			v{openCh} = v{last};
-			f{activateBuffer}(&v{name});
-			k{break};
+	if (! frag) {
+		static t{const char} validst{[]} = s{"aAdDirR"};
+		if (strchr(valids, last)) {
+			openCh = last;
+			activateBuffer(&name);
+			break;
 		}
 	}
 } x{process open brace}
@@ -469,17 +469,17 @@ d{process open brace} {
 
 ```
 d{process frag name}
-	k{if} (v{openCh} == s{'d'}) {
-		f{ASSERT}(! v{frag}, s{"def in frag"});
-		t{struct FragMap *}v{fm} = &v{input}->v{frags};
+	if (openCh == s{'d'}) {
+		ASSERT(! frag, s{"def in frag"});
+		t{struct FragMap *}fm = &input->frags;
 		E{check for double def};
-		k{if} (! v{frag}) {
-			v{frag} = f{allocFragInMap}(
-				v{fm}, v{name}.v{buffer},
-				v{name}.v{current} - n{1}
+		if (! frag) {
+			frag = allocFragInMap(
+				fm, name.buffer,
+				name.current - n{1}
 			);
 		}
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -488,17 +488,17 @@ x{process frag name}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'D'}) {
-		f{ASSERT}(! v{frag}, s{"def in frag"});
-		t{struct FragMap *}v{fm} = v{frags};
+	if (openCh == s{'D'}) {
+		ASSERT(! frag, s{"def in frag"});
+		t{struct FragMap *}fm = frags;
 		E{check for double def};
-		k{if} (! v{frag}) {
-			v{frag} = f{allocFragInMap}(
-				&v{root}, v{name}.v{buffer},
-				v{name}.v{current} - n{1}
+		if (! frag) {
+			frag = allocFragInMap(
+				&root, name.buffer,
+				name.current - n{1}
 			);
 		}
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -507,14 +507,14 @@ x{process frag name}
 
 ```
 d{check for double def}
-	v{frag} = f{findFragInMap}(
-		v{fm}, v{name}.v{buffer},
-		v{name}.v{current} - n{1}
+	frag = findFragInMap(
+		fm, name.buffer,
+		name.current - n{1}
 	);
-	k{if} (f{isPopulatedFrag}(v{frag})) {
-		f{printf}(
+	if (isPopulatedFrag(frag)) {
+		printf(
 			s{"frag [%s] already defined\n"},
-			v{name}.v{buffer}
+			name.buffer
 		);
 	}
 x{check for double def}
@@ -526,16 +526,16 @@ x{check for double def}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'a'}) {
-		f{ASSERT}(! v{frag}, s{"add in frag"});
-		t{struct FragMap *}v{fm} = &v{input}->v{frags};
-		t{struct FragMap *}v{ins} = v{fm};
-		v{frag} = f{findFragInMap}(
-			v{fm}, v{name}.v{buffer},
-			v{name}.v{current} - n{1}
+	if (openCh == s{'a'}) {
+		ASSERT(! frag, s{"add in frag"});
+		t{struct FragMap *}fm = &input->frags;
+		t{struct FragMap *}ins = fm;
+		frag = findFragInMap(
+			fm, name.buffer,
+			name.current - n{1}
 		);
 		E{check for add without def};
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -544,16 +544,16 @@ x{process frag name}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'A'}) {
-		f{ASSERT}(! v{frag}, s{"add in frag"});
-		t{struct FragMap *}v{fm} = v{frags};
-		t{struct FragMap *}v{ins} = &v{root};
-		v{frag} = f{findFragInMap}(
-			v{fm}, v{name}.v{buffer},
-			v{name}.v{current} - n{1}
+	if (openCh == s{'A'}) {
+		ASSERT(! frag, s{"add in frag"});
+		t{struct FragMap *}fm = frags;
+		t{struct FragMap *}ins = &root;
+		frag = findFragInMap(
+			fm, name.buffer,
+			name.current - n{1}
 		);
 		E{check for add without def};
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -561,15 +561,15 @@ x{process frag name}
 
 ```
 d{check for add without def}
-	k{if} (! f{isPopulatedFrag}(v{frag})) {
-		f{printf}(
+	if (! isPopulatedFrag(frag)) {
+		printf(
 			s{"frag [%s] not defined\n"},
-			v{name}.v{buffer}
+			name.buffer
 		);
-		v{frag} = f{getFragInMap}(
-			v{fm}, v{name}.v{buffer},
-			v{name}.v{current} - n{1},
-			v{ins}
+		frag = getFragInMap(
+			fm, name.buffer,
+			name.current - n{1},
+			ins
 		);
 	}
 x{check for add without def}
@@ -578,18 +578,18 @@ x{check for add without def}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'r'}) {
-		f{ASSERT}(! v{frag}, s{"replace in frag"});
-		v{frag} = f{getFragInMap}(
-			&v{input}->v{frags}, v{name}.v{buffer},
-			v{name}.v{current} - n{1}, &v{input}->v{frags}
+	if (openCh == s{'r'}) {
+		ASSERT(! frag, s{"replace in frag"});
+		frag = getFragInMap(
+			&input->frags, name.buffer,
+			name.current - n{1}, &input->frags
 		);
-		f{ASSERT}(
-			v{frag}, s{"frag %s not defined"},
-			v{name}.v{buffer}
+		ASSERT(
+			frag, s{"frag %s not defined"},
+			name.buffer
 		);
-		f{freeFragEntries}(v{frag});
-		v{processed} = k{true};
+		freeFragEntries(frag);
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -598,18 +598,18 @@ x{process frag name}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'R'}) {
-		f{ASSERT}(! v{frag}, s{"replace in frag"});
-		v{frag} = f{getFragInMap}(
-			v{frags}, v{name}.v{buffer},
-			v{name}.v{current} - n{1}, &v{root}
+	if (openCh == s{'R'}) {
+		ASSERT(! frag, s{"replace in frag"});
+		frag = getFragInMap(
+			frags, name.buffer,
+			name.current - n{1}, &root
 		);
-		f{ASSERT}(
-			v{frag}, s{"frag %s not defined"},
-			v{name}.v{buffer}
+		ASSERT(
+			frag, s{"frag %s not defined"},
+			name.buffer
 		);
-		f{freeFragEntries}(v{frag});
-		v{processed} = k{true};
+		freeFragEntries(frag);
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -617,12 +617,12 @@ x{process frag name}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'x'}) {
-		f{ASSERT}(v{frag}, s{"end not in frag"});
+	if (openCh == s{'x'}) {
+		ASSERT(frag, s{"end not in frag"});
 		e{frag names must match};
 		E{flush frag buffer};
-		v{frag} = k{NULL};
-		v{processed} = k{true};
+		frag = n{NULL};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -630,10 +630,10 @@ x{process frag name}
 
 ```
 d{frag names must match}
-	f{ASSERT}(
-		! f{strcmp}(v{frag}->v{name}, v{name}.v{buffer}),
+	ASSERT(
+		! strcmp(frag->name, name.buffer),
 		s{"closing [%s] != [%s]"},
-		v{name}.v{buffer}, v{frag}->v{name}
+		name.buffer, frag->name
 	);
 x{frag names must match}
 ```
@@ -642,19 +642,19 @@ x{frag names must match}
 
 ```
 d{global source vars}
-	t{bool} f{alreadyUsed}(t{const char *}v{name}) {
-		t{struct Input *}v{i} = v{input};
-		k{for} (; v{i}; v{i} = v{i}->v{link}) {
-			k{if} (f{strcmp}(v{i}->v{name}, v{name}) == n{0}) {
-				k{return} k{true};
+	t{bool} alreadyUsed(t{const char *}name) {
+		t{struct Input *}i = input;
+		for (; i; i = i->link) {
+			if (strcmp(i->name, name) == n{0}) {
+				return n{true};
 			}
 		}
-		k{for} (v{i} = v{used}; v{i}; v{i} = v{i}->v{link}) {
-			k{if} (f{strcmp}(v{i}->v{name}, v{name}) == n{0}) {
-				k{return} k{true};
+		for (i = used; i; i = i->link) {
+			if (strcmp(i->name, name) == n{0}) {
+				return n{true};
 			}
 		}
-		k{return} k{false};
+		return n{false};
 	}
 x{global source vars}
 ```
@@ -666,12 +666,12 @@ x{global source vars}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'i'}) {
-		f{ASSERT}(! v{frag}, s{"include in frag"});
-		k{if} (! f{alreadyUsed}(v{name}.v{buffer})) {
-			f{pushPath}(v{name}.v{buffer});
+	if (openCh == s{'i'}) {
+		ASSERT(! frag, s{"include in frag"});
+		if (! alreadyUsed(name.buffer)) {
+			pushPath(name.buffer);
 		}
-		v{processed} = k{true};
+		processed = true;
 	}
 x{process frag name}
 ```
@@ -681,54 +681,54 @@ x{process frag name}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'e'}) {
-		f{ASSERT}(v{frag}, s{"expand not in frag"});
+	if (openCh == s{'e'}) {
+		ASSERT(frag, s{"expand not in frag"});
 		E{flush frag buffer};
-		t{struct Frag *}v{sub} = f{getFragInMap}(
-			&v{input}->v{frags}, v{name}.buffer,
-			v{name}.v{current} - n{1}, &v{input}->v{frags}
+		t{struct Frag *}sub = getFragInMap(
+			&input->frags, name.buffer,
+			name.current - n{1}, &input->frags
 		);
 		E{check frag expand count};
 		++sub->expands;
-		f{addFragToFrag}(v{frag}, v{sub});
-		v{processed} = k{true};
+		addFragToFrag(frag, sub);
+		processed = true;
 	}
 x{process frag name}
 ```
 * Bei einem `@expand` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
-* Das Attribut `v{expands}` zählt, wie häufig das Fragment expandiert
+* Das Attribut `expands` zählt, wie häufig das Fragment expandiert
   wurde
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'g'}) {
-		f{ASSERT}(v{frag}, s{"expand not in frag"});
+	if (openCh == s{'g'}) {
+		ASSERT(frag, s{"expand not in frag"});
 		E{flush frag buffer};
-		t{struct Frag *}v{sub} = f{getFragInMap}(
-			v{frags}, v{name}.buffer,
-			v{name}.v{current} - n{1}, &v{root}
+		t{struct Frag *}sub = getFragInMap(
+			frags, name.buffer,
+			name.current - n{1}, &root
 		);
 		E{check frag expand count};
 		++sub->expands;
-		f{addFragToFrag}(v{frag}, v{sub});
-		v{processed} = k{true};
+		addFragToFrag(frag, sub);
+		processed = n{true};
 	}
 x{process frag name}
 ```
 
 ```
 d{check frag expand count}
-	k{if} (v{sub}->v{expands}) {
-		f{printf}(
+	if (sub->expands) {
+		printf(
 			s{"multiple expands of [%s]\n"},
-			v{sub}->v{name}
+			sub->name
 		);
 	}
-	k{if} (v{sub}->v{multiples}) {
-		f{printf}(
+	if (sub->multiples) {
+		printf(
 			s{"expand after mult of [%s]\n"},
-			v{sub}->v{name}
+			sub->name
 		);
 	}
 x{check frag expand count}
@@ -740,19 +740,19 @@ x{check frag expand count}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'E'}) {
-		f{ASSERT}(v{frag}, s{"multiple not in frag"});
+	if (openCh == s{'E'}) {
+		ASSERT(frag, s{"multiple not in frag"});
 		E{flush frag buffer};
-		t{struct Frag *}v{sub} =
-			f{getFragInMap}(
-				&v{input}->v{frags}, v{name}.v{buffer},
-				v{name}.v{current} - n{1}, &v{input}->v{frags}
+		t{struct Frag *}sub =
+			getFragInMap(
+				&input->frags, name.buffer,
+				name.current - n{1}, &input->frags
 			);
 		E{check for prev expands};
 		++sub->multiples;
-		f{addFragToFrag}(
-			v{frag}, v{sub});
-		v{processed} = k{true};
+		addFragToFrag(
+			frag, sub);
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -761,30 +761,30 @@ x{process frag name}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'G'}) {
-		f{ASSERT}(v{frag}, s{"multiple not in frag"});
+	if (openCh == s{'G'}) {
+		ASSERT(frag, s{"multiple not in frag"});
 		E{flush frag buffer};
-		t{struct Frag *}v{sub} =
-			f{getFragInMap}(
-				v{frags}, v{name}.v{buffer},
-				v{name}.v{current} - n{1}, &v{root}
+		t{struct Frag *}sub =
+			getFragInMap(
+				frags, name.buffer,
+				name.current - n{1}, &root
 			);
 		E{check for prev expands};
 		++sub->multiples;
-		f{addFragToFrag}(
-			v{frag}, v{sub});
-		v{processed} = k{true};
+		addFragToFrag(
+			frag, sub);
+		processed = n{true};
 	}
 x{process frag name}
 ```
 
 ```
 d{check for prev expands}
-	k{if} (v{sub}->v{expands}) {
-		f{printf}(
+	if (sub->expands) {
+		printf(
 			s{"multiple after expand "}
 				s{"of [%s]\n"},
-			v{sub}->v{name}
+			sub->name
 		);
 	}
 x{check for prev expands}
@@ -794,10 +794,10 @@ x{check for prev expands}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'p'}) {
-		f{ASSERT}(v{frag}, s{"private not in frag"});
+	if (openCh == s{'p'}) {
+		ASSERT(frag, s{"private not in frag"});
 		e{process private frag};
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -806,14 +806,14 @@ x{process frag name}
 
 ```
 d{process private frag}
-	t{unsigned} v{cur} = f{initHash}();
-	v{cur} = f{addTerminatedToHash}(
-		v{cur}, v{input}->v{name}
+	t{unsigned} cur = initHash();
+	cur = addTerminatedToHash(
+		cur, input->name
 	);
-	v{cur} = f{addRangeToHash}(
-		v{cur}, v{name}.v{buffer}, v{name}.v{current}
+	cur = addRangeToHash(
+		cur, name.buffer, name.current
 	);
-	v{cur} &= n{0x7fffffff};
+	cur &= n{0x7fffffff};
 x{process private frag}
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
@@ -822,15 +822,15 @@ x{process private frag}
 
 ```
 a{process private frag}
-	t{static char} v{hash}t{[12]};
-	t{char *}v{end} = v{hash} + f{sizeof}(v{hash});
-	t{char *}v{head} = v{end};
-	*--v{head} = '_';
-	k{for} (;;) {
-		f{ASSERT}(v{head} > v{hash});
-		*--v{head} = (v{cur} % n{10}) + s{'0'};
-		v{cur} /= n{10};
-		k{if} (! v{cur}) { k{break}; }
+	t{static char} hash[12];
+	t{char *}end = hash + sizeof(hash);
+	t{char *}head = end;
+	*--head = '_';
+	for (;;) {
+		ASSERT(head > hash);
+		*--head = (cur % n{10}) + s{'0'};
+		cur /= n{10};
+		if (! cur) { break; }
 	}
 x{process private frag}
 ```
@@ -841,19 +841,19 @@ x{process private frag}
 ```
 a{process private frag}
 	E{flush frag buffer};
-	t{static char} v{prefix}t{[]} = s{"_private_"};
-	f{addBytesToFrag}(
-		v{frag}, v{prefix},
-		v{prefix} + f{sizeof}(v{prefix}) - n{1},
-		v{input}->v{name}, v{nameLine}
+	t{static char} prefix[] = s{"_private_"};
+	addBytesToFrag(
+		frag, prefix,
+		prefix + sizeof(prefix) - n{1},
+		input->name, nameLine
 	);
-	f{addBytesToFrag}(
-		v{frag}, v{head}, v{end},
-		v{input}->v{name}, v{nameLine}
+	addBytesToFrag(
+		frag, head, end,
+		input->name, nameLine
 	);
-	f{addBytesToFrag}(
-		v{frag}, v{name}.v{buffer}, v{name}.v{current} - n{1},
-		v{input}->v{name}, v{nameLine}
+	addBytesToFrag(
+		frag, name.buffer, name.current - n{1},
+		input->name, nameLine
 	);
 x{process private frag}
 ```
@@ -865,10 +865,10 @@ x{process private frag}
 
 ```
 a{process frag name}
-	k{if} (v{openCh} == s{'m'}) {
-		f{ASSERT}(v{frag}, "magic not in frag");
+	if (openCh == s{'m'}) {
+		ASSERT(frag, "magic not in frag");
 		e{process magic frag};
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -878,33 +878,33 @@ x{process frag name}
 
 ```
 d{process magic frag}
-	t{unsigned} v{cur} = f{initHash}();
-	v{cur} = f{addTerminatedToHash}(
-		v{cur}, v{input}->v{name}
+	t{unsigned} cur = initHash();
+	cur = addTerminatedToHash(
+		cur, input->name
 	);
-	v{cur} = f{addRangeToHash}(
-		v{cur}, v{name}.v{buffer}, v{name}.v{current}
+	cur = addRangeToHash(
+		cur, name.buffer, name.current
 	);
-	v{cur} &= n{0x7fffffff};
+	cur &= n{0x7fffffff};
 x{process magic frag}
 ```
 * Berechnet Hash-Wert
 
 ```
 a{process magic frag}
-	t{static char} v{magic}t{[12]};
-	t{char *}v{end} = v{magic} + f{sizeof}(v{magic});
-	t{char *}v{head} = v{end};
-	k{for} (;;) {
-		f{ASSERT}(v{head} > v{magic});
-		*--v{head} = (v{cur} % n{10}) + s{'0'};
-		v{cur} /= n{10};
-		k{if} (! v{cur}) { k{break}; }
+	t{static char} magic[12];
+	t{char *}end = magic + sizeof(magic);
+	t{char *}head = end;
+	for (;;) {
+		ASSERT(head > magic);
+		*--head = (cur % n{10}) + s{'0'};
+		cur /= n{10};
+		if (! cur) { break; }
 	}
 	E{flush frag buffer};
-	f{addBytesToFrag}(
-		v{frag}, v{head}, v{end},
-		v{input}->v{name}, v{nameLine}
+	addBytesToFrag(
+		frag, head, end,
+		input->name, nameLine
 	);
 x{process magic frag}
 ```
@@ -913,15 +913,15 @@ x{process magic frag}
 
 ```
 d{flush frag buffer}
-	k{if} (
-		v{buffer}.v{buffer} != v{buffer}.v{current}
+	if (
+		buffer.buffer != buffer.current
 	) {
-		f{addBytesToFrag}(
-			v{frag}, v{buffer}.v{buffer},
-			v{buffer}.v{current},
-			v{input}->v{name}, v{bufferLine}
+		addBytesToFrag(
+			frag, buffer.buffer,
+			buffer.current,
+			input->name, bufferLine
 		);
-		f{resetBuffer}(&v{buffer});
+		resetBuffer(&buffer);
 	}
 x{flush frag buffer}
 ```
@@ -930,14 +930,14 @@ x{flush frag buffer}
 
 ```
 a{process open brace} {
-	k{if} (v{frag}) {
-		t{bool} v{valid} = k{false};
+	if (frag) {
+		t{bool} valid = n{false};
 		e{check valid names};
-		k{if} (v{valid}) {
-			v{openCh} = v{last};
-			v{nameLine} = v{input}->v{line};
-			f{activateBuffer}(&v{name});
-			k{break};
+		if (valid) {
+			openCh = last;
+			nameLine = input->line;
+			activateBuffer(&name);
+			break;
 		}
 	}
 } x{process open brace}
@@ -950,10 +950,10 @@ a{process open brace} {
 
 ```
 d{check valid names}
-	t{static const char} v{valids}t{[]} =
+	t{static const char} valids[] =
 		s{"fvsntkxeEgGpm"};
-	k{if} (f{strchr}(v{valids}, v{last})) {
-		v{valid} = k{true};
+	if (strchr(valids, last)) {
+		valid = n{true};
 	}
 x{check valid names}
 ```
@@ -962,19 +962,19 @@ x{check valid names}
 
 ```
 a{process frag name}
-	k{if} (! v{processed}) {
-		f{ASSERT}(
-			v{frag}, s{"unknown frag %s"},
-			v{name}.v{buffer}
+	if (! processed) {
+		ASSERT(
+			frag, s{"unknown frag %s"},
+			name.buffer
 		);
-		t{const char *}v{c} = v{name}.v{buffer};
-		k{for} (; v{c} != v{name.current} - n{1}; ++v{c}) {
-			if (! isActiveBuffer(&v{buffer)) {
+		t{const char *}c = name.buffer;
+		for (; c != name.current - n{1}; ++c) {
+			if (! isActiveBuffer(&buffer)) {
 				bufferLine = input->line;
 			}
-			f{addToBuffer}(&v{buffer}, *v{c});
+			addToBuffer(&buffer, *c);
 		}
-		v{processed} = k{true};
+		processed = n{true};
 	}
 x{process frag name}
 ```
@@ -984,11 +984,11 @@ x{process frag name}
 
 ```
 a{process open brace}
-	k{if} (v{frag}) {
-		if (! isActiveBuffer(&v{buffer)) {
+	if (frag) {
+		if (! isActiveBuffer(&buffer)) {
 			bufferLine = input->line;
 		}
-		f{addToBuffer}(&v{buffer}, v{last});
+		addToBuffer(&buffer, last);
 	}
 x{process open brace}
 ```
@@ -998,11 +998,11 @@ x{process open brace}
 
 ```
 a{process close brace}
-	k{if} (v{frag} && ! v{processed}) {
-		if (! isActiveBuffer(&v{buffer)) {
+	if (frag && ! processed) {
+		if (! isActiveBuffer(&buffer)) {
 			bufferLine = input->line;
 		}
-		f{addToBuffer}(&v{buffer}, v{last});
+		addToBuffer(&buffer, last);
 	}
 x{process close brace}
 ```
@@ -1016,12 +1016,12 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	t{struct Frag **}v{cur} = v{root}.v{frags};
-	t{struct Frag **}v{end} =
-		v{cur} + v{FRAG_SLOTS};
-	k{for} (; v{cur} < v{end}; ++v{cur}) {
-		t{struct Frag *}v{frag} = *v{cur};
-		k{for} (; v{frag}; v{frag} = v{frag}->v{link}) {
+	t{struct Frag **}cur = root.frags;
+	t{struct Frag **}end =
+		cur + FRAG_SLOTS;
+	for (; cur < end; ++cur) {
+		t{struct Frag *}frag = *cur;
+		for (; frag; frag = frag->link) {
 			E{serialize frag};
 		}
 	}
@@ -1034,18 +1034,18 @@ d{serialize fragments} {
 
 ```
 a{serialize fragments} {
-	v{input} = v{used};
-	k{for} (; v{input}; v{input} = v{input}->v{link})
+	input = used;
+	for (; input; input = input->link)
 	{
-		t{struct Frag **}v{cur} =
-			v{input}->v{frags}.v{frags};
-		t{struct Frag **}v{end} =
-			v{cur} + v{FRAG_SLOTS};
-		k{for} (; v{cur} < v{end}; ++v{cur}) {
-			t{struct Frag *}v{frag} = *v{cur};
-			k{while} (v{frag}) {
+		t{struct Frag **}cur =
+			input->frags.frags;
+		t{struct Frag **}end =
+			cur + FRAG_SLOTS;
+		for (; cur < end; ++cur) {
+			t{struct Frag *}frag = *cur;
+			while (frag) {
 				E{serialize frag};
-				v{frag} = v{frag}->v{link};
+				frag = frag->link;
 			}
 		}
 	}
@@ -1055,10 +1055,10 @@ a{serialize fragments} {
 
 ```
 d{serialize frag}
-	k{if} (! f{memcmp}(
+	if (! memcmp(
 		s{"file: "}, frag->name, n{6}
 	)) {
-		++v{frag}->v{expands};
+		++frag->expands;
 		e{write in file};
 	}
 x{serialize frag}
@@ -1069,12 +1069,12 @@ x{serialize frag}
 
 ```
 a{serialize frag} {
-	t{int} v{sum} =
-		v{frag}->v{expands} + v{frag}->v{multiples};
-	k{if} (v{sum} <= n{0}) {
-		f{printf}(
+	t{int} sum =
+		frag->expands + frag->multiples;
+	if (sum <= n{0}) {
+		printf(
 			s{"frag [%s] not called\n"},
-			v{frag}->v{name}
+			frag->name
 		);
 	}
 } x{serialize frag}
@@ -1084,11 +1084,11 @@ a{serialize frag} {
 
 ```
 a{serialize frag}
-	k{if} (v{frag}->v{multiples} == n{1}) {
-		f{printf}(
+	if (frag->multiples == n{1}) {
+		printf(
 			s{"multiple frag [%s] only "}
 				s{"used once\n"},
-			v{frag}->v{name}
+			frag->name
 		);
 	}
 x{serialize frag}
@@ -1099,10 +1099,10 @@ x{serialize frag}
 
 ```
 a{serialize frag}
-	k{if} (! f{isPopulatedFrag}(v{frag})) {
-		f{printf}(
+	if (! isPopulatedFrag(frag)) {
+		printf(
 			s{"frag [%s] not populated\n"},
-			v{frag}->v{name}
+			frag->name
 		);
 	}
 x{serialize frag}
@@ -1112,14 +1112,14 @@ x{serialize frag}
 
 ```
 d{write in file}
-	t{FILE *}v{f} =
-		f{fopen}(v{frag}->v{name} + n{6}, s{"w"});
-	f{ASSERT}(
-		v{f}, s{"can't open %s"},
-		v{frag}->v{name} + n{6}
+	t{FILE *}f =
+		fopen(frag->name + n{6}, s{"w"});
+	ASSERT(
+		f, s{"can't open %s"},
+		frag->name + n{6}
 	);
-	f{serializeFrag}(v{frag}, v{f}, k{false});
-	f{fclose}(v{f});
+	serializeFrag(frag, f, n{false});
+	fclose(f);
 x{write in file}
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
@@ -1128,22 +1128,22 @@ x{write in file}
 
 ```
 a{additional input elements}
-	t{int} v{line};
+	t{int} line;
 x{additional input elements}
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
 
 ```
 a{init additional input fields}
-	v{i}->v{line} = n{1};
+	i->line = n{1};
 x{init additional input fields}
 ```
 * Beim Öffnen einer neuen `.x`-Datei befinden wir uns in Zeile `n{1}`
 
 ```
 d{preprocess char}
-	k{if} (v{ch} == s{'\n'}) {
-		++v{input}->v{line};
+	if (ch == s{'\n'}) {
+		++input->line;
 	}
 x{preprocess char}
 ```

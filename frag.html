@@ -28,7 +28,7 @@
 <ul><li>
  Hash-Funktion wird benötigt
 </li><li>
- Und in der Datei als <code>f{calcHash}</code> definiiert
+ Und in der Datei als <code>calcHash</code> definiiert
 </li></ul></div>
 
 <div><div>
@@ -68,7 +68,7 @@
 
 <span class="in2"></span><span class="type">int</span> <span class="var">multiples</span>;<br/>
 
-<span class="in2"></span><span class="type">char </span><span class="var">name</span><span class="type">[]</span>;<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">name</span>[];<br/>
 
 <span class="in1"></span>};<br/>
 
@@ -103,7 +103,7 @@
 </div>
 
 <ul><li>
- <code>stdlib.h</code> wird für die Definition von <code>k{NULL}</code> benötigt
+ <code>stdlib.h</code> wird für die Definition von <code>n{NULL}</code> benötigt
 </li></ul></div>
 
  Neues Fragment anlegen</div>
@@ -128,13 +128,13 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct Frag *</span><span class="var">result</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">result</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">allocate frag on heap</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">link</span> = <span class="num">NULL</span>;<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">firstEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">firstEntry</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span><span class="var">result</span>-&gt;<span class="var">expands</span> = <span class="var">0</span>;<br/>
 
@@ -152,9 +152,9 @@
 </div>
 
 <ul><li>
- Die Zeiger werden mit <code>k{NULL}</code> initialisiert
+ Die Zeiger werden mit <code>n{NULL}</code> initialisiert
 </li><li>
- <code>v{lastEntry}</code> wird erst initialisiert, wenn <code>v{firstEntry}</code> gesetzt
+ <code>lastEntry</code> wird erst initialisiert, wenn <code>firstEntry</code> gesetzt
   wird
 </li><li>
  Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
@@ -182,7 +182,7 @@
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, <span class="str">"\n"</span>); \<br/>
 
-<span class="in3"></span><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \<br/>
+<span class="in3"></span><span class="fn">exit</span>(<span class="var">EXIT</span>_<span class="var">FAILURE</span>); \<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -212,11 +212,11 @@
 
 <span class="in2"></span><span class="var">nameEnd</span> - <span class="var">nameBegin</span>;<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">size</span> = <span class="keyword">sizeof</span>(<span class="type">struct Frag</span>)<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">size</span> = <span class="fn">sizeof</span>(<span class="type">struct Frag</span>)<br/>
 
 <span class="in2"></span>+ <span class="var">nameLength</span> + <span class="var">1</span>;<br/>
 
-<span class="in1"></span><span class="var">result</span> = <span class="var">malloc</span>(<span class="var">size</span>);<br/>
+<span class="in1"></span><span class="var">result</span> = <span class="fn">malloc</span>(<span class="var">size</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">result</span>);<br/>
 
@@ -226,9 +226,9 @@
 </div>
 
 <ul><li>
- Die Zeiger werden mit <code>k{NULL}</code> initialisiert
+ Die Zeiger werden mit <code>n{NULL}</code> initialisiert
 </li><li>
- <code>v{lastEntry}</code> wird erst initialisiert, wenn <code>v{firstEntry}</code> gesetzt
+ <code>lastEntry</code> wird erst initialisiert, wenn <code>firstEntry</code> gesetzt
   wird
 </li><li>
  Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
@@ -252,9 +252,9 @@
 
 <span class="in2"></span><span class="var">result</span>-&gt;<span class="var">name</span>, <span class="var">nameBegin</span>,<br/>
 
-<span class="in2"></span><span class="var">nameLength</span><br/>
+<span class="var">nameLength</span><br/>
 
-<span class="in1"></span>);<br/>
+<span class="in3"></span>);<br/>
 
 <span class="in1"></span><span class="var">result</span>-&gt;<span class="var">name</span>[<span class="var">nameLength</span>] = <span class="str">'\0'</span>;<br/>
 
@@ -293,9 +293,9 @@
 
 <span class="in3"></span><span class="expand">@expand(<span class="name">free frag entries</span>)</span>;<br/>
 
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">firstEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">firstEntry</span> = <span class="num">NULL</span>;<br/>
 
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">lastEntry</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">lastEntry</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -391,7 +391,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">void</span> <span class="fn">testFragName</span>(<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">testFragName</span>(<br/>
 
 <span class="in2"></span><span class="type">const char *</span><span class="var">name</span><br/>
 
@@ -419,7 +419,7 @@
 </div>
 
 <ul><li>
- <code>f{testFragName}</code> prüft, ob der Name korrekt in ein Fragment kopiert
+ <code>testFragName</code> prüft, ob der Name korrekt in ein Fragment kopiert
   wurde
 </li></ul></div>
 
@@ -458,7 +458,7 @@
 <ul><li>
  Zum einen wird getestet, ob die Namen korrekt kopiert werden
 </li><li>
- Zum anderen wird sichergestellt, dass die Verweise <code>k{NULL}</code> sind
+ Zum anderen wird sichergestellt, dass die Verweise <code>n{NULL}</code> sind
 </li></ul></div>
 
 <div><div>
@@ -507,7 +507,7 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">additional entry attributes</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">char </span><span class="var">value</span><span class="type">[]</span>;<br/>
+<span class="in2"></span><span class="type">char </span><span class="var">value</span>[];<br/>
 
 <span class="in1"></span>};<br/>
 
@@ -546,11 +546,11 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct FragEntry *</span><span class="var">result</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="type">struct FragEntry *</span><span class="var">result</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">allocate entry on heap</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">link</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">copy entry values</span>)</span>;<br/>
 
@@ -564,10 +564,10 @@
 </div>
 
 <ul><li>
- Wie bei einem Fragment werden die <code>v{link}</code> Verweise auf <code>k{NULL}</code>
+ Wie bei einem Fragment werden die <code>link</code> Verweise auf <code>n{NULL}</code>
   initialisiert
 </li><li>
- Sowohl <code>v{frag}</code> als auch <code>v{valueBegin}</code> sind optional
+ Sowohl <code>frag</code> als auch <code>valueBegin</code> sind optional
 </li><li>
  Die Größe des Eintrags hängt von der Anzahl der Bytes ab, die kopiert
   werden
@@ -592,9 +592,9 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">entrySize</span> = <span class="var">valueLength</span> +<br/>
 
-<span class="in2"></span><span class="keyword">sizeof</span>(<span class="type">struct FragEntry</span>);<br/>
+<span class="in2"></span><span class="fn">sizeof</span>(<span class="type">struct FragEntry</span>);<br/>
 
-<span class="in1"></span><span class="var">result</span> = <span class="var">malloc</span>(<span class="var">entrySize</span>);<br/>
+<span class="in1"></span><span class="var">result</span> = <span class="fn">malloc</span>(<span class="var">entrySize</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">result</span>);<br/>
 
@@ -621,9 +621,9 @@
 
 <span class="in3"></span><span class="var">result</span>-&gt;<span class="var">value</span>, <span class="var">valueBegin</span>,<br/>
 
-<span class="in3"></span><span class="var">valueLength</span><br/>
+<span class="var">valueLength</span><br/>
 
-<span class="in2"></span>);<br/>
+<span class="in5"></span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -647,17 +647,17 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="type">struct FragEntry *</span><br/>
+<span class="in1"></span><span class="type">struct FragEntry *</span><br/>
 
-<span class="fn">allocEmptyFragEntry</span>() {<br/>
+<span class="in2"></span><span class="fn">allocEmptyFragEntry</span>() {<br/>
 
-<span class="in1"></span><span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
 
-<span class="in2"></span><span class="keyword">NULL</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
+<span class="in4"></span><span class="num">NULL</span>, <span class="num">NULL</span>, <span class="num">NULL</span><br/>
 
-<span class="in1"></span>);<br/>
+<span class="in3"></span>);<br/>
 
-}<br/>
+<span class="in2"></span>}<br/>
 
 <span class="end">@end(<span class="name">define frag</span>)</span><br/>
 
@@ -682,7 +682,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="keyword">void</span> <span class="fn">freeFragEntry</span>(<br/>
+<span class="type">void</span> <span class="fn">freeFragEntry</span>(<br/>
 
 <span class="in1"></span><span class="type">struct FragEntry *</span><span class="var">e</span><br/>
 
@@ -719,13 +719,13 @@
 
 <span class="add">@globdef(<span class="name">forward declarations</span>)</span><br/>
 
-<span class="type">struct FragEntry</span>;<br/>
+<span class="in1"></span><span class="type">struct FragEntry</span>;<br/>
 
-<span class="keyword">void</span> <span class="fn">freeFragEntry</span>(<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">freeFragEntry</span>(<br/>
 
-<span class="in1"></span><span class="type">struct FragEntry *</span><span class="var">entry</span><br/>
+<span class="in2"></span><span class="type">struct FragEntry *</span><span class="var">entry</span><br/>
 
-);<br/>
+<span class="in1"></span>);<br/>
 
 <span class="end">@end(<span class="name">forward declarations</span>)</span><br/>
 
@@ -750,7 +750,7 @@
  Wenn ein Fragment freigegeben wird, so werden auch die anhängenden
   Einträge freigegeben
 </li><li>
- Damit die Funktion im <code>f{freeFrag}</code> sichtbar ist, wird sie in der
+ Damit die Funktion im <code>freeFrag</code> sichtbar ist, wird sie in der
   Include-Sektion definiert
 </li></ul></div>
 
@@ -768,7 +768,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">int</span> <span class="fn">getFragEntryValueSize</span>(<br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">getFragEntryValueSize</span>(<br/>
 
 <span class="in2"></span><span class="type">struct FragEntry *</span><span class="var">e</span><br/>
 
@@ -897,7 +897,7 @@
 
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
 
-<span class="in3"></span><span class="keyword">NULL</span>, <span class="var">v</span>, <span class="var">e</span><br/>
+<span class="in3"></span><span class="num">NULL</span>, <span class="var">v</span>, <span class="var">e</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1049,9 +1049,9 @@
 </div>
 
 <ul><li>
- Fragment darf nicht <code>k{NULL}</code> sein
+ Fragment darf nicht <code>n{NULL}</code> sein
 </li><li>
- Eintrag darf nicht <code>k{NULL}</code> sein
+ Eintrag darf nicht <code>n{NULL}</code> sein
 </li><li>
  Eintrag darf noch nicht in einer anderen Liste hängen
 </li></ul></div>
@@ -1077,7 +1077,7 @@
 </li><li>
  Der neue Eintrag wird zum neuen letzten Eintrag
 </li><li>
- Der Nachfolger von <code>v{entry}</code> ist bereits <code>k{NULL}</code>
+ Der Nachfolger von <code>entry</code> ist bereits <code>n{NULL}</code>
 </li></ul></div>
 
 <div><div>
@@ -1097,7 +1097,7 @@
 <ul><li>
  Der erste Eintrag wird auch als letzter Eintrag gesetzt
 </li><li>
- Der Nachfolger von <code>v{entry}</code> ist bereits <code>k{NULL}</code>
+ Der Nachfolger von <code>entry</code> ist bereits <code>n{NULL}</code>
 </li></ul></div>
 
 <div><div>
@@ -1179,7 +1179,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frag</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span><span class="type">struct FragEntry *</span><span class="var">first</span>;<br/>
 
@@ -1247,7 +1247,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frag</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frag</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span><span class="type">struct FragEntry *</span><span class="var">first</span>;<br/>
 
@@ -1299,7 +1299,7 @@
 
 <span class="in3"></span><span class="fn">allocFragEntry</span>(<br/>
 
-<span class="in4"></span><span class="keyword">NULL</span>, <span class="var">value</span>, <span class="var">valueEnd</span><br/>
+<span class="in4"></span><span class="num">NULL</span>, <span class="var">value</span>, <span class="var">valueEnd</span><br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1356,9 +1356,9 @@
  Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
   dass kein Zykel entsteht
 </li><li>
- Ein Zykel liegt vor, wenn <code>v{frag}</code> gleich <code>v{child}</code> ist
+ Ein Zykel liegt vor, wenn <code>frag</code> gleich <code>child</code> ist
 </li><li>
- Oder bereits direkt oder indirekt zu <code>v{child}</code> hinzugefügt wurde
+ Oder bereits direkt oder indirekt zu <code>child</code> hinzugefügt wurde
 </li><li>
  Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
   verwendet
@@ -1400,7 +1400,7 @@
 
 <span class="in2"></span><span class="fn">allocFragEntry</span>(<br/>
 
-<span class="in3"></span><span class="var">child</span>, <span class="keyword">NULL</span>, <span class="keyword">NULL</span><br/>
+<span class="in3"></span><span class="var">child</span>, <span class="num">NULL</span>, <span class="num">NULL</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1479,9 +1479,9 @@
 
 <span class="in4"></span><span class="var">entry</span>-&gt;<span class="var">frag</span>, <span class="var">out</span>,<br/>
 
-<span class="in4"></span><span class="var">writeLineMacros</span><br/>
+<span class="var">writeLineMacros</span><br/>
 
-<span class="in3"></span>);<br/>
+<span class="in7"></span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1503,9 +1503,9 @@
 
 <span class="add">@def(<span class="name">serialize test defines</span>)</span><br/>
 
-<span class="in1"></span><span class="type">char *</span><span class="var">fragTestBufferCur</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in1"></span><span class="type">char *</span><span class="var">fragTestBufferCur</span> = <span class="num">NULL</span>;<br/>
 
-<span class="in1"></span><span class="type">const char *</span><span class="var">fragTestBufferEnd</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in1"></span><span class="type">const char *</span><span class="var">fragTestBufferEnd</span> = <span class="num">NULL</span>;<br/>
 
 <span class="end">@end(<span class="name">serialize test defines</span>)</span><br/>
 
@@ -1551,7 +1551,7 @@
 </div>
 
 <ul><li>
- Wenn es Bytes in dem Eintrag gibt, wird der <code>v{consumer}</code> mit ihnen
+ Wenn es Bytes in dem Eintrag gibt, wird der <code>consumer</code> mit ihnen
   aufgerufen
 </li></ul></div>
 
@@ -1591,7 +1591,7 @@
 
 <span class="in1"></span><span class="var">fragTestBufferEnd</span> = <span class="var">buffer</span> + <span class="fn">sizeof</span>(<span class="var">buffer</span>);<br/>
 
-<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, (<span class="var">void</span> *) <span class="var">buffer</span>, <span class="keyword">false</span>);<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, (<span class="var">void</span> *) <span class="var">buffer</span>, <span class="num">false</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">strcmp</span>(<br/>
 
@@ -1633,7 +1633,7 @@
 
 <span class="in3"></span><span class="var">frag</span>, <span class="var">str</span>, <span class="var">str</span> + <span class="var">size</span>,<br/>
 
-<span class="in3"></span><span class="keyword">NULL</span>, <span class="num">0</span><br/>
+<span class="in3"></span><span class="num">NULL</span>, <span class="num">0</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1759,7 +1759,7 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">check cycle entries</span>)</span>;<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="keyword">false</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1805,7 +1805,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">haystack</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1816,7 +1816,7 @@
 
 <ul><li>
  Wenn der Container selbst das gesuchte Fragment ist, liefert die
-  Funktion <code>k{true}</code> zurück
+  Funktion <code>n{true}</code> zurück
 </li></ul></div>
 
 <div><div>
@@ -1838,7 +1838,7 @@
 
 <span class="in2"></span>)) {<br/>
 
-<span class="in3"></span><span class="keyword">return</span> <span class="keyword">true</span>;<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1877,11 +1877,11 @@
 
 <span class="in2"></span><span class="type">struct FragMap *</span><span class="var">link</span>;<br/>
 
-<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frags</span><span class="type">[</span><br/>
+<span class="in2"></span><span class="type">struct Frag *</span><span class="var">frags</span>[<br/>
 
 <span class="in3"></span><span class="type">FRAG_SLOTS</span><br/>
 
-<span class="in2"></span><span class="type">]</span>;<br/>
+<span class="in2"></span>];<br/>
 
 <span class="in1"></span>};<br/>
 
@@ -1893,7 +1893,7 @@
 <ul><li>
  Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
 </li><li>
- Alle Felder müssen mit <code>k{NULL}</code> initialisiert werden
+ Alle Felder müssen mit <code>n{NULL}</code> initialisiert werden
 </li></ul></div>
 
 <div><div>
@@ -1911,15 +1911,15 @@
 
 <span class="in2"></span><span class="type">struct Frag **</span><span class="var">end</span> =<br/>
 
-<span class="in3"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
+<span class="in3"></span><span class="var">cur</span> + <span class="var">FRAG</span>_<span class="var">SLOTS</span>;<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 
-<span class="in3"></span><span class="fn">freeFrag</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in3"></span><span class="fn">freeFrag</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="var">map</span>-&gt;<span class="var">link</span> = <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="var">map</span>-&gt;<span class="var">link</span> = <span class="num">NULL</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1952,7 +1952,7 @@
 
 <span class="in2"></span><span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span> % <span class="var">FRAG_SLOTS</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span> % <span class="var">FRAG</span>_<span class="var">SLOTS</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2048,7 +2048,7 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">find frag in linked map</span>)</span>;<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="keyword">NULL</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">NULL</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
