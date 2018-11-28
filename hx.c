@@ -1810,8 +1810,10 @@
 ;
 			
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 			continue;
 		}
@@ -1826,8 +1828,10 @@
 			);
 			
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 			continue;
 		}
@@ -1842,8 +1846,10 @@
 			);
 			
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 			continue;
 		}
@@ -1872,8 +1878,10 @@
 	status.state = hs_IN_CODE;
 	
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 ;
 			continue;
@@ -1888,8 +1896,10 @@
 	status.codeSpecial = '\0';
 	
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 ;
 			continue;
@@ -1950,8 +1960,10 @@
 		fprintf(out, "<br/>\n");
 		
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 		continue;
 	}
@@ -2303,8 +2315,10 @@
 ;
 		
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 		continue;
 	}
@@ -2323,8 +2337,10 @@
 			status.state = hs_AFTER_SLIDE;
 			
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 			continue;
 		}
@@ -2708,8 +2724,10 @@
 ;
 		
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 		continue;
 	}
@@ -2717,8 +2735,10 @@
 		if (ch == EOF) { break; }
 		
 	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
 ;
 	}
 } ;

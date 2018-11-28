@@ -95,15 +95,6 @@ d{write HTML file from in to out} {
 * Jedes Zeichen wird prozessiert
 * Bis das Datei-Ende erreicht ist
 
-```
-d{move ch to last}
-	newline = ch == '\n';
-	char xx = ch;
-	writeEscaped(out, &xx, &xx + 1);
-x{move ch to last}
-```
-* Beim Kopieren des Zeichens wird `EOF` durch `'\0'` ersetzt
-
 # Überschriften
 
 ```
@@ -112,6 +103,17 @@ d{html state enums}
 x{html state enums}
 ```
 * Es gibt einen eigenen Zustand, wenn eine Überschrift gelesen wird
+
+```
+d{move ch to last}
+	newline = ch == '\n';
+	if (status.state != hs_IN_HEADER) {
+		char xx = ch;
+		writeEscaped(out, &xx, &xx + 1);
+	}
+x{move ch to last}
+```
+* Beim Kopieren des Zeichens wird `EOF` durch `'\0'` ersetzt
 
 ```
 A{global elements}
