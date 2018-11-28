@@ -66,9 +66,9 @@
 
 <span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span>,<br/>
 
-<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>,<br/>
 
-<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">end</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -100,7 +100,7 @@
 
 <span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span>,<br/>
 
-<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -130,7 +130,7 @@
 
 <span class="in1"></span><span class="var">hash</span> ^= *<span class="var">begin</span>;<br/>
 
-<span class="in1"></span><span class="var">hash</span> = (<span class="var">hash</span> &lt;&lt; <span class="var">3</span>) | (<span class="var">hash</span> &gt;&gt; <span class="var">29</span>);<br/>
+<span class="in1"></span><span class="var">hash</span> = (<span class="var">hash</span> &lt;&lt; <span class="num">3</span>) | (<span class="var">hash</span> &gt;&gt; <span class="num">29</span>);<br/>
 
 <span class="end">@end(<span class="name">hash next ch</span>)</span><br/>
 
@@ -146,9 +146,9 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">calcHash</span>(<br/>
 
-<span class="in2"></span><span class="type">const char *</span><span class="var">begin</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>,<br/>
 
-<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">end</span><br/>
 
 <span class="in1"></span>) {<br/>
 

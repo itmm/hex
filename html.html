@@ -20,13 +20,13 @@
 
 <span class="add">@globdef(<span class="name">write HTML file</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct Input *</span><span class="var">cur</span> = <span class="var">used</span>;<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">cur</span> = <span class="var">used</span>;<br/>
 
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">write cur HTML file</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct Input *</span><span class="var">next</span> = <span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
+<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">next</span> = <span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
 
 <span class="in2"></span><span class="fn">free</span>(<span class="var">cur</span>);<br/>
 
@@ -52,7 +52,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>) + <span class="num">4</span>;<br/>
 
-<span class="in1"></span><span class="type">char *</span><span class="var">outPath</span> = <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
+<span class="in1"></span><span class="type">char</span> *<span class="var">outPath</span> = <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">outPath</span>);<br/>
 
@@ -60,7 +60,7 @@
 
 <span class="in1"></span><span class="fn">strcpy</span>(<span class="var">outPath</span> + <span class="var">len</span> - <span class="num">6</span>, <span class="str">".html"</span>);<br/>
 
-<span class="in1"></span><span class="type">FILE *</span><span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>, <span class="str">"w"</span>);<br/>
+<span class="in1"></span><span class="type">FILE</span> *<span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>, <span class="str">"w"</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 
@@ -84,7 +84,7 @@
 
 <span class="add">@def(<span class="name">write cur HTML file to out</span>)</span> <br/>
 
-<span class="in1"></span><span class="type">FILE *</span><span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">"r"</span>);<br/>
+<span class="in1"></span><span class="type">FILE</span> *<span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">"r"</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">in</span>);<br/>
 
@@ -106,15 +106,15 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">enum HtmlState</span> {<br/>
+<span class="in1"></span><span class="type">enum</span> <span class="type">HtmlState</span> {<br/>
 
-<span class="in2"></span><span class="var">hs</span>_<span class="var">NOTHING</span>_<span class="var">WRITTEN</span>,<br/>
+<span class="in2"></span><span class="var">hs_NOTHING_WRITTEN</span>,<br/>
 
-<span class="in2"></span><span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>,<br/>
+<span class="in2"></span><span class="var">hs_IN_SLIDE</span>,<br/>
 
-<span class="in2"></span><span class="var">hs</span>_<span class="var">AFTER</span>_<span class="var">SLIDE</span><br/>
+<span class="var">hs_AFTER_SLIDE</span><br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">html state enums</span>)</span><br/>
+<span class="in4"></span><span class="expand">@expand(<span class="name">html state enums</span>)</span><br/>
 
 <span class="in1"></span>};<br/>
 
@@ -139,7 +139,7 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct HtmlStatus</span> {<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">HtmlStatus</span> {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">html state elements</span>)</span><br/>
 
@@ -151,7 +151,7 @@
 </div>
 
 <ul><li>
- Der aktuelle Status wird in <code>t{struct HtmlStatus}</code> abgelegt
+ Der aktuelle Status wird in <code>struct HtmlStatus</code> abgelegt
 </li></ul></div>
 
 <div><div>
@@ -159,7 +159,7 @@
 
 <span class="add">@def(<span class="name">html state elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">enum HtmlState</span> <span class="var">state</span>;<br/>
+<span class="in1"></span><span class="type">enum</span> <span class="type">HtmlState</span> <span class="var">state</span>;<br/>
 
 <span class="end">@end(<span class="name">html state elements</span>)</span><br/>
 
@@ -175,9 +175,9 @@
 
 <span class="add">@def(<span class="name">write HTML file from in to out</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">struct HtmlStatus</span> <span class="var">status</span> = {<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">HtmlStatus</span> <span class="var">status</span> = {<br/>
 
-<span class="in2"></span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">NOTHING</span>_<span class="var">WRITTEN</span><br/>
+<span class="in2"></span>.<span class="var">state</span> = <span class="var">hs_NOTHING_WRITTEN</span><br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init html status</span>)</span><br/>
 
@@ -185,7 +185,7 @@
 
 <span class="in1"></span><span class="type">bool</span> <span class="var">newline</span> = <span class="num">true</span>;<br/>
 
-<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">ident</span> = {};<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Buffer</span> <span class="var">ident</span> = {};<br/>
 
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
 
@@ -221,9 +221,9 @@
 
 <span class="in1"></span><span class="var">newline</span> = <span class="var">ch</span> == <span class="str">'\n'</span>;<br/>
 
-<span class="in1"></span><span class="var">char</span> <span class="var">xx</span> = <span class="var">ch</span>;<br/>
+<span class="in1"></span><span class="type">char</span> <span class="var">xx</span> = <span class="var">ch</span>;<br/>
 
-<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, &amp;<span class="var">xx</span>, &amp;<span class="var">xx</span> + <span class="var">1</span>);<br/>
+<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, &amp;<span class="var">xx</span>, &amp;<span class="var">xx</span> + <span class="num">1</span>);<br/>
 
 <span class="end">@end(<span class="name">move ch to last</span>)</span><br/>
 
@@ -231,7 +231,7 @@
 </div>
 
 <ul><li>
- Beim Kopieren des Zeichens wird <code>n{EOF}</code> durch <code>s{'\0'}</code> ersetzt
+ Beim Kopieren des Zeichens wird <code>EOF</code> durch <code>'\0'</code> ersetzt
 </li></ul></div>
 
  Überschriften</div>
@@ -248,7 +248,7 @@
 
 <span class="add">@def(<span class="name">html state enums</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span><br/>
+<span class="in1"></span>, <span class="var">hs_IN_HEADER</span><br/>
 
 <span class="end">@end(<span class="name">html state enums</span>)</span><br/>
 
@@ -266,7 +266,7 @@
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isOutOfHtmlSpecial</span>(<br/>
 
-<span class="in2"></span><span class="type">struct HtmlStatus *</span><span class="var">s</span><br/>
+<span class="in2"></span><span class="type">struct</span> <span class="type">HtmlStatus</span> *<span class="var">s</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -282,7 +282,7 @@
 </div>
 
 <ul><li>
- Die Funktion <code>{isOutOfHtmlSpecial}</code> liefert <code>n{true}</code>, wenn sich
+ Die Funktion <code>{isOutOfHtmlSpecial}</code> liefert <code>true</code>, wenn sich
   der Zustands-Automat gerade nicht in einem Sonder-Modus (Überschrift,
   Code, Notizen) befindet
 </li></ul></div>
@@ -292,7 +292,7 @@
 
 <span class="add">@def(<span class="name">check html special state</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
@@ -314,9 +314,9 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">headerLevel</span>;<br/>
 
-<span class="in1"></span><span class="type">struct Buffer</span> <span class="var">headerName</span>;<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Buffer</span> <span class="var">headerName</span>;<br/>
 
-<span class="in1"></span><span class="type">enum HtmlState</span> <span class="var">headerState</span>;<br/>
+<span class="in1"></span><span class="type">enum</span> <span class="type">HtmlState</span> <span class="var">headerState</span>;<br/>
 
 <span class="end">@end(<span class="name">html state elements</span>)</span><br/>
 
@@ -359,13 +359,13 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span><br/>
 
 <span class="in2"></span>) {<br/>
 
 <span class="in3"></span>++<span class="var">status</span>.<span class="var">headerLevel</span>;<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_HEADER</span>) {<br/>
 
 <span class="in4"></span><span class="var">status</span>.<span class="var">headerState</span> =<br/>
 
@@ -373,7 +373,7 @@
 
 <span class="in3"></span>}<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_HEADER</span>;<br/>
 
 <span class="in3"></span><span class="keyword">continue</span>;<br/>
 
@@ -400,7 +400,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
 
@@ -431,13 +431,13 @@
 
 <span class="add">@def(<span class="name">reset header state</span>)</span> <br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">headerLevel</span> = <span class="num">0</span>;<br/>
 
 <span class="in1"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">status</span>.<span class="var">headerName</span>);<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">headerState</span> = <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">headerState</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
 
 <span class="end">@end(<span class="name">reset header state</span>)</span><br/>
 
@@ -454,7 +454,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<br/>
 
@@ -491,7 +491,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> &gt; <span class="str">' '</span> &amp;&amp; ! <span class="fn">isActiveBuffer</span>(<br/>
 
@@ -561,9 +561,9 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
 
-<span class="in2"></span><span class="type">FILE *</span><span class="var">out</span>, <span class="type">const char *</span><span class="var">str</span>,<br/>
+<span class="in2"></span><span class="type">FILE</span> *<span class="var">out</span>, <span class="type">const</span> <span class="type">char</span> *<span class="var">str</span>,<br/>
 
-<span class="in2"></span><span class="type">const char *</span><span class="var">end</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">end</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -662,7 +662,7 @@
 
 <span class="in1"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">headerState</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">case</span> <span class="var">hs</span>_<span class="var">NOTHING</span>_<span class="var">WRITTEN</span>: {<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="var">hs_NOTHING_WRITTEN</span>: {<br/>
 
 <span class="in3"></span><span class="expand">@expand(<span class="name">write HTML header</span>)</span>;<br/>
 
@@ -670,7 +670,7 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">case</span> <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>: {<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="var">hs_IN_SLIDE</span>: {<br/>
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
@@ -792,7 +792,7 @@
 
 <span class="add">@add(<span class="name">html state enums</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span><br/>
+<span class="in1"></span>, <span class="var">hs_IN_CODE</span><br/>
 
 <span class="end">@end(<span class="name">html state enums</span>)</span><br/>
 
@@ -808,7 +808,7 @@
 
 <span class="add">@add(<span class="name">check html special state</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
@@ -871,7 +871,7 @@
 
 <span class="in1"></span><span class="type">char</span> <span class="var">codeName</span>[<span class="num">100</span>];<br/>
 
-<span class="in1"></span><span class="type">char *</span><span class="var">codeNameEnd</span>;<br/>
+<span class="in1"></span><span class="type">char</span> *<span class="var">codeNameEnd</span>;<br/>
 
 <span class="end">@end(<span class="name">html state elements</span>)</span><br/>
 
@@ -904,7 +904,7 @@
 </div>
 
 <ul><li>
- Zur Initialisierung werden die Parameter auf <code>n{0}</code> gesetzt
+ Zur Initialisierung werden die Parameter auf <code>0</code> gesetzt
 </li><li>
  Das Code-Argument <code>codeName</code> wird nicht zurückgesetzt
 </li></ul></div>
@@ -918,7 +918,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
 
 <span class="in2"></span>) {<br/>
 
@@ -960,7 +960,7 @@
 
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
 
 <span class="in2"></span>) {<br/>
 
@@ -980,7 +980,7 @@
 </div>
 
 <ul><li>
- Wenn die Anzahl der Backticks genau <code>n{3}</code> war, dann wird der
+ Wenn die Anzahl der Backticks genau <code>3</code> war, dann wird der
   Code-Modus betreten oder verlassen
 </li></ul></div>
 
@@ -989,7 +989,7 @@
 
 <span class="add">@def(<span class="name">open code page</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_SLIDE</span>) {<br/>
 
 <span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
@@ -999,7 +999,7 @@
 
 <span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;code&gt;\n"</span>);<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_CODE</span>;<br/>
 
 <span class="in1"></span><span class="expand">@multiple(<span class="name">move ch to last</span>)</span>;<br/>
 
@@ -1023,7 +1023,7 @@
 
 <span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="num">0</span>;<br/>
 
@@ -1045,7 +1045,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="num">EOF</span>) {<br/>
 
@@ -1094,9 +1094,9 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeNameEnd</span> &amp;&amp; <span class="fn">isalnum</span>(<span class="var">ch</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<span class="fn">isalnum</span>(<span class="var">ch</span>) || <span class="var">ch</span> == <span class="str">'_'</span>)) {<br/>
 
 <span class="in3"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">ident</span>, <span class="var">ch</span>);<br/>
 
@@ -1118,9 +1118,9 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">int</span> <span class="fn">compareBuffer</span>(<span class="var">const</span> <span class="var">char</span> *<span class="var">s</span>, <span class="var">const</span> <span class="var">struct</span> <span class="var">Buffer</span> *<span class="var">b</span>) {<br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">compareBuffer</span>(<span class="type">const</span> <span class="type">char</span> *<span class="var">s</span>, <span class="type">const</span> <span class="type">struct</span> <span class="type">Buffer</span> *<span class="var">b</span>) {<br/>
 
-<span class="in2"></span><span class="var">const</span> <span class="var">char</span> *<span class="var">x</span> = <span class="var">b</span>-&gt;<span class="var">buffer</span>;<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">x</span> = <span class="var">b</span>-&gt;<span class="var">buffer</span>;<br/>
 
 <span class="in2"></span><span class="keyword">while</span> (*<span class="var">s</span> &amp;&amp; <span class="var">x</span> != <span class="var">b</span>-&gt;<span class="var">current</span>) {<br/>
 
@@ -1130,21 +1130,21 @@
 
 <span class="in3"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (*<span class="var">s</span> &lt; *<span class="var">x</span>) {<br/>
 
-<span class="in4"></span><span class="keyword">return</span> -<span class="var">1</span>;<br/>
+<span class="in4"></span><span class="keyword">return</span> -<span class="num">1</span>;<br/>
 
 <span class="in3"></span>} <span class="keyword">else</span> {<br/>
 
-<span class="in4"></span><span class="keyword">return</span> <span class="var">1</span>;<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">1</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (*<span class="var">s</span>) { <span class="keyword">return</span> <span class="var">1</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (*<span class="var">s</span>) { <span class="keyword">return</span> <span class="num">1</span>; }<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">x</span> != <span class="var">b</span>-&gt;<span class="var">current</span>) { <span class="keyword">return</span> -<span class="var">1</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">x</span> != <span class="var">b</span>-&gt;<span class="var">current</span>) { <span class="keyword">return</span> -<span class="num">1</span>; }<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">0</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">0</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1160,13 +1160,13 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">void</span> <span class="fn">escapeIdent</span>(<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">escapeIdent</span>(<br/>
 
-<span class="in2"></span><span class="var">FILE</span> *<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">FILE</span> *<span class="var">out</span>,<br/>
 
-<span class="in2"></span><span class="var">const</span> <span class="var">char</span> *<span class="var">cls</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">cls</span>,<br/>
 
-<span class="in2"></span><span class="var">const</span> <span class="var">struct</span> <span class="var">Buffer</span> *<span class="var">b</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">struct</span> <span class="type">Buffer</span> *<span class="var">b</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -1174,11 +1174,11 @@
 
 <span class="in3"></span><span class="var">out</span>,<br/>
 
-<span class="in3"></span>"&lt;<span class="var">span</span> <span class="var">class</span>=\"%<span class="var">s</span>\"&gt;%.*<span class="var">s</span>&lt;/<span class="var">span</span>&gt;",<br/>
+<span class="in3"></span><span class="str">"&lt;span class=\"%s\"&gt;%.*s&lt;/span&gt;"</span>,<br/>
 
 <span class="in3"></span><span class="var">cls</span>,<br/>
 
-<span class="in3"></span>(<span class="var">int</span>) (<span class="var">b</span>-&gt;<span class="var">current</span> - <span class="var">b</span>-&gt;<span class="var">buffer</span>),<br/>
+<span class="in3"></span>(<span class="type">int</span>) (<span class="var">b</span>-&gt;<span class="var">current</span> - <span class="var">b</span>-&gt;<span class="var">buffer</span>),<br/>
 
 <span class="in3"></span><span class="var">b</span>-&gt;<span class="var">buffer</span><br/>
 
@@ -1198,27 +1198,27 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">contains</span>(<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">contains</span>(<br/>
 
-<span class="in2"></span><span class="var">const</span> <span class="var">char</span> **<span class="var">begin</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> **<span class="var">begin</span>,<br/>
 
-<span class="in2"></span><span class="var">const</span> <span class="var">char</span> **<span class="var">end</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> **<span class="var">end</span>,<br/>
 
-<span class="in2"></span><span class="var">const</span> <span class="var">struct</span> <span class="var">Buffer</span> *<span class="var">b</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">struct</span> <span class="type">Buffer</span> *<span class="var">b</span><br/>
 
 <span class="in1"></span>) {<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">begin</span> != <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="fn">compareBuffer</span>(*<span class="var">begin</span>, <span class="var">b</span>) == <span class="var">0</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="fn">compareBuffer</span>(*<span class="var">begin</span>, <span class="var">b</span>) == <span class="num">0</span>) {<br/>
 
-<span class="in4"></span><span class="keyword">return</span> <span class="var">true</span>;<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">false</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1234,35 +1234,99 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">isKeyword</span>(<span class="var">const</span> <span class="var">struct</span> <span class="var">Buffer</span> *<span class="var">b</span>) {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isKeyword</span>(<span class="type">const</span> <span class="type">struct</span> <span class="type">Buffer</span> *<span class="var">b</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">static</span> <span class="var">const</span> <span class="var">char</span> *<span class="var">begin</span>[] = {<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>[] = {<br/>
 
-<span class="in3"></span><span class="str">"break"</span>,<br/>
+<span class="in3"></span><span class="str">"break"</span>, <span class="str">"case"</span>, <span class="str">"continue"</span>,<br/>
 
-<span class="in3"></span><span class="str">"case"</span>,<br/>
+<span class="in3"></span><span class="str">"default"</span>, <span class="str">"else"</span>, <span class="str">"for"</span>,<br/>
 
-<span class="in3"></span><span class="str">"continue"</span>,<br/>
+<span class="in3"></span><span class="str">"if"</span>, <span class="str">"return"</span>, <span class="str">"static"</span>,<br/>
 
-<span class="in3"></span><span class="str">"default"</span>,<br/>
-
-<span class="in3"></span><span class="str">"else"</span>,<br/>
-
-<span class="in3"></span><span class="str">"for"</span>,<br/>
-
-<span class="in3"></span><span class="str">"if"</span>,<br/>
-
-<span class="in3"></span><span class="str">"return"</span>,<br/>
-
-<span class="in3"></span><span class="str">"static"</span>,<br/>
-
-<span class="in3"></span><span class="str">"switch"</span>,<br/>
-
-<span class="in3"></span><span class="str">"while"</span><br/>
+<span class="in3"></span><span class="str">"switch"</span>, <span class="str">"while"</span><br/>
 
 <span class="in2"></span>};<br/>
 
-<span class="in2"></span><span class="keyword">static</span> <span class="var">const</span> <span class="var">char</span> **<span class="var">end</span> = (<span class="var">void</span> *) <span class="var">begin</span> + <span class="fn">sizeof</span>(<span class="var">begin</span>);<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> **<span class="var">end</span> = (<span class="type">void</span> *) <span class="var">begin</span> + <span class="fn">sizeof</span>(<span class="var">begin</span>);<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">contains</span>(<span class="var">begin</span>, <span class="var">end</span>, <span class="var">b</span>);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="type">struct</span> <span class="type">Buffer</span> *<span class="var">b</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>[] = {<br/>
+
+<span class="in3"></span><span class="str">"FILE"</span>,<br/>
+
+<span class="in3"></span><span class="str">"bool"</span>, <span class="str">"char"</span>, <span class="str">"const"</span>, <span class="str">"enum"</span>,<br/>
+
+<span class="in3"></span><span class="str">"int"</span>, <span class="str">"long"</span>, <span class="str">"signed"</span>, <span class="str">"struct"</span>,<br/>
+
+<span class="in3"></span><span class="str">"union"</span>, <span class="str">"unsigned"</span>, <span class="str">"void"</span><br/>
+
+<span class="in2"></span>};<br/>
+
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> **<span class="var">end</span> = (<span class="type">void</span> *) <span class="var">begin</span> + <span class="fn">sizeof</span>(<span class="var">begin</span>);<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">contains</span>(<span class="var">begin</span>, <span class="var">end</span>, <span class="var">b</span>)) {<br/>
+
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span>-&gt;<span class="var">current</span> - <span class="var">b</span>-&gt;<span class="var">buffer</span> &gt;= <span class="num">2</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="fn">isupper</span>(<span class="var">b</span>-&gt;<span class="var">buffer</span>[<span class="num">0</span>]) &amp;&amp; <span class="fn">islower</span>(<span class="var">b</span>-&gt;<span class="var">buffer</span>[<span class="num">1</span>])) {<br/>
+
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isNum</span>(<span class="type">const</span> <span class="type">struct</span> <span class="type">Buffer</span> *<span class="var">b</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>[] = {<br/>
+
+<span class="in3"></span><span class="str">"EOF"</span>, <span class="str">"NULL"</span>,<br/>
+
+<span class="in3"></span><span class="str">"false"</span>, <span class="str">"true"</span><br/>
+
+<span class="in2"></span>};<br/>
+
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> **<span class="var">end</span> = (<span class="type">void</span> *) <span class="var">begin</span> + <span class="fn">sizeof</span>(<span class="var">begin</span>);<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isdigit</span>(*<span class="var">b</span>-&gt;<span class="var">buffer</span>)) { <span class="keyword">return</span> <span class="num">true</span>; }<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">contains</span>(<span class="var">begin</span>, <span class="var">end</span>, <span class="var">b</span>);<br/>
 
@@ -1282,17 +1346,25 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">ident</span>)) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == '(') {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'('</span>) {<br/>
 
-<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, "<span class="var">fn</span>", &amp;<span class="var">ident</span>);<br/>
+<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, <span class="str">"fn"</span>, &amp;<span class="var">ident</span>);<br/>
 
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="fn">isKeyword</span>(&amp;<span class="var">ident</span>)) {<br/>
 
-<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, "<span class="var">keyword</span>", &amp;<span class="var">ident</span>);<br/>
+<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, <span class="str">"keyword"</span>, &amp;<span class="var">ident</span>);<br/>
+
+<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="fn">isType</span>(&amp;<span class="var">ident</span>)) {<br/>
+
+<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, <span class="str">"type"</span>, &amp;<span class="var">ident</span>);<br/>
+
+<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="fn">isNum</span>(&amp;<span class="var">ident</span>)) {<br/>
+
+<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, <span class="str">"num"</span>, &amp;<span class="var">ident</span>);<br/>
 
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 
-<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, "<span class="var">var</span>", &amp;<span class="var">ident</span>);<br/>
+<span class="in3"></span><span class="fn">escapeIdent</span>(<span class="var">out</span>, <span class="str">"var"</span>, &amp;<span class="var">ident</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1312,7 +1384,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process ch in HTML code</span>)</span>;<br/>
 
@@ -1398,7 +1470,7 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="var">0</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="num">0</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1411,6 +1483,30 @@
  Wenn es Tabulatoren gab, dann werden sie als Span-Element ausgegeben
 </li></ul></div>
 
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">process ch in HTML code</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<span class="var">ch</span> == <span class="str">'\''</span> || <span class="var">ch</span> == <span class="str">'"'</span> || <span class="var">ch</span> == <span class="str">'`'</span>)) {<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">ch</span>;<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+
+<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"str\"&gt;%c"</span>, <span class="var">ch</span>);<br/>
+
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">process ch in HTML code</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
 <div><div>
 <code>
 
@@ -1432,9 +1528,9 @@
 
 <span class="add">@def(<span class="name">escape HTML code tag</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == '{' &amp;&amp; <span class="var">ident</span>.<span class="var">current</span> - <span class="var">ident</span>.<span class="var">buffer</span> == <span class="var">1</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'{'</span> &amp;&amp; <span class="var">ident</span>.<span class="var">current</span> - <span class="var">ident</span>.<span class="var">buffer</span> == <span class="num">1</span>) {<br/>
 
-<span class="in2"></span><span class="var">char</span> <span class="var">lc</span> = *<span class="var">ident</span>.<span class="var">buffer</span>;<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">lc</span> = *<span class="var">ident</span>.<span class="var">buffer</span>;<br/>
 
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">lc</span>) {<br/>
 
@@ -1478,19 +1574,47 @@
 
 <span class="add">@add(<span class="name">escape HTML code tag</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == '}' &amp;&amp; <span class="var">status</span>.<span class="var">codeSpecial</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
+<span class="in2"></span>(<br/>
 
-<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">ident</span>);<br/>
+<span class="in3"></span><span class="var">ch</span> == <span class="str">'}'</span> &amp;&amp;<br/>
 
-<span class="in2"></span><span class="var">newline</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp;<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeSpecial</span> != '<span class="var">i</span>') {<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'\''</span> &amp;&amp;<br/>
 
-<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span>);<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'"'</span> &amp;&amp;<br/>
 
-<span class="in2"></span>}<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'`'</span><br/>
+
+<span class="in2"></span>) <br/>
+
+<span class="in1"></span>||<br/>
+
+<span class="in2"></span>(<br/>
+
+<span class="in3"></span>(<span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'\''</span> || <span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'"'</span>) &amp;&amp;<br/>
+
+<span class="in3"></span><span class="var">ch</span> == <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp;<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'<br/>
+
+<span class="in2"></span><br/>
+
+<span class="in1"></span><br/>
+
+<span class="in2"></span><br/>
+
+<span class="in2"></span><br/>
+
+<span class="in2"></span><br/>
+
+<span class="in2"></span>\\')) {E{flush pending};resetBuffer(&amp;ident);newline = false;if (status.codeSpecial != '</span><span class="str">'<span class="include">@include(<span class="name"><br/>
+
+<span class="in3"></span><br/>
+
+<span class="in2"></span><a href="writeEscaped(out, status.codeName, status.html">writeEscaped(out, status.codeName, status.codeNameEnd);</a>)</span></span><br/>
 
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">codeSpecial</span>) {<br/>
 
@@ -1542,6 +1666,14 @@
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'r'</span>: <span class="keyword">case</span> <span class="str">'d'</span>: <span class="keyword">case</span> <span class="str">'p'</span>: <span class="keyword">case</span> <span class="str">'m'</span>: {<br/>
 
 <span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/span&gt;)"</span>);<br/>
+
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+
+<span class="in1"></span><span class="keyword">case</span> <span class="str">'\''</span>: <span class="keyword">case</span> <span class="str">'"'</span>: <span class="keyword">case</span> <span class="str">'`'</span>:<br/>
+
+<span class="in2"></span><span class="fn">fputc</span>(<span class="var">status</span>.<span class="var">codeSpecial</span>, <span class="var">out</span>);<br/>
+
+<span class="in2"></span><span class="keyword">break</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1676,7 +1808,7 @@
 
 <ul><li>
  Wenn das Argument gespeichert werden soll (d.h. wenn <code>codeNameEnd</code>
-  nicht <code>n{NULL}</code>)
+  nicht <code>NULL</code>)
 </li><li>
  Wird das aktuelle Zeichen im <code>codeName</code> gespeichert
 </li></ul></div>
@@ -2307,7 +2439,7 @@
 
 <span class="add">@add(<span class="name">html state enums</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span><br/>
+<span class="in1"></span>, <span class="var">hs_IN_NOTES</span><br/>
 
 <span class="end">@end(<span class="name">html state enums</span>)</span><br/>
 
@@ -2321,7 +2453,7 @@
 
 <span class="add">@add(<span class="name">check html special state</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
@@ -2343,7 +2475,7 @@
 
 <span class="in2"></span><span class="var">newline</span> &amp;&amp;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -2361,7 +2493,7 @@
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"</span>);<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">AFTER</span>_<span class="var">SLIDE</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_AFTER_SLIDE</span>;<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">move ch to last</span>)</span>;<br/>
 
@@ -2387,13 +2519,13 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>)) {<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">SLIDE</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_SLIDE</span>) {<br/>
 
 <span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;\n"</span>);<br/>
 
 <span class="in3"></span>}<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_NOTES</span>;<br/>
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;ul&gt;&lt;li&gt;\n"</span>);<br/>
 
@@ -2423,7 +2555,7 @@
 
 <span class="in2"></span><span class="var">ch</span> == <span class="str">'`'</span> &amp;&amp;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -2461,7 +2593,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span> &amp;&amp;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span> &amp;&amp;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">noteInCode</span>) {<br/>
 
@@ -2483,11 +2615,11 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 
-<span class="in2"></span><span class="var">false</span> &amp;&amp;<br/>
+<span class="in2"></span><span class="num">false</span> &amp;&amp;<br/>
 
 <span class="in2"></span><span class="var">ch</span> == <span class="str">'*'</span> &amp;&amp; /*<span class="var">last</span> == <span class="str">'*'</span> &amp;&amp; */<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -2523,7 +2655,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs</span>_<span class="var">IN</span>_<span class="var">NOTES</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 

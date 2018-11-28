@@ -328,16 +328,16 @@
 			);
 		}
 
-void freeFragEntry(
-	struct FragEntry *e
-) {
-	while (e) {
-		struct FragEntry *l =
-			e->link;
-		free(e);
-		e = l;
+	void freeFragEntry(
+		struct FragEntry *e
+	) {
+		while (e) {
+			struct FragEntry *l =
+				e->link;
+			free(e);
+			e = l;
+		}
 	}
-}
 
 	int getFragEntryValueSize(
 		struct FragEntry *e
@@ -350,16 +350,16 @@ void freeFragEntry(
 	}
 
 	struct FragEntry *
-	allocTestFragEntry(
-		const char *v
-	) {
-		const char *e = v +
-			strlen(v);
+		allocTestFragEntry(
+			const char *v
+		) {
+			const char *e = v +
+				strlen(v);
 
-		return allocFragEntry(
-			NULL, v, e
-		);
-	}
+			return allocFragEntry(
+				NULL, v, e
+			);
+		}
 
 	void addEntryToFrag(
 		struct Frag *frag,
@@ -822,19 +822,41 @@ void freeFragEntry(
 
 	bool isKeyword(const struct Buffer *b) {
 		static const char *begin[] = {
-			"break",
-			"case",
-			"continue",
-			"default",
-			"else",
-			"for",
-			"if",
-			"return",
-			"static",
-			"switch",
-			"while"
+			"break", "case", "continue",
+			"default", "else", "for",
+			"if", "return", "static",
+			"switch", "while"
 		};
 		static const char **end = (void *) begin + sizeof(begin);
+		return contains(begin, end, b);
+	}
+
+	bool isType(const struct Buffer *b) {
+		static const char *begin[] = {
+			"FILE",
+			"bool", "char", "const", "enum",
+			"int", "long", "signed", "struct",
+			"union", "unsigned", "void"
+		};
+		static const char **end = (void *) begin + sizeof(begin);
+		if (contains(begin, end, b)) {
+			return true;
+		}
+		if (b->current - b->buffer >= 2) {
+			if (isupper(b->buffer[0]) && islower(b->buffer[1])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool isNum(const struct Buffer *b) {
+		static const char *begin[] = {
+			"EOF", "NULL",
+			"false", "true"
+		};
+		static const char **end = (void *) begin + sizeof(begin);
+		if (isdigit(*b->buffer)) { return true; }
 		return contains(begin, end, b);
 	}
 
@@ -901,7 +923,8 @@ void freeFragEntry(
 		ASSERT(entry);
 		ASSERT(
 			getFragEntryValueSize(
-				entry) == 0);
+				entry) == 0
+		);
 
 		freeFragEntry(entry);
 	}
@@ -913,7 +936,8 @@ void freeFragEntry(
 		ASSERT(entry);
 		ASSERT(
 			getFragEntryValueSize(
-				entry) == 3);
+				entry) == 3
+		);
 
 		freeFragEntry(entry);
 	}
@@ -925,7 +949,8 @@ void freeFragEntry(
 		ASSERT(entry);
 		ASSERT(
 			memcmp(entry->value,
-				"abc", 3) == 0);
+				"abc", 3) == 0
+		);
 
 		freeFragEntry(entry);
 	}
@@ -1883,7 +1908,7 @@ void freeFragEntry(
 	}
 
 	if (status.state == hs_IN_CODE) {
-		if (! status.codeNameEnd && isalnum(ch)) {
+		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
 			addToBuffer(&ident, ch);
 			continue;
 		}
@@ -1898,6 +1923,10 @@ void freeFragEntry(
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}
@@ -1925,6 +1954,13 @@ void freeFragEntry(
 			status.codeIndent
 		);
 		status.codeIndent = 0;
+	}
+
+	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
+		status.codeSpecial = ch;
+		status.codeNameEnd = status.codeName;
+		fprintf(out, "<span class=\"str\">%c", ch);
+		continue;
 	}
 
 	
@@ -2130,13 +2166,31 @@ void freeFragEntry(
 		}
 	}
 
-	if (ch == '}' && status.codeSpecial) {
+	if (
+		(
+			ch == '}' &&
+			status.codeSpecial &&
+			status.codeSpecial != '\'' &&
+			status.codeSpecial != '"' &&
+			status.codeSpecial != '`'
+		) 
+	||
+		(
+			(status.codeSpecial == '\'' || status.codeSpecial == '"') &&
+			ch == status.codeSpecial &&
+			status.codeNameEnd[-1] != '\\'
+		)
+	) {
 		
 	if (isActiveBuffer(&ident)) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}
@@ -2187,6 +2241,10 @@ void freeFragEntry(
 	case 'R':
 	case 'r': case 'd': case 'p': case 'm': {
 		fprintf(out, "</span>)");
+		break;
+	case '\'': case '"': case '`':
+		fputc(status.codeSpecial, out);
+		break;
 	}
 
 		}
@@ -2213,6 +2271,10 @@ void freeFragEntry(
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}
@@ -2271,6 +2333,10 @@ void freeFragEntry(
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}
@@ -2493,13 +2559,31 @@ void freeFragEntry(
 		}
 	}
 
-	if (ch == '}' && status.codeSpecial) {
+	if (
+		(
+			ch == '}' &&
+			status.codeSpecial &&
+			status.codeSpecial != '\'' &&
+			status.codeSpecial != '"' &&
+			status.codeSpecial != '`'
+		) 
+	||
+		(
+			(status.codeSpecial == '\'' || status.codeSpecial == '"') &&
+			ch == status.codeSpecial &&
+			status.codeNameEnd[-1] != '\\'
+		)
+	) {
 		
 	if (isActiveBuffer(&ident)) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}
@@ -2550,6 +2634,10 @@ void freeFragEntry(
 	case 'R':
 	case 'r': case 'd': case 'p': case 'm': {
 		fprintf(out, "</span>)");
+		break;
+	case '\'': case '"': case '`':
+		fputc(status.codeSpecial, out);
+		break;
 	}
 
 		}
@@ -2584,6 +2672,10 @@ void freeFragEntry(
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}

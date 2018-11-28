@@ -21,11 +21,11 @@ x{perform unit-tests}
 ```
 d{define buffer}
 	#define INIT_BUFFER_SIZE 16
-	t{struct Buffer} {
-		t{char} initial[INIT_BUFFER_SIZE];
-		t{char *}buffer;
-		t{char *}current;
-		t{const char *}end;
+	struct Buffer {
+		char initial[INIT_BUFFER_SIZE];
+		char *buffer;
+		char *current;
+		const char *end;
 	};
 x{define buffer}
 ```
@@ -35,14 +35,14 @@ x{define buffer}
   Heap anzufordern
 * `buffer` zeigt auf den Anfang des zu nutzenden Byte-Blocks
 * `current` zeigt auf das erste freie Zeichen im Byte-Block
-* `current` kann auch `n{NULL}` sein, um anzuzeigen, dass der Buffer
+* `current` kann auch `NULL` sein, um anzuzeigen, dass der Buffer
   momentan nicht aktiv ist
 * `end` zeigt auf das erste nicht mehr zum Buffer gehörende Byte
 
 ```
 a{define buffer}
-	t{static inline void} bufferInvariant(
-		t{const struct Buffer *}b
+	static inline void bufferInvariant(
+		const struct Buffer *b
 	) {
 		ASSERT(b);
 		if (b->current) {
@@ -56,7 +56,7 @@ x{define buffer}
 
 ```
 d{buffer unit tests} {
-	t{struct Buffer} b = {};
+	struct Buffer b = {};
 	bufferInvariant(&b);
 } x{buffer unit tests}
 ```
@@ -66,15 +66,15 @@ d{buffer unit tests} {
 # Aktiver & Inaktiver Buffer
 * Ein Buffer kann aktiv oder inaktiv sein
 * Ein aktiver Buffer kann auch leer sein
-* Als Unterscheidung dient, ob `current` `n{NULL}` ist
+* Als Unterscheidung dient, ob `current` `NULL` ist
 * Ein in aktiver Buffer wird durch das Hinzufügen eines Zeichens aktiv
 * Oder durch Aufruf von `activateBuffer`
 * Ein Buffer wird durch Zurücksetzen oder Löschen inaktiv
 
 ```
 a{define buffer}
-	t{static inline bool} isActiveBuffer(
-		t{const struct Buffer *}b
+	static inline bool isActiveBuffer(
+		const struct Buffer *b
 	) {
 		bufferInvariant(b);
 		return b->current;
@@ -85,7 +85,7 @@ x{define buffer}
 
 ```
 a{buffer unit tests} {
-	t{struct Buffer} b = {};
+	struct Buffer b = {};
 	ASSERT(! isActiveBuffer(&b));
 } x{buffer unit tests}
 ```
@@ -95,7 +95,7 @@ a{buffer unit tests} {
 
 ```
 a{define buffer}
-	t{void} activateBuffer(t{struct Buffer} *b) {
+	void activateBuffer(struct Buffer *b) {
 		bufferInvariant(b);
 		if (! b->buffer) {
 			b->buffer = b->initial;
@@ -118,7 +118,7 @@ x{define buffer}
 
 ```
 a{buffer unit tests} {
-	t{struct Buffer} b = {};
+	struct Buffer b = {};
 	activateBuffer(&b);
 	ASSERT(isActiveBuffer(&b));
 } x{buffer unit tests}
@@ -127,8 +127,8 @@ a{buffer unit tests} {
 
 ```
 a{define buffer}
-	t{void} addToBuffer(
-		t{struct Buffer *}buffer, t{char} ch
+	void addToBuffer(
+		struct Buffer *buffer, char ch
 	) {
 		bufferInvariant(buffer);
 		activateBuffer(buffer);
@@ -147,9 +147,9 @@ x{define buffer}
 ```
 d{assure buffer size}
 	if (buffer->current >= buffer->end) {
-		t{int} size = buffer->current -
+		int size = buffer->current -
 			buffer->buffer;
-		t{int} newSize = n{2} * size;
+		int newSize = 2 * size;
 		e{reallocate buffer};
 	}
 x{assure buffer size}
@@ -158,7 +158,7 @@ x{assure buffer size}
 
 ```
 d{reallocate buffer}
-	t{char *}newBuffer;
+	char *newBuffer;
 	if (buffer->buffer == buffer->initial) {
 		newBuffer = malloc(newSize);
 		e{copy initial buffer};
@@ -198,34 +198,34 @@ x{adjust buffer pointers}
 
 ```
 a{define buffer}
-	t{void} resetBuffer(
-		t{struct Buffer *}buffer
+	void resetBuffer(
+		struct Buffer *buffer
 	) {
 		bufferInvariant(buffer);
-		buffer->current = n{NULL};
+		buffer->current = NULL;
 	}
 x{define buffer}
 ```
 * Um einen Buffer wieder zu verwenden, der `current` muss auf
   `buffer` zurück gesetzt werden
 * Das funktioniert auch, wenn der initiale Buffer verwendet wird
-* Oder die Zeiger noch `n{NULL}` sind
+* Oder die Zeiger noch `NULL` sind
 * Es wird kein Speicher freigegeben
 
 ```
 a{define buffer}
-	t{void} eraseBuffer(
-		t{struct Buffer *}buffer
+	void eraseBuffer(
+		struct Buffer *buffer
 	) {
 		bufferInvariant(buffer);
 		e{erase heap buffer};
-		buffer->buffer = n{NULL};
-		buffer->current = n{NULL};
+		buffer->buffer = NULL;
+		buffer->current = NULL;
 	}
 x{define buffer}
 ```
 * Wenn ein Buffer auf dem Heap angelegt wurde, wird dieser freigegeben
-* Die Zeiger werden auf `n{NULL}` gesetzt
+* Die Zeiger werden auf `NULL` gesetzt
 * Nur `end` muss nicht aktualisiert werden, da es bei der
   Initialisierung gesetzt wird
 
@@ -245,9 +245,9 @@ x{erase heap buffer}
 
 ```
 a{buffer unit tests} {
-	t{struct Buffer} b = {};
-	addToBuffer(&b, s{'x'});
-	ASSERT(*b.buffer == s{'x'});
+	struct Buffer b = {};
+	addToBuffer(&b, 'x');
+	ASSERT(*b.buffer == 'x');
 	ASSERT(b.buffer + 1 == b.current);
 	ASSERT(b.buffer == b.initial);
 } x{buffer unit tests}
@@ -258,9 +258,9 @@ a{buffer unit tests} {
 
 ```
 a{define buffer}
-	t{void} addCharsToBuffer(
-		t{struct Buffer *}buffer,
-		t{char} ch, t{int} count
+	void addCharsToBuffer(
+		struct Buffer *buffer,
+		char ch, int count
 	) {
 		bufferInvariant(buffer);
 		ASSERT(count >= 0);
@@ -274,10 +274,10 @@ x{define buffer}
 
 ```
 a{buffer unit tests} {
-	t{struct Buffer} b = {};
-	addCharsToBuffer(&b, s{'x'}, 1000);
+	struct Buffer b = {};
+	addCharsToBuffer(&b, 'x', 1000);
 	ASSERT(isActiveBuffer(&b));
-	ASSERT(*b.buffer == s{'x'});
+	ASSERT(*b.buffer == 'x');
 	ASSERT(b.buffer + 1000 == b.current);
 	ASSERT(b.buffer != b.initial);
 	eraseBuffer(&b);

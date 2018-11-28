@@ -4,10 +4,10 @@
 
 ```
 D{write HTML file}
-	t{struct Input *}cur = used;
+	struct Input *cur = used;
 	while (cur) {
 		e{write cur HTML file};
-		t{struct Input *}next = cur->link;
+		struct Input *next = cur->link;
 		free(cur);
 		cur = next;
 	}
@@ -18,12 +18,12 @@ x{write HTML file}
 
 ```
 d{write cur HTML file}
-	t{int} len = strlen(cur->name) + n{4};
-	t{char *}outPath = malloc(len);
+	int len = strlen(cur->name) + 4;
+	char *outPath = malloc(len);
 	ASSERT(outPath);
-	memcpy(outPath, cur->name, len - n{6});
-	strcpy(outPath + len - n{6}, s{".html"});
-	t{FILE *}out = fopen(outPath, s{"w"});
+	memcpy(outPath, cur->name, len - 6);
+	strcpy(outPath + len - 6, ".html");
+	FILE *out = fopen(outPath, "w");
 	ASSERT(out);
 	e{write cur HTML file to out};
 	fclose(out);
@@ -34,7 +34,7 @@ x{write cur HTML file}
 
 ```
 d{write cur HTML file to out} 
-	t{FILE *}in = fopen(cur->name, s{"r"});
+	FILE *in = fopen(cur->name, "r");
 	ASSERT(in);
 	e{write HTML file from in to out};
 	fclose(in);
@@ -44,7 +44,7 @@ x{write cur HTML file to out}
 
 ```
 A{global elements}
-	t{enum HtmlState} {
+	enum HtmlState {
 		hs_NOTHING_WRITTEN,
 		hs_IN_SLIDE,
 		hs_AFTER_SLIDE
@@ -60,32 +60,32 @@ x{global elements}
 
 ```
 A{global elements}
-	t{struct HtmlStatus} {
+	struct HtmlStatus {
 		e{html state elements}
 	};
 x{global elements}
 ```
-* Der aktuelle Status wird in `t{struct HtmlStatus}` abgelegt
+* Der aktuelle Status wird in `struct HtmlStatus` abgelegt
 
 ```
 d{html state elements}
-	t{enum HtmlState} state;
+	enum HtmlState state;
 x{html state elements}
 ```
 * Der aktuelle Zustand wird im Status abgelegt
 
 ```
 d{write HTML file from in to out} {
-	t{struct HtmlStatus} status = {
+	struct HtmlStatus status = {
 		.state = hs_NOTHING_WRITTEN
 		e{init html status}
 	};
-	t{bool} newline = n{true};
-	t{struct Buffer} ident = {};
+	bool newline = true;
+	struct Buffer ident = {};
 	for (;;) {
-		t{int} ch = fgetc(in);
+		int ch = fgetc(in);
 		e{process ch for HTML};
-		if (ch == n{EOF}) { break; }
+		if (ch == EOF) { break; }
 		E{move ch to last};
 	}
 } x{write HTML file from in to out}
@@ -97,12 +97,12 @@ d{write HTML file from in to out} {
 
 ```
 d{move ch to last}
-	newline = ch == s{'\n'};
+	newline = ch == '\n';
 	char xx = ch;
 	writeEscaped(out, &xx, &xx + 1);
 x{move ch to last}
 ```
-* Beim Kopieren des Zeichens wird `n{EOF}` durch `s{'\0'}` ersetzt
+* Beim Kopieren des Zeichens wird `EOF` durch `'\0'` ersetzt
 
 # Überschriften
 
@@ -115,22 +115,22 @@ x{html state enums}
 
 ```
 A{global elements}
-	t{bool} isOutOfHtmlSpecial(
-		t{struct HtmlStatus *}s
+	bool isOutOfHtmlSpecial(
+		struct HtmlStatus *s
 	) {
 		e{check html special state};
-		return n{true};
+		return true;
 	}
 x{global elements}
 ```
-* Die Funktion `{isOutOfHtmlSpecial}` liefert `n{true}`, wenn sich
+* Die Funktion `{isOutOfHtmlSpecial}` liefert `true`, wenn sich
   der Zustands-Automat gerade nicht in einem Sonder-Modus (Überschrift,
   Code, Notizen) befindet
 
 ```
 d{check html special state}
 	if (s->state == hs_IN_HEADER) {
-		return n{false};
+		return false;
 	}
 x{check html special state}
 ```
@@ -138,9 +138,9 @@ x{check html special state}
 
 ```
 a{html state elements}
-	t{int} headerLevel;
-	t{struct Buffer} headerName;
-	t{enum HtmlState} headerState;
+	int headerLevel;
+	struct Buffer headerName;
+	enum HtmlState headerState;
 x{html state elements}
 ```
 * Für Überschriften wird abgelegt, auf welchem Level sie vorkommen
@@ -150,7 +150,7 @@ x{html state elements}
 
 ```
 d{init html status}
-	, .headerLevel = n{0}
+	, .headerLevel = 0
 	, .headerName = {}
 x{init html status}
 ```
@@ -158,7 +158,7 @@ x{init html status}
 
 ```
 d{process ch for HTML} 
-	if (ch == s{'#'} && newline) {
+	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||
 			status.state == hs_IN_HEADER
 		) {
@@ -181,7 +181,7 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	if (status.state == hs_IN_HEADER) {
-		if (ch == s{'\n'}) {
+		if (ch == '\n') {
 			e{process header in HTML};
 			e{reset header state};
 			E{move ch to last};
@@ -196,7 +196,7 @@ x{process ch for HTML}
 ```
 d{reset header state} 
 	status.state = hs_IN_SLIDE;
-	status.headerLevel = n{0};
+	status.headerLevel = 0;
 	resetBuffer(&status.headerName);
 	status.headerState = hs_IN_SLIDE;
 x{reset header state}
@@ -225,7 +225,7 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	if (status.state == hs_IN_HEADER) {
-		if (ch > s{' '} && ! isActiveBuffer(
+		if (ch > ' ' && ! isActiveBuffer(
 			&status.headerName
 		)) {
 			addToBuffer(
@@ -244,10 +244,10 @@ d{process header in HTML}
 	ASSERT(isActiveBuffer(&status.headerName));
 	e{close previous HTML page};
 	E{write header tag};
-	fprintf(out, s{"<div class=\"slides\">\n"});
-	fprintf(out, s{"<div><div>\n"});
+	fprintf(out, "<div class=\"slides\">\n");
+	fprintf(out, "<div><div>\n");
 	E{write header tag};
-	fprintf(out, s{"</div>\n"});
+	fprintf(out, "</div>\n");
 x{process header in HTML}
 ```
 * Falls schon eine Seite offen ist, dann wird diese geschlossen
@@ -256,9 +256,9 @@ x{process header in HTML}
 
 ```
 A{global elements} 
-	t{void} writeEscaped(
-		t{FILE *}out, t{const char *}str,
-		t{const char *}end
+	void writeEscaped(
+		FILE *out, const char *str,
+		const char *end
 	) {
 		ASSERT(out); ASSERT(str);
 		for (; *str && str != end; ++str) {
@@ -276,14 +276,14 @@ x{global elements}
 
 ```
 d{escape special}
-	case s{'<'}:
-		fprintf(out, s{"&lt;"});
+	case '<':
+		fprintf(out, "&lt;");
 		break;
-	case s{'>'}:
-		fprintf(out, s{"&gt;"});
+	case '>':
+		fprintf(out, "&gt;");
 		break;
-	case s{'&'}:
-		fprintf(out, s{"&amp;"});
+	case '&':
+		fprintf(out, "&amp;");
 		break;
 x{escape special}
 ```
@@ -291,13 +291,13 @@ x{escape special}
 
 ```
 d{write header tag} 
-	fprintf(out, s{"<h%d>"}, status.headerLevel);
+	fprintf(out, "<h%d>", status.headerLevel);
 	writeEscaped(
 		out,
 		status.headerName.buffer,
 		status.headerName.current
 	);
-	fprintf(out, s{"</h%d>\n"}, status.headerLevel);
+	fprintf(out, "</h%d>\n", status.headerLevel);
 x{write header tag}
 ```
 * Die HTML-Überschrift enthält den eingelesenen Level
@@ -310,12 +310,12 @@ d{close previous HTML page}
 			break;
 		}
 		case hs_IN_SLIDE: {
-			fprintf(out, s{"</div>\n"});
-			fprintf(out, s{"</div>\n"});
+			fprintf(out, "</div>\n");
+			fprintf(out, "</div>\n");
 			break;
 		}
 		default: {
-			fprintf(out, s{"</div>\n"});
+			fprintf(out, "</div>\n");
 		}
 	}
 x{close previous HTML page}
@@ -325,12 +325,12 @@ x{close previous HTML page}
 
 ```
 d{write HTML header} 
-	fprintf(out, s{"<!doctype html>\n"});
-	fprintf(out, s{"<html lang=\"de\"l>\n"});
-	fprintf(out, s{"<head>\n"});
+	fprintf(out, "<!doctype html>\n");
+	fprintf(out, "<html lang=\"de\"l>\n");
+	fprintf(out, "<head>\n");
 	e{write HTML header entries};
-	fprintf(out, s{"</head>\n"});
-	fprintf(out, s{"<body>\n"});
+	fprintf(out, "</head>\n");
+	fprintf(out, "<body>\n");
 x{write HTML header}
 ```
 * Dies wird am Anfang der HTML-Datei ausgegeben
@@ -340,18 +340,18 @@ x{write HTML header}
 ```
 d{write HTML header entries} 
 	fprintf(
-		out, s{"<meta charset=\"utf-8\">\n"}
+		out, "<meta charset=\"utf-8\">\n"
 	);
-	fprintf(out, s{"<title>"});
+	fprintf(out, "<title>");
 	writeEscaped(
 		out,
 		status.headerName.buffer,
 		status.headerName.current
 	);
-	fprintf(out, s{"</title>"});
+	fprintf(out, "</title>");
 	fprintf(
-		out, s{"<link rel=\"stylesheet\" "}
-		s{"type=\"text/css\" href=\"%s\">"},
+		out, "<link rel=\"stylesheet\" "
+		"type=\"text/css\" href=\"%s\">",
 		stylesheet
 	);
 x{write HTML header entries}
@@ -373,7 +373,7 @@ x{html state enums}
 ```
 a{check html special state}
 	if (s->state == hs_IN_CODE) {
-		return n{false};
+		return false;
 	}
 x{check html special state}
 ```
@@ -381,7 +381,7 @@ x{check html special state}
 
 ```
 a{html state elements}
-	t{int} codeOpening;
+	int codeOpening;
 x{html state elements}
 ```
 * Der Code-Block wird mit drei Backticks betreten und verlassen
@@ -390,7 +390,7 @@ x{html state elements}
 
 ```
 a{html state elements}
-	t{int} codeIndent;
+	int codeIndent;
 x{html state elements}
 ```
 * Tabs am Anfang der Zeile werden durch passenden HTML-Elemente ersetzt
@@ -399,9 +399,9 @@ x{html state elements}
 
 ```
 a{html state elements}
-	t{char} codeSpecial;
-	t{char} codeName[n{100}];
-	t{char *}codeNameEnd;
+	char codeSpecial;
+	char codeName[100];
+	char *codeNameEnd;
 x{html state elements}
 ```
 * Wenn ein Befehl gelesen wurde, dann enthält `codeSpecial` den
@@ -410,18 +410,18 @@ x{html state elements}
 
 ```
 a{init html status}
-	, .codeOpening = n{0}
-	, .codeIndent = n{0}
-	, .codeSpecial = s{'\0'}
-	, .codeNameEnd = n{NULL}
+	, .codeOpening = 0
+	, .codeIndent = 0
+	, .codeSpecial = '\0'
+	, .codeNameEnd = NULL
 x{init html status}
 ```
-* Zur Initialisierung werden die Parameter auf `n{0}` gesetzt
+* Zur Initialisierung werden die Parameter auf `0` gesetzt
 * Das Code-Argument `codeName` wird nicht zurückgesetzt
 
 ```
 a{process ch for HTML} 
-	if (newline && ch == s{'`'}) {
+	if (newline && ch == '`') {
 		if (isOutOfHtmlSpecial(&status) ||
 			status.state == hs_IN_CODE
 		) {
@@ -436,9 +436,9 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	if (
-		ch == s{'\n'} && status.codeOpening == n{3}
+		ch == '\n' && status.codeOpening == 3
 	) {
-		status.codeOpening = n{0};
+		status.codeOpening = 0;
 		if (isOutOfHtmlSpecial(&status)) {
 			e{open code page};
 			continue;
@@ -449,19 +449,19 @@ a{process ch for HTML}
 			continue;
 		}
 	}
-	status.codeOpening = n{0};
+	status.codeOpening = 0;
 x{process ch for HTML}
 ```
-* Wenn die Anzahl der Backticks genau `n{3}` war, dann wird der
+* Wenn die Anzahl der Backticks genau `3` war, dann wird der
   Code-Modus betreten oder verlassen
 
 ```
 d{open code page}
 	if (status.state == hs_IN_SLIDE) {
-		fprintf(out, s{"</div>\n"});
+		fprintf(out, "</div>\n");
 	}
-	fprintf(out, s{"<div><div>\n"});
-	fprintf(out, s{"<code>\n"});
+	fprintf(out, "<div><div>\n");
+	fprintf(out, "<code>\n");
 	status.state = hs_IN_CODE;
 	E{move ch to last};
 x{open code page}
@@ -471,11 +471,11 @@ x{open code page}
 
 ```
 d{close code page}
-	fprintf(out, s{"</code>\n"});
-	fprintf(out, s{"</div>\n"});
+	fprintf(out, "</code>\n");
+	fprintf(out, "</div>\n");
 	status.state = hs_IN_SLIDE;
-	status.codeIndent = n{0};
-	status.codeSpecial = s{'\0'};
+	status.codeIndent = 0;
+	status.codeSpecial = '\0';
 	E{move ch to last};
 x{close code page}
 ```
@@ -484,10 +484,10 @@ x{close code page}
 ```
 a{process ch for HTML}
 	if (status.state == hs_IN_CODE) {
-		if (ch == n{EOF}) {
+		if (ch == EOF) {
 			fprintf(
 				stderr,
-				s{"unterminated code block\n"}
+				"unterminated code block\n"
 			);
 			break;
 		}
@@ -507,7 +507,7 @@ x{includes}
 ```
 a{process ch for HTML}
 	if (status.state == hs_IN_CODE) {
-		if (! status.codeNameEnd && isalnum(ch)) {
+		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
 			addToBuffer(&ident, ch);
 			continue;
 		}
@@ -574,19 +574,49 @@ x{global elements}
 A{global elements}
 	bool isKeyword(const struct Buffer *b) {
 		static const char *begin[] = {
-			s{"break"},
-			s{"case"},
-			s{"continue"},
-			s{"default"},
-			s{"else"},
-			s{"for"},
-			s{"if"},
-			s{"return"},
-			s{"static"},
-			s{"switch"},
-			s{"while"}
+			"break", "case", "continue",
+			"default", "else", "for",
+			"if", "return", "static",
+			"switch", "while"
 		};
 		static const char **end = (void *) begin + sizeof(begin);
+		return contains(begin, end, b);
+	}
+x{global elements}
+```
+
+```
+A{global elements}
+	bool isType(const struct Buffer *b) {
+		static const char *begin[] = {
+			"FILE",
+			"bool", "char", "const", "enum",
+			"int", "long", "signed", "struct",
+			"union", "unsigned", "void"
+		};
+		static const char **end = (void *) begin + sizeof(begin);
+		if (contains(begin, end, b)) {
+			return true;
+		}
+		if (b->current - b->buffer >= 2) {
+			if (isupper(b->buffer[0]) && islower(b->buffer[1])) {
+				return true;
+			}
+		}
+		return false;
+	}
+x{global elements}
+```
+
+```
+A{global elements}
+	bool isNum(const struct Buffer *b) {
+		static const char *begin[] = {
+			"EOF", "NULL",
+			"false", "true"
+		};
+		static const char **end = (void *) begin + sizeof(begin);
+		if (isdigit(*b->buffer)) { return true; }
 		return contains(begin, end, b);
 	}
 x{global elements}
@@ -599,6 +629,10 @@ d{flush pending}
 			escapeIdent(out, "fn", &ident);
 		} else if (isKeyword(&ident)) {
 			escapeIdent(out, "keyword", &ident);
+		} else if (isType(&ident)) {
+			escapeIdent(out, "type", &ident);
+		} else if (isNum(&ident)) {
+			escapeIdent(out, "num", &ident);
 		} else {
 			escapeIdent(out, "var", &ident);
 		}
@@ -621,9 +655,9 @@ x{process ch for HTML}
 
 ```
 d{process ch in HTML code} 
-	if (ch == s{'\n'}) {
+	if (ch == '\n') {
 		E{flush pending};
-		fprintf(out, s{"<br/>\n"});
+		fprintf(out, "<br/>\n");
 		E{move ch to last};
 		continue;
 	}
@@ -633,7 +667,7 @@ x{process ch in HTML code}
 
 ```
 a{process ch in HTML code} 
-	if (newline && ch == s{'\t'}) {
+	if (newline && ch == '\t') {
 		++status.codeIndent;
 		continue;
 	}
@@ -646,7 +680,7 @@ a{process ch in HTML code}
 	if (status.codeIndent) {
 		fprintf(
 			out,
-			s{"<span class=\"in%d\"></span>"},
+			"<span class=\"in%d\"></span>",
 			status.codeIndent
 		);
 		status.codeIndent = 0;
@@ -654,6 +688,17 @@ a{process ch in HTML code}
 x{process ch in HTML code}
 ```
 * Wenn es Tabulatoren gab, dann werden sie als Span-Element ausgegeben
+
+```
+a{process ch in HTML code}
+	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
+		status.codeSpecial = ch;
+		status.codeNameEnd = status.codeName;
+		fprintf(out, "<span class=\"str\">%c", ch);
+		continue;
+	}
+x{process ch in HTML code}
+```
 
 ```
 a{process ch in HTML code}
@@ -672,7 +717,7 @@ d{escape HTML code tag}
 		}
 		if (status.codeSpecial) {
 			resetBuffer(&ident);
-			newline = n{false};
+			newline = false;
 			continue;
 		}
 	}
@@ -687,19 +732,33 @@ x{escape HTML code tag}
 
 ```
 a{escape HTML code tag}
-	if (ch == '}' && status.codeSpecial) {
+	if (
+		(
+			ch == '}' &&
+			status.codeSpecial &&
+			status.codeSpecial != '\'' &&
+			status.codeSpecial != '"' &&
+			status.codeSpecial != '`'
+		) 
+	||
+		(
+			(status.codeSpecial == '\'' || status.codeSpecial == '"') &&
+			ch == status.codeSpecial &&
+			status.codeNameEnd[-1] != '\\'
+		)
+	) {
 		E{flush pending};
 		resetBuffer(&ident);
-		newline = n{false};
+		newline = false;
 		if (status.codeSpecial != 'i') {
 			writeEscaped(out, status.codeName, status.codeNameEnd);
 		}
 		switch (status.codeSpecial) {
 			e{handle special codes}
 		}
-		fprintf(out, s{"</span>"});
-		status.codeSpecial = n{0};
-		status.codeNameEnd = n{NULL};
+		fprintf(out, "</span>");
+		status.codeSpecial = 0;
+		status.codeNameEnd = NULL;
 		continue;
 	}
 x{escape HTML code tag}
@@ -710,15 +769,19 @@ x{escape HTML code tag}
 
 ```
 d{handle special codes}
-	case s{'i'}: {
+	case 'i': {
 		e{handle html include};
 		break;
 	}
-	case s{'a'}: case s{'e'}: case s{'E'}: case s{'x'}:
-	case s{'g'}: case s{'G'}: case s{'A'}: case s{'D'}:
-	case s{'R'}:
-	case s{'r'}: case s{'d'}: case s{'p'}: case s{'m'}: {
-		fprintf(out, s{"</span>)"});
+	case 'a': case 'e': case 'E': case 'x':
+	case 'g': case 'G': case 'A': case 'D':
+	case 'R':
+	case 'r': case 'd': case 'p': case 'm': {
+		fprintf(out, "</span>)");
+		break;
+	case '\'': case '"': case '`':
+		fputc(status.codeSpecial, out);
+		break;
 	}
 x{handle special codes}
 ```
@@ -734,10 +797,10 @@ d{handle html include}
 		status.codeName +
 			sizeof(status.codeName)
 	);
-	*status.codeNameEnd = s{'\0'};
+	*status.codeNameEnd = '\0';
 	while (
 		status.codeNameEnd >= status.codeName
-		&& *status.codeNameEnd != s{'.'}
+		&& *status.codeNameEnd != '.'
 	) {
 		--status.codeNameEnd;
 	}
@@ -752,18 +815,18 @@ x{handle html include}
 a{handle html include}
 	ASSERT(
 		status.codeNameEnd >= status.codeName,
-		s{"no period"}
+		"no period"
 	);
-	*status.codeNameEnd = s{'\0'};
+	*status.codeNameEnd = '\0';
 	fprintf(out,
-		s{"<a href=\"%s.html\">"},
+		"<a href=\"%s.html\">",
 		status.codeName
 	);
-	*status.codeNameEnd = s{'.'};
+	*status.codeNameEnd = '.';
 	fprintf(out,
-		s{"%s</a>)</span>"}, status.codeName
+		"%s</a>)</span>", status.codeName
 	);
-	status.codeNameEnd = n{NULL};
+	status.codeNameEnd = NULL;
 x{handle html include}
 ```
 * Statt der ursprünglichen `.x`-Datei verweist der Link auf eine
@@ -772,7 +835,7 @@ x{handle html include}
 
 ```
 a{process ch in HTML code}
-	if (ch != n{EOF} && status.codeNameEnd) {
+	if (ch != EOF && status.codeNameEnd) {
 		ASSERT(
 			status.codeNameEnd <
 				status.codeName +
@@ -784,32 +847,17 @@ a{process ch in HTML code}
 x{process ch in HTML code}
 ```
 * Wenn das Argument gespeichert werden soll (d.h. wenn `codeNameEnd`
-  nicht `n{NULL}`)
+  nicht `NULL`)
 * Wird das aktuelle Zeichen im `codeName` gespeichert
 
 ```
 d{escape html frag}
-	case s{'d'}:
+	case 'd':
 		fprintf(out,
-			s{"<span class=\"add\">@def("}
+			"<span class=\"add\">@def("
 		);
 		fprintf(out,
-			s{"<span class=\"name\">"}
-		);
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'D'}:
-		fprintf(out,
-			s{"<span class=\"add\">@globdef("}
-		);
-		fprintf(out,
-			s{"<span class=\"name\">"}
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -819,27 +867,12 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'a'}:
+	case 'D':
 		fprintf(out,
-			s{"<span class=\"add\">@add("}
+			"<span class=\"add\">@globdef("
 		);
 		fprintf(out,
-			s{"<span class=\"name\">"}
-		);
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'A'}:
-		fprintf(out,
-			s{"<span class=\"add\">@globadd("}
-		);
-		fprintf(out,
-			s{"<span class=\"name\">"}
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -849,27 +882,12 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'r'}:
+	case 'a':
 		fprintf(out,
-			s{"<span class=\"add\">@replace("}
+			"<span class=\"add\">@add("
 		);
 		fprintf(out,
-			s{"<span class=\"name\">"}
-		);
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'R'}:
-		fprintf(out,
-			s{"<span class=\"add\">@globreplace("}
-		);
-		fprintf(out,
-			s{"<span class=\"name\">"}
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -879,27 +897,12 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'x'}:
+	case 'A':
 		fprintf(out,
-			s{"<span class=\"end\">@end("}
+			"<span class=\"add\">@globadd("
 		);
 		fprintf(out,
-			s{"<span class=\"name\">"}
-		);
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'e'}:
-		fprintf(out,
-			s{"<span class=\"expand\">@expand("}
-		);
-		fprintf(out,
-			s{"<span class=\"name\">"}
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -909,28 +912,12 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'E'}:
+	case 'r':
 		fprintf(out,
-			s{"<span class=\"expand\">@multiple("}
+			"<span class=\"add\">@replace("
 		);
 		fprintf(out,
-			s{"<span class=\"name\">"}
-		);
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'g'}:
-		fprintf(out,
-			s{"<span class=\"expand\">"}
-				s{"@globexpand("}
-		);
-		fprintf(out,
-			s{"<span class=\"name\">"}
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -940,28 +927,12 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'G'}:
+	case 'R':
 		fprintf(out,
-			s{"<span class=\"expand\">"}
-				s{"@globmult("}
+			"<span class=\"add\">@globreplace("
 		);
 		fprintf(out,
-			s{"<span class=\"name\">"}
-		);
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'i'}:
-		fprintf(out,
-			s{"<span class=\"include\">@include("}
-		);
-		fprintf(out,
-			s{"<span class=\"name\">"}
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -971,70 +942,12 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'t'}:
-		fprintf(out, s{"<span class=\"type\">"});
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'v'}:
-		fprintf(out, s{"<span class=\"var\">"});
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'f'}:
-		fprintf(out, s{"<span class=\"fn\">"});
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'k'}:
-		fprintf(out, s{"<span class=\"keyword\">"});
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'s'}:
-		fprintf(out, s{"<span class=\"str\">"});
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'n'}:
-		fprintf(out, s{"<span class=\"num\">"});
-		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case s{'p'}:
+	case 'x':
 		fprintf(out,
-			s{"<span class=\"type\">"}
-				s{"@priv(<span>"}
+			"<span class=\"end\">@end("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -1044,11 +957,161 @@ x{escape html frag}
 
 ```
 a{escape html frag}
-	case s{'m'}:
+	case 'e':
+		fprintf(out,
+			"<span class=\"expand\">@expand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'E':
+		fprintf(out,
+			"<span class=\"expand\">@multiple("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'g':
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globexpand("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'G':
+		fprintf(out,
+			"<span class=\"expand\">"
+				"@globmult("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'i':
+		fprintf(out,
+			"<span class=\"include\">@include("
+		);
+		fprintf(out,
+			"<span class=\"name\">"
+		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 't':
+		fprintf(out, "<span class=\"type\">");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'v':
+		fprintf(out, "<span class=\"var\">");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'f':
+		fprintf(out, "<span class=\"fn\">");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'k':
+		fprintf(out, "<span class=\"keyword\">");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 's':
+		fprintf(out, "<span class=\"str\">");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'n':
+		fprintf(out, "<span class=\"num\">");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'p':
+		fprintf(out,
+			"<span class=\"type\">"
+				"@priv(<span>"
+		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+
+```
+a{escape html frag}
+	case 'm':
 		fprintf(
 			out,
-			s{"<span class=\"num\">"}
-				s{"@magic(<span>"}
+			"<span class=\"num\">"
+				"@magic(<span>"
 		);
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
@@ -1061,15 +1124,15 @@ x{escape html frag}
 
 ```
 a{html state elements}
-	t{bool} noteInCode;
-	t{bool} noteInBold;
+	bool noteInCode;
+	bool noteInBold;
 x{html state elements}
 ```
 
 ```
 a{init html status}
-	, .noteInCode = n{false}
-	, .noteInBold = n{false}
+	, .noteInCode = false
+	, .noteInBold = false
 x{init html status}
 ```
 
@@ -1082,7 +1145,7 @@ x{html state enums}
 ```
 a{check html special state}
 	if (s->state == hs_IN_NOTES) {
-		return n{false};
+		return false;
 	}
 x{check html special state}
 ```
@@ -1093,13 +1156,13 @@ a{process ch for HTML}
 		newline &&
 		status.state == hs_IN_NOTES
 	) {
-		if (ch == s{'*'}) {
-			fprintf(out, s{"</li><li>\n"});
+		if (ch == '*') {
+			fprintf(out, "</li><li>\n");
 			resetBuffer(&ident);
-			newline = n{false};
+			newline = false;
 			continue;
-		} else if (ch != s{' '} && ch != s{'\t'}) {
-			fprintf(out, s{"</li></ul></div>\n"});
+		} else if (ch != ' ' && ch != '\t') {
+			fprintf(out, "</li></ul></div>\n");
 			status.state = hs_AFTER_SLIDE;
 			E{move ch to last};
 			continue;
@@ -1110,15 +1173,15 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	if (newline && ch == s{'*'}) {
+	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
 			if (status.state != hs_IN_SLIDE) {
-				fprintf(out, s{"<div>\n"});
+				fprintf(out, "<div>\n");
 			}
 			status.state = hs_IN_NOTES;
-			fprintf(out, s{"<ul><li>\n"});
+			fprintf(out, "<ul><li>\n");
 			resetBuffer(&ident);
-			newline = n{false};
+			newline = false;
 			continue;
 		}
 	}
@@ -1128,18 +1191,18 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	if (
-		ch == s{'`'} &&
+		ch == '`' &&
 		status.state == hs_IN_NOTES
 	) {
 		E{flush pending};
 		if (status.noteInCode) {
-			fprintf(out, s{"</code>"});
+			fprintf(out, "</code>");
 		} else {
-			fprintf(out, s{"<code>"});
+			fprintf(out, "<code>");
 		}
 		status.noteInCode = ! status.noteInCode;
 		resetBuffer(&ident);
-		newline = n{false};
+		newline = false;
 		continue;
 	}
 x{process ch for HTML}
@@ -1158,17 +1221,17 @@ x{process ch for HTML}
 a{process ch for HTML} 
 	if (
 		false &&
-		ch == s{'*'} && /*last == s{'*'} && */
+		ch == '*' && /*last == '*' && */
 		status.state == hs_IN_NOTES
 	) {
 		if (status.noteInBold) {
-			fprintf(out, s{"</b>"});
+			fprintf(out, "</b>");
 		} else {
-			fprintf(out, s{"<b>"});
+			fprintf(out, "<b>");
 		}
 		status.noteInBold =
 			! status.noteInBold;
-		newline = n{false};
+		newline = false;
 		continue;
 	}
 x{process ch for HTML}
