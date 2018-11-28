@@ -84,13 +84,13 @@
 
 <span class="add">@def(<span class="name">write cur HTML file to out</span>)</span> <br/>
 
-<span class="in1"></span><span class="type">FILE</span> *<span class="var">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">"r"</span>);<br/>
+<span class="in1"></span><span class="type">FILE</span> *<span class="keyword">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">"r"</span>);<br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">in</span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="keyword">in</span>);<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write HTML file from in to out</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">fclose</span>(<span class="var">in</span>);<br/>
+<span class="in1"></span><span class="fn">fclose</span>(<span class="keyword">in</span>);<br/>
 
 <span class="end">@end(<span class="name">write cur HTML file to out</span>)</span><br/>
 
@@ -189,7 +189,7 @@
 
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">in</span>);<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="keyword">in</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process ch for HTML</span>)</span>;<br/>
 
@@ -972,6 +972,34 @@
 
 <span class="in1"></span>}<br/>
 
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">1</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span>) {<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'`'</span>;<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+
+<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"str\"&gt;`"</span>);<br/>
+
+<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'`'</span> &amp;&amp; <span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'\x5c'</span><br/>
+
+<span class="in2"></span>) {<br/>
+
+<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"`&lt;/span&gt;"</span>);<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="num">0</span>;<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="num">NULL</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
+
+<br/>
+
 <span class="in1"></span><span class="var">status</span>.<span class="var">codeOpening</span> = <span class="num">0</span>;<br/>
 
 <span class="end">@end(<span class="name">process ch for HTML</span>)</span><br/>
@@ -1238,13 +1266,13 @@
 
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>[] = {<br/>
 
-<span class="in3"></span><span class="str">"break"</span>, <span class="str">"case"</span>, <span class="str">"continue"</span>,<br/>
+<span class="in3"></span><span class="str">"break"</span>, <span class="str">"case"</span>, <span class="str">"catch"</span>, <span class="str">"continue"</span>,<br/>
 
-<span class="in3"></span><span class="str">"default"</span>, <span class="str">"else"</span>, <span class="str">"for"</span>,<br/>
+<span class="in3"></span><span class="str">"default"</span>, <span class="str">"delete"</span>, <span class="str">"else"</span>, <span class="str">"for"</span>,<br/>
 
-<span class="in3"></span><span class="str">"if"</span>, <span class="str">"return"</span>, <span class="str">"static"</span>,<br/>
+<span class="in3"></span><span class="str">"if"</span>, <span class="str">"in"</span>, <span class="str">"new"</span>, <span class="str">"return"</span>, <span class="str">"static"</span>,<br/>
 
-<span class="in3"></span><span class="str">"switch"</span>, <span class="str">"while"</span><br/>
+<span class="in3"></span><span class="str">"switch"</span>, <span class="str">"try"</span>, <span class="str">"typeof"</span>, <span class="str">"while"</span><br/>
 
 <span class="in2"></span>};<br/>
 
@@ -1274,7 +1302,7 @@
 
 <span class="in3"></span><span class="str">"bool"</span>, <span class="str">"char"</span>, <span class="str">"const"</span>, <span class="str">"enum"</span>,<br/>
 
-<span class="in3"></span><span class="str">"int"</span>, <span class="str">"long"</span>, <span class="str">"signed"</span>, <span class="str">"struct"</span>,<br/>
+<span class="in3"></span><span class="str">"int"</span>, <span class="str">"let"</span>, <span class="str">"long"</span>, <span class="str">"signed"</span>, <span class="str">"struct"</span>,<br/>
 
 <span class="in3"></span><span class="str">"union"</span>, <span class="str">"unsigned"</span>, <span class="str">"void"</span><br/>
 
@@ -1320,7 +1348,7 @@
 
 <span class="in3"></span><span class="str">"EOF"</span>, <span class="str">"NULL"</span>,<br/>
 
-<span class="in3"></span><span class="str">"false"</span>, <span class="str">"true"</span><br/>
+<span class="in3"></span><span class="str">"false"</span>, <span class="str">"null"</span>, <span class="str">"true"</span>, <span class="str">"undefined"</span><br/>
 
 <span class="in2"></span>};<br/>
 
@@ -1594,27 +1622,35 @@
 
 <span class="in2"></span>(<br/>
 
-<span class="in3"></span>(<span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'\''</span> || <span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'"'</span>) &amp;&amp;<br/>
+<span class="in3"></span>(<br/>
+
+<span class="in4"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'\''</span> ||<br/>
+
+<span class="in4"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'"'</span> ||<br/>
+
+<span class="in4"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'`'</span><br/>
+
+<span class="in3"></span>) &amp;&amp;<br/>
 
 <span class="in3"></span><span class="var">ch</span> == <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp;<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'\x5c'</span><br/>
 
-<span class="in2"></span><br/>
+<span class="in2"></span>)<br/>
 
-<span class="in1"></span><br/>
+<span class="in1"></span>) {<br/>
 
-<span class="in2"></span><br/>
+<span class="in2"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 
-<span class="in2"></span><br/>
+<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">ident</span>);<br/>
 
-<span class="in2"></span><br/>
+<span class="in2"></span><span class="var">newline</span> = <span class="num">false</span>;<br/>
 
-<span class="in2"></span>\\')) {E{flush pending};resetBuffer(&amp;ident);newline = false;if (status.codeSpecial != '</span><span class="str">'<span class="include">@include(<span class="name"><br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'i'</span>) {<br/>
 
-<span class="in3"></span><br/>
+<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span>);<br/>
 
-<span class="in2"></span><a href="writeEscaped(out, status.codeName, status.html">writeEscaped(out, status.codeName, status.codeNameEnd);</a>)</span></span><br/>
+<span class="in2"></span>}<br/>
 
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">codeSpecial</span>) {<br/>
 
@@ -1791,7 +1827,11 @@
 
 <span class="in4"></span><span class="var">status</span>.<span class="var">codeName</span> +<br/>
 
-<span class="in5"></span><span class="fn">sizeof</span>(<span class="var">status</span>.<span class="var">codeName</span>)<br/>
+<span class="in5"></span><span class="fn">sizeof</span>(<span class="var">status</span>.<span class="var">codeName</span>),<br/>
+
+<span class="in3"></span><span class="str">" [%c], [%.*s]"</span>, <span class="var">status</span>.<span class="var">codeSpecial</span>,<br/>
+
+<span class="in3"></span><span class="fn">sizeof</span>(<span class="var">status</span>.<span class="var">codeName</span>), <span class="var">status</span>.<span class="var">codeName</span><br/>
 
 <span class="in2"></span>);<br/>
 

@@ -449,6 +449,20 @@ a{process ch for HTML}
 			continue;
 		}
 	}
+	if (status.codeOpening == 1) {
+		if (! status.codeSpecial) {
+			status.codeSpecial = '`';
+			status.codeNameEnd = status.codeName;
+			fprintf(out, "<span class=\"str\">`");
+		} else if (
+			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
+		) {
+			fprintf(out, "`</span>");
+			status.codeSpecial = 0;
+			status.codeNameEnd = NULL;
+		}
+	}
+
 	status.codeOpening = 0;
 x{process ch for HTML}
 ```
@@ -574,10 +588,10 @@ x{global elements}
 A{global elements}
 	bool isKeyword(const struct Buffer *b) {
 		static const char *begin[] = {
-			"break", "case", "continue",
-			"default", "else", "for",
-			"if", "return", "static",
-			"switch", "while"
+			"break", "case", "catch", "continue",
+			"default", "delete", "else", "for",
+			"if", "in", "new", "return", "static",
+			"switch", "try", "typeof", "while"
 		};
 		static const char **end = (void *) begin + sizeof(begin);
 		return contains(begin, end, b);
@@ -591,7 +605,7 @@ A{global elements}
 		static const char *begin[] = {
 			"FILE",
 			"bool", "char", "const", "enum",
-			"int", "long", "signed", "struct",
+			"int", "let", "long", "signed", "struct",
 			"union", "unsigned", "void"
 		};
 		static const char **end = (void *) begin + sizeof(begin);
@@ -613,7 +627,7 @@ A{global elements}
 	bool isNum(const struct Buffer *b) {
 		static const char *begin[] = {
 			"EOF", "NULL",
-			"false", "true"
+			"false", "null", "true", "undefined"
 		};
 		static const char **end = (void *) begin + sizeof(begin);
 		if (isdigit(*b->buffer)) { return true; }
@@ -742,9 +756,13 @@ a{escape HTML code tag}
 		) 
 	||
 		(
-			(status.codeSpecial == '\'' || status.codeSpecial == '"') &&
+			(
+				status.codeSpecial == '\'' ||
+				status.codeSpecial == '"' ||
+				status.codeSpecial == '`'
+			) &&
 			ch == status.codeSpecial &&
-			status.codeNameEnd[-1] != '\\'
+			status.codeNameEnd[-1] != '\x5c'
 		)
 	) {
 		E{flush pending};
@@ -839,7 +857,9 @@ a{process ch in HTML code}
 		ASSERT(
 			status.codeNameEnd <
 				status.codeName +
-					sizeof(status.codeName)
+					sizeof(status.codeName),
+			" [%c], [%.*s]", status.codeSpecial,
+			sizeof(status.codeName), status.codeName
 		);
 		*status.codeNameEnd++ = ch;
 		continue;
