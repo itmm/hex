@@ -2226,7 +2226,7 @@
 		break;
 
 	case 'b':
-		fprintf(out, "<br class=\"virt\"/>");
+		fprintf(out, "<span class=\"virt\"></span><br/>");
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
@@ -2638,7 +2638,7 @@
 		break;
 
 	case 'b':
-		fprintf(out, "<br class=\"virt\"/>");
+		fprintf(out, "<span class=\"virt\"></span><br/>");
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;

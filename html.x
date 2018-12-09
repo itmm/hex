@@ -1168,7 +1168,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'b':
-		fprintf(out, "<br class=\"virt\"/>");
+		fprintf(out, "<span class=\"virt\"></span><br/>");
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
