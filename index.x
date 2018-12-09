@@ -951,7 +951,7 @@ a{process open brace} {
 ```
 d{check valid names}
 	static const char valids[] =
-		"fvsntkxeEgGpm";
+		"fvsntkxeEgGpmb";
 	if (strchr(valids, last)) {
 		valid = true;
 	}

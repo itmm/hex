@@ -796,7 +796,9 @@ a{escape HTML code tag}
 		switch (status.codeSpecial) {
 			e{handle special codes}
 		}
-		fprintf(out, "</span>");
+		if (status.codeSpecial != 'b') {
+			fprintf(out, "</span>");
+		}
 		status.codeSpecial = 0;
 		status.codeNameEnd = NULL;
 		continue;
@@ -819,7 +821,8 @@ d{handle special codes}
 	case 'r': case 'd': case 'p': case 'm': {
 		fprintf(out, "</span>)");
 		break;
-	case '\'': case '"': case '`':
+	}
+	case '\'': case '"': case '`': {
 		fputc(status.codeSpecial, out);
 		break;
 	}
@@ -1155,6 +1158,17 @@ a{escape html frag}
 			"<span class=\"num\">"
 				"@magic(<span>"
 		);
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+x{escape html frag}
+```
+* `@magic`-Befehle werden als Zahlen formatiert
+
+```
+a{escape html frag}
+	case 'b':
+		fprintf(out, "<br/>");
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;

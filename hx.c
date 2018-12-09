@@ -1112,7 +1112,7 @@
 		bool valid = false;
 		
 	static const char valids[] =
-		"fvsntkxeEgGpm";
+		"fvsntkxeEgGpmb";
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -2225,6 +2225,12 @@
 		status.codeNameEnd = status.codeName;
 		break;
 
+	case 'b':
+		fprintf(out, "<br/>");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+
 			default: break;
 		}
 		if (status.codeSpecial) {
@@ -2314,13 +2320,16 @@
 	case 'r': case 'd': case 'p': case 'm': {
 		fprintf(out, "</span>)");
 		break;
-	case '\'': case '"': case '`':
+	}
+	case '\'': case '"': case '`': {
 		fputc(status.codeSpecial, out);
 		break;
 	}
 
 		}
-		fprintf(out, "</span>");
+		if (status.codeSpecial != 'b') {
+			fprintf(out, "</span>");
+		}
 		status.codeSpecial = 0;
 		status.codeNameEnd = NULL;
 		continue;
@@ -2628,6 +2637,12 @@
 		status.codeNameEnd = status.codeName;
 		break;
 
+	case 'b':
+		fprintf(out, "<br/>");
+		status.codeSpecial = lc;
+		status.codeNameEnd = status.codeName;
+		break;
+
 			default: break;
 		}
 		if (status.codeSpecial) {
@@ -2717,13 +2732,16 @@
 	case 'r': case 'd': case 'p': case 'm': {
 		fprintf(out, "</span>)");
 		break;
-	case '\'': case '"': case '`':
+	}
+	case '\'': case '"': case '`': {
 		fputc(status.codeSpecial, out);
 		break;
 	}
 
 		}
-		fprintf(out, "</span>");
+		if (status.codeSpecial != 'b') {
+			fprintf(out, "</span>");
+		}
 		status.codeSpecial = 0;
 		status.codeNameEnd = NULL;
 		continue;

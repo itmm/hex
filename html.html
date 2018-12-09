@@ -1706,7 +1706,11 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/span&gt;"</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'b'</span>) {<br/>
+
+<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/span&gt;"</span>);<br/>
+
+<span class="in2"></span>}<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="num">0</span>;<br/>
 
@@ -1753,7 +1757,9 @@
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
-<span class="in1"></span><span class="keyword">case</span> <span class="str">'\''</span>: <span class="keyword">case</span> <span class="str">'"'</span>: <span class="keyword">case</span> <span class="str">'`'</span>:<br/>
+<span class="in1"></span>}<br/>
+
+<span class="in1"></span><span class="keyword">case</span> <span class="str">'\''</span>: <span class="keyword">case</span> <span class="str">'"'</span>: <span class="keyword">case</span> <span class="str">'`'</span>: {<br/>
 
 <span class="in2"></span><span class="fn">fputc</span>(<span class="var">status</span>.<span class="var">codeSpecial</span>, <span class="var">out</span>);<br/>
 
@@ -2465,6 +2471,30 @@
 <span class="in4"></span><span class="str">"@magic(&lt;span&gt;"</span><br/>
 
 <span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+
+<span class="end">@end(<span class="name">escape html frag</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ <code>@magic</code>-Befehle werden als Zahlen formatiert
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">escape html frag</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">case</span> <span class="str">'b'</span>:<br/>
+
+<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;br/&gt;"</span>);<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
