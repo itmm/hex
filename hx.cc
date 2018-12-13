@@ -3,6 +3,7 @@
 	
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <list>
 
 	#include <list>
 
@@ -446,7 +447,6 @@
 ;
 
 	struct Input {
-		struct Input *link;
 		FILE *file;
 		
 	struct FragMap frags;
@@ -457,7 +457,8 @@
 	};
 
 	struct Input *input = nullptr;
-	struct Input *used = nullptr;
+	std::list<struct Input *> pending;
+	std::list<struct Input *> used;
 
 	struct FragMap root = {};
 	struct FragMap *frags = &root;
@@ -470,7 +471,7 @@
 	);
 ;
 		struct Input *i = new Input();
-		i->link = input;
+		if (input) { pending.push_back(input); }
 		i->file = f;
 		i->name = path;
 		
@@ -503,11 +504,14 @@
 ;
 			if (ch != EOF) { break; }
 			
-	struct Input *n = input->link;
 	fclose(input->file);
-	input->link = used;
-	used = input;
-	input = n;
+	used.push_back(input);
+	if (! pending.empty()) {
+		input = pending.back();
+		pending.pop_back();
+	} else {
+		input = nullptr;
+	}
 	struct FragMap *nxt = frags->link;
 	frags->link = nullptr;
 	frags = nxt;
@@ -517,14 +521,16 @@
 	}
 
 	bool alreadyUsed(const char *name) {
-		struct Input *i = input;
-		for (; i; i = i->link) {
-			if (i->name == name) {
+		if (input && input->name == name) {
+			return true;
+		}
+		for (auto j = pending.begin(); j != pending.end(); ++j) {
+			if ((*j)->name == name) {
 				return true;
 			}
 		}
-		for (i = used; i; i = i->link) {
-			if (i->name == name) {
+		for (auto j = used.begin(); j != used.end(); ++j) {
+			if ((*j)->name == name) {
 				return true;
 			}
 		}
@@ -1329,9 +1335,9 @@
 		}
 	}
 }  {
-	input = used;
-	for (; input; input = input->link)
+	for (auto j = used.begin(); j != used.end(); ++j)
 	{
+		input = *j;
 		struct Frag **cur =
 			input->frags.frags;
 		struct Frag **end =
@@ -1386,8 +1392,8 @@
 	}
 } ;
 	
-	struct Input *cur = used;
-	while (cur) {
+	for (auto j = used.begin(); j != used.end(); ++j) {
+		struct Input *cur = *j;
 		
 	std::string &name = cur->name;
 	std::string outPath =
@@ -2480,9 +2486,7 @@
 ;
 	fclose(out);
 ;
-		struct Input *next = cur->link;
-		free(cur);
-		cur = next;
+		delete(cur);
 	}
 ;
 

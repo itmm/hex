@@ -95,6 +95,7 @@ x{global elements}
 D{includes}
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <list>
 x{includes}
 ```
 * Standard File-Funktionen werden vom Programm benötigt
@@ -115,14 +116,14 @@ i{frag.x}
 ```
 A{global elements}
 	struct Input {
-		struct Input *link;
 		FILE *file;
 		e{additional input elements};
 		std::string name;
 	};
 
 	struct Input *input = nullptr;
-	struct Input *used = nullptr;
+	std::list<struct Input *> pending;
+	std::list<struct Input *> used;
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -150,7 +151,7 @@ A{global elements}
 		FILE *f = fopen(path, "r");
 		e{check file for path};
 		struct Input *i = new Input();
-		i->link = input;
+		if (input) { pending.push_back(input); }
 		i->file = f;
 		i->name = path;
 		e{init additional input fields};
@@ -275,11 +276,14 @@ x{global elements}
 ```
 
 d{get next input file}
-	struct Input *n = input->link;
 	fclose(input->file);
-	input->link = used;
-	used = input;
-	input = n;
+	used.push_back(input);
+	if (! pending.empty()) {
+		input = pending.back();
+		pending.pop_back();
+	} else {
+		input = nullptr;
+	}
 	struct FragMap *nxt = frags->link;
 	frags->link = nullptr;
 	frags = nxt;
@@ -618,14 +622,16 @@ x{frag names must match}
 ```
 A{global elements}
 	bool alreadyUsed(const char *name) {
-		struct Input *i = input;
-		for (; i; i = i->link) {
-			if (i->name == name) {
+		if (input && input->name == name) {
+			return true;
+		}
+		for (auto j = pending.begin(); j != pending.end(); ++j) {
+			if ((*j)->name == name) {
 				return true;
 			}
 		}
-		for (i = used; i; i = i->link) {
-			if (i->name == name) {
+		for (auto j = used.begin(); j != used.end(); ++j) {
+			if ((*j)->name == name) {
 				return true;
 			}
 		}
@@ -1008,9 +1014,9 @@ d{serialize fragments} {
 
 ```
 a{serialize fragments} {
-	input = used;
-	for (; input; input = input->link)
+	for (auto j = used.begin(); j != used.end(); ++j)
 	{
+		input = *j;
 		struct Frag **cur =
 			input->frags.frags;
 		struct Frag **end =

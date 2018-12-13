@@ -224,6 +224,8 @@
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdlib</span>.<span class="var">h</span>&gt;<br/>
 
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">list</span>&gt;<br/>
+
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
 
 </code>
@@ -271,8 +273,6 @@
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">link</span>;<br/>
-
 <span class="in2"></span><span class="type">FILE</span> *<span class="var">file</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">additional input elements</span>)</span>;<br/>
@@ -285,7 +285,9 @@
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">input</span> = <span class="num">nullptr</span>;<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">used</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">struct</span> <span class="type">Input</span> *&gt; <span class="var">pending</span>;<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">struct</span> <span class="type">Input</span> *&gt; <span class="var">used</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -342,7 +344,7 @@
 
 <span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">i</span> = <span class="keyword">new</span> <span class="fn">Input</span>();<br/>
 
-<span class="in2"></span><span class="var">i</span>-&gt;<span class="var">link</span> = <span class="var">input</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) { <span class="var">pending</span>.<span class="fn">push_back</span>(<span class="var">input</span>); }<br/>
 
 <span class="in2"></span><span class="var">i</span>-&gt;<span class="var">file</span> = <span class="var">f</span>;<br/>
 
@@ -613,15 +615,21 @@
 
 <span class="add">@def(<span class="name">get next input file</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">n</span> = <span class="var">input</span>-&gt;<span class="var">link</span>;<br/>
-
 <span class="in1"></span><span class="fn">fclose</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
 
-<span class="in1"></span><span class="var">input</span>-&gt;<span class="var">link</span> = <span class="var">used</span>;<br/>
+<span class="in1"></span><span class="var">used</span>.<span class="fn">push_back</span>(<span class="var">input</span>);<br/>
 
-<span class="in1"></span><span class="var">used</span> = <span class="var">input</span>;<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">pending</span>.<span class="fn">empty</span>()) {<br/>
 
-<span class="in1"></span><span class="var">input</span> = <span class="var">n</span>;<br/>
+<span class="in2"></span><span class="var">input</span> = <span class="var">pending</span>.<span class="fn">back</span>();<br/>
+
+<span class="in2"></span><span class="var">pending</span>.<span class="fn">pop_back</span>();<br/>
+
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+
+<span class="in2"></span><span class="var">input</span> = <span class="num">nullptr</span>;<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
 
@@ -1338,11 +1346,15 @@
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const</span> <span class="type">char</span> *<span class="var">name</span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">i</span> = <span class="var">input</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span> &amp;&amp; <span class="var">input</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">i</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">j</span> = <span class="var">pending</span>.<span class="fn">begin</span>(); <span class="var">j</span> != <span class="var">pending</span>.<span class="fn">end</span>(); ++<span class="var">j</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> ((*<span class="var">j</span>)-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
 
 <span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
@@ -1350,9 +1362,9 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">i</span> = <span class="var">used</span>; <span class="var">i</span>; <span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">link</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">j</span> = <span class="var">used</span>.<span class="fn">begin</span>(); <span class="var">j</span> != <span class="var">used</span>.<span class="fn">end</span>(); ++<span class="var">j</span>) {<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">i</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> ((*<span class="var">j</span>)-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
 
 <span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
@@ -2148,11 +2160,11 @@
 
 <span class="add">@add(<span class="name">serialize fragments</span>)</span> {<br/>
 
-<span class="in1"></span><span class="var">input</span> = <span class="var">used</span>;<br/>
-
-<span class="in1"></span><span class="keyword">for</span> (; <span class="var">input</span>; <span class="var">input</span> = <span class="var">input</span>-&gt;<span class="var">link</span>)<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">j</span> = <span class="var">used</span>.<span class="fn">begin</span>(); <span class="var">j</span> != <span class="var">used</span>.<span class="fn">end</span>(); ++<span class="var">j</span>)<br/>
 
 <span class="in1"></span>{<br/>
+
+<span class="in2"></span><span class="var">input</span> = *<span class="var">j</span>;<br/>
 
 <span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">cur</span> =<br/>
 

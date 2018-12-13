@@ -4,12 +4,10 @@
 
 ```
 D{write HTML file}
-	struct Input *cur = used;
-	while (cur) {
+	for (auto j = used.begin(); j != used.end(); ++j) {
+		struct Input *cur = *j;
 		e{write cur HTML file};
-		struct Input *next = cur->link;
-		free(cur);
-		cur = next;
+		delete(cur);
 	}
 x{write HTML file}
 ```

@@ -20,17 +20,13 @@
 
 <span class="add">@globdef(<span class="name">write HTML file</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">cur</span> = <span class="var">used</span>;<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">j</span> = <span class="var">used</span>.<span class="fn">begin</span>(); <span class="var">j</span> != <span class="var">used</span>.<span class="fn">end</span>(); ++<span class="var">j</span>) {<br/>
 
-<span class="in1"></span><span class="keyword">while</span> (<span class="var">cur</span>) {<br/>
+<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">cur</span> = *<span class="var">j</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">write cur HTML file</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">next</span> = <span class="var">cur</span>-&gt;<span class="var">link</span>;<br/>
-
-<span class="in2"></span><span class="fn">free</span>(<span class="var">cur</span>);<br/>
-
-<span class="in2"></span><span class="var">cur</span> = <span class="var">next</span>;<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">cur</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
