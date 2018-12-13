@@ -111,6 +111,8 @@
 </div>
 
 <ul><li>
+ Hex ist in C++ geschrieben
+</li><li>
  Das Hauptprogramm besteht aus der <code>main</code>-Funktion
 </li><li>
  Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
@@ -283,11 +285,11 @@
 
 <br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">input</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="type">Input</span> *<span class="var">input</span> = <span class="num">nullptr</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">struct</span> <span class="type">Input</span> *&gt; <span class="var">pending</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">Input</span> *&gt; <span class="var">pending</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">struct</span> <span class="type">Input</span> *&gt; <span class="var">used</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">Input</span> *&gt; <span class="var">used</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -317,9 +319,9 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> <span class="var">root</span> = {};<br/>
+<span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span> = {};<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -342,7 +344,7 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">check file for path</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">i</span> = <span class="keyword">new</span> <span class="fn">Input</span>();<br/>
+<span class="in2"></span><span class="type">Input</span> *<span class="var">i</span> = <span class="keyword">new</span> <span class="fn">Input</span>();<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) { <span class="var">pending</span>.<span class="fn">push_back</span>(<span class="var">input</span>); }<br/>
 
@@ -631,7 +633,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> *<span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
 
 <span class="in1"></span><span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
 
@@ -665,7 +667,7 @@
 
 <span class="add">@def(<span class="name">additional input elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> <span class="var">frags</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> <span class="var">frags</span>;<br/>
 
 <span class="end">@end(<span class="name">additional input elements</span>)</span><br/>
 
@@ -798,7 +800,7 @@
 
 <span class="add">@def(<span class="name">additional read vars</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">buffer</span>;<br/>
 
@@ -983,7 +985,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
@@ -1023,7 +1025,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = <span class="var">frags</span>;<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
@@ -1103,9 +1105,9 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">ins</span> = <span class="var">fm</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> = <span class="var">fm</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
@@ -1141,9 +1143,9 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = <span class="var">frags</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
@@ -1433,7 +1435,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
@@ -1476,7 +1478,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
@@ -1554,7 +1556,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">sub</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> =<br/>
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
@@ -1597,7 +1599,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">sub</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> =<br/>
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
@@ -2104,15 +2106,15 @@
 
 <span class="add">@def(<span class="name">serialize fragments</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">cur</span> = <span class="var">root</span>.<span class="var">frags</span>;<br/>
+<span class="in1"></span><span class="type">Frag</span> **<span class="var">cur</span> = <span class="var">root</span>.<span class="var">frags</span>;<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">end</span> =<br/>
+<span class="in1"></span><span class="type">Frag</span> **<span class="var">end</span> =<br/>
 
 <span class="in2"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
 
 <span class="in1"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = *<span class="var">cur</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = *<span class="var">cur</span>;<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">frag</span>; <span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>) {<br/>
 
@@ -2146,17 +2148,17 @@
 
 <span class="in2"></span><span class="var">input</span> = *<span class="var">j</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">cur</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> **<span class="var">cur</span> =<br/>
 
 <span class="in3"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">end</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> **<span class="var">end</span> =<br/>
 
 <span class="in3"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 
-<span class="in3"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = *<span class="var">cur</span>;<br/>
+<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = *<span class="var">cur</span>;<br/>
 
 <span class="in3"></span><span class="keyword">while</span> (<span class="var">frag</span>) {<br/>
 

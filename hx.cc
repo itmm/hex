@@ -31,7 +31,7 @@
 	
 	struct FragEntry;
 	void freeFragEntry(
-		struct FragEntry *entry
+		FragEntry *entry
 	);
 ;
 
@@ -91,10 +91,10 @@
 	};
 
 	struct Frag {
-		struct Frag *link;
+		Frag *link;
 		std::list<FragEntry> entries;
-		struct FragEntry *firstEntry;
-		struct FragEntry *lastEntry;
+		FragEntry *firstEntry;
+		FragEntry *lastEntry;
 		int expands;
 		int multiples;
 		std::string name;
@@ -104,7 +104,7 @@
 		const char *nameBegin,
 		const char *nameEnd
 	) {
-		struct Frag *result = nullptr;
+		Frag *result = nullptr;
 		
 	ASSERT(nameBegin);
 	ASSERT(nameBegin <= nameEnd);
@@ -121,7 +121,7 @@
 	}
 
 	void freeFragEntries(
-		struct Frag *frag
+		Frag *frag
 	) {
 		if (frag) {
 			frag->entries.clear();
@@ -129,17 +129,17 @@
 	}
 
 	void freeFrag(
-		struct Frag *f
+		Frag *f
 	) {
 		while (f) {
-			struct Frag *l =
+			Frag *l =
 				f->link;
 			delete(f);
 			f = l;
 		}
 	}
 
-	struct Frag *allocTestFrag(
+	Frag *allocTestFrag(
 		const char *name
 	) {
 		return allocFrag(
@@ -150,7 +150,7 @@
 	void testFragName(
 		const char *name
 	) {
-		struct Frag *f =
+		Frag *f =
 			allocTestFrag(name);
 		ASSERT(f);
 		ASSERT(f->name == name);
@@ -158,17 +158,17 @@
 	}
 
 	bool isPopulatedFrag(
-		const struct Frag *f
+		const Frag *f
 	) {
 		return f && f->entries.size();
 	}
 
-	struct FragEntry *allocFragEntry(
-		struct Frag *frag,
+	FragEntry *allocFragEntry(
+		Frag *frag,
 		const char *valueBegin,
 		const char *valueEnd
 	) {
-		struct FragEntry *result = nullptr;
+		FragEntry *result = nullptr;
 		
 	result = new FragEntry();
 ;
@@ -182,7 +182,7 @@
 		return result;
 	}
 
-	struct FragEntry *
+	FragEntry *
 		allocEmptyFragEntry() {
 			return allocFragEntry(
 				nullptr, nullptr, nullptr
@@ -190,10 +190,10 @@
 		}
 
 	void freeFragEntry(
-		struct FragEntry *e
+		FragEntry *e
 	) {
 		while (e) {
-			struct FragEntry *l =
+			FragEntry *l =
 				e->link;
 			delete(e);
 			e = l;
@@ -201,7 +201,7 @@
 	}
 
 	int getFragEntryValueSize(
-		struct FragEntry *e
+		FragEntry *e
 	) {
 		if (! e) {
 			return 0;
@@ -209,7 +209,7 @@
 		return e->value.size();
 	}
 
-	struct FragEntry *
+	FragEntry *
 		allocTestFragEntry(
 			const char *v
 		) {
@@ -222,8 +222,8 @@
 		}
 
 	void addEntryToFrag(
-		struct Frag *frag,
-		struct FragEntry *entry
+		Frag *frag,
+		FragEntry *entry
 	) {
 		
 	ASSERT(frag);
@@ -233,13 +233,13 @@
 	}
 
 	void addBytesToFrag(
-		struct Frag *frag,
+		Frag *frag,
 		const char *value,
 		const char *valueEnd,
 		const std::string &source,
 		int line
 	) {
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocFragEntry(
 				nullptr, value, valueEnd
 			);
@@ -252,8 +252,8 @@
 
 	
 	bool isFragInFrag(
-		struct Frag *needle,
-		struct Frag *haystack
+		Frag *needle,
+		Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -263,7 +263,7 @@
 	}
 ;
 		
-	struct FragEntry *entry =
+	FragEntry *entry =
 		haystack->firstEntry;
 	for (; entry; entry = entry->link) {
 		if (! entry->frag) { continue; }
@@ -278,8 +278,8 @@
 	}
 
 	void addFragToFrag(
-		struct Frag *frag,
-		struct Frag *child
+		Frag *frag,
+		Frag *child
 	) {
 		ASSERT(frag);
 		ASSERT(child);
@@ -297,7 +297,7 @@
 	}
 ;
 		
-	struct FragEntry *entry =
+	FragEntry *entry =
 		allocFragEntry(
 			child, nullptr, nullptr
 		);
@@ -309,7 +309,7 @@
 	std::string *fragTestBufferCur = nullptr;
 ;
 	void serializeFrag(
-		struct Frag *frag,
+		Frag *frag,
 		FILE *out,
 		bool writeLineMacros
 	) {
@@ -340,7 +340,7 @@
 ;
 	}
 
-	void testFrag(struct Frag *
+	void testFrag(Frag *
 		frag, const char *expected
 	) {
 		
@@ -353,7 +353,7 @@
 	}
 
 	void addStringToFrag(
-		struct Frag *frag,
+		Frag *frag,
 		const char *str
 	) {
 		int size = strlen(str);
@@ -366,17 +366,17 @@
 	#define FRAG_SLOTS 128
 
 	struct FragMap {
-		struct FragMap *link;
-		struct Frag *frags[
+		FragMap *link;
+		Frag *frags[
 			FRAG_SLOTS
 		];
 	};
 
 	void clearFragMap(
-		struct FragMap *map
+		FragMap *map
 	) {
-		struct Frag **cur = map->frags;
-		struct Frag **end =
+		Frag **cur = map->frags;
+		Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
 			freeFrag(*cur); *cur = nullptr;
@@ -391,13 +391,13 @@
 		return hash % FRAG_SLOTS;
 	}
 
-	struct Frag *allocFragInMap(
-		struct FragMap *map,
+	Frag *allocFragInMap(
+		FragMap *map,
 		const char *begin,
 		const char *end
 	) {
 		ASSERT(map);
-		struct Frag *frag =
+		Frag *frag =
 			allocFrag(begin, end);
 		
 	int hash = calcFragHash(begin, end);
@@ -407,15 +407,15 @@
 		return frag;
 	}
 
-	struct Frag *findFragInMap(
-		struct FragMap *map,
+	Frag *findFragInMap(
+		FragMap *map,
 		const char *begin,
 		const char *end
 	) {
 		ASSERT(map);
 		 {
 	int hash = calcFragHash(begin, end);
-	struct Frag *frag = map->frags[hash];
+	Frag *frag = map->frags[hash];
 	std::string s(begin, end);
 	for (; frag; frag = frag->link) {
 		if (s == frag->name) {
@@ -433,13 +433,13 @@
 		return nullptr;
 	}
 
-	struct Frag *getFragInMap(
-		struct FragMap *map,
+	Frag *getFragInMap(
+		FragMap *map,
 		const char *begin,
 		const char *end,
-		struct FragMap *insert
+		FragMap *insert
 	) {
-		struct Frag *frag = nullptr;
+		Frag *frag = nullptr;
 		
 	frag = findFragInMap(
 		map, begin, end
@@ -460,19 +460,19 @@
 	struct Input {
 		FILE *file;
 		
-	struct FragMap frags;
+	FragMap frags;
 
 	int line;
 ;
 		std::string name;
 	};
 
-	struct Input *input = nullptr;
-	std::list<struct Input *> pending;
-	std::list<struct Input *> used;
+	Input *input = nullptr;
+	std::list<Input *> pending;
+	std::list<Input *> used;
 
-	struct FragMap root = {};
-	struct FragMap *frags = &root;
+	FragMap root = {};
+	FragMap *frags = &root;
 
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
@@ -481,7 +481,7 @@
 		f, "can't open [%s]", path
 	);
 ;
-		struct Input *i = new Input();
+		Input *i = new Input();
 		if (input) { pending.push_back(input); }
 		i->file = f;
 		i->name = path;
@@ -523,7 +523,7 @@
 	} else {
 		input = nullptr;
 	}
-	struct FragMap *nxt = frags->link;
+	FragMap *nxt = frags->link;
 	frags->link = nullptr;
 	frags = nxt;
 ;
@@ -600,7 +600,7 @@
 	{ }
 
 	bool isOutOfHtmlSpecial(
-		struct HtmlStatus *s
+		HtmlStatus *s
 	) {
 		
 	if (s->state == hs_IN_HEADER) {
@@ -703,7 +703,7 @@
 	testFragName("");
 	testFragName("A c");
 	{
-		struct Frag *f =
+		Frag *f =
 			allocTestFrag("ab");
 		ASSERT(f);
 		ASSERT(! f->link);
@@ -712,7 +712,7 @@
 	}
 
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocEmptyFragEntry();
 
 		ASSERT(entry);
@@ -723,7 +723,7 @@
 	}
 
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocEmptyFragEntry();
 
 		ASSERT(entry);
@@ -736,7 +736,7 @@
 	}
 
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocTestFragEntry("abc");
 
 		ASSERT(entry);
@@ -749,7 +749,7 @@
 	}
 
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocTestFragEntry("abc");
 
 		ASSERT(entry);
@@ -759,7 +759,7 @@
 	}
 
 	{
-		struct Frag *frag =
+		Frag *frag =
 			allocTestFrag("");
 		addStringToFrag(frag, "abc");
 		addStringToFrag(frag, "def");
@@ -767,9 +767,9 @@
 		freeFrag(frag);
 	}
  {
-	struct Frag *a =
+	Frag *a =
 		allocTestFrag("");
-	struct Frag *b =
+	Frag *b =
 		allocTestFrag("");
 	addStringToFrag(a, "abc");
 	addFragToFrag(b, a);
@@ -810,7 +810,7 @@
 	
 	{
 		
-	struct Frag *frag = nullptr;
+	Frag *frag = nullptr;
 	std::string buffer;
 	int bufferLine = 0;
 
@@ -868,7 +868,7 @@
 		
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
-		struct FragMap *fm = &input->frags;
+		FragMap *fm = &input->frags;
 		
 	frag = findFragInMap(
 		fm, name.data(),
@@ -892,7 +892,7 @@
 
 	if (openCh == 'D') {
 		ASSERT(! frag, "def in frag");
-		struct FragMap *fm = frags;
+		FragMap *fm = frags;
 		
 	frag = findFragInMap(
 		fm, name.data(),
@@ -916,8 +916,8 @@
 
 	if (openCh == 'a') {
 		ASSERT(! frag, "add in frag");
-		struct FragMap *fm = &input->frags;
-		struct FragMap *ins = fm;
+		FragMap *fm = &input->frags;
+		FragMap *ins = fm;
 		frag = findFragInMap(
 			fm, name.data(),
 			name.data() + name.size()
@@ -940,8 +940,8 @@
 
 	if (openCh == 'A') {
 		ASSERT(! frag, "add in frag");
-		struct FragMap *fm = frags;
-		struct FragMap *ins = &root;
+		FragMap *fm = frags;
+		FragMap *ins = &root;
 		frag = findFragInMap(
 			fm, name.data(),
 			name.data() + name.size()
@@ -1033,7 +1033,7 @@
 		buffer.clear();
 	}
 ;
-		struct Frag *sub = getFragInMap(
+		Frag *sub = getFragInMap(
 			&input->frags, name.data(),
 			name.data() + name.size(), &input->frags
 		);
@@ -1068,7 +1068,7 @@
 		buffer.clear();
 	}
 ;
-		struct Frag *sub = getFragInMap(
+		Frag *sub = getFragInMap(
 			frags, name.data(),
 			name.data() + name.size(), &root
 		);
@@ -1103,7 +1103,7 @@
 		buffer.clear();
 	}
 ;
-		struct Frag *sub =
+		Frag *sub =
 			getFragInMap(
 				&input->frags, name.data(),
 				name.data() + name.size(), &input->frags
@@ -1135,7 +1135,7 @@
 		buffer.clear();
 	}
 ;
-		struct Frag *sub =
+		Frag *sub =
 			getFragInMap(
 				frags, name.data(),
 				name.data() + name.size(), &root
@@ -1286,11 +1286,11 @@
 	}
 ;
 	 {
-	struct Frag **cur = root.frags;
-	struct Frag **end =
+	Frag **cur = root.frags;
+	Frag **end =
 		cur + FRAG_SLOTS;
 	for (; cur < end; ++cur) {
-		struct Frag *frag = *cur;
+		Frag *frag = *cur;
 		for (; frag; frag = frag->link) {
 			
 	if (! memcmp(
@@ -1339,12 +1339,12 @@
 	for (auto j = used.begin(); j != used.end(); ++j)
 	{
 		input = *j;
-		struct Frag **cur =
+		Frag **cur =
 			input->frags.frags;
-		struct Frag **end =
+		Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
-			struct Frag *frag = *cur;
+			Frag *frag = *cur;
 			while (frag) {
 				
 	if (! memcmp(
@@ -1394,7 +1394,7 @@
 } ;
 	
 	for (auto j = used.begin(); j != used.end(); ++j) {
-		struct Input *cur = *j;
+		Input *cur = *j;
 		
 	std::string &name = cur->name;
 	std::string outPath =

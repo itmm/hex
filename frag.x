@@ -45,10 +45,10 @@ x{includes}
 ```
 a{define frag}
 	struct Frag {
-		struct Frag *link;
+		Frag *link;
 		std::list<FragEntry> entries;
-		struct FragEntry *firstEntry;
-		struct FragEntry *lastEntry;
+		FragEntry *firstEntry;
+		FragEntry *lastEntry;
 		int expands;
 		int multiples;
 		std::string name;
@@ -78,7 +78,7 @@ a{define frag}
 		const char *nameBegin,
 		const char *nameEnd
 	) {
-		struct Frag *result = nullptr;
+		Frag *result = nullptr;
 		e{allocate frag on heap};
 		result->link = nullptr;
 		result->expands = 0;
@@ -138,7 +138,7 @@ x{copy frag name}
 ```
 a{define frag}
 	void freeFragEntries(
-		struct Frag *frag
+		Frag *frag
 	) {
 		if (frag) {
 			frag->entries.clear();
@@ -150,10 +150,10 @@ x{define frag}
 ```
 a{define frag}
 	void freeFrag(
-		struct Frag *f
+		Frag *f
 	) {
 		while (f) {
-			struct Frag *l =
+			Frag *l =
 				f->link;
 			delete(f);
 			f = l;
@@ -172,7 +172,7 @@ D{perform unit-tests}
 x{perform unit-tests}
 
 a{define frag}
-	struct Frag *allocTestFrag(
+	Frag *allocTestFrag(
 		const char *name
 	) {
 		return allocFrag(
@@ -189,7 +189,7 @@ a{define frag}
 	void testFragName(
 		const char *name
 	) {
-		struct Frag *f =
+		Frag *f =
 			allocTestFrag(name);
 		ASSERT(f);
 		ASSERT(f->name == name);
@@ -206,7 +206,7 @@ d{frag unit tests}
 	testFragName("");
 	testFragName("A c");
 	{
-		struct Frag *f =
+		Frag *f =
 			allocTestFrag("ab");
 		ASSERT(f);
 		ASSERT(! f->link);
@@ -221,7 +221,7 @@ x{frag unit tests}
 ```
 a{define frag}
 	bool isPopulatedFrag(
-		const struct Frag *f
+		const Frag *f
 	) {
 		return f && f->entries.size();
 	}
@@ -232,12 +232,12 @@ x{define frag}
 
 ```
 a{define frag}
-	struct FragEntry *allocFragEntry(
-		struct Frag *frag,
+	FragEntry *allocFragEntry(
+		Frag *frag,
 		const char *valueBegin,
 		const char *valueEnd
 	) {
-		struct FragEntry *result = nullptr;
+		FragEntry *result = nullptr;
 		e{allocate entry on heap};
 		result->link = nullptr;
 		e{copy entry values};
@@ -272,7 +272,7 @@ x{copy entry values}
 
 ```
 a{define frag}
-	struct FragEntry *
+	FragEntry *
 		allocEmptyFragEntry() {
 			return allocFragEntry(
 				nullptr, nullptr, nullptr
@@ -287,10 +287,10 @@ x{define frag}
 ```
 a{define frag}
 	void freeFragEntry(
-		struct FragEntry *e
+		FragEntry *e
 	) {
 		while (e) {
-			struct FragEntry *l =
+			FragEntry *l =
 				e->link;
 			delete(e);
 			e = l;
@@ -306,7 +306,7 @@ x{define frag}
 D{forward declarations}
 	struct FragEntry;
 	void freeFragEntry(
-		struct FragEntry *entry
+		FragEntry *entry
 	);
 x{forward declarations}
 ```
@@ -316,7 +316,7 @@ x{forward declarations}
 ```
 a{define frag}
 	int getFragEntryValueSize(
-		struct FragEntry *e
+		FragEntry *e
 	) {
 		if (! e) {
 			return 0;
@@ -332,7 +332,7 @@ x{define frag}
 ```
 a{frag unit tests}
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocEmptyFragEntry();
 
 		ASSERT(entry);
@@ -349,7 +349,7 @@ x{frag unit tests}
 ```
 a{frag unit tests}
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocEmptyFragEntry();
 
 		ASSERT(entry);
@@ -366,7 +366,7 @@ x{frag unit tests}
 
 ```
 a{define frag}
-	struct FragEntry *
+	FragEntry *
 		allocTestFragEntry(
 			const char *v
 		) {
@@ -385,7 +385,7 @@ x{define frag}
 ```
 a{frag unit tests}
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocTestFragEntry("abc");
 
 		ASSERT(entry);
@@ -403,7 +403,7 @@ x{frag unit tests}
 ```
 a{frag unit tests}
 	{
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocTestFragEntry("abc");
 
 		ASSERT(entry);
@@ -420,8 +420,8 @@ x{frag unit tests}
 ```
 a{define frag}
 	void addEntryToFrag(
-		struct Frag *frag,
-		struct FragEntry *entry
+		Frag *frag,
+		FragEntry *entry
 	) {
 		e{assert add entry};
 		frag->entries.push_back(*entry);
@@ -444,13 +444,13 @@ x{assert add entry}
 ```
 a{define frag}
 	void addBytesToFrag(
-		struct Frag *frag,
+		Frag *frag,
 		const char *value,
 		const char *valueEnd,
 		const std::string &source,
 		int line
 	) {
-		struct FragEntry *entry =
+		FragEntry *entry =
 			allocFragEntry(
 				nullptr, value, valueEnd
 			);
@@ -466,8 +466,8 @@ x{define frag}
 a{define frag}
 	e{define cycle check}
 	void addFragToFrag(
-		struct Frag *frag,
-		struct Frag *child
+		Frag *frag,
+		Frag *child
 	) {
 		ASSERT(frag);
 		ASSERT(child);
@@ -499,7 +499,7 @@ x{reuse last entry}
 
 ```
 d{add frag entry}
-	struct FragEntry *entry =
+	FragEntry *entry =
 		allocFragEntry(
 			child, nullptr, nullptr
 		);
@@ -514,7 +514,7 @@ x{add frag entry}
 a{define frag}
 	e{serialize test defines};
 	void serializeFrag(
-		struct Frag *frag,
+		Frag *frag,
 		FILE *out,
 		bool writeLineMacros
 	) {
@@ -569,7 +569,7 @@ x{serialize bytes}
 
 ```
 a{define frag}
-	void testFrag(struct Frag *
+	void testFrag(Frag *
 		frag, const char *expected
 	) {
 		e{serialize test frag};
@@ -594,7 +594,7 @@ x{serialize test frag}
 ```
 a{define frag}
 	void addStringToFrag(
-		struct Frag *frag,
+		Frag *frag,
 		const char *str
 	) {
 		int size = strlen(str);
@@ -611,7 +611,7 @@ x{define frag}
 ```
 a{frag unit tests}
 	{
-		struct Frag *frag =
+		Frag *frag =
 			allocTestFrag("");
 		addStringToFrag(frag, "abc");
 		addStringToFrag(frag, "def");
@@ -624,9 +624,9 @@ x{frag unit tests}
 
 ```
 a{frag unit tests} {
-	struct Frag *a =
+	Frag *a =
 		allocTestFrag("");
-	struct Frag *b =
+	Frag *b =
 		allocTestFrag("");
 	addStringToFrag(a, "abc");
 	addFragToFrag(b, a);
@@ -643,8 +643,8 @@ a{frag unit tests} {
 ```
 d{define cycle check}
 	bool isFragInFrag(
-		struct Frag *needle,
-		struct Frag *haystack
+		Frag *needle,
+		Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -681,7 +681,7 @@ x{check cycle frag}
 
 ```
 d{check cycle entries}
-	struct FragEntry *entry =
+	FragEntry *entry =
 		haystack->firstEntry;
 	for (; entry; entry = entry->link) {
 		if (! entry->frag) { continue; }
@@ -703,8 +703,8 @@ a{define frag}
 	#define FRAG_SLOTS 128
 
 	struct FragMap {
-		struct FragMap *link;
-		struct Frag *frags[
+		FragMap *link;
+		Frag *frags[
 			FRAG_SLOTS
 		];
 	};
@@ -716,10 +716,10 @@ x{define frag}
 ```
 a{define frag}
 	void clearFragMap(
-		struct FragMap *map
+		FragMap *map
 	) {
-		struct Frag **cur = map->frags;
-		struct Frag **end =
+		Frag **cur = map->frags;
+		Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
 			freeFrag(*cur); *cur = nullptr;
@@ -749,13 +749,13 @@ x{define frag}
 
 ```
 a{define frag}
-	struct Frag *allocFragInMap(
-		struct FragMap *map,
+	Frag *allocFragInMap(
+		FragMap *map,
 		const char *begin,
 		const char *end
 	) {
 		ASSERT(map);
-		struct Frag *frag =
+		Frag *frag =
 			allocFrag(begin, end);
 		e{insert in slot};
 		return frag;
@@ -777,8 +777,8 @@ x{insert in slot}
 
 ```
 a{define frag}
-	struct Frag *findFragInMap(
-		struct FragMap *map,
+	Frag *findFragInMap(
+		FragMap *map,
 		const char *begin,
 		const char *end
 	) {
@@ -794,7 +794,7 @@ x{define frag}
 ```
 d{find frag in slot} {
 	int hash = calcFragHash(begin, end);
-	struct Frag *frag = map->frags[hash];
+	Frag *frag = map->frags[hash];
 	std::string s(begin, end);
 	for (; frag; frag = frag->link) {
 		if (s == frag->name) {
@@ -819,13 +819,13 @@ x{find frag in linked map}
 
 ```
 a{define frag}
-	struct Frag *getFragInMap(
-		struct FragMap *map,
+	Frag *getFragInMap(
+		FragMap *map,
 		const char *begin,
 		const char *end,
-		struct FragMap *insert
+		FragMap *insert
 	) {
-		struct Frag *frag = nullptr;
+		Frag *frag = nullptr;
 		e{get frag find};
 		e{get frag alloc};
 		return frag;

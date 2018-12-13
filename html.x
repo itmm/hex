@@ -5,7 +5,7 @@
 ```
 D{write HTML file}
 	for (auto j = used.begin(); j != used.end(); ++j) {
-		struct Input *cur = *j;
+		Input *cur = *j;
 		e{write cur HTML file};
 		delete(cur);
 	}
@@ -61,7 +61,7 @@ A{global elements}
 	};
 x{global elements}
 ```
-* Der aktuelle Status wird in `struct HtmlStatus` abgelegt
+* Der aktuelle Status wird in `HtmlStatus` abgelegt
 
 ```
 d{html state elements}
@@ -128,7 +128,7 @@ x{move ch to last}
 ```
 A{global elements}
 	bool isOutOfHtmlSpecial(
-		struct HtmlStatus *s
+		HtmlStatus *s
 	) {
 		e{check html special state};
 		return true;

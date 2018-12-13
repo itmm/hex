@@ -107,13 +107,13 @@
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">link</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">link</span>;<br/>
 
 <span class="in2"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">entries</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">firstEntry</span>;<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">firstEntry</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">lastEntry</span>;<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">lastEntry</span>;<br/>
 
 <span class="in2"></span><span class="type">int</span> <span class="var">expands</span>;<br/>
 
@@ -179,7 +179,7 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">result</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">result</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">allocate frag on heap</span>)</span>;<br/>
 
@@ -310,7 +310,7 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">freeFragEntries</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span><br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -336,13 +336,13 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">freeFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">f</span><br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span><br/>
 
 <span class="in1"></span>) {<br/>
 
 <span class="in2"></span><span class="keyword">while</span> (<span class="var">f</span>) {<br/>
 
-<span class="in3"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">l</span> =<br/>
+<span class="in3"></span><span class="type">Frag</span> *<span class="var">l</span> =<br/>
 
 <span class="in4"></span><span class="var">f</span>-&gt;<span class="var">link</span>;<br/>
 
@@ -380,7 +380,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="fn">allocTestFrag</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">allocTestFrag</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">name</span><br/>
 
@@ -416,7 +416,7 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">f</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocTestFrag</span>(<span class="var">name</span>);<br/>
 
@@ -451,7 +451,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">f</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocTestFrag</span>(<span class="str">"ab"</span>);<br/>
 
@@ -483,7 +483,7 @@
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">const</span> <span class="type">struct</span> <span class="type">Frag</span> *<span class="var">f</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">f</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -512,9 +512,9 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="fn">allocFragEntry</span>(<br/>
+<span class="in1"></span><span class="type">FragEntry</span> *<span class="fn">allocFragEntry</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">valueBegin</span>,<br/>
 
@@ -522,7 +522,7 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">result</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">result</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">allocate entry on heap</span>)</span>;<br/>
 
@@ -595,7 +595,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<br/>
+<span class="in1"></span><span class="type">FragEntry</span> *<br/>
 
 <span class="in2"></span><span class="fn">allocEmptyFragEntry</span>() {<br/>
 
@@ -632,13 +632,13 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">freeFragEntry</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">e</span><br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">e</span><br/>
 
 <span class="in1"></span>) {<br/>
 
 <span class="in2"></span><span class="keyword">while</span> (<span class="var">e</span>) {<br/>
 
-<span class="in3"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">l</span> =<br/>
+<span class="in3"></span><span class="type">FragEntry</span> *<span class="var">l</span> =<br/>
 
 <span class="in4"></span><span class="var">e</span>-&gt;<span class="var">link</span>;<br/>
 
@@ -671,7 +671,7 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">freeFragEntry</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span><br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -698,7 +698,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">getFragEntryValueSize</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">e</span><br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">e</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -737,7 +737,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocEmptyFragEntry</span>();<br/>
 
@@ -773,7 +773,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocEmptyFragEntry</span>();<br/>
 
@@ -809,7 +809,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<br/>
+<span class="in1"></span><span class="type">FragEntry</span> *<br/>
 
 <span class="in2"></span><span class="fn">allocTestFragEntry</span>(<br/>
 
@@ -848,7 +848,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocTestFragEntry</span>(<span class="str">"abc"</span>);<br/>
 
@@ -886,7 +886,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocTestFragEntry</span>(<span class="str">"abc"</span>);<br/>
 
@@ -927,9 +927,9 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">addEntryToFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span><br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -979,7 +979,7 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">addBytesToFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">value</span>,<br/>
 
@@ -991,7 +991,7 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocFragEntry</span>(<br/>
 
@@ -1025,9 +1025,9 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">addFragToFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">child</span><br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">child</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -1092,7 +1092,7 @@
 
 <span class="add">@def(<span class="name">add frag entry</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in1"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in2"></span><span class="fn">allocFragEntry</span>(<br/>
 
@@ -1129,7 +1129,7 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
 
 <span class="in2"></span><span class="type">FILE</span> *<span class="var">out</span>,<br/>
 
@@ -1246,7 +1246,7 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<span class="type">struct</span> <span class="type">Frag</span> *<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<span class="type">Frag</span> *<br/>
 
 <span class="in2"></span><span class="var">frag</span>, <span class="type">const</span> <span class="type">char</span> *<span class="var">expected</span><br/>
 
@@ -1299,7 +1299,7 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">addStringToFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">str</span><br/>
 
@@ -1334,7 +1334,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 
@@ -1362,11 +1362,11 @@
 
 <span class="add">@add(<span class="name">frag unit tests</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">a</span> =<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">a</span> =<br/>
 
 <span class="in2"></span><span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">b</span> =<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">b</span> =<br/>
 
 <span class="in2"></span><span class="fn">allocTestFrag</span>(<span class="str">""</span>);<br/>
 
@@ -1407,9 +1407,9 @@
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">needle</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">needle</span>,<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">haystack</span><br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">haystack</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -1486,7 +1486,7 @@
 
 <span class="add">@def(<span class="name">check cycle entries</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in1"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
 
 <span class="in2"></span><span class="var">haystack</span>-&gt;<span class="var">firstEntry</span>;<br/>
 
@@ -1537,9 +1537,9 @@
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">link</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">link</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frags</span>[<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frags</span>[<br/>
 
 <span class="var">FRAG_SLOTS</span><br/>
 
@@ -1565,13 +1565,13 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">clearFragMap</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">map</span><br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span><br/>
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">cur</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> **<span class="var">cur</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> **<span class="var">end</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> **<span class="var">end</span> =<br/>
 
 <span class="in3"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
 
@@ -1634,9 +1634,9 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="fn">allocFragInMap</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">allocFragInMap</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">map</span>,<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>,<br/>
 
@@ -1646,7 +1646,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> =<br/>
 
 <span class="in3"></span><span class="fn">allocFrag</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 
@@ -1694,9 +1694,9 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="fn">findFragInMap</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">findFragInMap</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">map</span>,<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>,<br/>
 
@@ -1730,7 +1730,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">hash</span> = <span class="fn">calcFragHash</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="var">frags</span>[<span class="var">hash</span>];<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="fn">s</span>(<span class="var">begin</span>, <span class="var">end</span>);<br/>
 
@@ -1783,19 +1783,19 @@
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="fn">getFragInMap</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">getFragInMap</span>(<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">map</span>,<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">end</span>,<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">insert</span><br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">insert</span><br/>
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">get frag find</span>)</span>;<br/>
 

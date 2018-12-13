@@ -41,6 +41,7 @@ D{file: hx.cc}
 	}
 x{file: hx.cc}
 ```
+* Hex ist in C++ geschrieben
 * Das Hauptprogramm besteht aus der `main`-Funktion
 * Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
   definiert werden können
@@ -121,9 +122,9 @@ A{global elements}
 		std::string name;
 	};
 
-	struct Input *input = nullptr;
-	std::list<struct Input *> pending;
-	std::list<struct Input *> used;
+	Input *input = nullptr;
+	std::list<Input *> pending;
+	std::list<Input *> used;
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -138,8 +139,8 @@ x{global elements}
 
 ```
 A{global elements}
-	struct FragMap root = {};
-	struct FragMap *frags = &root;
+	FragMap root = {};
+	FragMap *frags = &root;
 x{global elements}
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
@@ -150,7 +151,7 @@ A{global elements}
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
 		e{check file for path};
-		struct Input *i = new Input();
+		Input *i = new Input();
 		if (input) { pending.push_back(input); }
 		i->file = f;
 		i->name = path;
@@ -284,7 +285,7 @@ d{get next input file}
 	} else {
 		input = nullptr;
 	}
-	struct FragMap *nxt = frags->link;
+	FragMap *nxt = frags->link;
 	frags->link = nullptr;
 	frags = nxt;
 x{get next input file}
@@ -298,7 +299,7 @@ x{get next input file}
 
 ```
 d{additional input elements}
-	struct FragMap frags;
+	FragMap frags;
 x{additional input elements}
 ```
 * Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
@@ -361,7 +362,7 @@ x{process current char}
 
 ```
 d{additional read vars}
-	struct Frag *frag = nullptr;
+	Frag *frag = nullptr;
 	std::string buffer;
 	int bufferLine = 0;
 x{additional read vars}
@@ -450,7 +451,7 @@ d{process open brace} {
 d{process frag name}
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
-		struct FragMap *fm = &input->frags;
+		FragMap *fm = &input->frags;
 		E{check for double def};
 		if (! frag) {
 			frag = allocFragInMap(
@@ -469,7 +470,7 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'D') {
 		ASSERT(! frag, "def in frag");
-		struct FragMap *fm = frags;
+		FragMap *fm = frags;
 		E{check for double def};
 		if (! frag) {
 			frag = allocFragInMap(
@@ -507,8 +508,8 @@ x{check for double def}
 a{process frag name}
 	if (openCh == 'a') {
 		ASSERT(! frag, "add in frag");
-		struct FragMap *fm = &input->frags;
-		struct FragMap *ins = fm;
+		FragMap *fm = &input->frags;
+		FragMap *ins = fm;
 		frag = findFragInMap(
 			fm, name.data(),
 			name.data() + name.size()
@@ -525,8 +526,8 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'A') {
 		ASSERT(! frag, "add in frag");
-		struct FragMap *fm = frags;
-		struct FragMap *ins = &root;
+		FragMap *fm = frags;
+		FragMap *ins = &root;
 		frag = findFragInMap(
 			fm, name.data(),
 			name.data() + name.size()
@@ -665,7 +666,7 @@ a{process frag name}
 	if (openCh == 'e') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		struct Frag *sub = getFragInMap(
+		Frag *sub = getFragInMap(
 			&input->frags, name.data(),
 			name.data() + name.size(), &input->frags
 		);
@@ -686,7 +687,7 @@ a{process frag name}
 	if (openCh == 'g') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		struct Frag *sub = getFragInMap(
+		Frag *sub = getFragInMap(
 			frags, name.data(),
 			name.data() + name.size(), &root
 		);
@@ -724,7 +725,7 @@ a{process frag name}
 	if (openCh == 'E') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		struct Frag *sub =
+		Frag *sub =
 			getFragInMap(
 				&input->frags, name.data(),
 				name.data() + name.size(), &input->frags
@@ -745,7 +746,7 @@ a{process frag name}
 	if (openCh == 'G') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		struct Frag *sub =
+		Frag *sub =
 			getFragInMap(
 				frags, name.data(),
 				name.data() + name.size(), &root
@@ -986,11 +987,11 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	struct Frag **cur = root.frags;
-	struct Frag **end =
+	Frag **cur = root.frags;
+	Frag **end =
 		cur + FRAG_SLOTS;
 	for (; cur < end; ++cur) {
-		struct Frag *frag = *cur;
+		Frag *frag = *cur;
 		for (; frag; frag = frag->link) {
 			E{serialize frag};
 		}
@@ -1007,12 +1008,12 @@ a{serialize fragments} {
 	for (auto j = used.begin(); j != used.end(); ++j)
 	{
 		input = *j;
-		struct Frag **cur =
+		Frag **cur =
 			input->frags.frags;
-		struct Frag **end =
+		Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
-			struct Frag *frag = *cur;
+			Frag *frag = *cur;
 			while (frag) {
 				E{serialize frag};
 				frag = frag->link;
