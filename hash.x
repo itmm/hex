@@ -12,9 +12,14 @@ x{global elements}
 
 ```
 d{define hash}
-	static inline unsigned initHash() {
-		return 0x3d9a73b5;
-	}
+	class Hash {
+		private:
+			unsigned _hash;
+		public:
+			Hash(): _hash(0x3d9a73b5) {}
+			unsigned hash() const { return _hash & 0x7fffffff; }
+			unsigned add(const std::string &s);
+	};
 x{define hash}
 ```
 * Um deterministisch zu sein, werden Hashes mit einer festen Zahl
@@ -23,23 +28,19 @@ x{define hash}
 
 ```
 a{define hash}
-	template <typename T>
-	unsigned addToHash(
-		unsigned hash,
-		T begin, T end
-	) {
-		for (; begin < end; ++begin) {
+	unsigned Hash::add(const std::string &s) {
+		for (auto i = s.begin(); i != s.end(); ++i) {
 			e{hash next ch};
 		}
-		return hash;
+		return hash();
 	}
 x{define hash}
 ```
 
 ```
 d{hash next ch}
-	hash ^= *begin;
-	hash = (hash << 3) | (hash >> 29);
+	_hash ^= *i;
+	_hash = (_hash << 3) | (_hash >> 29);
 x{hash next ch}
 ```
 
@@ -49,11 +50,8 @@ a{define hash}
 		const char *begin,
 		const char *end
 	) {
-		unsigned hash = initHash();
-		hash = addToHash(
-			hash, begin, end
-		);
-		return hash & 0x7ffffff;
+		Hash h;
+		return h.add(std::string(begin, end));
 	}
 x{define hash}
 ```

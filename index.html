@@ -1686,21 +1686,11 @@
 
 <span class="add">@def(<span class="name">process private frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
+<span class="in1"></span><span class="type">Hash</span> <span class="var">h</span>;<br/>
 
-<span class="in1"></span><span class="var">cur</span> = <span class="fn">addToHash</span>(<br/>
+<span class="in1"></span><span class="var">h</span>.<span class="fn">add</span>(<span class="var">input</span>-&gt;<span class="var">name</span>);<br/>
 
-<span class="in2"></span><span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">input</span>-&gt;<span class="var">name</span>.<span class="fn">end</span>()<br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span><span class="var">cur</span> = <span class="fn">addToHash</span>(<br/>
-
-<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">name</span>.<span class="fn">end</span>()<br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span><span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="var">h</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
 
 <span class="end">@end(<span class="name">process private frag</span>)</span><br/>
 
@@ -1837,21 +1827,11 @@
 
 <span class="add">@def(<span class="name">process magic frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">initHash</span>();<br/>
+<span class="in1"></span><span class="type">Hash</span> <span class="var">h</span>;<br/>
 
-<span class="in1"></span><span class="var">cur</span> = <span class="fn">addToHash</span>(<br/>
+<span class="in1"></span><span class="var">h</span>.<span class="fn">add</span>(<span class="var">input</span>-&gt;<span class="var">name</span>);<br/>
 
-<span class="in2"></span><span class="var">cur</span>, <span class="var">input</span>-&gt;<span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">input</span>-&gt;<span class="var">name</span>.<span class="fn">end</span>()<br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span><span class="var">cur</span> = <span class="fn">addToHash</span>(<br/>
-
-<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">name</span>.<span class="fn">end</span>()<br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span><span class="var">cur</span> &amp;= <span class="num">0x7fffffff</span>;<br/>
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="var">h</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
 
 <span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
 

@@ -36,33 +36,31 @@
 ;
 
 	
-	static inline unsigned initHash() {
-		return 0x3d9a73b5;
-	}
+	class Hash {
+		private:
+			unsigned _hash;
+		public:
+			Hash(): _hash(0x3d9a73b5) {}
+			unsigned hash() const { return _hash & 0x7fffffff; }
+			unsigned add(const std::string &s);
+	};
 
-	template <typename T>
-	unsigned addToHash(
-		unsigned hash,
-		T begin, T end
-	) {
-		for (; begin < end; ++begin) {
+	unsigned Hash::add(const std::string &s) {
+		for (auto i = s.begin(); i != s.end(); ++i) {
 			
-	hash ^= *begin;
-	hash = (hash << 3) | (hash >> 29);
+	_hash ^= *i;
+	_hash = (_hash << 3) | (_hash >> 29);
 ;
 		}
-		return hash;
+		return hash();
 	}
 
 	int calcHash(
 		const char *begin,
 		const char *end
 	) {
-		unsigned hash = initHash();
-		hash = addToHash(
-			hash, begin, end
-		);
-		return hash & 0x7ffffff;
+		Hash h;
+		return h.add(std::string(begin, end));
 	}
 ;
 
@@ -1147,14 +1145,9 @@
 	if (openCh == 'p') {
 		ASSERT(frag, "private not in frag");
 		
-	unsigned cur = initHash();
-	cur = addToHash(
-		cur, input->name.begin(), input->name.end()
-	);
-	cur = addToHash(
-		cur, name.begin(), name.end()
-	);
-	cur &= 0x7fffffff;
+	Hash h;
+	h.add(input->name);
+	unsigned cur = h.add(name);
 
 	static char hash[12];
 	char *end = hash + sizeof(hash);
@@ -1198,14 +1191,9 @@
 	if (openCh == 'm') {
 		ASSERT(frag, "magic not in frag");
 		
-	unsigned cur = initHash();
-	cur = addToHash(
-		cur, input->name.begin(), input->name.end()
-	);
-	cur = addToHash(
-		cur, name.begin(), name.end()
-	);
-	cur &= 0x7fffffff;
+	Hash h;
+	h.add(input->name);
+	unsigned cur = h.add(name);
 
 	static char magic[12];
 	char *end = magic + sizeof(magic);

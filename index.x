@@ -787,14 +787,9 @@ x{process frag name}
 
 ```
 d{process private frag}
-	unsigned cur = initHash();
-	cur = addToHash(
-		cur, input->name.begin(), input->name.end()
-	);
-	cur = addToHash(
-		cur, name.begin(), name.end()
-	);
-	cur &= 0x7fffffff;
+	Hash h;
+	h.add(input->name);
+	unsigned cur = h.add(name);
 x{process private frag}
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
@@ -859,14 +854,9 @@ x{process frag name}
 
 ```
 d{process magic frag}
-	unsigned cur = initHash();
-	cur = addToHash(
-		cur, input->name.begin(), input->name.end()
-	);
-	cur = addToHash(
-		cur, name.begin(), name.end()
-	);
-	cur &= 0x7fffffff;
+	Hash h;
+	h.add(input->name);
+	unsigned cur = h.add(name);
 x{process magic frag}
 ```
 * Berechnet Hash-Wert
