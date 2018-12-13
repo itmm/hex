@@ -40,15 +40,26 @@
 		private:
 			unsigned _hash;
 		public:
-			Hash(): _hash(0x3d9a73b5) {}
-			unsigned hash() const { return _hash & 0x7fffffff; }
-			unsigned add(const std::string &s);
+			
+	Hash(): _hash(0x3d9a73b5) {}
+
+	int hash() const {
+		return static_cast<int>(
+			_hash & 0x7fffffff
+		);
+	}
+
+	unsigned add(const std::string &s);
+;
 	};
 
-	unsigned Hash::add(const std::string &s) {
-		for (auto i = s.begin(); i != s.end(); ++i) {
+	unsigned Hash::add(
+		const std::string &s
+	) {
+		for (auto &ch : s) {
 			
-	_hash ^= *i;
+	_hash ^= ch;
+
 	_hash = (_hash << 3) | (_hash >> 29);
 ;
 		}
@@ -60,7 +71,9 @@
 		const char *end
 	) {
 		Hash h;
-		return h.add(std::string(begin, end));
+		return h.add(
+			std::string(begin, end)
+		);
 	}
 ;
 
