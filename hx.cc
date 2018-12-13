@@ -4,6 +4,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
+	#include <list>
+
 	#include <stdlib.h>
 
 	#include <string.h>
@@ -64,10 +66,21 @@
 ;
 
 	
-	struct FragEntry;
+	struct Frag;
+
+	struct FragEntry {
+		FragEntry *link;
+		Frag *frag;
+		std::string value;
+		
+	std::string source;
+	int line;
+;
+	};
 
 	struct Frag {
 		struct Frag *link;
+		std::list<FragEntry> entries;
 		struct FragEntry *firstEntry;
 		struct FragEntry *lastEntry;
 		int expands;
@@ -87,7 +100,6 @@
 	ASSERT(result);
 ;
 		result->link = nullptr;
-		result->firstEntry = nullptr;
 		result->expands = 0;
 		result->multiples = 0;
 		
@@ -100,11 +112,7 @@
 		struct Frag *frag
 	) {
 		if (frag) {
-			
-	freeFragEntry(frag->firstEntry);
-;
-			frag->firstEntry = nullptr;
-			frag->lastEntry = nullptr;
+			frag->entries.clear();
 		}
 	}
 
@@ -114,7 +122,6 @@
 		while (f) {
 			struct Frag *l =
 				f->link;
-			freeFragEntries(f);
 			delete(f);
 			f = l;
 		}
@@ -141,18 +148,8 @@
 	bool isPopulatedFrag(
 		const struct Frag *f
 	) {
-		return f && f->firstEntry;
+		return f && f->entries.size();
 	}
-
-	struct FragEntry {
-		struct FragEntry *link;
-		struct Frag *frag;
-		std::string value;
-		
-	std::string source;
-	int line;
-;
-	};
 
 	struct FragEntry *allocFragEntry(
 		struct Frag *frag,
@@ -219,19 +216,8 @@
 		
 	ASSERT(frag);
 	ASSERT(entry);
-	ASSERT(! entry->link);
 ;
-		if (frag->firstEntry) {
-			
-	frag->lastEntry->link = entry;
-	frag->lastEntry = entry;
-;
-		} else {
-			
-	frag->firstEntry = entry;
-	frag->lastEntry = entry;
-;
-		}
+		frag->entries.push_back(*entry);
 	}
 
 	void addBytesToFrag(
@@ -318,11 +304,10 @@
 		ASSERT(frag);
 		ASSERT(out);
 		
-	struct FragEntry *entry =
-		frag->firstEntry;
-	for (; entry; entry = entry->link) {
+	auto entry = frag->entries.begin();
+	for (; entry != frag->entries.end(); ++entry) {
 		
-	if (getFragEntryValueSize(entry)) {
+	if (getFragEntryValueSize(&*entry)) {
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(
 				entry->value.data(), 1, entry->value.size(),
@@ -754,66 +739,6 @@
 		ASSERT(entry->value == "abc");
 
 		freeFragEntry(entry);
-	}
-
-	{
-		struct Frag *f =
-			allocTestFrag("");
-		struct FragEntry *e =
-			allocEmptyFragEntry();
-		addEntryToFrag(f, e);
-		ASSERT(
-			f->firstEntry == e
-		);
-		freeFrag(f);
-	}
-
-	{
-		struct Frag *f =
-			allocTestFrag("");
-		struct FragEntry *e =
-			allocEmptyFragEntry();
-		addEntryToFrag(f, e);
-		ASSERT(
-			f->lastEntry == e
-		);
-		freeFrag(f);
-	}
-
-	{
-		struct Frag *frag = nullptr;
-		struct FragEntry *first;
-		struct FragEntry *second;
-		
-	frag = allocTestFrag("");
-	first = allocEmptyFragEntry();
-	second = allocEmptyFragEntry();
-
-	addEntryToFrag(frag, first);
-	addEntryToFrag(frag, second);
-;
-		
-	ASSERT(frag->firstEntry == first);
-;
-		freeFrag(frag);
-	}
-
-	{
-		struct Frag *frag = nullptr;
-		struct FragEntry *first;
-		struct FragEntry *second;
-		
-	frag = allocTestFrag("");
-	first = allocEmptyFragEntry();
-	second = allocEmptyFragEntry();
-
-	addEntryToFrag(frag, first);
-	addEntryToFrag(frag, second);
-;
-		ASSERT(
-			frag->lastEntry == second
-		);
-		freeFrag(frag);
 	}
 
 	{

@@ -18,10 +18,35 @@ x{global elements}
 
 ```
 d{define frag}
-	struct FragEntry;
+	struct Frag;
 
+	struct FragEntry {
+		FragEntry *link;
+		Frag *frag;
+		std::string value;
+		e{additional entry attributes};
+	};
+x{define frag}
+```
+* Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
+  dieses an der aktuellen Stelle expandiert werden soll)
+* Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
+* Die Länge des Byte-Arrays wird über einen Zeiger angezeigt (damit auch
+  Null-Bytes verwendet werden können)
+* Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
+  zuerst der Text ausgegeben
+
+```
+A{includes}
+	#include <list>
+x{includes}
+```
+
+```
+a{define frag}
 	struct Frag {
 		struct Frag *link;
+		std::list<FragEntry> entries;
 		struct FragEntry *firstEntry;
 		struct FragEntry *lastEntry;
 		int expands;
@@ -56,7 +81,6 @@ a{define frag}
 		struct Frag *result = nullptr;
 		e{allocate frag on heap};
 		result->link = nullptr;
-		result->firstEntry = nullptr;
 		result->expands = 0;
 		result->multiples = 0;
 		e{copy frag name};
@@ -65,8 +89,6 @@ a{define frag}
 x{define frag}
 ```
 * Die Zeiger werden mit `nullptr` initialisiert
-* `lastEntry` wird erst initialisiert, wenn `firstEntry` gesetzt
-  wird
 * Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
   Null-Byte terminiert sein
 
@@ -97,8 +119,6 @@ d{allocate frag on heap}
 x{allocate frag on heap}
 ```
 * Die Zeiger werden mit `nullptr` initialisiert
-* `lastEntry` wird erst initialisiert, wenn `firstEntry` gesetzt
-  wird
 * Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
   Null-Byte terminiert sein
 
@@ -121,9 +141,7 @@ a{define frag}
 		struct Frag *frag
 	) {
 		if (frag) {
-			e{free frag entries};
-			frag->firstEntry = nullptr;
-			frag->lastEntry = nullptr;
+			frag->entries.clear();
 		}
 	}
 x{define frag}
@@ -137,7 +155,6 @@ a{define frag}
 		while (f) {
 			struct Frag *l =
 				f->link;
-			freeFragEntries(f);
 			delete(f);
 			f = l;
 		}
@@ -206,31 +223,11 @@ a{define frag}
 	bool isPopulatedFrag(
 		const struct Frag *f
 	) {
-		return f && f->firstEntry;
+		return f && f->entries.size();
 	}
 x{define frag}
 ```
 
-# Fragment-Einträge
-
-```
-a{define frag}
-	struct FragEntry {
-		struct FragEntry *link;
-		struct Frag *frag;
-		std::string value;
-		e{additional entry attributes};
-	};
-x{define frag}
-```
-* Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
-  dieses an der aktuellen Stelle expandiert werden soll)
-* Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
-* Die Länge des Byte-Arrays wird über einen Zeiger angezeigt (damit auch
-  Null-Bytes verwendet werden können)
-* Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
-  zuerst der Text ausgegeben
-		
 # Fragment-Eintrag anlegen
 
 ```
@@ -313,16 +310,6 @@ D{forward declarations}
 	);
 x{forward declarations}
 ```
-
-```
-d{free frag entries}
-	freeFragEntry(frag->firstEntry);
-x{free frag entries}
-```
-* Wenn ein Fragment freigegeben wird, so werden auch die anhängenden
-  Einträge freigegeben
-* Damit die Funktion im `freeFrag` sichtbar ist, wird sie in der
-  Include-Sektion definiert
 
 # Auf Attribute zugreifen
 
@@ -437,11 +424,7 @@ a{define frag}
 		struct FragEntry *entry
 	) {
 		e{assert add entry};
-		if (frag->firstEntry) {
-			e{append entry};
-		} else {
-			e{set first entry};
-		}
+		frag->entries.push_back(*entry);
 	}
 x{define frag}
 ```
@@ -452,115 +435,11 @@ x{define frag}
 d{assert add entry}
 	ASSERT(frag);
 	ASSERT(entry);
-	ASSERT(! entry->link);
 x{assert add entry}
 ```
 * Fragment darf nicht `nullptr` sein
 * Eintrag darf nicht `nullptr` sein
 * Eintrag darf noch nicht in einer anderen Liste hängen
-
-```
-d{append entry}
-	frag->lastEntry->link = entry;
-	frag->lastEntry = entry;
-x{append entry}
-```
-* Da es schon Einträge gibt, muss es bereits einen letzten geben
-* Dessen neuer Nachfolger ist der neue Eintrag
-* Der neue Eintrag wird zum neuen letzten Eintrag
-* Der Nachfolger von `entry` ist bereits `nullptr`
-
-```
-d{set first entry}
-	frag->firstEntry = entry;
-	frag->lastEntry = entry;
-x{set first entry}
-```
-* Der erste Eintrag wird auch als letzter Eintrag gesetzt
-* Der Nachfolger von `entry` ist bereits `nullptr`
-
-```
-a{frag unit tests}
-	{
-		struct Frag *f =
-			allocTestFrag("");
-		struct FragEntry *e =
-			allocEmptyFragEntry();
-		addEntryToFrag(f, e);
-		ASSERT(
-			f->firstEntry == e
-		);
-		freeFrag(f);
-	}
-x{frag unit tests}
-```
-* Der erste Eintrag im Fragment wird gesetzt
-
-```
-a{frag unit tests}
-	{
-		struct Frag *f =
-			allocTestFrag("");
-		struct FragEntry *e =
-			allocEmptyFragEntry();
-		addEntryToFrag(f, e);
-		ASSERT(
-			f->lastEntry == e
-		);
-		freeFrag(f);
-	}
-x{frag unit tests}
-```
-* Der letzte Eintrag im Fragment wird gesetzt
-
-```
-a{frag unit tests}
-	{
-		struct Frag *frag = nullptr;
-		struct FragEntry *first;
-		struct FragEntry *second;
-		E{add two entries};
-		e{check first of 2};
-		freeFrag(frag);
-	}
-x{frag unit tests}
-```
-* Zwei Einträge werden an ein Fragment angehängt
-* Der erste Eintrag muss gesetzt bleiben
-
-```
-d{add two entries}
-	frag = allocTestFrag("");
-	first = allocEmptyFragEntry();
-	second = allocEmptyFragEntry();
-
-	addEntryToFrag(frag, first);
-	addEntryToFrag(frag, second);
-x{add two entries}
-
-d{check first of 2}
-	ASSERT(frag->firstEntry == first);
-x{check first of 2}
-```
-* Zwei Einträge werden an ein Fragment angehängt
-* Der erste Eintrag muss gesetzt bleiben
-
-```
-a{frag unit tests}
-	{
-		struct Frag *frag = nullptr;
-		struct FragEntry *first;
-		struct FragEntry *second;
-		E{add two entries};
-		ASSERT(
-			frag->lastEntry == second
-		);
-		freeFrag(frag);
-	}
-x{frag unit tests}
-```
-* Zwei Einträge werden an ein Fragment angehängt
-* Der letzte Eintrag muss gesetzt werden
 
 ```
 a{define frag}
@@ -650,9 +529,8 @@ x{define frag}
 
 ```
 d{iterate entries}
-	struct FragEntry *entry =
-		frag->firstEntry;
-	for (; entry; entry = entry->link) {
+	auto entry = frag->entries.begin();
+	for (; entry != frag->entries.end(); ++entry) {
 		e{serialize bytes};
 		if (entry->frag) {
 			serializeFrag(
@@ -674,7 +552,7 @@ x{serialize test defines}
 
 ```
 d{serialize bytes}
-	if (getFragEntryValueSize(entry)) {
+	if (getFragEntryValueSize(&*entry)) {
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(
 				entry->value.data(), 1, entry->value.size(),
