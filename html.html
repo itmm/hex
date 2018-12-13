@@ -50,25 +50,21 @@
 
 <span class="add">@def(<span class="name">write cur HTML file</span>)</span><br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>) + <span class="num">4</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span> = <span class="var">cur</span>-&gt;<span class="var">name</span>;<br/>
 
-<span class="in1"></span><span class="type">char</span> *<span class="var">outPath</span> = (<span class="type">char</span> *) <span class="fn">malloc</span>(<span class="var">len</span>);<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">outPath</span> =<br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">outPath</span>);<br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">name</span>.<span class="fn">size</span>() - <span class="num">2</span>) +<br/>
 
-<span class="in1"></span><span class="fn">memcpy</span>(<span class="var">outPath</span>, <span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="var">len</span> - <span class="num">6</span>);<br/>
+<span class="in2"></span><span class="str">".html"</span>;<br/>
 
-<span class="in1"></span><span class="fn">strcpy</span>(<span class="var">outPath</span> + <span class="var">len</span> - <span class="num">6</span>, <span class="str">".html"</span>);<br/>
-
-<span class="in1"></span><span class="type">FILE</span> *<span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>, <span class="str">"w"</span>);<br/>
+<span class="in1"></span><span class="type">FILE</span> *<span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write cur HTML file to out</span>)</span>;<br/>
 
 <span class="in1"></span><span class="fn">fclose</span>(<span class="var">out</span>);<br/>
-
-<span class="in1"></span><span class="fn">free</span>(<span class="var">outPath</span>);<br/>
 
 <span class="end">@end(<span class="name">write cur HTML file</span>)</span><br/>
 
@@ -84,7 +80,7 @@
 
 <span class="add">@def(<span class="name">write cur HTML file to out</span>)</span> <br/>
 
-<span class="in1"></span><span class="type">FILE</span> *<span class="keyword">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>, <span class="str">"r"</span>);<br/>
+<span class="in1"></span><span class="type">FILE</span> *<span class="keyword">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>(), <span class="str">"r"</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="keyword">in</span>);<br/>
 

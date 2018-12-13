@@ -26,7 +26,7 @@ d{define frag}
 		struct FragEntry *lastEntry;
 		int expands;
 		int multiples;
-		char name[];
+		std::string name;
 	};
 x{define frag}
 ```
@@ -92,11 +92,7 @@ x{define logging}
 d{allocate frag on heap}
 	ASSERT(nameBegin);
 	ASSERT(nameBegin <= nameEnd);
-	int nameLength =
-		nameEnd - nameBegin;
-	int size = sizeof(struct Frag)
-		+ nameLength + 1;
-	result = reinterpret_cast<struct Frag *>(malloc(size));
+	result = new Frag();
 	ASSERT(result);
 x{allocate frag on heap}
 ```
@@ -112,15 +108,10 @@ A{includes}
 x{includes}
 
 d{copy frag name}
-	memcpy(
-		result->name, nameBegin,
-		nameLength
-	);
-	result->name[nameLength] = '\0';
+	result->name = std::string(nameBegin, nameEnd);
 x{copy frag name}
 ```
 * Der Name wird direkt in das Fragment kopiert
-* Der Name wird mit einem Null-Byte abgeschlossen
 
 # Fragmente freigeben
 
@@ -147,7 +138,7 @@ a{define frag}
 			struct Frag *l =
 				f->link;
 			freeFragEntries(f);
-			free(f);
+			delete(f);
 			f = l;
 		}
 	}
@@ -184,9 +175,7 @@ a{define frag}
 		struct Frag *f =
 			allocTestFrag(name);
 		ASSERT(f);
-		ASSERT(
-			strcmp(f->name, name) == 0
-		);
+		ASSERT(f->name == name);
 		freeFrag(f);
 	}
 x{define frag}
@@ -229,9 +218,8 @@ a{define frag}
 	struct FragEntry {
 		struct FragEntry *link;
 		struct Frag *frag;
-		const char *valueEnd;
+		std::string value;
 		e{additional entry attributes};
-		char value[];
 	};
 x{define frag}
 ```
@@ -268,16 +256,7 @@ x{define frag}
 
 ```
 d{allocate entry on heap}
-	int valueLength = 0;
-	if (valueBegin) {
-		ASSERT(valueBegin <= valueEnd);
-		valueLength =
-			valueEnd - valueBegin;
-	}
-	int entrySize = valueLength +
-		sizeof(struct FragEntry);
-	result = reinterpret_cast<struct FragEntry*>(malloc(entrySize));
-	ASSERT(result);
+	result = new FragEntry();
 x{allocate entry on heap}
 ```
 * Die Größe der Struktur wird um die Anzahl der zu kopierenden Bytes
@@ -287,13 +266,8 @@ x{allocate entry on heap}
 ```
 d{copy entry values}
 	if (valueBegin) {
-		memcpy(
-			result->value, valueBegin,
-			valueLength
-		);
+		result->value = std::string(valueBegin, valueEnd);
 	}
-	result->valueEnd =
-		result->value + valueLength;
 	result->frag = frag;
 x{copy entry values}
 ```
@@ -321,7 +295,7 @@ a{define frag}
 		while (e) {
 			struct FragEntry *l =
 				e->link;
-			free(e);
+			delete(e);
 			e = l;
 		}
 	}
@@ -360,8 +334,7 @@ a{define frag}
 		if (! e) {
 			return 0;
 		}
-		return e->valueEnd -
-			e->value;
+		return e->value.size();
 	}
 x{define frag}
 ```
@@ -447,10 +420,7 @@ a{frag unit tests}
 			allocTestFragEntry("abc");
 
 		ASSERT(entry);
-		ASSERT(
-			memcmp(entry->value,
-				"abc", 3) == 0
-		);
+		ASSERT(entry->value == "abc");
 
 		freeFragEntry(entry);
 	}
@@ -598,7 +568,7 @@ a{define frag}
 		struct Frag *frag,
 		const char *value,
 		const char *valueEnd,
-		const char *source,
+		const std::string &source,
 		int line
 	) {
 		struct FragEntry *entry =
@@ -698,24 +668,20 @@ x{iterate entries}
 
 ```
 d{serialize test defines}
-	char *fragTestBufferCur = nullptr;
-	const char *fragTestBufferEnd = nullptr;
+	std::string *fragTestBufferCur = nullptr;
 x{serialize test defines}
 ```
 
 ```
 d{serialize bytes}
 	if (getFragEntryValueSize(entry)) {
-		const char *cur = entry->value;
-		const char *end = entry->valueEnd;
-		unsigned len = end - cur;
 		if (! fragTestBufferCur) {
-			ASSERT(fwrite(cur, 1, len, out) == len);
+			ASSERT(fwrite(
+				entry->value.data(), 1, entry->value.size(),
+				out
+			) == entry->value.size());
 		} else {
-			ASSERT(fragTestBufferCur + len < fragTestBufferEnd);
-			memcpy(fragTestBufferCur, cur, len);
-			fragTestBufferCur += len;
-			*fragTestBufferCur = '\0';
+			*fragTestBufferCur += entry->value;
 		}
 	}
 x{serialize bytes}
@@ -737,15 +703,11 @@ x{define frag}
 
 ```
 d{serialize test frag}
-	char buffer[100];
-	fragTestBufferCur = buffer;
-	fragTestBufferEnd = buffer + sizeof(buffer);
-	serializeFrag(frag, (FILE *) buffer, false);
-	ASSERT(strcmp(
-		expected, buffer
-	) == 0);
+	std::string buffer;
+	fragTestBufferCur = &buffer;
+	serializeFrag(frag, (FILE *) &buffer, false);
+	ASSERT(buffer == expected);
 	fragTestBufferCur = nullptr;
-	fragTestBufferEnd = nullptr;
 x{serialize test frag}
 ```
 * Serialisiert das Fragment
@@ -760,7 +722,7 @@ a{define frag}
 		int size = strlen(str);
 		addBytesToFrag(
 			frag, str, str + size,
-			nullptr, 0
+			std::string(), 0
 		);
 	}
 x{define frag}
@@ -955,14 +917,11 @@ x{define frag}
 d{find frag in slot} {
 	int hash = calcFragHash(begin, end);
 	struct Frag *frag = map->frags[hash];
+	std::string s(begin, end);
 	for (; frag; frag = frag->link) {
-		const char *a = begin;
-		const char *b = frag->name;
-		while (a != end) {
-			if (*a++ != *b++) { break; }
+		if (s == frag->name) {
+			return frag;
 		}
-		if (a == end && ! *b) {
-			return frag; }
 	}
 } x{find frag in slot}
 ```
@@ -1024,7 +983,7 @@ x{get frag alloc}
 
 ```
 d{additional entry attributes}
-	const char *source;
+	std::string source;
 	int line;
 x{additional entry attributes}
 ```

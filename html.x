@@ -18,23 +18,21 @@ x{write HTML file}
 
 ```
 d{write cur HTML file}
-	int len = strlen(cur->name) + 4;
-	char *outPath = (char *) malloc(len);
-	ASSERT(outPath);
-	memcpy(outPath, cur->name, len - 6);
-	strcpy(outPath + len - 6, ".html");
-	FILE *out = fopen(outPath, "w");
+	std::string &name = cur->name;
+	std::string outPath =
+		name.substr(0, name.size() - 2) +
+		".html";
+	FILE *out = fopen(outPath.c_str(), "w");
 	ASSERT(out);
 	e{write cur HTML file to out};
 	fclose(out);
-	free(outPath);
 x{write cur HTML file}
 ```
 * Die HTML hat den gleichen Pfad mit der Endung `.html` anstatt `.x`
 
 ```
 d{write cur HTML file to out} 
-	FILE *in = fopen(cur->name, "r");
+	FILE *in = fopen(cur->name.c_str(), "r");
 	ASSERT(in);
 	e{write HTML file from in to out};
 	fclose(in);

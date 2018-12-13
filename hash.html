@@ -62,53 +62,19 @@
 
 <span class="add">@add(<span class="name">define hash</span>)</span><br/>
 
-<span class="in1"></span><span class="type">unsigned</span> <span class="fn">addRangeToHash</span>(<br/>
+<span class="in1"></span><span class="var">template</span> &lt;<span class="var">typename</span> <span class="var">T</span>&gt;<br/>
+
+<span class="in1"></span><span class="type">unsigned</span> <span class="fn">addToHash</span>(<br/>
 
 <span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span>,<br/>
 
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">end</span><br/>
+<span class="in2"></span><span class="var">T</span> <span class="var">begin</span>, <span class="var">T</span> <span class="var">end</span><br/>
 
 <span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">begin</span> &lt; <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
 
-<span class="in3"></span><span class="expand">@multiple(<span class="name">hash next ch</span>)</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="var">hash</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define hash</span>)</span><br/>
-
-</code>
-</div>
-
-
-</div>
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define hash</span>)</span><br/>
-
-<span class="in1"></span><span class="type">unsigned</span> <span class="fn">addTerminatedToHash</span>(<br/>
-
-<span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">begin</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">begin</span>);<br/>
-
-<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">begin</span>; ++<span class="var">begin</span>) {<br/>
-
-<span class="in3"></span><span class="expand">@multiple(<span class="name">hash next ch</span>)</span>;<br/>
+<span class="in3"></span><span class="expand">@expand(<span class="name">hash next ch</span>)</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -154,7 +120,7 @@
 
 <span class="in2"></span><span class="type">unsigned</span> <span class="var">hash</span> = <span class="fn">initHash</span>();<br/>
 
-<span class="in2"></span><span class="var">hash</span> = <span class="fn">addRangeToHash</span>(<br/>
+<span class="in2"></span><span class="var">hash</span> = <span class="fn">addToHash</span>(<br/>
 
 <span class="in3"></span><span class="var">hash</span>, <span class="var">begin</span>, <span class="var">end</span><br/>
 

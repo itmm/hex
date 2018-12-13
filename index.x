@@ -118,7 +118,7 @@ A{global elements}
 		struct Input *link;
 		FILE *file;
 		e{additional input elements};
-		char name[];
+		std::string name;
 	};
 
 	struct Input *input = nullptr;
@@ -149,14 +149,10 @@ A{global elements}
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
 		e{check file for path};
-		int len = strlen(path) + 1;
-		struct Input *i = (struct Input *) malloc(
-			sizeof(struct Input) + len
-		);
-		e{check memory for input};
+		struct Input *i = new Input();
 		i->link = input;
 		i->file = f;
-		memcpy(i->name, path, len);
+		i->name = path;
 		e{init additional input fields};
 		input = i;
 	}
@@ -175,17 +171,6 @@ d{check file for path}
 x{check file for path}
 ```
 * Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab
-
-```
-d{check memory for input}
-	ASSERT(
-		i,
-		"no memory for input"
-	);
-x{check memory for input}
-```
-* Wenn kein Speicher für die `struct Input` vorhanden ist bricht das
-  Programm ab
 
 ```
 d{init additional input fields}
@@ -621,9 +606,9 @@ x{process frag name}
 ```
 d{frag names must match}
 	ASSERT(
-		! strcmp(frag->name, name.c_str()),
+		frag->name == name,
 		"closing [%s] != [%s]",
-		name.c_str(), frag->name
+		name.c_str(), frag->name.c_str()
 	);
 x{frag names must match}
 ```
@@ -635,12 +620,12 @@ A{global elements}
 	bool alreadyUsed(const char *name) {
 		struct Input *i = input;
 		for (; i; i = i->link) {
-			if (strcmp(i->name, name) == 0) {
+			if (i->name == name) {
 				return true;
 			}
 		}
 		for (i = used; i; i = i->link) {
-			if (strcmp(i->name, name) == 0) {
+			if (i->name == name) {
 				return true;
 			}
 		}
@@ -712,13 +697,13 @@ d{check frag expand count}
 	if (sub->expands) {
 		printf(
 			"multiple expands of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 	if (sub->multiples) {
 		printf(
 			"expand after mult of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 x{check frag expand count}
@@ -774,7 +759,7 @@ d{check for prev expands}
 		printf(
 			"multiple after expand "
 				"of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 x{check for prev expands}
@@ -797,11 +782,11 @@ x{process frag name}
 ```
 d{process private frag}
 	unsigned cur = initHash();
-	cur = addTerminatedToHash(
-		cur, input->name
+	cur = addToHash(
+		cur, input->name.begin(), input->name.end()
 	);
-	cur = addRangeToHash(
-		cur, name.data(), name.data() + name.size()
+	cur = addToHash(
+		cur, name.begin(), name.end()
 	);
 	cur &= 0x7fffffff;
 x{process private frag}
@@ -869,11 +854,11 @@ x{process frag name}
 ```
 d{process magic frag}
 	unsigned cur = initHash();
-	cur = addTerminatedToHash(
-		cur, input->name
+	cur = addToHash(
+		cur, input->name.begin(), input->name.end()
 	);
-	cur = addRangeToHash(
-		cur, name.data(), name.data() + name.size()
+	cur = addToHash(
+		cur, name.begin(), name.end()
 	);
 	cur &= 0x7fffffff;
 x{process magic frag}
@@ -1045,7 +1030,7 @@ a{serialize fragments} {
 ```
 d{serialize frag}
 	if (! memcmp(
-		"file: ", frag->name, 6
+		"file: ", frag->name.data(), 6
 	)) {
 		++frag->expands;
 		e{write in file};
@@ -1063,7 +1048,7 @@ a{serialize frag} {
 	if (sum <= 0) {
 		printf(
 			"frag [%s] not called\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 } x{serialize frag}
@@ -1077,7 +1062,7 @@ a{serialize frag}
 		printf(
 			"multiple frag [%s] only "
 				"used once\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 x{serialize frag}
@@ -1091,7 +1076,7 @@ a{serialize frag}
 	if (! isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] not populated\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 x{serialize frag}
@@ -1102,10 +1087,10 @@ x{serialize frag}
 ```
 d{write in file}
 	FILE *f =
-		fopen(frag->name + 6, "w");
+		fopen(frag->name.substr(6).c_str(), "w");
 	ASSERT(
 		f, "can't open %s",
-		frag->name + 6
+		frag->name.substr(6).c_str()
 	);
 	serializeFrag(frag, f, false);
 	fclose(f);

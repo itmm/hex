@@ -37,27 +37,12 @@
 		return 0x3d9a73b5;
 	}
 
-	unsigned addRangeToHash(
+	template <typename T>
+	unsigned addToHash(
 		unsigned hash,
-		const char *begin,
-		const char *end
+		T begin, T end
 	) {
-		ASSERT(begin);
 		for (; begin < end; ++begin) {
-			
-	hash ^= *begin;
-	hash = (hash << 3) | (hash >> 29);
-;
-		}
-		return hash;
-	}
-
-	unsigned addTerminatedToHash(
-		unsigned hash,
-		const char *begin
-	) {
-		ASSERT(begin);
-		for (; *begin; ++begin) {
 			
 	hash ^= *begin;
 	hash = (hash << 3) | (hash >> 29);
@@ -71,7 +56,7 @@
 		const char *end
 	) {
 		unsigned hash = initHash();
-		hash = addRangeToHash(
+		hash = addToHash(
 			hash, begin, end
 		);
 		return hash & 0x7ffffff;
@@ -87,7 +72,7 @@
 		struct FragEntry *lastEntry;
 		int expands;
 		int multiples;
-		char name[];
+		std::string name;
 	};
 
 	struct Frag *allocFrag(
@@ -98,11 +83,7 @@
 		
 	ASSERT(nameBegin);
 	ASSERT(nameBegin <= nameEnd);
-	int nameLength =
-		nameEnd - nameBegin;
-	int size = sizeof(struct Frag)
-		+ nameLength + 1;
-	result = reinterpret_cast<struct Frag *>(malloc(size));
+	result = new Frag();
 	ASSERT(result);
 ;
 		result->link = nullptr;
@@ -110,11 +91,7 @@
 		result->expands = 0;
 		result->multiples = 0;
 		
-	memcpy(
-		result->name, nameBegin,
-		nameLength
-	);
-	result->name[nameLength] = '\0';
+	result->name = std::string(nameBegin, nameEnd);
 ;
 		return result;
 	}
@@ -138,7 +115,7 @@
 			struct Frag *l =
 				f->link;
 			freeFragEntries(f);
-			free(f);
+			delete(f);
 			f = l;
 		}
 	}
@@ -157,9 +134,7 @@
 		struct Frag *f =
 			allocTestFrag(name);
 		ASSERT(f);
-		ASSERT(
-			strcmp(f->name, name) == 0
-		);
+		ASSERT(f->name == name);
 		freeFrag(f);
 	}
 
@@ -172,12 +147,11 @@
 	struct FragEntry {
 		struct FragEntry *link;
 		struct Frag *frag;
-		const char *valueEnd;
+		std::string value;
 		
-	const char *source;
+	std::string source;
 	int line;
 ;
-		char value[];
 	};
 
 	struct FragEntry *allocFragEntry(
@@ -187,27 +161,13 @@
 	) {
 		struct FragEntry *result = nullptr;
 		
-	int valueLength = 0;
-	if (valueBegin) {
-		ASSERT(valueBegin <= valueEnd);
-		valueLength =
-			valueEnd - valueBegin;
-	}
-	int entrySize = valueLength +
-		sizeof(struct FragEntry);
-	result = reinterpret_cast<struct FragEntry*>(malloc(entrySize));
-	ASSERT(result);
+	result = new FragEntry();
 ;
 		result->link = nullptr;
 		
 	if (valueBegin) {
-		memcpy(
-			result->value, valueBegin,
-			valueLength
-		);
+		result->value = std::string(valueBegin, valueEnd);
 	}
-	result->valueEnd =
-		result->value + valueLength;
 	result->frag = frag;
 ;
 		return result;
@@ -226,7 +186,7 @@
 		while (e) {
 			struct FragEntry *l =
 				e->link;
-			free(e);
+			delete(e);
 			e = l;
 		}
 	}
@@ -237,8 +197,7 @@
 		if (! e) {
 			return 0;
 		}
-		return e->valueEnd -
-			e->value;
+		return e->value.size();
 	}
 
 	struct FragEntry *
@@ -279,7 +238,7 @@
 		struct Frag *frag,
 		const char *value,
 		const char *valueEnd,
-		const char *source,
+		const std::string &source,
 		int line
 	) {
 		struct FragEntry *entry =
@@ -349,8 +308,7 @@
 	}
 
 	
-	char *fragTestBufferCur = nullptr;
-	const char *fragTestBufferEnd = nullptr;
+	std::string *fragTestBufferCur = nullptr;
 ;
 	void serializeFrag(
 		struct Frag *frag,
@@ -365,16 +323,13 @@
 	for (; entry; entry = entry->link) {
 		
 	if (getFragEntryValueSize(entry)) {
-		const char *cur = entry->value;
-		const char *end = entry->valueEnd;
-		unsigned len = end - cur;
 		if (! fragTestBufferCur) {
-			ASSERT(fwrite(cur, 1, len, out) == len);
+			ASSERT(fwrite(
+				entry->value.data(), 1, entry->value.size(),
+				out
+			) == entry->value.size());
 		} else {
-			ASSERT(fragTestBufferCur + len < fragTestBufferEnd);
-			memcpy(fragTestBufferCur, cur, len);
-			fragTestBufferCur += len;
-			*fragTestBufferCur = '\0';
+			*fragTestBufferCur += entry->value;
 		}
 	}
 ;
@@ -392,15 +347,11 @@
 		frag, const char *expected
 	) {
 		
-	char buffer[100];
-	fragTestBufferCur = buffer;
-	fragTestBufferEnd = buffer + sizeof(buffer);
-	serializeFrag(frag, (FILE *) buffer, false);
-	ASSERT(strcmp(
-		expected, buffer
-	) == 0);
+	std::string buffer;
+	fragTestBufferCur = &buffer;
+	serializeFrag(frag, (FILE *) &buffer, false);
+	ASSERT(buffer == expected);
 	fragTestBufferCur = nullptr;
-	fragTestBufferEnd = nullptr;
 ;
 	}
 
@@ -411,7 +362,7 @@
 		int size = strlen(str);
 		addBytesToFrag(
 			frag, str, str + size,
-			nullptr, 0
+			std::string(), 0
 		);
 	}
 
@@ -468,14 +419,11 @@
 		 {
 	int hash = calcFragHash(begin, end);
 	struct Frag *frag = map->frags[hash];
+	std::string s(begin, end);
 	for (; frag; frag = frag->link) {
-		const char *a = begin;
-		const char *b = frag->name;
-		while (a != end) {
-			if (*a++ != *b++) { break; }
+		if (s == frag->name) {
+			return frag;
 		}
-		if (a == end && ! *b) {
-			return frag; }
 	}
 } ;
 		
@@ -520,7 +468,7 @@
 
 	int line;
 ;
-		char name[];
+		std::string name;
 	};
 
 	struct Input *input = nullptr;
@@ -536,19 +484,10 @@
 		f, "can't open [%s]", path
 	);
 ;
-		int len = strlen(path) + 1;
-		struct Input *i = (struct Input *) malloc(
-			sizeof(struct Input) + len
-		);
-		
-	ASSERT(
-		i,
-		"no memory for input"
-	);
-;
+		struct Input *i = new Input();
 		i->link = input;
 		i->file = f;
-		memcpy(i->name, path, len);
+		i->name = path;
 		
 	if (input) {
 		input->frags.link = frags;
@@ -595,12 +534,12 @@
 	bool alreadyUsed(const char *name) {
 		struct Input *i = input;
 		for (; i; i = i->link) {
-			if (strcmp(i->name, name) == 0) {
+			if (i->name == name) {
 				return true;
 			}
 		}
 		for (i = used; i; i = i->link) {
-			if (strcmp(i->name, name) == 0) {
+			if (i->name == name) {
 				return true;
 			}
 		}
@@ -812,10 +751,7 @@
 			allocTestFragEntry("abc");
 
 		ASSERT(entry);
-		ASSERT(
-			memcmp(entry->value,
-				"abc", 3) == 0
-		);
+		ASSERT(entry->value == "abc");
 
 		freeFragEntry(entry);
 	}
@@ -1116,9 +1052,9 @@
 		ASSERT(frag, "end not in frag");
 		
 	ASSERT(
-		! strcmp(frag->name, name.c_str()),
+		frag->name == name,
 		"closing [%s] != [%s]",
-		name.c_str(), frag->name
+		name.c_str(), frag->name.c_str()
 	);
 ;
 		
@@ -1163,13 +1099,13 @@
 	if (sub->expands) {
 		printf(
 			"multiple expands of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 	if (sub->multiples) {
 		printf(
 			"expand after mult of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 ;
@@ -1198,13 +1134,13 @@
 	if (sub->expands) {
 		printf(
 			"multiple expands of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 	if (sub->multiples) {
 		printf(
 			"expand after mult of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 ;
@@ -1235,7 +1171,7 @@
 		printf(
 			"multiple after expand "
 				"of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 ;
@@ -1267,7 +1203,7 @@
 		printf(
 			"multiple after expand "
 				"of [%s]\n",
-			sub->name
+			sub->name.c_str()
 		);
 	}
 ;
@@ -1281,11 +1217,11 @@
 		ASSERT(frag, "private not in frag");
 		
 	unsigned cur = initHash();
-	cur = addTerminatedToHash(
-		cur, input->name
+	cur = addToHash(
+		cur, input->name.begin(), input->name.end()
 	);
-	cur = addRangeToHash(
-		cur, name.data(), name.data() + name.size()
+	cur = addToHash(
+		cur, name.begin(), name.end()
 	);
 	cur &= 0x7fffffff;
 
@@ -1332,11 +1268,11 @@
 		ASSERT(frag, "magic not in frag");
 		
 	unsigned cur = initHash();
-	cur = addTerminatedToHash(
-		cur, input->name
+	cur = addToHash(
+		cur, input->name.begin(), input->name.end()
 	);
-	cur = addRangeToHash(
-		cur, name.data(), name.data() + name.size()
+	cur = addToHash(
+		cur, name.begin(), name.end()
 	);
 	cur &= 0x7fffffff;
 
@@ -1426,15 +1362,15 @@
 		for (; frag; frag = frag->link) {
 			
 	if (! memcmp(
-		"file: ", frag->name, 6
+		"file: ", frag->name.data(), 6
 	)) {
 		++frag->expands;
 		
 	FILE *f =
-		fopen(frag->name + 6, "w");
+		fopen(frag->name.substr(6).c_str(), "w");
 	ASSERT(
 		f, "can't open %s",
-		frag->name + 6
+		frag->name.substr(6).c_str()
 	);
 	serializeFrag(frag, f, false);
 	fclose(f);
@@ -1446,7 +1382,7 @@
 	if (sum <= 0) {
 		printf(
 			"frag [%s] not called\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 } 
@@ -1454,14 +1390,14 @@
 		printf(
 			"multiple frag [%s] only "
 				"used once\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 
 	if (! isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] not populated\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 ;
@@ -1480,15 +1416,15 @@
 			while (frag) {
 				
 	if (! memcmp(
-		"file: ", frag->name, 6
+		"file: ", frag->name.data(), 6
 	)) {
 		++frag->expands;
 		
 	FILE *f =
-		fopen(frag->name + 6, "w");
+		fopen(frag->name.substr(6).c_str(), "w");
 	ASSERT(
 		f, "can't open %s",
-		frag->name + 6
+		frag->name.substr(6).c_str()
 	);
 	serializeFrag(frag, f, false);
 	fclose(f);
@@ -1500,7 +1436,7 @@
 	if (sum <= 0) {
 		printf(
 			"frag [%s] not called\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 } 
@@ -1508,14 +1444,14 @@
 		printf(
 			"multiple frag [%s] only "
 				"used once\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 
 	if (! isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] not populated\n",
-			frag->name
+			frag->name.c_str()
 		);
 	}
 ;
@@ -1528,15 +1464,14 @@
 	struct Input *cur = used;
 	while (cur) {
 		
-	int len = strlen(cur->name) + 4;
-	char *outPath = (char *) malloc(len);
-	ASSERT(outPath);
-	memcpy(outPath, cur->name, len - 6);
-	strcpy(outPath + len - 6, ".html");
-	FILE *out = fopen(outPath, "w");
+	std::string &name = cur->name;
+	std::string outPath =
+		name.substr(0, name.size() - 2) +
+		".html";
+	FILE *out = fopen(outPath.c_str(), "w");
 	ASSERT(out);
 	 
-	FILE *in = fopen(cur->name, "r");
+	FILE *in = fopen(cur->name.c_str(), "r");
 	ASSERT(in);
 	 {
 	HtmlStatus status;
@@ -2619,7 +2554,6 @@
 	fclose(in);
 ;
 	fclose(out);
-	free(outPath);
 ;
 		struct Input *next = cur->link;
 		free(cur);

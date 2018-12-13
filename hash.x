@@ -23,29 +23,13 @@ x{define hash}
 
 ```
 a{define hash}
-	unsigned addRangeToHash(
+	template <typename T>
+	unsigned addToHash(
 		unsigned hash,
-		const char *begin,
-		const char *end
+		T begin, T end
 	) {
-		ASSERT(begin);
 		for (; begin < end; ++begin) {
-			E{hash next ch};
-		}
-		return hash;
-	}
-x{define hash}
-```
-
-```
-a{define hash}
-	unsigned addTerminatedToHash(
-		unsigned hash,
-		const char *begin
-	) {
-		ASSERT(begin);
-		for (; *begin; ++begin) {
-			E{hash next ch};
+			e{hash next ch};
 		}
 		return hash;
 	}
@@ -66,7 +50,7 @@ a{define hash}
 		const char *end
 	) {
 		unsigned hash = initHash();
-		hash = addRangeToHash(
+		hash = addToHash(
 			hash, begin, end
 		);
 		return hash & 0x7ffffff;
