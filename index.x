@@ -32,14 +32,14 @@
 * Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 
 ```
-D{file: hx.c}
+D{file: hx.cc}
 	g{global elements}
 	int main(
 		int argc, const char **argv
 	) {
 		e{main body}
 	}
-x{file: hx.c}
+x{file: hx.cc}
 ```
 * Das Hauptprogramm besteht aus der `main`-Funktion
 * Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
@@ -100,15 +100,6 @@ x{includes}
 * Standard File-Funktionen werden vom Programm benötigt
 * Standard Bibliothek wird für dynamische Speicherverwaltung benötigt
 
-# Buffer
-* Einfache Implementierung in C eines Byte-Vektors
-* Der dynamisch wachsen kann
-
-```
-i{buf.x}
-```
-* Buffer werden in einer eigenen Datei definiert
-
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
   angewendet werden
@@ -130,8 +121,8 @@ A{global elements}
 		char name[];
 	};
 
-	struct Input *input = NULL;
-	struct Input *used = NULL;
+	struct Input *input = nullptr;
+	struct Input *used = nullptr;
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -159,7 +150,7 @@ A{global elements}
 		FILE *f = fopen(path, "r");
 		e{check file for path};
 		int len = strlen(path) + 1;
-		struct Input *i = malloc(
+		struct Input *i = (struct Input *) malloc(
 			sizeof(struct Input) + len
 		);
 		e{check memory for input};
@@ -305,7 +296,7 @@ d{get next input file}
 	used = input;
 	input = n;
 	struct FragMap *nxt = frags->link;
-	frags->link = NULL;
+	frags->link = nullptr;
 	frags = nxt;
 x{get next input file}
 ```
@@ -342,7 +333,6 @@ x{init additional input fields};
 
 ```
 d{read source file}
-	e{global source vars};
 	{
 		e{additional read vars};
 		int last = nextCh();
@@ -382,8 +372,8 @@ x{process current char}
 
 ```
 d{additional read vars}
-	struct Frag *frag = NULL;
-	struct Buffer buffer = {};
+	struct Frag *frag = nullptr;
+	std::string buffer;
 	int bufferLine = 0;
 x{additional read vars}
 ```
@@ -391,7 +381,7 @@ x{additional read vars}
 * In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
   gelesen wird
 * Am Anfang sind wir außerhalb eines Code-Blocks
-* In einem Code-Block ist `frag` nicht `NULL`
+* In einem Code-Block ist `frag` nicht `nullptr`
 
 ```
 a{additional read vars}
@@ -404,7 +394,8 @@ x{additional read vars}
 
 ```
 a{additional read vars}
-	struct Buffer name = {};
+	std::string name;
+	bool useName = false;
 	int nameLine = 0;
 x{additional read vars}
 ```
@@ -412,10 +403,9 @@ x{additional read vars}
 
 ```
 d{process close brace} {
-	if (isActiveBuffer(&name)) {
-		addToBuffer(&name, '\0');
+	if (useName || ! name.empty()) {
 		e{process frag name};
-		resetBuffer(&name);
+		name.clear(); useName = false;
 		last = ch;
 		ch = nextCh();
 	}
@@ -426,8 +416,8 @@ d{process close brace} {
 
 ```
 d{process other char} {
-	if (isActiveBuffer(&name)) {
-		addToBuffer(&name, ch);
+	if (useName || ! name.empty()) {
+		name.push_back(ch);
 		break;
 	}
 } x{process other char}
@@ -438,10 +428,10 @@ d{process other char} {
 ```
 a{process other char} {
 	if (frag) {
-		if (! isActiveBuffer(&buffer)) {
+		if (buffer.empty()) {
 			bufferLine = input->line;
 		}
-		addToBuffer(&buffer, last);
+		buffer.push_back(last);
 	}
 } x{process other char}
 ```
@@ -454,7 +444,7 @@ d{process open brace} {
 		static const char valids[] = "aAdDirR";
 		if (strchr(valids, last)) {
 			openCh = last;
-			activateBuffer(&name);
+			useName = true;
 			break;
 		}
 	}
@@ -475,8 +465,8 @@ d{process frag name}
 		E{check for double def};
 		if (! frag) {
 			frag = allocFragInMap(
-				fm, name.buffer,
-				name.current - 1
+				fm, name.data(),
+				name.data() + name.size()
 			);
 		}
 		processed = true;
@@ -494,8 +484,8 @@ a{process frag name}
 		E{check for double def};
 		if (! frag) {
 			frag = allocFragInMap(
-				&root, name.buffer,
-				name.current - 1
+				&root, name.data(),
+				name.data() + name.size()
 			);
 		}
 		processed = true;
@@ -508,13 +498,13 @@ x{process frag name}
 ```
 d{check for double def}
 	frag = findFragInMap(
-		fm, name.buffer,
-		name.current - 1
+		fm, name.data(),
+		name.data() + name.size()
 	);
 	if (isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] already defined\n",
-			name.buffer
+			name.c_str()
 		);
 	}
 x{check for double def}
@@ -531,8 +521,8 @@ a{process frag name}
 		struct FragMap *fm = &input->frags;
 		struct FragMap *ins = fm;
 		frag = findFragInMap(
-			fm, name.buffer,
-			name.current - 1
+			fm, name.data(),
+			name.data() + name.size()
 		);
 		E{check for add without def};
 		processed = true;
@@ -549,8 +539,8 @@ a{process frag name}
 		struct FragMap *fm = frags;
 		struct FragMap *ins = &root;
 		frag = findFragInMap(
-			fm, name.buffer,
-			name.current - 1
+			fm, name.data(),
+			name.data() + name.size()
 		);
 		E{check for add without def};
 		processed = true;
@@ -564,11 +554,11 @@ d{check for add without def}
 	if (! isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] not defined\n",
-			name.buffer
+			name.c_str()
 		);
 		frag = getFragInMap(
-			fm, name.buffer,
-			name.current - 1,
+			fm, name.data(),
+			name.data() + name.size(),
 			ins
 		);
 	}
@@ -581,12 +571,12 @@ a{process frag name}
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			&input->frags, name.buffer,
-			name.current - 1, &input->frags
+			&input->frags, name.data(),
+			name.data() + name.size(), &input->frags
 		);
 		ASSERT(
 			frag, "frag %s not defined",
-			name.buffer
+			name.c_str()
 		);
 		freeFragEntries(frag);
 		processed = true;
@@ -601,12 +591,12 @@ a{process frag name}
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			frags, name.buffer,
-			name.current - 1, &root
+			frags, name.data(),
+			name.data() + name.size(), &root
 		);
 		ASSERT(
 			frag, "frag %s not defined",
-			name.buffer
+			name.c_str()
 		);
 		freeFragEntries(frag);
 		processed = true;
@@ -621,7 +611,7 @@ a{process frag name}
 		ASSERT(frag, "end not in frag");
 		e{frag names must match};
 		E{flush frag buffer};
-		frag = NULL;
+		frag = nullptr;
 		processed = true;
 	}
 x{process frag name}
@@ -631,9 +621,9 @@ x{process frag name}
 ```
 d{frag names must match}
 	ASSERT(
-		! strcmp(frag->name, name.buffer),
+		! strcmp(frag->name, name.c_str()),
 		"closing [%s] != [%s]",
-		name.buffer, frag->name
+		name.c_str(), frag->name
 	);
 x{frag names must match}
 ```
@@ -641,7 +631,7 @@ x{frag names must match}
   Abarbeitung abgebrochen
 
 ```
-d{global source vars}
+A{global elements}
 	bool alreadyUsed(const char *name) {
 		struct Input *i = input;
 		for (; i; i = i->link) {
@@ -656,7 +646,7 @@ d{global source vars}
 		}
 		return false;
 	}
-x{global source vars}
+x{global elements}
 ```
 * Prüft ob eine Datei bereits verwendet wurde
 * Sowohl die offenen als auch die bereits prozessierten Dateien werden
@@ -668,8 +658,8 @@ x{global source vars}
 a{process frag name}
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
-		if (! alreadyUsed(name.buffer)) {
-			pushPath(name.buffer);
+		if (! alreadyUsed(name.c_str())) {
+			pushPath(name.c_str());
 		}
 		processed = true;
 	}
@@ -685,8 +675,8 @@ a{process frag name}
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
 		struct Frag *sub = getFragInMap(
-			&input->frags, name.buffer,
-			name.current - 1, &input->frags
+			&input->frags, name.data(),
+			name.data() + name.size(), &input->frags
 		);
 		E{check frag expand count};
 		++sub->expands;
@@ -706,8 +696,8 @@ a{process frag name}
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
 		struct Frag *sub = getFragInMap(
-			frags, name.buffer,
-			name.current - 1, &root
+			frags, name.data(),
+			name.data() + name.size(), &root
 		);
 		E{check frag expand count};
 		++sub->expands;
@@ -745,8 +735,8 @@ a{process frag name}
 		E{flush frag buffer};
 		struct Frag *sub =
 			getFragInMap(
-				&input->frags, name.buffer,
-				name.current - 1, &input->frags
+				&input->frags, name.data(),
+				name.data() + name.size(), &input->frags
 			);
 		E{check for prev expands};
 		++sub->multiples;
@@ -766,8 +756,8 @@ a{process frag name}
 		E{flush frag buffer};
 		struct Frag *sub =
 			getFragInMap(
-				frags, name.buffer,
-				name.current - 1, &root
+				frags, name.data(),
+				name.data() + name.size(), &root
 			);
 		E{check for prev expands};
 		++sub->multiples;
@@ -811,7 +801,7 @@ d{process private frag}
 		cur, input->name
 	);
 	cur = addRangeToHash(
-		cur, name.buffer, name.current
+		cur, name.data(), name.data() + name.size()
 	);
 	cur &= 0x7fffffff;
 x{process private frag}
@@ -852,7 +842,7 @@ a{process private frag}
 		input->name, nameLine
 	);
 	addBytesToFrag(
-		frag, name.buffer, name.current - 1,
+		frag, name.data(), name.data() + name.size(),
 		input->name, nameLine
 	);
 x{process private frag}
@@ -883,7 +873,7 @@ d{process magic frag}
 		cur, input->name
 	);
 	cur = addRangeToHash(
-		cur, name.buffer, name.current
+		cur, name.data(), name.data() + name.size()
 	);
 	cur &= 0x7fffffff;
 x{process magic frag}
@@ -913,15 +903,13 @@ x{process magic frag}
 
 ```
 d{flush frag buffer}
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 x{flush frag buffer}
 ```
@@ -936,7 +924,7 @@ a{process open brace} {
 		if (valid) {
 			openCh = last;
 			nameLine = input->line;
-			activateBuffer(&name);
+			useName = true;
 			break;
 		}
 	}
@@ -965,14 +953,15 @@ a{process frag name}
 	if (! processed) {
 		ASSERT(
 			frag, "unknown frag %s",
-			name.buffer
+			name.c_str()
 		);
-		const char *c = name.buffer;
-		for (; c != name.current - 1; ++c) {
-			if (! isActiveBuffer(&buffer)) {
+		const char *c = name.data();
+		const char *e = c + name.size();
+		for (; c != e; ++c) {
+			if (buffer.empty()) {
 				bufferLine = input->line;
 			}
-			addToBuffer(&buffer, *c);
+			buffer.push_back(*c);
 		}
 		processed = true;
 	}
@@ -985,10 +974,10 @@ x{process frag name}
 ```
 a{process open brace}
 	if (frag) {
-		if (! isActiveBuffer(&buffer)) {
+		if (buffer.empty()) {
 			bufferLine = input->line;
 		}
-		addToBuffer(&buffer, last);
+		buffer.push_back(last);
 	}
 x{process open brace}
 ```
@@ -999,10 +988,10 @@ x{process open brace}
 ```
 a{process close brace}
 	if (frag && ! processed) {
-		if (! isActiveBuffer(&buffer)) {
+		if (buffer.empty()) {
 			bufferLine = input->line;
 		}
-		addToBuffer(&buffer, last);
+		buffer.push_back(last);
 	}
 x{process close brace}
 ```

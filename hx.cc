@@ -8,7 +8,8 @@
 
 	#include <string.h>
 
-	#include <stdbool.h>
+	#include <set>
+	#include <string>
 
 	#include <ctype.h>
 ;
@@ -29,115 +30,6 @@
 	void freeFragEntry(
 		struct FragEntry *entry
 	);
-;
-
-	
-	#define INIT_BUFFER_SIZE 16
-	struct Buffer {
-		char initial[INIT_BUFFER_SIZE];
-		char *buffer;
-		char *current;
-		const char *end;
-	};
-
-	static inline void bufferInvariant(
-		const struct Buffer *b
-	) {
-		ASSERT(b);
-		if (b->current) {
-			ASSERT(b->buffer <= b->current);
-			ASSERT(b->current <= b->end);
-		}
-	}
-
-	static inline bool isActiveBuffer(
-		const struct Buffer *b
-	) {
-		bufferInvariant(b);
-		return b->current;
-	}
-
-	void activateBuffer(struct Buffer *b) {
-		bufferInvariant(b);
-		if (! b->buffer) {
-			b->buffer = b->initial;
-			b->end = b->initial +
-				sizeof(b->initial);
-		}
-		if (! b->current) {
-			b->current = b->buffer;
-		}
-	}
-
-	void addToBuffer(
-		struct Buffer *buffer, char ch
-	) {
-		bufferInvariant(buffer);
-		activateBuffer(buffer);
-		
-	if (buffer->current >= buffer->end) {
-		int size = buffer->current -
-			buffer->buffer;
-		int newSize = 2 * size;
-		
-	char *newBuffer;
-	if (buffer->buffer == buffer->initial) {
-		newBuffer = malloc(newSize);
-		
-	ASSERT(newBuffer);
-	memcpy(
-		newBuffer, buffer->buffer, size
-	);
-;
-	} else {
-		newBuffer = realloc(
-			buffer->buffer, newSize
-		);
-	}
-	
-	ASSERT(newBuffer);
-	buffer->buffer = newBuffer;
-	buffer->current = newBuffer + size;
-	buffer->end = newBuffer + newSize;
-;
-;
-	}
-
-		*buffer->current++ = ch;
-	}
-
-	void resetBuffer(
-		struct Buffer *buffer
-	) {
-		bufferInvariant(buffer);
-		buffer->current = NULL;
-	}
-
-	void eraseBuffer(
-		struct Buffer *buffer
-	) {
-		bufferInvariant(buffer);
-		
-	if (buffer->buffer &&
-		buffer->buffer != buffer->initial
-	) {
-		free(buffer->buffer);
-	}
-;
-		buffer->buffer = NULL;
-		buffer->current = NULL;
-	}
-
-	void addCharsToBuffer(
-		struct Buffer *buffer,
-		char ch, int count
-	) {
-		bufferInvariant(buffer);
-		ASSERT(count >= 0);
-		for (; count; --count) {
-			addToBuffer(buffer, ch);
-		}
-	}
 ;
 
 	
@@ -202,7 +94,7 @@
 		const char *nameBegin,
 		const char *nameEnd
 	) {
-		struct Frag *result = NULL;
+		struct Frag *result = nullptr;
 		
 	ASSERT(nameBegin);
 	ASSERT(nameBegin <= nameEnd);
@@ -210,11 +102,11 @@
 		nameEnd - nameBegin;
 	int size = sizeof(struct Frag)
 		+ nameLength + 1;
-	result = malloc(size);
+	result = reinterpret_cast<struct Frag *>(malloc(size));
 	ASSERT(result);
 ;
-		result->link = NULL;
-		result->firstEntry = NULL;
+		result->link = nullptr;
+		result->firstEntry = nullptr;
 		result->expands = 0;
 		result->multiples = 0;
 		
@@ -234,8 +126,8 @@
 			
 	freeFragEntry(frag->firstEntry);
 ;
-			frag->firstEntry = NULL;
-			frag->lastEntry = NULL;
+			frag->firstEntry = nullptr;
+			frag->lastEntry = nullptr;
 		}
 	}
 
@@ -293,7 +185,7 @@
 		const char *valueBegin,
 		const char *valueEnd
 	) {
-		struct FragEntry *result = NULL;
+		struct FragEntry *result = nullptr;
 		
 	int valueLength = 0;
 	if (valueBegin) {
@@ -303,10 +195,10 @@
 	}
 	int entrySize = valueLength +
 		sizeof(struct FragEntry);
-	result = malloc(entrySize);
+	result = reinterpret_cast<struct FragEntry*>(malloc(entrySize));
 	ASSERT(result);
 ;
-		result->link = NULL;
+		result->link = nullptr;
 		
 	if (valueBegin) {
 		memcpy(
@@ -324,7 +216,7 @@
 	struct FragEntry *
 		allocEmptyFragEntry() {
 			return allocFragEntry(
-				NULL, NULL, NULL
+				nullptr, nullptr, nullptr
 			);
 		}
 
@@ -357,7 +249,7 @@
 				strlen(v);
 
 			return allocFragEntry(
-				NULL, v, e
+				nullptr, v, e
 			);
 		}
 
@@ -392,7 +284,7 @@
 	) {
 		struct FragEntry *entry =
 			allocFragEntry(
-				NULL, value, valueEnd
+				nullptr, value, valueEnd
 			);
 		
 	entry->source = source;
@@ -450,15 +342,15 @@
 		
 	struct FragEntry *entry =
 		allocFragEntry(
-			child, NULL, NULL
+			child, nullptr, nullptr
 		);
 	addEntryToFrag(frag, entry);
 ;
 	}
 
 	
-	char *fragTestBufferCur = NULL;
-	const char *fragTestBufferEnd = NULL;
+	char *fragTestBufferCur = nullptr;
+	const char *fragTestBufferEnd = nullptr;
 ;
 	void serializeFrag(
 		struct Frag *frag,
@@ -475,7 +367,7 @@
 	if (getFragEntryValueSize(entry)) {
 		const char *cur = entry->value;
 		const char *end = entry->valueEnd;
-		int len = end - cur;
+		unsigned len = end - cur;
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(cur, 1, len, out) == len);
 		} else {
@@ -503,12 +395,12 @@
 	char buffer[100];
 	fragTestBufferCur = buffer;
 	fragTestBufferEnd = buffer + sizeof(buffer);
-	serializeFrag(frag, (void *) buffer, false);
+	serializeFrag(frag, (FILE *) buffer, false);
 	ASSERT(strcmp(
 		expected, buffer
 	) == 0);
-	fragTestBufferCur = NULL;
-	fragTestBufferEnd = NULL;
+	fragTestBufferCur = nullptr;
+	fragTestBufferEnd = nullptr;
 ;
 	}
 
@@ -519,7 +411,7 @@
 		int size = strlen(str);
 		addBytesToFrag(
 			frag, str, str + size,
-			NULL, 0
+			nullptr, 0
 		);
 	}
 
@@ -539,9 +431,9 @@
 		struct Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
-			freeFrag(*cur); *cur = NULL;
+			freeFrag(*cur); *cur = nullptr;
 		}
-		map->link = NULL;
+		map->link = nullptr;
 	}
 
 	int calcFragHash(
@@ -593,7 +485,7 @@
 		);
 	}
 ;
-		return NULL;
+		return nullptr;
 	}
 
 	struct Frag *getFragInMap(
@@ -602,7 +494,7 @@
 		const char *end,
 		struct FragMap *insert
 	) {
-		struct Frag *frag = NULL;
+		struct Frag *frag = nullptr;
 		
 	frag = findFragInMap(
 		map, begin, end
@@ -631,8 +523,8 @@
 		char name[];
 	};
 
-	struct Input *input = NULL;
-	struct Input *used = NULL;
+	struct Input *input = nullptr;
+	struct Input *used = nullptr;
 
 	struct FragMap root = {};
 	struct FragMap *frags = &root;
@@ -645,7 +537,7 @@
 	);
 ;
 		int len = strlen(path) + 1;
-		struct Input *i = malloc(
+		struct Input *i = (struct Input *) malloc(
 			sizeof(struct Input) + len
 		);
 		
@@ -693,11 +585,26 @@
 	used = input;
 	input = n;
 	struct FragMap *nxt = frags->link;
-	frags->link = NULL;
+	frags->link = nullptr;
 	frags = nxt;
 ;
 		}
 		return ch;
+	}
+
+	bool alreadyUsed(const char *name) {
+		struct Input *i = input;
+		for (; i; i = i->link) {
+			if (strcmp(i->name, name) == 0) {
+				return true;
+			}
+		}
+		for (i = used; i; i = i->link) {
+			if (strcmp(i->name, name) == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	enum HtmlState {
@@ -715,10 +622,11 @@
 
 	struct HtmlStatus {
 		
+	HtmlStatus();
 	enum HtmlState state;
 
 	int headerLevel;
-	struct Buffer headerName;
+	std::string headerName;
 	enum HtmlState headerState;
 
 	int codeOpening;
@@ -733,6 +641,22 @@
 	bool noteInBold;
 
 	};
+
+	inline HtmlStatus::HtmlStatus():
+		state(hs_NOTHING_WRITTEN)
+		
+	, headerLevel(0)
+	, headerName()
+
+	, codeOpening(0)
+	, codeIndent(0)
+	, codeSpecial('\0')
+	, codeNameEnd(nullptr)
+
+	, noteInCode(false)
+	, noteInBold(false)
+
+	{ }
 
 	bool isOutOfHtmlSpecial(
 		struct HtmlStatus *s
@@ -753,11 +677,11 @@
 		return true;
 	}
  
+	template <typename T>
 	void writeEscaped(
-		FILE *out, const char *str,
-		const char *end
+		FILE *out, T str, T end
 	) {
-		ASSERT(out); ASSERT(str);
+		ASSERT(out);
 		for (; *str && str != end; ++str) {
 			switch (*str) {
 				
@@ -777,87 +701,55 @@
 		}
 	}
 
-	int compareBuffer(const char *s, const struct Buffer *b) {
-		const char *x = b->buffer;
-		while (*s && x != b->current) {
-			if (*s == *x) {
-				++s; ++x;
-			} else if (*s < *x) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-		if (*s) { return 1; }
-		if (x != b->current) { return -1; }
-		return 0;
-	}
-
 	void escapeIdent(
 		FILE *out,
 		const char *cls,
-		const struct Buffer *b
+		const std::string &s
 	) {
 		fprintf(
 			out,
 			"<span class=\"%s\">%.*s</span>",
 			cls,
-			(int) (b->current - b->buffer),
-			b->buffer
+			s.size(),
+			s.data()
 		);
 	}
 
-	bool contains(
-		const char **begin,
-		const char **end,
-		const struct Buffer *b
-	) {
-		for (; begin != end; ++begin) {
-			if (compareBuffer(*begin, b) == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	bool isKeyword(const struct Buffer *b) {
-		static const char *begin[] = {
+	bool isKeyword(const std::string &s) {
+		static std::set<std::string> reserved {
 			"break", "case", "catch", "continue",
 			"default", "delete", "else", "for",
 			"if", "in", "new", "return", "static",
 			"switch", "try", "typeof", "while"
 		};
-		static const char **end = (void *) begin + sizeof(begin);
-		return contains(begin, end, b);
+		return reserved.find(s) != reserved.end();
 	}
 
-	bool isType(const struct Buffer *b) {
-		static const char *begin[] = {
+	bool isType(const std::string &s) {
+		static std::set<std::string> reserved {
 			"FILE",
 			"bool", "char", "const", "enum",
 			"int", "let", "long", "signed", "struct",
 			"union", "unsigned", "void"
 		};
-		static const char **end = (void *) begin + sizeof(begin);
-		if (contains(begin, end, b)) {
+		if (reserved.find(s) != reserved.end()) {
 			return true;
 		}
-		if (b->current - b->buffer >= 2) {
-			if (isupper(b->buffer[0]) && islower(b->buffer[1])) {
+		if (s.size() >= 2) {
+			if (isupper(s[0]) && islower(s[1])) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	bool isNum(const struct Buffer *b) {
-		static const char *begin[] = {
-			"EOF", "NULL",
+	bool isNum(const std::string &s) {
+		static std::set<std::string> reserved {
+			"EOF", "NULL", "nullptr",
 			"false", "null", "true", "undefined"
 		};
-		static const char **end = (void *) begin + sizeof(begin);
-		if (isdigit(*b->buffer)) { return true; }
-		return contains(begin, end, b);
+		if (isdigit(s[0])) { return true; }
+		return reserved.find(s) != reserved.end();
 	}
 
 	int main(
@@ -865,33 +757,6 @@
 	) {
 		
 	
-	 {
-	struct Buffer b = {};
-	bufferInvariant(&b);
-}  {
-	struct Buffer b = {};
-	ASSERT(! isActiveBuffer(&b));
-}  {
-	struct Buffer b = {};
-	activateBuffer(&b);
-	ASSERT(isActiveBuffer(&b));
-}  {
-	struct Buffer b = {};
-	addToBuffer(&b, 'x');
-	ASSERT(*b.buffer == 'x');
-	ASSERT(b.buffer + 1 == b.current);
-	ASSERT(b.buffer == b.initial);
-}  {
-	struct Buffer b = {};
-	addCharsToBuffer(&b, 'x', 1000);
-	ASSERT(isActiveBuffer(&b));
-	ASSERT(*b.buffer == 'x');
-	ASSERT(b.buffer + 1000 == b.current);
-	ASSERT(b.buffer != b.initial);
-	eraseBuffer(&b);
-	ASSERT(! isActiveBuffer(&b));
-} ;
-
 	
 	testFragName("abc");
 	testFragName("");
@@ -980,7 +845,7 @@
 	}
 
 	{
-		struct Frag *frag = NULL;
+		struct Frag *frag = nullptr;
 		struct FragEntry *first;
 		struct FragEntry *second;
 		
@@ -998,7 +863,7 @@
 	}
 
 	{
-		struct Frag *frag = NULL;
+		struct Frag *frag = nullptr;
 		struct FragEntry *first;
 		struct FragEntry *second;
 		
@@ -1065,31 +930,16 @@
 	}
 ;
 	
-	
-	bool alreadyUsed(const char *name) {
-		struct Input *i = input;
-		for (; i; i = i->link) {
-			if (strcmp(i->name, name) == 0) {
-				return true;
-			}
-		}
-		for (i = used; i; i = i->link) {
-			if (strcmp(i->name, name) == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-;
 	{
 		
-	struct Frag *frag = NULL;
-	struct Buffer buffer = {};
+	struct Frag *frag = nullptr;
+	std::string buffer;
 	int bufferLine = 0;
 
 	char openCh = '\0';
 
-	struct Buffer name = {};
+	std::string name;
+	bool useName = false;
 	int nameLine = 0;
 ;
 		int last = nextCh();
@@ -1103,7 +953,7 @@
 		static const char valids[] = "aAdDirR";
 		if (strchr(valids, last)) {
 			openCh = last;
-			activateBuffer(&name);
+			useName = true;
 			break;
 		}
 	}
@@ -1120,44 +970,43 @@
 		if (valid) {
 			openCh = last;
 			nameLine = input->line;
-			activateBuffer(&name);
+			useName = true;
 			break;
 		}
 	}
 } 
 	if (frag) {
-		if (! isActiveBuffer(&buffer)) {
+		if (buffer.empty()) {
 			bufferLine = input->line;
 		}
-		addToBuffer(&buffer, last);
+		buffer.push_back(last);
 	}
 ;
 			break;
 		case '}': {
 			bool processed = false;
 			 {
-	if (isActiveBuffer(&name)) {
-		addToBuffer(&name, '\0');
+	if (useName || ! name.empty()) {
 		
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
 		struct FragMap *fm = &input->frags;
 		
 	frag = findFragInMap(
-		fm, name.buffer,
-		name.current - 1
+		fm, name.data(),
+		name.data() + name.size()
 	);
 	if (isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] already defined\n",
-			name.buffer
+			name.c_str()
 		);
 	}
 ;
 		if (! frag) {
 			frag = allocFragInMap(
-				fm, name.buffer,
-				name.current - 1
+				fm, name.data(),
+				name.data() + name.size()
 			);
 		}
 		processed = true;
@@ -1168,20 +1017,20 @@
 		struct FragMap *fm = frags;
 		
 	frag = findFragInMap(
-		fm, name.buffer,
-		name.current - 1
+		fm, name.data(),
+		name.data() + name.size()
 	);
 	if (isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] already defined\n",
-			name.buffer
+			name.c_str()
 		);
 	}
 ;
 		if (! frag) {
 			frag = allocFragInMap(
-				&root, name.buffer,
-				name.current - 1
+				&root, name.data(),
+				name.data() + name.size()
 			);
 		}
 		processed = true;
@@ -1192,18 +1041,18 @@
 		struct FragMap *fm = &input->frags;
 		struct FragMap *ins = fm;
 		frag = findFragInMap(
-			fm, name.buffer,
-			name.current - 1
+			fm, name.data(),
+			name.data() + name.size()
 		);
 		
 	if (! isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] not defined\n",
-			name.buffer
+			name.c_str()
 		);
 		frag = getFragInMap(
-			fm, name.buffer,
-			name.current - 1,
+			fm, name.data(),
+			name.data() + name.size(),
 			ins
 		);
 	}
@@ -1216,18 +1065,18 @@
 		struct FragMap *fm = frags;
 		struct FragMap *ins = &root;
 		frag = findFragInMap(
-			fm, name.buffer,
-			name.current - 1
+			fm, name.data(),
+			name.data() + name.size()
 		);
 		
 	if (! isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] not defined\n",
-			name.buffer
+			name.c_str()
 		);
 		frag = getFragInMap(
-			fm, name.buffer,
-			name.current - 1,
+			fm, name.data(),
+			name.data() + name.size(),
 			ins
 		);
 	}
@@ -1238,12 +1087,12 @@
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			&input->frags, name.buffer,
-			name.current - 1, &input->frags
+			&input->frags, name.data(),
+			name.data() + name.size(), &input->frags
 		);
 		ASSERT(
 			frag, "frag %s not defined",
-			name.buffer
+			name.c_str()
 		);
 		freeFragEntries(frag);
 		processed = true;
@@ -1252,12 +1101,12 @@
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			frags, name.buffer,
-			name.current - 1, &root
+			frags, name.data(),
+			name.data() + name.size(), &root
 		);
 		ASSERT(
 			frag, "frag %s not defined",
-			name.buffer
+			name.c_str()
 		);
 		freeFragEntries(frag);
 		processed = true;
@@ -1267,31 +1116,29 @@
 		ASSERT(frag, "end not in frag");
 		
 	ASSERT(
-		! strcmp(frag->name, name.buffer),
+		! strcmp(frag->name, name.c_str()),
 		"closing [%s] != [%s]",
-		name.buffer, frag->name
+		name.c_str(), frag->name
 	);
 ;
 		
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
-		frag = NULL;
+		frag = nullptr;
 		processed = true;
 	}
 
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
-		if (! alreadyUsed(name.buffer)) {
-			pushPath(name.buffer);
+		if (! alreadyUsed(name.c_str())) {
+			pushPath(name.c_str());
 		}
 		processed = true;
 	}
@@ -1299,20 +1146,18 @@
 	if (openCh == 'e') {
 		ASSERT(frag, "expand not in frag");
 		
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			&input->frags, name.buffer,
-			name.current - 1, &input->frags
+			&input->frags, name.data(),
+			name.data() + name.size(), &input->frags
 		);
 		
 	if (sub->expands) {
@@ -1336,20 +1181,18 @@
 	if (openCh == 'g') {
 		ASSERT(frag, "expand not in frag");
 		
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
 		struct Frag *sub = getFragInMap(
-			frags, name.buffer,
-			name.current - 1, &root
+			frags, name.data(),
+			name.data() + name.size(), &root
 		);
 		
 	if (sub->expands) {
@@ -1373,21 +1216,19 @@
 	if (openCh == 'E') {
 		ASSERT(frag, "multiple not in frag");
 		
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
 		struct Frag *sub =
 			getFragInMap(
-				&input->frags, name.buffer,
-				name.current - 1, &input->frags
+				&input->frags, name.data(),
+				name.data() + name.size(), &input->frags
 			);
 		
 	if (sub->expands) {
@@ -1407,21 +1248,19 @@
 	if (openCh == 'G') {
 		ASSERT(frag, "multiple not in frag");
 		
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
 		struct Frag *sub =
 			getFragInMap(
-				frags, name.buffer,
-				name.current - 1, &root
+				frags, name.data(),
+				name.data() + name.size(), &root
 			);
 		
 	if (sub->expands) {
@@ -1446,7 +1285,7 @@
 		cur, input->name
 	);
 	cur = addRangeToHash(
-		cur, name.buffer, name.current
+		cur, name.data(), name.data() + name.size()
 	);
 	cur &= 0x7fffffff;
 
@@ -1462,15 +1301,13 @@
 	}
 
 	
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
 	static char prefix[] = "_private_";
@@ -1484,7 +1321,7 @@
 		input->name, nameLine
 	);
 	addBytesToFrag(
-		frag, name.buffer, name.current - 1,
+		frag, name.data(), name.data() + name.size(),
 		input->name, nameLine
 	);
 ;
@@ -1499,7 +1336,7 @@
 		cur, input->name
 	);
 	cur = addRangeToHash(
-		cur, name.buffer, name.current
+		cur, name.data(), name.data() + name.size()
 	);
 	cur &= 0x7fffffff;
 
@@ -1513,15 +1350,13 @@
 		if (! cur) { break; }
 	}
 	
-	if (
-		buffer.buffer != buffer.current
-	) {
+	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.buffer,
-			buffer.current,
+			frag, buffer.data(),
+			buffer.data() + buffer.size(),
 			input->name, bufferLine
 		);
-		resetBuffer(&buffer);
+		buffer.clear();
 	}
 ;
 	addBytesToFrag(
@@ -1535,44 +1370,45 @@
 	if (! processed) {
 		ASSERT(
 			frag, "unknown frag %s",
-			name.buffer
+			name.c_str()
 		);
-		const char *c = name.buffer;
-		for (; c != name.current - 1; ++c) {
-			if (! isActiveBuffer(&buffer)) {
+		const char *c = name.data();
+		const char *e = c + name.size();
+		for (; c != e; ++c) {
+			if (buffer.empty()) {
 				bufferLine = input->line;
 			}
-			addToBuffer(&buffer, *c);
+			buffer.push_back(*c);
 		}
 		processed = true;
 	}
 ;
-		resetBuffer(&name);
+		name.clear(); useName = false;
 		last = ch;
 		ch = nextCh();
 	}
 } 
 	if (frag && ! processed) {
-		if (! isActiveBuffer(&buffer)) {
+		if (buffer.empty()) {
 			bufferLine = input->line;
 		}
-		addToBuffer(&buffer, last);
+		buffer.push_back(last);
 	}
 ;
 			break;
 		}
 		default:
 			 {
-	if (isActiveBuffer(&name)) {
-		addToBuffer(&name, ch);
+	if (useName || ! name.empty()) {
+		name.push_back(ch);
 		break;
 	}
 }  {
 	if (frag) {
-		if (! isActiveBuffer(&buffer)) {
+		if (buffer.empty()) {
 			bufferLine = input->line;
 		}
-		addToBuffer(&buffer, last);
+		buffer.push_back(last);
 	}
 } ;
 	}
@@ -1693,7 +1529,7 @@
 	while (cur) {
 		
 	int len = strlen(cur->name) + 4;
-	char *outPath = malloc(len);
+	char *outPath = (char *) malloc(len);
 	ASSERT(outPath);
 	memcpy(outPath, cur->name, len - 6);
 	strcpy(outPath + len - 6, ".html");
@@ -1703,23 +1539,9 @@
 	FILE *in = fopen(cur->name, "r");
 	ASSERT(in);
 	 {
-	struct HtmlStatus status = {
-		.state = hs_NOTHING_WRITTEN
-		
-	, .headerLevel = 0
-	, .headerName = {}
-
-	, .codeOpening = 0
-	, .codeIndent = 0
-	, .codeSpecial = '\0'
-	, .codeNameEnd = NULL
-
-	, .noteInCode = false
-	, .noteInBold = false
-
-	};
+	HtmlStatus status;
 	bool newline = true;
-	struct Buffer ident = {};
+	std::string ident;
 	for (;;) {
 		int ch = fgetc(in);
 		 
@@ -1740,7 +1562,7 @@
 	if (status.state == hs_IN_HEADER) {
 		if (ch == '\n') {
 			 
-	ASSERT(isActiveBuffer(&status.headerName));
+	ASSERT(! status.headerName.empty());
 	 
 	switch (status.headerState) {
 		case hs_NOTHING_WRITTEN: {
@@ -1755,8 +1577,8 @@
 	fprintf(out, "<title>");
 	writeEscaped(
 		out,
-		status.headerName.buffer,
-		status.headerName.current
+		status.headerName.begin(),
+		status.headerName.end()
 	);
 	fprintf(out, "</title>");
 	fprintf(
@@ -1784,8 +1606,8 @@
 	fprintf(out, "<h%d>", status.headerLevel);
 	writeEscaped(
 		out,
-		status.headerName.buffer,
-		status.headerName.current
+		status.headerName.begin(),
+		status.headerName.end()
 	);
 	fprintf(out, "</h%d>\n", status.headerLevel);
 ;
@@ -1795,8 +1617,8 @@
 	fprintf(out, "<h%d>", status.headerLevel);
 	writeEscaped(
 		out,
-		status.headerName.buffer,
-		status.headerName.current
+		status.headerName.begin(),
+		status.headerName.end()
 	);
 	fprintf(out, "</h%d>\n", status.headerLevel);
 ;
@@ -1805,7 +1627,7 @@
 			 
 	status.state = hs_IN_SLIDE;
 	status.headerLevel = 0;
-	resetBuffer(&status.headerName);
+	status.headerName.clear();
 	status.headerState = hs_IN_SLIDE;
 ;
 			
@@ -1820,12 +1642,8 @@
 	}
  
 	if (status.state == hs_IN_HEADER) {
-		if (
-			isActiveBuffer(&status.headerName)
-		) {
-			addToBuffer(
-				&status.headerName, ch
-			);
+		if (! status.headerName.empty()) {
+			status.headerName.push_back(ch);
 			
 	newline = ch == '\n';
 	if (status.state != hs_IN_HEADER) {
@@ -1838,12 +1656,8 @@
 	}
  
 	if (status.state == hs_IN_HEADER) {
-		if (ch > ' ' && ! isActiveBuffer(
-			&status.headerName
-		)) {
-			addToBuffer(
-				&status.headerName, ch
-			);
+		if (ch > ' ' && status.headerName.empty()) {
+			status.headerName.push_back(ch);
 			
 	newline = ch == '\n';
 	if (status.state != hs_IN_HEADER) {
@@ -1911,19 +1725,19 @@
 			status.codeSpecial = '`';
 			status.codeNameEnd = status.codeName;
 			
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
 			if (status.codeIndent) {
@@ -1939,25 +1753,25 @@
 			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
 		) {
 			
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
 			writeEscaped(out, status.codeName, status.codeNameEnd);
 			fprintf(out, "`</span>");
 			status.codeSpecial = 0;
-			status.codeNameEnd = NULL;
+			status.codeNameEnd = nullptr;
 		}
 	}
 
@@ -1975,7 +1789,7 @@
 
 	if (status.state == hs_IN_CODE) {
 		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
-			addToBuffer(&ident, ch);
+			ident.push_back(ch);
 			continue;
 		}
 	}
@@ -1984,19 +1798,19 @@
 		 
 	if (ch == '\n') {
 		
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
 		fprintf(out, "<br/>\n");
@@ -2032,8 +1846,8 @@
 	}
 
 	
-	if (ch == '{' && ident.current - ident.buffer == 1) {
-		char lc = *ident.buffer;
+	if (ch == '{' && ident.size() == 1) {
+		char lc = ident.front();
 		switch (lc) {
 			
 	case 'd':
@@ -2234,7 +2048,7 @@
 			default: break;
 		}
 		if (status.codeSpecial) {
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		}
@@ -2260,22 +2074,22 @@
 		)
 	) {
 		
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
-		resetBuffer(&ident);
+		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
 			writeEscaped(out, status.codeName, status.codeNameEnd);
@@ -2310,7 +2124,7 @@
 	fprintf(out,
 		"%s</a>)</span>", status.codeName
 	);
-	status.codeNameEnd = NULL;
+	status.codeNameEnd = nullptr;
 ;
 		break;
 	}
@@ -2331,7 +2145,7 @@
 			fprintf(out, "</span>");
 		}
 		status.codeSpecial = 0;
-		status.codeNameEnd = NULL;
+		status.codeNameEnd = nullptr;
 		continue;
 	}
 ;
@@ -2349,19 +2163,19 @@
 	}
 ;
 		
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
 		
@@ -2380,7 +2194,7 @@
 	) {
 		if (ch == '*') {
 			fprintf(out, "</li><li>\n");
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
@@ -2404,7 +2218,7 @@
 			}
 			status.state = hs_IN_NOTES;
 			fprintf(out, "<ul><li>\n");
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		}
@@ -2415,19 +2229,19 @@
 		status.state == hs_IN_NOTES
 	) {
 		
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
 		if (status.noteInCode) {
@@ -2436,7 +2250,7 @@
 			fprintf(out, "<code>");
 		}
 		status.noteInCode = ! status.noteInCode;
-		resetBuffer(&ident);
+		ident.clear();
 		newline = false;
 		continue;
 	}
@@ -2444,8 +2258,8 @@
 	if (status.state == hs_IN_NOTES &&
 	status.noteInCode) {
 		
-	if (ch == '{' && ident.current - ident.buffer == 1) {
-		char lc = *ident.buffer;
+	if (ch == '{' && ident.size() == 1) {
+		char lc = ident.front();
 		switch (lc) {
 			
 	case 'd':
@@ -2646,7 +2460,7 @@
 			default: break;
 		}
 		if (status.codeSpecial) {
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		}
@@ -2672,22 +2486,22 @@
 		)
 	) {
 		
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
-		resetBuffer(&ident);
+		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
 			writeEscaped(out, status.codeName, status.codeNameEnd);
@@ -2722,7 +2536,7 @@
 	fprintf(out,
 		"%s</a>)</span>", status.codeName
 	);
-	status.codeNameEnd = NULL;
+	status.codeNameEnd = nullptr;
 ;
 		break;
 	}
@@ -2743,7 +2557,7 @@
 			fprintf(out, "</span>");
 		}
 		status.codeSpecial = 0;
-		status.codeNameEnd = NULL;
+		status.codeNameEnd = nullptr;
 		continue;
 	}
 ;
@@ -2767,19 +2581,19 @@
  
 	if (status.state == hs_IN_NOTES) {
 		
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 ;
 		

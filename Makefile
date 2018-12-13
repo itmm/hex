@@ -1,16 +1,16 @@
-CFLAGS += -Wall -std=c99 -g
+CXXFLAGS += -Wall -std=c++14 -g
 
 .PHONY: all install clean test
 
 Xs := $(wildcard *.x)
 HTMLs := ${Xs:.x=.html}
 
-all: hx.c
+all: hx.cc
 
-hx.c: ${Xs}
+hx.cc: ${Xs}
 	hx
 
-hx: hx.c
+hx: hx.cc
 
 install: hx
 	cp hx ~/bin
@@ -19,4 +19,4 @@ test: hx
 	./hx
 
 clean:
-	rm -f hx.c ${HTMLs}
+	rm -f hx.cc ${HTMLs}

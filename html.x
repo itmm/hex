@@ -19,7 +19,7 @@ x{write HTML file}
 ```
 d{write cur HTML file}
 	int len = strlen(cur->name) + 4;
-	char *outPath = malloc(len);
+	char *outPath = (char *) malloc(len);
 	ASSERT(outPath);
 	memcpy(outPath, cur->name, len - 6);
 	strcpy(outPath + len - 6, ".html");
@@ -69,19 +69,33 @@ x{global elements}
 
 ```
 d{html state elements}
+	HtmlStatus();
 	enum HtmlState state;
 x{html state elements}
 ```
 * Der aktuelle Zustand wird im Status abgelegt
 
 ```
-d{write HTML file from in to out} {
-	struct HtmlStatus status = {
-		.state = hs_NOTHING_WRITTEN
+A{global elements}
+	inline HtmlStatus::HtmlStatus():
+		state(hs_NOTHING_WRITTEN)
 		e{init html status}
-	};
+	{ }
+x{global elements}
+```
+
+```
+A{includes}
+	#include <set>
+	#include <string>
+x{includes}
+```
+
+```
+d{write HTML file from in to out} {
+	HtmlStatus status;
 	bool newline = true;
-	struct Buffer ident = {};
+	std::string ident;
 	for (;;) {
 		int ch = fgetc(in);
 		e{process ch for HTML};
@@ -141,7 +155,7 @@ x{check html special state}
 ```
 a{html state elements}
 	int headerLevel;
-	struct Buffer headerName;
+	std::string headerName;
 	enum HtmlState headerState;
 x{html state elements}
 ```
@@ -152,8 +166,8 @@ x{html state elements}
 
 ```
 d{init html status}
-	, .headerLevel = 0
-	, .headerName = {}
+	, headerLevel(0)
+	, headerName()
 x{init html status}
 ```
 * Level und Name werden leer initialisiert
@@ -199,7 +213,7 @@ x{process ch for HTML}
 d{reset header state} 
 	status.state = hs_IN_SLIDE;
 	status.headerLevel = 0;
-	resetBuffer(&status.headerName);
+	status.headerName.clear();
 	status.headerState = hs_IN_SLIDE;
 x{reset header state}
 ```
@@ -209,12 +223,8 @@ x{reset header state}
 ```
 a{process ch for HTML} 
 	if (status.state == hs_IN_HEADER) {
-		if (
-			isActiveBuffer(&status.headerName)
-		) {
-			addToBuffer(
-				&status.headerName, ch
-			);
+		if (! status.headerName.empty()) {
+			status.headerName.push_back(ch);
 			E{move ch to last};
 			continue;
 		}
@@ -227,12 +237,8 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	if (status.state == hs_IN_HEADER) {
-		if (ch > ' ' && ! isActiveBuffer(
-			&status.headerName
-		)) {
-			addToBuffer(
-				&status.headerName, ch
-			);
+		if (ch > ' ' && status.headerName.empty()) {
+			status.headerName.push_back(ch);
 			E{move ch to last};
 			continue;
 		}
@@ -243,7 +249,7 @@ x{process ch for HTML}
 
 ```
 d{process header in HTML} 
-	ASSERT(isActiveBuffer(&status.headerName));
+	ASSERT(! status.headerName.empty());
 	e{close previous HTML page};
 	E{write header tag};
 	fprintf(out, "<div class=\"slides\">\n");
@@ -258,11 +264,11 @@ x{process header in HTML}
 
 ```
 A{global elements} 
+	template <typename T>
 	void writeEscaped(
-		FILE *out, const char *str,
-		const char *end
+		FILE *out, T str, T end
 	) {
-		ASSERT(out); ASSERT(str);
+		ASSERT(out);
 		for (; *str && str != end; ++str) {
 			switch (*str) {
 				e{escape special}
@@ -296,8 +302,8 @@ d{write header tag}
 	fprintf(out, "<h%d>", status.headerLevel);
 	writeEscaped(
 		out,
-		status.headerName.buffer,
-		status.headerName.current
+		status.headerName.begin(),
+		status.headerName.end()
 	);
 	fprintf(out, "</h%d>\n", status.headerLevel);
 x{write header tag}
@@ -347,8 +353,8 @@ d{write HTML header entries}
 	fprintf(out, "<title>");
 	writeEscaped(
 		out,
-		status.headerName.buffer,
-		status.headerName.current
+		status.headerName.begin(),
+		status.headerName.end()
 	);
 	fprintf(out, "</title>");
 	fprintf(
@@ -412,10 +418,10 @@ x{html state elements}
 
 ```
 a{init html status}
-	, .codeOpening = 0
-	, .codeIndent = 0
-	, .codeSpecial = '\0'
-	, .codeNameEnd = NULL
+	, codeOpening(0)
+	, codeIndent(0)
+	, codeSpecial('\0')
+	, codeNameEnd(nullptr)
 x{init html status}
 ```
 * Zur Initialisierung werden die Parameter auf `0` gesetzt
@@ -479,7 +485,7 @@ a{process ch for HTML}
 			writeEscaped(out, status.codeName, status.codeNameEnd);
 			fprintf(out, "`</span>");
 			status.codeSpecial = 0;
-			status.codeNameEnd = NULL;
+			status.codeNameEnd = nullptr;
 		}
 	}
 x{process ch for HTML}
@@ -544,7 +550,7 @@ x{includes}
 a{process ch for HTML}
 	if (status.state == hs_IN_CODE) {
 		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
-			addToBuffer(&ident, ch);
+			ident.push_back(ch);
 			continue;
 		}
 	}
@@ -553,37 +559,17 @@ x{process ch for HTML}
 
 ```
 A{global elements}
-	int compareBuffer(const char *s, const struct Buffer *b) {
-		const char *x = b->buffer;
-		while (*s && x != b->current) {
-			if (*s == *x) {
-				++s; ++x;
-			} else if (*s < *x) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-		if (*s) { return 1; }
-		if (x != b->current) { return -1; }
-		return 0;
-	}
-x{global elements}
-```
-
-```
-A{global elements}
 	void escapeIdent(
 		FILE *out,
 		const char *cls,
-		const struct Buffer *b
+		const std::string &s
 	) {
 		fprintf(
 			out,
 			"<span class=\"%s\">%.*s</span>",
 			cls,
-			(int) (b->current - b->buffer),
-			b->buffer
+			s.size(),
+			s.data()
 		);
 	}
 x{global elements}
@@ -591,51 +577,32 @@ x{global elements}
 
 ```
 A{global elements}
-	bool contains(
-		const char **begin,
-		const char **end,
-		const struct Buffer *b
-	) {
-		for (; begin != end; ++begin) {
-			if (compareBuffer(*begin, b) == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-x{global elements}
-```
-
-```
-A{global elements}
-	bool isKeyword(const struct Buffer *b) {
-		static const char *begin[] = {
+	bool isKeyword(const std::string &s) {
+		static std::set<std::string> reserved {
 			"break", "case", "catch", "continue",
 			"default", "delete", "else", "for",
 			"if", "in", "new", "return", "static",
 			"switch", "try", "typeof", "while"
 		};
-		static const char **end = (void *) begin + sizeof(begin);
-		return contains(begin, end, b);
+		return reserved.find(s) != reserved.end();
 	}
 x{global elements}
 ```
 
 ```
 A{global elements}
-	bool isType(const struct Buffer *b) {
-		static const char *begin[] = {
+	bool isType(const std::string &s) {
+		static std::set<std::string> reserved {
 			"FILE",
 			"bool", "char", "const", "enum",
 			"int", "let", "long", "signed", "struct",
 			"union", "unsigned", "void"
 		};
-		static const char **end = (void *) begin + sizeof(begin);
-		if (contains(begin, end, b)) {
+		if (reserved.find(s) != reserved.end()) {
 			return true;
 		}
-		if (b->current - b->buffer >= 2) {
-			if (isupper(b->buffer[0]) && islower(b->buffer[1])) {
+		if (s.size() >= 2) {
+			if (isupper(s[0]) && islower(s[1])) {
 				return true;
 			}
 		}
@@ -646,33 +613,32 @@ x{global elements}
 
 ```
 A{global elements}
-	bool isNum(const struct Buffer *b) {
-		static const char *begin[] = {
-			"EOF", "NULL",
+	bool isNum(const std::string &s) {
+		static std::set<std::string> reserved {
+			"EOF", "NULL", "nullptr",
 			"false", "null", "true", "undefined"
 		};
-		static const char **end = (void *) begin + sizeof(begin);
-		if (isdigit(*b->buffer)) { return true; }
-		return contains(begin, end, b);
+		if (isdigit(s[0])) { return true; }
+		return reserved.find(s) != reserved.end();
 	}
 x{global elements}
 ```
 
 ```
 d{flush pending}
-	if (isActiveBuffer(&ident)) {
+	if (! ident.empty()) {
 		if (ch == '(') {
-			escapeIdent(out, "fn", &ident);
-		} else if (isKeyword(&ident)) {
-			escapeIdent(out, "keyword", &ident);
-		} else if (isType(&ident)) {
-			escapeIdent(out, "type", &ident);
-		} else if (isNum(&ident)) {
-			escapeIdent(out, "num", &ident);
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", &ident);
+			escapeIdent(out, "var", ident);
 		}
-		resetBuffer(&ident);
+		ident.clear();
 	}
 x{flush pending}
 ```
@@ -745,14 +711,14 @@ x{process ch in HTML code}
 
 ```
 d{escape HTML code tag}
-	if (ch == '{' && ident.current - ident.buffer == 1) {
-		char lc = *ident.buffer;
+	if (ch == '{' && ident.size() == 1) {
+		char lc = ident.front();
 		switch (lc) {
 			e{escape html frag}
 			default: break;
 		}
 		if (status.codeSpecial) {
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		}
@@ -788,7 +754,7 @@ a{escape HTML code tag}
 		)
 	) {
 		E{flush pending};
-		resetBuffer(&ident);
+		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
 			writeEscaped(out, status.codeName, status.codeNameEnd);
@@ -800,7 +766,7 @@ a{escape HTML code tag}
 			fprintf(out, "</span>");
 		}
 		status.codeSpecial = 0;
-		status.codeNameEnd = NULL;
+		status.codeNameEnd = nullptr;
 		continue;
 	}
 x{escape HTML code tag}
@@ -869,7 +835,7 @@ a{handle html include}
 	fprintf(out,
 		"%s</a>)</span>", status.codeName
 	);
-	status.codeNameEnd = NULL;
+	status.codeNameEnd = nullptr;
 x{handle html include}
 ```
 * Statt der ursprünglichen `.x`-Datei verweist der Link auf eine
@@ -892,7 +858,7 @@ a{process ch in HTML code}
 x{process ch in HTML code}
 ```
 * Wenn das Argument gespeichert werden soll (d.h. wenn `codeNameEnd`
-  nicht `NULL`)
+  nicht `nullptr`)
 * Wird das aktuelle Zeichen im `codeName` gespeichert
 
 ```
@@ -1187,8 +1153,8 @@ x{html state elements}
 
 ```
 a{init html status}
-	, .noteInCode = false
-	, .noteInBold = false
+	, noteInCode(false)
+	, noteInBold(false)
 x{init html status}
 ```
 
@@ -1214,7 +1180,7 @@ a{process ch for HTML}
 	) {
 		if (ch == '*') {
 			fprintf(out, "</li><li>\n");
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
@@ -1236,7 +1202,7 @@ a{process ch for HTML}
 			}
 			status.state = hs_IN_NOTES;
 			fprintf(out, "<ul><li>\n");
-			resetBuffer(&ident);
+			ident.clear();
 			newline = false;
 			continue;
 		}
@@ -1257,7 +1223,7 @@ a{process ch for HTML}
 			fprintf(out, "<code>");
 		}
 		status.noteInCode = ! status.noteInCode;
-		resetBuffer(&ident);
+		ident.clear();
 		newline = false;
 		continue;
 	}

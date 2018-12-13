@@ -91,7 +91,7 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">file: hx.c</span>)</span><br/>
+<span class="add">@globdef(<span class="name">file: hx.cc</span>)</span><br/>
 
 <span class="in1"></span><span class="expand">@globexpand(<span class="name">global elements</span>)</span><br/>
 
@@ -105,7 +105,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">file: hx.c</span>)</span><br/>
+<span class="end">@end(<span class="name">file: hx.cc</span>)</span><br/>
 
 </code>
 </div>
@@ -236,31 +236,6 @@
 </li></ul></div>
 
 </div>
-<h1>Buffer</h1>
-<div class="slides">
-<div><div>
-<h1>Buffer</h1>
-</div>
-
-<ul><li>
- Einfache Implementierung in C eines Byte-Vektors
-</li><li>
- Der dynamisch wachsen kann
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="include">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Buffer werden in einer eigenen Datei definiert
-</li></ul></div>
-
-</div>
 <h1>Fragmente</h1>
 <div class="slides">
 <div><div>
@@ -308,9 +283,9 @@
 
 <br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">input</span> = <span class="num">NULL</span>;<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">input</span> = <span class="num">nullptr</span>;<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">used</span> = <span class="num">NULL</span>;<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">used</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -367,7 +342,7 @@
 
 <span class="in2"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">strlen</span>(<span class="var">path</span>) + <span class="num">1</span>;<br/>
 
-<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">i</span> = <span class="fn">malloc</span>(<br/>
+<span class="in2"></span><span class="type">struct</span> <span class="type">Input</span> *<span class="var">i</span> = (<span class="type">struct</span> <span class="type">Input</span> *) <span class="fn">malloc</span>(<br/>
 
 <span class="in3"></span><span class="fn">sizeof</span>(<span class="type">struct</span> <span class="type">Input</span>) + <span class="var">len</span><br/>
 
@@ -681,7 +656,7 @@
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">FragMap</span> *<span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
 
-<span class="in1"></span><span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="num">NULL</span>;<br/>
+<span class="in1"></span><span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in1"></span><span class="var">frags</span> = <span class="var">nxt</span>;<br/>
 
@@ -766,8 +741,6 @@
 
 <span class="add">@def(<span class="name">read source file</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@expand(<span class="name">global source vars</span>)</span>;<br/>
-
 <span class="in1"></span>{<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">additional read vars</span>)</span>;<br/>
@@ -848,9 +821,9 @@
 
 <span class="add">@def(<span class="name">additional read vars</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">NULL</span>;<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Buffer</span> <span class="var">buffer</span> = {};<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">buffer</span>;<br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="var">bufferLine</span> = <span class="num">0</span>;<br/>
 
@@ -867,7 +840,7 @@
 </li><li>
  Am Anfang sind wir außerhalb eines Code-Blocks
 </li><li>
- In einem Code-Block ist <code>frag</code> nicht <code>NULL</code>
+ In einem Code-Block ist <code>frag</code> nicht <code>nullptr</code>
 </li></ul></div>
 
 <div><div>
@@ -894,7 +867,9 @@
 
 <span class="add">@add(<span class="name">additional read vars</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Buffer</span> <span class="var">name</span> = {};<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="var">useName</span> = <span class="num">false</span>;<br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="var">nameLine</span> = <span class="num">0</span>;<br/>
 
@@ -912,13 +887,11 @@
 
 <span class="add">@def(<span class="name">process close brace</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
-
-<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="str">'\0'</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">useName</span> || ! <span class="var">name</span>.<span class="fn">empty</span>()) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process frag name</span>)</span>;<br/>
 
-<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">clear</span>(); <span class="var">useName</span> = <span class="num">false</span>;<br/>
 
 <span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
 
@@ -942,9 +915,9 @@
 
 <span class="add">@def(<span class="name">process other char</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isActiveBuffer</span>(&amp;<span class="var">name</span>)) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">useName</span> || ! <span class="var">name</span>.<span class="fn">empty</span>()) {<br/>
 
-<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">name</span>, <span class="var">ch</span>);<br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">push_back</span>(<span class="var">ch</span>);<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -967,13 +940,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
 <span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">last</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1000,7 +973,7 @@
 
 <span class="in3"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
 
-<span class="in3"></span><span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
+<span class="in3"></span><span class="var">useName</span> = <span class="num">true</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
@@ -1041,9 +1014,9 @@
 
 <span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
 
-<span class="in4"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in4"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1081,9 +1054,9 @@
 
 <span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
 
-<span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1111,9 +1084,9 @@
 
 <span class="in1"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
-<span class="in2"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in2"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in2"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1123,7 +1096,7 @@
 
 <span class="in3"></span><span class="str">"frag [%s] already defined\n"</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1159,9 +1132,9 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1197,9 +1170,9 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1229,15 +1202,15 @@
 
 <span class="in3"></span><span class="str">"frag [%s] not defined\n"</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(),<br/>
 
 <span class="var">ins</span><br/>
 
@@ -1265,9 +1238,9 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1275,7 +1248,7 @@
 
 <span class="in3"></span><span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1307,9 +1280,9 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">root</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1317,7 +1290,7 @@
 
 <span class="in3"></span><span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1349,7 +1322,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="num">NULL</span>;<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
@@ -1371,11 +1344,11 @@
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in2"></span>! <span class="fn">strcmp</span>(<span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="var">name</span>.<span class="var">buffer</span>),<br/>
+<span class="in2"></span>! <span class="fn">strcmp</span>(<span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="var">name</span>.<span class="fn">c_str</span>()),<br/>
 
 <span class="in2"></span><span class="str">"closing [%s] != [%s]"</span>,<br/>
 
-<span class="in2"></span><span class="var">name</span>.<span class="var">buffer</span>, <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">c_str</span>(), <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1392,7 +1365,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">global source vars</span>)</span><br/>
+<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const</span> <span class="type">char</span> *<span class="var">name</span>) {<br/>
 
@@ -1422,7 +1395,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">global source vars</span>)</span><br/>
+<span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -1446,9 +1419,9 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"include in frag"</span>);<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="var">buffer</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="fn">c_str</span>())) {<br/>
 
-<span class="in3"></span><span class="fn">pushPath</span>(<span class="var">name</span>.<span class="var">buffer</span>);<br/>
+<span class="in3"></span><span class="fn">pushPath</span>(<span class="var">name</span>.<span class="fn">c_str</span>());<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1481,9 +1454,9 @@
 
 <span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1524,9 +1497,9 @@
 
 <span class="in2"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">root</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1604,9 +1577,9 @@
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
-<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1647,9 +1620,9 @@
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
-<span class="in4"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="var">buffer</span>,<br/>
+<span class="in4"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in4"></span><span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>, &amp;<span class="var">root</span><br/>
+<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">root</span><br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1742,7 +1715,7 @@
 
 <span class="in1"></span><span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
 
-<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
+<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="fn">data</span>(), <span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1828,7 +1801,7 @@
 
 <span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
 
-<span class="in2"></span><span class="var">frag</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>,<br/>
+<span class="in2"></span><span class="var">frag</span>, <span class="var">name</span>.<span class="fn">data</span>(), <span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(),<br/>
 
 <span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 
@@ -1893,7 +1866,7 @@
 
 <span class="in1"></span><span class="var">cur</span> = <span class="fn">addRangeToHash</span>(<br/>
 
-<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="var">buffer</span>, <span class="var">name</span>.<span class="var">current</span><br/>
+<span class="in2"></span><span class="var">cur</span>, <span class="var">name</span>.<span class="fn">data</span>(), <span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1957,23 +1930,19 @@
 
 <span class="add">@def(<span class="name">flush frag buffer</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="var">buffer</span> != <span class="var">buffer</span>.<span class="var">current</span><br/>
-
-<span class="in1"></span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
 <span class="in2"></span><span class="fn">addBytesToFrag</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="var">buffer</span>.<span class="var">buffer</span>,<br/>
+<span class="in3"></span><span class="var">frag</span>, <span class="var">buffer</span>.<span class="fn">data</span>(),<br/>
 
-<span class="in3"></span><span class="var">buffer</span>.<span class="var">current</span>,<br/>
+<span class="in3"></span><span class="var">buffer</span>.<span class="fn">data</span>() + <span class="var">buffer</span>.<span class="fn">size</span>(),<br/>
 
 <span class="in3"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="fn">resetBuffer</span>(&amp;<span class="var">buffer</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">clear</span>();<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2005,7 +1974,7 @@
 
 <span class="in3"></span><span class="var">nameLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 
-<span class="in3"></span><span class="fn">activateBuffer</span>(&amp;<span class="var">name</span>);<br/>
+<span class="in3"></span><span class="var">useName</span> = <span class="num">true</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
@@ -2064,21 +2033,23 @@
 
 <span class="in3"></span><span class="var">frag</span>, <span class="str">"unknown frag %s"</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="var">buffer</span><br/>
+<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">c</span> = <span class="var">name</span>.<span class="var">buffer</span>;<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">c</span> = <span class="var">name</span>.<span class="fn">data</span>();<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">name</span>.<span class="var">current</span> - <span class="num">1</span>; ++<span class="var">c</span>) {<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">e</span> = <span class="var">c</span> + <span class="var">name</span>.<span class="fn">size</span>();<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer</span>)) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">c</span> != <span class="var">e</span>; ++<span class="var">c</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
 <span class="in4"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
-<span class="in3"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, *<span class="var">c</span>);<br/>
+<span class="in3"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(*<span class="var">c</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -2105,13 +2076,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
 <span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">last</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2133,13 +2104,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isActiveBuffer</span>(&amp;<span class="var">buffer</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
 <span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="fn">addToBuffer</span>(&amp;<span class="var">buffer</span>, <span class="var">last</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">last</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
