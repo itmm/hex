@@ -133,7 +133,6 @@ d{input methods}
 	): file(file), name(name)
 		e{direct input constr}
 	{
-		e{input constr}
 	}
 x{input methods}
 ```
@@ -157,7 +156,7 @@ x{global elements}
 
 ```
 A{global elements}
-	FragMap root = {};
+	FragMap root;
 	FragMap *frags = &root;
 x{global elements}
 ```
@@ -199,13 +198,6 @@ x{additional input elements}
 ```
 * Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
   Definitionen
-
-```
-d{input constr}
-	memset(&frags, 0, sizeof(frags));
-x{input constr}
-```
-* Map wird noch händisch mit `0`-Bytes initialisiert
 
 ```
 d{init additional input fields}
@@ -984,14 +976,9 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	Frag **cur = root.frags;
-	Frag **end =
-		cur + FRAG_SLOTS;
-	for (; cur < end; ++cur) {
-		Frag *frag = *cur;
-		for (; frag; frag = frag->link) {
-			E{serialize frag};
-		}
+	for (auto i = root.map.begin(); i != root.map.end(); ++i) {
+		Frag *frag = i->second;
+		E{serialize frag};
 	}
 } x{serialize fragments}
 ```
@@ -1005,16 +992,10 @@ a{serialize fragments} {
 	for (auto j = used.begin(); j != used.end(); ++j)
 	{
 		input = *j;
-		Frag **cur =
-			input->frags.frags;
-		Frag **end =
-			cur + FRAG_SLOTS;
-		for (; cur < end; ++cur) {
-			Frag *frag = *cur;
-			while (frag) {
-				E{serialize frag};
-				frag = frag->link;
-			}
+		for (auto i = input->frags.map.begin(); i !=
+			input->frags.map.end(); ++i) {
+			Frag *frag = i->second;
+			E{serialize frag};
 		}
 	}
 } x{serialize fragments}

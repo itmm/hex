@@ -39,16 +39,14 @@ x{define frag}
 ```
 A{includes}
 	#include <list>
+	#include <map>
 x{includes}
 ```
 
 ```
 a{define frag}
 	struct Frag {
-		Frag *link;
-		std::list<FragEntry> entries;
-		FragEntry *firstEntry;
-		FragEntry *lastEntry;
+		std::list<FragEntry *> entries;
 		int expands;
 		int multiples;
 		std::string name;
@@ -71,10 +69,7 @@ d{frag methods}
 	Frag(
 		const std::string &name
 	):
-		link(nullptr),
 		entries(),
-		firstEntry(nullptr),
-		lastEntry(nullptr),
 		expands(0),
 		multiples(0),
 		name(name)
@@ -82,16 +77,6 @@ d{frag methods}
 x{frag methods}
 ```
 * Die Zeiger werden mit `nullptr` initialisiert
-
-```
-a{frag methods}
-	~Frag() {
-		if (link) {
-			delete link;
-		}
-	}
-x{frag methods}
-```
 
 ```
 D{define logging}
@@ -158,11 +143,8 @@ d{frag unit tests}
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag *f = new Frag("ab");
-		ASSERT(f);
-		ASSERT(! f->link);
-		ASSERT(! f->firstEntry);
-		delete(f);
+		Frag f("ab");
+		ASSERT(f.entries.empty());
 	}
 x{frag unit tests}
 ```
@@ -375,7 +357,7 @@ a{define frag}
 		FragEntry *entry
 	) {
 		e{assert add entry};
-		frag->entries.push_back(*entry);
+		frag->entries.push_back(entry);
 	}
 x{define frag}
 ```
@@ -437,10 +419,10 @@ x{define frag}
 
 ```
 d{reuse last entry}
-	if (frag->firstEntry &&
-		! frag->lastEntry->frag
+	if (! frag->entries.empty() &&
+		! frag->entries.back()->frag
 	) {
-		frag->lastEntry->frag = child;
+		frag->entries.back()->frag = child;
 		return;
 	}
 x{reuse last entry}
@@ -483,9 +465,9 @@ d{iterate entries}
 	auto entry = frag->entries.begin();
 	for (; entry != frag->entries.end(); ++entry) {
 		e{serialize bytes};
-		if (entry->frag) {
+		if ((*entry)->frag) {
 			serializeFrag(
-				entry->frag, out,
+				(*entry)->frag, out,
 				writeLineMacros
 			);
 		}
@@ -503,14 +485,14 @@ x{serialize test defines}
 
 ```
 d{serialize bytes}
-	if (getFragEntryValueSize(&*entry)) {
+	if (getFragEntryValueSize(*entry)) {
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(
-				entry->value.data(), 1, entry->value.size(),
+				(*entry)->value.data(), 1, (*entry)->value.size(),
 				out
-			) == entry->value.size());
+			) == (*entry)->value.size());
 		} else {
-			*fragTestBufferCur += entry->value;
+			*fragTestBufferCur += (*entry)->value;
 		}
 	}
 x{serialize bytes}
@@ -629,12 +611,10 @@ x{check cycle frag}
 
 ```
 d{check cycle entries}
-	FragEntry *entry =
-		haystack->firstEntry;
-	for (; entry; entry = entry->link) {
-		if (! entry->frag) { continue; }
+	for (auto i = haystack->entries.begin(); i != haystack->entries.end(); ++i) {
+		if (! (*i)->frag) { continue; }
 		if (isFragInFrag(
-			needle, entry->frag
+			needle, (*i)->frag
 		)) {
 			return true;
 		}
@@ -652,9 +632,8 @@ a{define frag}
 
 	struct FragMap {
 		FragMap *link;
-		Frag *frags[
-			FRAG_SLOTS
-		];
+		std::map<std::string, Frag *> map;
+		e{frag map methods};
 	};
 x{define frag}
 ```
@@ -662,17 +641,21 @@ x{define frag}
 * Alle Felder müssen mit `nullptr` initialisiert werden
 
 ```
+d{frag map methods}
+	FragMap(): link(nullptr) {}
+x{frag map methods}
+```
+
+```
 a{define frag}
 	void clearFragMap(
 		FragMap *map
 	) {
-		Frag **cur = map->frags;
-		Frag **end =
-			cur + FRAG_SLOTS;
-		for (; cur < end; ++cur) {
-			delete(*cur); *cur = nullptr;
-		}
 		map->link = nullptr;
+		for (auto i = map->map.begin(); i != map->map.end(); ++i) {
+			delete i->second;
+		}
+		map->map.clear();
 	}
 x{define frag}
 ```
@@ -703,23 +686,13 @@ a{define frag}
 	) {
 		ASSERT(map);
 		Frag *frag = new Frag(name);
-		e{insert in slot};
+		map->map[name] = frag;
 		return frag;
 	}
 x{define frag}
 ```
 * Ein neues Fragment wird erstellt
 * Und in der Hash-Map abgelegt
-
-```
-d{insert in slot}
-	int hash = calcFragHash(name);
-	frag->link = map->frags[hash];
-	map->frags[hash] = frag;
-x{insert in slot}
-```
-* Fragment wird im Slot eingefügt
-* Neue Fragmente überlagern alte Fragmente mit gleichem Namen
 
 ```
 a{define frag}
@@ -738,12 +711,9 @@ x{define frag}
 
 ```
 d{find frag in slot} {
-	int hash = calcFragHash(name);
-	Frag *frag = map->frags[hash];
-	for (; frag; frag = frag->link) {
-		if (name == frag->name) {
-			return frag;
-		}
+	auto found = map->map.find(name);
+	if (found != map->map.end()) {
+		return found->second;
 	}
 } x{find frag in slot}
 ```

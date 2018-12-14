@@ -309,8 +309,6 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">input constr</span>)</span><br/>
-
 <span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">input methods</span>)</span><br/>
@@ -359,7 +357,7 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span> = {};<br/>
+<span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
 
 <span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
 
@@ -452,22 +450,6 @@
 <ul><li>
  Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
   Definitionen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@def(<span class="name">input constr</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">memset</span>(&amp;<span class="var">frags</span>, <span class="num">0</span>, <span class="fn">sizeof</span>(<span class="var">frags</span>));<br/>
-
-<span class="end">@end(<span class="name">input constr</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Map wird noch händisch mit <code>0</code>-Bytes initialisiert
 </li></ul></div>
 
 <div><div>
@@ -2105,21 +2087,11 @@
 
 <span class="add">@def(<span class="name">serialize fragments</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">Frag</span> **<span class="var">cur</span> = <span class="var">root</span>.<span class="var">frags</span>;<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">i</span> = <span class="var">root</span>.<span class="var">map</span>.<span class="fn">begin</span>(); <span class="var">i</span> != <span class="var">root</span>.<span class="var">map</span>.<span class="fn">end</span>(); ++<span class="var">i</span>) {<br/>
 
-<span class="in1"></span><span class="type">Frag</span> **<span class="var">end</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
 
-<span class="in2"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
-
-<span class="in1"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
-
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = *<span class="var">cur</span>;<br/>
-
-<span class="in2"></span><span class="keyword">for</span> (; <span class="var">frag</span>; <span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>) {<br/>
-
-<span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
-
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2147,25 +2119,13 @@
 
 <span class="in2"></span><span class="var">input</span> = *<span class="var">j</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> **<span class="var">cur</span> =<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">i</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>.<span class="fn">begin</span>(); <span class="var">i</span> !=<br/>
 
-<span class="in3"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">frags</span>;<br/>
+<span class="in3"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>.<span class="fn">end</span>(); ++<span class="var">i</span>) {<br/>
 
-<span class="in2"></span><span class="type">Frag</span> **<span class="var">end</span> =<br/>
+<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
 
-<span class="in3"></span><span class="var">cur</span> + <span class="var">FRAG_SLOTS</span>;<br/>
-
-<span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
-
-<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = *<span class="var">cur</span>;<br/>
-
-<span class="in3"></span><span class="keyword">while</span> (<span class="var">frag</span>) {<br/>
-
-<span class="in4"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
-
-<span class="in4"></span><span class="var">frag</span> = <span class="var">frag</span>-&gt;<span class="var">link</span>;<br/>
-
-<span class="in3"></span>}<br/>
+<span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
 <span class="in2"></span>}<br/>
 

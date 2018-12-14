@@ -6,6 +6,7 @@
 	#include <list>
 
 	#include <list>
+	#include <map>
 
 	#include <string.h>
 
@@ -86,10 +87,7 @@
 	};
 
 	struct Frag {
-		Frag *link;
-		std::list<FragEntry> entries;
-		FragEntry *firstEntry;
-		FragEntry *lastEntry;
+		std::list<FragEntry *> entries;
 		int expands;
 		int multiples;
 		std::string name;
@@ -97,20 +95,11 @@
 	Frag(
 		const std::string &name
 	):
-		link(nullptr),
 		entries(),
-		firstEntry(nullptr),
-		lastEntry(nullptr),
 		expands(0),
 		multiples(0),
 		name(name)
 	{ }
-
-	~Frag() {
-		if (link) {
-			delete link;
-		}
-	}
 ;
 	};
 
@@ -203,7 +192,7 @@
 	ASSERT(frag);
 	ASSERT(entry);
 ;
-		frag->entries.push_back(*entry);
+		frag->entries.push_back(entry);
 	}
 
 	void addBytesToFrag(
@@ -237,12 +226,10 @@
 	}
 ;
 		
-	FragEntry *entry =
-		haystack->firstEntry;
-	for (; entry; entry = entry->link) {
-		if (! entry->frag) { continue; }
+	for (auto i = haystack->entries.begin(); i != haystack->entries.end(); ++i) {
+		if (! (*i)->frag) { continue; }
 		if (isFragInFrag(
-			needle, entry->frag
+			needle, (*i)->frag
 		)) {
 			return true;
 		}
@@ -263,10 +250,10 @@
 	));
 ;
 		
-	if (frag->firstEntry &&
-		! frag->lastEntry->frag
+	if (! frag->entries.empty() &&
+		! frag->entries.back()->frag
 	) {
-		frag->lastEntry->frag = child;
+		frag->entries.back()->frag = child;
 		return;
 	}
 ;
@@ -293,20 +280,20 @@
 	auto entry = frag->entries.begin();
 	for (; entry != frag->entries.end(); ++entry) {
 		
-	if (getFragEntryValueSize(&*entry)) {
+	if (getFragEntryValueSize(*entry)) {
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(
-				entry->value.data(), 1, entry->value.size(),
+				(*entry)->value.data(), 1, (*entry)->value.size(),
 				out
-			) == entry->value.size());
+			) == (*entry)->value.size());
 		} else {
-			*fragTestBufferCur += entry->value;
+			*fragTestBufferCur += (*entry)->value;
 		}
 	}
 ;
-		if (entry->frag) {
+		if ((*entry)->frag) {
 			serializeFrag(
-				entry->frag, out,
+				(*entry)->frag, out,
 				writeLineMacros
 			);
 		}
@@ -341,21 +328,20 @@
 
 	struct FragMap {
 		FragMap *link;
-		Frag *frags[
-			FRAG_SLOTS
-		];
+		std::map<std::string, Frag *> map;
+		
+	FragMap(): link(nullptr) {}
+;
 	};
 
 	void clearFragMap(
 		FragMap *map
 	) {
-		Frag **cur = map->frags;
-		Frag **end =
-			cur + FRAG_SLOTS;
-		for (; cur < end; ++cur) {
-			delete(*cur); *cur = nullptr;
-		}
 		map->link = nullptr;
+		for (auto i = map->map.begin(); i != map->map.end(); ++i) {
+			delete i->second;
+		}
+		map->map.clear();
 	}
 
 	int calcFragHash(
@@ -371,11 +357,7 @@
 	) {
 		ASSERT(map);
 		Frag *frag = new Frag(name);
-		
-	int hash = calcFragHash(name);
-	frag->link = map->frags[hash];
-	map->frags[hash] = frag;
-;
+		map->map[name] = frag;
 		return frag;
 	}
 
@@ -385,12 +367,9 @@
 	) {
 		ASSERT(map);
 		 {
-	int hash = calcFragHash(name);
-	Frag *frag = map->frags[hash];
-	for (; frag; frag = frag->link) {
-		if (name == frag->name) {
-			return frag;
-		}
+	auto found = map->map.find(name);
+	if (found != map->map.end()) {
+		return found->second;
 	}
 } ;
 		
@@ -437,9 +416,6 @@
 	, line(1)
 
 	{
-		
-	memset(&frags, 0, sizeof(frags));
-
 	}
 ;
 	};
@@ -448,7 +424,7 @@
 	std::list<Input *> pending;
 	std::list<Input *> used;
 
-	FragMap root = {};
+	FragMap root;
 	FragMap *frags = &root;
 
 	void pushPath(const char *path) {
@@ -671,11 +647,8 @@
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag *f = new Frag("ab");
-		ASSERT(f);
-		ASSERT(! f->link);
-		ASSERT(! f->firstEntry);
-		delete(f);
+		Frag f("ab");
+		ASSERT(f.entries.empty());
 	}
 
 	{
@@ -1234,12 +1207,57 @@
 	}
 } ;
 	 {
-	Frag **cur = root.frags;
-	Frag **end =
-		cur + FRAG_SLOTS;
-	for (; cur < end; ++cur) {
-		Frag *frag = *cur;
-		for (; frag; frag = frag->link) {
+	for (auto i = root.map.begin(); i != root.map.end(); ++i) {
+		Frag *frag = i->second;
+		
+	if (! memcmp(
+		"file: ", frag->name.data(), 6
+	)) {
+		++frag->expands;
+		
+	FILE *f =
+		fopen(frag->name.substr(6).c_str(), "w");
+	ASSERT(
+		f, "can't open %s",
+		frag->name.substr(6).c_str()
+	);
+	serializeFrag(frag, f, false);
+	fclose(f);
+;
+	}
+ {
+	int sum =
+		frag->expands + frag->multiples;
+	if (sum <= 0) {
+		printf(
+			"frag [%s] not called\n",
+			frag->name.c_str()
+		);
+	}
+} 
+	if (frag->multiples == 1) {
+		printf(
+			"multiple frag [%s] only "
+				"used once\n",
+			frag->name.c_str()
+		);
+	}
+
+	if (! isPopulatedFrag(frag)) {
+		printf(
+			"frag [%s] not populated\n",
+			frag->name.c_str()
+		);
+	}
+;
+	}
+}  {
+	for (auto j = used.begin(); j != used.end(); ++j)
+	{
+		input = *j;
+		for (auto i = input->frags.map.begin(); i !=
+			input->frags.map.end(); ++i) {
+			Frag *frag = i->second;
 			
 	if (! memcmp(
 		"file: ", frag->name.data(), 6
@@ -1281,62 +1299,6 @@
 		);
 	}
 ;
-		}
-	}
-}  {
-	for (auto j = used.begin(); j != used.end(); ++j)
-	{
-		input = *j;
-		Frag **cur =
-			input->frags.frags;
-		Frag **end =
-			cur + FRAG_SLOTS;
-		for (; cur < end; ++cur) {
-			Frag *frag = *cur;
-			while (frag) {
-				
-	if (! memcmp(
-		"file: ", frag->name.data(), 6
-	)) {
-		++frag->expands;
-		
-	FILE *f =
-		fopen(frag->name.substr(6).c_str(), "w");
-	ASSERT(
-		f, "can't open %s",
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(frag, f, false);
-	fclose(f);
-;
-	}
- {
-	int sum =
-		frag->expands + frag->multiples;
-	if (sum <= 0) {
-		printf(
-			"frag [%s] not called\n",
-			frag->name.c_str()
-		);
-	}
-} 
-	if (frag->multiples == 1) {
-		printf(
-			"multiple frag [%s] only "
-				"used once\n",
-			frag->name.c_str()
-		);
-	}
-
-	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not populated\n",
-			frag->name.c_str()
-		);
-	}
-;
-				frag = frag->link;
-			}
 		}
 	}
 } ;
