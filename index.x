@@ -35,7 +35,8 @@
 D{file: hx.cc}
 	g{global elements}
 	int main(
-		int argc, const char **argv
+		int argc,
+		const char **argv
 	) {
 		e{main body}
 	}
@@ -95,7 +96,6 @@ x{global elements}
 ```
 D{includes}
 	#include <stdio.h>
-	#include <stdlib.h>
 	#include <list>
 x{includes}
 ```
@@ -124,6 +124,12 @@ A{global elements}
 	};
 x{global elements}
 ```
+* Die `Input`-Klasse enthält den Dateinamen der Eingabe-Dateien
+* Zusätzlich kann sie eine offene Datei enthalten
+* Alle Eingabe-Dateien, die während einer Inklude-Kaskade eingebunden
+  werden bleiben offen, damit an der richtigen Stelle weiter gearbeitet
+  werden kann
+* Weiter Attribute und Methoden können später definiert werden
 
 ```
 d{input methods}
@@ -136,6 +142,8 @@ d{input methods}
 	}
 x{input methods}
 ```
+* Im Konstruktor werden Datei und Name gesetzt
+* Später eingeführte Attribute können auch dann initialisiert werden
 
 ```
 A{global elements}

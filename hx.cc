@@ -2,7 +2,6 @@
 	
 	
 	#include <stdio.h>
-	#include <stdlib.h>
 	#include <list>
 
 	#include <list>
@@ -602,7 +601,8 @@
 	}
 
 	int main(
-		int argc, const char **argv
+		int argc,
+		const char **argv
 	) {
 		
 	

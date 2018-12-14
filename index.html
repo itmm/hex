@@ -97,7 +97,9 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">argc</span>, <span class="type">const</span> <span class="type">char</span> **<span class="var">argv</span><br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> **<span class="var">argv</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -224,8 +226,6 @@
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdio</span>.<span class="var">h</span>&gt;<br/>
 
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdlib</span>.<span class="var">h</span>&gt;<br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">list</span>&gt;<br/>
 
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
@@ -290,8 +290,18 @@
 </code>
 </div>
 
+<ul><li>
+ Die <code>Input</code>-Klasse enthält den Dateinamen der Eingabe-Dateien
+</li><li>
+ Zusätzlich kann sie eine offene Datei enthalten
+</li><li>
+ Alle Eingabe-Dateien, die während einer Inklude-Kaskade eingebunden
+  werden bleiben offen, damit an der richtigen Stelle weiter gearbeitet
+  werden kann
+</li><li>
+ Weiter Attribute und Methoden können später definiert werden
+</li></ul></div>
 
-</div>
 <div><div>
 <code>
 
@@ -316,8 +326,12 @@
 </code>
 </div>
 
+<ul><li>
+ Im Konstruktor werden Datei und Name gesetzt
+</li><li>
+ Später eingeführte Attribute können auch dann initialisiert werden
+</li></ul></div>
 
-</div>
 <div><div>
 <code>
 
