@@ -1072,11 +1072,7 @@
 
 <span class="add">@def(<span class="name">check for double def</span>)</span><br/>
 
-<span class="in1"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-
-<span class="in2"></span><span class="var">fm</span>, <span class="var">name</span><br/>
-
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
@@ -1118,11 +1114,7 @@
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> = <span class="var">fm</span>;<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
 
@@ -1154,11 +1146,7 @@
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
 

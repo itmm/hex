@@ -1254,36 +1254,35 @@ x{perform unit-tests}
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
+<span class="add">@add(<span class="name">frag map methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">clearFragMap</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span><br/>
+<span class="in2"></span><span class="var">auto</span> <span class="var">found</span> = <span class="var">map</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
-<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span> != <span class="var">map</span>.<span class="fn">end</span>()) {<br/>
 
-<span class="in2"></span><span class="var">map</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
+<span class="in3"></span><span class="keyword">return</span> &amp;<span class="var">found</span>-&gt;<span class="var">second</span>;<br/>
 
-<span class="in2"></span><span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">clear</span>();<br/>
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">link</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">return</span> <span class="var">link</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
+<span class="end">@end(<span class="name">frag map methods</span>)</span><br/>
 
 </code>
 </div>
 
-<ul><li>
- Um den Speicher freizugeben, wird jeder Slot gelöscht
-</li><li>
- und auf <code>nullptr</code> gesetzt um wieder verwendet
-  zu werden
-</li><li>
- Wenn es einen Link auf ein andere Map gibt, wird diese zurückgesetzt
-</li><li>
- Die referenzierte Map wird jedoch nicht gelöscht
-</li></ul></div>
 
+</div>
 <div><div>
 <code>
 
@@ -1325,85 +1324,6 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">findFragInMap</span>(<br/>
-
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
-
-<span class="in2"></span><span class="expand">@expand(<span class="name">find frag in slot</span>)</span>;<br/>
-
-<span class="in2"></span><span class="expand">@expand(<span class="name">find frag in linked map</span>)</span>;<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Liefert das erste Fragment mit dem übergebenen Namen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@def(<span class="name">find frag in slot</span>)</span> {<br/>
-
-<span class="in1"></span><span class="var">auto</span> <span class="var">found</span> = <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> != <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">end</span>()) {<br/>
-
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">found</span>-&gt;<span class="var">second</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-} <span class="end">@end(<span class="name">find frag in slot</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Im passenden Hash-Slot werden die Namen der Fragmente verglichen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@def(<span class="name">find frag in linked map</span>)</span><br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">map</span>-&gt;<span class="var">link</span>) {<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="fn">findFragInMap</span>(<br/>
-
-<span class="in3"></span><span class="var">map</span>-&gt;<span class="var">link</span>, <span class="var">name</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">find frag in linked map</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn es einen verlinkten Kontext gibt, so kann das Element auch in
-  diesem liegen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">getFragInMap</span>(<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
@@ -1435,11 +1355,7 @@ x{perform unit-tests}
 
 <span class="add">@def(<span class="name">get frag find</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
-
-<span class="in2"></span><span class="var">map</span>, <span class="var">name</span><br/>
-
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 

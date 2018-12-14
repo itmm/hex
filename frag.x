@@ -574,20 +574,19 @@ x{frag map methods}
 ```
 
 ```
-a{define frag}
-	void clearFragMap(
-		FragMap *map
-	) {
-		map->link = nullptr;
-		map->map.clear();
+a{frag map methods}
+	Frag *find(const std::string &name) {
+		auto found = map.find(name);
+		if (found != map.end()) {
+			return &found->second;
+		}
+		if (link) {
+			return link->find(name);
+		}
+		return nullptr;
 	}
-x{define frag}
+x{frag map methods}
 ```
-* Um den Speicher freizugeben, wird jeder Slot gelöscht
-* und auf `nullptr` gesetzt um wieder verwendet
-  zu werden
-* Wenn es einen Link auf ein andere Map gibt, wird diese zurückgesetzt
-* Die referenzierte Map wird jedoch nicht gelöscht
 
 ```
 a{define frag}
@@ -608,43 +607,6 @@ x{define frag}
 
 ```
 a{define frag}
-	Frag *findFragInMap(
-		FragMap *map,
-		const std::string &name
-	) {
-		ASSERT(map);
-		e{find frag in slot};
-		e{find frag in linked map};
-		return nullptr;
-	}
-x{define frag}
-```
-* Liefert das erste Fragment mit dem übergebenen Namen
-
-```
-d{find frag in slot} {
-	auto found = map->map.find(name);
-	if (found != map->map.end()) {
-		return &found->second;
-	}
-} x{find frag in slot}
-```
-* Im passenden Hash-Slot werden die Namen der Fragmente verglichen
-
-```
-d{find frag in linked map}
-	if (map->link) {
-		return findFragInMap(
-			map->link, name
-		);
-	}
-x{find frag in linked map}
-```
-* Wenn es einen verlinkten Kontext gibt, so kann das Element auch in
-  diesem liegen
-
-```
-a{define frag}
 	Frag &getFragInMap(
 		FragMap *map,
 		const std::string &name,
@@ -660,9 +622,7 @@ x{define frag}
 
 ```
 d{get frag find}
-	Frag *frag = findFragInMap(
-		map, name
-	);
+	Frag *frag = map->find(name);
 	if (frag) {
 		return *frag;
 	}

@@ -290,15 +290,19 @@
 		std::map<std::string, Frag> map;
 		
 	FragMap(): link(nullptr) {}
+
+	Frag *find(const std::string &name) {
+		auto found = map.find(name);
+		if (found != map.end()) {
+			return &found->second;
+		}
+		if (link) {
+			return link->find(name);
+		}
+		return nullptr;
+	}
 ;
 	};
-
-	void clearFragMap(
-		FragMap *map
-	) {
-		map->link = nullptr;
-		map->map.clear();
-	}
 
 	Frag &allocFragInMap(
 		FragMap *map,
@@ -311,36 +315,13 @@
 		return result.first->second;
 	}
 
-	Frag *findFragInMap(
-		FragMap *map,
-		const std::string &name
-	) {
-		ASSERT(map);
-		 {
-	auto found = map->map.find(name);
-	if (found != map->map.end()) {
-		return &found->second;
-	}
-} ;
-		
-	if (map->link) {
-		return findFragInMap(
-			map->link, name
-		);
-	}
-;
-		return nullptr;
-	}
-
 	Frag &getFragInMap(
 		FragMap *map,
 		const std::string &name,
 		FragMap *insert
 	) {
 		
-	Frag *frag = findFragInMap(
-		map, name
-	);
+	Frag *frag = map->find(name);
 	if (frag) {
 		return *frag;
 	}
@@ -752,9 +733,7 @@
 		ASSERT(! frag, "def in frag");
 		FragMap *fm = &input->frags;
 		
-	frag = findFragInMap(
-		fm, name
-	);
+	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] already defined\n",
@@ -774,9 +753,7 @@
 		ASSERT(! frag, "def in frag");
 		FragMap *fm = frags;
 		
-	frag = findFragInMap(
-		fm, name
-	);
+	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] already defined\n",
@@ -796,9 +773,7 @@
 		ASSERT(! frag, "add in frag");
 		FragMap *fm = &input->frags;
 		FragMap *ins = fm;
-		frag = findFragInMap(
-			fm, name
-		);
+		frag = fm->find(name);
 		
 	if (! isPopulatedFrag(frag)) {
 		printf(
@@ -817,9 +792,7 @@
 		ASSERT(! frag, "add in frag");
 		FragMap *fm = frags;
 		FragMap *ins = &root;
-		frag = findFragInMap(
-			fm, name
-		);
+		frag = fm->find(name);
 		
 	if (! isPopulatedFrag(frag)) {
 		printf(

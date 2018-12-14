@@ -492,9 +492,7 @@ x{process frag name}
 
 ```
 d{check for double def}
-	frag = findFragInMap(
-		fm, name
-	);
+	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
 		printf(
 			"frag [%s] already defined\n",
@@ -514,9 +512,7 @@ a{process frag name}
 		ASSERT(! frag, "add in frag");
 		FragMap *fm = &input->frags;
 		FragMap *ins = fm;
-		frag = findFragInMap(
-			fm, name
-		);
+		frag = fm->find(name);
 		E{check for add without def};
 		processed = true;
 	}
@@ -531,9 +527,7 @@ a{process frag name}
 		ASSERT(! frag, "add in frag");
 		FragMap *fm = frags;
 		FragMap *ins = &root;
-		frag = findFragInMap(
-			fm, name
-		);
+		frag = fm->find(name);
 		E{check for add without def};
 		processed = true;
 	}
