@@ -118,10 +118,28 @@ i{frag.x}
 A{global elements}
 	struct Input {
 		FILE *file;
-		e{additional input elements};
 		std::string name;
+		e{additional input elements};
+		e{input methods};
 	};
+x{global elements}
+```
 
+```
+d{input methods}
+	Input(
+		FILE *file,
+		const std::string &name
+	): file(file), name(name)
+		e{direct input constr}
+	{
+		e{input constr}
+	}
+x{input methods}
+```
+
+```
+A{global elements}
 	Input *input = nullptr;
 	std::list<Input *> pending;
 	std::list<Input *> used;
@@ -151,10 +169,8 @@ A{global elements}
 	void pushPath(const char *path) {
 		FILE *f = fopen(path, "r");
 		e{check file for path};
-		Input *i = new Input();
+		Input *i = new Input(f, path);
 		if (input) { pending.push_back(input); }
-		i->file = f;
-		i->name = path;
 		e{init additional input fields};
 		input = i;
 	}
@@ -173,6 +189,23 @@ d{check file for path}
 x{check file for path}
 ```
 * Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab
+
+# Lokale Fragmente
+
+```
+d{additional input elements}
+	FragMap frags;
+x{additional input elements}
+```
+* Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
+  Definitionen
+
+```
+d{input constr}
+	memset(&frags, 0, sizeof(frags));
+x{input constr}
+```
+* Map wird noch händisch mit `0`-Bytes initialisiert
 
 ```
 d{init additional input fields}
@@ -275,7 +308,6 @@ x{global elements}
 * Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
 
 ```
-
 d{get next input file}
 	fclose(input->file);
 	used.push_back(input);
@@ -295,45 +327,21 @@ x{get next input file}
 * Dann wird der Vorgänger zur aktuellen Datei erklärt
 * Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
 
-# Lokale Fragmente
-
-```
-d{additional input elements}
-	FragMap frags;
-x{additional input elements}
-```
-* Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
-  Definitionen
-
-```
-a{init additional input fields}
-	memset(
-		&i->frags, 0,
-		sizeof(i->frags)
-	);
-x{init additional input fields};
-```
-* Eine Map kann initialisiert werden, indem alle Bytes auf `0`
-  gesetzt werden
-
 # Eingabe-Dateien lesen
 * In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
   Fragmente aufzubauen und alle notwendigen Beziehungen zwischen den
   einzelnen Folien zu finden
 
 ```
-d{read source file}
-	{
-		e{additional read vars};
-		int last = nextCh();
-		int ch = last != EOF ? nextCh() : EOF;
-		while (ch != EOF) {
-			e{process current char};
-			last = ch; ch = nextCh();
-		}
+d{read source file} {
+	e{additional read vars};
+	int last = nextCh();
+	int ch = last != EOF ? nextCh() : EOF;
+	while (ch != EOF) {
+		e{process current char};
+		last = ch; ch = nextCh();
 	}
-x{read source file}
-
+} x{read source file}
 ```
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
@@ -1105,11 +1113,11 @@ x{additional input elements}
 * Pro Datei wird die aktuelle Zeile festgehalten
 
 ```
-a{init additional input fields}
-	i->line = 1;
-x{init additional input fields}
+d{direct input constr}
+	, line(1)
+x{direct input constr}
 ```
-* Beim Öffnen einer neuen `.x`-Datei befinden wir uns in Zeile `1`
+* Zeile wird mit `1` initialisiert
 
 ```
 d{preprocess char}

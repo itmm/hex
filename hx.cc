@@ -459,12 +459,26 @@
 
 	struct Input {
 		FILE *file;
+		std::string name;
 		
 	FragMap frags;
 
 	int line;
 ;
-		std::string name;
+		
+	Input(
+		FILE *file,
+		const std::string &name
+	): file(file), name(name)
+		
+	, line(1)
+
+	{
+		
+	memset(&frags, 0, sizeof(frags));
+
+	}
+;
 	};
 
 	Input *input = nullptr;
@@ -481,22 +495,13 @@
 		f, "can't open [%s]", path
 	);
 ;
-		Input *i = new Input();
+		Input *i = new Input(f, path);
 		if (input) { pending.push_back(input); }
-		i->file = f;
-		i->name = path;
 		
 	if (input) {
 		input->frags.link = frags;
 		frags = &input->frags;
 	}
-
-	memset(
-		&i->frags, 0,
-		sizeof(i->frags)
-	);
-
-	i->line = 1;
 ;
 		input = i;
 	}
@@ -807,9 +812,8 @@
 		pushPath("index.x");
 	}
 ;
+	 {
 	
-	{
-		
 	Frag *frag = nullptr;
 	std::string buffer;
 	int bufferLine = 0;
@@ -820,10 +824,10 @@
 	bool useName = false;
 	int nameLine = 0;
 ;
-		int last = nextCh();
-		int ch = last != EOF ? nextCh() : EOF;
-		while (ch != EOF) {
-			
+	int last = nextCh();
+	int ch = last != EOF ? nextCh() : EOF;
+	while (ch != EOF) {
+		
 	switch (ch) {
 		case '{':
 			 {
@@ -1281,10 +1285,9 @@
 } ;
 	}
 ;
-			last = ch; ch = nextCh();
-		}
+		last = ch; ch = nextCh();
 	}
-;
+} ;
 	 {
 	Frag **cur = root.frags;
 	Frag **end =
