@@ -92,24 +92,6 @@ x{frag methods}
 ```
 
 ```
-D{define logging}
-	#define ASSERT(COND, ...) \
-		if (! (COND)) { \
-			fprintf(stderr, \
-				"%s:%d", \
-				__FILE__, __LINE__); \
-			fprintf(stderr, \
-				" FAILED: " __VA_ARGS__); \
-			fprintf(stderr, "\n"); \
-			exit(EXIT_FAILURE); \
-		}
-x{define logging}
-```
-* Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
-* Und das Programm beendet
-* Datei und Zeile des Tests wird ausgegeben
-
-```
 A{includes}
 	#include <string.h>
 x{includes}

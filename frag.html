@@ -209,44 +209,6 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">define logging</span>)</span><br/>
-
-<span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>, ...) \<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
-
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
-
-<span class="in4"></span><span class="str">"%s:%d"</span>, \<br/>
-
-<span class="in4"></span><span class="var">__FILE__</span>, <span class="var">__LINE__</span>); \<br/>
-
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
-
-<span class="in4"></span><span class="str">" FAILED: "</span> <span class="var">__VA_ARGS__</span>); \<br/>
-
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, <span class="str">"\n"</span>); \<br/>
-
-<span class="in3"></span><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="end">@end(<span class="name">define logging</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
-</li><li>
- Und das Programm beendet
-</li><li>
- Datei und Zeile des Tests wird ausgegeben
-</li></ul></div>
-
-<div><div>
-<code>
-
 <span class="add">@globadd(<span class="name">includes</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">string</span>.<span class="var">h</span>&gt;<br/>

@@ -234,9 +234,11 @@
 </div>
 
 <ul><li>
- Standard File-Funktionen werden vom Programm benötigt
+ Aus <code>stdio.h</code> werden File-Funktionen verwendet
 </li><li>
- Standard Bibliothek wird für dynamische Speicherverwaltung benötigt
+ Aus <code>memory</code> wird <code>unique_ptr</code> verwendet
+</li><li>
+ <code>vector</code> ist ein Container für Source-Dateien
 </li></ul></div>
 
 </div>
@@ -273,15 +275,19 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Input</span> {<br/>
+<span class="in1"></span><span class="var">class</span> <span class="type">Input</span> {<br/>
 
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">file</span>;<br/>
+<span class="in2"></span><span class="var">private</span>:<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
+<span class="in3"></span><span class="type">FILE</span> *<span class="var">file</span>;<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">additional input elements</span>)</span>;<br/>
+<span class="in2"></span><span class="var">public</span>:<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">input methods</span>)</span>;<br/>
+<span class="in3"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">additional input elements</span>)</span>;<br/>
+
+<span class="in3"></span><span class="expand">@expand(<span class="name">input methods</span>)</span>;<br/>
 
 <span class="in1"></span>};<br/>
 
@@ -335,13 +341,57 @@
 <div><div>
 <code>
 
+<span class="add">@add(<span class="name">input methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">next</span>() {<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="num">EOF</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>) {<br/>
+
+<span class="in3"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">file</span>);<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="num">EOF</span>) {<br/>
+
+<span class="in4"></span><span class="fn">fclose</span>(<span class="var">file</span>);<br/>
+
+<span class="in4"></span><span class="var">file</span> = <span class="num">NULL</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">input methods</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ <code>next</code> liefert das nächste Zeichen aus der Datei
+</li><li>
+ Wenn das Ende erreicht ist, wird <code>EOF</code> zurück gegeben
+</li><li>
+ Und die Datei geschlossen
+</li></ul></div>
+
+<div><div>
+<code>
+
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">input</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt; <span class="var">pending</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt; <span class="var">used</span>;<br/>
+<span class="in2"></span><span class="var">pending</span>;<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt;<br/>
+
+<span class="in2"></span><span class="var">used</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -396,11 +446,21 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">check file for path</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> = <span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">f</span>, <span class="var">path</span>);<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> =<br/>
+
+<span class="in3"></span><span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">f</span>, <span class="var">path</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) { <span class="var">pending</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>)); }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
+
+<span class="in3"></span><span class="var">pending</span>.<span class="fn">push_back</span>(<br/>
+
+<span class="in4"></span><span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>)<br/>
+
+<span class="in3"></span>);<br/>
+
+<span class="in2"></span>}<br/>
 
 <span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
 
@@ -416,8 +476,49 @@
 </li><li>
  Dieser wird als Name gespeichert
 </li><li>
- Die Struktur wird dynamisch so groß gewählt, dass der Name hinein
-  passt
+ Durch <code>unique_ptr</code> ist keine direkte Speicherverwaltung notwendig
+</li><li>
+ Das Verschieben der Ownership muss aber explizit erfolgen
+</li><li>
+ Falls schon eine Datei offen ist, wird sie nach <code>pending</code> verschoben
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="add">@globdef(<span class="name">define logging</span>)</span><br/>
+
+<span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>, ...) \<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
+
+<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
+
+<span class="in4"></span><span class="str">"%s:%d"</span>, \<br/>
+
+<span class="in4"></span><span class="var">__FILE__</span>, <span class="var">__LINE__</span>); \<br/>
+
+<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
+
+<span class="in4"></span><span class="str">" FAILED: "</span> <span class="var">__VA_ARGS__</span>); \<br/>
+
+<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, <span class="str">"\n"</span>); \<br/>
+
+<span class="in3"></span><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="end">@end(<span class="name">define logging</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
+</li><li>
+ Und das Programm beendet
+</li><li>
+ Datei und Zeile des Tests wird ausgegeben
 </li></ul></div>
 
 <div><div>
@@ -658,7 +759,7 @@
 
 <span class="in2"></span><span class="keyword">while</span> (<span class="var">input</span>) {<br/>
 
-<span class="in3"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
+<span class="in3"></span><span class="var">ch</span> = <span class="var">input</span>-&gt;<span class="fn">next</span>();<br/>
 
 <span class="in3"></span><span class="expand">@expand(<span class="name">preprocess char</span>)</span>;<br/>
 
@@ -688,8 +789,6 @@
 <code>
 
 <span class="add">@def(<span class="name">get next input file</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">fclose</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
 
 <span class="in1"></span><span class="var">used</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>));<br/>
 

@@ -99,8 +99,9 @@ D{includes}
 	#include <vector>
 x{includes}
 ```
-* Standard File-Funktionen werden vom Programm benötigt
-* Standard Bibliothek wird für dynamische Speicherverwaltung benötigt
+* Aus `stdio.h` werden File-Funktionen verwendet
+* Aus `memory` wird `unique_ptr` verwendet
+* `vector` ist ein Container für Source-Dateien
 
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
@@ -116,11 +117,13 @@ i{frag.x}
 
 ```
 A{global elements}
-	struct Input {
-		FILE *file;
-		std::string name;
-		e{additional input elements};
-		e{input methods};
+	class Input {
+		private:
+			FILE *file;
+		public:
+			const std::string name;
+			e{additional input elements};
+			e{input methods};
 	};
 x{global elements}
 ```
@@ -146,10 +149,31 @@ x{input methods}
 * Später eingeführte Attribute können auch dann initialisiert werden
 
 ```
+a{input methods}
+	int next() {
+		int ch = EOF;
+		if (file) {
+			ch = fgetc(file);
+			if (ch == EOF) {
+				fclose(file);
+				file = NULL;
+			}
+		}
+		return ch;
+	}
+x{input methods}
+```
+* `next` liefert das nächste Zeichen aus der Datei
+* Wenn das Ende erreicht ist, wird `EOF` zurück gegeben
+* Und die Datei geschlossen
+
+```
 A{global elements}
 	std::unique_ptr<Input> input;
-	std::vector<std::unique_ptr<Input>> pending;
-	std::vector<std::unique_ptr<Input>> used;
+	std::vector<std::unique_ptr<Input>>
+		pending;
+	std::vector<std::unique_ptr<Input>>
+		used;
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -176,17 +200,41 @@ A{global elements}
 	void pushPath(const std::string &path) {
 		FILE *f = fopen(path.c_str(), "r");
 		e{check file for path};
-		std::unique_ptr<Input> i = std::make_unique<Input>(f, path);
+		std::unique_ptr<Input> i =
+			std::make_unique<Input>(f, path);
 		e{init additional input fields};
-		if (input) { pending.push_back(std::move(input)); }
+		if (input) {
+			pending.push_back(
+				std::move(input)
+			);
+		}
 		input = std::move(i);
 	}
 x{global elements}
 ```
 * Dateien werden über ihren Pfad identifiziert
 * Dieser wird als Name gespeichert
-* Die Struktur wird dynamisch so groß gewählt, dass der Name hinein
-  passt
+* Durch `unique_ptr` ist keine direkte Speicherverwaltung notwendig
+* Das Verschieben der Ownership muss aber explizit erfolgen
+* Falls schon eine Datei offen ist, wird sie nach `pending` verschoben
+
+```
+D{define logging}
+	#define ASSERT(COND, ...) \
+		if (! (COND)) { \
+			fprintf(stderr, \
+				"%s:%d", \
+				__FILE__, __LINE__); \
+			fprintf(stderr, \
+				" FAILED: " __VA_ARGS__); \
+			fprintf(stderr, "\n"); \
+			exit(EXIT_FAILURE); \
+		}
+x{define logging}
+```
+* Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
+* Und das Programm beendet
+* Datei und Zeile des Tests wird ausgegeben
 
 ```
 d{check file for path}
@@ -294,7 +342,7 @@ A{global elements}
 	int nextCh() {
 		int ch = EOF;
 		while (input) {
-			ch = fgetc(input->file);
+			ch = input->next();
 			e{preprocess char};
 			if (ch != EOF) { break; }
 			e{get next input file};
@@ -309,7 +357,6 @@ x{global elements}
 
 ```
 d{get next input file}
-	fclose(input->file);
 	used.push_back(std::move(input));
 	if (! pending.empty()) {
 		input = std::move(pending.back());

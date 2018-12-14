@@ -15,7 +15,7 @@ x{write HTML file}
 
 ```
 d{write cur HTML file}
-	std::string &name = cur->name;
+	const std::string &name = cur->name;
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";

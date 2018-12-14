@@ -280,15 +280,17 @@
 	};
 ;
 
-	struct Input {
-		FILE *file;
-		std::string name;
-		
+	class Input {
+		private:
+			FILE *file;
+		public:
+			const std::string name;
+			
 	FragMap frags;
 
 	int line;
 ;
-		
+			
 	Input(
 		FILE *file,
 		const std::string &name
@@ -298,12 +300,26 @@
 
 	{
 	}
+
+	int next() {
+		int ch = EOF;
+		if (file) {
+			ch = fgetc(file);
+			if (ch == EOF) {
+				fclose(file);
+				file = NULL;
+			}
+		}
+		return ch;
+	}
 ;
 	};
 
 	std::unique_ptr<Input> input;
-	std::vector<std::unique_ptr<Input>> pending;
-	std::vector<std::unique_ptr<Input>> used;
+	std::vector<std::unique_ptr<Input>>
+		pending;
+	std::vector<std::unique_ptr<Input>>
+		used;
 
 	FragMap root;
 	FragMap *frags = &root;
@@ -315,14 +331,19 @@
 		f, "can't open [%s]", path.c_str()
 	);
 ;
-		std::unique_ptr<Input> i = std::make_unique<Input>(f, path);
+		std::unique_ptr<Input> i =
+			std::make_unique<Input>(f, path);
 		
 	if (input) {
 		input->frags.link = frags;
 		frags = &input->frags;
 	}
 ;
-		if (input) { pending.push_back(std::move(input)); }
+		if (input) {
+			pending.push_back(
+				std::move(input)
+			);
+		}
 		input = std::move(i);
 	}
 
@@ -332,7 +353,7 @@
 	int nextCh() {
 		int ch = EOF;
 		while (input) {
-			ch = fgetc(input->file);
+			ch = input->next();
 			
 	if (ch == '\n') {
 		++input->line;
@@ -340,7 +361,6 @@
 ;
 			if (ch != EOF) { break; }
 			
-	fclose(input->file);
 	used.push_back(std::move(input));
 	if (! pending.empty()) {
 		input = std::move(pending.back());
@@ -1111,7 +1131,7 @@
 	
 	for (auto &cur : used) {
 		
-	std::string &name = cur->name;
+	const std::string &name = cur->name;
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";
