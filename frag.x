@@ -24,7 +24,12 @@ d{define frag}
 		Frag *frag;
 		std::string value;
 		e{additional entry attributes};
-		FragEntry(): frag(nullptr) {}
+		FragEntry(
+			const std::string &value = std::string()
+		):
+			frag(nullptr),
+			value(value)
+		{}
 	};
 x{define frag}
 ```
@@ -46,7 +51,7 @@ x{includes}
 ```
 a{define frag}
 	struct Frag {
-		std::list<FragEntry *> entries;
+		std::list<FragEntry> entries;
 		int expands;
 		int multiples;
 		std::string name;
@@ -79,6 +84,14 @@ x{frag methods}
 * Die Zeiger werden mit `nullptr` initialisiert
 
 ```
+a{frag methods}
+	void clear() {
+		entries.clear();
+	}
+x{frag methods}
+```
+
+```
 D{define logging}
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
@@ -100,20 +113,6 @@ x{define logging}
 A{includes}
 	#include <string.h>
 x{includes}
-
-# Fragmente freigeben
-
-```
-a{define frag}
-	void freeFragEntries(
-		Frag *frag
-	) {
-		if (frag) {
-			frag->entries.clear();
-		}
-	}
-x{define frag}
-```
 
 # Unit Tests
 
@@ -159,44 +158,14 @@ a{define frag}
 x{define frag}
 ```
 
-# Fragment-Eintrag anlegen
-
-```
-a{define frag}
-	FragEntry *allocFragEntry(
-		Frag *frag,
-		const std::string &value
-	) {
-		FragEntry *result = new FragEntry();
-		result->frag = frag;
-		result->value = value;
-		return result;
-	}
-x{define frag}
-```
-* Sowohl `frag` als auch `value` sind optional
-
-```
-a{define frag}
-	FragEntry *
-		allocEmptyFragEntry() {
-			return allocFragEntry(
-				nullptr, std::string()
-			);
-		}
-x{define frag}
-```
-* Für Tests ist es praktisch, leere Einträge anzulegen
-
 # Auf Attribute zugreifen
 
 ```
 a{define frag}
 	int getFragEntryValueSize(
-		FragEntry *e
+		const FragEntry &e
 	) {
-		if (! e) { return 0; }
-		return e->value.size();
+		return e.value.size();
 	}
 x{define frag}
 ```
@@ -220,8 +189,7 @@ a{frag unit tests}
 	{
 		FragEntry entry;
 		ASSERT(
-			getFragEntryValueSize(
-				&entry) == 0
+			getFragEntryValueSize(entry) == 0
 		);
 	}
 x{frag unit tests}
@@ -229,33 +197,12 @@ x{frag unit tests}
 * Ein leerer Eintrag hat keine Bytes
 
 ```
-a{define frag}
-	FragEntry *
-		allocTestFragEntry(
-			const std::string &s
-		) {
-			return allocFragEntry(
-				nullptr, s
-			);
-		}
-x{define frag}
-```
-* Der Test-Konstruktor bekommt eine Null-terminierte Zeichenkette als
-  Argument
-
-```
 a{frag unit tests}
 	{
-		FragEntry *entry =
-			allocTestFragEntry("abc");
-
-		ASSERT(entry);
+		FragEntry entry("abc");
 		ASSERT(
-			getFragEntryValueSize(
-				entry) == 3
+			getFragEntryValueSize(entry) == 3
 		);
-
-		delete(entry);
 	}
 x{frag unit tests}
 ```
@@ -264,13 +211,8 @@ x{frag unit tests}
 ```
 a{frag unit tests}
 	{
-		FragEntry *entry =
-			allocTestFragEntry("abc");
-
-		ASSERT(entry);
-		ASSERT(entry->value == "abc");
-
-		delete(entry);
+		FragEntry entry("abc");
+		ASSERT(entry.value == "abc");
 	}
 x{frag unit tests}
 ```
@@ -279,59 +221,36 @@ x{frag unit tests}
 # Einträge zu Fragmenten hinzufügen
 
 ```
-a{define frag}
-	void addEntryToFrag(
-		Frag *frag,
-		FragEntry *entry
-	) {
-		e{assert add entry};
-		frag->entries.push_back(entry);
-	}
-x{define frag}
-```
-* Ein Eintrag wird entweder an das Ende der Liste der Einträge angehängt
-* Oder als neuer Kopf der Liste gesetzt
-
-```
-d{assert add entry}
-	ASSERT(frag);
-	ASSERT(entry);
-x{assert add entry}
-```
-* Fragment darf nicht `nullptr` sein
-* Eintrag darf nicht `nullptr` sein
-* Eintrag darf noch nicht in einer anderen Liste hängen
-
-```
-a{define frag}
-	void addBytesToFrag(
-		Frag *frag,
+a{frag methods}
+	Frag &add(
 		const std::string &value,
 		const std::string &source,
 		int line
 	) {
-		FragEntry *entry =
-			allocFragEntry(nullptr, value);
+		entries.push_back(FragEntry());
+		FragEntry &entry = entries.back();
+		entry.value += value;
 		e{populate additional entry fields};
-		addEntryToFrag(frag, entry);
+		return *this;
 	}
-x{define frag}
+x{frag methods}
 ```
-* Für die Daten wird ein neuer Eintrag angelegt
-* Dieser wird an das Fragment angehängt
+
+```
+a{frag methods}
+	Frag &add(Frag *child);
+x{frag methods}
+```
 
 ```
 a{define frag}
 	e{define cycle check}
-	void addFragToFrag(
-		Frag *frag,
-		Frag *child
-	) {
-		ASSERT(frag);
+	Frag &Frag::add(Frag *child) {
 		ASSERT(child);
 		e{avoid frag cycles};
 		e{reuse last entry};
 		e{add frag entry};
+		return *this;
 	}
 x{define frag}
 ```
@@ -344,11 +263,11 @@ x{define frag}
 
 ```
 d{reuse last entry}
-	if (! frag->entries.empty() &&
-		! frag->entries.back()->frag
+	if (! entries.empty() &&
+		! entries.back().frag
 	) {
-		frag->entries.back()->frag = child;
-		return;
+		entries.back().frag = child;
+		return *this;
 	}
 x{reuse last entry}
 ```
@@ -357,9 +276,9 @@ x{reuse last entry}
 
 ```
 d{add frag entry}
-	FragEntry *entry =
-		allocFragEntry(child, std::string());
-	addEntryToFrag(frag, entry);
+	entries.push_back(FragEntry());
+	FragEntry &entry = entries.back();
+	entry.frag = child;
 x{add frag entry}
 ```
 * Sonst muss ein neuer Eintrag in dem Fragment angelegt werden
@@ -370,11 +289,9 @@ x{add frag entry}
 a{define frag}
 	e{serialize test defines};
 	void serializeFrag(
-		Frag *frag,
-		FILE *out,
+		const Frag &frag, FILE *out,
 		bool writeLineMacros
 	) {
-		ASSERT(frag);
 		ASSERT(out);
 		e{iterate entries};
 	}
@@ -385,12 +302,12 @@ x{define frag}
 
 ```
 d{iterate entries}
-	auto entry = frag->entries.begin();
-	for (; entry != frag->entries.end(); ++entry) {
+	auto entry = frag.entries.begin();
+	for (; entry != frag.entries.end(); ++entry) {
 		e{serialize bytes};
-		if ((*entry)->frag) {
+		if (entry->frag) {
 			serializeFrag(
-				(*entry)->frag, out,
+				*entry->frag, out,
 				writeLineMacros
 			);
 		}
@@ -411,11 +328,11 @@ d{serialize bytes}
 	if (getFragEntryValueSize(*entry)) {
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(
-				(*entry)->value.data(), 1, (*entry)->value.size(),
+				entry->value.data(), 1, entry->value.size(),
 				out
-			) == (*entry)->value.size());
+			) == entry->value.size());
 		} else {
-			*fragTestBufferCur += (*entry)->value;
+			*fragTestBufferCur += entry->value;
 		}
 	}
 x{serialize bytes}
@@ -425,8 +342,9 @@ x{serialize bytes}
 
 ```
 a{define frag}
-	void testFrag(Frag *
-		frag, const std::string &expected
+	void testFrag(
+		const Frag &frag,
+		const std::string &expected
 	) {
 		e{serialize test frag};
 	}
@@ -453,8 +371,8 @@ a{define frag}
 		Frag *frag,
 		const std::string &str
 	) {
-		addBytesToFrag(
-			frag, str, std::string(), 0
+		frag->add(
+			str, std::string(), 0
 		);
 	}
 x{define frag}
@@ -467,7 +385,7 @@ a{frag unit tests} {
 	Frag frag("");
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
-	testFrag(&frag, "abcdef");
+	testFrag(frag, "abcdef");
 } x{frag unit tests}
 ```
 * Prüft, ob zwei Strings richtig serialisiert werden
@@ -477,10 +395,10 @@ a{frag unit tests} {
 	Frag a("");
 	Frag b("");
 	addStringToFrag(&a, "abc");
-	addFragToFrag(&b, &a);
+	b.add(&a);
 	addStringToFrag(&b, "def");
-	addFragToFrag(&b, &a);
-	testFrag(&b, "abcdefabc");
+	b.add(&a);
+	testFrag(b, "abcdefabc");
 } x{frag unit tests}
 ```
 * Prüft, ob Fragmente expandiert werden
@@ -508,7 +426,7 @@ x{define cycle check}
 ```
 d{avoid frag cycles}
 	ASSERT(! isFragInFrag(
-		frag, child
+		this, child
 	));
 x{avoid frag cycles}
 ```
@@ -531,9 +449,9 @@ d{check cycle entries}
 		auto i = haystack->entries.begin();
 		i != haystack->entries.end(); ++i
 	) {
-		if (! (*i)->frag) { continue; }
+		if (! i->frag) { continue; }
 		if (isFragInFrag(
-			needle, (*i)->frag
+			needle, i->frag
 		)) {
 			return true;
 		}
@@ -615,7 +533,7 @@ x{additional entry attributes}
 
 ```
 d{populate additional entry fields}
-	entry->source = source;
-	entry->line = line;
+	entry.source = source;
+	entry.line = line;
 x{populate additional entry fields}
 ```

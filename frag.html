@@ -64,7 +64,17 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">additional entry attributes</span>)</span>;<br/>
 
-<span class="in2"></span><span class="fn">FragEntry</span>(): <span class="fn">frag</span>(<span class="num">nullptr</span>) {}<br/>
+<span class="in2"></span><span class="fn">FragEntry</span>(<br/>
+
+<span class="in3"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span> = <span class="var">std</span>::<span class="fn">string</span>()<br/>
+
+<span class="in2"></span>):<br/>
+
+<span class="in3"></span><span class="fn">frag</span>(<span class="num">nullptr</span>),<br/>
+
+<span class="in3"></span><span class="fn">value</span>(<span class="var">value</span>)<br/>
+
+<span class="in2"></span>{}<br/>
 
 <span class="in1"></span>};<br/>
 
@@ -109,7 +119,7 @@
 
 <span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">FragEntry</span> *&gt; <span class="var">entries</span>;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">entries</span>;<br/>
 
 <span class="in2"></span><span class="type">int</span> <span class="var">expands</span>;<br/>
 
@@ -181,6 +191,24 @@
 <div><div>
 <code>
 
+<span class="add">@add(<span class="name">frag methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
+
+<span class="in2"></span><span class="var">entries</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">frag methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
 <span class="add">@globdef(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>, ...) \<br/>
@@ -224,28 +252,6 @@
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">string</span>.<span class="var">h</span>&gt;<br/>
 
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
-
-<br/>
-
-# <span class="type">Fragmente</span> <span class="var">freigeben</span><br/>
-
-<br/>
-
-</code>
-</div>
-
-a{define frag}
-	void freeFragEntries(
-		Frag *frag
-	) {
-		if (frag) {
-			frag-&gt;entries.clear();
-		}
-	}
-x{define frag}
-</div>
-<div><div>
-<code>
 
 <br/>
 
@@ -341,73 +347,6 @@ x{perform unit-tests}
 
 </div>
 </div>
-<h1>Fragment-Eintrag anlegen</h1>
-<div class="slides">
-<div><div>
-<h1>Fragment-Eintrag anlegen</h1>
-</div>
-
-
-</div>
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">FragEntry</span> *<span class="fn">allocFragEntry</span>(<br/>
-
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">result</span> = <span class="keyword">new</span> <span class="fn">FragEntry</span>();<br/>
-
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">frag</span> = <span class="var">frag</span>;<br/>
-
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">value</span> = <span class="var">value</span>;<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Sowohl <code>frag</code> als auch <code>value</code> sind optional
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">FragEntry</span> *<br/>
-
-<span class="in2"></span><span class="fn">allocEmptyFragEntry</span>() {<br/>
-
-<span class="in3"></span><span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
-
-<span class="in4"></span><span class="num">nullptr</span>, <span class="var">std</span>::<span class="fn">string</span>()<br/>
-
-<span class="in3"></span>);<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Für Tests ist es praktisch, leere Einträge anzulegen
-</li></ul></div>
-
-</div>
 <h1>Auf Attribute zugreifen</h1>
 <div class="slides">
 <div><div>
@@ -423,13 +362,11 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">getFragEntryValueSize</span>(<br/>
 
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">e</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">FragEntry</span> &amp;<span class="var">e</span><br/>
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">e</span>) { <span class="keyword">return</span> <span class="num">0</span>; }<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="var">e</span>-&gt;<span class="var">value</span>.<span class="fn">size</span>();<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">e</span>.<span class="var">value</span>.<span class="fn">size</span>();<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -486,9 +423,7 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in3"></span><span class="fn">getFragEntryValueSize</span>(<br/>
-
-<span class="in4"></span>&amp;<span class="var">entry</span>) == <span class="num">0</span><br/>
+<span class="in3"></span><span class="fn">getFragEntryValueSize</span>(<span class="var">entry</span>) == <span class="num">0</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -506,60 +441,17 @@ x{perform unit-tests}
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">FragEntry</span> *<br/>
-
-<span class="in2"></span><span class="fn">allocTestFragEntry</span>(<br/>
-
-<span class="in3"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span><br/>
-
-<span class="in2"></span>) {<br/>
-
-<span class="in3"></span><span class="keyword">return</span> <span class="fn">allocFragEntry</span>(<br/>
-
-<span class="in4"></span><span class="num">nullptr</span>, <span class="var">s</span><br/>
-
-<span class="in3"></span>);<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Der Test-Konstruktor bekommt eine Null-terminierte Zeichenkette als
-  Argument
-</li></ul></div>
-
-<div><div>
-<code>
-
 <span class="add">@add(<span class="name">frag unit tests</span>)</span><br/>
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
-
-<span class="in3"></span><span class="fn">allocTestFragEntry</span>(<span class="str">"abc"</span>);<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="type">FragEntry</span> <span class="fn">entry</span>(<span class="str">"abc"</span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in3"></span><span class="fn">getFragEntryValueSize</span>(<br/>
-
-<span class="in4"></span><span class="var">entry</span>) == <span class="num">3</span><br/>
+<span class="in3"></span><span class="fn">getFragEntryValueSize</span>(<span class="var">entry</span>) == <span class="num">3</span><br/>
 
 <span class="in2"></span>);<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -579,19 +471,9 @@ x{perform unit-tests}
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> <span class="fn">entry</span>(<span class="str">"abc"</span>);<br/>
 
-<span class="in3"></span><span class="fn">allocTestFragEntry</span>(<span class="str">"abc"</span>);<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>-&gt;<span class="var">value</span> == <span class="str">"abc"</span>);<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="var">value</span> == <span class="str">"abc"</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -616,63 +498,9 @@ x{perform unit-tests}
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
+<span class="add">@add(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">addEntryToFrag</span>(<br/>
-
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
-
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="expand">@expand(<span class="name">assert add entry</span>)</span>;<br/>
-
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">entries</span>.<span class="fn">push_back</span>(<span class="var">entry</span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Ein Eintrag wird entweder an das Ende der Liste der Einträge angehängt
-</li><li>
- Oder als neuer Kopf der Liste gesetzt
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@def(<span class="name">assert add entry</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>);<br/>
-
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
-
-<span class="end">@end(<span class="name">assert add entry</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Fragment darf nicht <code>nullptr</code> sein
-</li><li>
- Eintrag darf nicht <code>nullptr</code> sein
-</li><li>
- Eintrag darf noch nicht in einer anderen Liste hängen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">void</span> <span class="fn">addBytesToFrag</span>(<br/>
-
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
 
@@ -682,27 +510,39 @@ x{perform unit-tests}
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="var">entries</span>.<span class="fn">push_back</span>(<span class="fn">FragEntry</span>());<br/>
 
-<span class="in3"></span><span class="fn">allocFragEntry</span>(<span class="num">nullptr</span>, <span class="var">value</span>);<br/>
+<span class="in2"></span><span class="type">FragEntry</span> &amp;<span class="var">entry</span> = <span class="var">entries</span>.<span class="fn">back</span>();<br/>
+
+<span class="in2"></span><span class="var">entry</span>.<span class="var">value</span> += <span class="var">value</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">populate additional entry fields</span>)</span>;<br/>
 
-<span class="in2"></span><span class="fn">addEntryToFrag</span>(<span class="var">frag</span>, <span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
+<span class="end">@end(<span class="name">frag methods</span>)</span><br/>
 
 </code>
 </div>
 
-<ul><li>
- Für die Daten wird ein neuer Eintrag angelegt
-</li><li>
- Dieser wird an das Fragment angehängt
-</li></ul></div>
 
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">frag methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>);<br/>
+
+<span class="end">@end(<span class="name">frag methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
 <div><div>
 <code>
 
@@ -710,15 +550,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">define cycle check</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">addFragToFrag</span>(<br/>
-
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
-
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">child</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
 
@@ -727,6 +559,8 @@ x{perform unit-tests}
 <span class="in2"></span><span class="expand">@expand(<span class="name">reuse last entry</span>)</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">add frag entry</span>)</span>;<br/>
+
+<span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -752,15 +586,15 @@ x{perform unit-tests}
 
 <span class="add">@def(<span class="name">reuse last entry</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>-&gt;<span class="var">entries</span>.<span class="fn">empty</span>() &amp;&amp;<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">entries</span>.<span class="fn">empty</span>() &amp;&amp;<br/>
 
-<span class="in2"></span>! <span class="var">frag</span>-&gt;<span class="var">entries</span>.<span class="fn">back</span>()-&gt;<span class="var">frag</span><br/>
+<span class="in2"></span>! <span class="var">entries</span>.<span class="fn">back</span>().<span class="var">frag</span><br/>
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">entries</span>.<span class="fn">back</span>()-&gt;<span class="var">frag</span> = <span class="var">child</span>;<br/>
+<span class="in2"></span><span class="var">entries</span>.<span class="fn">back</span>().<span class="var">frag</span> = <span class="var">child</span>;<br/>
 
-<span class="in2"></span><span class="keyword">return</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -779,11 +613,11 @@ x{perform unit-tests}
 
 <span class="add">@def(<span class="name">add frag entry</span>)</span><br/>
 
-<span class="in1"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in1"></span><span class="var">entries</span>.<span class="fn">push_back</span>(<span class="fn">FragEntry</span>());<br/>
 
-<span class="in2"></span><span class="fn">allocFragEntry</span>(<span class="var">child</span>, <span class="var">std</span>::<span class="fn">string</span>());<br/>
+<span class="in1"></span><span class="type">FragEntry</span> &amp;<span class="var">entry</span> = <span class="var">entries</span>.<span class="fn">back</span>();<br/>
 
-<span class="in1"></span><span class="fn">addEntryToFrag</span>(<span class="var">frag</span>, <span class="var">entry</span>);<br/>
+<span class="in1"></span><span class="var">entry</span>.<span class="var">frag</span> = <span class="var">child</span>;<br/>
 
 <span class="end">@end(<span class="name">add frag entry</span>)</span><br/>
 
@@ -812,15 +646,11 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
-
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>, <span class="type">FILE</span> *<span class="var">out</span>,<br/>
 
 <span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
 
 <span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 
@@ -844,17 +674,17 @@ x{perform unit-tests}
 
 <span class="add">@def(<span class="name">iterate entries</span>)</span><br/>
 
-<span class="in1"></span><span class="var">auto</span> <span class="var">entry</span> = <span class="var">frag</span>-&gt;<span class="var">entries</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="var">auto</span> <span class="var">entry</span> = <span class="var">frag</span>.<span class="var">entries</span>.<span class="fn">begin</span>();<br/>
 
-<span class="in1"></span><span class="keyword">for</span> (; <span class="var">entry</span> != <span class="var">frag</span>-&gt;<span class="var">entries</span>.<span class="fn">end</span>(); ++<span class="var">entry</span>) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (; <span class="var">entry</span> != <span class="var">frag</span>.<span class="var">entries</span>.<span class="fn">end</span>(); ++<span class="var">entry</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">serialize bytes</span>)</span>;<br/>
 
-<span class="in2"></span><span class="keyword">if</span> ((*<span class="var">entry</span>)-&gt;<span class="var">frag</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>-&gt;<span class="var">frag</span>) {<br/>
 
 <span class="in3"></span><span class="fn">serializeFrag</span>(<br/>
 
-<span class="in4"></span>(*<span class="var">entry</span>)-&gt;<span class="var">frag</span>, <span class="var">out</span>,<br/>
+<span class="in4"></span>*<span class="var">entry</span>-&gt;<span class="var">frag</span>, <span class="var">out</span>,<br/>
 
 <span class="var">writeLineMacros</span><br/>
 
@@ -900,15 +730,15 @@ x{perform unit-tests}
 
 <span class="in3"></span><span class="fn">ASSERT</span>(<span class="fn">fwrite</span>(<br/>
 
-<span class="in4"></span>(*<span class="var">entry</span>)-&gt;<span class="var">value</span>.<span class="fn">data</span>(), <span class="num">1</span>, (*<span class="var">entry</span>)-&gt;<span class="var">value</span>.<span class="fn">size</span>(),<br/>
+<span class="in4"></span><span class="var">entry</span>-&gt;<span class="var">value</span>.<span class="fn">data</span>(), <span class="num">1</span>, <span class="var">entry</span>-&gt;<span class="var">value</span>.<span class="fn">size</span>(),<br/>
 
 <span class="var">out</span><br/>
 
-<span class="in7"></span>) == (*<span class="var">entry</span>)-&gt;<span class="var">value</span>.<span class="fn">size</span>());<br/>
+<span class="in7"></span>) == <span class="var">entry</span>-&gt;<span class="var">value</span>.<span class="fn">size</span>());<br/>
 
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 
-<span class="in3"></span>*<span class="var">fragTestBufferCur</span> += (*<span class="var">entry</span>)-&gt;<span class="var">value</span>;<br/>
+<span class="in3"></span>*<span class="var">fragTestBufferCur</span> += <span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -929,9 +759,11 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<span class="type">Frag</span> *<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<br/>
 
-<span class="in2"></span><span class="var">frag</span>, <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">expected</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">expected</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -988,9 +820,9 @@ x{perform unit-tests}
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="fn">addBytesToFrag</span>(<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="var">str</span>, <span class="var">std</span>::<span class="fn">string</span>(), <span class="num">0</span><br/>
+<span class="in3"></span><span class="var">str</span>, <span class="var">std</span>::<span class="fn">string</span>(), <span class="num">0</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1017,7 +849,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"def"</span>);<br/>
 
-<span class="in1"></span><span class="fn">testFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
+<span class="in1"></span><span class="fn">testFrag</span>(<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
 
 } <span class="end">@end(<span class="name">frag unit tests</span>)</span><br/>
 
@@ -1039,13 +871,13 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
 
-<span class="in1"></span><span class="fn">addFragToFrag</span>(&amp;<span class="var">b</span>, &amp;<span class="var">a</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
 
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
 
-<span class="in1"></span><span class="fn">addFragToFrag</span>(&amp;<span class="var">b</span>, &amp;<span class="var">a</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
 
-<span class="in1"></span><span class="fn">testFrag</span>(&amp;<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
+<span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 
 } <span class="end">@end(<span class="name">frag unit tests</span>)</span><br/>
 
@@ -1109,7 +941,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="fn">ASSERT</span>(! <span class="fn">isFragInFrag</span>(<br/>
 
-<span class="in2"></span><span class="var">frag</span>, <span class="var">child</span><br/>
+<span class="in2"></span><span class="var">this</span>, <span class="var">child</span><br/>
 
 <span class="in1"></span>));<br/>
 
@@ -1157,11 +989,11 @@ x{perform unit-tests}
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! (*<span class="var">i</span>)-&gt;<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">i</span>-&gt;<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFragInFrag</span>(<br/>
 
-<span class="in3"></span><span class="var">needle</span>, (*<span class="var">i</span>)-&gt;<span class="var">frag</span><br/>
+<span class="in3"></span><span class="var">needle</span>, <span class="var">i</span>-&gt;<span class="var">frag</span><br/>
 
 <span class="in2"></span>)) {<br/>
 
@@ -1347,9 +1179,9 @@ x{perform unit-tests}
 
 <span class="add">@def(<span class="name">populate additional entry fields</span>)</span><br/>
 
-<span class="in1"></span><span class="var">entry</span>-&gt;<span class="var">source</span> = <span class="var">source</span>;<br/>
+<span class="in1"></span><span class="var">entry</span>.<span class="var">source</span> = <span class="var">source</span>;<br/>
 
-<span class="in1"></span><span class="var">entry</span>-&gt;<span class="var">line</span> = <span class="var">line</span>;<br/>
+<span class="in1"></span><span class="var">entry</span>.<span class="var">line</span> = <span class="var">line</span>;<br/>
 
 <span class="end">@end(<span class="name">populate additional entry fields</span>)</span><br/>
 

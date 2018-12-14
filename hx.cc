@@ -76,11 +76,16 @@
 	std::string source;
 	int line;
 ;
-		FragEntry(): frag(nullptr) {}
+		FragEntry(
+			const std::string &value = std::string()
+		):
+			frag(nullptr),
+			value(value)
+		{}
 	};
 
 	struct Frag {
-		std::list<FragEntry *> entries;
+		std::list<FragEntry> entries;
 		int expands;
 		int multiples;
 		std::string name;
@@ -93,16 +98,29 @@
 		multiples(0),
 		name(name)
 	{ }
+
+	void clear() {
+		entries.clear();
+	}
+
+	Frag &add(
+		const std::string &value,
+		const std::string &source,
+		int line
+	) {
+		entries.push_back(FragEntry());
+		FragEntry &entry = entries.back();
+		entry.value += value;
+		
+	entry.source = source;
+	entry.line = line;
+;
+		return *this;
+	}
+
+	Frag &add(Frag *child);
 ;
 	};
-
-	void freeFragEntries(
-		Frag *frag
-	) {
-		if (frag) {
-			frag->entries.clear();
-		}
-	}
 
 	void testFragName(
 		const std::string &name
@@ -117,63 +135,10 @@
 		return f && f->entries.size();
 	}
 
-	FragEntry *allocFragEntry(
-		Frag *frag,
-		const std::string &value
-	) {
-		FragEntry *result = new FragEntry();
-		result->frag = frag;
-		result->value = value;
-		return result;
-	}
-
-	FragEntry *
-		allocEmptyFragEntry() {
-			return allocFragEntry(
-				nullptr, std::string()
-			);
-		}
-
 	int getFragEntryValueSize(
-		FragEntry *e
+		const FragEntry &e
 	) {
-		if (! e) { return 0; }
-		return e->value.size();
-	}
-
-	FragEntry *
-		allocTestFragEntry(
-			const std::string &s
-		) {
-			return allocFragEntry(
-				nullptr, s
-			);
-		}
-
-	void addEntryToFrag(
-		Frag *frag,
-		FragEntry *entry
-	) {
-		
-	ASSERT(frag);
-	ASSERT(entry);
-;
-		frag->entries.push_back(entry);
-	}
-
-	void addBytesToFrag(
-		Frag *frag,
-		const std::string &value,
-		const std::string &source,
-		int line
-	) {
-		FragEntry *entry =
-			allocFragEntry(nullptr, value);
-		
-	entry->source = source;
-	entry->line = line;
-;
-		addEntryToFrag(frag, entry);
+		return e.value.size();
 	}
 
 	
@@ -192,9 +157,9 @@
 		auto i = haystack->entries.begin();
 		i != haystack->entries.end(); ++i
 	) {
-		if (! (*i)->frag) { continue; }
+		if (! i->frag) { continue; }
 		if (isFragInFrag(
-			needle, (*i)->frag
+			needle, i->frag
 		)) {
 			return true;
 		}
@@ -203,60 +168,55 @@
 		return false;
 	}
 
-	void addFragToFrag(
-		Frag *frag,
-		Frag *child
-	) {
-		ASSERT(frag);
+	Frag &Frag::add(Frag *child) {
 		ASSERT(child);
 		
 	ASSERT(! isFragInFrag(
-		frag, child
+		this, child
 	));
 ;
 		
-	if (! frag->entries.empty() &&
-		! frag->entries.back()->frag
+	if (! entries.empty() &&
+		! entries.back().frag
 	) {
-		frag->entries.back()->frag = child;
-		return;
+		entries.back().frag = child;
+		return *this;
 	}
 ;
 		
-	FragEntry *entry =
-		allocFragEntry(child, std::string());
-	addEntryToFrag(frag, entry);
+	entries.push_back(FragEntry());
+	FragEntry &entry = entries.back();
+	entry.frag = child;
 ;
+		return *this;
 	}
 
 	
 	std::string *fragTestBufferCur = nullptr;
 ;
 	void serializeFrag(
-		Frag *frag,
-		FILE *out,
+		const Frag &frag, FILE *out,
 		bool writeLineMacros
 	) {
-		ASSERT(frag);
 		ASSERT(out);
 		
-	auto entry = frag->entries.begin();
-	for (; entry != frag->entries.end(); ++entry) {
+	auto entry = frag.entries.begin();
+	for (; entry != frag.entries.end(); ++entry) {
 		
 	if (getFragEntryValueSize(*entry)) {
 		if (! fragTestBufferCur) {
 			ASSERT(fwrite(
-				(*entry)->value.data(), 1, (*entry)->value.size(),
+				entry->value.data(), 1, entry->value.size(),
 				out
-			) == (*entry)->value.size());
+			) == entry->value.size());
 		} else {
-			*fragTestBufferCur += (*entry)->value;
+			*fragTestBufferCur += entry->value;
 		}
 	}
 ;
-		if ((*entry)->frag) {
+		if (entry->frag) {
 			serializeFrag(
-				(*entry)->frag, out,
+				*entry->frag, out,
 				writeLineMacros
 			);
 		}
@@ -264,8 +224,9 @@
 ;
 	}
 
-	void testFrag(Frag *
-		frag, const std::string &expected
+	void testFrag(
+		const Frag &frag,
+		const std::string &expected
 	) {
 		
 	std::string buffer;
@@ -280,8 +241,8 @@
 		Frag *frag,
 		const std::string &str
 	) {
-		addBytesToFrag(
-			frag, str, std::string(), 0
+		frag->add(
+			str, std::string(), 0
 		);
 	}
 
@@ -579,46 +540,34 @@
 	{
 		FragEntry entry;
 		ASSERT(
-			getFragEntryValueSize(
-				&entry) == 0
+			getFragEntryValueSize(entry) == 0
 		);
 	}
 
 	{
-		FragEntry *entry =
-			allocTestFragEntry("abc");
-
-		ASSERT(entry);
+		FragEntry entry("abc");
 		ASSERT(
-			getFragEntryValueSize(
-				entry) == 3
+			getFragEntryValueSize(entry) == 3
 		);
-
-		delete(entry);
 	}
 
 	{
-		FragEntry *entry =
-			allocTestFragEntry("abc");
-
-		ASSERT(entry);
-		ASSERT(entry->value == "abc");
-
-		delete(entry);
+		FragEntry entry("abc");
+		ASSERT(entry.value == "abc");
 	}
  {
 	Frag frag("");
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
-	testFrag(&frag, "abcdef");
+	testFrag(frag, "abcdef");
 }  {
 	Frag a("");
 	Frag b("");
 	addStringToFrag(&a, "abc");
-	addFragToFrag(&b, &a);
+	b.add(&a);
 	addStringToFrag(&b, "def");
-	addFragToFrag(&b, &a);
-	testFrag(&b, "abcdefabc");
+	b.add(&a);
+	testFrag(b, "abcdefabc");
 } ;
 ;
 	
@@ -784,7 +733,7 @@
 			frag, "frag %s not defined",
 			name.c_str()
 		);
-		freeFragEntries(frag);
+		frag->clear();
 		processed = true;
 	}
 
@@ -795,7 +744,7 @@
 			frag, "frag %s not defined",
 			name.c_str()
 		);
-		freeFragEntries(frag);
+		frag->clear();
 		processed = true;
 	}
 
@@ -810,8 +759,8 @@
 ;
 		
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
@@ -833,8 +782,8 @@
 		ASSERT(frag, "expand not in frag");
 		
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
@@ -856,7 +805,7 @@
 	}
 ;
 		++sub.expands;
-		addFragToFrag(frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 
@@ -864,8 +813,8 @@
 		ASSERT(frag, "expand not in frag");
 		
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
@@ -887,7 +836,7 @@
 	}
 ;
 		++sub.expands;
-		addFragToFrag(frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 
@@ -895,8 +844,8 @@
 		ASSERT(frag, "multiple not in frag");
 		
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
@@ -913,8 +862,7 @@
 	}
 ;
 		++sub.multiples;
-		addFragToFrag(
-			frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 
@@ -922,8 +870,8 @@
 		ASSERT(frag, "multiple not in frag");
 		
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
@@ -940,8 +888,7 @@
 	}
 ;
 		++sub.multiples;
-		addFragToFrag(
-			frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 
@@ -965,24 +912,23 @@
 
 	
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
 	}
 ;
 	static char prefix[] = "_private_";
-	addBytesToFrag(
-		frag, prefix,
+	frag->add(
+		prefix, input->name, nameLine
+	);
+	frag->add(
+		std::string(head, end),
 		input->name, nameLine
 	);
-	addBytesToFrag(
-		frag, std::string(head, end),
-		input->name, nameLine
-	);
-	addBytesToFrag(
-		frag, name,
+	frag->add(
+		name,
 		input->name, nameLine
 	);
 ;
@@ -1007,15 +953,15 @@
 	}
 	
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
 	}
 ;
-	addBytesToFrag(
-		frag, std::string(head, end),
+	frag->add(
+		std::string(head, end),
 		input->name, nameLine
 	);
 ;
@@ -1086,7 +1032,7 @@
 		f, "can't open %s",
 		frag->name.substr(6).c_str()
 	);
-	serializeFrag(frag, f, false);
+	serializeFrag(*frag, f, false);
 	fclose(f);
 ;
 	}
@@ -1135,7 +1081,7 @@
 		f, "can't open %s",
 		frag->name.substr(6).c_str()
 	);
-	serializeFrag(frag, f, false);
+	serializeFrag(*frag, f, false);
 	fclose(f);
 ;
 	}

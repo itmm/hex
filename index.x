@@ -553,7 +553,7 @@ a{process frag name}
 			frag, "frag %s not defined",
 			name.c_str()
 		);
-		freeFragEntries(frag);
+		frag->clear();
 		processed = true;
 	}
 x{process frag name}
@@ -570,7 +570,7 @@ a{process frag name}
 			frag, "frag %s not defined",
 			name.c_str()
 		);
-		freeFragEntries(frag);
+		frag->clear();
 		processed = true;
 	}
 x{process frag name}
@@ -651,7 +651,7 @@ a{process frag name}
 		Frag &sub = input->frags[name];
 		E{check frag expand count};
 		++sub.expands;
-		addFragToFrag(frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 x{process frag name}
@@ -669,7 +669,7 @@ a{process frag name}
 		Frag &sub = frags->get(name, root);
 		E{check frag expand count};
 		++sub.expands;
-		addFragToFrag(frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 x{process frag name}
@@ -704,8 +704,7 @@ a{process frag name}
 		Frag &sub = input->frags[name];
 		E{check for prev expands};
 		++sub.multiples;
-		addFragToFrag(
-			frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 x{process frag name}
@@ -721,8 +720,7 @@ a{process frag name}
 		Frag &sub = frags->get(name, root);
 		E{check for prev expands};
 		++sub.multiples;
-		addFragToFrag(
-			frag, &sub);
+		frag->add(&sub);
 		processed = true;
 	}
 x{process frag name}
@@ -787,16 +785,15 @@ x{process private frag}
 a{process private frag}
 	E{flush frag buffer};
 	static char prefix[] = "_private_";
-	addBytesToFrag(
-		frag, prefix,
+	frag->add(
+		prefix, input->name, nameLine
+	);
+	frag->add(
+		std::string(head, end),
 		input->name, nameLine
 	);
-	addBytesToFrag(
-		frag, std::string(head, end),
-		input->name, nameLine
-	);
-	addBytesToFrag(
-		frag, name,
+	frag->add(
+		name,
 		input->name, nameLine
 	);
 x{process private frag}
@@ -841,8 +838,8 @@ a{process magic frag}
 		if (! cur) { break; }
 	}
 	E{flush frag buffer};
-	addBytesToFrag(
-		frag, std::string(head, end),
+	frag->add(
+		std::string(head, end),
 		input->name, nameLine
 	);
 x{process magic frag}
@@ -853,8 +850,8 @@ x{process magic frag}
 ```
 d{flush frag buffer}
 	if (! buffer.empty()) {
-		addBytesToFrag(
-			frag, buffer,
+		frag->add(
+			buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();
@@ -1044,7 +1041,7 @@ d{write in file}
 		f, "can't open %s",
 		frag->name.substr(6).c_str()
 	);
-	serializeFrag(frag, f, false);
+	serializeFrag(*frag, f, false);
 	fclose(f);
 x{write in file}
 ```
