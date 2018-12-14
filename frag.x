@@ -52,6 +52,7 @@ a{define frag}
 		int expands;
 		int multiples;
 		std::string name;
+		e{frag methods};
 	};
 x{define frag}
 ```
@@ -63,31 +64,34 @@ x{define frag}
 * Je nach Namen werden für ein Fragment unterschiedlich viele Bytes im
   Heap angefordert
 
-```
-A{includes}
-	#include <stdlib.h>
-x{includes}
-```
-* `stdlib.h` wird für die Definition von `nullptr` benötigt
-
 # Neues Fragment anlegen
 
 ```
-a{define frag}
-	struct Frag *allocFrag(
+d{frag methods}
+	Frag(
 		const std::string &name
-	) {
-		Frag *result = nullptr;
-		result = new Frag();
-		result->link = nullptr;
-		result->expands = 0;
-		result->multiples = 0;
-		result->name = name;
-		return result;
-	}
-x{define frag}
+	):
+		link(nullptr),
+		entries(),
+		firstEntry(nullptr),
+		lastEntry(nullptr),
+		expands(0),
+		multiples(0),
+		name(name)
+	{ }
+x{frag methods}
 ```
 * Die Zeiger werden mit `nullptr` initialisiert
+
+```
+a{frag methods}
+	~Frag() {
+		if (link) {
+			delete link;
+		}
+	}
+x{frag methods}
+```
 
 ```
 D{define logging}
@@ -126,23 +130,6 @@ a{define frag}
 x{define frag}
 ```
 
-```
-a{define frag}
-	void freeFrag(
-		Frag *f
-	) {
-		while (f) {
-			Frag *l =
-				f->link;
-			delete(f);
-			f = l;
-		}
-	}
-x{define frag}
-```
-* Mit einem Fragment werden auch alle verketteten Fragmente freigegeben
-* Die Freigabe der einzelnen Einträge wird später definiert
-		
 # Unit Tests
 
 ```
@@ -155,10 +142,10 @@ a{define frag}
 	void testFragName(
 		const std::string &name
 	) {
-		Frag *f = allocFrag(name);
+		Frag *f = new Frag(name);
 		ASSERT(f);
 		ASSERT(f->name == name);
-		freeFrag(f);
+		delete(f);
 	}
 x{define frag}
 ```
@@ -171,11 +158,11 @@ d{frag unit tests}
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag *f = allocFrag("ab");
+		Frag *f = new Frag("ab");
 		ASSERT(f);
 		ASSERT(! f->link);
 		ASSERT(! f->firstEntry);
-		freeFrag(f);
+		delete(f);
 	}
 x{frag unit tests}
 ```
@@ -575,11 +562,11 @@ x{define frag}
 ```
 a{frag unit tests}
 	{
-		Frag *frag = allocFrag("");
+		Frag *frag = new Frag("");
 		addStringToFrag(frag, "abc");
 		addStringToFrag(frag, "def");
 		testFrag(frag, "abcdef");
-		freeFrag(frag);
+		delete(frag);
 	}
 x{frag unit tests}
 ```
@@ -587,14 +574,14 @@ x{frag unit tests}
 
 ```
 a{frag unit tests} {
-	Frag *a = allocFrag("");
-	Frag *b = allocFrag("");
+	Frag *a = new Frag("");
+	Frag *b = new Frag("");
 	addStringToFrag(a, "abc");
 	addFragToFrag(b, a);
 	addStringToFrag(b, "def");
 	addFragToFrag(b, a);
 	testFrag(b, "abcdefabc");
-	freeFrag(a); freeFrag(b);
+	delete(a); delete(b);
 } x{frag unit tests}
 ```
 * Prüft, ob Fragmente expandiert werden
@@ -683,7 +670,7 @@ a{define frag}
 		Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
-			freeFrag(*cur); *cur = nullptr;
+			delete(*cur); *cur = nullptr;
 		}
 		map->link = nullptr;
 	}
@@ -715,7 +702,7 @@ a{define frag}
 		const std::string &name
 	) {
 		ASSERT(map);
-		Frag *frag = allocFrag(name);
+		Frag *frag = new Frag(name);
 		e{insert in slot};
 		return frag;
 	}

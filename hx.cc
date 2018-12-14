@@ -7,8 +7,6 @@
 
 	#include <list>
 
-	#include <stdlib.h>
-
 	#include <string.h>
 
 	#include <set>
@@ -95,19 +93,26 @@
 		int expands;
 		int multiples;
 		std::string name;
-	};
-
-	struct Frag *allocFrag(
+		
+	Frag(
 		const std::string &name
-	) {
-		Frag *result = nullptr;
-		result = new Frag();
-		result->link = nullptr;
-		result->expands = 0;
-		result->multiples = 0;
-		result->name = name;
-		return result;
+	):
+		link(nullptr),
+		entries(),
+		firstEntry(nullptr),
+		lastEntry(nullptr),
+		expands(0),
+		multiples(0),
+		name(name)
+	{ }
+
+	~Frag() {
+		if (link) {
+			delete link;
+		}
 	}
+;
+	};
 
 	void freeFragEntries(
 		Frag *frag
@@ -117,24 +122,13 @@
 		}
 	}
 
-	void freeFrag(
-		Frag *f
-	) {
-		while (f) {
-			Frag *l =
-				f->link;
-			delete(f);
-			f = l;
-		}
-	}
-
 	void testFragName(
 		const std::string &name
 	) {
-		Frag *f = allocFrag(name);
+		Frag *f = new Frag(name);
 		ASSERT(f);
 		ASSERT(f->name == name);
-		freeFrag(f);
+		delete(f);
 	}
 
 	bool isPopulatedFrag(
@@ -359,7 +353,7 @@
 		Frag **end =
 			cur + FRAG_SLOTS;
 		for (; cur < end; ++cur) {
-			freeFrag(*cur); *cur = nullptr;
+			delete(*cur); *cur = nullptr;
 		}
 		map->link = nullptr;
 	}
@@ -376,7 +370,7 @@
 		const std::string &name
 	) {
 		ASSERT(map);
-		Frag *frag = allocFrag(name);
+		Frag *frag = new Frag(name);
 		
 	int hash = calcFragHash(name);
 	frag->link = map->frags[hash];
@@ -677,11 +671,11 @@
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag *f = allocFrag("ab");
+		Frag *f = new Frag("ab");
 		ASSERT(f);
 		ASSERT(! f->link);
 		ASSERT(! f->firstEntry);
-		freeFrag(f);
+		delete(f);
 	}
 
 	{
@@ -732,21 +726,21 @@
 	}
 
 	{
-		Frag *frag = allocFrag("");
+		Frag *frag = new Frag("");
 		addStringToFrag(frag, "abc");
 		addStringToFrag(frag, "def");
 		testFrag(frag, "abcdef");
-		freeFrag(frag);
+		delete(frag);
 	}
  {
-	Frag *a = allocFrag("");
-	Frag *b = allocFrag("");
+	Frag *a = new Frag("");
+	Frag *b = new Frag("");
 	addStringToFrag(a, "abc");
 	addFragToFrag(b, a);
 	addStringToFrag(b, "def");
 	addFragToFrag(b, a);
 	testFrag(b, "abcdefabc");
-	freeFrag(a); freeFrag(b);
+	delete(a); delete(b);
 } ;
 ;
 	

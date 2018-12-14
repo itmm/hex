@@ -121,6 +121,8 @@
 
 <span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
 
+<span class="in2"></span><span class="expand">@expand(<span class="name">frag methods</span>)</span>;<br/>
+
 <span class="in1"></span>};<br/>
 
 <span class="end">@end(<span class="name">define frag</span>)</span><br/>
@@ -141,22 +143,6 @@
   Heap angefordert
 </li></ul></div>
 
-<div><div>
-<code>
-
-<span class="add">@globadd(<span class="name">includes</span>)</span><br/>
-
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdlib</span>.<span class="var">h</span>&gt;<br/>
-
-<span class="end">@end(<span class="name">includes</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- <code>stdlib.h</code> wird für die Definition von <code>nullptr</code> benötigt
-</li></ul></div>
-
 </div>
 <h1>Neues Fragment anlegen</h1>
 <div class="slides">
@@ -169,31 +155,31 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
+<span class="add">@def(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">struct</span> <span class="type">Frag</span> *<span class="fn">allocFrag</span>(<br/>
+<span class="in1"></span><span class="fn">Frag</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
 
-<span class="in1"></span>) {<br/>
+<span class="in1"></span>):<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">result</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="fn">link</span>(<span class="num">nullptr</span>),<br/>
 
-<span class="in2"></span><span class="var">result</span> = <span class="keyword">new</span> <span class="fn">Frag</span>();<br/>
+<span class="in2"></span><span class="fn">entries</span>(),<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="fn">firstEntry</span>(<span class="num">nullptr</span>),<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">expands</span> = <span class="num">0</span>;<br/>
+<span class="in2"></span><span class="fn">lastEntry</span>(<span class="num">nullptr</span>),<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">multiples</span> = <span class="num">0</span>;<br/>
+<span class="in2"></span><span class="fn">expands</span>(<span class="num">0</span>),<br/>
 
-<span class="in2"></span><span class="var">result</span>-&gt;<span class="var">name</span> = <span class="var">name</span>;<br/>
+<span class="in2"></span><span class="fn">multiples</span>(<span class="num">0</span>),<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span>;<br/>
+<span class="in2"></span><span class="fn">name</span>(<span class="var">name</span>)<br/>
 
-<span class="in1"></span>}<br/>
+<span class="in1"></span>{ }<br/>
 
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
+<span class="end">@end(<span class="name">frag methods</span>)</span><br/>
 
 </code>
 </div>
@@ -202,6 +188,28 @@
  Die Zeiger werden mit <code>nullptr</code> initialisiert
 </li></ul></div>
 
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">frag methods</span>)</span><br/>
+
+<span class="in1"></span>~<span class="fn">Frag</span>() {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">link</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">delete</span> <span class="var">link</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">frag methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
 <div><div>
 <code>
 
@@ -273,32 +281,7 @@ x{define frag}
 
 <br/>
 
-</code>
-</div>
-
-a{define frag}
-	void freeFrag(
-		Frag *f
-	) {
-		while (f) {
-			Frag *l =
-				f-&gt;link;
-			delete(f);
-			f = l;
-		}
-	}
-x{define frag}
-</div>
-<div><div>
-<code>
-
-* <span class="type">Mit</span> <span class="var">einem</span> <span class="type">Fragment</span> <span class="var">werden</span> <span class="var">auch</span> <span class="var">alle</span> <span class="var">verketteten</span> <span class="type">Fragmente</span> <span class="var">freigegeben</span><br/>
-
-* <span class="type">Die</span> <span class="type">Freigabe</span> <span class="var">der</span> <span class="var">einzelnen</span> <span class="type">Eintr</span>ä<span class="var">ge</span> <span class="var">wird</span> <span class="var">sp</span>ä<span class="var">ter</span> <span class="var">definiert</span><br/>
-
-<br/>
-
-<span class="in2"></span># <span class="type">Unit</span> <span class="type">Tests</span><br/>
+# <span class="type">Unit</span> <span class="type">Tests</span><br/>
 
 <br/>
 
@@ -321,13 +304,13 @@ x{perform unit-tests}
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> = <span class="fn">allocFrag</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>-&gt;<span class="var">name</span> == <span class="var">name</span>);<br/>
 
-<span class="in2"></span><span class="fn">freeFrag</span>(<span class="var">f</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">f</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -354,7 +337,7 @@ x{perform unit-tests}
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> = <span class="fn">allocFrag</span>(<span class="str">"ab"</span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="str">"ab"</span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>);<br/>
 
@@ -362,7 +345,7 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">f</span>-&gt;<span class="var">firstEntry</span>);<br/>
 
-<span class="in2"></span><span class="fn">freeFrag</span>(<span class="var">f</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">f</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1235,7 +1218,7 @@ x{perform unit-tests}
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="fn">allocFrag</span>(<span class="str">""</span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="str">""</span>);<br/>
 
 <span class="in2"></span><span class="fn">addStringToFrag</span>(<span class="var">frag</span>, <span class="str">"abc"</span>);<br/>
 
@@ -1243,7 +1226,7 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="fn">testFrag</span>(<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
 
-<span class="in2"></span><span class="fn">freeFrag</span>(<span class="var">frag</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">frag</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1261,9 +1244,9 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">frag unit tests</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="var">a</span> = <span class="fn">allocFrag</span>(<span class="str">""</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">a</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="str">""</span>);<br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="var">b</span> = <span class="fn">allocFrag</span>(<span class="str">""</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">b</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="str">""</span>);<br/>
 
 <span class="in1"></span><span class="fn">addStringToFrag</span>(<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
 
@@ -1275,7 +1258,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 
-<span class="in1"></span><span class="fn">freeFrag</span>(<span class="var">a</span>); <span class="fn">freeFrag</span>(<span class="var">b</span>);<br/>
+<span class="in1"></span><span class="fn">delete</span>(<span class="var">a</span>); <span class="fn">delete</span>(<span class="var">b</span>);<br/>
 
 } <span class="end">@end(<span class="name">frag unit tests</span>)</span><br/>
 
@@ -1472,7 +1455,7 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">cur</span> &lt; <span class="var">end</span>; ++<span class="var">cur</span>) {<br/>
 
-<span class="in3"></span><span class="fn">freeFrag</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="num">nullptr</span>;<br/>
+<span class="in3"></span><span class="fn">delete</span>(*<span class="var">cur</span>); *<span class="var">cur</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1539,7 +1522,7 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="fn">allocFrag</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">insert in slot</span>)</span>;<br/>
 
