@@ -810,15 +810,14 @@ a{process private frag}
 	static char prefix[] = "_private_";
 	addBytesToFrag(
 		frag, prefix,
-		prefix + sizeof(prefix) - 1,
 		input->name, nameLine
 	);
 	addBytesToFrag(
-		frag, head, end,
+		frag, std::string(head, end),
 		input->name, nameLine
 	);
 	addBytesToFrag(
-		frag, name.data(), name.data() + name.size(),
+		frag, name,
 		input->name, nameLine
 	);
 x{process private frag}
@@ -864,7 +863,7 @@ a{process magic frag}
 	}
 	E{flush frag buffer};
 	addBytesToFrag(
-		frag, head, end,
+		frag, std::string(head, end),
 		input->name, nameLine
 	);
 x{process magic frag}
@@ -876,8 +875,7 @@ x{process magic frag}
 d{flush frag buffer}
 	if (! buffer.empty()) {
 		addBytesToFrag(
-			frag, buffer.data(),
-			buffer.data() + buffer.size(),
+			frag, buffer,
 			input->name, bufferLine
 		);
 		buffer.clear();

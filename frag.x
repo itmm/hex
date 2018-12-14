@@ -21,7 +21,6 @@ d{define frag}
 	struct Frag;
 
 	struct FragEntry {
-		FragEntry *link;
 		Frag *frag;
 		std::string value;
 		e{additional entry attributes};
@@ -127,10 +126,8 @@ a{define frag}
 	void testFragName(
 		const std::string &name
 	) {
-		Frag *f = new Frag(name);
-		ASSERT(f);
-		ASSERT(f->name == name);
-		delete(f);
+		Frag f(name);
+		ASSERT(f.name == name);
 	}
 x{define frag}
 ```
@@ -167,48 +164,23 @@ x{define frag}
 a{define frag}
 	FragEntry *allocFragEntry(
 		Frag *frag,
-		const char *valueBegin,
-		const char *valueEnd
+		const std::string &value
 	) {
-		FragEntry *result = nullptr;
-		e{allocate entry on heap};
-		result->link = nullptr;
-		e{copy entry values};
+		FragEntry *result = new FragEntry();
+		result->frag = frag;
+		result->value = value;
 		return result;
 	}
 x{define frag}
 ```
-* Wie bei einem Fragment werden die `link` Verweise auf `nullptr`
-  initialisiert
-* Sowohl `frag` als auch `valueBegin` sind optional
-* Die Größe des Eintrags hängt von der Anzahl der Bytes ab, die kopiert
-  werden
-
-```
-d{allocate entry on heap}
-	result = new FragEntry();
-x{allocate entry on heap}
-```
-* Die Größe der Struktur wird um die Anzahl der zu kopierenden Bytes
-  vergrößert
-* Wenn nicht genug Speicher vorhanden ist, dann wird das Programm beendet
-
-```
-d{copy entry values}
-	if (valueBegin) {
-		result->value = std::string(valueBegin, valueEnd);
-	}
-	result->frag = frag;
-x{copy entry values}
-```
-* Die Bytes werden nur kopiert, wenn welche übergeben wurden
+* Sowohl `frag` als auch `value` sind optional
 
 ```
 a{define frag}
 	FragEntry *
 		allocEmptyFragEntry() {
 			return allocFragEntry(
-				nullptr, nullptr, nullptr
+				nullptr, std::string()
 			);
 		}
 x{define frag}
@@ -222,17 +194,10 @@ a{define frag}
 	void freeFragEntry(
 		FragEntry *e
 	) {
-		while (e) {
-			FragEntry *l =
-				e->link;
 			delete(e);
-			e = l;
-		}
 	}
 x{define frag}
 ```
-* Wenn ein Eintrag freigegeben wird, so werden auch alle verlinkten
-  Einträge freigegeben
 * Referenzierte Fragmente werden nicht mit freigegeben
 
 ```
@@ -251,9 +216,7 @@ a{define frag}
 	int getFragEntryValueSize(
 		FragEntry *e
 	) {
-		if (! e) {
-			return 0;
-		}
+		if (! e) { return 0; }
 		return e->value.size();
 	}
 x{define frag}
@@ -269,7 +232,6 @@ a{frag unit tests}
 			allocEmptyFragEntry();
 
 		ASSERT(entry);
-		ASSERT(! entry->link);
 		ASSERT(! entry->frag);
 
 		freeFragEntry(entry);
@@ -301,13 +263,10 @@ x{frag unit tests}
 a{define frag}
 	FragEntry *
 		allocTestFragEntry(
-			const char *v
+			const std::string &s
 		) {
-			const char *e = v +
-				strlen(v);
-
 			return allocFragEntry(
-				nullptr, v, e
+				nullptr, s
 			);
 		}
 x{define frag}
@@ -378,15 +337,12 @@ x{assert add entry}
 a{define frag}
 	void addBytesToFrag(
 		Frag *frag,
-		const char *value,
-		const char *valueEnd,
+		const std::string &value,
 		const std::string &source,
 		int line
 	) {
 		FragEntry *entry =
-			allocFragEntry(
-				nullptr, value, valueEnd
-			);
+			allocFragEntry(nullptr, value);
 		e{populate additional entry fields};
 		addEntryToFrag(frag, entry);
 	}
@@ -433,9 +389,7 @@ x{reuse last entry}
 ```
 d{add frag entry}
 	FragEntry *entry =
-		allocFragEntry(
-			child, nullptr, nullptr
-		);
+		allocFragEntry(child, std::string());
 	addEntryToFrag(frag, entry);
 x{add frag entry}
 ```
@@ -503,7 +457,7 @@ x{serialize bytes}
 ```
 a{define frag}
 	void testFrag(Frag *
-		frag, const char *expected
+		frag, const std::string &expected
 	) {
 		e{serialize test frag};
 	}
@@ -528,12 +482,10 @@ x{serialize test frag}
 a{define frag}
 	void addStringToFrag(
 		Frag *frag,
-		const char *str
+		const std::string &str
 	) {
-		int size = strlen(str);
 		addBytesToFrag(
-			frag, str, str + size,
-			std::string(), 0
+			frag, str, std::string(), 0
 		);
 	}
 x{define frag}
@@ -542,28 +494,24 @@ x{define frag}
   werden
 
 ```
-a{frag unit tests}
-	{
-		Frag *frag = new Frag("");
-		addStringToFrag(frag, "abc");
-		addStringToFrag(frag, "def");
-		testFrag(frag, "abcdef");
-		delete(frag);
-	}
-x{frag unit tests}
+a{frag unit tests} {
+	Frag frag("");
+	addStringToFrag(&frag, "abc");
+	addStringToFrag(&frag, "def");
+	testFrag(&frag, "abcdef");
+} x{frag unit tests}
 ```
 * Prüft, ob zwei Strings richtig serialisiert werden
 
 ```
 a{frag unit tests} {
-	Frag *a = new Frag("");
-	Frag *b = new Frag("");
-	addStringToFrag(a, "abc");
-	addFragToFrag(b, a);
-	addStringToFrag(b, "def");
-	addFragToFrag(b, a);
-	testFrag(b, "abcdefabc");
-	delete(a); delete(b);
+	Frag a("");
+	Frag b("");
+	addStringToFrag(&a, "abc");
+	addFragToFrag(&b, &a);
+	addStringToFrag(&b, "def");
+	addFragToFrag(&b, &a);
+	testFrag(&b, "abcdefabc");
 } x{frag unit tests}
 ```
 * Prüft, ob Fragmente expandiert werden
@@ -573,8 +521,7 @@ a{frag unit tests} {
 ```
 d{define cycle check}
 	bool isFragInFrag(
-		Frag *needle,
-		Frag *haystack
+		Frag *needle, Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -611,7 +558,10 @@ x{check cycle frag}
 
 ```
 d{check cycle entries}
-	for (auto i = haystack->entries.begin(); i != haystack->entries.end(); ++i) {
+	for (
+		auto i = haystack->entries.begin();
+		i != haystack->entries.end(); ++i
+	) {
 		if (! (*i)->frag) { continue; }
 		if (isFragInFrag(
 			needle, (*i)->frag
@@ -628,8 +578,6 @@ x{check cycle entries}
 
 ```
 a{define frag}
-	#define FRAG_SLOTS 128
-
 	struct FragMap {
 		FragMap *link;
 		std::map<std::string, Frag *> map;
@@ -664,19 +612,6 @@ x{define frag}
   zu werden
 * Wenn es einen Link auf ein andere Map gibt, wird diese zurückgesetzt
 * Die referenzierte Map wird jedoch nicht gelöscht
-
-```
-a{define frag}
-	int calcFragHash(
-		const std::string &name
-	) {
-		int hash = calcHash(name);
-		return hash % FRAG_SLOTS;
-	}
-x{define frag}
-```
-* Der Hash wird über den Namen des Fragments erstellt
-* Und auf die Anzahl der möglichen Slots beschränkt
 
 ```
 a{define frag}

@@ -1739,7 +1739,13 @@
 
 <span class="in2"></span><span class="var">frag</span>, <span class="var">prefix</span>,<br/>
 
-<span class="in2"></span><span class="var">prefix</span> + <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>,<br/>
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
+
+<span class="in1"></span>);<br/>
+
+<span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
+
+<span class="in2"></span><span class="var">frag</span>, <span class="var">std</span>::<span class="fn">string</span>(<span class="var">head</span>, <span class="var">end</span>),<br/>
 
 <span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 
@@ -1747,15 +1753,7 @@
 
 <span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
 
-<span class="in2"></span><span class="var">frag</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
-
-<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
-
-<span class="in2"></span><span class="var">frag</span>, <span class="var">name</span>.<span class="fn">data</span>(), <span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(),<br/>
+<span class="in2"></span><span class="var">frag</span>, <span class="var">name</span>,<br/>
 
 <span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 
@@ -1852,7 +1850,7 @@
 
 <span class="in1"></span><span class="fn">addBytesToFrag</span>(<br/>
 
-<span class="in2"></span><span class="var">frag</span>, <span class="var">head</span>, <span class="var">end</span>,<br/>
+<span class="in2"></span><span class="var">frag</span>, <span class="var">std</span>::<span class="fn">string</span>(<span class="var">head</span>, <span class="var">end</span>),<br/>
 
 <span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">nameLine</span><br/>
 
@@ -1878,9 +1876,7 @@
 
 <span class="in2"></span><span class="fn">addBytesToFrag</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="var">buffer</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in3"></span><span class="var">buffer</span>.<span class="fn">data</span>() + <span class="var">buffer</span>.<span class="fn">size</span>(),<br/>
+<span class="in3"></span><span class="var">frag</span>, <span class="var">buffer</span>,<br/>
 
 <span class="in3"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
 
