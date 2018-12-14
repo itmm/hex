@@ -4,8 +4,7 @@
 
 ```
 D{write HTML file}
-	for (auto j = used.begin(); j != used.end(); ++j) {
-		Input *cur = *j;
+	for (auto &cur : used) {
 		e{write cur HTML file};
 		delete(cur);
 	}

@@ -2,7 +2,7 @@
 	
 	
 	#include <stdio.h>
-	#include <list>
+	#include <vector>
 
 	#include <list>
 	#include <map>
@@ -301,8 +301,8 @@
 	};
 
 	Input *input = nullptr;
-	std::list<Input *> pending;
-	std::list<Input *> used;
+	std::vector<Input *> pending;
+	std::vector<Input *> used;
 
 	FragMap root;
 	FragMap *frags = &root;
@@ -355,17 +355,17 @@
 		return ch;
 	}
 
-	bool alreadyUsed(const char *name) {
+	bool alreadyUsed(const std::string &name) {
 		if (input && input->name == name) {
 			return true;
 		}
-		for (auto j = pending.begin(); j != pending.end(); ++j) {
-			if ((*j)->name == name) {
+		for (auto &j : pending) {
+			if (j->name == name) {
 				return true;
 			}
 		}
-		for (auto j = used.begin(); j != used.end(); ++j) {
-			if ((*j)->name == name) {
+		for (auto &j : used) {
+			if (j->name == name) {
 				return true;
 			}
 		}
@@ -973,13 +973,11 @@
 			frag, "unknown frag %s",
 			name.c_str()
 		);
-		const char *c = name.data();
-		const char *e = c + name.size();
-		for (; c != e; ++c) {
+		for (auto &c : name) {
 			if (buffer.empty()) {
 				bufferLine = input->line;
 			}
-			buffer.push_back(*c);
+			buffer.push_back(c);
 		}
 		processed = true;
 	}
@@ -1018,8 +1016,8 @@
 	}
 } ;
 	 {
-	for (auto i = root.map.begin(); i != root.map.end(); ++i) {
-		Frag *frag = &i->second;
+	for (auto &i : root.map) {
+		Frag *frag = &i.second;
 		
 	if (! memcmp(
 		"file: ", frag->name.data(), 6
@@ -1063,12 +1061,11 @@
 ;
 	}
 }  {
-	for (auto j = used.begin(); j != used.end(); ++j)
+	for (auto &j : used)
 	{
-		input = *j;
-		for (auto i = input->frags.map.begin(); i !=
-			input->frags.map.end(); ++i) {
-			Frag *frag = &i->second;
+		input = j;
+		for (auto &i : input->frags.map) {
+			Frag *frag = &i.second;
 			
 	if (! memcmp(
 		"file: ", frag->name.data(), 6
@@ -1114,8 +1111,7 @@
 	}
 } ;
 	
-	for (auto j = used.begin(); j != used.end(); ++j) {
-		Input *cur = *j;
+	for (auto &cur : used) {
 		
 	std::string &name = cur->name;
 	std::string outPath =
