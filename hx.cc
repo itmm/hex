@@ -26,12 +26,6 @@
 			exit(EXIT_FAILURE); \
 		}
 ;
-	
-	struct FragEntry;
-	void freeFragEntry(
-		FragEntry *entry
-	);
-;
 
 	
 	class Hash {
@@ -139,12 +133,6 @@
 				nullptr, std::string()
 			);
 		}
-
-	void freeFragEntry(
-		FragEntry *e
-	) {
-			delete(e);
-	}
 
 	int getFragEntryValueSize(
 		FragEntry *e
@@ -621,7 +609,7 @@
 		ASSERT(entry);
 		ASSERT(! entry->frag);
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 
 	{
@@ -634,7 +622,7 @@
 				entry) == 0
 		);
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 
 	{
@@ -647,7 +635,7 @@
 				entry) == 3
 		);
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 
 	{
@@ -657,7 +645,7 @@
 		ASSERT(entry);
 		ASSERT(entry->value == "abc");
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
  {
 	Frag frag("");

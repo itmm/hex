@@ -188,28 +188,6 @@ x{define frag}
 ```
 * Für Tests ist es praktisch, leere Einträge anzulegen
 
-# Fragment-Einträge freigeben
-
-```
-a{define frag}
-	void freeFragEntry(
-		FragEntry *e
-	) {
-			delete(e);
-	}
-x{define frag}
-```
-* Referenzierte Fragmente werden nicht mit freigegeben
-
-```
-D{forward declarations}
-	struct FragEntry;
-	void freeFragEntry(
-		FragEntry *entry
-	);
-x{forward declarations}
-```
-
 # Auf Attribute zugreifen
 
 ```
@@ -235,7 +213,7 @@ a{frag unit tests}
 		ASSERT(entry);
 		ASSERT(! entry->frag);
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 x{frag unit tests}
 ```
@@ -254,7 +232,7 @@ a{frag unit tests}
 				entry) == 0
 		);
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 x{frag unit tests}
 ```
@@ -287,7 +265,7 @@ a{frag unit tests}
 				entry) == 3
 		);
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 x{frag unit tests}
 ```
@@ -302,7 +280,7 @@ a{frag unit tests}
 		ASSERT(entry);
 		ASSERT(entry->value == "abc");
 
-		freeFragEntry(entry);
+		delete(entry);
 	}
 x{frag unit tests}
 ```

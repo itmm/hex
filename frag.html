@@ -408,59 +408,6 @@ x{perform unit-tests}
 </li></ul></div>
 
 </div>
-<h1>Fragment-Einträge freigeben</h1>
-<div class="slides">
-<div><div>
-<h1>Fragment-Einträge freigeben</h1>
-</div>
-
-
-</div>
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">void</span> <span class="fn">freeFragEntry</span>(<br/>
-
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">e</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in3"></span><span class="fn">delete</span>(<span class="var">e</span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Referenzierte Fragmente werden nicht mit freigegeben
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@globdef(<span class="name">forward declarations</span>)</span><br/>
-
-<span class="in1"></span><span class="type">struct</span> <span class="type">FragEntry</span>;<br/>
-
-<span class="in1"></span><span class="type">void</span> <span class="fn">freeFragEntry</span>(<br/>
-
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span><br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="end">@end(<span class="name">forward declarations</span>)</span><br/>
-
-</code>
-</div>
-
-
-</div>
-</div>
 <h1>Auf Attribute zugreifen</h1>
 <div class="slides">
 <div><div>
@@ -523,7 +470,7 @@ x{perform unit-tests}
 
 <br/>
 
-<span class="in2"></span><span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -563,7 +510,7 @@ x{perform unit-tests}
 
 <br/>
 
-<span class="in2"></span><span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -632,7 +579,7 @@ x{perform unit-tests}
 
 <br/>
 
-<span class="in2"></span><span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -664,7 +611,7 @@ x{perform unit-tests}
 
 <br/>
 
-<span class="in2"></span><span class="fn">freeFragEntry</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
 
 <span class="in1"></span>}<br/>
 

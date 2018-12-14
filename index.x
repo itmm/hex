@@ -78,7 +78,6 @@ x{main body}
 D{global elements}
 	g{includes};
 	g{define logging};
-	g{forward declarations};
 x{global elements}
 ```
 * System-Dateien werden vor der Definition von Strukturen und Funktionen
