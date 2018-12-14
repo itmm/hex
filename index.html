@@ -224,6 +224,8 @@
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdio</span>.<span class="var">h</span>&gt;<br/>
 
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">memory</span>&gt;<br/>
+
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">vector</span>&gt;<br/>
 
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
@@ -335,11 +337,11 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Input</span> *<span class="var">input</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">input</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span> *&gt; <span class="var">pending</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt; <span class="var">pending</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span> *&gt; <span class="var">used</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt; <span class="var">used</span>;<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -388,19 +390,19 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="type">char</span> *<span class="var">path</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
 
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">path</span>, <span class="str">"r"</span>);<br/>
+<span class="in2"></span><span class="type">FILE</span> *<span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">path</span>.<span class="fn">c_str</span>(), <span class="str">"r"</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">check file for path</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Input</span> *<span class="var">i</span> = <span class="keyword">new</span> <span class="fn">Input</span>(<span class="var">f</span>, <span class="var">path</span>);<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) { <span class="var">pending</span>.<span class="fn">push_back</span>(<span class="var">input</span>); }<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> = <span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">f</span>, <span class="var">path</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">input</span> = <span class="var">i</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) { <span class="var">pending</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>)); }<br/>
+
+<span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -425,7 +427,7 @@
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open [%s]"</span>, <span class="var">path</span><br/>
+<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open [%s]"</span>, <span class="var">path</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in1"></span>);<br/>
 
@@ -689,17 +691,13 @@
 
 <span class="in1"></span><span class="fn">fclose</span>(<span class="var">input</span>-&gt;<span class="var">file</span>);<br/>
 
-<span class="in1"></span><span class="var">used</span>.<span class="fn">push_back</span>(<span class="var">input</span>);<br/>
+<span class="in1"></span><span class="var">used</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>));<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">pending</span>.<span class="fn">empty</span>()) {<br/>
 
-<span class="in2"></span><span class="var">input</span> = <span class="var">pending</span>.<span class="fn">back</span>();<br/>
+<span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">pending</span>.<span class="fn">back</span>());<br/>
 
 <span class="in2"></span><span class="var">pending</span>.<span class="fn">pop_back</span>();<br/>
-
-<span class="in1"></span>} <span class="keyword">else</span> {<br/>
-
-<span class="in2"></span><span class="var">input</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1369,7 +1367,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="fn">c_str</span>())) {<br/>
 
-<span class="in3"></span><span class="fn">pushPath</span>(<span class="var">name</span>.<span class="fn">c_str</span>());<br/>
+<span class="in3"></span><span class="fn">pushPath</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -2059,9 +2057,7 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="var">input</span> = <span class="var">j</span>;<br/>
-
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>) {<br/>
 
 <span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = &amp;<span class="var">i</span>.<span class="var">second</span>;<br/>
 

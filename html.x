@@ -6,8 +6,8 @@
 D{write HTML file}
 	for (auto &cur : used) {
 		e{write cur HTML file};
-		delete(cur);
 	}
+	used.clear();
 x{write HTML file}
 ```
 * Alle bisher prozessierten Dateien werden erneut durchgegangen

@@ -2,6 +2,7 @@
 	
 	
 	#include <stdio.h>
+	#include <memory>
 	#include <vector>
 
 	#include <list>
@@ -300,29 +301,29 @@
 ;
 	};
 
-	Input *input = nullptr;
-	std::vector<Input *> pending;
-	std::vector<Input *> used;
+	std::unique_ptr<Input> input;
+	std::vector<std::unique_ptr<Input>> pending;
+	std::vector<std::unique_ptr<Input>> used;
 
 	FragMap root;
 	FragMap *frags = &root;
 
-	void pushPath(const char *path) {
-		FILE *f = fopen(path, "r");
+	void pushPath(const std::string &path) {
+		FILE *f = fopen(path.c_str(), "r");
 		
 	ASSERT(
-		f, "can't open [%s]", path
+		f, "can't open [%s]", path.c_str()
 	);
 ;
-		Input *i = new Input(f, path);
-		if (input) { pending.push_back(input); }
+		std::unique_ptr<Input> i = std::make_unique<Input>(f, path);
 		
 	if (input) {
 		input->frags.link = frags;
 		frags = &input->frags;
 	}
 ;
-		input = i;
+		if (input) { pending.push_back(std::move(input)); }
+		input = std::move(i);
 	}
 
 	const char *stylesheet =
@@ -340,12 +341,10 @@
 			if (ch != EOF) { break; }
 			
 	fclose(input->file);
-	used.push_back(input);
+	used.push_back(std::move(input));
 	if (! pending.empty()) {
-		input = pending.back();
+		input = std::move(pending.back());
 		pending.pop_back();
-	} else {
-		input = nullptr;
 	}
 	FragMap *nxt = frags->link;
 	frags->link = nullptr;
@@ -773,7 +772,7 @@
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
 		if (! alreadyUsed(name.c_str())) {
-			pushPath(name.c_str());
+			pushPath(name);
 		}
 		processed = true;
 	}
@@ -1063,8 +1062,7 @@
 }  {
 	for (auto &j : used)
 	{
-		input = j;
-		for (auto &i : input->frags.map) {
+		for (auto &i : j->frags.map) {
 			Frag *frag = &i.second;
 			
 	if (! memcmp(
@@ -2204,8 +2202,8 @@
 ;
 	fclose(out);
 ;
-		delete(cur);
 	}
+	used.clear();
 ;
 
 	}

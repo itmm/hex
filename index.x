@@ -95,6 +95,7 @@ x{global elements}
 ```
 D{includes}
 	#include <stdio.h>
+	#include <memory>
 	#include <vector>
 x{includes}
 ```
@@ -146,9 +147,9 @@ x{input methods}
 
 ```
 A{global elements}
-	Input *input = nullptr;
-	std::vector<Input *> pending;
-	std::vector<Input *> used;
+	std::unique_ptr<Input> input;
+	std::vector<std::unique_ptr<Input>> pending;
+	std::vector<std::unique_ptr<Input>> used;
 x{global elements}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -172,13 +173,13 @@ x{global elements}
 
 ```
 A{global elements}
-	void pushPath(const char *path) {
-		FILE *f = fopen(path, "r");
+	void pushPath(const std::string &path) {
+		FILE *f = fopen(path.c_str(), "r");
 		e{check file for path};
-		Input *i = new Input(f, path);
-		if (input) { pending.push_back(input); }
+		std::unique_ptr<Input> i = std::make_unique<Input>(f, path);
 		e{init additional input fields};
-		input = i;
+		if (input) { pending.push_back(std::move(input)); }
+		input = std::move(i);
 	}
 x{global elements}
 ```
@@ -190,7 +191,7 @@ x{global elements}
 ```
 d{check file for path}
 	ASSERT(
-		f, "can't open [%s]", path
+		f, "can't open [%s]", path.c_str()
 	);
 x{check file for path}
 ```
@@ -309,12 +310,10 @@ x{global elements}
 ```
 d{get next input file}
 	fclose(input->file);
-	used.push_back(input);
+	used.push_back(std::move(input));
 	if (! pending.empty()) {
-		input = pending.back();
+		input = std::move(pending.back());
 		pending.pop_back();
-	} else {
-		input = nullptr;
 	}
 	FragMap *nxt = frags->link;
 	frags->link = nullptr;
@@ -633,7 +632,7 @@ a{process frag name}
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
 		if (! alreadyUsed(name.c_str())) {
-			pushPath(name.c_str());
+			pushPath(name);
 		}
 		processed = true;
 	}
@@ -963,8 +962,7 @@ d{serialize fragments} {
 a{serialize fragments} {
 	for (auto &j : used)
 	{
-		input = j;
-		for (auto &i : input->frags.map) {
+		for (auto &i : j->frags.map) {
 			Frag *frag = &i.second;
 			E{serialize frag};
 		}
