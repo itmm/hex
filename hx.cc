@@ -302,46 +302,20 @@
 		return nullptr;
 	}
 
-	Frag &get(const std::string &name, FragMap *insert = nullptr) {
+	Frag &get(const std::string &name, FragMap &insert) {
 		Frag *found = find(name);
 		if (found) { return *found; }
-		insert = insert ?: this;
-		auto created = insert->map.insert(
+		auto created = insert.map.insert(
 			std::pair<std::string, Frag>(name, name)
 		);
 		return created.first->second;
 	}
 
 	Frag &operator[](const std::string &name) {
-		return get(name);
+		return get(name, *this);
 	}
 ;
 	};
-
-	Frag &allocFragInMap(
-		FragMap *map,
-		const std::string &name
-	) {
-		ASSERT(map);
-		auto result = map->map.insert(std::pair<std::string, Frag>(
-			name, name
-		));
-		return result.first->second;
-	}
-
-	Frag &getFragInMap(
-		FragMap *map,
-		const std::string &name,
-		FragMap *insert
-	) {
-		
-	Frag *frag = map->find(name);
-	if (frag) {
-		return *frag;
-	}
-;
-		return allocFragInMap(map, name);
-	}
 ;
 
 	struct Input {
@@ -598,26 +572,16 @@
 	}
 
 	{
-		FragEntry *entry =
-			allocEmptyFragEntry();
-
-		ASSERT(entry);
-		ASSERT(! entry->frag);
-
-		delete(entry);
+		FragEntry entry;
+		ASSERT(! entry.frag);
 	}
 
 	{
-		FragEntry *entry =
-			allocEmptyFragEntry();
-
-		ASSERT(entry);
+		FragEntry entry;
 		ASSERT(
 			getFragEntryValueSize(
-				entry) == 0
+				&entry) == 0
 		);
-
-		delete(entry);
 	}
 
 	{
@@ -756,9 +720,7 @@
 	}
 ;
 		if (! frag) {
-			frag = &allocFragInMap(
-				fm, name
-			);
+			frag = &(*fm)[name];
 		}
 		processed = true;
 	}
@@ -776,9 +738,7 @@
 	}
 ;
 		if (! frag) {
-			frag = &allocFragInMap(
-				&root, name.data()
-			);
+			frag = &root[name];
 		}
 		processed = true;
 	}
@@ -794,7 +754,7 @@
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = &fm->get(name, ins);
+		frag = &fm->get(name, *ins);
 	}
 ;
 		processed = true;
@@ -811,7 +771,7 @@
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = &fm->get(name, ins);
+		frag = &fm->get(name, *ins);
 	}
 ;
 		processed = true;
@@ -830,7 +790,7 @@
 
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = &frags->get(name, &root);
+		frag = &frags->get(name, root);
 		ASSERT(
 			frag, "frag %s not defined",
 			name.c_str()
@@ -911,9 +871,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = getFragInMap(
-			frags, name, &root
-		);
+		Frag &sub = frags->get(name, root);
 		
 	if (sub.expands) {
 		printf(
@@ -944,11 +902,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub =
-			getFragInMap(
-				&input->frags, name,
-				&input->frags
-			);
+		Frag &sub = input->frags[name];
 		
 	if (sub.expands) {
 		printf(
@@ -975,10 +929,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub =
-			getFragInMap(
-				frags, name, &root
-			);
+		Frag &sub = frags->get(name, root);
 		
 	if (sub.expands) {
 		printf(

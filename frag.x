@@ -207,13 +207,8 @@ x{define frag}
 ```
 a{frag unit tests}
 	{
-		FragEntry *entry =
-			allocEmptyFragEntry();
-
-		ASSERT(entry);
-		ASSERT(! entry->frag);
-
-		delete(entry);
+		FragEntry entry;
+		ASSERT(! entry.frag);
 	}
 x{frag unit tests}
 ```
@@ -223,16 +218,11 @@ x{frag unit tests}
 ```
 a{frag unit tests}
 	{
-		FragEntry *entry =
-			allocEmptyFragEntry();
-
-		ASSERT(entry);
+		FragEntry entry;
 		ASSERT(
 			getFragEntryValueSize(
-				entry) == 0
+				&entry) == 0
 		);
-
-		delete(entry);
 	}
 x{frag unit tests}
 ```
@@ -590,11 +580,10 @@ x{frag map methods}
 
 ```
 a{frag map methods}
-	Frag &get(const std::string &name, FragMap *insert = nullptr) {
+	Frag &get(const std::string &name, FragMap &insert) {
 		Frag *found = find(name);
 		if (found) { return *found; }
-		insert = insert ?: this;
-		auto created = insert->map.insert(
+		auto created = insert.map.insert(
 			std::pair<std::string, Frag>(name, name)
 		);
 		return created.first->second;
@@ -605,53 +594,10 @@ x{frag map methods}
 ```
 a{frag map methods}
 	Frag &operator[](const std::string &name) {
-		return get(name);
+		return get(name, *this);
 	}
 x{frag map methods}
 ```
-
-```
-a{define frag}
-	Frag &allocFragInMap(
-		FragMap *map,
-		const std::string &name
-	) {
-		ASSERT(map);
-		auto result = map->map.insert(std::pair<std::string, Frag>(
-			name, name
-		));
-		return result.first->second;
-	}
-x{define frag}
-```
-* Ein neues Fragment wird erstellt
-* Und in der Hash-Map abgelegt
-
-```
-a{define frag}
-	Frag &getFragInMap(
-		FragMap *map,
-		const std::string &name,
-		FragMap *insert
-	) {
-		e{get frag find};
-		return allocFragInMap(map, name);
-	}
-x{define frag}
-```
-* Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment
-  mit diesem Namen an
-
-```
-d{get frag find}
-	Frag *frag = map->find(name);
-	if (frag) {
-		return *frag;
-	}
-x{get frag find}
-```
-* Wenn das Fragment in der Kollektion vorhanden ist, wird dieses
-  verwendet
 
 # Position im Original merken
 

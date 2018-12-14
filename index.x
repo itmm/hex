@@ -461,9 +461,7 @@ d{process frag name}
 		FragMap *fm = &input->frags;
 		E{check for double def};
 		if (! frag) {
-			frag = &allocFragInMap(
-				fm, name
-			);
+			frag = &(*fm)[name];
 		}
 		processed = true;
 	}
@@ -479,9 +477,7 @@ a{process frag name}
 		FragMap *fm = frags;
 		E{check for double def};
 		if (! frag) {
-			frag = &allocFragInMap(
-				&root, name.data()
-			);
+			frag = &root[name];
 		}
 		processed = true;
 	}
@@ -542,7 +538,7 @@ d{check for add without def}
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = &fm->get(name, ins);
+		frag = &fm->get(name, *ins);
 	}
 x{check for add without def}
 ```
@@ -569,7 +565,7 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = &frags->get(name, &root);
+		frag = &frags->get(name, root);
 		ASSERT(
 			frag, "frag %s not defined",
 			name.c_str()
@@ -670,9 +666,7 @@ a{process frag name}
 	if (openCh == 'g') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		Frag &sub = getFragInMap(
-			frags, name, &root
-		);
+		Frag &sub = frags->get(name, root);
 		E{check frag expand count};
 		++sub.expands;
 		addFragToFrag(frag, &sub);
@@ -707,11 +701,7 @@ a{process frag name}
 	if (openCh == 'E') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag &sub =
-			getFragInMap(
-				&input->frags, name,
-				&input->frags
-			);
+		Frag &sub = input->frags[name];
 		E{check for prev expands};
 		++sub.multiples;
 		addFragToFrag(
@@ -728,10 +718,7 @@ a{process frag name}
 	if (openCh == 'G') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag &sub =
-			getFragInMap(
-				frags, name, &root
-			);
+		Frag &sub = frags->get(name, root);
 		E{check for prev expands};
 		++sub.multiples;
 		addFragToFrag(

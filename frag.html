@@ -458,19 +458,9 @@ x{perform unit-tests}
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
+<span class="in2"></span><span class="type">FragEntry</span> <span class="var">entry</span>;<br/>
 
-<span class="in3"></span><span class="fn">allocEmptyFragEntry</span>();<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">entry</span>-&gt;<span class="var">frag</span>);<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">entry</span>.<span class="var">frag</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -492,25 +482,15 @@ x{perform unit-tests}
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="type">FragEntry</span> *<span class="var">entry</span> =<br/>
-
-<span class="in3"></span><span class="fn">allocEmptyFragEntry</span>();<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>);<br/>
+<span class="in2"></span><span class="type">FragEntry</span> <span class="var">entry</span>;<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
 <span class="in3"></span><span class="fn">getFragEntryValueSize</span>(<br/>
 
-<span class="in4"></span><span class="var">entry</span>) == <span class="num">0</span><br/>
+<span class="in4"></span>&amp;<span class="var">entry</span>) == <span class="num">0</span><br/>
 
 <span class="in2"></span>);<br/>
-
-<br/>
-
-<span class="in2"></span><span class="fn">delete</span>(<span class="var">entry</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1288,15 +1268,13 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">frag map methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>, <span class="type">FragMap</span> *<span class="var">insert</span> = <span class="num">nullptr</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>, <span class="type">FragMap</span> &amp;<span class="var">insert</span>) {<br/>
 
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">found</span> = <span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span>) { <span class="keyword">return</span> *<span class="var">found</span>; }<br/>
 
-<span class="in2"></span><span class="var">insert</span> = <span class="var">insert</span> ?: <span class="var">this</span>;<br/>
-
-<span class="in2"></span><span class="var">auto</span> <span class="var">created</span> = <span class="var">insert</span>-&gt;<span class="var">map</span>.<span class="fn">insert</span>(<br/>
+<span class="in2"></span><span class="var">auto</span> <span class="var">created</span> = <span class="var">insert</span>.<span class="var">map</span>.<span class="fn">insert</span>(<br/>
 
 <span class="in3"></span><span class="var">std</span>::<span class="var">pair</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;(<span class="var">name</span>, <span class="var">name</span>)<br/>
 
@@ -1320,7 +1298,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">operator</span>[](<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="fn">get</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">get</span>(<span class="var">name</span>, *<span class="var">this</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1331,96 +1309,6 @@ x{perform unit-tests}
 
 
 </div>
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">allocFragInMap</span>(<br/>
-
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
-
-<span class="in2"></span><span class="var">auto</span> <span class="var">result</span> = <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">insert</span>(<span class="var">std</span>::<span class="var">pair</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;(<br/>
-
-<span class="in3"></span><span class="var">name</span>, <span class="var">name</span><br/>
-
-<span class="in2"></span>));<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span>.<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Ein neues Fragment wird erstellt
-</li><li>
- Und in der Hash-Map abgelegt
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">define frag</span>)</span><br/>
-
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">getFragInMap</span>(<br/>
-
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>,<br/>
-
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">insert</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="expand">@expand(<span class="name">get frag find</span>)</span>;<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="fn">allocFragInMap</span>(<span class="var">map</span>, <span class="var">name</span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Liefert Fragment mit angegebenen Namen oder legt ein neues Fragment
-  mit diesem Namen an
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@def(<span class="name">get frag find</span>)</span><br/>
-
-<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">map</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-
-<span class="in2"></span><span class="keyword">return</span> *<span class="var">frag</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">get frag find</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn das Fragment in der Kollektion vorhanden ist, wird dieses
-  verwendet
-</li></ul></div>
-
 </div>
 <h1>Position im Original merken</h1>
 <div class="slides">

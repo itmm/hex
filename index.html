@@ -1006,11 +1006,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="var">frag</span> = &amp;<span class="fn">allocFragInMap</span>(<br/>
-
-<span class="in4"></span><span class="var">fm</span>, <span class="var">name</span><br/>
-
-<span class="in3"></span>);<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;(*<span class="var">fm</span>)[<span class="var">name</span>];<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1044,11 +1040,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="var">frag</span> = &amp;<span class="fn">allocFragInMap</span>(<br/>
-
-<span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="fn">data</span>()<br/>
-
-<span class="in3"></span>);<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">name</span>];<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1178,7 +1170,7 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">fm</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">ins</span>);<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">fm</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, *<span class="var">ins</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1236,7 +1228,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
 
-<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, &amp;<span class="var">root</span>);<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
@@ -1445,11 +1437,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
-
-<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>);<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
 
@@ -1521,15 +1509,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> =<br/>
-
-<span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
-
-<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>,<br/>
-
-<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
-
-<span class="in3"></span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>];<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
@@ -1564,13 +1544,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> =<br/>
-
-<span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
-
-<span class="in4"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
-
-<span class="in3"></span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>);<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
