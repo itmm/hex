@@ -92,13 +92,10 @@ x{hash next ch}
 ```
 a{define hash}
 	int calcHash(
-		const char *begin,
-		const char *end
+		const std::string &name
 	) {
 		Hash h;
-		return h.add(
-			std::string(begin, end)
-		);
+		return h.add(name);
 	}
 x{define hash}
 ```

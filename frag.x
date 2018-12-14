@@ -75,22 +75,19 @@ x{includes}
 ```
 a{define frag}
 	struct Frag *allocFrag(
-		const char *nameBegin,
-		const char *nameEnd
+		const std::string &name
 	) {
 		Frag *result = nullptr;
-		e{allocate frag on heap};
+		result = new Frag();
 		result->link = nullptr;
 		result->expands = 0;
 		result->multiples = 0;
-		e{copy frag name};
+		result->name = name;
 		return result;
 	}
 x{define frag}
 ```
 * Die Zeiger werden mit `nullptr` initialisiert
-* Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
-  Null-Byte terminiert sein
 
 ```
 D{define logging}
@@ -111,27 +108,9 @@ x{define logging}
 * Datei und Zeile des Tests wird ausgegeben
 
 ```
-d{allocate frag on heap}
-	ASSERT(nameBegin);
-	ASSERT(nameBegin <= nameEnd);
-	result = new Frag();
-	ASSERT(result);
-x{allocate frag on heap}
-```
-* Die Zeiger werden mit `nullptr` initialisiert
-* Der Name wird über zwei Zeiger übergeben, muss also nicht mit einem
-  Null-Byte terminiert sein
-
-```
 A{includes}
 	#include <string.h>
 x{includes}
-
-d{copy frag name}
-	result->name = std::string(nameBegin, nameEnd);
-x{copy frag name}
-```
-* Der Name wird direkt in das Fragment kopiert
 
 # Fragmente freigeben
 
@@ -171,26 +150,12 @@ D{perform unit-tests}
 	e{frag unit tests};
 x{perform unit-tests}
 
-a{define frag}
-	Frag *allocTestFrag(
-		const char *name
-	) {
-		return allocFrag(
-			name, name + strlen(name)
-		);
-	}
-x{define frag}
-```
-* Für Unit-Tests gibt es einen einfacheren Konstruktor
-* Die Länge des Namens wird anhand des Null-Bytes berechnet
-
 ```
 a{define frag}
 	void testFragName(
-		const char *name
+		const std::string &name
 	) {
-		Frag *f =
-			allocTestFrag(name);
+		Frag *f = allocFrag(name);
 		ASSERT(f);
 		ASSERT(f->name == name);
 		freeFrag(f);
@@ -206,8 +171,7 @@ d{frag unit tests}
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag *f =
-			allocTestFrag("ab");
+		Frag *f = allocFrag("ab");
 		ASSERT(f);
 		ASSERT(! f->link);
 		ASSERT(! f->firstEntry);
@@ -611,8 +575,7 @@ x{define frag}
 ```
 a{frag unit tests}
 	{
-		Frag *frag =
-			allocTestFrag("");
+		Frag *frag = allocFrag("");
 		addStringToFrag(frag, "abc");
 		addStringToFrag(frag, "def");
 		testFrag(frag, "abcdef");
@@ -624,10 +587,8 @@ x{frag unit tests}
 
 ```
 a{frag unit tests} {
-	Frag *a =
-		allocTestFrag("");
-	Frag *b =
-		allocTestFrag("");
+	Frag *a = allocFrag("");
+	Frag *b = allocFrag("");
 	addStringToFrag(a, "abc");
 	addFragToFrag(b, a);
 	addStringToFrag(b, "def");
@@ -737,9 +698,9 @@ x{define frag}
 ```
 a{define frag}
 	int calcFragHash(
-		const char *begin, const char *end
+		const std::string &name
 	) {
-		int hash = calcHash(begin, end);
+		int hash = calcHash(name);
 		return hash % FRAG_SLOTS;
 	}
 x{define frag}
@@ -751,12 +712,10 @@ x{define frag}
 a{define frag}
 	Frag *allocFragInMap(
 		FragMap *map,
-		const char *begin,
-		const char *end
+		const std::string &name
 	) {
 		ASSERT(map);
-		Frag *frag =
-			allocFrag(begin, end);
+		Frag *frag = allocFrag(name);
 		e{insert in slot};
 		return frag;
 	}
@@ -767,7 +726,7 @@ x{define frag}
 
 ```
 d{insert in slot}
-	int hash = calcFragHash(begin, end);
+	int hash = calcFragHash(name);
 	frag->link = map->frags[hash];
 	map->frags[hash] = frag;
 x{insert in slot}
@@ -779,8 +738,7 @@ x{insert in slot}
 a{define frag}
 	Frag *findFragInMap(
 		FragMap *map,
-		const char *begin,
-		const char *end
+		const std::string &name
 	) {
 		ASSERT(map);
 		e{find frag in slot};
@@ -793,11 +751,10 @@ x{define frag}
 
 ```
 d{find frag in slot} {
-	int hash = calcFragHash(begin, end);
+	int hash = calcFragHash(name);
 	Frag *frag = map->frags[hash];
-	std::string s(begin, end);
 	for (; frag; frag = frag->link) {
-		if (s == frag->name) {
+		if (name == frag->name) {
 			return frag;
 		}
 	}
@@ -809,7 +766,7 @@ d{find frag in slot} {
 d{find frag in linked map}
 	if (map->link) {
 		return findFragInMap(
-			map->link, begin, end
+			map->link, name
 		);
 	}
 x{find frag in linked map}
@@ -821,14 +778,11 @@ x{find frag in linked map}
 a{define frag}
 	Frag *getFragInMap(
 		FragMap *map,
-		const char *begin,
-		const char *end,
+		const std::string &name,
 		FragMap *insert
 	) {
-		Frag *frag = nullptr;
 		e{get frag find};
-		e{get frag alloc};
-		return frag;
+		return allocFragInMap(map, name);
 	}
 x{define frag}
 ```
@@ -837,8 +791,8 @@ x{define frag}
 
 ```
 d{get frag find}
-	frag = findFragInMap(
-		map, begin, end
+	Frag *frag = findFragInMap(
+		map, name
 	);
 	if (frag) {
 		return frag;
@@ -847,15 +801,6 @@ x{get frag find}
 ```
 * Wenn das Fragment in der Kollektion vorhanden ist, wird dieses
   verwendet
-
-```
-d{get frag alloc}
-	frag = allocFragInMap(
-		map, begin, end
-	);
-x{get frag alloc}
-```
-* Sonst wird ein neues Fragment angelegt
 
 # Position im Original merken
 

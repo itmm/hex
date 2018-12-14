@@ -1014,9 +1014,7 @@
 
 <span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
 
-<span class="in4"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
+<span class="in4"></span><span class="var">fm</span>, <span class="var">name</span><br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1054,9 +1052,7 @@
 
 <span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
 
-<span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
+<span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="fn">data</span>()<br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1084,9 +1080,7 @@
 
 <span class="in1"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
-<span class="in2"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in2"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
+<span class="in2"></span><span class="var">fm</span>, <span class="var">name</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1132,9 +1126,7 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1170,9 +1162,7 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">findFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>()<br/>
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1208,13 +1198,9 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
+<span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>, <span class="var">ins</span><br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(),<br/>
-
-<span class="var">ins</span><br/>
-
-<span class="in5"></span>);<br/>
+<span class="in2"></span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1238,9 +1224,9 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1280,9 +1266,7 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">root</span><br/>
+<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1458,9 +1442,7 @@
 
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+<span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1501,9 +1483,7 @@
 
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
-<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">root</span><br/>
+<span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1581,9 +1561,9 @@
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
-<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
+<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>,<br/>
 
-<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
+<span class="in4"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
 <span class="in3"></span>);<br/>
 
@@ -1624,9 +1604,7 @@
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
-<span class="in4"></span><span class="var">frags</span>, <span class="var">name</span>.<span class="fn">data</span>(),<br/>
-
-<span class="in4"></span><span class="var">name</span>.<span class="fn">data</span>() + <span class="var">name</span>.<span class="fn">size</span>(), &amp;<span class="var">root</span><br/>
+<span class="in4"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
 
 <span class="in3"></span>);<br/>
 

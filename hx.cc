@@ -67,13 +67,10 @@
 	}
 
 	int calcHash(
-		const char *begin,
-		const char *end
+		const std::string &name
 	) {
 		Hash h;
-		return h.add(
-			std::string(begin, end)
-		);
+		return h.add(name);
 	}
 ;
 
@@ -101,22 +98,14 @@
 	};
 
 	struct Frag *allocFrag(
-		const char *nameBegin,
-		const char *nameEnd
+		const std::string &name
 	) {
 		Frag *result = nullptr;
-		
-	ASSERT(nameBegin);
-	ASSERT(nameBegin <= nameEnd);
-	result = new Frag();
-	ASSERT(result);
-;
+		result = new Frag();
 		result->link = nullptr;
 		result->expands = 0;
 		result->multiples = 0;
-		
-	result->name = std::string(nameBegin, nameEnd);
-;
+		result->name = name;
 		return result;
 	}
 
@@ -139,19 +128,10 @@
 		}
 	}
 
-	Frag *allocTestFrag(
-		const char *name
-	) {
-		return allocFrag(
-			name, name + strlen(name)
-		);
-	}
-
 	void testFragName(
-		const char *name
+		const std::string &name
 	) {
-		Frag *f =
-			allocTestFrag(name);
+		Frag *f = allocFrag(name);
 		ASSERT(f);
 		ASSERT(f->name == name);
 		freeFrag(f);
@@ -385,22 +365,20 @@
 	}
 
 	int calcFragHash(
-		const char *begin, const char *end
+		const std::string &name
 	) {
-		int hash = calcHash(begin, end);
+		int hash = calcHash(name);
 		return hash % FRAG_SLOTS;
 	}
 
 	Frag *allocFragInMap(
 		FragMap *map,
-		const char *begin,
-		const char *end
+		const std::string &name
 	) {
 		ASSERT(map);
-		Frag *frag =
-			allocFrag(begin, end);
+		Frag *frag = allocFrag(name);
 		
-	int hash = calcFragHash(begin, end);
+	int hash = calcFragHash(name);
 	frag->link = map->frags[hash];
 	map->frags[hash] = frag;
 ;
@@ -409,16 +387,14 @@
 
 	Frag *findFragInMap(
 		FragMap *map,
-		const char *begin,
-		const char *end
+		const std::string &name
 	) {
 		ASSERT(map);
 		 {
-	int hash = calcFragHash(begin, end);
+	int hash = calcFragHash(name);
 	Frag *frag = map->frags[hash];
-	std::string s(begin, end);
 	for (; frag; frag = frag->link) {
-		if (s == frag->name) {
+		if (name == frag->name) {
 			return frag;
 		}
 	}
@@ -426,7 +402,7 @@
 		
 	if (map->link) {
 		return findFragInMap(
-			map->link, begin, end
+			map->link, name
 		);
 	}
 ;
@@ -435,25 +411,18 @@
 
 	Frag *getFragInMap(
 		FragMap *map,
-		const char *begin,
-		const char *end,
+		const std::string &name,
 		FragMap *insert
 	) {
-		Frag *frag = nullptr;
 		
-	frag = findFragInMap(
-		map, begin, end
+	Frag *frag = findFragInMap(
+		map, name
 	);
 	if (frag) {
 		return frag;
 	}
 ;
-		
-	frag = allocFragInMap(
-		map, begin, end
-	);
-;
-		return frag;
+		return allocFragInMap(map, name);
 	}
 ;
 
@@ -708,8 +677,7 @@
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag *f =
-			allocTestFrag("ab");
+		Frag *f = allocFrag("ab");
 		ASSERT(f);
 		ASSERT(! f->link);
 		ASSERT(! f->firstEntry);
@@ -764,18 +732,15 @@
 	}
 
 	{
-		Frag *frag =
-			allocTestFrag("");
+		Frag *frag = allocFrag("");
 		addStringToFrag(frag, "abc");
 		addStringToFrag(frag, "def");
 		testFrag(frag, "abcdef");
 		freeFrag(frag);
 	}
  {
-	Frag *a =
-		allocTestFrag("");
-	Frag *b =
-		allocTestFrag("");
+	Frag *a = allocFrag("");
+	Frag *b = allocFrag("");
 	addStringToFrag(a, "abc");
 	addFragToFrag(b, a);
 	addStringToFrag(b, "def");
@@ -875,8 +840,7 @@
 		FragMap *fm = &input->frags;
 		
 	frag = findFragInMap(
-		fm, name.data(),
-		name.data() + name.size()
+		fm, name
 	);
 	if (isPopulatedFrag(frag)) {
 		printf(
@@ -887,8 +851,7 @@
 ;
 		if (! frag) {
 			frag = allocFragInMap(
-				fm, name.data(),
-				name.data() + name.size()
+				fm, name
 			);
 		}
 		processed = true;
@@ -899,8 +862,7 @@
 		FragMap *fm = frags;
 		
 	frag = findFragInMap(
-		fm, name.data(),
-		name.data() + name.size()
+		fm, name
 	);
 	if (isPopulatedFrag(frag)) {
 		printf(
@@ -911,8 +873,7 @@
 ;
 		if (! frag) {
 			frag = allocFragInMap(
-				&root, name.data(),
-				name.data() + name.size()
+				&root, name.data()
 			);
 		}
 		processed = true;
@@ -923,8 +884,7 @@
 		FragMap *fm = &input->frags;
 		FragMap *ins = fm;
 		frag = findFragInMap(
-			fm, name.data(),
-			name.data() + name.size()
+			fm, name
 		);
 		
 	if (! isPopulatedFrag(frag)) {
@@ -933,9 +893,7 @@
 			name.c_str()
 		);
 		frag = getFragInMap(
-			fm, name.data(),
-			name.data() + name.size(),
-			ins
+			fm, name, ins
 		);
 	}
 ;
@@ -947,8 +905,7 @@
 		FragMap *fm = frags;
 		FragMap *ins = &root;
 		frag = findFragInMap(
-			fm, name.data(),
-			name.data() + name.size()
+			fm, name
 		);
 		
 	if (! isPopulatedFrag(frag)) {
@@ -957,9 +914,7 @@
 			name.c_str()
 		);
 		frag = getFragInMap(
-			fm, name.data(),
-			name.data() + name.size(),
-			ins
+			fm, name, ins
 		);
 	}
 ;
@@ -969,8 +924,8 @@
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			&input->frags, name.data(),
-			name.data() + name.size(), &input->frags
+			&input->frags, name,
+			&input->frags
 		);
 		ASSERT(
 			frag, "frag %s not defined",
@@ -983,8 +938,7 @@
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			frags, name.data(),
-			name.data() + name.size(), &root
+			frags, name, &root
 		);
 		ASSERT(
 			frag, "frag %s not defined",
@@ -1038,8 +992,7 @@
 	}
 ;
 		Frag *sub = getFragInMap(
-			&input->frags, name.data(),
-			name.data() + name.size(), &input->frags
+			&input->frags, name, &input->frags
 		);
 		
 	if (sub->expands) {
@@ -1073,8 +1026,7 @@
 	}
 ;
 		Frag *sub = getFragInMap(
-			frags, name.data(),
-			name.data() + name.size(), &root
+			frags, name, &root
 		);
 		
 	if (sub->expands) {
@@ -1109,8 +1061,8 @@
 ;
 		Frag *sub =
 			getFragInMap(
-				&input->frags, name.data(),
-				name.data() + name.size(), &input->frags
+				&input->frags, name,
+				&input->frags
 			);
 		
 	if (sub->expands) {
@@ -1141,8 +1093,7 @@
 ;
 		Frag *sub =
 			getFragInMap(
-				frags, name.data(),
-				name.data() + name.size(), &root
+				frags, name, &root
 			);
 		
 	if (sub->expands) {

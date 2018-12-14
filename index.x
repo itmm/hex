@@ -463,8 +463,7 @@ d{process frag name}
 		E{check for double def};
 		if (! frag) {
 			frag = allocFragInMap(
-				fm, name.data(),
-				name.data() + name.size()
+				fm, name
 			);
 		}
 		processed = true;
@@ -482,8 +481,7 @@ a{process frag name}
 		E{check for double def};
 		if (! frag) {
 			frag = allocFragInMap(
-				&root, name.data(),
-				name.data() + name.size()
+				&root, name.data()
 			);
 		}
 		processed = true;
@@ -496,8 +494,7 @@ x{process frag name}
 ```
 d{check for double def}
 	frag = findFragInMap(
-		fm, name.data(),
-		name.data() + name.size()
+		fm, name
 	);
 	if (isPopulatedFrag(frag)) {
 		printf(
@@ -519,8 +516,7 @@ a{process frag name}
 		FragMap *fm = &input->frags;
 		FragMap *ins = fm;
 		frag = findFragInMap(
-			fm, name.data(),
-			name.data() + name.size()
+			fm, name
 		);
 		E{check for add without def};
 		processed = true;
@@ -537,8 +533,7 @@ a{process frag name}
 		FragMap *fm = frags;
 		FragMap *ins = &root;
 		frag = findFragInMap(
-			fm, name.data(),
-			name.data() + name.size()
+			fm, name
 		);
 		E{check for add without def};
 		processed = true;
@@ -555,9 +550,7 @@ d{check for add without def}
 			name.c_str()
 		);
 		frag = getFragInMap(
-			fm, name.data(),
-			name.data() + name.size(),
-			ins
+			fm, name, ins
 		);
 	}
 x{check for add without def}
@@ -569,8 +562,8 @@ a{process frag name}
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			&input->frags, name.data(),
-			name.data() + name.size(), &input->frags
+			&input->frags, name,
+			&input->frags
 		);
 		ASSERT(
 			frag, "frag %s not defined",
@@ -589,8 +582,7 @@ a{process frag name}
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
 		frag = getFragInMap(
-			frags, name.data(),
-			name.data() + name.size(), &root
+			frags, name, &root
 		);
 		ASSERT(
 			frag, "frag %s not defined",
@@ -675,8 +667,7 @@ a{process frag name}
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
 		Frag *sub = getFragInMap(
-			&input->frags, name.data(),
-			name.data() + name.size(), &input->frags
+			&input->frags, name, &input->frags
 		);
 		E{check frag expand count};
 		++sub->expands;
@@ -696,8 +687,7 @@ a{process frag name}
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
 		Frag *sub = getFragInMap(
-			frags, name.data(),
-			name.data() + name.size(), &root
+			frags, name, &root
 		);
 		E{check frag expand count};
 		++sub->expands;
@@ -735,8 +725,8 @@ a{process frag name}
 		E{flush frag buffer};
 		Frag *sub =
 			getFragInMap(
-				&input->frags, name.data(),
-				name.data() + name.size(), &input->frags
+				&input->frags, name,
+				&input->frags
 			);
 		E{check for prev expands};
 		++sub->multiples;
@@ -756,8 +746,7 @@ a{process frag name}
 		E{flush frag buffer};
 		Frag *sub =
 			getFragInMap(
-				frags, name.data(),
-				name.data() + name.size(), &root
+				frags, name, &root
 			);
 		E{check for prev expands};
 		++sub->multiples;
