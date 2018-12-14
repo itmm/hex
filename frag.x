@@ -589,6 +589,28 @@ x{frag map methods}
 ```
 
 ```
+a{frag map methods}
+	Frag &get(const std::string &name, FragMap *insert = nullptr) {
+		Frag *found = find(name);
+		if (found) { return *found; }
+		insert = insert ?: this;
+		auto created = insert->map.insert(
+			std::pair<std::string, Frag>(name, name)
+		);
+		return created.first->second;
+	}
+x{frag map methods}
+```
+
+```
+a{frag map methods}
+	Frag &operator[](const std::string &name) {
+		return get(name);
+	}
+x{frag map methods}
+```
+
+```
 a{define frag}
 	Frag &allocFragInMap(
 		FragMap *map,

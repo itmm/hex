@@ -1286,6 +1286,54 @@ x{perform unit-tests}
 <div><div>
 <code>
 
+<span class="add">@add(<span class="name">frag map methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>, <span class="type">FragMap</span> *<span class="var">insert</span> = <span class="num">nullptr</span>) {<br/>
+
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">found</span> = <span class="fn">find</span>(<span class="var">name</span>);<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span>) { <span class="keyword">return</span> *<span class="var">found</span>; }<br/>
+
+<span class="in2"></span><span class="var">insert</span> = <span class="var">insert</span> ?: <span class="var">this</span>;<br/>
+
+<span class="in2"></span><span class="var">auto</span> <span class="var">created</span> = <span class="var">insert</span>-&gt;<span class="var">map</span>.<span class="fn">insert</span>(<br/>
+
+<span class="in3"></span><span class="var">std</span>::<span class="var">pair</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;(<span class="var">name</span>, <span class="var">name</span>)<br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">created</span>.<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">frag map methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">frag map methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">operator</span>[](<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">get</span>(<span class="var">name</span>);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">frag map methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">allocFragInMap</span>(<br/>

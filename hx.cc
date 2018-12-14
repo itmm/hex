@@ -301,6 +301,20 @@
 		}
 		return nullptr;
 	}
+
+	Frag &get(const std::string &name, FragMap *insert = nullptr) {
+		Frag *found = find(name);
+		if (found) { return *found; }
+		insert = insert ?: this;
+		auto created = insert->map.insert(
+			std::pair<std::string, Frag>(name, name)
+		);
+		return created.first->second;
+	}
+
+	Frag &operator[](const std::string &name) {
+		return get(name);
+	}
 ;
 	};
 
@@ -780,9 +794,7 @@
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = &getFragInMap(
-			fm, name, ins
-		);
+		frag = &fm->get(name, ins);
 	}
 ;
 		processed = true;
@@ -799,9 +811,7 @@
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = &getFragInMap(
-			fm, name, ins
-		);
+		frag = &fm->get(name, ins);
 	}
 ;
 		processed = true;
@@ -809,10 +819,7 @@
 
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = &getFragInMap(
-			&input->frags, name,
-			&input->frags
-		);
+		frag = &(input->frags[name]);
 		ASSERT(
 			frag, "frag %s not defined",
 			name.c_str()
@@ -823,9 +830,7 @@
 
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = &getFragInMap(
-			frags, name, &root
-		);
+		frag = &frags->get(name, &root);
 		ASSERT(
 			frag, "frag %s not defined",
 			name.c_str()
@@ -875,9 +880,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = getFragInMap(
-			&input->frags, name, &input->frags
-		);
+		Frag &sub = input->frags[name];
 		
 	if (sub.expands) {
 		printf(

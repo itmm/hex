@@ -542,9 +542,7 @@ d{check for add without def}
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = &getFragInMap(
-			fm, name, ins
-		);
+		frag = &fm->get(name, ins);
 	}
 x{check for add without def}
 ```
@@ -554,10 +552,7 @@ x{check for add without def}
 a{process frag name}
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = &getFragInMap(
-			&input->frags, name,
-			&input->frags
-		);
+		frag = &(input->frags[name]);
 		ASSERT(
 			frag, "frag %s not defined",
 			name.c_str()
@@ -574,9 +569,7 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = &getFragInMap(
-			frags, name, &root
-		);
+		frag = &frags->get(name, &root);
 		ASSERT(
 			frag, "frag %s not defined",
 			name.c_str()
@@ -659,9 +652,7 @@ a{process frag name}
 	if (openCh == 'e') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		Frag &sub = getFragInMap(
-			&input->frags, name, &input->frags
-		);
+		Frag &sub = input->frags[name];
 		E{check frag expand count};
 		++sub.expands;
 		addFragToFrag(frag, &sub);
