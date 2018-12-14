@@ -1008,7 +1008,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;<span class="fn">allocFragInMap</span>(<br/>
 
 <span class="in4"></span><span class="var">fm</span>, <span class="var">name</span><br/>
 
@@ -1046,7 +1046,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="var">frag</span> = <span class="fn">allocFragInMap</span>(<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;<span class="fn">allocFragInMap</span>(<br/>
 
 <span class="in4"></span>&amp;<span class="var">root</span>, <span class="var">name</span>.<span class="fn">data</span>()<br/>
 
@@ -1192,7 +1192,7 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;<span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span><span class="var">fm</span>, <span class="var">name</span>, <span class="var">ins</span><br/>
 
@@ -1218,7 +1218,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;<span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>,<br/>
 
@@ -1260,7 +1260,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;<span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
 
@@ -1436,7 +1436,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span>&amp;<span class="var">input</span>-&gt;<span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">input</span>-&gt;<span class="var">frags</span><br/>
 
@@ -1444,9 +1444,9 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
 
-<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">expands</span>;<br/>
+<span class="in2"></span>++<span class="var">sub</span>.<span class="var">expands</span>;<br/>
 
-<span class="in2"></span><span class="fn">addFragToFrag</span>(<span class="var">frag</span>, <span class="var">sub</span>);<br/>
+<span class="in2"></span><span class="fn">addFragToFrag</span>(<span class="var">frag</span>, &amp;<span class="var">sub</span>);<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
@@ -1477,7 +1477,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="fn">getFragInMap</span>(<br/>
 
 <span class="in3"></span><span class="var">frags</span>, <span class="var">name</span>, &amp;<span class="var">root</span><br/>
 
@@ -1485,9 +1485,9 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
 
-<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">expands</span>;<br/>
+<span class="in2"></span>++<span class="var">sub</span>.<span class="var">expands</span>;<br/>
 
-<span class="in2"></span><span class="fn">addFragToFrag</span>(<span class="var">frag</span>, <span class="var">sub</span>);<br/>
+<span class="in2"></span><span class="fn">addFragToFrag</span>(<span class="var">frag</span>, &amp;<span class="var">sub</span>);<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
@@ -1505,25 +1505,25 @@
 
 <span class="add">@def(<span class="name">check frag expand count</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="var">expands</span>) {<br/>
 
 <span class="in2"></span><span class="fn">printf</span>(<br/>
 
 <span class="in3"></span><span class="str">"multiple expands of [%s]\n"</span>,<br/>
 
-<span class="in3"></span><span class="var">sub</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">multiples</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="var">multiples</span>) {<br/>
 
 <span class="in2"></span><span class="fn">printf</span>(<br/>
 
 <span class="in3"></span><span class="str">"expand after mult of [%s]\n"</span>,<br/>
 
-<span class="in3"></span><span class="var">sub</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1553,7 +1553,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> =<br/>
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
@@ -1565,11 +1565,11 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
-<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">multiples</span>;<br/>
+<span class="in2"></span>++<span class="var">sub</span>.<span class="var">multiples</span>;<br/>
 
 <span class="in2"></span><span class="fn">addFragToFrag</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="var">sub</span>);<br/>
+<span class="in3"></span><span class="var">frag</span>, &amp;<span class="var">sub</span>);<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
@@ -1596,7 +1596,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> =<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> =<br/>
 
 <span class="in3"></span><span class="fn">getFragInMap</span>(<br/>
 
@@ -1606,11 +1606,11 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
-<span class="in2"></span>++<span class="var">sub</span>-&gt;<span class="var">multiples</span>;<br/>
+<span class="in2"></span>++<span class="var">sub</span>.<span class="var">multiples</span>;<br/>
 
 <span class="in2"></span><span class="fn">addFragToFrag</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="var">sub</span>);<br/>
+<span class="in3"></span><span class="var">frag</span>, &amp;<span class="var">sub</span>);<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
@@ -1628,7 +1628,7 @@
 
 <span class="add">@def(<span class="name">check for prev expands</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="var">expands</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="var">expands</span>) {<br/>
 
 <span class="in2"></span><span class="fn">printf</span>(<br/>
 
@@ -1636,7 +1636,7 @@
 
 <span class="in4"></span><span class="str">"of [%s]\n"</span>,<br/>
 
-<span class="in3"></span><span class="var">sub</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -2099,7 +2099,7 @@
 
 <span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">i</span> = <span class="var">root</span>.<span class="var">map</span>.<span class="fn">begin</span>(); <span class="var">i</span> != <span class="var">root</span>.<span class="var">map</span>.<span class="fn">end</span>(); ++<span class="var">i</span>) {<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = &amp;<span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
@@ -2133,7 +2133,7 @@
 
 <span class="in3"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>.<span class="fn">end</span>(); ++<span class="var">i</span>) {<br/>
 
-<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = &amp;<span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 

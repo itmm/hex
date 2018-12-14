@@ -24,6 +24,7 @@ d{define frag}
 		Frag *frag;
 		std::string value;
 		e{additional entry attributes};
+		FragEntry(): frag(nullptr) {}
 	};
 x{define frag}
 ```
@@ -580,7 +581,7 @@ x{check cycle entries}
 a{define frag}
 	struct FragMap {
 		FragMap *link;
-		std::map<std::string, Frag *> map;
+		std::map<std::string, Frag> map;
 		e{frag map methods};
 	};
 x{define frag}
@@ -600,9 +601,6 @@ a{define frag}
 		FragMap *map
 	) {
 		map->link = nullptr;
-		for (auto i = map->map.begin(); i != map->map.end(); ++i) {
-			delete i->second;
-		}
 		map->map.clear();
 	}
 x{define frag}
@@ -615,14 +613,15 @@ x{define frag}
 
 ```
 a{define frag}
-	Frag *allocFragInMap(
+	Frag &allocFragInMap(
 		FragMap *map,
 		const std::string &name
 	) {
 		ASSERT(map);
-		Frag *frag = new Frag(name);
-		map->map[name] = frag;
-		return frag;
+		auto result = map->map.insert(std::pair<std::string, Frag>(
+			name, name
+		));
+		return result.first->second;
 	}
 x{define frag}
 ```
@@ -648,7 +647,7 @@ x{define frag}
 d{find frag in slot} {
 	auto found = map->map.find(name);
 	if (found != map->map.end()) {
-		return found->second;
+		return &found->second;
 	}
 } x{find frag in slot}
 ```
@@ -668,7 +667,7 @@ x{find frag in linked map}
 
 ```
 a{define frag}
-	Frag *getFragInMap(
+	Frag &getFragInMap(
 		FragMap *map,
 		const std::string &name,
 		FragMap *insert
@@ -687,7 +686,7 @@ d{get frag find}
 		map, name
 	);
 	if (frag) {
-		return frag;
+		return *frag;
 	}
 x{get frag find}
 ```

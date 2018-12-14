@@ -462,7 +462,7 @@ d{process frag name}
 		FragMap *fm = &input->frags;
 		E{check for double def};
 		if (! frag) {
-			frag = allocFragInMap(
+			frag = &allocFragInMap(
 				fm, name
 			);
 		}
@@ -480,7 +480,7 @@ a{process frag name}
 		FragMap *fm = frags;
 		E{check for double def};
 		if (! frag) {
-			frag = allocFragInMap(
+			frag = &allocFragInMap(
 				&root, name.data()
 			);
 		}
@@ -549,7 +549,7 @@ d{check for add without def}
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			fm, name, ins
 		);
 	}
@@ -561,7 +561,7 @@ x{check for add without def}
 a{process frag name}
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			&input->frags, name,
 			&input->frags
 		);
@@ -581,7 +581,7 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			frags, name, &root
 		);
 		ASSERT(
@@ -666,12 +666,12 @@ a{process frag name}
 	if (openCh == 'e') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		Frag *sub = getFragInMap(
+		Frag &sub = getFragInMap(
 			&input->frags, name, &input->frags
 		);
 		E{check frag expand count};
-		++sub->expands;
-		addFragToFrag(frag, sub);
+		++sub.expands;
+		addFragToFrag(frag, &sub);
 		processed = true;
 	}
 x{process frag name}
@@ -686,12 +686,12 @@ a{process frag name}
 	if (openCh == 'g') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		Frag *sub = getFragInMap(
+		Frag &sub = getFragInMap(
 			frags, name, &root
 		);
 		E{check frag expand count};
-		++sub->expands;
-		addFragToFrag(frag, sub);
+		++sub.expands;
+		addFragToFrag(frag, &sub);
 		processed = true;
 	}
 x{process frag name}
@@ -699,16 +699,16 @@ x{process frag name}
 
 ```
 d{check frag expand count}
-	if (sub->expands) {
+	if (sub.expands) {
 		printf(
 			"multiple expands of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
-	if (sub->multiples) {
+	if (sub.multiples) {
 		printf(
 			"expand after mult of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
 x{check frag expand count}
@@ -723,15 +723,15 @@ a{process frag name}
 	if (openCh == 'E') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag *sub =
+		Frag &sub =
 			getFragInMap(
 				&input->frags, name,
 				&input->frags
 			);
 		E{check for prev expands};
-		++sub->multiples;
+		++sub.multiples;
 		addFragToFrag(
-			frag, sub);
+			frag, &sub);
 		processed = true;
 	}
 x{process frag name}
@@ -744,14 +744,14 @@ a{process frag name}
 	if (openCh == 'G') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag *sub =
+		Frag &sub =
 			getFragInMap(
 				frags, name, &root
 			);
 		E{check for prev expands};
-		++sub->multiples;
+		++sub.multiples;
 		addFragToFrag(
-			frag, sub);
+			frag, &sub);
 		processed = true;
 	}
 x{process frag name}
@@ -759,11 +759,11 @@ x{process frag name}
 
 ```
 d{check for prev expands}
-	if (sub->expands) {
+	if (sub.expands) {
 		printf(
 			"multiple after expand "
 				"of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
 x{check for prev expands}
@@ -983,7 +983,7 @@ x{process close brace}
 ```
 d{serialize fragments} {
 	for (auto i = root.map.begin(); i != root.map.end(); ++i) {
-		Frag *frag = i->second;
+		Frag *frag = &i->second;
 		E{serialize frag};
 	}
 } x{serialize fragments}
@@ -1000,7 +1000,7 @@ a{serialize fragments} {
 		input = *j;
 		for (auto i = input->frags.map.begin(); i !=
 			input->frags.map.end(); ++i) {
-			Frag *frag = i->second;
+			Frag *frag = &i->second;
 			E{serialize frag};
 		}
 	}

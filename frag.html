@@ -64,6 +64,8 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">additional entry attributes</span>)</span>;<br/>
 
+<span class="in2"></span><span class="fn">FragEntry</span>(): <span class="fn">frag</span>(<span class="num">nullptr</span>) {}<br/>
+
 <span class="in1"></span>};<br/>
 
 <span class="end">@end(<span class="name">define frag</span>)</span><br/>
@@ -1271,7 +1273,7 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">link</span>;<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">map</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span> *&gt; <span class="var">map</span>;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">map</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt; <span class="var">map</span>;<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">frag map methods</span>)</span>;<br/>
 
@@ -1315,12 +1317,6 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="var">map</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> <span class="var">i</span> = <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">begin</span>(); <span class="var">i</span> != <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">end</span>(); ++<span class="var">i</span>) {<br/>
-
-<span class="in3"></span><span class="keyword">delete</span> <span class="var">i</span>-&gt;<span class="var">second</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
 <span class="in2"></span><span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">clear</span>();<br/>
 
 <span class="in1"></span>}<br/>
@@ -1346,7 +1342,7 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">allocFragInMap</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">allocFragInMap</span>(<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
 
@@ -1356,11 +1352,13 @@ x{perform unit-tests}
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">map</span>);<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="keyword">new</span> <span class="fn">Frag</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="var">auto</span> <span class="var">result</span> = <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">insert</span>(<span class="var">std</span>::<span class="var">pair</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;(<br/>
 
-<span class="in2"></span><span class="var">map</span>-&gt;<span class="var">map</span>[<span class="var">name</span>] = <span class="var">frag</span>;<br/>
+<span class="in3"></span><span class="var">name</span>, <span class="var">name</span><br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">frag</span>;<br/>
+<span class="in2"></span>));<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span>.<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1416,7 +1414,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> != <span class="var">map</span>-&gt;<span class="var">map</span>.<span class="fn">end</span>()) {<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">found</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">found</span>-&gt;<span class="var">second</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1459,7 +1457,7 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">getFragInMap</span>(<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">getFragInMap</span>(<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">map</span>,<br/>
 
@@ -1498,7 +1496,7 @@ x{perform unit-tests}
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">frag</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> *<span class="var">frag</span>;<br/>
 
 <span class="in1"></span>}<br/>
 

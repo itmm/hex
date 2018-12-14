@@ -82,6 +82,7 @@
 	std::string source;
 	int line;
 ;
+		FragEntry(): frag(nullptr) {}
 	};
 
 	struct Frag {
@@ -298,7 +299,7 @@
 
 	struct FragMap {
 		FragMap *link;
-		std::map<std::string, Frag *> map;
+		std::map<std::string, Frag> map;
 		
 	FragMap(): link(nullptr) {}
 ;
@@ -308,20 +309,18 @@
 		FragMap *map
 	) {
 		map->link = nullptr;
-		for (auto i = map->map.begin(); i != map->map.end(); ++i) {
-			delete i->second;
-		}
 		map->map.clear();
 	}
 
-	Frag *allocFragInMap(
+	Frag &allocFragInMap(
 		FragMap *map,
 		const std::string &name
 	) {
 		ASSERT(map);
-		Frag *frag = new Frag(name);
-		map->map[name] = frag;
-		return frag;
+		auto result = map->map.insert(std::pair<std::string, Frag>(
+			name, name
+		));
+		return result.first->second;
 	}
 
 	Frag *findFragInMap(
@@ -332,7 +331,7 @@
 		 {
 	auto found = map->map.find(name);
 	if (found != map->map.end()) {
-		return found->second;
+		return &found->second;
 	}
 } ;
 		
@@ -345,7 +344,7 @@
 		return nullptr;
 	}
 
-	Frag *getFragInMap(
+	Frag &getFragInMap(
 		FragMap *map,
 		const std::string &name,
 		FragMap *insert
@@ -355,7 +354,7 @@
 		map, name
 	);
 	if (frag) {
-		return frag;
+		return *frag;
 	}
 ;
 		return allocFragInMap(map, name);
@@ -776,7 +775,7 @@
 	}
 ;
 		if (! frag) {
-			frag = allocFragInMap(
+			frag = &allocFragInMap(
 				fm, name
 			);
 		}
@@ -798,7 +797,7 @@
 	}
 ;
 		if (! frag) {
-			frag = allocFragInMap(
+			frag = &allocFragInMap(
 				&root, name.data()
 			);
 		}
@@ -818,7 +817,7 @@
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			fm, name, ins
 		);
 	}
@@ -839,7 +838,7 @@
 			"frag [%s] not defined\n",
 			name.c_str()
 		);
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			fm, name, ins
 		);
 	}
@@ -849,7 +848,7 @@
 
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			&input->frags, name,
 			&input->frags
 		);
@@ -863,7 +862,7 @@
 
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = getFragInMap(
+		frag = &getFragInMap(
 			frags, name, &root
 		);
 		ASSERT(
@@ -915,25 +914,25 @@
 		buffer.clear();
 	}
 ;
-		Frag *sub = getFragInMap(
+		Frag &sub = getFragInMap(
 			&input->frags, name, &input->frags
 		);
 		
-	if (sub->expands) {
+	if (sub.expands) {
 		printf(
 			"multiple expands of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
-	if (sub->multiples) {
+	if (sub.multiples) {
 		printf(
 			"expand after mult of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
 ;
-		++sub->expands;
-		addFragToFrag(frag, sub);
+		++sub.expands;
+		addFragToFrag(frag, &sub);
 		processed = true;
 	}
 
@@ -948,25 +947,25 @@
 		buffer.clear();
 	}
 ;
-		Frag *sub = getFragInMap(
+		Frag &sub = getFragInMap(
 			frags, name, &root
 		);
 		
-	if (sub->expands) {
+	if (sub.expands) {
 		printf(
 			"multiple expands of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
-	if (sub->multiples) {
+	if (sub.multiples) {
 		printf(
 			"expand after mult of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
 ;
-		++sub->expands;
-		addFragToFrag(frag, sub);
+		++sub.expands;
+		addFragToFrag(frag, &sub);
 		processed = true;
 	}
 
@@ -981,23 +980,23 @@
 		buffer.clear();
 	}
 ;
-		Frag *sub =
+		Frag &sub =
 			getFragInMap(
 				&input->frags, name,
 				&input->frags
 			);
 		
-	if (sub->expands) {
+	if (sub.expands) {
 		printf(
 			"multiple after expand "
 				"of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
 ;
-		++sub->multiples;
+		++sub.multiples;
 		addFragToFrag(
-			frag, sub);
+			frag, &sub);
 		processed = true;
 	}
 
@@ -1012,22 +1011,22 @@
 		buffer.clear();
 	}
 ;
-		Frag *sub =
+		Frag &sub =
 			getFragInMap(
 				frags, name, &root
 			);
 		
-	if (sub->expands) {
+	if (sub.expands) {
 		printf(
 			"multiple after expand "
 				"of [%s]\n",
-			sub->name.c_str()
+			sub.name.c_str()
 		);
 	}
 ;
-		++sub->multiples;
+		++sub.multiples;
 		addFragToFrag(
-			frag, sub);
+			frag, &sub);
 		processed = true;
 	}
 
@@ -1159,7 +1158,7 @@
 } ;
 	 {
 	for (auto i = root.map.begin(); i != root.map.end(); ++i) {
-		Frag *frag = i->second;
+		Frag *frag = &i->second;
 		
 	if (! memcmp(
 		"file: ", frag->name.data(), 6
@@ -1208,7 +1207,7 @@
 		input = *j;
 		for (auto i = input->frags.map.begin(); i !=
 			input->frags.map.end(); ++i) {
-			Frag *frag = i->second;
+			Frag *frag = &i->second;
 			
 	if (! memcmp(
 		"file: ", frag->name.data(), 6
