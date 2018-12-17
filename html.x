@@ -563,7 +563,7 @@ A{global elements}
 			out,
 			"<span class=\"%s\">%.*s</span>",
 			cls,
-			s.size(),
+			(int) s.size(),
 			s.data()
 		);
 	}
@@ -845,7 +845,7 @@ a{process ch in HTML code}
 				status.codeName +
 					sizeof(status.codeName),
 			" [%c], [%.*s]", status.codeSpecial,
-			sizeof(status.codeName), status.codeName
+			(int) sizeof(status.codeName), status.codeName
 		);
 		*status.codeNameEnd++ = ch;
 		continue;
