@@ -156,7 +156,7 @@ a{input methods}
 			ch = fgetc(file);
 			if (ch == EOF) {
 				fclose(file);
-				file = NULL;
+				file = nullptr;
 			}
 		}
 		return ch;
@@ -271,8 +271,7 @@ x{init additional input fields}
 
 ```
 A{global elements}
-	const char *stylesheet =
-		"slides/slides.css";
+	std::string stylesheet { "slides/slides.css" };
 x{global elements}
 ```
 * Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
@@ -296,10 +295,10 @@ x{process arguments}
 
 ```
 d{process argument} {
-	const char prefix[] = "--css=";
-	int len = sizeof(prefix) - 1;
-	if (memcmp(argv[i], prefix, len) == 0) {
-		stylesheet = argv[i] + len;
+	static const std::string prefix { "--css=" };
+	std::string arg { argv[i] };
+	if (arg.substr(0, prefix.length()) == prefix) {
+		stylesheet = arg.substr(prefix.length());
 		continue;
 	}
 } x{process argument}
@@ -1019,14 +1018,13 @@ a{serialize fragments} {
 * Auch alle lokalen Fragmente bearbeiten
 
 ```
-d{serialize frag}
-	if (! memcmp(
-		"file: ", frag->name.data(), 6
-	)) {
+d{serialize frag} {
+	static const std::string prefix { "file: " };
+	if (frag->name.substr(0, prefix.size()) == prefix) {
 		++frag->expands;
 		e{write in file};
 	}
-x{serialize frag}
+} x{serialize frag}
 ```
 * Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in die
   passende Datei geschrieben

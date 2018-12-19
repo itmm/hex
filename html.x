@@ -355,7 +355,7 @@ d{write HTML header entries}
 	fprintf(
 		out, "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\"%s\">",
-		stylesheet
+		stylesheet.c_str()
 	);
 x{write HTML header entries}
 ```

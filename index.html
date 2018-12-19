@@ -355,7 +355,7 @@
 
 <span class="in4"></span><span class="fn">fclose</span>(<span class="var">file</span>);<br/>
 
-<span class="in4"></span><span class="var">file</span> = <span class="num">NULL</span>;<br/>
+<span class="in4"></span><span class="var">file</span> = <span class="num">nullptr</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
@@ -606,9 +606,7 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">stylesheet</span> =<br/>
-
-<span class="in2"></span><span class="str">"slides/slides.css"</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">stylesheet</span> { <span class="str">"slides/slides.css"</span> };<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -660,13 +658,13 @@
 
 <span class="add">@def(<span class="name">process argument</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">const</span> <span class="type">char</span> <span class="var">prefix</span>[] = <span class="str">"--css="</span>;<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"--css="</span> };<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">len</span> = <span class="fn">sizeof</span>(<span class="var">prefix</span>) - <span class="num">1</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">arg</span> { <span class="var">argv</span>[<span class="var">i</span>] };<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="fn">memcmp</span>(<span class="var">argv</span>[<span class="var">i</span>], <span class="var">prefix</span>, <span class="var">len</span>) == <span class="num">0</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()) == <span class="var">prefix</span>) {<br/>
 
-<span class="in2"></span><span class="var">stylesheet</span> = <span class="var">argv</span>[<span class="var">i</span>] + <span class="var">len</span>;<br/>
+<span class="in2"></span><span class="var">stylesheet</span> = <span class="var">arg</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">length</span>());<br/>
 
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 
@@ -2178,13 +2176,11 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">serialize frag</span>)</span><br/>
+<span class="add">@def(<span class="name">serialize frag</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (! <span class="fn">memcmp</span>(<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"file: "</span> };<br/>
 
-<span class="in2"></span><span class="str">"file: "</span>, <span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">data</span>(), <span class="num">6</span><br/>
-
-<span class="in1"></span>)) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">size</span>()) == <span class="var">prefix</span>) {<br/>
 
 <span class="in2"></span>++<span class="var">frag</span>-&gt;<span class="var">expands</span>;<br/>
 
@@ -2192,7 +2188,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+} <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
 
 </code>
 </div>

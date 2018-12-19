@@ -307,7 +307,7 @@
 			ch = fgetc(file);
 			if (ch == EOF) {
 				fclose(file);
-				file = NULL;
+				file = nullptr;
 			}
 		}
 		return ch;
@@ -347,8 +347,7 @@
 		input = std::move(i);
 	}
 
-	const char *stylesheet =
-		"slides/slides.css";
+	std::string stylesheet { "slides/slides.css" };
 
 	int nextCh() {
 		int ch = EOF;
@@ -593,10 +592,10 @@
 	bool someFile = false;
 	for (int i = 1; i < argc; ++i) {
 		 {
-	const char prefix[] = "--css=";
-	int len = sizeof(prefix) - 1;
-	if (memcmp(argv[i], prefix, len) == 0) {
-		stylesheet = argv[i] + len;
+	static const std::string prefix { "--css=" };
+	std::string arg { argv[i] };
+	if (arg.substr(0, prefix.length()) == prefix) {
+		stylesheet = arg.substr(prefix.length());
 		continue;
 	}
 } 
@@ -1037,10 +1036,9 @@
 	 {
 	for (auto &i : root.map) {
 		Frag *frag = &i.second;
-		
-	if (! memcmp(
-		"file: ", frag->name.data(), 6
-	)) {
+		 {
+	static const std::string prefix { "file: " };
+	if (frag->name.substr(0, prefix.size()) == prefix) {
 		++frag->expands;
 		
 	FILE *f =
@@ -1053,7 +1051,7 @@
 	fclose(f);
 ;
 	}
- {
+}  {
 	int sum =
 		frag->expands + frag->multiples;
 	if (sum <= 0) {
@@ -1084,10 +1082,9 @@
 	{
 		for (auto &i : j->frags.map) {
 			Frag *frag = &i.second;
-			
-	if (! memcmp(
-		"file: ", frag->name.data(), 6
-	)) {
+			 {
+	static const std::string prefix { "file: " };
+	if (frag->name.substr(0, prefix.size()) == prefix) {
 		++frag->expands;
 		
 	FILE *f =
@@ -1100,7 +1097,7 @@
 	fclose(f);
 ;
 	}
- {
+}  {
 	int sum =
 		frag->expands + frag->multiples;
 	if (sum <= 0) {
@@ -1186,7 +1183,7 @@
 	fprintf(
 		out, "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\"%s\">",
-		stylesheet
+		stylesheet.c_str()
 	);
 ;
 	fprintf(out, "</head>\n");
