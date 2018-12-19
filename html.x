@@ -39,7 +39,7 @@ x{write cur HTML file to out}
 
 ```
 A{global elements}
-	enum HtmlState {
+	enum class HtmlState {
 		nothingWritten,
 		inSlide,
 		afterSlide
@@ -65,7 +65,7 @@ x{global elements}
 ```
 d{html state elements}
 	HtmlStatus();
-	enum HtmlState state;
+	HtmlState state;
 x{html state elements}
 ```
 * Der aktuelle Zustand wird im Status abgelegt
@@ -151,7 +151,7 @@ x{check html special state}
 a{html state elements}
 	int headerLevel;
 	std::string headerName;
-	enum HtmlState headerState;
+	HtmlState headerState;
 x{html state elements}
 ```
 * Für Überschriften wird abgelegt, auf welchem Level sie vorkommen

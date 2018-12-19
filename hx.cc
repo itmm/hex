@@ -391,7 +391,7 @@
 		return false;
 	}
 
-	enum HtmlState {
+	enum class HtmlState {
 		nothingWritten,
 		inSlide,
 		afterSlide
@@ -407,11 +407,11 @@
 	struct HtmlStatus {
 		
 	HtmlStatus();
-	enum HtmlState state;
+	HtmlState state;
 
 	int headerLevel;
 	std::string headerName;
-	enum HtmlState headerState;
+	HtmlState headerState;
 
 	int codeOpening;
 
