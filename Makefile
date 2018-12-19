@@ -5,12 +5,12 @@ CXXFLAGS += -Wall -std=c++14 -g
 Xs := $(wildcard *.x)
 HTMLs := ${Xs:.x=.html}
 
-all: hx.cc
+all: hx.cpp
 
-hx.cc: ${Xs}
+hx.cpp: ${Xs}
 	hx
 
-hx: hx.cc
+hx: hx.cpp
 
 install: hx
 	cp hx ~/bin
@@ -19,4 +19,4 @@ test: hx
 	./hx
 
 clean:
-	rm -f hx.cc ${HTMLs}
+	rm -f hx.cpp ${HTMLs}

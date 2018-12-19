@@ -32,7 +32,7 @@
 * Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 
 ```
-D{file: hx.cc}
+D{file: hx.cpp}
 	g{global elements}
 	int main(
 		int argc,
@@ -40,7 +40,7 @@ D{file: hx.cc}
 	) {
 		e{main body}
 	}
-x{file: hx.cc}
+x{file: hx.cpp}
 ```
 * Hex ist in C++ geschrieben
 * Das Hauptprogramm besteht aus der `main`-Funktion
