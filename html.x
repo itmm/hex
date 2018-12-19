@@ -40,9 +40,9 @@ x{write cur HTML file to out}
 ```
 A{global elements}
 	enum HtmlState {
-		hs_NOTHING_WRITTEN,
-		hs_IN_SLIDE,
-		hs_AFTER_SLIDE
+		nothingWritten,
+		inSlide,
+		afterSlide
 		e{html state enums}
 	};
 x{global elements}
@@ -73,7 +73,7 @@ x{html state elements}
 ```
 A{global elements}
 	inline HtmlStatus::HtmlStatus():
-		state(hs_NOTHING_WRITTEN)
+		state(HtmlState::nothingWritten)
 		e{init html status}
 	{ }
 x{global elements}
@@ -108,7 +108,7 @@ d{write HTML file from in to out} {
 
 ```
 d{html state enums}
-	, hs_IN_HEADER
+	, inHeader
 x{html state enums}
 ```
 * Es gibt einen eigenen Zustand, wenn eine Überschrift gelesen wird
@@ -116,7 +116,7 @@ x{html state enums}
 ```
 d{move ch to last}
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -140,7 +140,7 @@ x{global elements}
 
 ```
 d{check html special state}
-	if (s->state == hs_IN_HEADER) {
+	if (s->state == HtmlState::inHeader) {
 		return false;
 	}
 x{check html special state}
@@ -171,14 +171,14 @@ x{init html status}
 d{process ch for HTML} 
 	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||
-			status.state == hs_IN_HEADER
+			status.state == HtmlState::inHeader
 		) {
 			++status.headerLevel;
-			if (status.state != hs_IN_HEADER) {
+			if (status.state != HtmlState::inHeader) {
 				status.headerState =
 					status.state;
 			}
-			status.state = hs_IN_HEADER;
+			status.state = HtmlState::inHeader;
 			continue;
 		}
 	}
@@ -191,7 +191,7 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	if (status.state == hs_IN_HEADER) {
+	if (status.state == HtmlState::inHeader) {
 		if (ch == '\n') {
 			e{process header in HTML};
 			e{reset header state};
@@ -206,10 +206,10 @@ x{process ch for HTML}
 
 ```
 d{reset header state} 
-	status.state = hs_IN_SLIDE;
+	status.state = HtmlState::inSlide;
 	status.headerLevel = 0;
 	status.headerName.clear();
-	status.headerState = hs_IN_SLIDE;
+	status.headerState = HtmlState::inSlide;
 x{reset header state}
 ```
 * Beim Zurücksetzen des Zustands wird sichergestellt, das der Level und
@@ -217,7 +217,7 @@ x{reset header state}
 
 ```
 a{process ch for HTML} 
-	if (status.state == hs_IN_HEADER) {
+	if (status.state == HtmlState::inHeader) {
 		if (! status.headerName.empty()) {
 			status.headerName.push_back(ch);
 			E{move ch to last};
@@ -231,7 +231,7 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	if (status.state == hs_IN_HEADER) {
+	if (status.state == HtmlState::inHeader) {
 		if (ch > ' ' && status.headerName.empty()) {
 			status.headerName.push_back(ch);
 			E{move ch to last};
@@ -308,11 +308,11 @@ x{write header tag}
 ```
 d{close previous HTML page} 
 	switch (status.headerState) {
-		case hs_NOTHING_WRITTEN: {
+		case HtmlState::nothingWritten: {
 			e{write HTML header};
 			break;
 		}
-		case hs_IN_SLIDE: {
+		case HtmlState::inSlide: {
 			fprintf(out, "</div>\n");
 			fprintf(out, "</div>\n");
 			break;
@@ -368,14 +368,14 @@ x{write HTML header entries}
 
 ```
 a{html state enums}
-	, hs_IN_CODE
+	, inCode
 x{html state enums}
 ```
 * Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
 
 ```
 a{check html special state}
-	if (s->state == hs_IN_CODE) {
+	if (s->state == HtmlState::inCode) {
 		return false;
 	}
 x{check html special state}
@@ -426,7 +426,7 @@ x{init html status}
 a{process ch for HTML} 
 	if (newline && ch == '`') {
 		if (isOutOfHtmlSpecial(&status) ||
-			status.state == hs_IN_CODE
+			status.state == HtmlState::inCode
 		) {
 			++status.codeOpening;
 			continue;
@@ -446,7 +446,7 @@ a{process ch for HTML}
 			e{open code page};
 			continue;
 		} else if (
-			status.state == hs_IN_CODE
+			status.state == HtmlState::inCode
 		) {
 			e{close code page};
 			continue;
@@ -460,7 +460,7 @@ x{process ch for HTML}
 ```
 a{process ch for HTML}
 	if (status.codeOpening == 1) {
-		if (! status.codeSpecial && status.state == hs_IN_CODE) {
+		if (! status.codeSpecial && status.state == HtmlState::inCode) {
 			status.codeSpecial = '`';
 			status.codeNameEnd = status.codeName;
 			E{flush pending};
@@ -494,12 +494,12 @@ x{process ch for HTML}
 
 ```
 d{open code page}
-	if (status.state == hs_IN_SLIDE) {
+	if (status.state == HtmlState::inSlide) {
 		fprintf(out, "</div>\n");
 	}
 	fprintf(out, "<div><div>\n");
 	fprintf(out, "<code>\n");
-	status.state = hs_IN_CODE;
+	status.state = HtmlState::inCode;
 	E{move ch to last};
 x{open code page}
 ```
@@ -510,7 +510,7 @@ x{open code page}
 d{close code page}
 	fprintf(out, "</code>\n");
 	fprintf(out, "</div>\n");
-	status.state = hs_IN_SLIDE;
+	status.state = HtmlState::inSlide;
 	status.codeIndent = 0;
 	status.codeSpecial = '\0';
 	E{move ch to last};
@@ -520,7 +520,7 @@ x{close code page}
 
 ```
 a{process ch for HTML}
-	if (status.state == hs_IN_CODE) {
+	if (status.state == HtmlState::inCode) {
 		if (ch == EOF) {
 			fprintf(
 				stderr,
@@ -543,7 +543,7 @@ x{includes}
 
 ```
 a{process ch for HTML}
-	if (status.state == hs_IN_CODE) {
+	if (status.state == HtmlState::inCode) {
 		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
 			ident.push_back(ch);
 			continue;
@@ -640,7 +640,7 @@ x{flush pending}
 
 ```
 a{process ch for HTML}
-	if (status.state == hs_IN_CODE) {
+	if (status.state == HtmlState::inCode) {
 		e{process ch in HTML code};
 		E{flush pending};
 		E{move ch to last};
@@ -1155,13 +1155,13 @@ x{init html status}
 
 ```
 a{html state enums}
-	, hs_IN_NOTES
+	, inNotes
 x{html state enums}
 ```
 
 ```
 a{check html special state}
-	if (s->state == hs_IN_NOTES) {
+	if (s->state == HtmlState::inNotes) {
 		return false;
 	}
 x{check html special state}
@@ -1171,7 +1171,7 @@ x{check html special state}
 a{process ch for HTML} 
 	if (
 		newline &&
-		status.state == hs_IN_NOTES
+		status.state == HtmlState::inNotes
 	) {
 		if (ch == '*') {
 			fprintf(out, "</li><li>\n");
@@ -1180,7 +1180,7 @@ a{process ch for HTML}
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
 			fprintf(out, "</li></ul></div>\n");
-			status.state = hs_AFTER_SLIDE;
+			status.state = HtmlState::afterSlide;
 			E{move ch to last};
 			continue;
 		}
@@ -1192,10 +1192,10 @@ x{process ch for HTML}
 a{process ch for HTML} 
 	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
-			if (status.state != hs_IN_SLIDE) {
+			if (status.state != HtmlState::inSlide) {
 				fprintf(out, "<div>\n");
 			}
-			status.state = hs_IN_NOTES;
+			status.state = HtmlState::inNotes;
 			fprintf(out, "<ul><li>\n");
 			ident.clear();
 			newline = false;
@@ -1209,7 +1209,7 @@ x{process ch for HTML}
 a{process ch for HTML} 
 	if (
 		ch == '`' &&
-		status.state == hs_IN_NOTES
+		status.state == HtmlState::inNotes
 	) {
 		E{flush pending};
 		if (status.noteInCode) {
@@ -1227,7 +1227,7 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	if (status.state == hs_IN_NOTES &&
+	if (status.state == HtmlState::inNotes &&
 	status.noteInCode) {
 		E{escape HTML code tag};
 	}
@@ -1239,7 +1239,7 @@ a{process ch for HTML}
 	if (
 		false &&
 		ch == '*' && /*last == '*' && */
-		status.state == hs_IN_NOTES
+		status.state == HtmlState::inNotes
 	) {
 		if (status.noteInBold) {
 			fprintf(out, "</b>");
@@ -1256,7 +1256,7 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	if (status.state == hs_IN_NOTES) {
+	if (status.state == HtmlState::inNotes) {
 		E{flush pending};
 		E{move ch to last};
 		continue;

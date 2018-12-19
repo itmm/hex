@@ -392,15 +392,15 @@
 	}
 
 	enum HtmlState {
-		hs_NOTHING_WRITTEN,
-		hs_IN_SLIDE,
-		hs_AFTER_SLIDE
+		nothingWritten,
+		inSlide,
+		afterSlide
 		
-	, hs_IN_HEADER
+	, inHeader
 
-	, hs_IN_CODE
+	, inCode
 
-	, hs_IN_NOTES
+	, inNotes
 
 	};
 
@@ -427,7 +427,7 @@
 	};
 
 	inline HtmlStatus::HtmlStatus():
-		state(hs_NOTHING_WRITTEN)
+		state(HtmlState::nothingWritten)
 		
 	, headerLevel(0)
 	, headerName()
@@ -446,15 +446,15 @@
 		HtmlStatus *s
 	) {
 		
-	if (s->state == hs_IN_HEADER) {
+	if (s->state == HtmlState::inHeader) {
 		return false;
 	}
 
-	if (s->state == hs_IN_CODE) {
+	if (s->state == HtmlState::inCode) {
 		return false;
 	}
 
-	if (s->state == hs_IN_NOTES) {
+	if (s->state == HtmlState::inNotes) {
 		return false;
 	}
 ;
@@ -1149,25 +1149,25 @@
 		 
 	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||
-			status.state == hs_IN_HEADER
+			status.state == HtmlState::inHeader
 		) {
 			++status.headerLevel;
-			if (status.state != hs_IN_HEADER) {
+			if (status.state != HtmlState::inHeader) {
 				status.headerState =
 					status.state;
 			}
-			status.state = hs_IN_HEADER;
+			status.state = HtmlState::inHeader;
 			continue;
 		}
 	}
  
-	if (status.state == hs_IN_HEADER) {
+	if (status.state == HtmlState::inHeader) {
 		if (ch == '\n') {
 			 
 	ASSERT(! status.headerName.empty());
 	 
 	switch (status.headerState) {
-		case hs_NOTHING_WRITTEN: {
+		case HtmlState::nothingWritten: {
 			 
 	fprintf(out, "<!doctype html>\n");
 	fprintf(out, "<html lang=\"de\"l>\n");
@@ -1194,7 +1194,7 @@
 ;
 			break;
 		}
-		case hs_IN_SLIDE: {
+		case HtmlState::inSlide: {
 			fprintf(out, "</div>\n");
 			fprintf(out, "</div>\n");
 			break;
@@ -1227,14 +1227,14 @@
 	fprintf(out, "</div>\n");
 ;
 			 
-	status.state = hs_IN_SLIDE;
+	status.state = HtmlState::inSlide;
 	status.headerLevel = 0;
 	status.headerName.clear();
-	status.headerState = hs_IN_SLIDE;
+	status.headerState = HtmlState::inSlide;
 ;
 			
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1243,12 +1243,12 @@
 		}
 	}
  
-	if (status.state == hs_IN_HEADER) {
+	if (status.state == HtmlState::inHeader) {
 		if (! status.headerName.empty()) {
 			status.headerName.push_back(ch);
 			
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1257,12 +1257,12 @@
 		}
 	}
  
-	if (status.state == hs_IN_HEADER) {
+	if (status.state == HtmlState::inHeader) {
 		if (ch > ' ' && status.headerName.empty()) {
 			status.headerName.push_back(ch);
 			
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1273,7 +1273,7 @@
  
 	if (newline && ch == '`') {
 		if (isOutOfHtmlSpecial(&status) ||
-			status.state == hs_IN_CODE
+			status.state == HtmlState::inCode
 		) {
 			++status.codeOpening;
 			continue;
@@ -1286,15 +1286,15 @@
 		status.codeOpening = 0;
 		if (isOutOfHtmlSpecial(&status)) {
 			
-	if (status.state == hs_IN_SLIDE) {
+	if (status.state == HtmlState::inSlide) {
 		fprintf(out, "</div>\n");
 	}
 	fprintf(out, "<div><div>\n");
 	fprintf(out, "<code>\n");
-	status.state = hs_IN_CODE;
+	status.state = HtmlState::inCode;
 	
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1302,17 +1302,17 @@
 ;
 			continue;
 		} else if (
-			status.state == hs_IN_CODE
+			status.state == HtmlState::inCode
 		) {
 			
 	fprintf(out, "</code>\n");
 	fprintf(out, "</div>\n");
-	status.state = hs_IN_SLIDE;
+	status.state = HtmlState::inSlide;
 	status.codeIndent = 0;
 	status.codeSpecial = '\0';
 	
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1323,7 +1323,7 @@
 	}
 
 	if (status.codeOpening == 1) {
-		if (! status.codeSpecial && status.state == hs_IN_CODE) {
+		if (! status.codeSpecial && status.state == HtmlState::inCode) {
 			status.codeSpecial = '`';
 			status.codeNameEnd = status.codeName;
 			
@@ -1379,7 +1379,7 @@
 
 	status.codeOpening = 0;
 
-	if (status.state == hs_IN_CODE) {
+	if (status.state == HtmlState::inCode) {
 		if (ch == EOF) {
 			fprintf(
 				stderr,
@@ -1389,14 +1389,14 @@
 		}
 	}
 
-	if (status.state == hs_IN_CODE) {
+	if (status.state == HtmlState::inCode) {
 		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
 			ident.push_back(ch);
 			continue;
 		}
 	}
 
-	if (status.state == hs_IN_CODE) {
+	if (status.state == HtmlState::inCode) {
 		 
 	if (ch == '\n') {
 		
@@ -1418,7 +1418,7 @@
 		fprintf(out, "<br/>\n");
 		
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1782,7 +1782,7 @@
 ;
 		
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1792,7 +1792,7 @@
  
 	if (
 		newline &&
-		status.state == hs_IN_NOTES
+		status.state == HtmlState::inNotes
 	) {
 		if (ch == '*') {
 			fprintf(out, "</li><li>\n");
@@ -1801,10 +1801,10 @@
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
 			fprintf(out, "</li></ul></div>\n");
-			status.state = hs_AFTER_SLIDE;
+			status.state = HtmlState::afterSlide;
 			
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -1815,10 +1815,10 @@
  
 	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
-			if (status.state != hs_IN_SLIDE) {
+			if (status.state != HtmlState::inSlide) {
 				fprintf(out, "<div>\n");
 			}
-			status.state = hs_IN_NOTES;
+			status.state = HtmlState::inNotes;
 			fprintf(out, "<ul><li>\n");
 			ident.clear();
 			newline = false;
@@ -1828,7 +1828,7 @@
  
 	if (
 		ch == '`' &&
-		status.state == hs_IN_NOTES
+		status.state == HtmlState::inNotes
 	) {
 		
 	if (! ident.empty()) {
@@ -1857,7 +1857,7 @@
 		continue;
 	}
  
-	if (status.state == hs_IN_NOTES &&
+	if (status.state == HtmlState::inNotes &&
 	status.noteInCode) {
 		
 	if (ch == '{' && ident.size() == 1) {
@@ -2168,7 +2168,7 @@
 	if (
 		false &&
 		ch == '*' && /*last == '*' && */
-		status.state == hs_IN_NOTES
+		status.state == HtmlState::inNotes
 	) {
 		if (status.noteInBold) {
 			fprintf(out, "</b>");
@@ -2181,7 +2181,7 @@
 		continue;
 	}
  
-	if (status.state == hs_IN_NOTES) {
+	if (status.state == HtmlState::inNotes) {
 		
 	if (! ident.empty()) {
 		if (ch == '(') {
@@ -2200,7 +2200,7 @@
 ;
 		
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}
@@ -2211,7 +2211,7 @@
 		if (ch == EOF) { break; }
 		
 	newline = ch == '\n';
-	if (status.state != hs_IN_HEADER) {
+	if (status.state != HtmlState::inHeader) {
 		char xx = ch;
 		writeEscaped(out, &xx, &xx + 1);
 	}

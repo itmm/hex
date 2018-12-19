@@ -98,11 +98,11 @@
 
 <span class="in1"></span><span class="type">enum</span> <span class="type">HtmlState</span> {<br/>
 
-<span class="in2"></span><span class="var">hs_NOTHING_WRITTEN</span>,<br/>
+<span class="in2"></span><span class="var">nothingWritten</span>,<br/>
 
-<span class="in2"></span><span class="var">hs_IN_SLIDE</span>,<br/>
+<span class="in2"></span><span class="var">inSlide</span>,<br/>
 
-<span class="var">hs_AFTER_SLIDE</span><br/>
+<span class="var">afterSlide</span><br/>
 
 <span class="in4"></span><span class="expand">@expand(<span class="name">html state enums</span>)</span><br/>
 
@@ -169,7 +169,7 @@
 
 <span class="in1"></span><span class="var">inline</span> <span class="type">HtmlStatus</span>::<span class="fn">HtmlStatus</span>():<br/>
 
-<span class="in2"></span><span class="fn">state</span>(<span class="var">hs_NOTHING_WRITTEN</span>)<br/>
+<span class="in2"></span><span class="fn">state</span>(<span class="type">HtmlState</span>::<span class="var">nothingWritten</span>)<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init html status</span>)</span><br/>
 
@@ -250,7 +250,7 @@
 
 <span class="add">@def(<span class="name">html state enums</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">hs_IN_HEADER</span><br/>
+<span class="in1"></span>, <span class="var">inHeader</span><br/>
 
 <span class="end">@end(<span class="name">html state enums</span>)</span><br/>
 
@@ -268,7 +268,7 @@
 
 <span class="in1"></span><span class="var">newline</span> = <span class="var">ch</span> == <span class="str">'\n'</span>;<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
 <span class="in2"></span><span class="type">char</span> <span class="var">xx</span> = <span class="var">ch</span>;<br/>
 
@@ -318,7 +318,7 @@
 
 <span class="add">@def(<span class="name">check html special state</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
@@ -385,13 +385,13 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inHeader</span><br/>
 
 <span class="in2"></span>) {<br/>
 
 <span class="in3"></span>++<span class="var">status</span>.<span class="var">headerLevel</span>;<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
 <span class="in4"></span><span class="var">status</span>.<span class="var">headerState</span> =<br/>
 
@@ -399,7 +399,7 @@
 
 <span class="in3"></span>}<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_HEADER</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inHeader</span>;<br/>
 
 <span class="in3"></span><span class="keyword">continue</span>;<br/>
 
@@ -426,7 +426,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
 
@@ -457,13 +457,13 @@
 
 <span class="add">@def(<span class="name">reset header state</span>)</span> <br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">headerLevel</span> = <span class="num">0</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">clear</span>();<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">headerState</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">headerState</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
 
 <span class="end">@end(<span class="name">reset header state</span>)</span><br/>
 
@@ -480,7 +480,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">empty</span>()) {<br/>
 
@@ -509,7 +509,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_HEADER</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> &gt; <span class="str">' '</span> &amp;&amp; <span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">empty</span>()) {<br/>
 
@@ -672,7 +672,7 @@
 
 <span class="in1"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">headerState</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">case</span> <span class="var">hs_NOTHING_WRITTEN</span>: {<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">nothingWritten</span>: {<br/>
 
 <span class="in3"></span><span class="expand">@expand(<span class="name">write HTML header</span>)</span>;<br/>
 
@@ -680,7 +680,7 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">case</span> <span class="var">hs_IN_SLIDE</span>: {<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">inSlide</span>: {<br/>
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
@@ -802,7 +802,7 @@
 
 <span class="add">@add(<span class="name">html state enums</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">hs_IN_CODE</span><br/>
+<span class="in1"></span>, <span class="var">inCode</span><br/>
 
 <span class="end">@end(<span class="name">html state enums</span>)</span><br/>
 
@@ -818,7 +818,7 @@
 
 <span class="add">@add(<span class="name">check html special state</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
@@ -928,7 +928,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>) ||<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span><br/>
 
 <span class="in2"></span>) {<br/>
 
@@ -970,7 +970,7 @@
 
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span><br/>
 
 <span class="in2"></span>) {<br/>
 
@@ -999,7 +999,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeOpening</span> == <span class="num">1</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; <span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'`'</span>;<br/>
 
@@ -1071,7 +1071,7 @@
 
 <span class="add">@def(<span class="name">open code page</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_SLIDE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inSlide</span>) {<br/>
 
 <span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
@@ -1081,7 +1081,7 @@
 
 <span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;code&gt;\n"</span>);<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_CODE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inCode</span>;<br/>
 
 <span class="in1"></span><span class="expand">@multiple(<span class="name">move ch to last</span>)</span>;<br/>
 
@@ -1105,7 +1105,7 @@
 
 <span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_SLIDE</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="num">0</span>;<br/>
 
@@ -1127,7 +1127,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="num">EOF</span>) {<br/>
 
@@ -1176,7 +1176,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<span class="fn">isalnum</span>(<span class="var">ch</span>) || <span class="var">ch</span> == <span class="str">'_'</span>)) {<br/>
 
@@ -1382,7 +1382,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_CODE</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process ch in HTML code</span>)</span>;<br/>
 
@@ -2479,7 +2479,7 @@
 
 <span class="add">@add(<span class="name">html state enums</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">hs_IN_NOTES</span><br/>
+<span class="in1"></span>, <span class="var">inNotes</span><br/>
 
 <span class="end">@end(<span class="name">html state enums</span>)</span><br/>
 
@@ -2493,7 +2493,7 @@
 
 <span class="add">@add(<span class="name">check html special state</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
@@ -2515,7 +2515,7 @@
 
 <span class="in2"></span><span class="var">newline</span> &amp;&amp;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -2533,7 +2533,7 @@
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"</span>);<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_AFTER_SLIDE</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">afterSlide</span>;<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">move ch to last</span>)</span>;<br/>
 
@@ -2559,13 +2559,13 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isOutOfHtmlSpecial</span>(&amp;<span class="var">status</span>)) {<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="var">hs_IN_SLIDE</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inSlide</span>) {<br/>
 
 <span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;\n"</span>);<br/>
 
 <span class="in3"></span>}<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="var">hs_IN_NOTES</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inNotes</span>;<br/>
 
 <span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;ul&gt;&lt;li&gt;\n"</span>);<br/>
 
@@ -2595,7 +2595,7 @@
 
 <span class="in2"></span><span class="var">ch</span> == <span class="str">'`'</span> &amp;&amp;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -2633,7 +2633,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span> &amp;&amp;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span> &amp;&amp;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">noteInCode</span>) {<br/>
 
@@ -2659,7 +2659,7 @@
 
 <span class="in2"></span><span class="var">ch</span> == <span class="str">'*'</span> &amp;&amp; /*<span class="var">last</span> == <span class="str">'*'</span> &amp;&amp; */<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -2695,7 +2695,7 @@
 
 <span class="add">@add(<span class="name">process ch for HTML</span>)</span> <br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="var">hs_IN_NOTES</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 
