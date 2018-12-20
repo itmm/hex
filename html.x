@@ -19,10 +19,7 @@ d{write cur HTML file}
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";
-	std::ofstream out(
-		outPath.c_str(),
-		std::ofstream::out
-	);
+	std::ofstream out(outPath.c_str());
 	e{write cur HTML file to out};
 	out.close();
 x{write cur HTML file}
@@ -31,10 +28,9 @@ x{write cur HTML file}
 
 ```
 d{write cur HTML file to out} 
-	FILE *in = fopen(cur->name.c_str(), "r");
-	ASSERT(in);
+	std::ifstream in { cur->name.c_str() };
 	e{write HTML file from in to out};
-	fclose(in);
+	in.close();
 x{write cur HTML file to out}
 ```
 * Zuerst wird die Eingabe-Datei zum Lesen geöffnet
@@ -94,7 +90,8 @@ d{write HTML file from in to out} {
 	bool newline = true;
 	std::string ident;
 	for (;;) {
-		int ch = fgetc(in);
+		int ch = in.get();
+		if (! in.good()) { ch = EOF; }
 		e{process ch for HTML};
 		if (ch == EOF) { break; }
 		E{move ch to last};

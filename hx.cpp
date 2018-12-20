@@ -4,7 +4,6 @@
 	#include <fstream>
 	#include <iostream>
 	#include <memory>
-	#include <stdio.h>
 	#include <vector>
 
 	#include <list>
@@ -281,7 +280,7 @@
 
 	class Input {
 		private:
-			FILE *file;
+			std::ifstream file;
 		public:
 			const std::string name;
 			
@@ -291,9 +290,8 @@
 ;
 			
 	Input(
-		FILE *file,
 		const std::string &name
-	): file(file), name(name)
+	): file(name.c_str()), name(name)
 		
 	, line(1)
 
@@ -302,11 +300,11 @@
 
 	int next() {
 		int ch = EOF;
-		if (file) {
-			ch = fgetc(file);
-			if (ch == EOF) {
-				fclose(file);
-				file = nullptr;
+		if (file.is_open()) {
+			ch = file.get();
+			if (! file.good()) {
+				file.close();
+				ch = EOF;
 			}
 		}
 		return ch;
@@ -324,14 +322,8 @@
 	FragMap *frags = &root;
 
 	void pushPath(const std::string &path) {
-		FILE *f = fopen(path.c_str(), "r");
-		
-	ASSERT(
-		f, "can't open ", path
-	);
-;
 		std::unique_ptr<Input> i =
-			std::make_unique<Input>(f, path);
+			std::make_unique<Input>(path);
 		
 	if (input) {
 		input->frags.link = frags;
@@ -1031,8 +1023,7 @@
 		++frag->expands;
 		
 	std::ofstream out(
-		frag->name.substr(6).c_str(),
-		std::ofstream::out
+		frag->name.substr(6).c_str()
 	);
 	serializeFrag(*frag, out, false);
 	out.close();
@@ -1075,8 +1066,7 @@
 		++frag->expands;
 		
 	std::ofstream out(
-		frag->name.substr(6).c_str(),
-		std::ofstream::out
+		frag->name.substr(6).c_str()
 	);
 	serializeFrag(*frag, out, false);
 	out.close();
@@ -1117,19 +1107,16 @@
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";
-	std::ofstream out(
-		outPath.c_str(),
-		std::ofstream::out
-	);
+	std::ofstream out(outPath.c_str());
 	 
-	FILE *in = fopen(cur->name.c_str(), "r");
-	ASSERT(in);
+	std::ifstream in { cur->name.c_str() };
 	 {
 	HtmlStatus status;
 	bool newline = true;
 	std::string ident;
 	for (;;) {
-		int ch = fgetc(in);
+		int ch = in.get();
+		if (! in.good()) { ch = EOF; }
 		 
 	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||
@@ -2070,7 +2057,7 @@
 ;
 	}
 } ;
-	fclose(in);
+	in.close();
 ;
 	out.close();
 ;

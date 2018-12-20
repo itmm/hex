@@ -53,13 +53,7 @@
 
 <span class="in2"></span><span class="str">".html"</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<br/>
-
-<span class="in2"></span><span class="var">outPath</span>.<span class="fn">c_str</span>(),<br/>
-
-<span class="in2"></span><span class="var">std</span>::<span class="var">ofstream</span>::<span class="var">out</span><br/>
-
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<span class="var">outPath</span>.<span class="fn">c_str</span>());<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write cur HTML file to out</span>)</span>;<br/>
 
@@ -79,13 +73,11 @@
 
 <span class="add">@def(<span class="name">write cur HTML file to out</span>)</span> <br/>
 
-<span class="in1"></span><span class="type">FILE</span> *<span class="keyword">in</span> = <span class="fn">fopen</span>(<span class="var">cur</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>(), <span class="str">"r"</span>);<br/>
-
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="keyword">in</span>);<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">ifstream</span> <span class="keyword">in</span> { <span class="var">cur</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>() };<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write HTML file from in to out</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">fclose</span>(<span class="keyword">in</span>);<br/>
+<span class="in1"></span><span class="keyword">in</span>.<span class="fn">close</span>();<br/>
 
 <span class="end">@end(<span class="name">write cur HTML file to out</span>)</span><br/>
 
@@ -216,7 +208,9 @@
 
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="keyword">in</span>);<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="keyword">in</span>.<span class="fn">get</span>();<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! <span class="keyword">in</span>.<span class="fn">good</span>()) { <span class="var">ch</span> = <span class="num">EOF</span>; }<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process ch for HTML</span>)</span>;<br/>
 

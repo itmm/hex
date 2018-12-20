@@ -229,8 +229,6 @@
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">memory</span>&gt;<br/>
 
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdio</span>.<span class="var">h</span>&gt;<br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">vector</span>&gt;<br/>
 
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
@@ -239,8 +237,6 @@
 </div>
 
 <ul><li>
- Aus <code>stdio.h</code> werden File-Funktionen verwendet
-</li><li>
  Aus <code>memory</code> wird <code>unique_ptr</code> verwendet
 </li><li>
  <code>vector</code> ist ein Container für Source-Dateien
@@ -284,7 +280,7 @@
 
 <span class="in2"></span><span class="var">private</span>:<br/>
 
-<span class="in3"></span><span class="type">FILE</span> *<span class="var">file</span>;<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">ifstream</span> <span class="var">file</span>;<br/>
 
 <span class="in2"></span><span class="var">public</span>:<br/>
 
@@ -320,11 +316,9 @@
 
 <span class="in1"></span><span class="fn">Input</span>(<br/>
 
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">file</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
 
-<span class="in1"></span>): <span class="fn">file</span>(<span class="var">file</span>), <span class="fn">name</span>(<span class="var">name</span>)<br/>
+<span class="in1"></span>): <span class="fn">file</span>(<span class="var">name</span>.<span class="fn">c_str</span>()), <span class="fn">name</span>(<span class="var">name</span>)<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">direct input constr</span>)</span><br/>
 
@@ -352,15 +346,15 @@
 
 <span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="num">EOF</span>;<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>.<span class="fn">is_open</span>()) {<br/>
 
-<span class="in3"></span><span class="var">ch</span> = <span class="fn">fgetc</span>(<span class="var">file</span>);<br/>
+<span class="in3"></span><span class="var">ch</span> = <span class="var">file</span>.<span class="fn">get</span>();<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="num">EOF</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (! <span class="var">file</span>.<span class="fn">good</span>()) {<br/>
 
-<span class="in4"></span><span class="fn">fclose</span>(<span class="var">file</span>);<br/>
+<span class="in4"></span><span class="var">file</span>.<span class="fn">close</span>();<br/>
 
-<span class="in4"></span><span class="var">file</span> = <span class="num">nullptr</span>;<br/>
+<span class="in4"></span><span class="var">ch</span> = <span class="num">EOF</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
@@ -447,13 +441,9 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
 
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">f</span> = <span class="fn">fopen</span>(<span class="var">path</span>.<span class="fn">c_str</span>(), <span class="str">"r"</span>);<br/>
-
-<span class="in2"></span><span class="expand">@expand(<span class="name">check file for path</span>)</span>;<br/>
-
 <span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> =<br/>
 
-<span class="in3"></span><span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">f</span>, <span class="var">path</span>);<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">path</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
 
@@ -578,26 +568,6 @@
   aufgerufen
 </li><li>
  wenn es keine Parameter mehr gibt, bricht die Kette ab
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@def(<span class="name">check file for path</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-
-<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open "</span>, <span class="var">path</span><br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="end">@end(<span class="name">check file for path</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab
 </li></ul></div>
 
 </div>
@@ -2348,9 +2318,7 @@
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<br/>
 
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>).<span class="fn">c_str</span>(),<br/>
-
-<span class="in2"></span><span class="var">std</span>::<span class="var">ofstream</span>::<span class="var">out</span><br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>).<span class="fn">c_str</span>()<br/>
 
 <span class="in1"></span>);<br/>
 

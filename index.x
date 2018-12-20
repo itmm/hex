@@ -97,11 +97,9 @@ D{includes}
 	#include <fstream>
 	#include <iostream>
 	#include <memory>
-	#include <stdio.h>
 	#include <vector>
 x{includes}
 ```
-* Aus `stdio.h` werden File-Funktionen verwendet
 * Aus `memory` wird `unique_ptr` verwendet
 * `vector` ist ein Container für Source-Dateien
 
@@ -121,7 +119,7 @@ i{frag.x}
 A{global elements}
 	class Input {
 		private:
-			FILE *file;
+			std::ifstream file;
 		public:
 			const std::string name;
 			e{additional input elements};
@@ -139,9 +137,8 @@ x{global elements}
 ```
 d{input methods}
 	Input(
-		FILE *file,
 		const std::string &name
-	): file(file), name(name)
+	): file(name.c_str()), name(name)
 		e{direct input constr}
 	{
 	}
@@ -154,11 +151,11 @@ x{input methods}
 a{input methods}
 	int next() {
 		int ch = EOF;
-		if (file) {
-			ch = fgetc(file);
-			if (ch == EOF) {
-				fclose(file);
-				file = nullptr;
+		if (file.is_open()) {
+			ch = file.get();
+			if (! file.good()) {
+				file.close();
+				ch = EOF;
 			}
 		}
 		return ch;
@@ -200,10 +197,8 @@ x{global elements}
 ```
 A{global elements}
 	void pushPath(const std::string &path) {
-		FILE *f = fopen(path.c_str(), "r");
-		e{check file for path};
 		std::unique_ptr<Input> i =
-			std::make_unique<Input>(f, path);
+			std::make_unique<Input>(path);
 		e{init additional input fields};
 		if (input) {
 			pending.push_back(
@@ -264,15 +259,6 @@ x{define logging}
 * Dann wird die Suffix-Funktion für den Rest mit weniger Parametern
   aufgerufen
 * wenn es keine Parameter mehr gibt, bricht die Kette ab
-
-```
-d{check file for path}
-	ASSERT(
-		f, "can't open ", path
-	);
-x{check file for path}
-```
-* Wenn die Datei nicht geöffnet werden kann, bricht das Programm ab
 
 # Lokale Fragmente
 
@@ -1101,8 +1087,7 @@ x{serialize frag}
 ```
 d{write in file}
 	std::ofstream out(
-		frag->name.substr(6).c_str(),
-		std::ofstream::out
+		frag->name.substr(6).c_str()
 	);
 	serializeFrag(*frag, out, false);
 	out.close();
