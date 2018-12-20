@@ -224,14 +224,27 @@ x{global elements}
 D{define logging}
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
-			fprintf(stderr, \
-				"%s:%d", \
-				__FILE__, __LINE__); \
-			fprintf(stderr, \
-				" FAILED: " __VA_ARGS__); \
-			fprintf(stderr, "\n"); \
+			std::cerr << __FILE__ << ':' << __LINE__ << ' ' \
+				<< #COND << " FAILED: "; \
+			failSuffix(__VA_ARGS__); \
 			exit(EXIT_FAILURE); \
 		}
+	
+	inline void failSuffix() {
+		std::cerr << std::endl;
+	}
+
+	template<typename T> inline void failSuffix(const T& a) {
+		std::cerr << a;
+		failSuffix();
+	}
+
+	template<typename T, typename... Args> inline void failSuffix(
+		const T& a, Args... args
+	) {
+		std::cerr << a;
+		failSuffix(args...);
+	}
 x{define logging}
 ```
 * Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
@@ -241,7 +254,7 @@ x{define logging}
 ```
 d{check file for path}
 	ASSERT(
-		f, "can't open [%s]", path.c_str()
+		f, "can't open ", path
 	);
 x{check file for path}
 ```
@@ -286,8 +299,7 @@ d{process arguments}
 		e{process argument};
 		ASSERT(
 			false,
-			"unknown argument [%s]",
-			argv[i]
+			"unknown argument [", argv[i], ']'
 		);
 	}
 x{process arguments}
@@ -597,8 +609,7 @@ a{process frag name}
 		ASSERT(! frag, "replace in frag");
 		frag = &(input->frags[name]);
 		ASSERT(
-			frag, "frag %s not defined",
-			name.c_str()
+			frag, "frag ", name, " not defined"
 		);
 		frag->clear();
 		processed = true;
@@ -614,8 +625,7 @@ a{process frag name}
 		ASSERT(! frag, "replace in frag");
 		frag = &frags->get(name, root);
 		ASSERT(
-			frag, "frag %s not defined",
-			name.c_str()
+			frag, "frag ", name, " not defined"
 		);
 		frag->clear();
 		processed = true;
@@ -641,8 +651,7 @@ x{process frag name}
 d{frag names must match}
 	ASSERT(
 		frag->name == name,
-		"closing [%s] != [%s]",
-		name.c_str(), frag->name.c_str()
+		"closing [", name, "] != [", frag->name, ']'
 	);
 x{frag names must match}
 ```
@@ -944,8 +953,8 @@ x{check valid names}
 a{process frag name}
 	if (! processed) {
 		ASSERT(
-			frag, "unknown frag %s",
-			name.c_str()
+			frag, "unknown frag ",
+			name
 		);
 		for (auto &c : name) {
 			if (buffer.empty()) {

@@ -497,21 +497,47 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; <span class="str">':'</span> &lt;&lt; <span class="var">__LINE__</span> &lt;&lt; <span class="str">' '</span> \<br/>
 
-<span class="in4"></span><span class="str">"%s:%d"</span>, \<br/>
+<span class="in4"></span>&lt;&lt; #<span class="var">COND</span> &lt;&lt; <span class="str">" FAILED: "</span>; \<br/>
 
-<span class="in4"></span><span class="var">__FILE__</span>, <span class="var">__LINE__</span>); \<br/>
-
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, \<br/>
-
-<span class="in4"></span><span class="str">" FAILED: "</span> <span class="var">__VA_ARGS__</span>); \<br/>
-
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">stderr</span>, <span class="str">"\n"</span>); \<br/>
+<span class="in3"></span><span class="fn">failSuffix</span>(<span class="var">__VA_ARGS__</span>); \<br/>
 
 <span class="in3"></span><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \<br/>
 
 <span class="in2"></span>}<br/>
+
+<br/>
+
+<span class="in2"></span><span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>() {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<br/>
+
+<span class="in1"></span><span class="var">template</span>&lt;<span class="var">typename</span> <span class="var">T</span>&gt; <span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>(<span class="type">const</span> <span class="var">T</span>&amp; <span class="var">a</span>) {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">a</span>;<br/>
+
+<span class="in2"></span><span class="fn">failSuffix</span>();<br/>
+
+<span class="in1"></span>}<br/>
+
+<br/>
+
+<span class="in1"></span><span class="var">template</span>&lt;<span class="var">typename</span> <span class="var">T</span>, <span class="var">typename</span>... <span class="type">Args</span>&gt; <span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>(<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">T</span>&amp; <span class="var">a</span>, <span class="type">Args</span>... <span class="var">args</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">a</span>;<br/>
+
+<span class="in2"></span><span class="fn">failSuffix</span>(<span class="var">args</span>...);<br/>
+
+<span class="in1"></span>}<br/>
 
 <span class="end">@end(<span class="name">define logging</span>)</span><br/>
 
@@ -533,7 +559,7 @@
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open [%s]"</span>, <span class="var">path</span>.<span class="fn">c_str</span>()<br/>
+<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open "</span>, <span class="var">path</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -639,9 +665,7 @@
 
 <span class="in3"></span><span class="num">false</span>,<br/>
 
-<span class="in3"></span><span class="str">"unknown argument [%s]"</span>,<br/>
-
-<span class="in3"></span><span class="var">argv</span>[<span class="var">i</span>]<br/>
+<span class="in3"></span><span class="str">"unknown argument ["</span>, <span class="var">argv</span>[<span class="var">i</span>], <span class="str">']'</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1296,9 +1320,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag "</span>, <span class="var">name</span>, <span class="str">" not defined"</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1332,9 +1354,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag %s not defined"</span>,<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag "</span>, <span class="var">name</span>, <span class="str">" not defined"</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1390,9 +1410,7 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">name</span>,<br/>
 
-<span class="in2"></span><span class="str">"closing [%s] != [%s]"</span>,<br/>
-
-<span class="in2"></span><span class="var">name</span>.<span class="fn">c_str</span>(), <span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="in2"></span><span class="str">"closing ["</span>, <span class="var">name</span>, <span class="str">"] != ["</span>, <span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="str">']'</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -2021,11 +2039,11 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="str">"unknown frag %s"</span>,<br/>
+<span class="in3"></span><span class="var">frag</span>, <span class="str">"unknown frag "</span>,<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
+<span class="var">name</span><br/>
 
-<span class="in2"></span>);<br/>
+<span class="in5"></span>);<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">c</span> : <span class="var">name</span>) {<br/>
 

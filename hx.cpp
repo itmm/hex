@@ -21,14 +21,27 @@
 	
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
-			fprintf(stderr, \
-				"%s:%d", \
-				__FILE__, __LINE__); \
-			fprintf(stderr, \
-				" FAILED: " __VA_ARGS__); \
-			fprintf(stderr, "\n"); \
+			std::cerr << __FILE__ << ':' << __LINE__ << ' ' \
+				<< #COND << " FAILED: "; \
+			failSuffix(__VA_ARGS__); \
 			exit(EXIT_FAILURE); \
 		}
+	
+	inline void failSuffix() {
+		std::cerr << std::endl;
+	}
+
+	template<typename T> inline void failSuffix(const T& a) {
+		std::cerr << a;
+		failSuffix();
+	}
+
+	template<typename T, typename... Args> inline void failSuffix(
+		const T& a, Args... args
+	) {
+		std::cerr << a;
+		failSuffix(args...);
+	}
 ;
 
 	
@@ -318,7 +331,7 @@
 		FILE *f = fopen(path.c_str(), "r");
 		
 	ASSERT(
-		f, "can't open [%s]", path.c_str()
+		f, "can't open ", path
 	);
 ;
 		std::unique_ptr<Input> i =
@@ -591,8 +604,7 @@
 ;
 		ASSERT(
 			false,
-			"unknown argument [%s]",
-			argv[i]
+			"unknown argument [", argv[i], ']'
 		);
 	}
 
@@ -732,8 +744,7 @@
 		ASSERT(! frag, "replace in frag");
 		frag = &(input->frags[name]);
 		ASSERT(
-			frag, "frag %s not defined",
-			name.c_str()
+			frag, "frag ", name, " not defined"
 		);
 		frag->clear();
 		processed = true;
@@ -743,8 +754,7 @@
 		ASSERT(! frag, "replace in frag");
 		frag = &frags->get(name, root);
 		ASSERT(
-			frag, "frag %s not defined",
-			name.c_str()
+			frag, "frag ", name, " not defined"
 		);
 		frag->clear();
 		processed = true;
@@ -755,8 +765,7 @@
 		
 	ASSERT(
 		frag->name == name,
-		"closing [%s] != [%s]",
-		name.c_str(), frag->name.c_str()
+		"closing [", name, "] != [", frag->name, ']'
 	);
 ;
 		
@@ -972,8 +981,8 @@
 
 	if (! processed) {
 		ASSERT(
-			frag, "unknown frag %s",
-			name.c_str()
+			frag, "unknown frag ",
+			name
 		);
 		for (auto &c : name) {
 			if (buffer.empty()) {
@@ -1664,8 +1673,9 @@
 			status.codeNameEnd <
 				status.codeName +
 					sizeof(status.codeName),
-			" [%c], [%.*s]", status.codeSpecial,
-			(int) sizeof(status.codeName), status.codeName
+			" [", status.codeSpecial, "], [",
+				std::string(status.codeName, sizeof(status.codeName)),
+			"]" 
 		);
 		*status.codeNameEnd++ = ch;
 		continue;

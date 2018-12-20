@@ -825,8 +825,9 @@ a{process ch in HTML code}
 			status.codeNameEnd <
 				status.codeName +
 					sizeof(status.codeName),
-			" [%c], [%.*s]", status.codeSpecial,
-			(int) sizeof(status.codeName), status.codeName
+			" [", status.codeSpecial, "], [",
+				std::string(status.codeName, sizeof(status.codeName)),
+			"]" 
 		);
 		*status.codeNameEnd++ = ch;
 		continue;
