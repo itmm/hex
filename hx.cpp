@@ -1,9 +1,10 @@
 
 	
 	
-	#include <stdio.h>
 	#include <fstream>
+	#include <iostream>
 	#include <memory>
+	#include <stdio.h>
 	#include <vector>
 
 	#include <list>
@@ -1353,10 +1354,7 @@
 
 	if (status.state == HtmlState::inCode) {
 		if (ch == EOF) {
-			fprintf(
-				stderr,
-				"unterminated code block\n"
-			);
+			std::cerr << "unterminated code block" << std::endl;
 			break;
 		}
 	}

@@ -1122,13 +1122,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="num">EOF</span>) {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<br/>
-
-<span class="in4"></span><span class="var">stderr</span>,<br/>
-
-<span class="in4"></span><span class="str">"unterminated code block\n"</span><br/>
-
-<span class="in3"></span>);<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"unterminated code block"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
