@@ -26,17 +26,13 @@
 			failSuffix(__VA_ARGS__); \
 			exit(EXIT_FAILURE); \
 		}
-	
+
 	inline void failSuffix() {
 		std::cerr << std::endl;
 	}
 
-	template<typename T> inline void failSuffix(const T& a) {
-		std::cerr << a;
-		failSuffix();
-	}
-
-	template<typename T, typename... Args> inline void failSuffix(
+	template<typename T, typename... Args>
+	inline void failSuffix(
 		const T& a, Args... args
 	) {
 		std::cerr << a;

@@ -229,17 +229,29 @@ D{define logging}
 			failSuffix(__VA_ARGS__); \
 			exit(EXIT_FAILURE); \
 		}
-	
+x{define logging}
+```
+* Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
+* Und das Programm beendet
+* Datei und Zeile des Tests wird ausgegeben
+* Eine variable Anzahl von weiteren Parametern kann mit ausgegeben
+  werden
+
+```
+A{define logging}
 	inline void failSuffix() {
 		std::cerr << std::endl;
 	}
+x{define logging}
+```
+* Die Ausgabe der zusätzlichen Parameter erfolgt über variadic
+  Funktionen
+* Im einfachsten Fall wird nur ein Zeilenumbruch ausgegeben
 
-	template<typename T> inline void failSuffix(const T& a) {
-		std::cerr << a;
-		failSuffix();
-	}
-
-	template<typename T, typename... Args> inline void failSuffix(
+```
+A{define logging}
+	template<typename T, typename... Args>
+	inline void failSuffix(
 		const T& a, Args... args
 	) {
 		std::cerr << a;
@@ -247,9 +259,11 @@ D{define logging}
 	}
 x{define logging}
 ```
-* Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
-* Und das Programm beendet
-* Datei und Zeile des Tests wird ausgegeben
+* Bei einer variablen Anzahl von Parametern wird zuerst der erste
+  Parameter ausgegeben
+* Dann wird die Suffix-Funktion für den Rest mit weniger Parametern
+  aufgerufen
+* wenn es keine Parameter mehr gibt, bricht die Kette ab
 
 ```
 d{check file for path}
