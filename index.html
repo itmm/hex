@@ -2298,21 +2298,17 @@
 
 <span class="add">@def(<span class="name">write in file</span>)</span><br/>
 
-<span class="in1"></span><span class="type">FILE</span> *<span class="var">f</span> =<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<br/>
 
-<span class="in2"></span><span class="fn">fopen</span>(<span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>).<span class="fn">c_str</span>(), <span class="str">"w"</span>);<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>).<span class="fn">c_str</span>(),<br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-
-<span class="in2"></span><span class="var">f</span>, <span class="str">"can't open %s"</span>,<br/>
-
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>).<span class="fn">c_str</span>()<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">ofstream</span>::<span class="var">out</span><br/>
 
 <span class="in1"></span>);<br/>
 
-<span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">f</span>, <span class="num">false</span>);<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
 
-<span class="in1"></span><span class="fn">fclose</span>(<span class="var">f</span>);<br/>
+<span class="in1"></span><span class="var">out</span>.<span class="fn">close</span>();<br/>
 
 <span class="end">@end(<span class="name">write in file</span>)</span><br/>
 

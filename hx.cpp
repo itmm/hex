@@ -8,6 +8,7 @@
 
 	#include <list>
 	#include <map>
+	#include <sstream>
 
 	#include <string.h>
 
@@ -193,27 +194,16 @@
 		return *this;
 	}
 
-	
-	std::string *fragTestBufferCur = nullptr;
-;
 	void serializeFrag(
-		const Frag &frag, FILE *out,
+		const Frag &frag, std::ostream &out,
 		bool writeLineMacros
 	) {
-		ASSERT(out);
 		
 	auto entry = frag.entries.begin();
 	for (; entry != frag.entries.end(); ++entry) {
 		
 	if (getFragEntryValueSize(*entry)) {
-		if (! fragTestBufferCur) {
-			ASSERT(fwrite(
-				entry->value.data(), 1, entry->value.size(),
-				out
-			) == entry->value.size());
-		} else {
-			*fragTestBufferCur += entry->value;
-		}
+		out << entry->value;
 	}
 ;
 		if (entry->frag) {
@@ -231,11 +221,9 @@
 		const std::string &expected
 	) {
 		
-	std::string buffer;
-	fragTestBufferCur = &buffer;
-	serializeFrag(frag, (FILE *) &buffer, false);
-	ASSERT(buffer == expected);
-	fragTestBufferCur = nullptr;
+	std::ostringstream buffer;
+	serializeFrag(frag, buffer, false);
+	ASSERT(buffer.str() == expected);
 ;
 	}
 
@@ -1036,14 +1024,12 @@
 	if (frag->name.substr(0, prefix.size()) == prefix) {
 		++frag->expands;
 		
-	FILE *f =
-		fopen(frag->name.substr(6).c_str(), "w");
-	ASSERT(
-		f, "can't open %s",
-		frag->name.substr(6).c_str()
+	std::ofstream out(
+		frag->name.substr(6).c_str(),
+		std::ofstream::out
 	);
-	serializeFrag(*frag, f, false);
-	fclose(f);
+	serializeFrag(*frag, out, false);
+	out.close();
 ;
 	}
 }  {
@@ -1082,14 +1068,12 @@
 	if (frag->name.substr(0, prefix.size()) == prefix) {
 		++frag->expands;
 		
-	FILE *f =
-		fopen(frag->name.substr(6).c_str(), "w");
-	ASSERT(
-		f, "can't open %s",
-		frag->name.substr(6).c_str()
+	std::ofstream out(
+		frag->name.substr(6).c_str(),
+		std::ofstream::out
 	);
-	serializeFrag(*frag, f, false);
-	fclose(f);
+	serializeFrag(*frag, out, false);
+	out.close();
 ;
 	}
 }  {
@@ -1127,7 +1111,10 @@
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";
-	std::ofstream out(outPath.c_str(), std::ofstream::out);
+	std::ofstream out(
+		outPath.c_str(),
+		std::ofstream::out
+	);
 	 
 	FILE *in = fopen(cur->name.c_str(), "r");
 	ASSERT(in);

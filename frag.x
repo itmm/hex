@@ -45,6 +45,7 @@ x{define frag}
 A{includes}
 	#include <list>
 	#include <map>
+	#include <sstream>
 x{includes}
 ```
 
@@ -269,12 +270,10 @@ x{add frag entry}
 
 ```
 a{define frag}
-	e{serialize test defines};
 	void serializeFrag(
-		const Frag &frag, FILE *out,
+		const Frag &frag, std::ostream &out,
 		bool writeLineMacros
 	) {
-		ASSERT(out);
 		e{iterate entries};
 	}
 x{define frag}
@@ -300,22 +299,9 @@ x{iterate entries}
 * Dann wird rekursiv das Fragment ausgegeben, falls vorhanden
 
 ```
-d{serialize test defines}
-	std::string *fragTestBufferCur = nullptr;
-x{serialize test defines}
-```
-
-```
 d{serialize bytes}
 	if (getFragEntryValueSize(*entry)) {
-		if (! fragTestBufferCur) {
-			ASSERT(fwrite(
-				entry->value.data(), 1, entry->value.size(),
-				out
-			) == entry->value.size());
-		} else {
-			*fragTestBufferCur += entry->value;
-		}
+		out << entry->value;
 	}
 x{serialize bytes}
 ```
@@ -337,11 +323,9 @@ x{define frag}
 
 ```
 d{serialize test frag}
-	std::string buffer;
-	fragTestBufferCur = &buffer;
-	serializeFrag(frag, (FILE *) &buffer, false);
-	ASSERT(buffer == expected);
-	fragTestBufferCur = nullptr;
+	std::ostringstream buffer;
+	serializeFrag(frag, buffer, false);
+	ASSERT(buffer.str() == expected);
 x{serialize test frag}
 ```
 * Serialisiert das Fragment

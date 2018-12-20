@@ -19,7 +19,10 @@ d{write cur HTML file}
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";
-	std::ofstream out(outPath.c_str(), std::ofstream::out);
+	std::ofstream out(
+		outPath.c_str(),
+		std::ofstream::out
+	);
 	e{write cur HTML file to out};
 	out.close();
 x{write cur HTML file}

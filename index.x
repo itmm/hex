@@ -1076,14 +1076,12 @@ x{serialize frag}
 
 ```
 d{write in file}
-	FILE *f =
-		fopen(frag->name.substr(6).c_str(), "w");
-	ASSERT(
-		f, "can't open %s",
-		frag->name.substr(6).c_str()
+	std::ofstream out(
+		frag->name.substr(6).c_str(),
+		std::ofstream::out
 	);
-	serializeFrag(*frag, f, false);
-	fclose(f);
+	serializeFrag(*frag, out, false);
+	out.close();
 x{write in file}
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben

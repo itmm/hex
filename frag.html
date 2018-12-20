@@ -106,6 +106,8 @@
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">map</span>&gt;<br/>
 
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">sstream</span>&gt;<br/>
+
 <span class="end">@end(<span class="name">includes</span>)</span><br/>
 
 </code>
@@ -605,17 +607,13 @@ x{perform unit-tests}
 
 <span class="add">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@expand(<span class="name">serialize test defines</span>)</span>;<br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
 
-<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>, <span class="type">FILE</span> *<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>, <span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 
 <span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
 
 <span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">iterate entries</span>)</span>;<br/>
 
@@ -671,39 +669,11 @@ x{perform unit-tests}
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">serialize test defines</span>)</span><br/>
-
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> *<span class="var">fragTestBufferCur</span> = <span class="num">nullptr</span>;<br/>
-
-<span class="end">@end(<span class="name">serialize test defines</span>)</span><br/>
-
-</code>
-</div>
-
-
-</div>
-<div><div>
-<code>
-
 <span class="add">@def(<span class="name">serialize bytes</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">getFragEntryValueSize</span>(*<span class="var">entry</span>)) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">fragTestBufferCur</span>) {<br/>
-
-<span class="in3"></span><span class="fn">ASSERT</span>(<span class="fn">fwrite</span>(<br/>
-
-<span class="in4"></span><span class="var">entry</span>-&gt;<span class="var">value</span>.<span class="fn">data</span>(), <span class="num">1</span>, <span class="var">entry</span>-&gt;<span class="var">value</span>.<span class="fn">size</span>(),<br/>
-
-<span class="var">out</span><br/>
-
-<span class="in7"></span>) == <span class="var">entry</span>-&gt;<span class="var">value</span>.<span class="fn">size</span>());<br/>
-
-<span class="in2"></span>} <span class="keyword">else</span> {<br/>
-
-<span class="in3"></span>*<span class="var">fragTestBufferCur</span> += <span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
-
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="var">entry</span>-&gt;<span class="var">value</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -749,15 +719,11 @@ x{perform unit-tests}
 
 <span class="add">@def(<span class="name">serialize test frag</span>)</span><br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">buffer</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
 
-<span class="in1"></span><span class="var">fragTestBufferCur</span> = &amp;<span class="var">buffer</span>;<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">buffer</span>, <span class="num">false</span>);<br/>
 
-<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, (<span class="type">FILE</span> *) &amp;<span class="var">buffer</span>, <span class="num">false</span>);<br/>
-
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span> == <span class="var">expected</span>);<br/>
-
-<span class="in1"></span><span class="var">fragTestBufferCur</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="fn">str</span>() == <span class="var">expected</span>);<br/>
 
 <span class="end">@end(<span class="name">serialize test frag</span>)</span><br/>
 
