@@ -91,7 +91,6 @@ d{write HTML file from in to out} {
 	std::string ident;
 	for (;;) {
 		int ch = in.get();
-		if (! in.good()) { ch = EOF; }
 		e{process ch for HTML};
 		if (ch == EOF) { break; }
 		E{move ch to last};

@@ -304,7 +304,6 @@
 			ch = file.get();
 			if (! file.good()) {
 				file.close();
-				ch = EOF;
 			}
 		}
 		return ch;
@@ -1116,7 +1115,6 @@
 	std::string ident;
 	for (;;) {
 		int ch = in.get();
-		if (! in.good()) { ch = EOF; }
 		 
 	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||

@@ -155,7 +155,6 @@ a{input methods}
 			ch = file.get();
 			if (! file.good()) {
 				file.close();
-				ch = EOF;
 			}
 		}
 		return ch;
