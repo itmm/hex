@@ -2,6 +2,7 @@
 	
 	
 	#include <stdio.h>
+	#include <fstream>
 	#include <memory>
 	#include <vector>
 
@@ -462,40 +463,34 @@
  
 	template <typename T>
 	void writeEscaped(
-		FILE *out, T str, T end
+		std::ostream &out, T str, T end
 	) {
-		ASSERT(out);
 		for (; *str && str != end; ++str) {
 			switch (*str) {
 				
 	case '<':
-		fprintf(out, "&lt;");
+		out << "&lt;";
 		break;
 	case '>':
-		fprintf(out, "&gt;");
+		out << "&gt;";
 		break;
 	case '&':
-		fprintf(out, "&amp;");
+		out << "&amp;";
 		break;
 
 				default:
-					fputc(*str, out);
+					out << *str;
 			}
 		}
 	}
 
 	void escapeIdent(
-		FILE *out,
+		std::ostream &out,
 		const char *cls,
 		const std::string &s
 	) {
-		fprintf(
-			out,
-			"<span class=\"%s\">%.*s</span>",
-			cls,
-			(int) s.size(),
-			s.data()
-		);
+		out << "<span class=\"" << cls << "\">"
+			<< s << "</span>";
 	}
 
 	bool isKeyword(const std::string &s) {
@@ -1132,8 +1127,7 @@
 	std::string outPath =
 		name.substr(0, name.size() - 2) +
 		".html";
-	FILE *out = fopen(outPath.c_str(), "w");
-	ASSERT(out);
+	std::ofstream out(outPath.c_str(), std::ofstream::out);
 	 
 	FILE *in = fopen(cur->name.c_str(), "r");
 	ASSERT(in);
@@ -1166,62 +1160,58 @@
 	switch (status.headerState) {
 		case HtmlState::nothingWritten: {
 			 
-	fprintf(out, "<!doctype html>\n");
-	fprintf(out, "<html lang=\"de\"l>\n");
-	fprintf(out, "<head>\n");
+	out << "<!doctype html>" << std::endl;
+	out << "<html lang=\"de\"l>" << std::endl;
+	out << "<head>" << std::endl;
 	 
-	fprintf(
-		out, "<meta charset=\"utf-8\">\n"
-	);
-	fprintf(out, "<title>");
+	out << "<meta charset=\"utf-8\">" << std::endl;
+	out << "<title>";
 	writeEscaped(
 		out,
 		status.headerName.begin(),
 		status.headerName.end()
 	);
-	fprintf(out, "</title>");
-	fprintf(
-		out, "<link rel=\"stylesheet\" "
-		"type=\"text/css\" href=\"%s\">",
-		stylesheet.c_str()
-	);
+	out << "</title>" << std::endl;
+	out << "<link rel=\"stylesheet\" "
+		"type=\"text/css\" href=\""
+		<< stylesheet << "\">";
 ;
-	fprintf(out, "</head>\n");
-	fprintf(out, "<body>\n");
+	out << "</head>" << std::endl;
+	out << "<body>" << std::endl;
 ;
 			break;
 		}
 		case HtmlState::inSlide: {
-			fprintf(out, "</div>\n");
-			fprintf(out, "</div>\n");
+			out << "</div>" << std::endl;
+			out << "</div>" << std::endl;
 			break;
 		}
 		default: {
-			fprintf(out, "</div>\n");
+			out << "</div>" << std::endl;
 		}
 	}
 ;
 	 
-	fprintf(out, "<h%d>", status.headerLevel);
+	out << "<h" << status.headerLevel << '>';
 	writeEscaped(
 		out,
 		status.headerName.begin(),
 		status.headerName.end()
 	);
-	fprintf(out, "</h%d>\n", status.headerLevel);
+	out << "</h" << status.headerLevel << '>' << std::endl;
 ;
-	fprintf(out, "<div class=\"slides\">\n");
-	fprintf(out, "<div><div>\n");
+	out << "<div class=\"slides\">" << std::endl;
+	out << "<div><div>" << std::endl;
 	 
-	fprintf(out, "<h%d>", status.headerLevel);
+	out << "<h" << status.headerLevel << '>';
 	writeEscaped(
 		out,
 		status.headerName.begin(),
 		status.headerName.end()
 	);
-	fprintf(out, "</h%d>\n", status.headerLevel);
+	out << "</h" << status.headerLevel << '>' << std::endl;
 ;
-	fprintf(out, "</div>\n");
+	out << "</div>" << std::endl;
 ;
 			 
 	status.state = HtmlState::inSlide;
@@ -1284,10 +1274,10 @@
 		if (isOutOfHtmlSpecial(&status)) {
 			
 	if (status.state == HtmlState::inSlide) {
-		fprintf(out, "</div>\n");
+		out << "</div>" << std::endl;
 	}
-	fprintf(out, "<div><div>\n");
-	fprintf(out, "<code>\n");
+	out << "<div><div>" << std::endl;
+	out << "<code>" << std::endl;
 	status.state = HtmlState::inCode;
 	
 	newline = ch == '\n';
@@ -1302,8 +1292,8 @@
 			status.state == HtmlState::inCode
 		) {
 			
-	fprintf(out, "</code>\n");
-	fprintf(out, "</div>\n");
+	out << "</code>" << std::endl;
+	out << "</div>" << std::endl;
 	status.state = HtmlState::inSlide;
 	status.codeIndent = 0;
 	status.codeSpecial = '\0';
@@ -1340,14 +1330,12 @@
 	}
 ;
 			if (status.codeIndent) {
-				fprintf(
-					out,
-					"<span class=\"in%d\"></span>",
-					status.codeIndent
-				);
+				out << "<span class=\"in"
+					<< status.codeIndent
+					<< "\"></span>";
 				status.codeIndent = 0;
 			}
-			fprintf(out, "<span class=\"str\">`");
+			out << "<span class=\"str\">`";
 		} else if (
 			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
 		) {
@@ -1368,7 +1356,7 @@
 	}
 ;
 			writeEscaped(out, status.codeName, status.codeNameEnd);
-			fprintf(out, "`</span>");
+			out << "`</span>";
 			status.codeSpecial = 0;
 			status.codeNameEnd = nullptr;
 		}
@@ -1412,7 +1400,7 @@
 		ident.clear();
 	}
 ;
-		fprintf(out, "<br/>\n");
+		out << "<br/>" << std::endl;
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
@@ -1429,18 +1417,16 @@
 	}
  
 	if (status.codeIndent) {
-		fprintf(
-			out,
-			"<span class=\"in%d\"></span>",
-			status.codeIndent
-		);
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
 		status.codeIndent = 0;
 	}
 
 	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
 		status.codeSpecial = ch;
 		status.codeNameEnd = status.codeName;
-		fprintf(out, "<span class=\"str\">%c", ch);
+		out << "<span class=\"str\">" << static_cast<char>(ch);
 		continue;
 	}
 
@@ -1450,196 +1436,139 @@
 		switch (lc) {
 			
 	case 'd':
-		fprintf(out,
-			"<span class=\"add\">@def("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@def(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'D':
-		fprintf(out,
-			"<span class=\"add\">@globdef("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@globdef(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'a':
-		fprintf(out,
-			"<span class=\"add\">@add("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@add(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'A':
-		fprintf(out,
-			"<span class=\"add\">@globadd("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@globadd(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'r':
-		fprintf(out,
-			"<span class=\"add\">@replace("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@replace(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'R':
-		fprintf(out,
-			"<span class=\"add\">@globreplace("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@globreplace(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'x':
-		fprintf(out,
-			"<span class=\"end\">@end("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"end\">@end(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'e':
-		fprintf(out,
-			"<span class=\"expand\">@expand("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@expand(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'E':
-		fprintf(out,
-			"<span class=\"expand\">@multiple("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@multiple(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'g':
-		fprintf(out,
-			"<span class=\"expand\">"
-				"@globexpand("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@globexpand(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'G':
-		fprintf(out,
-			"<span class=\"expand\">"
-				"@globmult("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@globmult(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'i':
-		fprintf(out,
-			"<span class=\"include\">@include("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"include\">@include(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 't':
-		fprintf(out, "<span class=\"type\">");
+		out << "<span class=\"type\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'v':
-		fprintf(out, "<span class=\"var\">");
+		out << "<span class=\"var\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'f':
-		fprintf(out, "<span class=\"fn\">");
+		out << "<span class=\"fn\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'k':
-		fprintf(out, "<span class=\"keyword\">");
+		out << "<span class=\"keyword\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 's':
-		fprintf(out, "<span class=\"str\">");
+		out << "<span class=\"str\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'n':
-		fprintf(out, "<span class=\"num\">");
+		out << "<span class=\"num\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'p':
-		fprintf(out,
-			"<span class=\"type\">"
-				"@priv(<span>"
-		);
+		out << "<span class=\"type\">@priv(<span>";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'm':
-		fprintf(
-			out,
-			"<span class=\"num\">"
-				"@magic(<span>"
-		);
+		out << "<span class=\"num\">@magic(<span>";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'b':
-		fprintf(out, "<span class=\"virt\"></span><br/>");
+		out << "<span class=\"virt\"></span><br/>";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
@@ -1715,14 +1644,10 @@
 		"no period"
 	);
 	*status.codeNameEnd = '\0';
-	fprintf(out,
-		"<a href=\"%s.html\">",
-		status.codeName
-	);
+	out << "<a href=\"" 
+		<< status.codeName << ".html\">";
 	*status.codeNameEnd = '.';
-	fprintf(out,
-		"%s</a>)</span>", status.codeName
-	);
+	out << status.codeName << "</a>)</span>";
 	status.codeNameEnd = nullptr;
 ;
 		break;
@@ -1731,17 +1656,17 @@
 	case 'g': case 'G': case 'A': case 'D':
 	case 'R':
 	case 'r': case 'd': case 'p': case 'm': {
-		fprintf(out, "</span>)");
+		out << "</span>)";
 		break;
 	}
 	case '\'': case '"': case '`': {
-		fputc(status.codeSpecial, out);
+		out << status.codeSpecial;
 		break;
 	}
 
 		}
 		if (status.codeSpecial != 'b') {
-			fprintf(out, "</span>");
+			out << "</span>";
 		}
 		status.codeSpecial = 0;
 		status.codeNameEnd = nullptr;
@@ -1792,12 +1717,12 @@
 		status.state == HtmlState::inNotes
 	) {
 		if (ch == '*') {
-			fprintf(out, "</li><li>\n");
+			out << "</li><li>" << std::endl;
 			ident.clear();
 			newline = false;
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
-			fprintf(out, "</li></ul></div>\n");
+			out << "</li></ul></div>" << std::endl;
 			status.state = HtmlState::afterSlide;
 			
 	newline = ch == '\n';
@@ -1813,10 +1738,10 @@
 	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
 			if (status.state != HtmlState::inSlide) {
-				fprintf(out, "<div>\n");
+				out << "<div>" << std::endl;
 			}
 			status.state = HtmlState::inNotes;
-			fprintf(out, "<ul><li>\n");
+			out << "<ul><li>" << std::endl;
 			ident.clear();
 			newline = false;
 			continue;
@@ -1844,9 +1769,9 @@
 	}
 ;
 		if (status.noteInCode) {
-			fprintf(out, "</code>");
+			out << "</code>";
 		} else {
-			fprintf(out, "<code>");
+			out << "<code>";
 		}
 		status.noteInCode = ! status.noteInCode;
 		ident.clear();
@@ -1862,196 +1787,139 @@
 		switch (lc) {
 			
 	case 'd':
-		fprintf(out,
-			"<span class=\"add\">@def("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@def(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'D':
-		fprintf(out,
-			"<span class=\"add\">@globdef("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@globdef(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'a':
-		fprintf(out,
-			"<span class=\"add\">@add("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@add(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'A':
-		fprintf(out,
-			"<span class=\"add\">@globadd("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@globadd(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'r':
-		fprintf(out,
-			"<span class=\"add\">@replace("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@replace(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'R':
-		fprintf(out,
-			"<span class=\"add\">@globreplace("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"add\">@globreplace(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'x':
-		fprintf(out,
-			"<span class=\"end\">@end("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"end\">@end(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'e':
-		fprintf(out,
-			"<span class=\"expand\">@expand("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@expand(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'E':
-		fprintf(out,
-			"<span class=\"expand\">@multiple("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@multiple(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'g':
-		fprintf(out,
-			"<span class=\"expand\">"
-				"@globexpand("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@globexpand(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'G':
-		fprintf(out,
-			"<span class=\"expand\">"
-				"@globmult("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"expand\">@globmult(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'i':
-		fprintf(out,
-			"<span class=\"include\">@include("
-		);
-		fprintf(out,
-			"<span class=\"name\">"
-		);
+		out << "<span class=\"include\">@include(";
+		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 't':
-		fprintf(out, "<span class=\"type\">");
+		out << "<span class=\"type\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'v':
-		fprintf(out, "<span class=\"var\">");
+		out << "<span class=\"var\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'f':
-		fprintf(out, "<span class=\"fn\">");
+		out << "<span class=\"fn\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'k':
-		fprintf(out, "<span class=\"keyword\">");
+		out << "<span class=\"keyword\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 's':
-		fprintf(out, "<span class=\"str\">");
+		out << "<span class=\"str\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'n':
-		fprintf(out, "<span class=\"num\">");
+		out << "<span class=\"num\">";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'p':
-		fprintf(out,
-			"<span class=\"type\">"
-				"@priv(<span>"
-		);
+		out << "<span class=\"type\">@priv(<span>";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'm':
-		fprintf(
-			out,
-			"<span class=\"num\">"
-				"@magic(<span>"
-		);
+		out << "<span class=\"num\">@magic(<span>";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
 
 	case 'b':
-		fprintf(out, "<span class=\"virt\"></span><br/>");
+		out << "<span class=\"virt\"></span><br/>";
 		status.codeSpecial = lc;
 		status.codeNameEnd = status.codeName;
 		break;
@@ -2127,14 +1995,10 @@
 		"no period"
 	);
 	*status.codeNameEnd = '\0';
-	fprintf(out,
-		"<a href=\"%s.html\">",
-		status.codeName
-	);
+	out << "<a href=\"" 
+		<< status.codeName << ".html\">";
 	*status.codeNameEnd = '.';
-	fprintf(out,
-		"%s</a>)</span>", status.codeName
-	);
+	out << status.codeName << "</a>)</span>";
 	status.codeNameEnd = nullptr;
 ;
 		break;
@@ -2143,17 +2007,17 @@
 	case 'g': case 'G': case 'A': case 'D':
 	case 'R':
 	case 'r': case 'd': case 'p': case 'm': {
-		fprintf(out, "</span>)");
+		out << "</span>)";
 		break;
 	}
 	case '\'': case '"': case '`': {
-		fputc(status.codeSpecial, out);
+		out << status.codeSpecial;
 		break;
 	}
 
 		}
 		if (status.codeSpecial != 'b') {
-			fprintf(out, "</span>");
+			out << "</span>";
 		}
 		status.codeSpecial = 0;
 		status.codeNameEnd = nullptr;
@@ -2168,9 +2032,9 @@
 		status.state == HtmlState::inNotes
 	) {
 		if (status.noteInBold) {
-			fprintf(out, "</b>");
+			out << "</b>";
 		} else {
-			fprintf(out, "<b>");
+			out << "<b>";
 		}
 		status.noteInBold =
 			! status.noteInBold;
@@ -2217,7 +2081,7 @@
 } ;
 	fclose(in);
 ;
-	fclose(out);
+	out.close();
 ;
 	}
 	used.clear();

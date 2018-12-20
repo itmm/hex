@@ -2,7 +2,8 @@
 <html lang="de"l>
 <head>
 <meta charset="utf-8">
-<title>HTML-Präsentation generieren</title><link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<title>HTML-Präsentation generieren</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
 <h1>HTML-Präsentation generieren</h1>
 <div class="slides">
@@ -52,13 +53,11 @@
 
 <span class="in2"></span><span class="str">".html"</span>;<br/>
 
-<span class="in1"></span><span class="type">FILE</span> *<span class="var">out</span> = <span class="fn">fopen</span>(<span class="var">outPath</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>);<br/>
-
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<span class="var">outPath</span>.<span class="fn">c_str</span>(), <span class="var">std</span>::<span class="var">ofstream</span>::<span class="var">out</span>);<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write cur HTML file to out</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">fclose</span>(<span class="var">out</span>);<br/>
+<span class="in1"></span><span class="var">out</span>.<span class="fn">close</span>();<br/>
 
 <span class="end">@end(<span class="name">write cur HTML file</span>)</span><br/>
 
@@ -543,13 +542,13 @@
 
 <span class="in1"></span><span class="expand">@multiple(<span class="name">write header tag</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span><span class="expand">@multiple(<span class="name">write header tag</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="end">@end(<span class="name">process header in HTML</span>)</span><br/>
 
@@ -573,11 +572,9 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
 
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">out</span>, <span class="var">T</span> <span class="var">str</span>, <span class="var">T</span> <span class="var">end</span><br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="var">T</span> <span class="var">str</span>, <span class="var">T</span> <span class="var">end</span><br/>
 
 <span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">out</span>);<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; *<span class="var">str</span> &amp;&amp; <span class="var">str</span> != <span class="var">end</span>; ++<span class="var">str</span>) {<br/>
 
@@ -587,7 +584,7 @@
 
 <span class="in4"></span><span class="keyword">default</span>:<br/>
 
-<span class="in5"></span><span class="fn">fputc</span>(*<span class="var">str</span>, <span class="var">out</span>);<br/>
+<span class="in5"></span><span class="var">out</span> &lt;&lt; *<span class="var">str</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
@@ -612,19 +609,19 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'&lt;'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;lt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&amp;lt;"</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'&gt;'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&amp;gt;"</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'&amp;'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&amp;amp;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&amp;amp;"</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -642,7 +639,7 @@
 
 <span class="add">@def(<span class="name">write header tag</span>)</span> <br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;h%d&gt;"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;h"</span> &lt;&lt; <span class="var">status</span>.<span class="var">headerLevel</span> &lt;&lt; <span class="str">'&gt;'</span>;<br/>
 
 <span class="in1"></span><span class="fn">writeEscaped</span>(<br/>
 
@@ -654,7 +651,7 @@
 
 <span class="in1"></span>);<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/h%d&gt;\n"</span>, <span class="var">status</span>.<span class="var">headerLevel</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/h"</span> &lt;&lt; <span class="var">status</span>.<span class="var">headerLevel</span> &lt;&lt; <span class="str">'&gt;'</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="end">@end(<span class="name">write header tag</span>)</span><br/>
 
@@ -682,9 +679,9 @@
 
 <span class="in2"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">inSlide</span>: {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
@@ -692,7 +689,7 @@
 
 <span class="in2"></span><span class="keyword">default</span>: {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -713,17 +710,17 @@
 
 <span class="add">@def(<span class="name">write HTML header</span>)</span> <br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;!doctype html&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;!doctype html&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;html lang=\"de\"l&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;html lang=\"de\"l&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;head&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;head&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write HTML header entries</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/head&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/head&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;body&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;body&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="end">@end(<span class="name">write HTML header</span>)</span><br/>
 
@@ -743,13 +740,9 @@
 
 <span class="add">@def(<span class="name">write HTML header entries</span>)</span> <br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;meta charset=\"utf-8\"&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in2"></span><span class="var">out</span>, <span class="str">"&lt;meta charset=\"utf-8\"&gt;\n"</span><br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;title&gt;"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;title&gt;"</span>;<br/>
 
 <span class="in1"></span><span class="fn">writeEscaped</span>(<br/>
 
@@ -761,17 +754,13 @@
 
 <span class="in1"></span>);<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/title&gt;"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/title&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;link rel=\"stylesheet\" "</span><br/>
 
-<span class="in2"></span><span class="var">out</span>, <span class="str">"&lt;link rel=\"stylesheet\" "</span><br/>
+<span class="in2"></span><span class="str">"type=\"text/css\" href=\""</span><br/>
 
-<span class="in2"></span><span class="str">"type=\"text/css\" href=\"%s\"&gt;"</span>,<br/>
-
-<span class="in2"></span><span class="var">stylesheet</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in1"></span>);<br/>
+<span class="in2"></span>&lt;&lt; <span class="var">stylesheet</span> &lt;&lt; <span class="str">"\"&gt;"</span>;<br/>
 
 <span class="end">@end(<span class="name">write HTML header entries</span>)</span><br/>
 
@@ -1009,21 +998,17 @@
 
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeIndent</span>) {<br/>
 
-<span class="in4"></span><span class="fn">fprintf</span>(<br/>
+<span class="in4"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"in"</span><br/>
 
-<span class="in5"></span><span class="var">out</span>,<br/>
+<span class="in5"></span>&lt;&lt; <span class="var">status</span>.<span class="var">codeIndent</span><br/>
 
-<span class="in5"></span><span class="str">"&lt;span class=\"in%d\"&gt;&lt;/span&gt;"</span>,<br/>
-
-<span class="in5"></span><span class="var">status</span>.<span class="var">codeIndent</span><br/>
-
-<span class="in4"></span>);<br/>
+<span class="in5"></span>&lt;&lt; <span class="str">"\"&gt;&lt;/span&gt;"</span>;<br/>
 
 <span class="in4"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="num">0</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"str\"&gt;`"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"str\"&gt;`"</span>;<br/>
 
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<br/>
 
@@ -1035,7 +1020,7 @@
 
 <span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span>);<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"`&lt;/span&gt;"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"`&lt;/span&gt;"</span>;<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="num">0</span>;<br/>
 
@@ -1073,13 +1058,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inSlide</span>) {<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;code&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;code&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inCode</span>;<br/>
 
@@ -1101,9 +1086,9 @@
 
 <span class="add">@def(<span class="name">close code page</span>)</span><br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/code&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/code&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/div&gt;\n"</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
 
@@ -1202,7 +1187,7 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">escapeIdent</span>(<br/>
 
-<span class="in2"></span><span class="type">FILE</span> *<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">cls</span>,<br/>
 
@@ -1210,19 +1195,9 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\""</span> &lt;&lt; <span class="var">cls</span> &lt;&lt; <span class="str">"\"&gt;"</span><br/>
 
-<span class="in3"></span><span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"%s\"&gt;%.*s&lt;/span&gt;"</span>,<br/>
-
-<span class="in3"></span><span class="var">cls</span>,<br/>
-
-<span class="in3"></span>(<span class="type">int</span>) <span class="var">s</span>.<span class="fn">size</span>(),<br/>
-
-<span class="in3"></span><span class="var">s</span>.<span class="fn">data</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">s</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1412,7 +1387,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;br/&gt;\n"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;br/&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">move ch to last</span>)</span>;<br/>
 
@@ -1458,15 +1433,11 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeIndent</span>) {<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"in"</span><br/>
 
-<span class="in3"></span><span class="var">out</span>,<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">status</span>.<span class="var">codeIndent</span><br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"in%d\"&gt;&lt;/span&gt;"</span>,<br/>
-
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeIndent</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span>&lt;&lt; <span class="str">"\"&gt;&lt;/span&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeIndent</span> = <span class="num">0</span>;<br/>
 
@@ -1492,7 +1463,7 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"str\"&gt;%c"</span>, <span class="var">ch</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"str\"&gt;"</span> &lt;&lt; <span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">ch</span>);<br/>
 
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 
@@ -1630,7 +1601,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'b'</span>) {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/span&gt;"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1675,7 +1646,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'r'</span>: <span class="keyword">case</span> <span class="str">'d'</span>: <span class="keyword">case</span> <span class="str">'p'</span>: <span class="keyword">case</span> <span class="str">'m'</span>: {<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/span&gt;)"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)"</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1683,7 +1654,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'\''</span>: <span class="keyword">case</span> <span class="str">'"'</span>: <span class="keyword">case</span> <span class="str">'`'</span>: {<br/>
 
-<span class="in2"></span><span class="fn">fputc</span>(<span class="var">status</span>.<span class="var">codeSpecial</span>, <span class="var">out</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="var">status</span>.<span class="var">codeSpecial</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1760,21 +1731,13 @@
 
 <span class="in1"></span>*<span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="str">'\0'</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;a href=\""</span> <br/>
 
-<span class="in2"></span><span class="str">"&lt;a href=\"%s.html\"&gt;"</span>,<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeName</span><br/>
-
-<span class="in1"></span>);<br/>
+<span class="in2"></span>&lt;&lt; <span class="var">status</span>.<span class="var">codeName</span> &lt;&lt; <span class="str">".html\"&gt;"</span>;<br/>
 
 <span class="in1"></span>*<span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="str">'.'</span>;<br/>
 
-<span class="in1"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in2"></span><span class="str">"%s&lt;/a&gt;)&lt;/span&gt;"</span>, <span class="var">status</span>.<span class="var">codeName</span><br/>
-
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="var">status</span>.<span class="var">codeName</span> &lt;&lt; <span class="str">"&lt;/a&gt;)&lt;/span&gt;"</span>;<br/>
 
 <span class="in1"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="num">nullptr</span>;<br/>
 
@@ -1836,17 +1799,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'d'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"add\"&gt;@def("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"add\"&gt;@def("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -1868,17 +1823,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'D'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"add\"&gt;@globdef("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"add\"&gt;@globdef("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -1900,17 +1847,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'a'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"add\"&gt;@add("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"add\"&gt;@add("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -1932,17 +1871,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'A'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"add\"&gt;@globadd("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"add\"&gt;@globadd("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -1964,17 +1895,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'r'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"add\"&gt;@replace("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"add\"&gt;@replace("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -1996,17 +1919,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'R'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"add\"&gt;@globreplace("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"add\"&gt;@globreplace("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2028,17 +1943,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'x'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"end\"&gt;@end("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"end\"&gt;@end("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2060,17 +1967,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'e'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"expand\"&gt;@expand("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"expand\"&gt;@expand("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2092,17 +1991,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'E'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"expand\"&gt;@multiple("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"expand\"&gt;@multiple("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2124,19 +2015,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'g'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"expand\"&gt;@globexpand("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"expand\"&gt;"</span><br/>
-
-<span class="in4"></span><span class="str">"@globexpand("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2158,19 +2039,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'G'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"expand\"&gt;@globmult("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"expand\"&gt;"</span><br/>
-
-<span class="in4"></span><span class="str">"@globmult("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2192,17 +2063,9 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'i'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"include\"&gt;@include("</span>;<br/>
 
-<span class="in3"></span><span class="str">"&lt;span class=\"include\"&gt;@include("</span><br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"name\"&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"name\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2224,7 +2087,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'t'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"type\"&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"type\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2246,7 +2109,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'v'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"var\"&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"var\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2268,7 +2131,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'f'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"fn\"&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"fn\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2290,7 +2153,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'k'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"keyword\"&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"keyword\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2312,7 +2175,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'s'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"str\"&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"str\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2334,7 +2197,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'n'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"num\"&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"num\"&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2356,13 +2219,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'p'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"type\"&gt;"</span><br/>
-
-<span class="in4"></span><span class="str">"@priv(&lt;span&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"type\"&gt;@priv(&lt;span&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2384,15 +2241,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'m'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<br/>
-
-<span class="in3"></span><span class="var">out</span>,<br/>
-
-<span class="in3"></span><span class="str">"&lt;span class=\"num\"&gt;"</span><br/>
-
-<span class="in4"></span><span class="str">"@magic(&lt;span&gt;"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"num\"&gt;@magic(&lt;span&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2416,7 +2265,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'b'</span>:<br/>
 
-<span class="in2"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;span class=\"virt\"&gt;&lt;/span&gt;&lt;br/&gt;"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"virt\"&gt;&lt;/span&gt;&lt;br/&gt;"</span>;<br/>
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
@@ -2521,7 +2370,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'*'</span>) {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;li&gt;\n"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/li&gt;&lt;li&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in3"></span><span class="var">ident</span>.<span class="fn">clear</span>();<br/>
 
@@ -2531,7 +2380,7 @@
 
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ch</span> != <span class="str">' '</span> &amp;&amp; <span class="var">ch</span> != <span class="str">'\t'</span>) {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;\n"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">afterSlide</span>;<br/>
 
@@ -2561,13 +2410,13 @@
 
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inSlide</span>) {<br/>
 
-<span class="in4"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;div&gt;\n"</span>);<br/>
+<span class="in4"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in3"></span>}<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inNotes</span>;<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;ul&gt;&lt;li&gt;\n"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;ul&gt;&lt;li&gt;"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in3"></span><span class="var">ident</span>.<span class="fn">clear</span>();<br/>
 
@@ -2603,11 +2452,11 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">noteInCode</span>) {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/code&gt;"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/code&gt;"</span>;<br/>
 
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;code&gt;"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;code&gt;"</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -2665,11 +2514,11 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">noteInBold</span>) {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;/b&gt;"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/b&gt;"</span>;<br/>
 
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 
-<span class="in3"></span><span class="fn">fprintf</span>(<span class="var">out</span>, <span class="str">"&lt;b&gt;"</span>);<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;b&gt;"</span>;<br/>
 
 <span class="in2"></span>}<br/>
 

@@ -95,6 +95,7 @@ x{global elements}
 ```
 D{includes}
 	#include <stdio.h>
+	#include <fstream>
 	#include <memory>
 	#include <vector>
 x{includes}
