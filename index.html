@@ -445,15 +445,7 @@
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
-
-<span class="in3"></span><span class="var">pending</span>.<span class="fn">push_back</span>(<br/>
-
-<span class="in4"></span><span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>)<br/>
-
-<span class="in3"></span>);<br/>
-
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="expand">@expand(<span class="name">push to pending</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
 
@@ -472,7 +464,29 @@
  Durch <code>unique_ptr</code> ist keine direkte Speicherverwaltung notwendig
 </li><li>
  Das Verschieben der Ownership muss aber explizit erfolgen
-</li><li>
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">push to pending</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
+
+<span class="in2"></span><span class="var">pending</span>.<span class="fn">push_back</span>(<br/>
+
+<span class="in3"></span><span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>)<br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">push to pending</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
  Falls schon eine Datei offen ist, wird sie nach <code>pending</code> verschoben
 </li></ul></div>
 

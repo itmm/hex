@@ -199,11 +199,7 @@ A{global elements}
 		std::unique_ptr<Input> i =
 			std::make_unique<Input>(path);
 		e{init additional input fields};
-		if (input) {
-			pending.push_back(
-				std::move(input)
-			);
-		}
+		e{push to pending};
 		input = std::move(i);
 	}
 x{global elements}
@@ -212,6 +208,16 @@ x{global elements}
 * Dieser wird als Name gespeichert
 * Durch `unique_ptr` ist keine direkte Speicherverwaltung notwendig
 * Das Verschieben der Ownership muss aber explizit erfolgen
+
+```
+d{push to pending}
+	if (input) {
+		pending.push_back(
+			std::move(input)
+		);
+	}
+x{push to pending}
+```
 * Falls schon eine Datei offen ist, wird sie nach `pending` verschoben
 
 ```

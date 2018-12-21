@@ -329,11 +329,13 @@
 		frags = &input->frags;
 	}
 ;
-		if (input) {
-			pending.push_back(
-				std::move(input)
-			);
-		}
+		
+	if (input) {
+		pending.push_back(
+			std::move(input)
+		);
+	}
+;
 		input = std::move(i);
 	}
 
