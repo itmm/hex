@@ -1202,13 +1202,11 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt; <span class="var">name</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"frag [%s] already defined\n"</span>,<br/>
+<span class="in3"></span><span class="str">"] already defined"</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1296,13 +1294,9 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt; <span class="var">name</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"frag [%s] not defined\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="str">"] not defined"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">fm</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, *<span class="var">ins</span>);<br/>
 
@@ -1591,25 +1585,17 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="var">expands</span>) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple expands of ["</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"multiple expands of [%s]\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="var">multiples</span>) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"expand after mult of ["</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"expand after mult of [%s]\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1696,15 +1682,9 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="var">expands</span>) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple after expand of ["</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"multiple after expand "</span><br/>
-
-<span class="in4"></span><span class="str">"of [%s]\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2198,13 +2178,9 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sum</span> &lt;= <span class="num">0</span>) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"frag [%s] not called\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="str">"] not called"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2226,15 +2202,11 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">multiples</span> == <span class="num">1</span>) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple frag ["</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"multiple frag [%s] only "</span><br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">"] only used once"</span> &lt;&lt;<br/>
 
-<span class="in4"></span><span class="str">"used once\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2257,13 +2229,9 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
-<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="str">"frag [%s] not populated\n"</span>,<br/>
-
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="str">"] not populated"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 

@@ -554,10 +554,9 @@ x{process frag name}
 d{check for double def}
 	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] already defined\n",
-			name.c_str()
-		);
+		std::cerr << "frag [" << name <<
+			"] already defined" <<
+			std::endl;
 	}
 x{check for double def}
 ```
@@ -598,10 +597,8 @@ x{process frag name}
 ```
 d{check for add without def}
 	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not defined\n",
-			name.c_str()
-		);
+		std::cerr << "frag [" << name <<
+			"] not defined" << std::endl;
 		frag = &fm->get(name, *ins);
 	}
 x{check for add without def}
@@ -739,16 +736,12 @@ x{process frag name}
 ```
 d{check frag expand count}
 	if (sub.expands) {
-		printf(
-			"multiple expands of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "multiple expands of [" <<
+			sub.name << "]" << std::endl;
 	}
 	if (sub.multiples) {
-		printf(
-			"expand after mult of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "expand after mult of [" <<
+			sub.name << "]" << std::endl;
 	}
 x{check frag expand count}
 ```
@@ -790,11 +783,8 @@ x{process frag name}
 ```
 d{check for prev expands}
 	if (sub.expands) {
-		printf(
-			"multiple after expand "
-				"of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "multiple after expand of [" <<
+			sub.name << "]" << std::endl;
 	}
 x{check for prev expands}
 ```
@@ -1028,10 +1018,8 @@ a{serialize frag} {
 	int sum =
 		frag->expands + frag->multiples;
 	if (sum <= 0) {
-		printf(
-			"frag [%s] not called\n",
-			frag->name.c_str()
-		);
+		std::cerr << "frag [" << frag->name <<
+			"] not called" << std::endl;
 	}
 } x{serialize frag}
 ```
@@ -1041,11 +1029,9 @@ a{serialize frag} {
 ```
 a{serialize frag}
 	if (frag->multiples == 1) {
-		printf(
-			"multiple frag [%s] only "
-				"used once\n",
-			frag->name.c_str()
-		);
+		std::cerr << "multiple frag [" <<
+			frag->name << "] only used once" <<
+			std::endl;
 	}
 x{serialize frag}
 ```
@@ -1056,10 +1042,8 @@ x{serialize frag}
 ```
 a{serialize frag}
 	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not populated\n",
-			frag->name.c_str()
-		);
+		std::cerr << "frag [" << frag->name <<
+			"] not populated" << std::endl;
 	}
 x{serialize frag}
 ```

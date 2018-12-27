@@ -629,10 +629,9 @@
 		
 	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] already defined\n",
-			name.c_str()
-		);
+		std::cerr << "frag [" << name <<
+			"] already defined" <<
+			std::endl;
 	}
 ;
 		if (! frag) {
@@ -647,10 +646,9 @@
 		
 	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] already defined\n",
-			name.c_str()
-		);
+		std::cerr << "frag [" << name <<
+			"] already defined" <<
+			std::endl;
 	}
 ;
 		if (! frag) {
@@ -666,10 +664,8 @@
 		frag = fm->find(name);
 		
 	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not defined\n",
-			name.c_str()
-		);
+		std::cerr << "frag [" << name <<
+			"] not defined" << std::endl;
 		frag = &fm->get(name, *ins);
 	}
 ;
@@ -683,10 +679,8 @@
 		frag = fm->find(name);
 		
 	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not defined\n",
-			name.c_str()
-		);
+		std::cerr << "frag [" << name <<
+			"] not defined" << std::endl;
 		frag = &fm->get(name, *ins);
 	}
 ;
@@ -756,16 +750,12 @@
 		Frag &sub = input->frags[name];
 		
 	if (sub.expands) {
-		printf(
-			"multiple expands of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "multiple expands of [" <<
+			sub.name << "]" << std::endl;
 	}
 	if (sub.multiples) {
-		printf(
-			"expand after mult of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "expand after mult of [" <<
+			sub.name << "]" << std::endl;
 	}
 ;
 		++sub.expands;
@@ -787,16 +777,12 @@
 		Frag &sub = frags->get(name, root);
 		
 	if (sub.expands) {
-		printf(
-			"multiple expands of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "multiple expands of [" <<
+			sub.name << "]" << std::endl;
 	}
 	if (sub.multiples) {
-		printf(
-			"expand after mult of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "expand after mult of [" <<
+			sub.name << "]" << std::endl;
 	}
 ;
 		++sub.expands;
@@ -818,11 +804,8 @@
 		Frag &sub = input->frags[name];
 		
 	if (sub.expands) {
-		printf(
-			"multiple after expand "
-				"of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "multiple after expand of [" <<
+			sub.name << "]" << std::endl;
 	}
 ;
 		++sub.multiples;
@@ -844,11 +827,8 @@
 		Frag &sub = frags->get(name, root);
 		
 	if (sub.expands) {
-		printf(
-			"multiple after expand "
-				"of [%s]\n",
-			sub.name.c_str()
-		);
+		std::cerr << "multiple after expand of [" <<
+			sub.name << "]" << std::endl;
 	}
 ;
 		++sub.multiples;
@@ -982,25 +962,19 @@
 	int sum =
 		frag->expands + frag->multiples;
 	if (sum <= 0) {
-		printf(
-			"frag [%s] not called\n",
-			frag->name.c_str()
-		);
+		std::cerr << "frag [" << frag->name <<
+			"] not called" << std::endl;
 	}
 } 
 	if (frag->multiples == 1) {
-		printf(
-			"multiple frag [%s] only "
-				"used once\n",
-			frag->name.c_str()
-		);
+		std::cerr << "multiple frag [" <<
+			frag->name << "] only used once" <<
+			std::endl;
 	}
 
 	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not populated\n",
-			frag->name.c_str()
-		);
+		std::cerr << "frag [" << frag->name <<
+			"] not populated" << std::endl;
 	}
 ;
 	}
@@ -1025,25 +999,19 @@
 	int sum =
 		frag->expands + frag->multiples;
 	if (sum <= 0) {
-		printf(
-			"frag [%s] not called\n",
-			frag->name.c_str()
-		);
+		std::cerr << "frag [" << frag->name <<
+			"] not called" << std::endl;
 	}
 } 
 	if (frag->multiples == 1) {
-		printf(
-			"multiple frag [%s] only "
-				"used once\n",
-			frag->name.c_str()
-		);
+		std::cerr << "multiple frag [" <<
+			frag->name << "] only used once" <<
+			std::endl;
 	}
 
 	if (! isPopulatedFrag(frag)) {
-		printf(
-			"frag [%s] not populated\n",
-			frag->name.c_str()
-		);
+		std::cerr << "frag [" << frag->name <<
+			"] not populated" << std::endl;
 	}
 ;
 		}
