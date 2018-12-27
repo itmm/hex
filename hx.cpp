@@ -12,6 +12,8 @@
 
 	#include <string.h>
 
+	#include <functional>
+
 	#include <set>
 	#include <string>
 
@@ -36,45 +38,6 @@
 	) {
 		std::cerr << a;
 		failSuffix(args...);
-	}
-;
-
-	
-	class Hash {
-		private:
-			unsigned _hash;
-		public:
-			
-	Hash(): _hash(0x3d9a73b5) {}
-
-	int hash() const {
-		return static_cast<int>(
-			_hash & 0x7fffffff
-		);
-	}
-
-	unsigned add(const std::string &s);
-;
-	};
-
-	unsigned Hash::add(
-		const std::string &s
-	) {
-		for (auto &ch : s) {
-			
-	_hash ^= ch;
-
-	_hash = (_hash << 3) | (_hash >> 29);
-;
-		}
-		return hash();
-	}
-
-	int calcHash(
-		const std::string &name
-	) {
-		Hash h;
-		return h.add(name);
 	}
 ;
 
@@ -895,9 +858,8 @@
 	if (openCh == 'p') {
 		ASSERT(frag, "private not in frag");
 		
-	Hash h;
-	h.add(input->name);
-	unsigned cur = h.add(name);
+	std::hash<std::string> h;
+	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
 
 	static char hash[12];
 	char *end = hash + sizeof(hash);
@@ -938,9 +900,8 @@
 	if (openCh == 'm') {
 		ASSERT(frag, "magic not in frag");
 		
-	Hash h;
-	h.add(input->name);
-	unsigned cur = h.add(name);
+	std::hash<std::string> h;
+	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
 
 	static char magic[12];
 	char *end = magic + sizeof(magic);

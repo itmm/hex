@@ -1747,13 +1747,27 @@
 <div><div>
 <code>
 
+<span class="add">@globadd(<span class="name">includes</span>)</span><br/>
+
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">functional</span>&gt;<br/>
+
+<span class="end">@end(<span class="name">includes</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Enthält Hash-Funktion
+</li></ul></div>
+
+<div><div>
+<code>
+
 <span class="add">@def(<span class="name">process private frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Hash</span> <span class="var">h</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">hash</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">h</span>;<br/>
 
-<span class="in1"></span><span class="var">h</span>.<span class="fn">add</span>(<span class="var">input</span>-&gt;<span class="var">name</span>);<br/>
-
-<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="var">h</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span>;<br/>
 
 <span class="end">@end(<span class="name">process private frag</span>)</span><br/>
 
@@ -1886,11 +1900,9 @@
 
 <span class="add">@def(<span class="name">process magic frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Hash</span> <span class="var">h</span>;<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">hash</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">h</span>;<br/>
 
-<span class="in1"></span><span class="var">h</span>.<span class="fn">add</span>(<span class="var">input</span>-&gt;<span class="var">name</span>);<br/>
-
-<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="var">h</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span>;<br/>
 
 <span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
 

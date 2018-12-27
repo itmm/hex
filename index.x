@@ -814,10 +814,16 @@ x{process frag name}
 * Um sie global unique zu machen
 
 ```
+A{includes}
+	#include <functional>
+x{includes}
+```
+* Enthält Hash-Funktion
+
+```
 d{process private frag}
-	Hash h;
-	h.add(input->name);
-	unsigned cur = h.add(name);
+	std::hash<std::string> h;
+	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
 x{process private frag}
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
@@ -880,9 +886,8 @@ x{process frag name}
 
 ```
 d{process magic frag}
-	Hash h;
-	h.add(input->name);
-	unsigned cur = h.add(name);
+	std::hash<std::string> h;
+	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
 x{process magic frag}
 ```
 * Berechnet Hash-Wert

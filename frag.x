@@ -4,12 +4,6 @@
   Source-Code Dateien
 
 ```
-i{hash.x}
-```
-* Hash-Funktion wird benötigt
-* Und in der Datei als `calcHash` definiiert
-
-```
 A{global elements}
 	e{define frag};
 x{global elements}
