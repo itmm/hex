@@ -816,6 +816,7 @@ x{process frag name}
 ```
 A{includes}
 	#include <functional>
+	#include <sstream>
 x{includes}
 ```
 * Enthält Hash-Funktion
@@ -832,36 +833,13 @@ x{process private frag}
 
 ```
 a{process private frag}
-	static char hash[12];
-	char *end = hash + sizeof(hash);
-	char *head = end;
-	*--head = '_';
-	for (;;) {
-		ASSERT(head > hash);
-		*--head = (cur % 10) + '0';
-		cur /= 10;
-		if (! cur) { break; }
-	}
-x{process private frag}
-```
-* Das Textfeld mit dem Hash-Wert wird von hinten aus gefüllt
-* Das erleichtert das extrahieren der einzelnen Dezimal-Stellen
-* Zusätzlich wird noch ein Unterstrich an den Hash angehängt
-
-```
-a{process private frag}
 	E{flush frag buffer};
-	static char prefix[] = "_private_";
+	std::ostringstream hashed;
+	hashed << "_private_"
+		<< cur << '_' << name;
 	frag->add(
-		prefix, input->name, nameLine
-	);
-	frag->add(
-		std::string(head, end),
-		input->name, nameLine
-	);
-	frag->add(
-		name,
-		input->name, nameLine
+		hashed.str(), input->name,
+		nameLine
 	);
 x{process private frag}
 ```
@@ -894,19 +872,13 @@ x{process magic frag}
 
 ```
 a{process magic frag}
-	static char magic[12];
-	char *end = magic + sizeof(magic);
-	char *head = end;
-	for (;;) {
-		ASSERT(head > magic);
-		*--head = (cur % 10) + '0';
-		cur /= 10;
-		if (! cur) { break; }
-	}
+	E{flush frag buffer};
+	std::ostringstream value;
+	value << cur;
 	E{flush frag buffer};
 	frag->add(
-		std::string(head, end),
-		input->name, nameLine
+		value.str(),
+		input->name, bufferLine
 	);
 x{process magic frag}
 ```

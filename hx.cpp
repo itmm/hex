@@ -13,6 +13,7 @@
 	#include <string.h>
 
 	#include <functional>
+	#include <sstream>
 
 	#include <set>
 	#include <string>
@@ -861,17 +862,6 @@
 	std::hash<std::string> h;
 	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
 
-	static char hash[12];
-	char *end = hash + sizeof(hash);
-	char *head = end;
-	*--head = '_';
-	for (;;) {
-		ASSERT(head > hash);
-		*--head = (cur % 10) + '0';
-		cur /= 10;
-		if (! cur) { break; }
-	}
-
 	
 	if (! buffer.empty()) {
 		frag->add(
@@ -881,17 +871,12 @@
 		buffer.clear();
 	}
 ;
-	static char prefix[] = "_private_";
+	std::ostringstream hashed;
+	hashed << "_private_"
+		<< cur << '_' << name;
 	frag->add(
-		prefix, input->name, nameLine
-	);
-	frag->add(
-		std::string(head, end),
-		input->name, nameLine
-	);
-	frag->add(
-		name,
-		input->name, nameLine
+		hashed.str(), input->name,
+		nameLine
 	);
 ;
 		processed = true;
@@ -903,15 +888,17 @@
 	std::hash<std::string> h;
 	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
 
-	static char magic[12];
-	char *end = magic + sizeof(magic);
-	char *head = end;
-	for (;;) {
-		ASSERT(head > magic);
-		*--head = (cur % 10) + '0';
-		cur /= 10;
-		if (! cur) { break; }
+	
+	if (! buffer.empty()) {
+		frag->add(
+			buffer,
+			input->name, bufferLine
+		);
+		buffer.clear();
 	}
+;
+	std::ostringstream value;
+	value << cur;
 	
 	if (! buffer.empty()) {
 		frag->add(
@@ -922,8 +909,8 @@
 	}
 ;
 	frag->add(
-		std::string(head, end),
-		input->name, nameLine
+		value.str(),
+		input->name, bufferLine
 	);
 ;
 		processed = true;
