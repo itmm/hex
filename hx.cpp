@@ -376,8 +376,8 @@
 	int codeIndent;
 
 	char codeSpecial;
-	char codeName[100];
-	char *codeNameEnd;
+	std::string name;
+	bool nameUsed;
 
 	bool noteInCode;
 	bool noteInBold;
@@ -393,7 +393,8 @@
 	, codeOpening { 0 }
 	, codeIndent { 0 }
 	, codeSpecial { '\0' }
-	, codeNameEnd { nullptr }
+	, name {}
+	, nameUsed { false }
 
 	, noteInCode { false }
 	, noteInBold { false }
@@ -1214,7 +1215,8 @@
 	if (status.codeOpening == 1) {
 		if (! status.codeSpecial && status.state == HtmlState::inCode) {
 			status.codeSpecial = '`';
-			status.codeNameEnd = status.codeName;
+			status.name.clear();
+			status.nameUsed = true;
 			
 	if (! ident.empty()) {
 		if (ch == '(') {
@@ -1239,7 +1241,7 @@
 			}
 			out << "<span class=\"str\">`";
 		} else if (
-			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
+			status.codeSpecial == '`' && status.name.back() != '\x5c'
 		) {
 			
 	if (! ident.empty()) {
@@ -1257,12 +1259,10 @@
 		ident.clear();
 	}
 ;
-			writeEscaped(out, std::string(
-				status.codeName, status.codeNameEnd
-			));
+			writeEscaped(out, status.name);
 			out << "`</span>";
 			status.codeSpecial = 0;
-			status.codeNameEnd = nullptr;
+			status.nameUsed = false;
 		}
 	}
 
@@ -1325,7 +1325,8 @@
 
 	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
 		status.codeSpecial = ch;
-		status.codeNameEnd = status.codeName;
+		status.nameUsed = true;
+		status.name.clear();
 		out << "<span class=\"str\">" << static_cast<char>(ch);
 		continue;
 	}
@@ -1339,138 +1340,159 @@
 		out << "<span class=\"add\">@def(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'D':
 		out << "<span class=\"add\">@globdef(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'a':
 		out << "<span class=\"add\">@add(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'A':
 		out << "<span class=\"add\">@globadd(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'r':
 		out << "<span class=\"add\">@replace(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'R':
 		out << "<span class=\"add\">@globreplace(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'x':
 		out << "<span class=\"end\">@end(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'e':
 		out << "<span class=\"expand\">@expand(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'E':
 		out << "<span class=\"expand\">@multiple(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'g':
 		out << "<span class=\"expand\">@globexpand(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'G':
 		out << "<span class=\"expand\">@globmult(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'i':
 		out << "<span class=\"include\">@include(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 't':
 		out << "<span class=\"type\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'v':
 		out << "<span class=\"var\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'f':
 		out << "<span class=\"fn\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'k':
 		out << "<span class=\"keyword\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 's':
 		out << "<span class=\"str\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'n':
 		out << "<span class=\"num\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'p':
 		out << "<span class=\"type\">@priv(<span>";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'm':
 		out << "<span class=\"num\">@magic(<span>";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'b':
 		out << "<span class=\"virt\"></span><br/>";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 			default: break;
@@ -1498,7 +1520,7 @@
 				status.codeSpecial == '`'
 			) &&
 			ch == status.codeSpecial &&
-			status.codeNameEnd[-1] != '\x5c'
+			status.name.back() != '\x5c'
 		)
 	) {
 		
@@ -1520,37 +1542,22 @@
 		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
-			writeEscaped(out, std::string(
-				status.codeName, status.codeNameEnd
-			));
+			writeEscaped(out, status.name);
 		}
 		switch (status.codeSpecial) {
 			
 	case 'i': {
 		
+	auto ext = status.name.find_last_of('.');
 	ASSERT(
-		status.codeNameEnd <
-		status.codeName +
-			sizeof(status.codeName)
-	);
-	*status.codeNameEnd = '\0';
-	while (
-		status.codeNameEnd >= status.codeName
-		&& *status.codeNameEnd != '.'
-	) {
-		--status.codeNameEnd;
-	}
-
-	ASSERT(
-		status.codeNameEnd >= status.codeName,
+		ext != std::string::npos,
 		"no period"
 	);
-	*status.codeNameEnd = '\0';
 	out << "<a href=\"" 
-		<< status.codeName << ".html\">";
-	*status.codeNameEnd = '.';
-	out << status.codeName << "</a>)</span>";
-	status.codeNameEnd = nullptr;
+		<< status.name.substr(0, ext) << "html\">";
+	out << status.name << "</a>)</span>";
+	status.name.clear();
+	status.nameUsed = false;
 ;
 		break;
 	}
@@ -1571,21 +1578,14 @@
 			out << "</span>";
 		}
 		status.codeSpecial = 0;
-		status.codeNameEnd = nullptr;
+		status.name.clear();
+		status.nameUsed = false;
 		continue;
 	}
 ;
 
-	if (ch != EOF && status.codeNameEnd) {
-		ASSERT(
-			status.codeNameEnd <
-				status.codeName +
-					sizeof(status.codeName),
-			" [", status.codeSpecial, "], [",
-				std::string(status.codeName, sizeof(status.codeName)),
-			"]" 
-		);
-		*status.codeNameEnd++ = ch;
+	if (ch != EOF && status.nameUsed) {
+		status.name += ch;
 		continue;
 	}
 ;
@@ -1691,138 +1691,159 @@
 		out << "<span class=\"add\">@def(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'D':
 		out << "<span class=\"add\">@globdef(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'a':
 		out << "<span class=\"add\">@add(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'A':
 		out << "<span class=\"add\">@globadd(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'r':
 		out << "<span class=\"add\">@replace(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'R':
 		out << "<span class=\"add\">@globreplace(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'x':
 		out << "<span class=\"end\">@end(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'e':
 		out << "<span class=\"expand\">@expand(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'E':
 		out << "<span class=\"expand\">@multiple(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'g':
 		out << "<span class=\"expand\">@globexpand(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'G':
 		out << "<span class=\"expand\">@globmult(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'i':
 		out << "<span class=\"include\">@include(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 't':
 		out << "<span class=\"type\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'v':
 		out << "<span class=\"var\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'f':
 		out << "<span class=\"fn\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'k':
 		out << "<span class=\"keyword\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 's':
 		out << "<span class=\"str\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'n':
 		out << "<span class=\"num\">";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'p':
 		out << "<span class=\"type\">@priv(<span>";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'm':
 		out << "<span class=\"num\">@magic(<span>";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 	case 'b':
 		out << "<span class=\"virt\"></span><br/>";
 		status.codeSpecial = lc;
-		status.codeNameEnd = status.codeName;
+		status.name.clear();
+		status.nameUsed = true;
 		break;
 
 			default: break;
@@ -1850,7 +1871,7 @@
 				status.codeSpecial == '`'
 			) &&
 			ch == status.codeSpecial &&
-			status.codeNameEnd[-1] != '\x5c'
+			status.name.back() != '\x5c'
 		)
 	) {
 		
@@ -1872,37 +1893,22 @@
 		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
-			writeEscaped(out, std::string(
-				status.codeName, status.codeNameEnd
-			));
+			writeEscaped(out, status.name);
 		}
 		switch (status.codeSpecial) {
 			
 	case 'i': {
 		
+	auto ext = status.name.find_last_of('.');
 	ASSERT(
-		status.codeNameEnd <
-		status.codeName +
-			sizeof(status.codeName)
-	);
-	*status.codeNameEnd = '\0';
-	while (
-		status.codeNameEnd >= status.codeName
-		&& *status.codeNameEnd != '.'
-	) {
-		--status.codeNameEnd;
-	}
-
-	ASSERT(
-		status.codeNameEnd >= status.codeName,
+		ext != std::string::npos,
 		"no period"
 	);
-	*status.codeNameEnd = '\0';
 	out << "<a href=\"" 
-		<< status.codeName << ".html\">";
-	*status.codeNameEnd = '.';
-	out << status.codeName << "</a>)</span>";
-	status.codeNameEnd = nullptr;
+		<< status.name.substr(0, ext) << "html\">";
+	out << status.name << "</a>)</span>";
+	status.name.clear();
+	status.nameUsed = false;
 ;
 		break;
 	}
@@ -1923,7 +1929,8 @@
 			out << "</span>";
 		}
 		status.codeSpecial = 0;
-		status.codeNameEnd = nullptr;
+		status.name.clear();
+		status.nameUsed = false;
 		continue;
 	}
 ;

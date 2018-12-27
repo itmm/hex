@@ -880,9 +880,9 @@
 
 <span class="in1"></span><span class="type">char</span> <span class="var">codeSpecial</span>;<br/>
 
-<span class="in1"></span><span class="type">char</span> <span class="var">codeName</span>[<span class="num">100</span>];<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
 
-<span class="in1"></span><span class="type">char</span> *<span class="var">codeNameEnd</span>;<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">nameUsed</span>;<br/>
 
 <span class="end">@end(<span class="name">html state elements</span>)</span><br/>
 
@@ -892,8 +892,6 @@
 <ul><li>
  Wenn ein Befehl gelesen wurde, dann enthält <code>codeSpecial</code> den
   Code des Befehls
-</li><li>
- In <code>codeName</code> wird bis zu <code>codeEnd</code> das Argument abgelegt
 </li></ul></div>
 
 <div><div>
@@ -907,7 +905,9 @@
 
 <span class="in1"></span>, <span class="var">codeSpecial</span> { <span class="str">'\0'</span> }<br/>
 
-<span class="in1"></span>, <span class="var">codeNameEnd</span> { <span class="num">nullptr</span> }<br/>
+<span class="in1"></span>, <span class="var">name</span> {}<br/>
+
+<span class="in1"></span>, <span class="var">nameUsed</span> { <span class="num">false</span> }<br/>
 
 <span class="end">@end(<span class="name">init html status</span>)</span><br/>
 
@@ -916,8 +916,6 @@
 
 <ul><li>
  Zur Initialisierung werden die Parameter auf <code>0</code> gesetzt
-</li><li>
- Das Code-Argument <code>codeName</code> wird nicht zurückgesetzt
 </li></ul></div>
 
 <div><div>
@@ -1004,7 +1002,9 @@
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="str">'`'</span>;<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in3"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 
@@ -1024,23 +1024,19 @@
 
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'`'</span> &amp;&amp; <span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'\x5c'</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> == <span class="str">'`'</span> &amp;&amp; <span class="var">status</span>.<span class="var">name</span>.<span class="fn">back</span>() != <span class="str">'\x5c'</span><br/>
 
 <span class="in2"></span>) {<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 
-<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">std</span>::<span class="fn">string</span>(<br/>
-
-<span class="in4"></span><span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span><br/>
-
-<span class="in3"></span>));<br/>
+<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">name</span>);<br/>
 
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"`&lt;/span&gt;"</span>;<br/>
 
 <span class="in3"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="num">0</span>;<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="num">nullptr</span>;<br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">false</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1471,7 +1467,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">ch</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
 
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\"str\"&gt;"</span> &lt;&lt; <span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">ch</span>);<br/>
 
@@ -1585,7 +1583,7 @@
 
 <span class="in3"></span><span class="var">ch</span> == <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp;<br/>
 
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span>[-<span class="num">1</span>] != <span class="str">'\x5c'</span><br/>
+<span class="in3"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">back</span>() != <span class="str">'\x5c'</span><br/>
 
 <span class="in2"></span>)<br/>
 
@@ -1599,11 +1597,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'i'</span>) {<br/>
 
-<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">std</span>::<span class="fn">string</span>(<br/>
-
-<span class="in4"></span><span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span><br/>
-
-<span class="in3"></span>));<br/>
+<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">name</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1621,7 +1615,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="num">0</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">false</span>;<br/>
 
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 
@@ -1692,68 +1688,25 @@
 
 <span class="add">@def(<span class="name">handle html include</span>)</span><br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> &lt;<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeName</span> +<br/>
-
-<span class="in3"></span><span class="fn">sizeof</span>(<span class="var">status</span>.<span class="var">codeName</span>)<br/>
-
-<span class="in1"></span>);<br/>
-
-<span class="in1"></span>*<span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="str">'\0'</span>;<br/>
-
-<span class="in1"></span><span class="keyword">while</span> (<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> &gt;= <span class="var">status</span>.<span class="var">codeName</span><br/>
-
-<span class="in2"></span>&amp;&amp; *<span class="var">status</span>.<span class="var">codeNameEnd</span> != <span class="str">'.'</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span>--<span class="var">status</span>.<span class="var">codeNameEnd</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="end">@end(<span class="name">handle html include</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Bei der Behandlung von Includes wurde der Dateiname in <code>codeName</code>
-  abgelegt
-</li><li>
- Hier wird von hinten alles bis zum ersten Punkt abgeschnitten
-</li><li>
- Also wird die Dateiextension aus dem Namen entfernt
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="add">@add(<span class="name">handle html include</span>)</span><br/>
+<span class="in1"></span><span class="var">auto</span> <span class="var">ext</span> = <span class="var">status</span>.<span class="var">name</span>.<span class="fn">find_last_of</span>(<span class="str">'.'</span>);<br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> &gt;= <span class="var">status</span>.<span class="var">codeName</span>,<br/>
+<span class="in2"></span><span class="var">ext</span> != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span>,<br/>
 
 <span class="in2"></span><span class="str">"no period"</span><br/>
 
 <span class="in1"></span>);<br/>
 
-<span class="in1"></span>*<span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="str">'\0'</span>;<br/>
-
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;a href=\""</span> <br/>
 
-<span class="in2"></span>&lt;&lt; <span class="var">status</span>.<span class="var">codeName</span> &lt;&lt; <span class="str">".html\"&gt;"</span>;<br/>
+<span class="in2"></span>&lt;&lt; <span class="var">status</span>.<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">ext</span>) &lt;&lt; <span class="str">"html\"&gt;"</span>;<br/>
 
-<span class="in1"></span>*<span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="str">'.'</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="var">status</span>.<span class="var">name</span> &lt;&lt; <span class="str">"&lt;/a&gt;)&lt;/span&gt;"</span>;<br/>
 
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="var">status</span>.<span class="var">codeName</span> &lt;&lt; <span class="str">"&lt;/a&gt;)&lt;/span&gt;"</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
 
-<span class="in1"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">false</span>;<br/>
 
 <span class="end">@end(<span class="name">handle html include</span>)</span><br/>
 
@@ -1772,25 +1725,9 @@
 
 <span class="add">@add(<span class="name">process ch in HTML code</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span> &amp;&amp; <span class="var">status</span>.<span class="var">codeNameEnd</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span> &amp;&amp; <span class="var">status</span>.<span class="var">nameUsed</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
-
-<span class="in3"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> &lt;<br/>
-
-<span class="in4"></span><span class="var">status</span>.<span class="var">codeName</span> +<br/>
-
-<span class="in5"></span><span class="fn">sizeof</span>(<span class="var">status</span>.<span class="var">codeName</span>),<br/>
-
-<span class="in3"></span><span class="str">" ["</span>, <span class="var">status</span>.<span class="var">codeSpecial</span>, <span class="str">"], ["</span>,<br/>
-
-<span class="in4"></span><span class="var">std</span>::<span class="fn">string</span>(<span class="var">status</span>.<span class="var">codeName</span>, <span class="fn">sizeof</span>(<span class="var">status</span>.<span class="var">codeName</span>)),<br/>
-
-<span class="in3"></span><span class="str">"]"</span> <br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span>*<span class="var">status</span>.<span class="var">codeNameEnd</span>++ = <span class="var">ch</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span> += <span class="var">ch</span>;<br/>
 
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 
@@ -1804,8 +1741,6 @@
 <ul><li>
  Wenn das Argument gespeichert werden soll (d.h. wenn <code>codeNameEnd</code>
   nicht <code>nullptr</code>)
-</li><li>
- Wird das aktuelle Zeichen im <code>codeName</code> gespeichert
 </li></ul></div>
 
 <div><div>
@@ -1821,7 +1756,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1845,7 +1782,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1869,7 +1808,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1893,7 +1834,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1917,7 +1860,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1941,7 +1886,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1965,7 +1912,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -1989,7 +1938,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2013,7 +1964,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2037,7 +1990,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2061,7 +2016,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2085,7 +2042,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2107,7 +2066,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2129,7 +2090,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2151,7 +2114,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2173,7 +2138,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2195,7 +2162,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2217,7 +2186,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2239,7 +2210,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2261,7 +2234,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -2285,7 +2260,9 @@
 
 <span class="in2"></span><span class="var">status</span>.<span class="var">codeSpecial</span> = <span class="var">lc</span>;<br/>
 
-<span class="in2"></span><span class="var">status</span>.<span class="var">codeNameEnd</span> = <span class="var">status</span>.<span class="var">codeName</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">name</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">status</span>.<span class="var">nameUsed</span> = <span class="num">true</span>;<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
