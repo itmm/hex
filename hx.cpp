@@ -69,10 +69,10 @@
 	Frag(
 		const std::string &name
 	):
-		entries(),
-		expands(0),
-		multiples(0),
-		name(name)
+		entries {},
+		expands { 0 },
+		multiples { 0 },
+		name { name }
 	{ }
 
 	void clear() {
@@ -84,7 +84,7 @@
 		const std::string &source,
 		int line
 	) {
-		entries.push_back(FragEntry());
+		entries.push_back(FragEntry {});
 		FragEntry &entry = entries.back();
 		entry.value += value;
 		
@@ -130,7 +130,7 @@
 ;
 		
 	for (
-		auto i = haystack->entries.begin();
+		auto i { haystack->entries.begin() };
 		i != haystack->entries.end(); ++i
 	) {
 		if (! i->frag) { continue; }
@@ -160,7 +160,7 @@
 	}
 ;
 		
-	entries.push_back(FragEntry());
+	entries.push_back(FragEntry {});
 	FragEntry &entry = entries.back();
 	entry.frag = child;
 ;
@@ -172,7 +172,7 @@
 		bool writeLineMacros
 	) {
 		
-	auto entry = frag.entries.begin();
+	auto entry { frag.entries.begin() };
 	for (; entry != frag.entries.end(); ++entry) {
 		
 	if (getFragEntryValueSize(*entry)) {
@@ -205,7 +205,7 @@
 		const std::string &str
 	) {
 		frag->add(
-			str, std::string(), 0
+			str, std::string {}, 0
 		);
 	}
 
@@ -213,10 +213,10 @@
 		FragMap *link;
 		std::map<std::string, Frag> map;
 		
-	FragMap(): link(nullptr) {}
+	FragMap(): link { nullptr } {}
 
 	Frag *find(const std::string &name) {
-		auto found = map.find(name);
+		auto found { map.find(name) };
 		if (found != map.end()) {
 			return &found->second;
 		}
@@ -227,11 +227,11 @@
 	}
 
 	Frag &get(const std::string &name, FragMap &insert) {
-		Frag *found = find(name);
+		Frag *found { find(name) };
 		if (found) { return *found; }
-		auto created = insert.map.insert(
+		auto created { insert.map.insert(
 			std::pair<std::string, Frag>(name, name)
-		);
+		) };
 		return created.first->second;
 	}
 
@@ -255,7 +255,9 @@
 			
 	Input(
 		const std::string &name
-	): file(name.c_str()), name(name)
+	):
+		file { name.c_str() },
+		name { name }
 		
 	, line(1)
 
@@ -263,7 +265,7 @@
 	}
 
 	int next() {
-		int ch = EOF;
+		int ch { EOF };
 		if (file.is_open()) {
 			ch = file.get();
 			if (! file.good()) {
@@ -282,11 +284,12 @@
 		used;
 
 	FragMap root;
-	FragMap *frags = &root;
+	FragMap *frags { &root };
 
 	void pushPath(const std::string &path) {
-		std::unique_ptr<Input> i =
-			std::make_unique<Input>(path);
+		std::unique_ptr<Input> i {
+			std::make_unique<Input>(path)
+		};
 		
 	if (input) {
 		input->frags.link = frags;
@@ -306,7 +309,7 @@
 	std::string stylesheet { "slides/slides.css" };
 
 	int nextCh() {
-		int ch = EOF;
+		int ch { EOF };
 		while (input) {
 			ch = input->next();
 			
@@ -321,7 +324,7 @@
 		input = std::move(pending.back());
 		pending.pop_back();
 	}
-	FragMap *nxt = frags->link;
+	FragMap *nxt { frags->link };
 	frags->link = nullptr;
 	frags = nxt;
 ;
@@ -382,18 +385,18 @@
 	};
 
 	inline HtmlStatus::HtmlStatus():
-		state(HtmlState::nothingWritten)
+		state { HtmlState::nothingWritten }
 		
-	, headerLevel(0)
-	, headerName()
+	, headerLevel { 0 }
+	, headerName {}
 
-	, codeOpening(0)
-	, codeIndent(0)
-	, codeSpecial('\0')
-	, codeNameEnd(nullptr)
+	, codeOpening { 0 }
+	, codeIndent { 0 }
+	, codeSpecial { '\0' }
+	, codeNameEnd { nullptr }
 
-	, noteInCode(false)
-	, noteInBold(false)
+	, noteInCode { false }
+	, noteInBold { false }
 
 	{ }
 
@@ -496,7 +499,7 @@
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag f("ab");
+		Frag f { "ab" };
 		ASSERT(f.entries.empty());
 	}
 
@@ -513,24 +516,24 @@
 	}
 
 	{
-		FragEntry entry("abc");
+		FragEntry entry { "abc" };
 		ASSERT(
 			getFragEntryValueSize(entry) == 3
 		);
 	}
 
 	{
-		FragEntry entry("abc");
+		FragEntry entry { "abc" };
 		ASSERT(entry.value == "abc");
 	}
  {
-	Frag frag("");
+	Frag frag {""};
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
 }  {
-	Frag a("");
-	Frag b("");
+	Frag a { "" };
+	Frag b { "" };
 	addStringToFrag(&a, "abc");
 	b.add(&a);
 	addStringToFrag(&b, "def");
@@ -539,8 +542,8 @@
 } ;
 ;
 	
-	bool someFile = false;
-	for (int i = 1; i < argc; ++i) {
+	bool someFile { false };
+	for (int i { 1 }; i < argc; ++i) {
 		 {
 	static const std::string prefix { "--css=" };
 	std::string arg { argv[i] };
@@ -567,25 +570,25 @@
 ;
 	 {
 	
-	Frag *frag = nullptr;
+	Frag *frag { nullptr };
 	std::string buffer;
-	int bufferLine = 0;
+	int bufferLine { 0 };
 
-	char openCh = '\0';
+	char openCh { '\0' };
 
 	std::string name;
-	bool useName = false;
-	int nameLine = 0;
+	bool useName { false };
+	int nameLine { 0 };
 ;
-	int last = nextCh();
-	int ch = last != EOF ? nextCh() : EOF;
+	int last { nextCh() };
+	int ch { last != EOF ? nextCh() : EOF };
 	while (ch != EOF) {
 		
 	switch (ch) {
 		case '{':
 			 {
 	if (! frag) {
-		static const char valids[] = "aAdDirR";
+		static const char valids[] { "aAdDirR" };
 		if (strchr(valids, last)) {
 			openCh = last;
 			useName = true;
@@ -594,10 +597,11 @@
 	}
 }  {
 	if (frag) {
-		bool valid = false;
+		bool valid { false };
 		
-	static const char valids[] =
-		"fvsntkxeEgGpmb";
+	static const char valids[] { 
+		"fvsntkxeEgGpmb"
+	};
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -619,13 +623,13 @@
 ;
 			break;
 		case '}': {
-			bool processed = false;
+			bool processed { false };
 			 {
 	if (useName || ! name.empty()) {
 		
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
-		FragMap *fm = &input->frags;
+		FragMap *fm { &input->frags };
 		
 	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
@@ -642,7 +646,7 @@
 
 	if (openCh == 'D') {
 		ASSERT(! frag, "def in frag");
-		FragMap *fm = frags;
+		FragMap *fm { frags };
 		
 	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
@@ -659,8 +663,8 @@
 
 	if (openCh == 'a') {
 		ASSERT(! frag, "add in frag");
-		FragMap *fm = &input->frags;
-		FragMap *ins = fm;
+		FragMap *fm { &input->frags };
+		FragMap *ins { fm };
 		frag = fm->find(name);
 		
 	if (! isPopulatedFrag(frag)) {
@@ -674,8 +678,8 @@
 
 	if (openCh == 'A') {
 		ASSERT(! frag, "add in frag");
-		FragMap *fm = frags;
-		FragMap *ins = &root;
+		FragMap *fm { frags };
+		FragMap *ins { &root };
 		frag = fm->find(name);
 		
 	if (! isPopulatedFrag(frag)) {
@@ -801,7 +805,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = input->frags[name];
+		Frag &sub { input->frags[name] };
 		
 	if (sub.expands) {
 		std::cerr << "multiple after expand of [" <<
@@ -824,7 +828,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = frags->get(name, root);
+		Frag &sub { frags->get(name, root) };
 		
 	if (sub.expands) {
 		std::cerr << "multiple after expand of [" <<
@@ -840,7 +844,9 @@
 		ASSERT(frag, "private not in frag");
 		
 	std::hash<std::string> h;
-	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
+	unsigned cur {
+		h(input->name + ':' + name) & 0x7fffffff
+	};
 
 	
 	if (! buffer.empty()) {
@@ -866,7 +872,9 @@
 		ASSERT(frag, "magic not in frag");
 		
 	std::hash<std::string> h;
-	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
+	unsigned cur {
+		h(input->name + ':' + name) & 0x7fffffff
+	};
 
 	
 	if (! buffer.empty()) {
@@ -945,7 +953,7 @@
 } ;
 	 {
 	for (auto &i : root.map) {
-		Frag *frag = &i.second;
+		Frag *frag { &i.second };
 		 {
 	static const std::string prefix { "file: " };
 	if (frag->name.substr(0, prefix.size()) == prefix) {
@@ -959,8 +967,9 @@
 ;
 	}
 }  {
-	int sum =
-		frag->expands + frag->multiples;
+	int sum {
+		frag->expands + frag->multiples
+	};
 	if (sum <= 0) {
 		std::cerr << "frag [" << frag->name <<
 			"] not called" << std::endl;
@@ -982,7 +991,7 @@
 	for (auto &j : used)
 	{
 		for (auto &i : j->frags.map) {
-			Frag *frag = &i.second;
+			Frag *frag { &i.second };
 			 {
 	static const std::string prefix { "file: " };
 	if (frag->name.substr(0, prefix.size()) == prefix) {
@@ -996,8 +1005,9 @@
 ;
 	}
 }  {
-	int sum =
-		frag->expands + frag->multiples;
+	int sum {
+		frag->expands + frag->multiples
+	};
 	if (sum <= 0) {
 		std::cerr << "frag [" << frag->name <<
 			"] not called" << std::endl;
@@ -1020,19 +1030,20 @@
 	
 	for (auto &cur : used) {
 		
-	const std::string &name = cur->name;
-	std::string outPath =
+	const std::string &name { cur->name };
+	std::string outPath {
 		name.substr(0, name.size() - 2) +
-		".html";
-	std::ofstream out(outPath.c_str());
+		".html"
+	};
+	std::ofstream out { outPath.c_str() };
 	 
 	std::ifstream in { cur->name.c_str() };
 	 {
 	HtmlStatus status;
-	bool newline = true;
+	bool newline { true };
 	std::string ident;
 	for (;;) {
-		int ch = in.get();
+		int ch { in.get() };
 		 
 	if (ch == '#' && newline) {
 		if (isOutOfHtmlSpecial(&status) ||
@@ -1118,7 +1129,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1132,7 +1143,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1146,7 +1157,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1178,7 +1189,7 @@
 	
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1196,7 +1207,7 @@
 	
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1297,7 +1308,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1325,7 +1336,7 @@
 
 	
 	if (ch == '{' && ident.size() == 1) {
-		char lc = ident.front();
+		char lc { ident.front() };
 		switch (lc) {
 			
 	case 'd':
@@ -1599,7 +1610,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1621,7 +1632,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1677,7 +1688,7 @@
 	status.noteInCode) {
 		
 	if (ch == '{' && ident.size() == 1) {
-		char lc = ident.front();
+		char lc { ident.front() };
 		switch (lc) {
 			
 	case 'd':
@@ -1956,7 +1967,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;
@@ -1967,7 +1978,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 ;

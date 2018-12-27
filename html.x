@@ -15,11 +15,12 @@ x{write HTML file}
 
 ```
 d{write cur HTML file}
-	const std::string &name = cur->name;
-	std::string outPath =
+	const std::string &name { cur->name };
+	std::string outPath {
 		name.substr(0, name.size() - 2) +
-		".html";
-	std::ofstream out(outPath.c_str());
+		".html"
+	};
+	std::ofstream out { outPath.c_str() };
 	e{write cur HTML file to out};
 	out.close();
 x{write cur HTML file}
@@ -71,7 +72,7 @@ x{html state elements}
 ```
 A{global elements}
 	inline HtmlStatus::HtmlStatus():
-		state(HtmlState::nothingWritten)
+		state { HtmlState::nothingWritten }
 		e{init html status}
 	{ }
 x{global elements}
@@ -87,10 +88,10 @@ x{includes}
 ```
 d{write HTML file from in to out} {
 	HtmlStatus status;
-	bool newline = true;
+	bool newline { true };
 	std::string ident;
 	for (;;) {
-		int ch = in.get();
+		int ch { in.get() };
 		e{process ch for HTML};
 		if (ch == EOF) { break; }
 		E{move ch to last};
@@ -115,7 +116,7 @@ x{html state enums}
 d{move ch to last}
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx = ch;
+		char xx { static_cast<char>(ch) };
 		writeEscaped(out, &xx, &xx + 1);
 	}
 x{move ch to last}
@@ -159,8 +160,8 @@ x{html state elements}
 
 ```
 d{init html status}
-	, headerLevel(0)
-	, headerName()
+	, headerLevel { 0 }
+	, headerName {}
 x{init html status}
 ```
 * Level und Name werden leer initialisiert
@@ -406,10 +407,10 @@ x{html state elements}
 
 ```
 a{init html status}
-	, codeOpening(0)
-	, codeIndent(0)
-	, codeSpecial('\0')
-	, codeNameEnd(nullptr)
+	, codeOpening { 0 }
+	, codeIndent { 0 }
+	, codeSpecial { '\0' }
+	, codeNameEnd { nullptr }
 x{init html status}
 ```
 * Zur Initialisierung werden die Parameter auf `0` gesetzt
@@ -688,7 +689,7 @@ x{process ch in HTML code}
 ```
 d{escape HTML code tag}
 	if (ch == '{' && ident.size() == 1) {
-		char lc = ident.front();
+		char lc { ident.front() };
 		switch (lc) {
 			e{escape html frag}
 			default: break;
@@ -1069,8 +1070,8 @@ x{html state elements}
 
 ```
 a{init html status}
-	, noteInCode(false)
-	, noteInBold(false)
+	, noteInCode { false }
+	, noteInBold { false }
 x{init html status}
 ```
 

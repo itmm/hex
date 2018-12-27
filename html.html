@@ -45,15 +45,17 @@
 
 <span class="add">@def(<span class="name">write cur HTML file</span>)</span><br/>
 
-<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span> = <span class="var">cur</span>-&gt;<span class="var">name</span>;<br/>
+<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span> { <span class="var">cur</span>-&gt;<span class="var">name</span> };<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">outPath</span> =<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">outPath</span> {<br/>
 
 <span class="in2"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">name</span>.<span class="fn">size</span>() - <span class="num">2</span>) +<br/>
 
-<span class="in2"></span><span class="str">".html"</span>;<br/>
+<span class="in2"></span><span class="str">".html"</span><br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<span class="var">outPath</span>.<span class="fn">c_str</span>());<br/>
+<span class="in1"></span>};<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="var">out</span> { <span class="var">outPath</span>.<span class="fn">c_str</span>() };<br/>
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">write cur HTML file to out</span>)</span>;<br/>
 
@@ -166,7 +168,7 @@
 
 <span class="in1"></span><span class="var">inline</span> <span class="type">HtmlStatus</span>::<span class="fn">HtmlStatus</span>():<br/>
 
-<span class="in2"></span><span class="fn">state</span>(<span class="type">HtmlState</span>::<span class="var">nothingWritten</span>)<br/>
+<span class="in2"></span><span class="var">state</span> { <span class="type">HtmlState</span>::<span class="var">nothingWritten</span> }<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init html status</span>)</span><br/>
 
@@ -202,13 +204,13 @@
 
 <span class="in1"></span><span class="type">HtmlStatus</span> <span class="var">status</span>;<br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">newline</span> = <span class="num">true</span>;<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">newline</span> { <span class="num">true</span> };<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">ident</span>;<br/>
 
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="keyword">in</span>.<span class="fn">get</span>();<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="keyword">in</span>.<span class="fn">get</span>() };<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process ch for HTML</span>)</span>;<br/>
 
@@ -267,7 +269,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
-<span class="in2"></span><span class="type">char</span> <span class="var">xx</span> = <span class="var">ch</span>;<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">xx</span> { <span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">ch</span>) };<br/>
 
 <span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, &amp;<span class="var">xx</span>, &amp;<span class="var">xx</span> + <span class="num">1</span>);<br/>
 
@@ -360,9 +362,9 @@
 
 <span class="add">@def(<span class="name">init html status</span>)</span><br/>
 
-<span class="in1"></span>, <span class="fn">headerLevel</span>(<span class="num">0</span>)<br/>
+<span class="in1"></span>, <span class="var">headerLevel</span> { <span class="num">0</span> }<br/>
 
-<span class="in1"></span>, <span class="fn">headerName</span>()<br/>
+<span class="in1"></span>, <span class="var">headerName</span> {}<br/>
 
 <span class="end">@end(<span class="name">init html status</span>)</span><br/>
 
@@ -887,13 +889,13 @@
 
 <span class="add">@add(<span class="name">init html status</span>)</span><br/>
 
-<span class="in1"></span>, <span class="fn">codeOpening</span>(<span class="num">0</span>)<br/>
+<span class="in1"></span>, <span class="var">codeOpening</span> { <span class="num">0</span> }<br/>
 
-<span class="in1"></span>, <span class="fn">codeIndent</span>(<span class="num">0</span>)<br/>
+<span class="in1"></span>, <span class="var">codeIndent</span> { <span class="num">0</span> }<br/>
 
-<span class="in1"></span>, <span class="fn">codeSpecial</span>(<span class="str">'\0'</span>)<br/>
+<span class="in1"></span>, <span class="var">codeSpecial</span> { <span class="str">'\0'</span> }<br/>
 
-<span class="in1"></span>, <span class="fn">codeNameEnd</span>(<span class="num">nullptr</span>)<br/>
+<span class="in1"></span>, <span class="var">codeNameEnd</span> { <span class="num">nullptr</span> }<br/>
 
 <span class="end">@end(<span class="name">init html status</span>)</span><br/>
 
@@ -1491,7 +1493,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'{'</span> &amp;&amp; <span class="var">ident</span>.<span class="fn">size</span>() == <span class="num">1</span>) {<br/>
 
-<span class="in2"></span><span class="type">char</span> <span class="var">lc</span> = <span class="var">ident</span>.<span class="fn">front</span>();<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">lc</span> { <span class="var">ident</span>.<span class="fn">front</span>() };<br/>
 
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">lc</span>) {<br/>
 
@@ -2306,9 +2308,9 @@
 
 <span class="add">@add(<span class="name">init html status</span>)</span><br/>
 
-<span class="in1"></span>, <span class="fn">noteInCode</span>(<span class="num">false</span>)<br/>
+<span class="in1"></span>, <span class="var">noteInCode</span> { <span class="num">false</span> }<br/>
 
-<span class="in1"></span>, <span class="fn">noteInBold</span>(<span class="num">false</span>)<br/>
+<span class="in1"></span>, <span class="var">noteInBold</span> { <span class="num">false</span> }<br/>
 
 <span class="end">@end(<span class="name">init html status</span>)</span><br/>
 

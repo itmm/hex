@@ -318,7 +318,11 @@
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
 
-<span class="in1"></span>): <span class="fn">file</span>(<span class="var">name</span>.<span class="fn">c_str</span>()), <span class="fn">name</span>(<span class="var">name</span>)<br/>
+<span class="in1"></span>):<br/>
+
+<span class="in2"></span><span class="var">file</span> { <span class="var">name</span>.<span class="fn">c_str</span>() },<br/>
+
+<span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">direct input constr</span>)</span><br/>
 
@@ -344,7 +348,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">next</span>() {<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="num">EOF</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="num">EOF</span> };<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>.<span class="fn">is_open</span>()) {<br/>
 
@@ -420,7 +424,7 @@
 
 <span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
 
-<span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> = &amp;<span class="var">root</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> { &amp;<span class="var">root</span> };<br/>
 
 <span class="end">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -439,9 +443,11 @@
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> =<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> {<br/>
 
-<span class="in3"></span><span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">path</span>);<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">path</span>)<br/>
+
+<span class="in2"></span>};<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
 
@@ -665,9 +671,9 @@
 
 <span class="add">@def(<span class="name">process arguments</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> = <span class="num">false</span>;<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> { <span class="num">false</span> };<br/>
 
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> { <span class="num">1</span> }; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">process argument</span>)</span>;<br/>
 
@@ -792,7 +798,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> = <span class="num">EOF</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="num">EOF</span> };<br/>
 
 <span class="in2"></span><span class="keyword">while</span> (<span class="var">input</span>) {<br/>
 
@@ -837,7 +843,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="in1"></span><span class="type">FragMap</span> *<span class="var">nxt</span> = <span class="var">frags</span>-&gt;<span class="var">link</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> *<span class="var">nxt</span> { <span class="var">frags</span>-&gt;<span class="var">link</span> };<br/>
 
 <span class="in1"></span><span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
 
@@ -877,9 +883,9 @@
 
 <span class="in1"></span><span class="expand">@expand(<span class="name">additional read vars</span>)</span>;<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">last</span> = <span class="fn">nextCh</span>();<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">last</span> { <span class="fn">nextCh</span>() };<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">ch</span> = <span class="var">last</span> != <span class="num">EOF</span> ? <span class="fn">nextCh</span>() : <span class="num">EOF</span>;<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">ch</span> { <span class="var">last</span> != <span class="num">EOF</span> ? <span class="fn">nextCh</span>() : <span class="num">EOF</span> };<br/>
 
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">ch</span> != <span class="num">EOF</span>) {<br/>
 
@@ -916,7 +922,7 @@
 
 <span class="in2"></span><span class="keyword">case</span> <span class="str">'}'</span>: {<br/>
 
-<span class="in3"></span><span class="type">bool</span> <span class="var">processed</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span><span class="type">bool</span> <span class="var">processed</span> { <span class="num">false</span> };<br/>
 
 <span class="in3"></span><span class="expand">@expand(<span class="name">process close brace</span>)</span>;<br/>
 
@@ -949,11 +955,11 @@
 
 <span class="add">@def(<span class="name">additional read vars</span>)</span><br/>
 
-<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> { <span class="num">nullptr</span> };<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">buffer</span>;<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">bufferLine</span> = <span class="num">0</span>;<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">bufferLine</span> { <span class="num">0</span> };<br/>
 
 <span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
 
@@ -976,7 +982,7 @@
 
 <span class="add">@add(<span class="name">additional read vars</span>)</span><br/>
 
-<span class="in1"></span><span class="type">char</span> <span class="var">openCh</span> = <span class="str">'\0'</span>;<br/>
+<span class="in1"></span><span class="type">char</span> <span class="var">openCh</span> { <span class="str">'\0'</span> };<br/>
 
 <span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
 
@@ -997,9 +1003,9 @@
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">useName</span> = <span class="num">false</span>;<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">useName</span> { <span class="num">false</span> };<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">nameLine</span> = <span class="num">0</span>;<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">nameLine</span> { <span class="num">0</span> };<br/>
 
 <span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
 
@@ -1095,7 +1101,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] = <span class="str">"aAdDirR"</span>;<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] { <span class="str">"aAdDirR"</span> };<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 
@@ -1134,7 +1140,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">input</span>-&gt;<span class="var">frags</span> };<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
@@ -1168,7 +1174,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
@@ -1234,9 +1240,9 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">input</span>-&gt;<span class="var">frags</span> };<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> = <span class="var">fm</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { <span class="var">fm</span> };<br/>
 
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
@@ -1266,9 +1272,9 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> = &amp;<span class="var">root</span>;<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { &amp;<span class="var">root</span> };<br/>
 
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
@@ -1623,7 +1629,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>];<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>] };<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
@@ -1656,7 +1662,7 @@
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>) };<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
@@ -1749,7 +1755,11 @@
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">hash</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">h</span>;<br/>
 
-<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span>;<br/>
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
+
+<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span><br/>
+
+<span class="in1"></span>};<br/>
 
 <span class="end">@end(<span class="name">process private frag</span>)</span><br/>
 
@@ -1836,7 +1846,11 @@
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">hash</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">h</span>;<br/>
 
-<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> = <span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span>;<br/>
+<span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
+
+<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span><br/>
+
+<span class="in1"></span>};<br/>
 
 <span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
 
@@ -1916,7 +1930,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="type">bool</span> <span class="var">valid</span> = <span class="num">false</span>;<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">valid</span> { <span class="num">false</span> };<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">check valid names</span>)</span>;<br/>
 
@@ -1953,9 +1967,11 @@
 
 <span class="add">@def(<span class="name">check valid names</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] =<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] { <br/>
 
-<span class="in2"></span><span class="str">"fvsntkxeEgGpmb"</span>;<br/>
+<span class="in2"></span><span class="str">"fvsntkxeEgGpmb"</span><br/>
+
+<span class="in1"></span>};<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
 
@@ -2093,7 +2109,7 @@
 
 <span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>.<span class="var">map</span>) {<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = &amp;<span class="var">i</span>.<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
@@ -2123,7 +2139,7 @@
 
 <span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>) {<br/>
 
-<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> = &amp;<span class="var">i</span>.<span class="var">second</span>;<br/>
+<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
@@ -2161,8 +2177,8 @@
 </div>
 
 <ul><li>
- Wenn der Name eines Fragments mit <code>file: </code> beginnt, dann wird es in die
-  passende Datei geschrieben
+ Wenn der Name eines Fragments mit <code>file: </code> beginnt, dann wird es in
+  die passende Datei geschrieben
 </li><li>
  Zusätzlich zählt das als eine Expansion
 </li></ul></div>
@@ -2172,9 +2188,11 @@
 
 <span class="add">@add(<span class="name">serialize frag</span>)</span> {<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">sum</span> =<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">sum</span> {<br/>
 
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">expands</span> + <span class="var">frag</span>-&gt;<span class="var">multiples</span>;<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">expands</span> + <span class="var">frag</span>-&gt;<span class="var">multiples</span><br/>
+
+<span class="in1"></span>};<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sum</span> &lt;= <span class="num">0</span>) {<br/>
 

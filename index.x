@@ -138,7 +138,9 @@ x{global elements}
 d{input methods}
 	Input(
 		const std::string &name
-	): file(name.c_str()), name(name)
+	):
+		file { name.c_str() },
+		name { name }
 		e{direct input constr}
 	{
 	}
@@ -150,7 +152,7 @@ x{input methods}
 ```
 a{input methods}
 	int next() {
-		int ch = EOF;
+		int ch { EOF };
 		if (file.is_open()) {
 			ch = file.get();
 			if (! file.good()) {
@@ -187,7 +189,7 @@ x{global elements}
 ```
 A{global elements}
 	FragMap root;
-	FragMap *frags = &root;
+	FragMap *frags { &root };
 x{global elements}
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
@@ -196,8 +198,9 @@ x{global elements}
 ```
 A{global elements}
 	void pushPath(const std::string &path) {
-		std::unique_ptr<Input> i =
-			std::make_unique<Input>(path);
+		std::unique_ptr<Input> i {
+			std::make_unique<Input>(path)
+		};
 		e{init additional input fields};
 		e{push to pending};
 		input = std::move(i);
@@ -299,8 +302,8 @@ x{global elements}
 
 ```
 d{process arguments}
-	bool someFile = false;
-	for (int i = 1; i < argc; ++i) {
+	bool someFile { false };
+	for (int i { 1 }; i < argc; ++i) {
 		e{process argument};
 		ASSERT(
 			false,
@@ -358,7 +361,7 @@ x{process arguments}
 ```
 A{global elements}
 	int nextCh() {
-		int ch = EOF;
+		int ch { EOF };
 		while (input) {
 			ch = input->next();
 			e{preprocess char};
@@ -380,7 +383,7 @@ d{get next input file}
 		input = std::move(pending.back());
 		pending.pop_back();
 	}
-	FragMap *nxt = frags->link;
+	FragMap *nxt { frags->link };
 	frags->link = nullptr;
 	frags = nxt;
 x{get next input file}
@@ -398,8 +401,8 @@ x{get next input file}
 ```
 d{read source file} {
 	e{additional read vars};
-	int last = nextCh();
-	int ch = last != EOF ? nextCh() : EOF;
+	int last { nextCh() };
+	int ch { last != EOF ? nextCh() : EOF };
 	while (ch != EOF) {
 		e{process current char};
 		last = ch; ch = nextCh();
@@ -417,7 +420,7 @@ d{process current char}
 			e{process open brace};
 			break;
 		case '}': {
-			bool processed = false;
+			bool processed { false };
 			e{process close brace};
 			break;
 		}
@@ -433,9 +436,9 @@ x{process current char}
 
 ```
 d{additional read vars}
-	Frag *frag = nullptr;
+	Frag *frag { nullptr };
 	std::string buffer;
-	int bufferLine = 0;
+	int bufferLine { 0 };
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
@@ -446,7 +449,7 @@ x{additional read vars}
 
 ```
 a{additional read vars}
-	char openCh = '\0';
+	char openCh { '\0' };
 x{additional read vars}
 ```
 * Das Zeichenvor einer öffnenden Mengenklammer wird in `openCh`
@@ -456,8 +459,8 @@ x{additional read vars}
 ```
 a{additional read vars}
 	std::string name;
-	bool useName = false;
-	int nameLine = 0;
+	bool useName { false };
+	int nameLine { 0 };
 x{additional read vars}
 ```
 * Wenn `name` aktiv ist, dann wird ein Name in Buffer gelesen
@@ -502,7 +505,7 @@ a{process other char} {
 ```
 d{process open brace} {
 	if (! frag) {
-		static const char valids[] = "aAdDirR";
+		static const char valids[] { "aAdDirR" };
 		if (strchr(valids, last)) {
 			openCh = last;
 			useName = true;
@@ -522,7 +525,7 @@ d{process open brace} {
 d{process frag name}
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
-		FragMap *fm = &input->frags;
+		FragMap *fm { &input->frags };
 		E{check for double def};
 		if (! frag) {
 			frag = &(*fm)[name];
@@ -538,7 +541,7 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'D') {
 		ASSERT(! frag, "def in frag");
-		FragMap *fm = frags;
+		FragMap *fm { frags };
 		E{check for double def};
 		if (! frag) {
 			frag = &root[name];
@@ -569,8 +572,8 @@ x{check for double def}
 a{process frag name}
 	if (openCh == 'a') {
 		ASSERT(! frag, "add in frag");
-		FragMap *fm = &input->frags;
-		FragMap *ins = fm;
+		FragMap *fm { &input->frags };
+		FragMap *ins { fm };
 		frag = fm->find(name);
 		E{check for add without def};
 		processed = true;
@@ -584,8 +587,8 @@ x{process frag name}
 a{process frag name}
 	if (openCh == 'A') {
 		ASSERT(! frag, "add in frag");
-		FragMap *fm = frags;
-		FragMap *ins = &root;
+		FragMap *fm { frags };
+		FragMap *ins { &root };
 		frag = fm->find(name);
 		E{check for add without def};
 		processed = true;
@@ -755,7 +758,7 @@ a{process frag name}
 	if (openCh == 'E') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag &sub = input->frags[name];
+		Frag &sub { input->frags[name] };
 		E{check for prev expands};
 		++sub.multiples;
 		frag->add(&sub);
@@ -771,7 +774,7 @@ a{process frag name}
 	if (openCh == 'G') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag &sub = frags->get(name, root);
+		Frag &sub { frags->get(name, root) };
 		E{check for prev expands};
 		++sub.multiples;
 		frag->add(&sub);
@@ -814,7 +817,9 @@ x{includes}
 ```
 d{process private frag}
 	std::hash<std::string> h;
-	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
+	unsigned cur {
+		h(input->name + ':' + name) & 0x7fffffff
+	};
 x{process private frag}
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
@@ -855,7 +860,9 @@ x{process frag name}
 ```
 d{process magic frag}
 	std::hash<std::string> h;
-	unsigned cur = h(input->name + ':' + name) & 0x7fffffff;
+	unsigned cur {
+		h(input->name + ':' + name) & 0x7fffffff
+	};
 x{process magic frag}
 ```
 * Berechnet Hash-Wert
@@ -892,7 +899,7 @@ x{flush frag buffer}
 ```
 a{process open brace} {
 	if (frag) {
-		bool valid = false;
+		bool valid { false };
 		e{check valid names};
 		if (valid) {
 			openCh = last;
@@ -911,8 +918,9 @@ a{process open brace} {
 
 ```
 d{check valid names}
-	static const char valids[] =
-		"fvsntkxeEgGpmb";
+	static const char valids[] { 
+		"fvsntkxeEgGpmb"
+	};
 	if (strchr(valids, last)) {
 		valid = true;
 	}
@@ -977,7 +985,7 @@ x{process close brace}
 ```
 d{serialize fragments} {
 	for (auto &i : root.map) {
-		Frag *frag = &i.second;
+		Frag *frag { &i.second };
 		E{serialize frag};
 	}
 } x{serialize fragments}
@@ -992,7 +1000,7 @@ a{serialize fragments} {
 	for (auto &j : used)
 	{
 		for (auto &i : j->frags.map) {
-			Frag *frag = &i.second;
+			Frag *frag { &i.second };
 			E{serialize frag};
 		}
 	}
@@ -1009,14 +1017,15 @@ d{serialize frag} {
 	}
 } x{serialize frag}
 ```
-* Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in die
-  passende Datei geschrieben
+* Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in
+  die passende Datei geschrieben
 * Zusätzlich zählt das als eine Expansion
 
 ```
 a{serialize frag} {
-	int sum =
-		frag->expands + frag->multiples;
+	int sum {
+		frag->expands + frag->multiples
+	};
 	if (sum <= 0) {
 		std::cerr << "frag [" << frag->name <<
 			"] not called" << std::endl;

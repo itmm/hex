@@ -69,10 +69,10 @@ d{frag methods}
 	Frag(
 		const std::string &name
 	):
-		entries(),
-		expands(0),
-		multiples(0),
-		name(name)
+		entries {},
+		expands { 0 },
+		multiples { 0 },
+		name { name }
 	{ }
 x{frag methods}
 ```
@@ -117,7 +117,7 @@ d{frag unit tests}
 	testFragName("");
 	testFragName("A c");
 	{
-		Frag f("ab");
+		Frag f { "ab" };
 		ASSERT(f.entries.empty());
 	}
 x{frag unit tests}
@@ -176,7 +176,7 @@ x{frag unit tests}
 ```
 a{frag unit tests}
 	{
-		FragEntry entry("abc");
+		FragEntry entry { "abc" };
 		ASSERT(
 			getFragEntryValueSize(entry) == 3
 		);
@@ -188,7 +188,7 @@ x{frag unit tests}
 ```
 a{frag unit tests}
 	{
-		FragEntry entry("abc");
+		FragEntry entry { "abc" };
 		ASSERT(entry.value == "abc");
 	}
 x{frag unit tests}
@@ -204,7 +204,7 @@ a{frag methods}
 		const std::string &source,
 		int line
 	) {
-		entries.push_back(FragEntry());
+		entries.push_back(FragEntry {});
 		FragEntry &entry = entries.back();
 		entry.value += value;
 		e{populate additional entry fields};
@@ -253,7 +253,7 @@ x{reuse last entry}
 
 ```
 d{add frag entry}
-	entries.push_back(FragEntry());
+	entries.push_back(FragEntry {});
 	FragEntry &entry = entries.back();
 	entry.frag = child;
 x{add frag entry}
@@ -277,7 +277,7 @@ x{define frag}
 
 ```
 d{iterate entries}
-	auto entry = frag.entries.begin();
+	auto entry { frag.entries.begin() };
 	for (; entry != frag.entries.end(); ++entry) {
 		e{serialize bytes};
 		if (entry->frag) {
@@ -332,7 +332,7 @@ a{define frag}
 		const std::string &str
 	) {
 		frag->add(
-			str, std::string(), 0
+			str, std::string {}, 0
 		);
 	}
 x{define frag}
@@ -342,7 +342,7 @@ x{define frag}
 
 ```
 a{frag unit tests} {
-	Frag frag("");
+	Frag frag {""};
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
@@ -352,8 +352,8 @@ a{frag unit tests} {
 
 ```
 a{frag unit tests} {
-	Frag a("");
-	Frag b("");
+	Frag a { "" };
+	Frag b { "" };
 	addStringToFrag(&a, "abc");
 	b.add(&a);
 	addStringToFrag(&b, "def");
@@ -406,7 +406,7 @@ x{check cycle frag}
 ```
 d{check cycle entries}
 	for (
-		auto i = haystack->entries.begin();
+		auto i { haystack->entries.begin() };
 		i != haystack->entries.end(); ++i
 	) {
 		if (! i->frag) { continue; }
@@ -437,14 +437,14 @@ x{define frag}
 
 ```
 d{frag map methods}
-	FragMap(): link(nullptr) {}
+	FragMap(): link { nullptr } {}
 x{frag map methods}
 ```
 
 ```
 a{frag map methods}
 	Frag *find(const std::string &name) {
-		auto found = map.find(name);
+		auto found { map.find(name) };
 		if (found != map.end()) {
 			return &found->second;
 		}
@@ -459,11 +459,11 @@ x{frag map methods}
 ```
 a{frag map methods}
 	Frag &get(const std::string &name, FragMap &insert) {
-		Frag *found = find(name);
+		Frag *found { find(name) };
 		if (found) { return *found; }
-		auto created = insert.map.insert(
+		auto created { insert.map.insert(
 			std::pair<std::string, Frag>(name, name)
-		);
+		) };
 		return created.first->second;
 	}
 x{frag map methods}
