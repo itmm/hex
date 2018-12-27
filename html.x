@@ -116,8 +116,7 @@ x{html state enums}
 d{move ch to last}
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 x{move ch to last}
 ```
@@ -258,16 +257,26 @@ x{process header in HTML}
 
 ```
 A{global elements} 
-	template <typename T>
-	void writeEscaped(
-		std::ostream &out, T str, T end
+	void writeOneEscaped(
+		std::ostream &out, char ch
 	) {
-		for (; *str && str != end; ++str) {
-			switch (*str) {
-				e{escape special}
-				default:
-					out << *str;
-			}
+		switch (ch) {
+			e{escape special}
+			default:
+				out << ch;
+		}
+	}
+x{global elements}
+```
+
+```
+A{global elements}
+	void writeEscaped(
+		std::ostream &out,
+		const std::string &str
+	) {
+		for (char ch : str) {
+			writeOneEscaped(out, ch);
 		}
 	}
 x{global elements}
@@ -294,9 +303,7 @@ x{escape special}
 d{write header tag} 
 	out << "<h" << status.headerLevel << '>';
 	writeEscaped(
-		out,
-		status.headerName.begin(),
-		status.headerName.end()
+		out, status.headerName
 	);
 	out << "</h" << status.headerLevel << '>' << std::endl;
 x{write header tag}
@@ -343,9 +350,7 @@ d{write HTML header entries}
 	out << "<meta charset=\"utf-8\">" << std::endl;
 	out << "<title>";
 	writeEscaped(
-		out,
-		status.headerName.begin(),
-		status.headerName.end()
+		out, status.headerName
 	);
 	out << "</title>" << std::endl;
 	out << "<link rel=\"stylesheet\" "
@@ -469,7 +474,9 @@ a{process ch for HTML}
 			status.codeSpecial == '`' && status.codeNameEnd[-1] != '\x5c'
 		) {
 			E{flush pending};
-			writeEscaped(out, status.codeName, status.codeNameEnd);
+			writeEscaped(out, std::string(
+				status.codeName, status.codeNameEnd
+			));
 			out << "`</span>";
 			status.codeSpecial = 0;
 			status.codeNameEnd = nullptr;
@@ -734,7 +741,9 @@ a{escape HTML code tag}
 		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.codeName, status.codeNameEnd);
+			writeEscaped(out, std::string(
+				status.codeName, status.codeNameEnd
+			));
 		}
 		switch (status.codeSpecial) {
 			e{handle special codes}

@@ -419,13 +419,11 @@
 		return true;
 	}
  
-	template <typename T>
-	void writeEscaped(
-		std::ostream &out, T str, T end
+	void writeOneEscaped(
+		std::ostream &out, char ch
 	) {
-		for (; *str && str != end; ++str) {
-			switch (*str) {
-				
+		switch (ch) {
+			
 	case '<':
 		out << "&lt;";
 		break;
@@ -436,9 +434,17 @@
 		out << "&amp;";
 		break;
 
-				default:
-					out << *str;
-			}
+			default:
+				out << ch;
+		}
+	}
+
+	void writeEscaped(
+		std::ostream &out,
+		const std::string &str
+	) {
+		for (char ch : str) {
+			writeOneEscaped(out, ch);
 		}
 	}
 
@@ -1074,9 +1080,7 @@
 	out << "<meta charset=\"utf-8\">" << std::endl;
 	out << "<title>";
 	writeEscaped(
-		out,
-		status.headerName.begin(),
-		status.headerName.end()
+		out, status.headerName
 	);
 	out << "</title>" << std::endl;
 	out << "<link rel=\"stylesheet\" "
@@ -1101,9 +1105,7 @@
 	 
 	out << "<h" << status.headerLevel << '>';
 	writeEscaped(
-		out,
-		status.headerName.begin(),
-		status.headerName.end()
+		out, status.headerName
 	);
 	out << "</h" << status.headerLevel << '>' << std::endl;
 ;
@@ -1112,9 +1114,7 @@
 	 
 	out << "<h" << status.headerLevel << '>';
 	writeEscaped(
-		out,
-		status.headerName.begin(),
-		status.headerName.end()
+		out, status.headerName
 	);
 	out << "</h" << status.headerLevel << '>' << std::endl;
 ;
@@ -1129,8 +1129,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 			continue;
@@ -1143,8 +1142,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 			continue;
@@ -1157,8 +1155,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 			continue;
@@ -1189,8 +1186,7 @@
 	
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 ;
@@ -1207,8 +1203,7 @@
 	
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 ;
@@ -1262,7 +1257,9 @@
 		ident.clear();
 	}
 ;
-			writeEscaped(out, status.codeName, status.codeNameEnd);
+			writeEscaped(out, std::string(
+				status.codeName, status.codeNameEnd
+			));
 			out << "`</span>";
 			status.codeSpecial = 0;
 			status.codeNameEnd = nullptr;
@@ -1308,8 +1305,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 		continue;
@@ -1524,7 +1520,9 @@
 		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.codeName, status.codeNameEnd);
+			writeEscaped(out, std::string(
+				status.codeName, status.codeNameEnd
+			));
 		}
 		switch (status.codeSpecial) {
 			
@@ -1610,8 +1608,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 		continue;
@@ -1632,8 +1629,7 @@
 			
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 			continue;
@@ -1876,7 +1872,9 @@
 		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.codeName, status.codeNameEnd);
+			writeEscaped(out, std::string(
+				status.codeName, status.codeNameEnd
+			));
 		}
 		switch (status.codeSpecial) {
 			
@@ -1967,8 +1965,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 		continue;
@@ -1978,8 +1975,7 @@
 		
 	newline = ch == '\n';
 	if (status.state != HtmlState::inHeader) {
-		char xx { static_cast<char>(ch) };
-		writeEscaped(out, &xx, &xx + 1);
+		writeOneEscaped(out, ch);
 	}
 ;
 	}

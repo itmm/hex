@@ -269,9 +269,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inHeader</span>) {<br/>
 
-<span class="in2"></span><span class="type">char</span> <span class="var">xx</span> { <span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">ch</span>) };<br/>
-
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, &amp;<span class="var">xx</span>, &amp;<span class="var">xx</span> + <span class="num">1</span>);<br/>
+<span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="var">ch</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -568,25 +566,47 @@
 
 <span class="add">@globadd(<span class="name">global elements</span>)</span> <br/>
 
-<span class="in1"></span><span class="var">template</span> &lt;<span class="var">typename</span> <span class="var">T</span>&gt;<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">writeOneEscaped</span>(<br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
-
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="var">T</span> <span class="var">str</span>, <span class="var">T</span> <span class="var">end</span><br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="type">char</span> <span class="var">ch</span><br/>
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (; *<span class="var">str</span> &amp;&amp; <span class="var">str</span> != <span class="var">end</span>; ++<span class="var">str</span>) {<br/>
+<span class="in2"></span><span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
 
-<span class="in3"></span><span class="keyword">switch</span> (*<span class="var">str</span>) {<br/>
+<span class="in3"></span><span class="expand">@expand(<span class="name">escape special</span>)</span><br/>
 
-<span class="in4"></span><span class="expand">@expand(<span class="name">escape special</span>)</span><br/>
+<span class="in3"></span><span class="keyword">default</span>:<br/>
 
-<span class="in4"></span><span class="keyword">default</span>:<br/>
+<span class="in4"></span><span class="var">out</span> &lt;&lt; <span class="var">ch</span>;<br/>
 
-<span class="in5"></span><span class="var">out</span> &lt;&lt; *<span class="var">str</span>;<br/>
+<span class="in2"></span>}<br/>
 
-<span class="in3"></span>}<br/>
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">str</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">char</span> <span class="var">ch</span> : <span class="var">str</span>) {<br/>
+
+<span class="in3"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="var">ch</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -643,11 +663,7 @@
 
 <span class="in1"></span><span class="fn">writeEscaped</span>(<br/>
 
-<span class="in2"></span><span class="var">out</span>,<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">begin</span>(),<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">end</span>()<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -746,11 +762,7 @@
 
 <span class="in1"></span><span class="fn">writeEscaped</span>(<br/>
 
-<span class="in2"></span><span class="var">out</span>,<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">begin</span>(),<br/>
-
-<span class="in2"></span><span class="var">status</span>.<span class="var">headerName</span>.<span class="fn">end</span>()<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="var">status</span>.<span class="var">headerName</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1018,7 +1030,11 @@
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">flush pending</span>)</span>;<br/>
 
-<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span>);<br/>
+<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">std</span>::<span class="fn">string</span>(<br/>
+
+<span class="in4"></span><span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span><br/>
+
+<span class="in3"></span>));<br/>
 
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"`&lt;/span&gt;"</span>;<br/>
 
@@ -1583,7 +1599,11 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">codeSpecial</span> != <span class="str">'i'</span>) {<br/>
 
-<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span>);<br/>
+<span class="in3"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">std</span>::<span class="fn">string</span>(<br/>
+
+<span class="in4"></span><span class="var">status</span>.<span class="var">codeName</span>, <span class="var">status</span>.<span class="var">codeNameEnd</span><br/>
+
+<span class="in3"></span>));<br/>
 
 <span class="in2"></span>}<br/>
 
