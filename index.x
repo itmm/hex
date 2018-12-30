@@ -103,18 +103,21 @@ x{includes}
 * Aus `memory` wird `unique_ptr` verwendet
 * `vector` ist ein Container für Source-Dateien
 
+# Buffer
+* Buffer können als Erweiterung von Strings aktiv gesetzt werden
+* Und tracken den enthaltenen Range
+
+```
+i{buf.x}
+```
+* Buffer werden in einer eigenen Datei definiert
+
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
   angewendet werden
 * Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren ist
   die Möglichkeit, Fragmente vor der Definition zu verwenden
 * Und Fragment an mehreren Stellen zu erweitern
-
-```
-i{buf.x}
-```
-* Buffer können als Erweiterung von Strings aktiv gesetzt werden
-* Und tracken den enthaltenen Range
 
 ```
 i{frag.x}
@@ -233,7 +236,8 @@ x{push to pending}
 d{define logging}
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
-			std::cerr << __FILE__ << ':' << __LINE__ << ' ' \
+			std::cerr << __FILE__ << ':' \
+				<< __LINE__ << ' ' \
 				<< #COND << " FAILED: "; \
 			failSuffix(__VA_ARGS__); \
 			exit(EXIT_FAILURE); \
@@ -300,7 +304,9 @@ x{init additional input fields}
 
 ```
 a{global elements}
-	std::string stylesheet { "slides/slides.css" };
+	std::string stylesheet {
+		"slides/slides.css"
+	};
 x{global elements}
 ```
 * Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
@@ -323,10 +329,15 @@ x{process arguments}
 
 ```
 d{process argument} {
-	static const std::string prefix { "--css=" };
+	static const std::string prefix {
+		"--css="
+	};
 	std::string arg { argv[i] };
-	if (arg.substr(0, prefix.length()) == prefix) {
-		stylesheet = arg.substr(prefix.length());
+	if (arg.substr(
+		0, prefix.length()
+	) == prefix) {
+		stylesheet =
+			arg.substr(prefix.length());
 		continue;
 	}
 } x{process argument}
@@ -660,7 +671,8 @@ x{process frag name}
 d{frag names must match}
 	ASSERT(
 		frag->name == name,
-		"closing [", name, "] != [", frag->name, ']'
+		"closing [", name, "] != [",
+			frag->name, ']'
 	);
 x{frag names must match}
 ```
@@ -741,12 +753,12 @@ x{process frag name}
 ```
 d{check frag expand count}
 	if (sub.expands()) {
-		std::cerr << "multiple expands of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr << "multiple expands of ["
+			<< sub.name << "]" << std::endl;
 	}
 	if (sub.multiples()) {
-		std::cerr << "expand after mult of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr << "expand after mult of ["
+			<< sub.name << "]" << std::endl;
 	}
 x{check frag expand count}
 ```
@@ -788,8 +800,9 @@ x{process frag name}
 ```
 d{check for prev expands}
 	if (sub.expands()) {
-		std::cerr << "multiple after expand of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr
+			<< "multiple after expand of ["
+			<< sub.name << "]" << std::endl;
 	}
 x{check for prev expands}
 ```
@@ -820,7 +833,8 @@ x{includes}
 d{process private frag}
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name) & 0x7fffffff
+		h(input->name + ':' + name)
+			& 0x7fffffff
 	};
 x{process private frag}
 ```
@@ -836,7 +850,7 @@ a{process private frag}
 		<< cur << '_' << name;
 	frag->add(
 		hashed.str(), input->name,
-		nameLine
+		v{nameLine}
 	);
 x{process private frag}
 ```
@@ -863,7 +877,8 @@ x{process frag name}
 d{process magic frag}
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name) & 0x7fffffff
+		h(input->name + ':' + name)
+			& 0x7fffffff
 	};
 x{process magic frag}
 ```
@@ -936,7 +951,7 @@ a{process frag name}
 	if (! processed) {
 		ASSERT(
 			frag, "unknown frag ",
-			name
+			v{name}
 		);
 		for (auto &c : name) {
 			if (buffer.empty()) {
@@ -1024,11 +1039,14 @@ d{serialize frag} {
 ```
 a{serialize frag} {
 	int sum {
-		frag->expands() + frag->multiples()
+		frag->expands()
+			+ frag->multiples()
 	};
 	if (sum <= 0) {
-		std::cerr << "frag [" << frag->name <<
-			"] not called" << std::endl;
+		std::cerr << "frag ["
+			<< frag->name
+			<< "] not called"
+			<< std::endl;
 	}
 } x{serialize frag}
 ```
@@ -1038,9 +1056,10 @@ a{serialize frag} {
 ```
 a{serialize frag}
 	if (frag->multiples() == 1) {
-		std::cerr << "multiple frag [" <<
-			frag->name << "] only used once" <<
-			std::endl;
+		std::cerr << "multiple frag ["
+			<< frag->name
+			<< "] only used once"
+			<< std::endl;
 	}
 x{serialize frag}
 ```
@@ -1051,8 +1070,10 @@ x{serialize frag}
 ```
 a{serialize frag}
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << frag->name <<
-			"] not populated" << std::endl;
+		std::cerr << "frag ["
+			<< frag->name
+			<< "] not populated"
+			<< std::endl;
 	}
 x{serialize frag}
 ```

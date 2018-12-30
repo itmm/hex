@@ -243,6 +243,31 @@
 </li></ul></div>
 
 </div>
+<h1>Buffer</h1>
+<div class="slides">
+<div><div>
+<h1>Buffer</h1>
+</div>
+
+<ul><li>
+ Buffer können als Erweiterung von Strings aktiv gesetzt werden
+</li><li>
+ Und tracken den enthaltenen Range
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Buffer werden in einer eigenen Datei definiert
+</li></ul></div>
+
+</div>
 <h1>Fragmente</h1>
 <div class="slides">
 <div><div>
@@ -257,20 +282,6 @@
   die Möglichkeit, Fragmente vor der Definition zu verwenden
 </li><li>
  Und Fragment an mehreren Stellen zu erweitern
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Buffer können als Erweiterung von Strings aktiv gesetzt werden
-</li><li>
- Und tracken den enthaltenen Range
 </li></ul></div>
 
 <div><div>
@@ -519,7 +530,9 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
 
-<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; <span class="str">':'</span> &lt;&lt; <span class="var">__LINE__</span> &lt;&lt; <span class="str">' '</span> \<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; <span class="str">':'</span> \<br/>
+
+<span class="in4"></span>&lt;&lt; <span class="var">__LINE__</span> &lt;&lt; <span class="str">' '</span> \<br/>
 
 <span class="in4"></span>&lt;&lt; #<span class="var">COND</span> &lt;&lt; <span class="str">" FAILED: "</span>; \<br/>
 
@@ -667,7 +680,11 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">stylesheet</span> { <span class="str">"slides/slides.css"</span> };<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">stylesheet</span> {<br/>
+
+<span class="in2"></span><span class="str">"slides/slides.css"</span><br/>
+
+<span class="in1"></span>};<br/>
 
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -717,13 +734,23 @@
 
 <span class="macro">@def(<span class="name">process argument</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"--css="</span> };<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> {<br/>
+
+<span class="in2"></span><span class="str">"--css="</span><br/>
+
+<span class="in1"></span>};<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">arg</span> { <span class="var">argv</span>[<span class="var">i</span>] };<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()) == <span class="var">prefix</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<br/>
 
-<span class="in2"></span><span class="var">stylesheet</span> = <span class="var">arg</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">length</span>());<br/>
+<span class="in2"></span><span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()<br/>
+
+<span class="in1"></span>) == <span class="var">prefix</span>) {<br/>
+
+<span class="in2"></span><span class="var">stylesheet</span> =<br/>
+
+<span class="in3"></span><span class="var">arg</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">length</span>());<br/>
 
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 
@@ -1430,7 +1457,9 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">name</span>,<br/>
 
-<span class="in2"></span><span class="str">"closing ["</span>, <span class="var">name</span>, <span class="str">"] != ["</span>, <span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="str">']'</span><br/>
+<span class="in2"></span><span class="str">"closing ["</span>, <span class="var">name</span>, <span class="str">"] != ["</span>,<br/>
+
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="str">']'</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1598,17 +1627,17 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="fn">expands</span>()) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple expands of ["</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple expands of ["</span><br/>
 
-<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="fn">multiples</span>()) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"expand after mult of ["</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"expand after mult of ["</span><br/>
 
-<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1695,9 +1724,11 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="fn">expands</span>()) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple after expand of ["</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span><br/>
 
-<span class="in3"></span><span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span>&lt;&lt; <span class="str">"multiple after expand of ["</span><br/>
+
+<span class="in3"></span>&lt;&lt; <span class="var">sub</span>.<span class="var">name</span> &lt;&lt; <span class="str">"]"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1764,7 +1795,9 @@
 
 <span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
 
-<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span><br/>
+<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>)<br/>
+
+<span class="in3"></span>&amp; <span class="num">0x7fffffff</span><br/>
 
 <span class="in1"></span>};<br/>
 
@@ -1798,9 +1831,9 @@
 
 <span class="in2"></span><span class="var">hashed</span>.<span class="fn">str</span>(), <span class="var">input</span>-&gt;<span class="var">name</span>,<br/>
 
-<span class="var">nameLine</span><br/>
+<span class="in2"></span><span class="var">nameLine</span><br/>
 
-<span class="in3"></span>);<br/>
+<span class="in1"></span>);<br/>
 
 <span class="macro">@end(<span class="name">process private frag</span>)</span><br/>
 
@@ -1855,7 +1888,9 @@
 
 <span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
 
-<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>) &amp; <span class="num">0x7fffffff</span><br/>
+<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>)<br/>
+
+<span class="in3"></span>&amp; <span class="num">0x7fffffff</span><br/>
 
 <span class="in1"></span>};<br/>
 
@@ -2008,9 +2043,9 @@
 
 <span class="in3"></span><span class="var">frag</span>, <span class="str">"unknown frag "</span>,<br/>
 
-<span class="var">name</span><br/>
+<span class="in3"></span><span class="var">name</span><br/>
 
-<span class="in5"></span>);<br/>
+<span class="in2"></span>);<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">c</span> : <span class="var">name</span>) {<br/>
 
@@ -2193,15 +2228,21 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">sum</span> {<br/>
 
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">expands</span>() + <span class="var">frag</span>-&gt;<span class="fn">multiples</span>()<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">expands</span>()<br/>
+
+<span class="in3"></span>+ <span class="var">frag</span>-&gt;<span class="fn">multiples</span>()<br/>
 
 <span class="in1"></span>};<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sum</span> &lt;= <span class="num">0</span>) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span><br/>
 
-<span class="in3"></span><span class="str">"] not called"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in3"></span>&lt;&lt; <span class="str">"] not called"</span><br/>
+
+<span class="in3"></span>&lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2223,11 +2264,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">multiples</span>() == <span class="num">1</span>) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple frag ["</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"multiple frag ["</span><br/>
 
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">"] only used once"</span> &lt;&lt;<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
 
-<span class="in3"></span><span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span>&lt;&lt; <span class="str">"] only used once"</span><br/>
+
+<span class="in3"></span>&lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2250,9 +2293,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span><br/>
 
-<span class="in3"></span><span class="str">"] not populated"</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span><br/>
+
+<span class="in3"></span>&lt;&lt; <span class="str">"] not populated"</span><br/>
+
+<span class="in3"></span>&lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
 
 <span class="in1"></span>}<br/>
 

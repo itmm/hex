@@ -23,7 +23,8 @@
 	
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
-			std::cerr << __FILE__ << ':' << __LINE__ << ' ' \
+			std::cerr << __FILE__ << ':' \
+				<< __LINE__ << ' ' \
 				<< #COND << " FAILED: "; \
 			failSuffix(__VA_ARGS__); \
 			exit(EXIT_FAILURE); \
@@ -492,7 +493,9 @@
 		input = std::move(i);
 	}
 
-	std::string stylesheet { "slides/slides.css" };
+	std::string stylesheet {
+		"slides/slides.css"
+	};
 
 	int nextCh() {
 		int ch { EOF };
@@ -922,10 +925,15 @@
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
 		 {
-	static const std::string prefix { "--css=" };
+	static const std::string prefix {
+		"--css="
+	};
 	std::string arg { argv[i] };
-	if (arg.substr(0, prefix.length()) == prefix) {
-		stylesheet = arg.substr(prefix.length());
+	if (arg.substr(
+		0, prefix.length()
+	) == prefix) {
+		stylesheet =
+			arg.substr(prefix.length());
 		continue;
 	}
 } 
@@ -1093,7 +1101,8 @@
 		
 	ASSERT(
 		frag->name == name,
-		"closing [", name, "] != [", frag->name, ']'
+		"closing [", name, "] != [",
+			frag->name, ']'
 	);
 ;
 		
@@ -1131,12 +1140,12 @@
 		Frag &sub = input->frags[name];
 		
 	if (sub.expands()) {
-		std::cerr << "multiple expands of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr << "multiple expands of ["
+			<< sub.name << "]" << std::endl;
 	}
 	if (sub.multiples()) {
-		std::cerr << "expand after mult of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr << "expand after mult of ["
+			<< sub.name << "]" << std::endl;
 	}
 ;
 		sub.addExpand();
@@ -1158,12 +1167,12 @@
 		Frag &sub = frags->get(name, root);
 		
 	if (sub.expands()) {
-		std::cerr << "multiple expands of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr << "multiple expands of ["
+			<< sub.name << "]" << std::endl;
 	}
 	if (sub.multiples()) {
-		std::cerr << "expand after mult of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr << "expand after mult of ["
+			<< sub.name << "]" << std::endl;
 	}
 ;
 		sub.addExpand();
@@ -1185,8 +1194,9 @@
 		Frag &sub { input->frags[name] };
 		
 	if (sub.expands()) {
-		std::cerr << "multiple after expand of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr
+			<< "multiple after expand of ["
+			<< sub.name << "]" << std::endl;
 	}
 ;
 		sub.addMultiple();
@@ -1208,8 +1218,9 @@
 		Frag &sub { frags->get(name, root) };
 		
 	if (sub.expands()) {
-		std::cerr << "multiple after expand of [" <<
-			sub.name << "]" << std::endl;
+		std::cerr
+			<< "multiple after expand of ["
+			<< sub.name << "]" << std::endl;
 	}
 ;
 		sub.addMultiple();
@@ -1222,7 +1233,8 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name) & 0x7fffffff
+		h(input->name + ':' + name)
+			& 0x7fffffff
 	};
 
 	
@@ -1250,7 +1262,8 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name) & 0x7fffffff
+		h(input->name + ':' + name)
+			& 0x7fffffff
 	};
 
 	
@@ -1343,22 +1356,28 @@
 	}
 }  {
 	int sum {
-		frag->expands() + frag->multiples()
+		frag->expands()
+			+ frag->multiples()
 	};
 	if (sum <= 0) {
-		std::cerr << "frag [" << frag->name <<
-			"] not called" << std::endl;
+		std::cerr << "frag ["
+			<< frag->name
+			<< "] not called"
+			<< std::endl;
 	}
 } 
 	if (frag->multiples() == 1) {
-		std::cerr << "multiple frag [" <<
-			frag->name << "] only used once" <<
-			std::endl;
+		std::cerr << "multiple frag ["
+			<< frag->name
+			<< "] only used once"
+			<< std::endl;
 	}
 
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << frag->name <<
-			"] not populated" << std::endl;
+		std::cerr << "frag ["
+			<< frag->name
+			<< "] not populated"
+			<< std::endl;
 	}
 ;
 	}
@@ -1379,22 +1398,28 @@
 	}
 }  {
 	int sum {
-		frag->expands() + frag->multiples()
+		frag->expands()
+			+ frag->multiples()
 	};
 	if (sum <= 0) {
-		std::cerr << "frag [" << frag->name <<
-			"] not called" << std::endl;
+		std::cerr << "frag ["
+			<< frag->name
+			<< "] not called"
+			<< std::endl;
 	}
 } 
 	if (frag->multiples() == 1) {
-		std::cerr << "multiple frag [" <<
-			frag->name << "] only used once" <<
-			std::endl;
+		std::cerr << "multiple frag ["
+			<< frag->name
+			<< "] only used once"
+			<< std::endl;
 	}
 
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << frag->name <<
-			"] not populated" << std::endl;
+		std::cerr << "frag ["
+			<< frag->name
+			<< "] not populated"
+			<< std::endl;
 	}
 ;
 		}
