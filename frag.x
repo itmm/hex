@@ -108,6 +108,16 @@ x{define frag}
 
 ```
 d{frag methods}
+	bool isFile() const {
+		static const std::string prefix { "file: " };
+		return name.substr(0, prefix.size()) == prefix;
+	}
+x{frag methods}
+```
+* Beschreibt das Fragment eine Datei?
+
+```
+a{frag methods}
 	Frag(
 		const std::string &name
 	):
@@ -115,7 +125,9 @@ d{frag methods}
 		_expands { 0 },
 		_multiples { 0 },
 		name { name }
-	{ }
+	{
+		if (isFile()) { ++_expands; }
+	}
 x{frag methods}
 ```
 * Die Zeiger werden mit `nullptr` initialisiert
@@ -476,9 +488,10 @@ x{check cycle entries}
 
 ```
 a{define frag}
-	struct FragMap {
-		FragMap *link;
+	class FragMap {
+		FragMap *_link;
 		std::map<std::string, Frag> map;
+	public:
 		e{frag map methods};
 	};
 x{define frag}
@@ -488,9 +501,22 @@ x{define frag}
 
 ```
 d{frag map methods}
-	FragMap(): link { nullptr } {}
+	FragMap(): _link { nullptr } {}
 x{frag map methods}
 ```
+* Map wird ohne Verknüpfung und Elementen als leere Struktur angelegt
+
+```
+a{frag map methods}
+	FragMap *setLink(FragMap *link) {
+		FragMap *old { _link };
+		_link = link;
+		return old;
+	}
+x{frag map methods}
+```
+* Der Link kann dynamisch geändert werden
+* Der vorher aktive Link wird zurück geliefert
 
 ```
 a{frag map methods}
@@ -499,13 +525,16 @@ a{frag map methods}
 		if (found != map.end()) {
 			return &found->second;
 		}
-		if (link) {
-			return link->find(name);
+		if (_link) {
+			return _link->find(name);
 		}
 		return nullptr;
 	}
 x{frag map methods}
 ```
+* Sucht ein Element in der Map
+* Oder in verlinkten Maps
+* Wenn es nicht gefunden wird, wird `nullptr` zurück geliefert
 
 ```
 a{frag map methods}
@@ -519,6 +548,10 @@ a{frag map methods}
 	}
 x{frag map methods}
 ```
+* Sucht ein Element in der Map
+* Oder in verlinkten Map
+* Wenn es nicht gefunden wird, wird es in der Map `insert` angelegt
+* Und zurück geliefert
 
 ```
 a{frag map methods}
@@ -527,4 +560,22 @@ a{frag map methods}
 	}
 x{frag map methods}
 ```
+* Kurzform für `get`
 
+```
+a{frag map methods}
+	auto begin() const {
+		return map.cbegin();
+	}
+x{frag map methods}
+```
+* Beginn eines konstanten Iterators über Elemente der Map
+
+```
+a{frag map methods}
+	auto end() const {
+		return map.cend();
+	}
+x{frag map methods}
+```
+* Ende eines kostanten Iterators über Elemente der Map

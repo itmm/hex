@@ -85,6 +85,11 @@
 	public:
 		const std::string name;
 		
+	bool isFile() const {
+		static const std::string prefix { "file: " };
+		return name.substr(0, prefix.size()) == prefix;
+	}
+
 	Frag(
 		const std::string &name
 	):
@@ -92,7 +97,9 @@
 		_expands { 0 },
 		_multiples { 0 },
 		name { name }
-	{ }
+	{
+		if (isFile()) { ++_expands; }
+	}
 
 	void clear() {
 		_entries.clear();
@@ -235,19 +242,26 @@
 		);
 	}
 
-	struct FragMap {
-		FragMap *link;
+	class FragMap {
+		FragMap *_link;
 		std::map<std::string, Frag> map;
+	public:
 		
-	FragMap(): link { nullptr } {}
+	FragMap(): _link { nullptr } {}
+
+	FragMap *setLink(FragMap *link) {
+		FragMap *old { _link };
+		_link = link;
+		return old;
+	}
 
 	Frag *find(const std::string &name) {
 		auto found { map.find(name) };
 		if (found != map.end()) {
 			return &found->second;
 		}
-		if (link) {
-			return link->find(name);
+		if (_link) {
+			return _link->find(name);
 		}
 		return nullptr;
 	}
@@ -263,6 +277,14 @@
 
 	Frag &operator[](const std::string &name) {
 		return get(name, *this);
+	}
+
+	auto begin() const {
+		return map.cbegin();
+	}
+
+	auto end() const {
+		return map.cend();
 	}
 ;
 	};
@@ -318,7 +340,7 @@
 		};
 		
 	if (input) {
-		input->frags.link = frags;
+		input->frags.setLink(frags);
 		frags = &input->frags;
 	}
 ;
@@ -350,9 +372,7 @@
 		input = std::move(pending.back());
 		pending.pop_back();
 	}
-	FragMap *nxt { frags->link };
-	frags->link = nullptr;
-	frags = nxt;
+	frags = frags->setLink(nullptr);
 ;
 		}
 		return ch;
@@ -976,12 +996,10 @@
 	}
 } ;
 	 {
-	for (auto &i : root.map) {
-		Frag *frag { &i.second };
+	for (auto &i : root) {
+		const Frag *frag { &i.second };
 		 {
-	static const std::string prefix { "file: " };
-	if (frag->name.substr(0, prefix.size()) == prefix) {
-		frag->addExpand();
+	if (frag->isFile()) {
 		
 	std::ofstream out(
 		frag->name.substr(6).c_str()
@@ -1014,12 +1032,10 @@
 }  {
 	for (auto &j : used)
 	{
-		for (auto &i : j->frags.map) {
-			Frag *frag { &i.second };
+		for (auto &i : j->frags) {
+			const Frag *frag { &i.second };
 			 {
-	static const std::string prefix { "file: " };
-	if (frag->name.substr(0, prefix.size()) == prefix) {
-		frag->addExpand();
+	if (frag->isFile()) {
 		
 	std::ofstream out(
 		frag->name.substr(6).c_str()

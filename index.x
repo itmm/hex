@@ -281,7 +281,7 @@ x{additional input elements}
 ```
 d{init additional input fields}
 	if (input) {
-		input->frags.link = frags;
+		input->frags.setLink(frags);
 		frags = &input->frags;
 	}
 x{init additional input fields}
@@ -383,9 +383,7 @@ d{get next input file}
 		input = std::move(pending.back());
 		pending.pop_back();
 	}
-	FragMap *nxt { frags->link };
-	frags->link = nullptr;
-	frags = nxt;
+	frags = frags->setLink(nullptr);
 x{get next input file}
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
@@ -982,8 +980,8 @@ x{process close brace}
 
 ```
 d{serialize fragments} {
-	for (auto &i : root.map) {
-		Frag *frag { &i.second };
+	for (auto &i : root) {
+		const Frag *frag { &i.second };
 		E{serialize frag};
 	}
 } x{serialize fragments}
@@ -997,8 +995,8 @@ d{serialize fragments} {
 a{serialize fragments} {
 	for (auto &j : used)
 	{
-		for (auto &i : j->frags.map) {
-			Frag *frag { &i.second };
+		for (auto &i : j->frags) {
+			const Frag *frag { &i.second };
 			E{serialize frag};
 		}
 	}
@@ -1008,9 +1006,7 @@ a{serialize fragments} {
 
 ```
 d{serialize frag} {
-	static const std::string prefix { "file: " };
-	if (frag->name.substr(0, prefix.size()) == prefix) {
-		frag->addExpand();
+	if (frag->isFile()) {
 		e{write in file};
 	}
 } x{serialize frag}

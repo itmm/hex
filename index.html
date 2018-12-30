@@ -621,7 +621,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
 
-<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="var">link</span> = <span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="fn">setLink</span>(<span class="var">frags</span>);<br/>
 
 <span class="in2"></span><span class="var">frags</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
 
@@ -843,11 +843,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="in1"></span><span class="type">FragMap</span> *<span class="var">nxt</span> { <span class="var">frags</span>-&gt;<span class="var">link</span> };<br/>
-
-<span class="in1"></span><span class="var">frags</span>-&gt;<span class="var">link</span> = <span class="num">nullptr</span>;<br/>
-
-<span class="in1"></span><span class="var">frags</span> = <span class="var">nxt</span>;<br/>
+<span class="in1"></span><span class="var">frags</span> = <span class="var">frags</span>-&gt;<span class="fn">setLink</span>(<span class="num">nullptr</span>);<br/>
 
 <span class="end">@end(<span class="name">get next input file</span>)</span><br/>
 
@@ -2104,9 +2100,9 @@
 
 <span class="add">@def(<span class="name">serialize fragments</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>.<span class="var">map</span>) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>) {<br/>
 
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
 
 <span class="in2"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
@@ -2134,9 +2130,9 @@
 
 <span class="in1"></span>{<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>-&gt;<span class="var">frags</span>.<span class="var">map</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>-&gt;<span class="var">frags</span>) {<br/>
 
-<span class="in3"></span><span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
 
 <span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
@@ -2158,11 +2154,7 @@
 
 <span class="add">@def(<span class="name">serialize frag</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"file: "</span> };<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">size</span>()) == <span class="var">prefix</span>) {<br/>
-
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">addExpand</span>();<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">isFile</span>()) {<br/>
 
 <span class="in2"></span><span class="expand">@expand(<span class="name">write in file</span>)</span>;<br/>
 
