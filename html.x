@@ -791,7 +791,7 @@ d{handle html include}
 		"no period"
 	);
 	out << "<a href=\"" 
-		<< status.name.substr(0, ext) << "html\">";
+		<< status.name.substr(0, ext) << ".html\">";
 	out << status.name << "</a>)</span>";
 	status.name.clear();
 	status.nameUsed = false;
