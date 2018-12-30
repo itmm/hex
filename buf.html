@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="de"l>
+<head>
+<meta charset="utf-8">
+<title>Buffer</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Buffer</h1>
+<div class="slides">
+<div><div>
+<h1>Buffer</h1>
+</div>
+
+<ul><li>
+ Ein Buffer ist eine Erweiterung zum C++ String
+</li><li>
+ Er kann aktiv oder inaktiv sein
+</li><li>
+ Und er hält Datei-Namen und Zeilennummern des enthaltenen Bereichs
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">define buf</span>)</span>;<br/>
+
+<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Buffer sind global sichtbare Strukturen
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">define buf</span>)</span><br/>
+
+<span class="in1"></span><span class="var">class</span> <span class="type">Buf</span> {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_value</span>;<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_file</span>;<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">_startLine</span>;<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">_endLine</span>;<br/>
+
+<span class="in2"></span><span class="type">bool</span> <span class="var">_active</span>;<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">private methods</span>)</span>;<br/>
+
+<span class="in1"></span><span class="var">public</span>:<br/>
+
+<span class="in2"></span><span class="expand">@expand(<span class="name">buf methods</span>)</span>;<br/>
+
+<span class="in1"></span>};<br/>
+
+<span class="end">@end(<span class="name">define buf</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="fn">Buf</span>(): <span class="fn">_active</span>(<span class="num">false</span>) {}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">active</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_active</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_value</span>.<span class="fn">empty</span>();<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">activate</span>() {<br/>
+
+<span class="in2"></span><span class="var">_active</span> = <span class="num">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
+
+<span class="in2"></span><span class="var">_value</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">_file</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in2"></span><span class="var">_startLine</span> = <span class="num">0</span>;<br/>
+
+<span class="in2"></span><span class="var">_endLine</span> = <span class="num">0</span>;<br/>
+
+<span class="in2"></span><span class="var">_active</span> = <span class="num">false</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="fn">str</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_value</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="fn">file</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_file</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">startLine</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_startLine</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">endLine</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_endLine</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">private methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">assertCont</span>(<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">empty</span>()) {<br/>
+
+<span class="in3"></span><span class="var">_file</span> = <span class="var">file</span>;<br/>
+
+<span class="in3"></span><span class="var">_startLine</span> = <span class="var">line</span>;<br/>
+
+<span class="in3"></span><span class="var">_endLine</span> = <span class="var">line</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">_file</span> == <span class="var">file</span>, <span class="str">"switching files"</span>);<br/>
+
+<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in3"></span><span class="var">line</span> == <span class="var">_endLine</span> || <span class="var">line</span> == <span class="var">_endLine</span> + <span class="num">1</span>,<br/>
+
+<span class="in3"></span><span class="str">"not continous"</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">private methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="fn">activate</span>();<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">value</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
+
+<span class="in2"></span><span class="fn">assertCont</span>(<span class="var">file</span>, <span class="var">line</span>);<br/>
+
+<span class="in2"></span><span class="var">_value</span> += <span class="var">value</span>;<br/>
+
+<span class="in2"></span><span class="var">_endLine</span> = <span class="var">line</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">Buf</span> &amp;<span class="var">b</span>) {<br/>
+
+<span class="in2"></span><span class="fn">activate</span>();<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
+
+<span class="in2"></span><span class="fn">assertCont</span>(<span class="var">b</span>.<span class="var">_file</span>, <span class="var">b</span>.<span class="var">_startLine</span>);<br/>
+
+<span class="in2"></span><span class="var">_value</span> += <span class="var">b</span>.<span class="var">_value</span>;<br/>
+
+<span class="in2"></span><span class="var">_endLine</span> = <span class="var">b</span>.<span class="var">_endLine</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+</div>
+<h1>Unit Tests</h1>
+<div class="slides">
+<div><div>
+<h1>Unit Tests</h1>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@globdef(<span class="name">perform unit-tests</span>)</span><br/>
+
+<span class="in1"></span><span class="expand">@expand(<span class="name">unit tests</span>)</span>;<br/>
+
+<span class="end">@end(<span class="name">perform unit-tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="type">Buf</span> <span class="var">b</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="var">b</span>.<span class="fn">active</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="type">Buf</span> <span class="var">b</span>;<br/>
+
+<span class="in1"></span><span class="var">b</span>.<span class="fn">activate</span>();<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">active</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="type">Buf</span> <span class="var">b</span>;<br/>
+
+<span class="in1"></span><span class="var">b</span>.<span class="fn">activate</span>();<br/>
+
+<span class="in1"></span><span class="var">b</span>.<span class="fn">clear</span>();<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="var">b</span>.<span class="fn">active</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">foo entry</span>)</span><br/>
+
+<span class="in1"></span><span class="type">Buf</span> <span class="var">b</span>;<br/>
+
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">"abc"</span>, <span class="str">"foo.x"</span>, <span class="num">1</span>);<br/>
+
+<span class="end">@end(<span class="name">foo entry</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">active</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">str</span>() == <span class="str">"abc"</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">file</span>() == <span class="str">"foo.x"</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">startLine</span>() == <span class="num">1</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">endLine</span>() == <span class="num">1</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">foo two lines</span>)</span><br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">"\n"</span>, <span class="str">"foo.x"</span>, <span class="num">1</span>);<br/>
+
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">"def"</span>, <span class="str">"foo.x"</span>, <span class="num">2</span>);<br/>
+
+<span class="end">@end(<span class="name">foo two lines</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo two lines</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">str</span>() == <span class="str">"abc\ndef"</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo two lines</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">startLine</span>() == <span class="num">1</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo two lines</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span>.<span class="fn">endLine</span>() == <span class="num">2</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">bar entry</span>)</span><br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">foo two lines</span>)</span>;<br/>
+
+<span class="in1"></span><span class="type">Buf</span> <span class="var">c</span>;<br/>
+
+<span class="in1"></span><span class="var">c</span>.<span class="fn">add</span>(<span class="var">b</span>);<br/>
+
+<span class="end">@end(<span class="name">bar entry</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">str</span>() == <span class="var">b</span>.<span class="fn">str</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">startLine</span>() == <span class="var">b</span>.<span class="fn">startLine</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">endLine</span>() == <span class="var">b</span>.<span class="fn">endLine</span>());<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@def(<span class="name">bar two entry</span>)</span><br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar entry</span>)</span>;<br/>
+
+<span class="in1"></span><span class="type">Buf</span> <span class="var">d</span>;<br/>
+
+<span class="in1"></span><span class="var">d</span>.<span class="fn">add</span>(<span class="str">"\n"</span>, <span class="str">"foo.x"</span>, <span class="num">2</span>);<br/>
+
+<span class="in1"></span><span class="var">d</span>.<span class="fn">add</span>(<span class="str">"ghi"</span>, <span class="str">"foo.x"</span>, <span class="num">3</span>);<br/>
+
+<span class="in1"></span><span class="var">c</span>.<span class="fn">add</span>(<span class="var">d</span>);<br/>
+
+<span class="end">@end(<span class="name">bar two entry</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar two entry</span>)</span><br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">str</span>() == <span class="str">"abc\ndef\nghi"</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar two entry</span>)</span><br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">startLine</span>() == <span class="num">1</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">unit tests</span>)</span> {<br/>
+
+<span class="in1"></span><span class="expand">@multiple(<span class="name">bar two entry</span>)</span><br/>
+
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">endLine</span>() == <span class="num">3</span>);<br/>
+
+} <span class="end">@end(<span class="name">unit tests</span>)</span><br/>
+
+</code>
+</div>
+
+

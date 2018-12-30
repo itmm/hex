@@ -157,7 +157,7 @@ x{includes}
 # Unit Tests
 
 ```
-D{perform unit-tests}
+A{perform unit-tests}
 	e{frag unit tests};
 x{perform unit-tests}
 ```

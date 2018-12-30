@@ -111,6 +111,12 @@ x{includes}
 * Und Fragment an mehreren Stellen zu erweitern
 
 ```
+i{buf.x}
+```
+* Buffer können als Erweiterung von Strings aktiv gesetzt werden
+* Und tracken den enthaltenen Range
+
+```
 i{frag.x}
 ```
 * Fragment-Behandlung wird in einer eigenen Datei definiert
