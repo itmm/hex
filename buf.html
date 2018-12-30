@@ -238,6 +238,74 @@
 
 <span class="add">@def(<span class="name">private methods</span>)</span><br/>
 
+<span class="in1"></span><span class="type">bool</span> <span class="fn">_canContinue</span>(<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span> != <span class="var">file</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <br/>
+
+<span class="in3"></span><span class="var">line</span> == <span class="var">_endLine</span> ||<br/>
+
+<span class="in3"></span><span class="var">line</span> == <span class="var">_endLine</span> + <span class="num">1</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">private methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">buf methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">canContinue</span>(<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">empty</span>()) {<br/>
+
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">_canContinue</span>(<br/>
+
+<span class="in3"></span><span class="var">file</span>, <span class="var">line</span><br/>
+
+<span class="in2"></span>);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="end">@end(<span class="name">buf methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="add">@add(<span class="name">private methods</span>)</span><br/>
+
 <span class="in1"></span><span class="type">void</span> <span class="fn">assertCont</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
@@ -256,15 +324,7 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">_file</span> == <span class="var">file</span>, <span class="str">"switching files"</span>);<br/>
-
-<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
-
-<span class="in3"></span><span class="var">line</span> == <span class="var">_endLine</span> || <span class="var">line</span> == <span class="var">_endLine</span> + <span class="num">1</span>,<br/>
-
-<span class="in3"></span><span class="str">"not continous"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="fn">_canContinue</span>(<span class="var">file</span>, <span class="var">line</span>));<br/>
 
 <span class="in1"></span>}<br/>
 

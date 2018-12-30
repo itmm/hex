@@ -50,6 +50,18 @@
 		int _endLine;
 		bool _active;
 		
+	bool _canContinue(
+		const std::string &file,
+		int line
+	) {
+		if (_file != file) {
+			return false;
+		}
+		return 
+			line == _endLine ||
+			line == _endLine + 1;
+	}
+
 	void assertCont(
 		const std::string &file,
 		int line
@@ -59,11 +71,7 @@
 			_startLine = line;
 			_endLine = line;
 		}
-		ASSERT(_file == file, "switching files");
-		ASSERT(
-			line == _endLine || line == _endLine + 1,
-			"not continous"
-		);
+		ASSERT(_canContinue(file, line));
 	}
 ;
 	public:
@@ -106,6 +114,18 @@
 		return _endLine;
 	}
 
+	bool canContinue(
+		const std::string &file,
+		int line
+	) {
+		if (_file.empty()) {
+			return true;
+		}
+		return _canContinue(
+			file, line
+		);
+	}
+
 	void add(
 		const std::string &value,
 		const std::string &file,
@@ -133,34 +153,47 @@
 	class Frag;
 
 	class FragEntry {
-		std::string _value;
+		Buf _buf;
 	public:
 		const Frag *frag;
 		
 	FragEntry(
-		Frag *frag,
-		const std::string &value
-			= std::string()
+		Frag *frag
 	):
-		_value { value },
 		frag { frag }
 	{}
 
 	FragEntry(
-		const std::string &value
-			= std::string()
+		const std::string &value,
+		const std::string &file = "/dev/null",
+		int line = 1
 	): 
-		_value { value },
+		frag { nullptr}
+	{
+		_buf.add(value, file, line);
+	}
+
+	FragEntry(): 
 		frag { nullptr}
 	{}
 
 	const std::string &str() const {
-		return _value;
+		return _buf.str();
 	}
 
-	FragEntry &operator<<(const std::string &s) {
-		_value += s;
-		return *this;
+	void add(
+		const std::string &value,
+		const std::string &file,
+		int line
+	) {
+		_buf.add(value, file, line);
+	}
+
+	bool canAdd(
+		const std::string &file,
+		int line
+	) {
+		return _buf.canContinue(file, line);
 	}
 ;
 	};
@@ -198,15 +231,24 @@
 
 	Frag &add(
 		const std::string &value,
-		const std::string &source,
+		const std::string &file,
 		int line
 	) {
+		if (value.empty()) { return *this; }
 		if (_entries.empty()) {
 			_entries.push_back(FragEntry {
-				value
+				value, file, line
+			});
+		} else if (! _entries.back().canAdd(
+			file, line
+		)) {
+			_entries.push_back(FragEntry {
+				value, file, line
 			});
 		} else {
-			_entries.back() << value;
+			_entries.back().add(
+				value, file, line
+			);
 		}
 		return *this;
 	}

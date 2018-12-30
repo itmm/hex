@@ -15,7 +15,7 @@ d{define frag}
 	class Frag;
 
 	class FragEntry {
-		std::string _value;
+		Buf _buf;
 	public:
 		const Frag *frag;
 		e{entry methods};
@@ -32,11 +32,8 @@ x{define frag}
 ```
 d{entry methods}
 	FragEntry(
-		Frag *frag,
-		const std::string &value
-			= std::string()
+		Frag *frag
 	):
-		_value { value },
 		frag { frag }
 	{}
 x{entry methods}
@@ -47,20 +44,31 @@ x{entry methods}
 ```
 a{entry methods}
 	FragEntry(
-		const std::string &value
-			= std::string()
+		const std::string &value,
+		const std::string &file = "/dev/null",
+		int line = 1
 	): 
-		_value { value },
 		frag { nullptr}
-	{}
+	{
+		_buf.add(value, file, line);
+	}
 x{entry methods}
 ```
 * Ein Fragment kann auch nur mit einer Zeichenkette initialisiert werden
 
 ```
 a{entry methods}
+	FragEntry(): 
+		frag { nullptr}
+	{}
+x{entry methods}
+```
+* Ein Fragment kann auch leer initialisiert werden
+
+```
+a{entry methods}
 	const std::string &str() const {
-		return _value;
+		return _buf.str();
 	}
 x{entry methods}
 ```
@@ -68,13 +76,27 @@ x{entry methods}
 
 ```
 a{entry methods}
-	FragEntry &operator<<(const std::string &s) {
-		_value += s;
-		return *this;
+	void add(
+		const std::string &value,
+		const std::string &file,
+		int line
+	) {
+		_buf.add(value, file, line);
 	}
 x{entry methods}
 ```
 * Bytes können direkt hinzugefügt werden
+
+```
+a{entry methods}
+	bool canAdd(
+		const std::string &file,
+		int line
+	) {
+		return _buf.canContinue(file, line);
+	}
+x{entry methods}
+```
 
 ```
 A{includes}
@@ -238,15 +260,24 @@ x{frag unit tests}
 a{frag methods}
 	Frag &add(
 		const std::string &value,
-		const std::string &source,
+		const std::string &file,
 		int line
 	) {
+		if (value.empty()) { return *this; }
 		if (_entries.empty()) {
 			_entries.push_back(FragEntry {
-				value
+				value, file, line
+			});
+		} else if (! _entries.back().canAdd(
+			file, line
+		)) {
+			_entries.push_back(FragEntry {
+				value, file, line
 			});
 		} else {
-			_entries.back() << value;
+			_entries.back().add(
+				value, file, line
+			);
 		}
 		return *this;
 	}

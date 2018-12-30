@@ -101,6 +101,38 @@ x{buf methods}
 
 ```
 d{private methods}
+	bool _canContinue(
+		const std::string &file,
+		int line
+	) {
+		if (_file != file) {
+			return false;
+		}
+		return 
+			line == _endLine ||
+			line == _endLine + 1;
+	}
+x{private methods}
+```
+
+```
+a{buf methods}
+	bool canContinue(
+		const std::string &file,
+		int line
+	) {
+		if (_file.empty()) {
+			return true;
+		}
+		return _canContinue(
+			file, line
+		);
+	}
+x{buf methods}
+```
+
+```
+a{private methods}
 	void assertCont(
 		const std::string &file,
 		int line
@@ -110,11 +142,7 @@ d{private methods}
 			_startLine = line;
 			_endLine = line;
 		}
-		ASSERT(_file == file, "switching files");
-		ASSERT(
-			line == _endLine || line == _endLine + 1,
-			"not continous"
-		);
+		ASSERT(_canContinue(file, line));
 	}
 x{private methods}
 ```
