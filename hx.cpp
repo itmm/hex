@@ -45,19 +45,37 @@
 	
 	struct Frag;
 
-	struct FragEntry {
-		Frag *frag;
+	class FragEntry {
 		std::string value;
+	public:
+		const Frag *frag;
 		
-	std::string source;
-	int line;
+	FragEntry(
+		Frag *frag,
+		const std::string &value
+			= std::string()
+	):
+		value { value },
+		frag { frag }
+	{}
+
+	FragEntry(
+		const std::string &value
+			= std::string()
+	): 
+		value { value },
+		frag { nullptr}
+	{}
+
+	const std::string &str() const {
+		return value;
+	}
+
+	FragEntry &operator<<(const std::string &s) {
+		value += s;
+		return *this;
+	}
 ;
-		FragEntry(
-			const std::string &value = std::string()
-		):
-			frag(nullptr),
-			value(value)
-		{}
 	};
 
 	struct Frag {
@@ -84,13 +102,13 @@
 		const std::string &source,
 		int line
 	) {
-		entries.push_back(FragEntry {});
-		FragEntry &entry = entries.back();
-		entry.value += value;
-		
-	entry.source = source;
-	entry.line = line;
-;
+		if (entries.empty()) {
+			entries.push_back(FragEntry {
+				value
+			});
+		} else {
+			entries.back() << value;
+		}
 		return *this;
 	}
 
@@ -114,12 +132,13 @@
 	int getFragEntryValueSize(
 		const FragEntry &e
 	) {
-		return e.value.size();
+		return e.str().size();
 	}
 
 	
 	bool isFragInFrag(
-		Frag *needle, Frag *haystack
+		const Frag *needle,
+		const Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -152,17 +171,7 @@
 	));
 ;
 		
-	if (! entries.empty() &&
-		! entries.back().frag
-	) {
-		entries.back().frag = child;
-		return *this;
-	}
-;
-		
-	entries.push_back(FragEntry {});
-	FragEntry &entry = entries.back();
-	entry.frag = child;
+	entries.push_back(FragEntry { child });
 ;
 		return *this;
 	}
@@ -174,17 +183,17 @@
 		
 	auto entry { frag.entries.begin() };
 	for (; entry != frag.entries.end(); ++entry) {
-		
-	if (getFragEntryValueSize(*entry)) {
-		out << entry->value;
-	}
-;
 		if (entry->frag) {
 			serializeFrag(
 				*entry->frag, out,
 				writeLineMacros
 			);
 		}
+		
+	if (getFragEntryValueSize(*entry)) {
+		out << entry->str();
+	}
+;
 	}
 ;
 	}
@@ -531,7 +540,7 @@
 
 	{
 		FragEntry entry { "abc" };
-		ASSERT(entry.value == "abc");
+		ASSERT(entry.str() == "abc");
 	}
  {
 	Frag frag {""};

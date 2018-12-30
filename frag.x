@@ -14,26 +14,67 @@ x{global elements}
 d{define frag}
 	struct Frag;
 
-	struct FragEntry {
-		Frag *frag;
+	class FragEntry {
 		std::string value;
-		e{additional entry attributes};
-		FragEntry(
-			const std::string &value = std::string()
-		):
-			frag(nullptr),
-			value(value)
-		{}
+	public:
+		const Frag *frag;
+		e{entry methods};
 	};
 x{define frag}
 ```
 * Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
   dieses an der aktuellen Stelle expandiert werden soll)
 * Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
-* Die Länge des Byte-Arrays wird über einen Zeiger angezeigt (damit auch
-  Null-Bytes verwendet werden können)
 * Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
-  zuerst der Text ausgegeben
+  zuerst das Fragment ausgegeben
+* So können die Bytes leicht erweitert werden
+
+```
+d{entry methods}
+	FragEntry(
+		Frag *frag,
+		const std::string &value
+			= std::string()
+	):
+		value { value },
+		frag { frag }
+	{}
+x{entry methods}
+```
+* Ein Eintrag kann direkt mit Fragment und Zeichenkette initialisiert
+  werden
+
+```
+a{entry methods}
+	FragEntry(
+		const std::string &value
+			= std::string()
+	): 
+		value { value },
+		frag { nullptr}
+	{}
+x{entry methods}
+```
+* Ein Fragment kann auch nur mit einer Zeichenkette initialisiert werden
+
+```
+a{entry methods}
+	const std::string &str() const {
+		return value;
+	}
+x{entry methods}
+```
+* Auf die Bytes kann mit `str()` nur lesend zugegriffen werden
+
+```
+a{entry methods}
+	FragEntry &operator<<(const std::string &s) {
+		value += s;
+		return *this;
+	}
+x{entry methods}
+```
+* Bytes können direkt hinzugefügt werden
 
 ```
 A{includes}
@@ -142,7 +183,7 @@ a{define frag}
 	int getFragEntryValueSize(
 		const FragEntry &e
 	) {
-		return e.value.size();
+		return e.str().size();
 	}
 x{define frag}
 ```
@@ -189,7 +230,7 @@ x{frag unit tests}
 a{frag unit tests}
 	{
 		FragEntry entry { "abc" };
-		ASSERT(entry.value == "abc");
+		ASSERT(entry.str() == "abc");
 	}
 x{frag unit tests}
 ```
@@ -204,10 +245,13 @@ a{frag methods}
 		const std::string &source,
 		int line
 	) {
-		entries.push_back(FragEntry {});
-		FragEntry &entry = entries.back();
-		entry.value += value;
-		e{populate additional entry fields};
+		if (entries.empty()) {
+			entries.push_back(FragEntry {
+				value
+			});
+		} else {
+			entries.back() << value;
+		}
 		return *this;
 	}
 x{frag methods}
@@ -225,7 +269,6 @@ a{define frag}
 	Frag &Frag::add(Frag *child) {
 		ASSERT(child);
 		e{avoid frag cycles};
-		e{reuse last entry};
 		e{add frag entry};
 		return *this;
 	}
@@ -239,26 +282,11 @@ x{define frag}
   verwendet
 
 ```
-d{reuse last entry}
-	if (! entries.empty() &&
-		! entries.back().frag
-	) {
-		entries.back().frag = child;
-		return *this;
-	}
-x{reuse last entry}
-```
-* Wenn das Fragment-Attribut im letzten Eintrag noch nicht benutzt wird,
-  kann dieses verwendet werden
-
-```
 d{add frag entry}
-	entries.push_back(FragEntry {});
-	FragEntry &entry = entries.back();
-	entry.frag = child;
+	entries.push_back(FragEntry { child });
 x{add frag entry}
 ```
-* Sonst muss ein neuer Eintrag in dem Fragment angelegt werden
+* Es muss ein neuer Eintrag in dem Fragment angelegt werden
 
 # Fragmente serialisieren
 
@@ -279,23 +307,23 @@ x{define frag}
 d{iterate entries}
 	auto entry { frag.entries.begin() };
 	for (; entry != frag.entries.end(); ++entry) {
-		e{serialize bytes};
 		if (entry->frag) {
 			serializeFrag(
 				*entry->frag, out,
 				writeLineMacros
 			);
 		}
+		e{serialize bytes};
 	}
 x{iterate entries}
 ```
-* Für jeden Eintrag werden zuerst die Bytes ausgegeben
-* Dann wird rekursiv das Fragment ausgegeben, falls vorhanden
+* Rekursiv wird das Fragment ausgegeben, falls vorhanden
+* Dann werden die Bytes des Eintrags ausgegeben
 
 ```
 d{serialize bytes}
 	if (getFragEntryValueSize(*entry)) {
-		out << entry->value;
+		out << entry->str();
 	}
 x{serialize bytes}
 ```
@@ -368,7 +396,8 @@ a{frag unit tests} {
 ```
 d{define cycle check}
 	bool isFragInFrag(
-		Frag *needle, Frag *haystack
+		const Frag *needle,
+		const Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -477,23 +506,3 @@ a{frag map methods}
 x{frag map methods}
 ```
 
-# Position im Original merken
-
-```
-d{additional entry attributes}
-	std::string source;
-	int line;
-x{additional entry attributes}
-```
-* Jedes Fragment hält einen Zeiger auf die Datei aus der das Fragment
-  generiert wurde
-* Und die Zeile in dieser Datei
-* So kann durch spezielle `#line` Makros im generierten Source-Code auf
-  die ursprüngliche Datei verwiesen werden
-
-```
-d{populate additional entry fields}
-	entry.source = source;
-	entry.line = line;
-x{populate additional entry fields}
-```
