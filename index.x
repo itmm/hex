@@ -33,7 +33,7 @@
 
 ```
 D{file: hx.cpp}
-	g{global elements}
+	e{global elements}
 	int main(
 		int argc,
 		const char **argv
@@ -49,11 +49,11 @@ x{file: hx.cpp}
 
 ```
 d{main body}
-	g{perform unit-tests};
+	e{perform unit-tests};
 	e{process arguments};
 	e{read source file};
 	e{serialize fragments};
-	g{write HTML file};
+	e{write HTML file};
 x{main body}
 ```
 * Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
@@ -75,9 +75,9 @@ x{main body}
 * Für mehrfache Auflösungen muss `@mulitple` verwendet werden
 
 ```
-D{global elements}
-	g{includes};
-	g{define logging};
+d{global elements}
+	e{includes};
+	e{define logging};
 x{global elements}
 ```
 * System-Dateien werden vor der Definition von Strukturen und Funktionen
@@ -93,7 +93,7 @@ x{global elements}
   eine weitere Datei gelesen werden
 
 ```
-D{includes}
+d{includes}
 	#include <fstream>
 	#include <iostream>
 	#include <memory>
@@ -122,7 +122,7 @@ i{frag.x}
 * Fragment-Behandlung wird in einer eigenen Datei definiert
 
 ```
-A{global elements}
+a{global elements}
 	class Input {
 		private:
 			std::ifstream file;
@@ -174,7 +174,7 @@ x{input methods}
 * Und die Datei geschlossen
 
 ```
-A{global elements}
+a{global elements}
 	std::unique_ptr<Input> input;
 	std::vector<std::unique_ptr<Input>>
 		pending;
@@ -193,7 +193,7 @@ x{global elements}
   werden müssen
 
 ```
-A{global elements}
+a{global elements}
 	FragMap root;
 	FragMap *frags { &root };
 x{global elements}
@@ -202,7 +202,7 @@ x{global elements}
   angelegt
 
 ```
-A{global elements}
+a{global elements}
 	void pushPath(const std::string &path) {
 		std::unique_ptr<Input> i {
 			std::make_unique<Input>(path)
@@ -230,7 +230,7 @@ x{push to pending}
 * Falls schon eine Datei offen ist, wird sie nach `pending` verschoben
 
 ```
-D{define logging}
+d{define logging}
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \
 			std::cerr << __FILE__ << ':' << __LINE__ << ' ' \
@@ -247,7 +247,7 @@ x{define logging}
   werden
 
 ```
-A{define logging}
+a{define logging}
 	inline void failSuffix() {
 		std::cerr << std::endl;
 	}
@@ -258,7 +258,7 @@ x{define logging}
 * Im einfachsten Fall wird nur ein Zeilenumbruch ausgegeben
 
 ```
-A{define logging}
+a{define logging}
 	template<typename T, typename... Args>
 	inline void failSuffix(
 		const T& a, Args... args
@@ -299,7 +299,7 @@ x{init additional input fields}
 * Die Kommandozeile wird Element für Element abgearbeitet
 
 ```
-A{global elements}
+a{global elements}
 	std::string stylesheet { "slides/slides.css" };
 x{global elements}
 ```
@@ -365,7 +365,7 @@ x{process arguments}
   zurück geliefert
 
 ```
-A{global elements}
+a{global elements}
 	int nextCh() {
 		int ch { EOF };
 		while (input) {
@@ -668,7 +668,7 @@ x{frag names must match}
   Abarbeitung abgebrochen
 
 ```
-A{global elements}
+a{global elements}
 	bool alreadyUsed(const std::string &name) {
 		if (input && input->name == name) {
 			return true;
@@ -809,7 +809,7 @@ x{process frag name}
 * Um sie global unique zu machen
 
 ```
-A{includes}
+a{includes}
 	#include <functional>
 	#include <sstream>
 x{includes}

@@ -94,7 +94,7 @@
 
 <span class="macro">@globdef(<span class="name">file: hx.cpp</span>)</span><br/>
 
-<span class="in1"></span><span class="macro">@globexpand(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 
@@ -127,7 +127,7 @@
 
 <span class="macro">@def(<span class="name">main body</span>)</span><br/>
 
-<span class="in1"></span><span class="macro">@globexpand(<span class="name">perform unit-tests</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">perform unit-tests</span>)</span>;<br/>
 
 <span class="in1"></span><span class="macro">@expand(<span class="name">process arguments</span>)</span>;<br/>
 
@@ -135,7 +135,7 @@
 
 <span class="in1"></span><span class="macro">@expand(<span class="name">serialize fragments</span>)</span>;<br/>
 
-<span class="in1"></span><span class="macro">@globexpand(<span class="name">write HTML file</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">write HTML file</span>)</span>;<br/>
 
 <span class="macro">@end(<span class="name">main body</span>)</span><br/>
 
@@ -183,11 +183,11 @@
 <div><div>
 <code>
 
-<span class="macro">@globdef(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@def(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="macro">@globexpand(<span class="name">includes</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">includes</span>)</span>;<br/>
 
-<span class="in1"></span><span class="macro">@globexpand(<span class="name">define logging</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">define logging</span>)</span>;<br/>
 
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
@@ -221,7 +221,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globdef(<span class="name">includes</span>)</span><br/>
+<span class="macro">@def(<span class="name">includes</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">fstream</span>&gt;<br/>
 
@@ -288,7 +288,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">class</span> <span class="type">Input</span> {<br/>
 
@@ -396,7 +396,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">input</span>;<br/>
 
@@ -434,7 +434,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
 
@@ -453,7 +453,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
 
@@ -513,7 +513,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globdef(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@def(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>, ...) \<br/>
 
@@ -548,7 +548,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@add(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span><span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>() {<br/>
 
@@ -571,7 +571,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@add(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span><span class="var">template</span>&lt;<span class="var">typename</span> <span class="var">T</span>, <span class="var">typename</span>... <span class="type">Args</span>&gt;<br/>
 
@@ -665,7 +665,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">stylesheet</span> { <span class="str">"slides/slides.css"</span> };<br/>
 
@@ -808,7 +808,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
 
@@ -1447,7 +1447,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
 
@@ -1740,7 +1740,7 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="macro">@add(<span class="name">includes</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">functional</span>&gt;<br/>
 
