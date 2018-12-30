@@ -92,9 +92,9 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">file: hx.cpp</span>)</span><br/>
+<span class="macro">@globdef(<span class="name">file: hx.cpp</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@globexpand(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@globexpand(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 
@@ -104,11 +104,11 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">main body</span>)</span><br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">main body</span>)</span><br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">file: hx.cpp</span>)</span><br/>
+<span class="macro">@end(<span class="name">file: hx.cpp</span>)</span><br/>
 
 </code>
 </div>
@@ -125,19 +125,19 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">main body</span>)</span><br/>
+<span class="macro">@def(<span class="name">main body</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@globexpand(<span class="name">perform unit-tests</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@globexpand(<span class="name">perform unit-tests</span>)</span>;<br/>
 
-<span class="in1"></span><span class="expand">@expand(<span class="name">process arguments</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">process arguments</span>)</span>;<br/>
 
-<span class="in1"></span><span class="expand">@expand(<span class="name">read source file</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">read source file</span>)</span>;<br/>
 
-<span class="in1"></span><span class="expand">@expand(<span class="name">serialize fragments</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">serialize fragments</span>)</span>;<br/>
 
-<span class="in1"></span><span class="expand">@globexpand(<span class="name">write HTML file</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@globexpand(<span class="name">write HTML file</span>)</span>;<br/>
 
-<span class="end">@end(<span class="name">main body</span>)</span><br/>
+<span class="macro">@end(<span class="name">main body</span>)</span><br/>
 
 </code>
 </div>
@@ -183,13 +183,13 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globdef(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@globexpand(<span class="name">includes</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@globexpand(<span class="name">includes</span>)</span>;<br/>
 
-<span class="in1"></span><span class="expand">@globexpand(<span class="name">define logging</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@globexpand(<span class="name">define logging</span>)</span>;<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -221,7 +221,7 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">includes</span>)</span><br/>
+<span class="macro">@globdef(<span class="name">includes</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">fstream</span>&gt;<br/>
 
@@ -231,7 +231,7 @@
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">vector</span>&gt;<br/>
 
-<span class="end">@end(<span class="name">includes</span>)</span><br/>
+<span class="macro">@end(<span class="name">includes</span>)</span><br/>
 
 </code>
 </div>
@@ -262,7 +262,7 @@
 <div><div>
 <code>
 
-<span class="include">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
+<span class="macro">@include(<span class="name"><a href="buf.html">buf.x</a>)</span></span><br/>
 
 </code>
 </div>
@@ -276,7 +276,7 @@
 <div><div>
 <code>
 
-<span class="include">@include(<span class="name"><a href="frag.html">frag.x</a>)</span></span><br/>
+<span class="macro">@include(<span class="name"><a href="frag.html">frag.x</a>)</span></span><br/>
 
 </code>
 </div>
@@ -288,7 +288,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">class</span> <span class="type">Input</span> {<br/>
 
@@ -300,13 +300,13 @@
 
 <span class="in3"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">additional input elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">additional input elements</span>)</span>;<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">input methods</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">input methods</span>)</span>;<br/>
 
 <span class="in1"></span>};<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -326,7 +326,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@def(<span class="name">input methods</span>)</span><br/>
 
 <span class="in1"></span><span class="fn">Input</span>(<br/>
 
@@ -338,13 +338,13 @@
 
 <span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">direct input constr</span>)</span><br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">direct input constr</span>)</span><br/>
 
 <span class="in1"></span>{<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@end(<span class="name">input methods</span>)</span><br/>
 
 </code>
 </div>
@@ -358,7 +358,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@add(<span class="name">input methods</span>)</span><br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">next</span>() {<br/>
 
@@ -380,7 +380,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@end(<span class="name">input methods</span>)</span><br/>
 
 </code>
 </div>
@@ -396,7 +396,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">input</span>;<br/>
 
@@ -408,7 +408,7 @@
 
 <span class="in2"></span><span class="var">used</span>;<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -434,13 +434,13 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
 
 <span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> { &amp;<span class="var">root</span> };<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -453,7 +453,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
 
@@ -463,15 +463,15 @@
 
 <span class="in2"></span>};<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">init additional input fields</span>)</span>;<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">push to pending</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">push to pending</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -489,7 +489,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">push to pending</span>)</span><br/>
+<span class="macro">@def(<span class="name">push to pending</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
 
@@ -501,7 +501,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">push to pending</span>)</span><br/>
+<span class="macro">@end(<span class="name">push to pending</span>)</span><br/>
 
 </code>
 </div>
@@ -513,7 +513,7 @@
 <div><div>
 <code>
 
-<span class="add">@globdef(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@globdef(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>, ...) \<br/>
 
@@ -529,7 +529,7 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="end">@end(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
 
 </code>
 </div>
@@ -548,7 +548,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span><span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>() {<br/>
 
@@ -556,7 +556,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
 
 </code>
 </div>
@@ -571,7 +571,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
 
 <span class="in1"></span><span class="var">template</span>&lt;<span class="var">typename</span> <span class="var">T</span>, <span class="var">typename</span>... <span class="type">Args</span>&gt;<br/>
 
@@ -587,7 +587,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">define logging</span>)</span><br/>
+<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
 
 </code>
 </div>
@@ -614,11 +614,11 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">additional input elements</span>)</span><br/>
+<span class="macro">@def(<span class="name">additional input elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">FragMap</span> <span class="var">frags</span>;<br/>
 
-<span class="end">@end(<span class="name">additional input elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">additional input elements</span>)</span><br/>
 
 </code>
 </div>
@@ -631,7 +631,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">init additional input fields</span>)</span><br/>
+<span class="macro">@def(<span class="name">init additional input fields</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
 
@@ -641,7 +641,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">init additional input fields</span>)</span><br/>
+<span class="macro">@end(<span class="name">init additional input fields</span>)</span><br/>
 
 </code>
 </div>
@@ -665,11 +665,11 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">stylesheet</span> { <span class="str">"slides/slides.css"</span> };<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -683,13 +683,13 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process arguments</span>)</span><br/>
+<span class="macro">@def(<span class="name">process arguments</span>)</span><br/>
 
 <span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> { <span class="num">false</span> };<br/>
 
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> { <span class="num">1</span> }; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">process argument</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">process argument</span>)</span>;<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
@@ -701,7 +701,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process arguments</span>)</span><br/>
+<span class="macro">@end(<span class="name">process arguments</span>)</span><br/>
 
 </code>
 </div>
@@ -715,7 +715,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process argument</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">process argument</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"--css="</span> };<br/>
 
@@ -729,7 +729,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">process argument</span>)</span><br/>
+} <span class="macro">@end(<span class="name">process argument</span>)</span><br/>
 
 </code>
 </div>
@@ -742,7 +742,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process argument</span>)</span><br/>
+<span class="macro">@add(<span class="name">process argument</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 
@@ -754,7 +754,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process argument</span>)</span><br/>
+<span class="macro">@end(<span class="name">process argument</span>)</span><br/>
 
 </code>
 </div>
@@ -770,7 +770,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process arguments</span>)</span><br/>
+<span class="macro">@add(<span class="name">process arguments</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 
@@ -778,7 +778,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process arguments</span>)</span><br/>
+<span class="macro">@end(<span class="name">process arguments</span>)</span><br/>
 
 </code>
 </div>
@@ -808,7 +808,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
 
@@ -818,11 +818,11 @@
 
 <span class="in3"></span><span class="var">ch</span> = <span class="var">input</span>-&gt;<span class="fn">next</span>();<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">preprocess char</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">preprocess char</span>)</span>;<br/>
 
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span>) { <span class="keyword">break</span>; }<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">get next input file</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">get next input file</span>)</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -830,7 +830,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -845,7 +845,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">get next input file</span>)</span><br/>
+<span class="macro">@def(<span class="name">get next input file</span>)</span><br/>
 
 <span class="in1"></span><span class="var">used</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>));<br/>
 
@@ -859,7 +859,7 @@
 
 <span class="in1"></span><span class="var">frags</span> = <span class="var">frags</span>-&gt;<span class="fn">setLink</span>(<span class="num">nullptr</span>);<br/>
 
-<span class="end">@end(<span class="name">get next input file</span>)</span><br/>
+<span class="macro">@end(<span class="name">get next input file</span>)</span><br/>
 
 </code>
 </div>
@@ -889,9 +889,9 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">read source file</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">read source file</span>)</span> {<br/>
 
-<span class="in1"></span><span class="expand">@expand(<span class="name">additional read vars</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@expand(<span class="name">additional read vars</span>)</span>;<br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="var">last</span> { <span class="fn">nextCh</span>() };<br/>
 
@@ -899,13 +899,13 @@
 
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">ch</span> != <span class="num">EOF</span>) {<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">process current char</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">process current char</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>; <span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">read source file</span>)</span><br/>
+} <span class="macro">@end(<span class="name">read source file</span>)</span><br/>
 
 </code>
 </div>
@@ -920,13 +920,13 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process current char</span>)</span><br/>
+<span class="macro">@def(<span class="name">process current char</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">case</span> <span class="str">'{'</span>:<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">process open brace</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">process open brace</span>)</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
@@ -934,7 +934,7 @@
 
 <span class="in3"></span><span class="type">bool</span> <span class="var">processed</span> { <span class="num">false</span> };<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">process close brace</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">process close brace</span>)</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
@@ -942,11 +942,11 @@
 
 <span class="in2"></span><span class="keyword">default</span>:<br/>
 
-<span class="in3"></span><span class="expand">@expand(<span class="name">process other char</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">process other char</span>)</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process current char</span>)</span><br/>
+<span class="macro">@end(<span class="name">process current char</span>)</span><br/>
 
 </code>
 </div>
@@ -963,7 +963,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@def(<span class="name">additional read vars</span>)</span><br/>
 
 <span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> { <span class="num">nullptr</span> };<br/>
 
@@ -971,7 +971,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">bufferLine</span> { <span class="num">0</span> };<br/>
 
-<span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
 
 </code>
 </div>
@@ -990,11 +990,11 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@add(<span class="name">additional read vars</span>)</span><br/>
 
 <span class="in1"></span><span class="type">char</span> <span class="var">openCh</span> { <span class="str">'\0'</span> };<br/>
 
-<span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
 
 </code>
 </div>
@@ -1009,7 +1009,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@add(<span class="name">additional read vars</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
 
@@ -1017,7 +1017,7 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">nameLine</span> { <span class="num">0</span> };<br/>
 
-<span class="end">@end(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
 
 </code>
 </div>
@@ -1029,11 +1029,11 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process close brace</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">process close brace</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">useName</span> || ! <span class="var">name</span>.<span class="fn">empty</span>()) {<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">process frag name</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">process frag name</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">name</span>.<span class="fn">clear</span>(); <span class="var">useName</span> = <span class="num">false</span>;<br/>
 
@@ -1043,7 +1043,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">process close brace</span>)</span><br/>
+} <span class="macro">@end(<span class="name">process close brace</span>)</span><br/>
 
 </code>
 </div>
@@ -1057,7 +1057,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process other char</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">process other char</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">useName</span> || ! <span class="var">name</span>.<span class="fn">empty</span>()) {<br/>
 
@@ -1067,7 +1067,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">process other char</span>)</span><br/>
+} <span class="macro">@end(<span class="name">process other char</span>)</span><br/>
 
 </code>
 </div>
@@ -1080,7 +1080,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process other char</span>)</span> {<br/>
+<span class="macro">@add(<span class="name">process other char</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
@@ -1094,7 +1094,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">process other char</span>)</span><br/>
+} <span class="macro">@end(<span class="name">process other char</span>)</span><br/>
 
 </code>
 </div>
@@ -1107,7 +1107,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process open brace</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">process open brace</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
@@ -1125,7 +1125,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">process open brace</span>)</span><br/>
+} <span class="macro">@end(<span class="name">process open brace</span>)</span><br/>
 
 </code>
 </div>
@@ -1144,7 +1144,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@def(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
 
@@ -1152,7 +1152,7 @@
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">input</span>-&gt;<span class="var">frags</span> };<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
@@ -1164,7 +1164,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1178,7 +1178,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
 
@@ -1186,7 +1186,7 @@
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check for double def</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
@@ -1198,7 +1198,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1212,7 +1212,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">check for double def</span>)</span><br/>
+<span class="macro">@def(<span class="name">check for double def</span>)</span><br/>
 
 <span class="in1"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
@@ -1226,7 +1226,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">check for double def</span>)</span><br/>
+<span class="macro">@end(<span class="name">check for double def</span>)</span><br/>
 
 </code>
 </div>
@@ -1244,7 +1244,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'a'</span>) {<br/>
 
@@ -1256,13 +1256,13 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1276,7 +1276,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'A'</span>) {<br/>
 
@@ -1288,13 +1288,13 @@
 
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check for add without def</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1306,7 +1306,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">check for add without def</span>)</span><br/>
+<span class="macro">@def(<span class="name">check for add without def</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
@@ -1318,7 +1318,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">check for add without def</span>)</span><br/>
+<span class="macro">@end(<span class="name">check for add without def</span>)</span><br/>
 
 </code>
 </div>
@@ -1330,7 +1330,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
 
@@ -1350,7 +1350,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1364,7 +1364,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'R'</span>) {<br/>
 
@@ -1384,7 +1384,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1396,15 +1396,15 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"end not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">frag names must match</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">frag names must match</span>)</span>;<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 
@@ -1412,7 +1412,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1424,7 +1424,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">frag names must match</span>)</span><br/>
+<span class="macro">@def(<span class="name">frag names must match</span>)</span><br/>
 
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
 
@@ -1434,7 +1434,7 @@
 
 <span class="in1"></span>);<br/>
 
-<span class="end">@end(<span class="name">frag names must match</span>)</span><br/>
+<span class="macro">@end(<span class="name">frag names must match</span>)</span><br/>
 
 </code>
 </div>
@@ -1447,7 +1447,7 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
 
@@ -1481,7 +1481,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
@@ -1499,7 +1499,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'i'</span>) {<br/>
 
@@ -1515,7 +1515,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1530,17 +1530,17 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>];<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addExpand</span>();<br/>
 
@@ -1550,7 +1550,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1564,17 +1564,17 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'g'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addExpand</span>();<br/>
 
@@ -1584,7 +1584,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1594,7 +1594,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">check frag expand count</span>)</span><br/>
+<span class="macro">@def(<span class="name">check frag expand count</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="fn">expands</span>()) {<br/>
 
@@ -1612,7 +1612,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">check frag expand count</span>)</span><br/>
+<span class="macro">@end(<span class="name">check frag expand count</span>)</span><br/>
 
 </code>
 </div>
@@ -1628,17 +1628,17 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>] };<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addMultiple</span>();<br/>
 
@@ -1648,7 +1648,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1661,17 +1661,17 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'G'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>, <span class="var">root</span>) };<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addMultiple</span>();<br/>
 
@@ -1681,7 +1681,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1691,7 +1691,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">check for prev expands</span>)</span><br/>
+<span class="macro">@def(<span class="name">check for prev expands</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>.<span class="fn">expands</span>()) {<br/>
 
@@ -1701,7 +1701,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">check for prev expands</span>)</span><br/>
+<span class="macro">@end(<span class="name">check for prev expands</span>)</span><br/>
 
 </code>
 </div>
@@ -1714,19 +1714,19 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"private not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">process private frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">process private frag</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1740,13 +1740,13 @@
 <div><div>
 <code>
 
-<span class="add">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">functional</span>&gt;<br/>
 
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">sstream</span>&gt;<br/>
 
-<span class="end">@end(<span class="name">includes</span>)</span><br/>
+<span class="macro">@end(<span class="name">includes</span>)</span><br/>
 
 </code>
 </div>
@@ -1758,7 +1758,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process private frag</span>)</span><br/>
+<span class="macro">@def(<span class="name">process private frag</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">hash</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">h</span>;<br/>
 
@@ -1768,7 +1768,7 @@
 
 <span class="in1"></span>};<br/>
 
-<span class="end">@end(<span class="name">process private frag</span>)</span><br/>
+<span class="macro">@end(<span class="name">process private frag</span>)</span><br/>
 
 </code>
 </div>
@@ -1784,9 +1784,9 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process private frag</span>)</span><br/>
+<span class="macro">@add(<span class="name">process private frag</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">hashed</span>;<br/>
 
@@ -1802,7 +1802,7 @@
 
 <span class="in3"></span>);<br/>
 
-<span class="end">@end(<span class="name">process private frag</span>)</span><br/>
+<span class="macro">@end(<span class="name">process private frag</span>)</span><br/>
 
 </code>
 </div>
@@ -1822,19 +1822,19 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'m'</span>) {<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"magic not in frag"</span>);<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">process magic frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">process magic frag</span>)</span>;<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -1849,7 +1849,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">process magic frag</span>)</span><br/>
+<span class="macro">@def(<span class="name">process magic frag</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">hash</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">h</span>;<br/>
 
@@ -1859,7 +1859,7 @@
 
 <span class="in1"></span>};<br/>
 
-<span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
+<span class="macro">@end(<span class="name">process magic frag</span>)</span><br/>
 
 </code>
 </div>
@@ -1871,15 +1871,15 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process magic frag</span>)</span><br/>
+<span class="macro">@add(<span class="name">process magic frag</span>)</span><br/>
 
-<span class="in1"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">value</span>;<br/>
 
 <span class="in1"></span><span class="var">value</span> &lt;&lt; <span class="var">cur</span>;<br/>
 
-<span class="in1"></span><span class="expand">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 
@@ -1889,7 +1889,7 @@
 
 <span class="in1"></span>);<br/>
 
-<span class="end">@end(<span class="name">process magic frag</span>)</span><br/>
+<span class="macro">@end(<span class="name">process magic frag</span>)</span><br/>
 
 </code>
 </div>
@@ -1903,7 +1903,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">flush frag buffer</span>)</span><br/>
+<span class="macro">@def(<span class="name">flush frag buffer</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
@@ -1919,7 +1919,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">flush frag buffer</span>)</span><br/>
+<span class="macro">@end(<span class="name">flush frag buffer</span>)</span><br/>
 
 </code>
 </div>
@@ -1933,13 +1933,13 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process open brace</span>)</span> {<br/>
+<span class="macro">@add(<span class="name">process open brace</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
 <span class="in2"></span><span class="type">bool</span> <span class="var">valid</span> { <span class="num">false</span> };<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">check valid names</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">check valid names</span>)</span>;<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">valid</span>) {<br/>
 
@@ -1955,7 +1955,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">process open brace</span>)</span><br/>
+} <span class="macro">@end(<span class="name">process open brace</span>)</span><br/>
 
 </code>
 </div>
@@ -1972,7 +1972,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">check valid names</span>)</span><br/>
+<span class="macro">@def(<span class="name">check valid names</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] { <br/>
 
@@ -1986,7 +1986,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">check valid names</span>)</span><br/>
+<span class="macro">@end(<span class="name">check valid names</span>)</span><br/>
 
 </code>
 </div>
@@ -2000,7 +2000,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
 
@@ -2028,7 +2028,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process frag name</span>)</span><br/>
+<span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
 </code>
 </div>
@@ -2043,7 +2043,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process open brace</span>)</span><br/>
+<span class="macro">@add(<span class="name">process open brace</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
@@ -2057,7 +2057,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process open brace</span>)</span><br/>
+<span class="macro">@end(<span class="name">process open brace</span>)</span><br/>
 
 </code>
 </div>
@@ -2071,7 +2071,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">process close brace</span>)</span><br/>
+<span class="macro">@add(<span class="name">process close brace</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
 
@@ -2085,7 +2085,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">process close brace</span>)</span><br/>
+<span class="macro">@end(<span class="name">process close brace</span>)</span><br/>
 
 </code>
 </div>
@@ -2112,17 +2112,17 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">serialize fragments</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">serialize fragments</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>) {<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
 
-<span class="in2"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">serialize fragments</span>)</span><br/>
+} <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
 
 </code>
 </div>
@@ -2138,7 +2138,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">serialize fragments</span>)</span> {<br/>
+<span class="macro">@add(<span class="name">serialize fragments</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">used</span>)<br/>
 
@@ -2148,13 +2148,13 @@
 
 <span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
 
-<span class="in3"></span><span class="expand">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">serialize fragments</span>)</span><br/>
+} <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
 
 </code>
 </div>
@@ -2166,15 +2166,15 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">serialize frag</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">serialize frag</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">isFile</span>()) {<br/>
 
-<span class="in2"></span><span class="expand">@expand(<span class="name">write in file</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">write in file</span>)</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+} <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 
 </code>
 </div>
@@ -2189,7 +2189,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">serialize frag</span>)</span> {<br/>
+<span class="macro">@add(<span class="name">serialize frag</span>)</span> {<br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="var">sum</span> {<br/>
 
@@ -2205,7 +2205,7 @@
 
 <span class="in1"></span>}<br/>
 
-} <span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+} <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 
 </code>
 </div>
@@ -2219,7 +2219,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">serialize frag</span>)</span><br/>
+<span class="macro">@add(<span class="name">serialize frag</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">multiples</span>() == <span class="num">1</span>) {<br/>
 
@@ -2231,7 +2231,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+<span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 
 </code>
 </div>
@@ -2246,7 +2246,7 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">serialize frag</span>)</span><br/>
+<span class="macro">@add(<span class="name">serialize frag</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
@@ -2256,7 +2256,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">serialize frag</span>)</span><br/>
+<span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 
 </code>
 </div>
@@ -2269,7 +2269,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">write in file</span>)</span><br/>
+<span class="macro">@def(<span class="name">write in file</span>)</span><br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="fn">out</span>(<br/>
 
@@ -2281,7 +2281,7 @@
 
 <span class="in1"></span><span class="var">out</span>.<span class="fn">close</span>();<br/>
 
-<span class="end">@end(<span class="name">write in file</span>)</span><br/>
+<span class="macro">@end(<span class="name">write in file</span>)</span><br/>
 
 </code>
 </div>
@@ -2302,11 +2302,11 @@
 <div><div>
 <code>
 
-<span class="add">@add(<span class="name">additional input elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">additional input elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">int</span> <span class="var">line</span>;<br/>
 
-<span class="end">@end(<span class="name">additional input elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">additional input elements</span>)</span><br/>
 
 </code>
 </div>
@@ -2318,11 +2318,11 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">direct input constr</span>)</span><br/>
+<span class="macro">@def(<span class="name">direct input constr</span>)</span><br/>
 
 <span class="in1"></span>, <span class="fn">line</span>(<span class="num">1</span>)<br/>
 
-<span class="end">@end(<span class="name">direct input constr</span>)</span><br/>
+<span class="macro">@end(<span class="name">direct input constr</span>)</span><br/>
 
 </code>
 </div>
@@ -2334,7 +2334,7 @@
 <div><div>
 <code>
 
-<span class="add">@def(<span class="name">preprocess char</span>)</span><br/>
+<span class="macro">@def(<span class="name">preprocess char</span>)</span><br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
 
@@ -2342,7 +2342,7 @@
 
 <span class="in1"></span>}<br/>
 
-<span class="end">@end(<span class="name">preprocess char</span>)</span><br/>
+<span class="macro">@end(<span class="name">preprocess char</span>)</span><br/>
 
 </code>
 </div>
@@ -2366,7 +2366,7 @@
 <div><div>
 <code>
 
-<span class="include">@include(<span class="name"><a href="html.html">html.x</a>)</span></span><br/>
+<span class="macro">@include(<span class="name"><a href="html.html">html.x</a>)</span></span><br/>
 
 </code>
 </div>

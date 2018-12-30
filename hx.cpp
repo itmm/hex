@@ -677,6 +677,27 @@
 		return reserved.find(s) != reserved.end();
 	}
 
+	void writeMacroClass(
+		std::ostream &out,
+		HtmlStatus &status,
+		const char *name,
+		char special
+	) {
+		out << "<span class=\"" << name << "\">";
+		status.codeSpecial = special;
+		status.name.clear(true);
+	}
+
+	void writeMacroHeader(
+		std::ostream &out,
+		HtmlStatus &status,
+		const char *name,
+		char special
+	) {
+		writeMacroClass(out, status, "macro", special);
+		out << '@' << name << "(<span class=\"name\">";
+	}
+
 	int main(
 		int argc,
 		const char **argv
@@ -1683,141 +1704,90 @@
 		switch (lc) {
 			
 	case 'd':
-		out << "<span class=\"add\">@def(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "def", lc);
 		break;
 
 	case 'D':
-		out << "<span class=\"add\">@globdef(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globdef", lc);
 		break;
 
 	case 'a':
-		out << "<span class=\"add\">@add(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "add", lc);
 		break;
 
 	case 'A':
-		out << "<span class=\"add\">@globadd(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globadd", lc);
 		break;
 
 	case 'r':
-		out << "<span class=\"add\">@replace(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "replace", lc);
 		break;
 
 	case 'R':
-		out << "<span class=\"add\">@globreplace(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globreplace", lc);
 		break;
 
 	case 'x':
-		out << "<span class=\"end\">@end(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "end", lc);
 		break;
 
 	case 'e':
-		out << "<span class=\"expand\">@expand(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "expand", lc);
 		break;
 
 	case 'E':
-		out << "<span class=\"expand\">@multiple(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "multiple", lc);
 		break;
 
 	case 'g':
-		out << "<span class=\"expand\">@globexpand(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globexpand", lc);
 		break;
 
 	case 'G':
-		out << "<span class=\"expand\">@globmult(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globmult", lc);
 		break;
 
 	case 'i':
-		out << "<span class=\"include\">@include(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "include", lc);
 		break;
 
 	case 't':
-		out << "<span class=\"type\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "type", lc);
 		break;
 
 	case 'v':
-		out << "<span class=\"var\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "var", lc);
 		break;
 
 	case 'f':
-		out << "<span class=\"fn\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "fn", lc);
 		break;
 
 	case 'k':
-		out << "<span class=\"keyword\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "keyword", lc);
 		break;
 
 	case 's':
-		out << "<span class=\"str\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "str", lc);
 		break;
 
 	case 'n':
-		out << "<span class=\"num\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "num", lc);
 		break;
 
 	case 'p':
-		out << "<span class=\"type\">@priv(<span>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "type", lc);
+		out << "@priv(<span>";
 		break;
 
 	case 'm':
-		out << "<span class=\"num\">@magic(<span>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "var", lc);
+		out << "@magic(<span>";
 		break;
 
 	case 'b':
-		out << "<span class=\"virt\"></span><br/>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "virt", lc);
+		out << "</span><br/>";
 		break;
 
 			default: break;
@@ -2013,141 +1983,90 @@
 		switch (lc) {
 			
 	case 'd':
-		out << "<span class=\"add\">@def(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "def", lc);
 		break;
 
 	case 'D':
-		out << "<span class=\"add\">@globdef(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globdef", lc);
 		break;
 
 	case 'a':
-		out << "<span class=\"add\">@add(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "add", lc);
 		break;
 
 	case 'A':
-		out << "<span class=\"add\">@globadd(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globadd", lc);
 		break;
 
 	case 'r':
-		out << "<span class=\"add\">@replace(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "replace", lc);
 		break;
 
 	case 'R':
-		out << "<span class=\"add\">@globreplace(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globreplace", lc);
 		break;
 
 	case 'x':
-		out << "<span class=\"end\">@end(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "end", lc);
 		break;
 
 	case 'e':
-		out << "<span class=\"expand\">@expand(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "expand", lc);
 		break;
 
 	case 'E':
-		out << "<span class=\"expand\">@multiple(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "multiple", lc);
 		break;
 
 	case 'g':
-		out << "<span class=\"expand\">@globexpand(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globexpand", lc);
 		break;
 
 	case 'G':
-		out << "<span class=\"expand\">@globmult(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globmult", lc);
 		break;
 
 	case 'i':
-		out << "<span class=\"include\">@include(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "include", lc);
 		break;
 
 	case 't':
-		out << "<span class=\"type\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "type", lc);
 		break;
 
 	case 'v':
-		out << "<span class=\"var\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "var", lc);
 		break;
 
 	case 'f':
-		out << "<span class=\"fn\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "fn", lc);
 		break;
 
 	case 'k':
-		out << "<span class=\"keyword\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "keyword", lc);
 		break;
 
 	case 's':
-		out << "<span class=\"str\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "str", lc);
 		break;
 
 	case 'n':
-		out << "<span class=\"num\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "num", lc);
 		break;
 
 	case 'p':
-		out << "<span class=\"type\">@priv(<span>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "type", lc);
+		out << "@priv(<span>";
 		break;
 
 	case 'm':
-		out << "<span class=\"num\">@magic(<span>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "var", lc);
+		out << "@magic(<span>";
 		break;
 
 	case 'b':
-		out << "<span class=\"virt\"></span><br/>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "virt", lc);
+		out << "</span><br/>";
 		break;
 
 			default: break;

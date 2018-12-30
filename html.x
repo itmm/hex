@@ -812,12 +812,38 @@ x{process ch in HTML code}
   nicht `nullptr`)
 
 ```
+A{global elements}
+	void writeMacroClass(
+		std::ostream &out,
+		HtmlStatus &status,
+		const char *name,
+		char special
+	) {
+		out << "<span class=\"" << name << "\">";
+		status.codeSpecial = special;
+		status.name.clear(true);
+	}
+x{global elements}
+```
+
+```
+A{global elements}
+	void writeMacroHeader(
+		std::ostream &out,
+		HtmlStatus &status,
+		const char *name,
+		char special
+	) {
+		writeMacroClass(out, status, "macro", special);
+		out << '@' << name << "(<span class=\"name\">";
+	}
+x{global elements}
+```
+
+```
 d{escape html frag}
 	case 'd':
-		out << "<span class=\"add\">@def(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "def", lc);
 		break;
 x{escape html frag}
 ```
@@ -825,10 +851,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'D':
-		out << "<span class=\"add\">@globdef(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globdef", lc);
 		break;
 x{escape html frag}
 ```
@@ -836,10 +859,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'a':
-		out << "<span class=\"add\">@add(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "add", lc);
 		break;
 x{escape html frag}
 ```
@@ -847,10 +867,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'A':
-		out << "<span class=\"add\">@globadd(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globadd", lc);
 		break;
 x{escape html frag}
 ```
@@ -858,10 +875,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'r':
-		out << "<span class=\"add\">@replace(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "replace", lc);
 		break;
 x{escape html frag}
 ```
@@ -869,10 +883,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'R':
-		out << "<span class=\"add\">@globreplace(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globreplace", lc);
 		break;
 x{escape html frag}
 ```
@@ -880,10 +891,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'x':
-		out << "<span class=\"end\">@end(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "end", lc);
 		break;
 x{escape html frag}
 ```
@@ -891,10 +899,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'e':
-		out << "<span class=\"expand\">@expand(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "expand", lc);
 		break;
 x{escape html frag}
 ```
@@ -902,10 +907,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'E':
-		out << "<span class=\"expand\">@multiple(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "multiple", lc);
 		break;
 x{escape html frag}
 ```
@@ -913,10 +915,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'g':
-		out << "<span class=\"expand\">@globexpand(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globexpand", lc);
 		break;
 x{escape html frag}
 ```
@@ -924,10 +923,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'G':
-		out << "<span class=\"expand\">@globmult(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "globmult", lc);
 		break;
 x{escape html frag}
 ```
@@ -935,10 +931,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'i':
-		out << "<span class=\"include\">@include(";
-		out << "<span class=\"name\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroHeader(out, status, "include", lc);
 		break;
 x{escape html frag}
 ```
@@ -946,9 +939,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 't':
-		out << "<span class=\"type\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "type", lc);
 		break;
 x{escape html frag}
 ```
@@ -956,9 +947,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'v':
-		out << "<span class=\"var\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "var", lc);
 		break;
 x{escape html frag}
 ```
@@ -966,9 +955,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'f':
-		out << "<span class=\"fn\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "fn", lc);
 		break;
 x{escape html frag}
 ```
@@ -976,9 +963,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'k':
-		out << "<span class=\"keyword\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "keyword", lc);
 		break;
 x{escape html frag}
 ```
@@ -986,9 +971,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 's':
-		out << "<span class=\"str\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "str", lc);
 		break;
 x{escape html frag}
 ```
@@ -996,9 +979,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'n':
-		out << "<span class=\"num\">";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "num", lc);
 		break;
 x{escape html frag}
 ```
@@ -1006,9 +987,8 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'p':
-		out << "<span class=\"type\">@priv(<span>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "type", lc);
+		out << "@priv(<span>";
 		break;
 x{escape html frag}
 ```
@@ -1016,9 +996,8 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'm':
-		out << "<span class=\"num\">@magic(<span>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "var", lc);
+		out << "@magic(<span>";
 		break;
 x{escape html frag}
 ```
@@ -1027,13 +1006,12 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'b':
-		out << "<span class=\"virt\"></span><br/>";
-		status.codeSpecial = lc;
-		status.name.clear(true);
+		writeMacroClass(out, status, "virt", lc);
+		out << "</span><br/>";
 		break;
 x{escape html frag}
 ```
-* `@magic`-Befehle werden als Zahlen formatiert
+* Zeilenumbrüche
 
 # Notizen
 
