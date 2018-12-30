@@ -57,12 +57,12 @@ x{buf methods}
 
 ```
 a{buf methods}
-	void clear() {
+	void clear(bool active = false) {
 		_value.clear();
 		_file.clear();
 		_startLine = 0;
 		_endLine = 0;
-		_active = false;
+		_active = active;
 	}
 x{buf methods}
 ```
@@ -151,14 +151,27 @@ x{private methods}
 a{buf methods}
 	void add(
 		const std::string &value,
-		const std::string &file,
-		int line
+		const std::string &file = "/dev/null",
+		int line = 1
 	) {
 		activate();
 		if (value.empty()) { return; }
 		assertCont(file, line);
 		_value += value;
 		_endLine = line;
+	}
+x{buf methods}
+```
+
+```
+a{buf methods}
+	void add(
+		int ch,
+		const std::string &file = "/dev/null",
+		int line = 1
+	) {
+		char c = static_cast<char>(ch);
+		add(std::string(&c, &c + 1), file, line);
 	}
 x{buf methods}
 ```

@@ -402,8 +402,7 @@ x{html state elements}
 ```
 a{html state elements}
 	char codeSpecial;
-	std::string name;
-	bool nameUsed;
+	Buf name;
 x{html state elements}
 ```
 * Wenn ein Befehl gelesen wurde, dann enthält `codeSpecial` den
@@ -415,7 +414,6 @@ a{init html status}
 	, codeIndent { 0 }
 	, codeSpecial { '\0' }
 	, name {}
-	, nameUsed { false }
 x{init html status}
 ```
 * Zur Initialisierung werden die Parameter auf `0` gesetzt
@@ -460,8 +458,7 @@ a{process ch for HTML}
 	if (status.codeOpening == 1) {
 		if (! status.codeSpecial && status.state == HtmlState::inCode) {
 			status.codeSpecial = '`';
-			status.name.clear();
-			status.nameUsed = true;
+			status.name.clear(true);
 			E{flush pending};
 			if (status.codeIndent) {
 				out << "<span class=\"in"
@@ -471,13 +468,16 @@ a{process ch for HTML}
 			}
 			out << "<span class=\"str\">`";
 		} else if (
-			status.codeSpecial == '`' && status.name.back() != '\x5c'
+			status.codeSpecial == '`' && (
+				status.name.str().empty() ||
+				status.name.str().back() != '\x5c'
+			)
 		) {
 			E{flush pending};
-			writeEscaped(out, status.name);
+			writeEscaped(out, status.name.str());
 			out << "`</span>";
 			status.codeSpecial = 0;
-			status.nameUsed = false;
+			status.name.clear();
 		}
 	}
 x{process ch for HTML}
@@ -677,8 +677,7 @@ x{process ch in HTML code}
 a{process ch in HTML code}
 	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
 		status.codeSpecial = ch;
-		status.nameUsed = true;
-		status.name.clear();
+		status.name.clear(true);
 		out << "<span class=\"str\">" << static_cast<char>(ch);
 		continue;
 	}
@@ -732,15 +731,17 @@ a{escape HTML code tag}
 				status.codeSpecial == '"' ||
 				status.codeSpecial == '`'
 			) &&
-			ch == status.codeSpecial &&
-			status.name.back() != '\x5c'
+			ch == status.codeSpecial && (
+				status.name.str().empty() ||
+				status.name.str().back() != '\x5c'
+			)
 		)
 	) {
 		E{flush pending};
 		ident.clear();
 		newline = false;
 		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.name);
+			writeEscaped(out, status.name.str());
 		}
 		switch (status.codeSpecial) {
 			e{handle special codes}
@@ -750,7 +751,6 @@ a{escape HTML code tag}
 		}
 		status.codeSpecial = 0;
 		status.name.clear();
-		status.nameUsed = false;
 		continue;
 	}
 x{escape HTML code tag}
@@ -785,16 +785,15 @@ x{handle special codes}
 
 ```
 d{handle html include}
-	auto ext = status.name.find_last_of('.');
+	auto ext = status.name.str().find_last_of('.');
 	ASSERT(
 		ext != std::string::npos,
 		"no period"
 	);
 	out << "<a href=\"" 
-		<< status.name.substr(0, ext) << ".html\">";
-	out << status.name << "</a>)</span>";
+		<< status.name.str().substr(0, ext) << ".html\">";
+	out << status.name.str() << "</a>)</span>";
 	status.name.clear();
-	status.nameUsed = false;
 x{handle html include}
 ```
 * Statt der ursprünglichen `.x`-Datei verweist der Link auf eine
@@ -803,8 +802,8 @@ x{handle html include}
 
 ```
 a{process ch in HTML code}
-	if (ch != EOF && status.nameUsed) {
-		status.name += ch;
+	if (ch != EOF && status.name.active()) {
+		status.name.add(ch);
 		continue;
 	}
 x{process ch in HTML code}
@@ -818,8 +817,7 @@ d{escape html frag}
 		out << "<span class=\"add\">@def(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -830,8 +828,7 @@ a{escape html frag}
 		out << "<span class=\"add\">@globdef(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -842,8 +839,7 @@ a{escape html frag}
 		out << "<span class=\"add\">@add(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -854,8 +850,7 @@ a{escape html frag}
 		out << "<span class=\"add\">@globadd(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -866,8 +861,7 @@ a{escape html frag}
 		out << "<span class=\"add\">@replace(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -878,8 +872,7 @@ a{escape html frag}
 		out << "<span class=\"add\">@globreplace(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -890,8 +883,7 @@ a{escape html frag}
 		out << "<span class=\"end\">@end(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -902,8 +894,7 @@ a{escape html frag}
 		out << "<span class=\"expand\">@expand(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -914,8 +905,7 @@ a{escape html frag}
 		out << "<span class=\"expand\">@multiple(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -926,8 +916,7 @@ a{escape html frag}
 		out << "<span class=\"expand\">@globexpand(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -938,8 +927,7 @@ a{escape html frag}
 		out << "<span class=\"expand\">@globmult(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -950,8 +938,7 @@ a{escape html frag}
 		out << "<span class=\"include\">@include(";
 		out << "<span class=\"name\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -961,8 +948,7 @@ a{escape html frag}
 	case 't':
 		out << "<span class=\"type\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -972,8 +958,7 @@ a{escape html frag}
 	case 'v':
 		out << "<span class=\"var\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -983,8 +968,7 @@ a{escape html frag}
 	case 'f':
 		out << "<span class=\"fn\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -994,8 +978,7 @@ a{escape html frag}
 	case 'k':
 		out << "<span class=\"keyword\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -1005,8 +988,7 @@ a{escape html frag}
 	case 's':
 		out << "<span class=\"str\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -1016,8 +998,7 @@ a{escape html frag}
 	case 'n':
 		out << "<span class=\"num\">";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -1027,8 +1008,7 @@ a{escape html frag}
 	case 'p':
 		out << "<span class=\"type\">@priv(<span>";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -1038,8 +1018,7 @@ a{escape html frag}
 	case 'm':
 		out << "<span class=\"num\">@magic(<span>";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
@@ -1050,8 +1029,7 @@ a{escape html frag}
 	case 'b':
 		out << "<span class=\"virt\"></span><br/>";
 		status.codeSpecial = lc;
-		status.name.clear();
-		status.nameUsed = true;
+		status.name.clear(true);
 		break;
 x{escape html frag}
 ```
