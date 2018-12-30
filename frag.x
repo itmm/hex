@@ -12,10 +12,10 @@ x{global elements}
 
 ```
 d{define frag}
-	struct Frag;
+	class Frag;
 
 	class FragEntry {
-		std::string value;
+		std::string _value;
 	public:
 		const Frag *frag;
 		e{entry methods};
@@ -36,7 +36,7 @@ d{entry methods}
 		const std::string &value
 			= std::string()
 	):
-		value { value },
+		_value { value },
 		frag { frag }
 	{}
 x{entry methods}
@@ -50,7 +50,7 @@ a{entry methods}
 		const std::string &value
 			= std::string()
 	): 
-		value { value },
+		_value { value },
 		frag { nullptr}
 	{}
 x{entry methods}
@@ -60,7 +60,7 @@ x{entry methods}
 ```
 a{entry methods}
 	const std::string &str() const {
-		return value;
+		return _value;
 	}
 x{entry methods}
 ```
@@ -69,7 +69,7 @@ x{entry methods}
 ```
 a{entry methods}
 	FragEntry &operator<<(const std::string &s) {
-		value += s;
+		_value += s;
 		return *this;
 	}
 x{entry methods}
@@ -86,11 +86,12 @@ x{includes}
 
 ```
 a{define frag}
-	struct Frag {
-		std::list<FragEntry> entries;
-		int expands;
-		int multiples;
-		std::string name;
+	class Frag {
+		std::list<FragEntry> _entries;
+		int _expands;
+		int _multiples;
+	public:
+		const std::string name;
 		e{frag methods};
 	};
 x{define frag}
@@ -110,9 +111,9 @@ d{frag methods}
 	Frag(
 		const std::string &name
 	):
-		entries {},
-		expands { 0 },
-		multiples { 0 },
+		_entries {},
+		_expands { 0 },
+		_multiples { 0 },
 		name { name }
 	{ }
 x{frag methods}
@@ -122,7 +123,15 @@ x{frag methods}
 ```
 a{frag methods}
 	void clear() {
-		entries.clear();
+		_entries.clear();
+	}
+x{frag methods}
+```
+
+```
+a{frag methods}
+	bool empty() const {
+		return _entries.empty();
 	}
 x{frag methods}
 ```
@@ -131,6 +140,7 @@ x{frag methods}
 A{includes}
 	#include <string.h>
 x{includes}
+```
 
 # Unit Tests
 
@@ -138,6 +148,7 @@ x{includes}
 D{perform unit-tests}
 	e{frag unit tests};
 x{perform unit-tests}
+```
 
 ```
 a{define frag}
@@ -159,7 +170,7 @@ d{frag unit tests}
 	testFragName("A c");
 	{
 		Frag f { "ab" };
-		ASSERT(f.entries.empty());
+		ASSERT(f.empty());
 	}
 x{frag unit tests}
 ```
@@ -171,23 +182,10 @@ a{define frag}
 	bool isPopulatedFrag(
 		const Frag *f
 	) {
-		return f && f->entries.size();
+		return f && ! f->empty();
 	}
 x{define frag}
 ```
-
-# Auf Attribute zugreifen
-
-```
-a{define frag}
-	int getFragEntryValueSize(
-		const FragEntry &e
-	) {
-		return e.str().size();
-	}
-x{define frag}
-```
-* Liefert die Anzahl der enthaltenen Bytes
 
 # Unit Tests
 
@@ -206,25 +204,11 @@ x{frag unit tests}
 a{frag unit tests}
 	{
 		FragEntry entry;
-		ASSERT(
-			getFragEntryValueSize(entry) == 0
-		);
+		ASSERT(entry.str().empty());
 	}
 x{frag unit tests}
 ```
 * Ein leerer Eintrag hat keine Bytes
-
-```
-a{frag unit tests}
-	{
-		FragEntry entry { "abc" };
-		ASSERT(
-			getFragEntryValueSize(entry) == 3
-		);
-	}
-x{frag unit tests}
-```
-* Ein Eintrag hat die korrekte Anzahl an Bytes
 
 ```
 a{frag unit tests}
@@ -245,12 +229,12 @@ a{frag methods}
 		const std::string &source,
 		int line
 	) {
-		if (entries.empty()) {
-			entries.push_back(FragEntry {
+		if (_entries.empty()) {
+			_entries.push_back(FragEntry {
 				value
 			});
 		} else {
-			entries.back() << value;
+			_entries.back() << value;
 		}
 		return *this;
 	}
@@ -283,10 +267,62 @@ x{define frag}
 
 ```
 d{add frag entry}
-	entries.push_back(FragEntry { child });
+	_entries.push_back(
+		FragEntry { child }
+	);
 x{add frag entry}
 ```
 * Es muss ein neuer Eintrag in dem Fragment angelegt werden
+
+```
+a{frag methods}
+	auto begin() const {
+		return _entries.cbegin();
+	}
+x{frag methods}
+```
+* Begin eines konstanten Iterators auf den Einträgen
+
+```
+a{frag methods}
+	auto end() const {
+		return _entries.cend();
+	}
+x{frag methods}
+```
+* Ende eines konstanten Iterators auf den Einträgen
+
+```
+a{frag methods}
+	int expands() const {
+		return _expands;
+	}
+x{frag methods}
+```
+
+```
+a{frag methods}
+	void addExpand() {
+		++_expands;
+	}
+x{frag methods}
+```
+
+```
+a{frag methods}
+	int multiples() const {
+		return _multiples;
+	}
+x{frag methods}
+```
+
+```
+a{frag methods}
+	void addMultiple() {
+		++_multiples;
+	}
+x{frag methods}
+```
 
 # Fragmente serialisieren
 
@@ -305,30 +341,19 @@ x{define frag}
 
 ```
 d{iterate entries}
-	auto entry { frag.entries.begin() };
-	for (; entry != frag.entries.end(); ++entry) {
-		if (entry->frag) {
+	for (const auto &entry : frag) {
+		if (entry.frag) {
 			serializeFrag(
-				*entry->frag, out,
+				*entry.frag, out,
 				writeLineMacros
 			);
 		}
-		e{serialize bytes};
+		out << entry.str();
 	}
 x{iterate entries}
 ```
 * Rekursiv wird das Fragment ausgegeben, falls vorhanden
 * Dann werden die Bytes des Eintrags ausgegeben
-
-```
-d{serialize bytes}
-	if (getFragEntryValueSize(*entry)) {
-		out << entry->str();
-	}
-x{serialize bytes}
-```
-* Wenn es Bytes in dem Eintrag gibt, wird der `consumer` mit ihnen
-  aufgerufen
 
 ```
 a{define frag}
@@ -434,13 +459,10 @@ x{check cycle frag}
 
 ```
 d{check cycle entries}
-	for (
-		auto i { haystack->entries.begin() };
-		i != haystack->entries.end(); ++i
-	) {
-		if (! i->frag) { continue; }
+	for (const auto &i : *haystack)  {
+		if (! i.frag) { continue; }
 		if (isFragInFrag(
-			needle, i->frag
+			needle, i.frag
 		)) {
 			return true;
 		}

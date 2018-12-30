@@ -43,10 +43,10 @@
 ;
 
 	
-	struct Frag;
+	class Frag;
 
 	class FragEntry {
-		std::string value;
+		std::string _value;
 	public:
 		const Frag *frag;
 		
@@ -55,7 +55,7 @@
 		const std::string &value
 			= std::string()
 	):
-		value { value },
+		_value { value },
 		frag { frag }
 	{}
 
@@ -63,38 +63,43 @@
 		const std::string &value
 			= std::string()
 	): 
-		value { value },
+		_value { value },
 		frag { nullptr}
 	{}
 
 	const std::string &str() const {
-		return value;
+		return _value;
 	}
 
 	FragEntry &operator<<(const std::string &s) {
-		value += s;
+		_value += s;
 		return *this;
 	}
 ;
 	};
 
-	struct Frag {
-		std::list<FragEntry> entries;
-		int expands;
-		int multiples;
-		std::string name;
+	class Frag {
+		std::list<FragEntry> _entries;
+		int _expands;
+		int _multiples;
+	public:
+		const std::string name;
 		
 	Frag(
 		const std::string &name
 	):
-		entries {},
-		expands { 0 },
-		multiples { 0 },
+		_entries {},
+		_expands { 0 },
+		_multiples { 0 },
 		name { name }
 	{ }
 
 	void clear() {
-		entries.clear();
+		_entries.clear();
+	}
+
+	bool empty() const {
+		return _entries.empty();
 	}
 
 	Frag &add(
@@ -102,17 +107,41 @@
 		const std::string &source,
 		int line
 	) {
-		if (entries.empty()) {
-			entries.push_back(FragEntry {
+		if (_entries.empty()) {
+			_entries.push_back(FragEntry {
 				value
 			});
 		} else {
-			entries.back() << value;
+			_entries.back() << value;
 		}
 		return *this;
 	}
 
 	Frag &add(Frag *child);
+
+	auto begin() const {
+		return _entries.cbegin();
+	}
+
+	auto end() const {
+		return _entries.cend();
+	}
+
+	int expands() const {
+		return _expands;
+	}
+
+	void addExpand() {
+		++_expands;
+	}
+
+	int multiples() const {
+		return _multiples;
+	}
+
+	void addMultiple() {
+		++_multiples;
+	}
 ;
 	};
 
@@ -126,13 +155,7 @@
 	bool isPopulatedFrag(
 		const Frag *f
 	) {
-		return f && f->entries.size();
-	}
-
-	int getFragEntryValueSize(
-		const FragEntry &e
-	) {
-		return e.str().size();
+		return f && ! f->empty();
 	}
 
 	
@@ -148,13 +171,10 @@
 	}
 ;
 		
-	for (
-		auto i { haystack->entries.begin() };
-		i != haystack->entries.end(); ++i
-	) {
-		if (! i->frag) { continue; }
+	for (const auto &i : *haystack)  {
+		if (! i.frag) { continue; }
 		if (isFragInFrag(
-			needle, i->frag
+			needle, i.frag
 		)) {
 			return true;
 		}
@@ -171,7 +191,9 @@
 	));
 ;
 		
-	entries.push_back(FragEntry { child });
+	_entries.push_back(
+		FragEntry { child }
+	);
 ;
 		return *this;
 	}
@@ -181,19 +203,14 @@
 		bool writeLineMacros
 	) {
 		
-	auto entry { frag.entries.begin() };
-	for (; entry != frag.entries.end(); ++entry) {
-		if (entry->frag) {
+	for (const auto &entry : frag) {
+		if (entry.frag) {
 			serializeFrag(
-				*entry->frag, out,
+				*entry.frag, out,
 				writeLineMacros
 			);
 		}
-		
-	if (getFragEntryValueSize(*entry)) {
-		out << entry->str();
-	}
-;
+		out << entry.str();
 	}
 ;
 	}
@@ -516,7 +533,7 @@
 	testFragName("A c");
 	{
 		Frag f { "ab" };
-		ASSERT(f.entries.empty());
+		ASSERT(f.empty());
 	}
 
 	{
@@ -526,16 +543,7 @@
 
 	{
 		FragEntry entry;
-		ASSERT(
-			getFragEntryValueSize(entry) == 0
-		);
-	}
-
-	{
-		FragEntry entry { "abc" };
-		ASSERT(
-			getFragEntryValueSize(entry) == 3
-		);
+		ASSERT(entry.str().empty());
 	}
 
 	{
@@ -769,16 +777,16 @@
 ;
 		Frag &sub = input->frags[name];
 		
-	if (sub.expands) {
+	if (sub.expands()) {
 		std::cerr << "multiple expands of [" <<
 			sub.name << "]" << std::endl;
 	}
-	if (sub.multiples) {
+	if (sub.multiples()) {
 		std::cerr << "expand after mult of [" <<
 			sub.name << "]" << std::endl;
 	}
 ;
-		++sub.expands;
+		sub.addExpand();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -796,16 +804,16 @@
 ;
 		Frag &sub = frags->get(name, root);
 		
-	if (sub.expands) {
+	if (sub.expands()) {
 		std::cerr << "multiple expands of [" <<
 			sub.name << "]" << std::endl;
 	}
-	if (sub.multiples) {
+	if (sub.multiples()) {
 		std::cerr << "expand after mult of [" <<
 			sub.name << "]" << std::endl;
 	}
 ;
-		++sub.expands;
+		sub.addExpand();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -823,12 +831,12 @@
 ;
 		Frag &sub { input->frags[name] };
 		
-	if (sub.expands) {
+	if (sub.expands()) {
 		std::cerr << "multiple after expand of [" <<
 			sub.name << "]" << std::endl;
 	}
 ;
-		++sub.multiples;
+		sub.addMultiple();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -846,12 +854,12 @@
 ;
 		Frag &sub { frags->get(name, root) };
 		
-	if (sub.expands) {
+	if (sub.expands()) {
 		std::cerr << "multiple after expand of [" <<
 			sub.name << "]" << std::endl;
 	}
 ;
-		++sub.multiples;
+		sub.addMultiple();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -973,7 +981,7 @@
 		 {
 	static const std::string prefix { "file: " };
 	if (frag->name.substr(0, prefix.size()) == prefix) {
-		++frag->expands;
+		frag->addExpand();
 		
 	std::ofstream out(
 		frag->name.substr(6).c_str()
@@ -984,14 +992,14 @@
 	}
 }  {
 	int sum {
-		frag->expands + frag->multiples
+		frag->expands() + frag->multiples()
 	};
 	if (sum <= 0) {
 		std::cerr << "frag [" << frag->name <<
 			"] not called" << std::endl;
 	}
 } 
-	if (frag->multiples == 1) {
+	if (frag->multiples() == 1) {
 		std::cerr << "multiple frag [" <<
 			frag->name << "] only used once" <<
 			std::endl;
@@ -1011,7 +1019,7 @@
 			 {
 	static const std::string prefix { "file: " };
 	if (frag->name.substr(0, prefix.size()) == prefix) {
-		++frag->expands;
+		frag->addExpand();
 		
 	std::ofstream out(
 		frag->name.substr(6).c_str()
@@ -1022,14 +1030,14 @@
 	}
 }  {
 	int sum {
-		frag->expands + frag->multiples
+		frag->expands() + frag->multiples()
 	};
 	if (sum <= 0) {
 		std::cerr << "frag [" << frag->name <<
 			"] not called" << std::endl;
 	}
 } 
-	if (frag->multiples == 1) {
+	if (frag->multiples() == 1) {
 		std::cerr << "multiple frag [" <<
 			frag->name << "] only used once" <<
 			std::endl;

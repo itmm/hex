@@ -711,7 +711,7 @@ a{process frag name}
 		E{flush frag buffer};
 		Frag &sub = input->frags[name];
 		E{check frag expand count};
-		++sub.expands;
+		sub.addExpand();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -719,8 +719,6 @@ x{process frag name}
 ```
 * Bei einem `@expand` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
-* Das Attribut `expands` zählt, wie häufig das Fragment expandiert
-  wurde
 
 ```
 a{process frag name}
@@ -729,7 +727,7 @@ a{process frag name}
 		E{flush frag buffer};
 		Frag &sub = frags->get(name, root);
 		E{check frag expand count};
-		++sub.expands;
+		sub.addExpand();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -738,11 +736,11 @@ x{process frag name}
 
 ```
 d{check frag expand count}
-	if (sub.expands) {
+	if (sub.expands()) {
 		std::cerr << "multiple expands of [" <<
 			sub.name << "]" << std::endl;
 	}
-	if (sub.multiples) {
+	if (sub.multiples()) {
 		std::cerr << "expand after mult of [" <<
 			sub.name << "]" << std::endl;
 	}
@@ -760,7 +758,7 @@ a{process frag name}
 		E{flush frag buffer};
 		Frag &sub { input->frags[name] };
 		E{check for prev expands};
-		++sub.multiples;
+		sub.addMultiple();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -776,7 +774,7 @@ a{process frag name}
 		E{flush frag buffer};
 		Frag &sub { frags->get(name, root) };
 		E{check for prev expands};
-		++sub.multiples;
+		sub.addMultiple();
 		frag->add(&sub);
 		processed = true;
 	}
@@ -785,7 +783,7 @@ x{process frag name}
 
 ```
 d{check for prev expands}
-	if (sub.expands) {
+	if (sub.expands()) {
 		std::cerr << "multiple after expand of [" <<
 			sub.name << "]" << std::endl;
 	}
@@ -1012,7 +1010,7 @@ a{serialize fragments} {
 d{serialize frag} {
 	static const std::string prefix { "file: " };
 	if (frag->name.substr(0, prefix.size()) == prefix) {
-		++frag->expands;
+		frag->addExpand();
 		e{write in file};
 	}
 } x{serialize frag}
@@ -1024,7 +1022,7 @@ d{serialize frag} {
 ```
 a{serialize frag} {
 	int sum {
-		frag->expands + frag->multiples
+		frag->expands() + frag->multiples()
 	};
 	if (sum <= 0) {
 		std::cerr << "frag [" << frag->name <<
@@ -1037,7 +1035,7 @@ a{serialize frag} {
 
 ```
 a{serialize frag}
-	if (frag->multiples == 1) {
+	if (frag->multiples() == 1) {
 		std::cerr << "multiple frag [" <<
 			frag->name << "] only used once" <<
 			std::endl;
