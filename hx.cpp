@@ -2,7 +2,7 @@
 	
 	
 	#include <iostream>
-	#include <cstdlib>
+	#include <exception>
 
 	#include <list>
 	#include <map>
@@ -30,7 +30,7 @@
 				<< __LINE__ << ' ' \
 				<< #COND << " FAILED: "; \
 			failSuffix(__VA_ARGS__); \
-			std::exit(EXIT_FAILURE); \
+			throw std::exception(); \
 		}
 
 	inline void failSuffix() {

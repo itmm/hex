@@ -3,7 +3,7 @@
 ```
 D{includes}
 	#include <iostream>
-	#include <cstdlib>
+	#include <exception>
 x{includes}
 ```
 
@@ -15,7 +15,7 @@ D{define logging}
 				<< __LINE__ << ' ' \
 				<< #COND << " FAILED: "; \
 			failSuffix(__VA_ARGS__); \
-			std::exit(EXIT_FAILURE); \
+			throw std::exception(); \
 		}
 x{define logging}
 ```
