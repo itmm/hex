@@ -581,6 +581,8 @@
 		"slides/slides.css"
 	};
 
+	int blockLimit = -1;
+
 	Inputs inputs;
 
 	enum class HtmlState {
@@ -983,6 +985,20 @@
 			arg.substr(prefix.length());
 		continue;
 	}
+}  {
+	static const std::string prefix {
+		"--limit="
+	};
+	std::string arg { argv[i] };
+	if (arg.substr(
+		0, prefix.length()
+	) == prefix) {
+		std::istringstream iss {
+			arg.substr(prefix.length())
+		};
+		iss >> blockLimit;
+		continue;
+	}
 } 
 	if (! someFile) {
 		inputs.push(argv[1]);
@@ -1018,9 +1034,10 @@
 			 {
 	if (! frag) {
 		static const char valids[] { "aAdDirR" };
-		if (strchr(valids, last)) {
+		if (strchr(valids, last) && blockLimit != 0) {
 			openCh = last;
 			name.activate();
+			--blockLimit;
 			break;
 		}
 	}

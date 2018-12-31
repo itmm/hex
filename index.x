@@ -140,6 +140,14 @@ x{global elements}
 
 ```
 a{global elements}
+	int blockLimit = -1;
+x{global elements}
+```
+* Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit
+  diesem Parameter limitiert werden
+
+```
+a{global elements}
 	Inputs inputs;
 x{global elements}
 ```
@@ -176,6 +184,24 @@ d{process argument} {
 ```
 * Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
   werden
+
+```
+a{process argument} {
+	static const std::string prefix {
+		"--limit="
+	};
+	std::string arg { argv[i] };
+	if (arg.substr(
+		0, prefix.length()
+	) == prefix) {
+		std::istringstream iss {
+			arg.substr(prefix.length())
+		};
+		iss >> blockLimit;
+		continue;
+	}
+} x{process argument}
+```
 
 ```
 a{process argument}
@@ -306,9 +332,10 @@ a{process other char} {
 d{process open brace} {
 	if (! frag) {
 		static const char valids[] { "aAdDirR" };
-		if (strchr(valids, last)) {
+		if (strchr(valids, last) && blockLimit != 0) {
 			openCh = last;
 			name.activate();
+			--blockLimit;
 			break;
 		}
 	}

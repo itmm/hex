@@ -348,6 +348,23 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
+<span class="in1"></span><span class="type">int</span> <span class="var">blockLimit</span> = -<span class="num">1</span>;<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit
+  diesem Parameter limitiert werden
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+
 <span class="in1"></span><span class="type">Inputs</span> <span class="var">inputs</span>;<br/>
 
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
@@ -426,6 +443,44 @@
   werden
 </li></ul></div>
 
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">process argument</span>)</span> {<br/>
+
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> {<br/>
+
+<span class="in2"></span><span class="str">"--limit="</span><br/>
+
+<span class="in1"></span>};<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">arg</span> { <span class="var">argv</span>[<span class="var">i</span>] };<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<br/>
+
+<span class="in2"></span><span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()<br/>
+
+<span class="in1"></span>) == <span class="var">prefix</span>) {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">istringstream</span> <span class="var">iss</span> {<br/>
+
+<span class="in3"></span><span class="var">arg</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">length</span>())<br/>
+
+<span class="in2"></span>};<br/>
+
+<span class="in2"></span><span class="var">iss</span> &gt;&gt; <span class="var">blockLimit</span>;<br/>
+
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+} <span class="macro">@end(<span class="name">process argument</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
 <div><div>
 <code>
 
@@ -702,11 +757,13 @@
 
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] { <span class="str">"aAdDirR"</span> };<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>) &amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
 
 <span class="in3"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
 
 <span class="in3"></span><span class="var">name</span>.<span class="fn">activate</span>();<br/>
+
+<span class="in3"></span>--<span class="var">blockLimit</span>;<br/>
 
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 
