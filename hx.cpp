@@ -19,7 +19,7 @@
 	#include <set>
 	#include <string>
 
-	#include <ctype.h>
+	#include <cctype>
 ;
 	
 	#define ASSERT(COND, ...) \

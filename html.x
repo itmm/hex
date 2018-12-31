@@ -530,7 +530,7 @@ x{process ch for HTML}
 
 ```
 A{includes}
-	#include <ctype.h>
+	#include <cctype>
 x{includes}
 ```
 
