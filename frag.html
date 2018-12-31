@@ -224,7 +224,7 @@
 
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">canAdd</span>(<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">canAdd</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 
@@ -314,7 +314,7 @@
 
 <span class="macro">@def(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"file: "</span> };<br/>
 
@@ -388,7 +388,7 @@
 
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">empty</span>();<br/>
 
@@ -500,7 +500,7 @@
 
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">f</span><br/>
 
@@ -770,7 +770,7 @@
 
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">cbegin</span>();<br/>
 
@@ -790,7 +790,7 @@
 
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">cend</span>();<br/>
 
@@ -895,7 +895,7 @@
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>, <span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 
-<span class="in2"></span><span class="var">bool</span> <span class="var">writeLineMacros</span><br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -919,7 +919,7 @@
 
 <span class="macro">@def(<span class="name">iterate entries</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="var">auto</span> &amp;<span class="var">entry</span> : <span class="var">frag</span>) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">entry</span> : <span class="var">frag</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
 
@@ -1092,7 +1092,7 @@
 
 <span class="macro">@def(<span class="name">define cycle check</span>)</span><br/>
 
-<span class="in1"></span><span class="var">bool</span> <span class="fn">isFragInFrag</span>(<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">needle</span>,<br/>
 
@@ -1173,7 +1173,7 @@
 
 <span class="macro">@def(<span class="name">check cycle entries</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="var">auto</span> &amp;<span class="var">i</span> : *<span class="var">haystack</span>)  {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : *<span class="var">haystack</span>)  {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">i</span>.<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
 
@@ -1286,7 +1286,7 @@
 
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
 
-<span class="in2"></span><span class="var">auto</span> <span class="var">found</span> { <span class="var">map</span>.<span class="fn">find</span>(<span class="var">name</span>) };<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">found</span> { <span class="var">map</span>.<span class="fn">find</span>(<span class="var">name</span>) };<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span> != <span class="var">map</span>.<span class="fn">end</span>()) {<br/>
 
@@ -1328,7 +1328,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span>) { <span class="keyword">return</span> *<span class="var">found</span>; }<br/>
 
-<span class="in2"></span><span class="var">auto</span> <span class="var">created</span> { <span class="var">insert</span>.<span class="var">map</span>.<span class="fn">insert</span>(<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">created</span> { <span class="var">insert</span>.<span class="var">map</span>.<span class="fn">insert</span>(<br/>
 
 <span class="in3"></span><span class="var">std</span>::<span class="var">pair</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;(<span class="var">name</span>, <span class="var">name</span>)<br/>
 
@@ -1378,7 +1378,7 @@
 
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">map</span>.<span class="fn">cbegin</span>();<br/>
 
@@ -1398,7 +1398,7 @@
 
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
 
-<span class="in1"></span><span class="var">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">map</span>.<span class="fn">cend</span>();<br/>
 
