@@ -1,6 +1,13 @@
 # Logging
 
 ```
+D{includes}
+	#include <iostream>
+	#include <cstdlib>
+x{includes}
+```
+
+```
 D{define logging}
 	#define ASSERT(COND, ...) \
 		if (! (COND)) { \

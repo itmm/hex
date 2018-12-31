@@ -1,16 +1,19 @@
 
 	
 	
-	#include <fstream>
 	#include <iostream>
-	#include <memory>
-	#include <vector>
+	#include <cstdlib>
 
 	#include <list>
 	#include <map>
 	#include <sstream>
 
 	#include <string.h>
+
+	#include <fstream>
+	#include <iostream>
+	#include <memory>
+	#include <vector>
 
 	#include <functional>
 	#include <sstream>
@@ -511,10 +514,6 @@
 		input = std::move(i);
 	}
 
-	std::string stylesheet {
-		"slides/slides.css"
-	};
-
 	int nextCh() {
 		int ch { EOF };
 		while (input) {
@@ -553,6 +552,10 @@
 		}
 		return false;
 	}
+
+	std::string stylesheet {
+		"slides/slides.css"
+	};
 
 	enum class HtmlState {
 		nothingWritten,
