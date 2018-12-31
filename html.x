@@ -537,7 +537,7 @@ x{includes}
 ```
 a{process ch for HTML}
 	if (status.state == HtmlState::inCode) {
-		if (! status.codeSpecial && (isalnum(ch) || ch == '_')) {
+		if (! status.codeSpecial && (std::isalnum(ch) || ch == '_')) {
 			ident.push_back(ch);
 			continue;
 		}
@@ -601,7 +601,7 @@ A{global elements}
 			"EOF", "NULL", "nullptr",
 			"false", "null", "true", "undefined"
 		};
-		if (isdigit(s[0])) { return true; }
+		if (std::isdigit(s[0])) { return true; }
 		return reserved.find(s) != reserved.end();
 	}
 x{global elements}

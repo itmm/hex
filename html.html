@@ -1167,7 +1167,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<span class="fn">isalnum</span>(<span class="var">ch</span>) || <span class="var">ch</span> == <span class="str">'_'</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<span class="var">std</span>::<span class="fn">isalnum</span>(<span class="var">ch</span>) || <span class="var">ch</span> == <span class="str">'_'</span>)) {<br/>
 
 <span class="in3"></span><span class="var">ident</span>.<span class="fn">push_back</span>(<span class="var">ch</span>);<br/>
 
@@ -1303,7 +1303,7 @@
 
 <span class="in2"></span>};<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) { <span class="keyword">return</span> <span class="num">true</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">std</span>::<span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) { <span class="keyword">return</span> <span class="num">true</span>; }<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) != <span class="var">reserved</span>.<span class="fn">end</span>();<br/>
 
