@@ -961,9 +961,7 @@
 
 	char openCh { '\0' };
 
-	std::string name;
-	bool useName { false };
-	int nameLine { 0 };
+	Buf name;
 ;
 	int last { nextCh() };
 	int ch { last != EOF ? nextCh() : EOF };
@@ -976,7 +974,7 @@
 		static const char valids[] { "aAdDirR" };
 		if (strchr(valids, last)) {
 			openCh = last;
-			useName = true;
+			name.activate();
 			break;
 		}
 	}
@@ -993,8 +991,7 @@
 ;
 		if (valid) {
 			openCh = last;
-			nameLine = input->line;
-			useName = true;
+			name.activate();
 			break;
 		}
 	}
@@ -1010,21 +1007,21 @@
 		case '}': {
 			bool processed { false };
 			 {
-	if (useName || ! name.empty()) {
+	if (name.active()) {
 		
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
 		FragMap *fm { &input->frags };
 		
-	frag = fm->find(name);
+	frag = fm->find(name.str());
 	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name <<
+		std::cerr << "frag [" << name.str() <<
 			"] already defined" <<
 			std::endl;
 	}
 ;
 		if (! frag) {
-			frag = &(*fm)[name];
+			frag = &(*fm)[name.str()];
 		}
 		processed = true;
 	}
@@ -1033,15 +1030,15 @@
 		ASSERT(! frag, "def in frag");
 		FragMap *fm { frags };
 		
-	frag = fm->find(name);
+	frag = fm->find(name.str());
 	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name <<
+		std::cerr << "frag [" << name.str() <<
 			"] already defined" <<
 			std::endl;
 	}
 ;
 		if (! frag) {
-			frag = &root[name];
+			frag = &root[name.str()];
 		}
 		processed = true;
 	}
@@ -1050,12 +1047,12 @@
 		ASSERT(! frag, "add in frag");
 		FragMap *fm { &input->frags };
 		FragMap *ins { fm };
-		frag = fm->find(name);
+		frag = fm->find(name.str());
 		
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name <<
+		std::cerr << "frag [" << name.str() <<
 			"] not defined" << std::endl;
-		frag = &fm->get(name, *ins);
+		frag = &fm->get(name.str(), *ins);
 	}
 ;
 		processed = true;
@@ -1065,12 +1062,12 @@
 		ASSERT(! frag, "add in frag");
 		FragMap *fm { frags };
 		FragMap *ins { &root };
-		frag = fm->find(name);
+		frag = fm->find(name.str());
 		
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name <<
+		std::cerr << "frag [" << name.str() <<
 			"] not defined" << std::endl;
-		frag = &fm->get(name, *ins);
+		frag = &fm->get(name.str(), *ins);
 	}
 ;
 		processed = true;
@@ -1078,9 +1075,9 @@
 
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = &(input->frags[name]);
+		frag = &(input->frags[name.str()]);
 		ASSERT(
-			frag, "frag ", name, " not defined"
+			frag, "frag ", name.str(), " not defined"
 		);
 		frag->clear();
 		processed = true;
@@ -1088,9 +1085,9 @@
 
 	if (openCh == 'R') {
 		ASSERT(! frag, "replace in frag");
-		frag = &frags->get(name, root);
+		frag = &frags->get(name.str(), root);
 		ASSERT(
-			frag, "frag ", name, " not defined"
+			frag, "frag ", name.str(), " not defined"
 		);
 		frag->clear();
 		processed = true;
@@ -1100,8 +1097,8 @@
 		ASSERT(frag, "end not in frag");
 		
 	ASSERT(
-		frag->name == name,
-		"closing [", name, "] != [",
+		frag->name == name.str(),
+		"closing [", name.str(), "] != [",
 			frag->name, ']'
 	);
 ;
@@ -1120,8 +1117,8 @@
 
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
-		if (! alreadyUsed(name.c_str())) {
-			pushPath(name);
+		if (! alreadyUsed(name.str())) {
+			pushPath(name.str());
 		}
 		processed = true;
 	}
@@ -1137,7 +1134,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = input->frags[name];
+		Frag &sub = input->frags[name.str()];
 		
 	if (sub.expands()) {
 		std::cerr << "multiple expands of ["
@@ -1164,7 +1161,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = frags->get(name, root);
+		Frag &sub = frags->get(name.str(), root);
 		
 	if (sub.expands()) {
 		std::cerr << "multiple expands of ["
@@ -1191,7 +1188,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub { input->frags[name] };
+		Frag &sub { input->frags[name.str()] };
 		
 	if (sub.expands()) {
 		std::cerr
@@ -1215,7 +1212,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub { frags->get(name, root) };
+		Frag &sub { frags->get(name.str(), root) };
 		
 	if (sub.expands()) {
 		std::cerr
@@ -1233,7 +1230,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name)
+		h(input->name + ':' + name.str())
 			& 0x7fffffff
 	};
 
@@ -1248,10 +1245,10 @@
 ;
 	std::ostringstream hashed;
 	hashed << "_private_"
-		<< cur << '_' << name;
+		<< cur << '_' << name.str();
 	frag->add(
 		hashed.str(), input->name,
-		nameLine
+		name.startLine()
 	);
 ;
 		processed = true;
@@ -1262,7 +1259,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name)
+		h(input->name + ':' + name.str())
 			& 0x7fffffff
 	};
 
@@ -1297,9 +1294,9 @@
 	if (! processed) {
 		ASSERT(
 			frag, "unknown frag ",
-			name
+			name.str()
 		);
-		for (auto &c : name) {
+		for (auto &c : name.str()) {
 			if (buffer.empty()) {
 				bufferLine = input->line;
 			}
@@ -1308,7 +1305,7 @@
 		processed = true;
 	}
 ;
-		name.clear(); useName = false;
+		name.clear();
 		last = ch;
 		ch = nextCh();
 	}
@@ -1324,8 +1321,8 @@
 		}
 		default:
 			 {
-	if (useName || ! name.empty()) {
-		name.push_back(ch);
+	if (name.active()) {
+		name.add(ch, input->name, input->line);
 		break;
 	}
 }  {
