@@ -15,7 +15,7 @@ D{define logging}
 				<< __LINE__ << ' ' \
 				<< #COND << " FAILED: "; \
 			failSuffix(__VA_ARGS__); \
-			exit(EXIT_FAILURE); \
+			std::exit(EXIT_FAILURE); \
 		}
 x{define logging}
 ```
