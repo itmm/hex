@@ -452,8 +452,7 @@ x{process current char}
 ```
 d{additional read vars}
 	Frag *frag { nullptr };
-	std::string buffer;
-	int bufferLine { 0 };
+	Buf buffer;
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
@@ -505,10 +504,7 @@ d{process other char} {
 ```
 a{process other char} {
 	if (frag) {
-		if (buffer.empty()) {
-			bufferLine = input->line;
-		}
-		buffer.push_back(last);
+		buffer.add(last, input->name, input->line);
 	}
 } x{process other char}
 ```
@@ -890,7 +886,7 @@ a{process magic frag}
 	E{flush frag buffer};
 	frag->add(
 		value.str(),
-		input->name, bufferLine
+		input->name, input->line
 	);
 x{process magic frag}
 ```
@@ -900,10 +896,7 @@ x{process magic frag}
 ```
 d{flush frag buffer}
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 x{flush frag buffer}
@@ -950,12 +943,7 @@ a{process frag name}
 			frag, "unknown frag ",
 			v{name}.str()
 		);
-		for (auto &c : name.str()) {
-			if (buffer.empty()) {
-				bufferLine = input->line;
-			}
-			buffer.push_back(c);
-		}
+		buffer.add(name);
 		processed = true;
 	}
 x{process frag name}
@@ -967,10 +955,7 @@ x{process frag name}
 ```
 a{process open brace}
 	if (frag) {
-		if (buffer.empty()) {
-			bufferLine = input->line;
-		}
-		buffer.push_back(last);
+		buffer.add(last, input->name, input->line);
 	}
 x{process open brace}
 ```
@@ -981,10 +966,7 @@ x{process open brace}
 ```
 a{process close brace}
 	if (frag && ! processed) {
-		if (buffer.empty()) {
-			bufferLine = input->line;
-		}
-		buffer.push_back(last);
+		buffer.add(last, input->name, input->line);
 	}
 x{process close brace}
 ```

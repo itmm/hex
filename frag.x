@@ -89,6 +89,16 @@ x{entry methods}
 
 ```
 a{entry methods}
+	void add(
+		const Buf &b
+	) {
+		_buf.add(b);
+	}
+x{entry methods}
+```
+
+```
+a{entry methods}
 	bool canAdd(
 		const std::string &file,
 		int line
@@ -280,6 +290,22 @@ a{frag methods}
 			);
 		}
 		return *this;
+	}
+x{frag methods}
+```
+
+```
+a{frag methods}
+	void add(const Buf &b) {
+		if (b.empty()) { return; }
+		if (_entries.empty()) {
+			_entries.push_back(FragEntry {});
+		} else if (! _entries.back().canAdd(
+			b.file(), b.startLine()
+		)) {
+			_entries.push_back(FragEntry {});
+		}
+		_entries.back().add(b);
 	}
 x{frag methods}
 ```

@@ -199,6 +199,12 @@
 		_buf.add(value, file, line);
 	}
 
+	void add(
+		const Buf &b
+	) {
+		_buf.add(b);
+	}
+
 	bool canAdd(
 		const std::string &file,
 		int line
@@ -261,6 +267,18 @@
 			);
 		}
 		return *this;
+	}
+
+	void add(const Buf &b) {
+		if (b.empty()) { return; }
+		if (_entries.empty()) {
+			_entries.push_back(FragEntry {});
+		} else if (! _entries.back().canAdd(
+			b.file(), b.startLine()
+		)) {
+			_entries.push_back(FragEntry {});
+		}
+		_entries.back().add(b);
 	}
 
 	Frag &add(Frag *child);
@@ -956,8 +974,7 @@
 	 {
 	
 	Frag *frag { nullptr };
-	std::string buffer;
-	int bufferLine { 0 };
+	Buf buffer;
 
 	char openCh { '\0' };
 
@@ -997,10 +1014,7 @@
 	}
 } 
 	if (frag) {
-		if (buffer.empty()) {
-			bufferLine = input->line;
-		}
-		buffer.push_back(last);
+		buffer.add(last, input->name, input->line);
 	}
 ;
 			break;
@@ -1104,10 +1118,7 @@
 ;
 		
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1127,10 +1138,7 @@
 		ASSERT(frag, "expand not in frag");
 		
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1154,10 +1162,7 @@
 		ASSERT(frag, "expand not in frag");
 		
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1181,10 +1186,7 @@
 		ASSERT(frag, "multiple not in frag");
 		
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1205,10 +1207,7 @@
 		ASSERT(frag, "multiple not in frag");
 		
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1236,10 +1235,7 @@
 
 	
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1265,10 +1261,7 @@
 
 	
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
@@ -1276,16 +1269,13 @@
 	value << cur;
 	
 	if (! buffer.empty()) {
-		frag->add(
-			buffer,
-			input->name, bufferLine
-		);
+		frag->add(buffer);
 		buffer.clear();
 	}
 ;
 	frag->add(
 		value.str(),
-		input->name, bufferLine
+		input->name, input->line
 	);
 ;
 		processed = true;
@@ -1296,12 +1286,7 @@
 			frag, "unknown frag ",
 			name.str()
 		);
-		for (auto &c : name.str()) {
-			if (buffer.empty()) {
-				bufferLine = input->line;
-			}
-			buffer.push_back(c);
-		}
+		buffer.add(name);
 		processed = true;
 	}
 ;
@@ -1311,10 +1296,7 @@
 	}
 } 
 	if (frag && ! processed) {
-		if (buffer.empty()) {
-			bufferLine = input->line;
-		}
-		buffer.push_back(last);
+		buffer.add(last, input->name, input->line);
 	}
 ;
 			break;
@@ -1327,10 +1309,7 @@
 	}
 }  {
 	if (frag) {
-		if (buffer.empty()) {
-			bufferLine = input->line;
-		}
-		buffer.push_back(last);
+		buffer.add(last, input->name, input->line);
 	}
 } ;
 	}

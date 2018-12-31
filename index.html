@@ -994,9 +994,7 @@
 
 <span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> { <span class="num">nullptr</span> };<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">buffer</span>;<br/>
-
-<span class="in1"></span><span class="type">int</span> <span class="var">bufferLine</span> { <span class="num">0</span> };<br/>
+<span class="in1"></span><span class="type">Buf</span> <span class="var">buffer</span>;<br/>
 
 <span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
 
@@ -1107,13 +1105,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
-
-<span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">last</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1916,7 +1908,7 @@
 
 <span class="in2"></span><span class="var">value</span>.<span class="fn">str</span>(),<br/>
 
-<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
+<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span><br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1938,13 +1930,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
 
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
-
-<span class="in3"></span><span class="var">buffer</span>,<br/>
-
-<span class="in3"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">bufferLine</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">buffer</span>);<br/>
 
 <span class="in2"></span><span class="var">buffer</span>.<span class="fn">clear</span>();<br/>
 
@@ -2041,17 +2027,7 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">c</span> : <span class="var">name</span>.<span class="fn">str</span>()) {<br/>
-
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
-
-<span class="in4"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-
-<span class="in3"></span>}<br/>
-
-<span class="in3"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">c</span>);<br/>
-
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
 
@@ -2076,13 +2052,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
-
-<span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">last</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -2104,13 +2074,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
-
-<span class="in3"></span><span class="var">bufferLine</span> = <span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">push_back</span>(<span class="var">last</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
