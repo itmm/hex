@@ -576,7 +576,7 @@ x{global elements}
 A{global elements}
 	bool isType(const std::string &s) {
 		static std::set<std::string> reserved {
-			"FILE",
+			"FILE", "auto"
 			"bool", "char", "const", "enum",
 			"int", "let", "long", "signed", "struct",
 			"union", "unsigned", "void"
@@ -986,7 +986,7 @@ x{escape html frag}
 ```
 a{escape html frag}
 	case 'p':
-		writeMacroClass(out, status, "type", lc);
+		writeMacroClass(out, status, "var", lc);
 		out << "@priv(<span>";
 		break;
 x{escape html frag}

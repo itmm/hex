@@ -702,7 +702,7 @@
 
 	bool isType(const std::string &s) {
 		static std::set<std::string> reserved {
-			"FILE",
+			"FILE", "auto"
 			"bool", "char", "const", "enum",
 			"int", "let", "long", "signed", "struct",
 			"union", "unsigned", "void"
@@ -1806,7 +1806,7 @@
 		break;
 
 	case 'p':
-		writeMacroClass(out, status, "type", lc);
+		writeMacroClass(out, status, "var", lc);
 		out << "@priv(<span>";
 		break;
 
@@ -2085,7 +2085,7 @@
 		break;
 
 	case 'p':
-		writeMacroClass(out, status, "type", lc);
+		writeMacroClass(out, status, "var", lc);
 		out << "@priv(<span>";
 		break;
 

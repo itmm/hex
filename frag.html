@@ -224,7 +224,7 @@
 
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">canAdd</span>(<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">canAdd</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 
@@ -314,7 +314,7 @@
 
 <span class="macro">@def(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"file: "</span> };<br/>
 
@@ -388,7 +388,7 @@
 
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">empty</span>();<br/>
 
@@ -500,7 +500,7 @@
 
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">f</span><br/>
 
@@ -895,7 +895,7 @@
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>, <span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 
-<span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
+<span class="in2"></span><span class="var">bool</span> <span class="var">writeLineMacros</span><br/>
 
 <span class="in1"></span>) {<br/>
 
@@ -1092,7 +1092,7 @@
 
 <span class="macro">@def(<span class="name">define cycle check</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isFragInFrag</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">needle</span>,<br/>
 

@@ -50,7 +50,7 @@
 
 <span class="in2"></span><span class="type">int</span> <span class="var">_endLine</span>;<br/>
 
-<span class="in2"></span><span class="type">bool</span> <span class="var">_active</span>;<br/>
+<span class="in2"></span><span class="var">bool</span> <span class="var">_active</span>;<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">private methods</span>)</span>;<br/>
 
@@ -86,7 +86,7 @@
 
 <span class="macro">@add(<span class="name">buf methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">active</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">active</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_active</span>;<br/>
 
@@ -104,7 +104,7 @@
 
 <span class="macro">@add(<span class="name">buf methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_value</span>.<span class="fn">empty</span>();<br/>
 
@@ -140,7 +140,7 @@
 
 <span class="macro">@add(<span class="name">buf methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>(<span class="type">bool</span> <span class="var">active</span> = <span class="num">false</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>(<span class="var">bool</span> <span class="var">active</span> = <span class="num">false</span>) {<br/>
 
 <span class="in2"></span><span class="var">_value</span>.<span class="fn">clear</span>();<br/>
 
@@ -238,7 +238,7 @@
 
 <span class="macro">@def(<span class="name">private methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">_canContinue</span>(<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">_canContinue</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 
@@ -272,7 +272,7 @@
 
 <span class="macro">@add(<span class="name">buf methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">canContinue</span>(<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">canContinue</span>(<br/>
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 

@@ -202,7 +202,7 @@
 
 <span class="in1"></span><span class="type">HtmlStatus</span> <span class="var">status</span>;<br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">newline</span> { <span class="num">true</span> };<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="var">newline</span> { <span class="num">true</span> };<br/>
 
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">ident</span>;<br/>
 
@@ -285,7 +285,7 @@
 
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isOutOfHtmlSpecial</span>(<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isOutOfHtmlSpecial</span>(<br/>
 
 <span class="in2"></span><span class="type">HtmlStatus</span> *<span class="var">s</span><br/>
 
@@ -1217,7 +1217,7 @@
 
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isKeyword</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isKeyword</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">reserved</span> {<br/>
 
@@ -1247,11 +1247,11 @@
 
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">reserved</span> {<br/>
 
-<span class="in3"></span><span class="str">"FILE"</span>,<br/>
+<span class="in3"></span><span class="str">"FILE"</span>, <span class="str">"auto"</span><br/>
 
 <span class="in3"></span><span class="str">"bool"</span>, <span class="str">"char"</span>, <span class="str">"const"</span>, <span class="str">"enum"</span>,<br/>
 
@@ -1293,7 +1293,7 @@
 
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isNum</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="fn">isNum</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">reserved</span> {<br/>
 
@@ -2132,7 +2132,7 @@
 
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'p'</span>:<br/>
 
-<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="var">status</span>, <span class="str">"type"</span>, <span class="var">lc</span>);<br/>
+<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="var">status</span>, <span class="str">"var"</span>, <span class="var">lc</span>);<br/>
 
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"@priv(&lt;span&gt;"</span>;<br/>
 
@@ -2203,9 +2203,9 @@
 
 <span class="macro">@add(<span class="name">html state elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">noteInCode</span>;<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="var">noteInCode</span>;<br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">noteInBold</span>;<br/>
+<span class="in1"></span><span class="var">bool</span> <span class="var">noteInBold</span>;<br/>
 
 <span class="macro">@end(<span class="name">html state elements</span>)</span><br/>
 
