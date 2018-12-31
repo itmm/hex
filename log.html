@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="de"l>
+<head>
+<meta charset="utf-8">
+<title>Logging</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Logging</h1>
+<div class="slides">
+<div><div>
+<h1>Logging</h1>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@globdef(<span class="name">define logging</span>)</span><br/>
+
+<span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>, ...) \<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
+
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; <span class="str">':'</span> \<br/>
+
+<span class="in4"></span>&lt;&lt; <span class="var">__LINE__</span> &lt;&lt; <span class="str">' '</span> \<br/>
+
+<span class="in4"></span>&lt;&lt; #<span class="var">COND</span> &lt;&lt; <span class="str">" FAILED: "</span>; \<br/>
+
+<span class="in3"></span><span class="fn">failSuffix</span>(<span class="var">__VA_ARGS__</span>); \<br/>
+
+<span class="in3"></span><span class="fn">exit</span>(<span class="var">EXIT_FAILURE</span>); \<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
+</li><li>
+ Und das Programm beendet
+</li><li>
+ Datei und Zeile des Tests wird ausgegeben
+</li><li>
+ Eine variable Anzahl von weiteren Parametern kann mit ausgegeben
+  werden
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
+
+<span class="in1"></span><span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>() {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Die Ausgabe der zusätzlichen Parameter erfolgt über variadic
+  Funktionen
+</li><li>
+ Im einfachsten Fall wird nur ein Zeilenumbruch ausgegeben
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
+
+<span class="in1"></span><span class="var">template</span>&lt;<span class="var">typename</span> <span class="var">T</span>, <span class="var">typename</span>... <span class="type">Args</span>&gt;<br/>
+
+<span class="in1"></span><span class="var">inline</span> <span class="type">void</span> <span class="fn">failSuffix</span>(<br/>
+
+<span class="in2"></span><span class="type">const</span> <span class="var">T</span>&amp; <span class="var">a</span>, <span class="type">Args</span>... <span class="var">args</span><br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">a</span>;<br/>
+
+<span class="in2"></span><span class="fn">failSuffix</span>(<span class="var">args</span>...);<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Bei einer variablen Anzahl von Parametern wird zuerst der erste
+  Parameter ausgegeben
+</li><li>
+ Dann wird die Suffix-Funktion für den Rest mit weniger Parametern
+  aufgerufen
+</li><li>
+ wenn es keine Parameter mehr gibt, bricht die Kette ab
+</li></ul></div>
+
