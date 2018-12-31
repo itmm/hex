@@ -755,9 +755,11 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] { <span class="str">"aAdDirR"</span> };<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">valids</span> { <span class="str">"aAdDirR"</span> };<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>) &amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">valids</span>.<span class="fn">find</span>(<span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">last</span>)) != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span><br/>
+
+<span class="in3"></span>&amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
 
 <span class="in3"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
 
@@ -1568,13 +1570,13 @@
 
 <span class="macro">@def(<span class="name">check valid names</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">valids</span>[] { <br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">valids</span> { <br/>
 
 <span class="in2"></span><span class="str">"fvsntkxeEgGpmb"</span><br/>
 
 <span class="in1"></span>};<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="fn">strchr</span>(<span class="var">valids</span>, <span class="var">last</span>)) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">valids</span>.<span class="fn">find</span>(<span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">last</span>)) != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span>) {<br/>
 
 <span class="in2"></span><span class="var">valid</span> = <span class="num">true</span>;<br/>
 

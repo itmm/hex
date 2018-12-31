@@ -180,12 +180,6 @@ a{frag methods}
 x{frag methods}
 ```
 
-```
-A{includes}
-	#include <string.h>
-x{includes}
-```
-
 # Unit Tests
 
 ```

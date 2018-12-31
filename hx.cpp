@@ -8,8 +8,6 @@
 	#include <map>
 	#include <sstream>
 
-	#include <string.h>
-
 	#include <fstream>
 	#include <iostream>
 	#include <memory>
@@ -1033,8 +1031,9 @@
 		case '{':
 			 {
 	if (! frag) {
-		static const char valids[] { "aAdDirR" };
-		if (strchr(valids, last) && blockLimit != 0) {
+		static const std::string valids { "aAdDirR" };
+		if (valids.find(static_cast<char>(last)) != std::string::npos
+			&& blockLimit != 0) {
 			openCh = last;
 			name.activate();
 			--blockLimit;
@@ -1045,10 +1044,10 @@
 	if (frag) {
 		bool valid { false };
 		
-	static const char valids[] { 
+	static const std::string valids { 
 		"fvsntkxeEgGpmb"
 	};
-	if (strchr(valids, last)) {
+	if (valids.find(static_cast<char>(last)) != std::string::npos) {
 		valid = true;
 	}
 ;

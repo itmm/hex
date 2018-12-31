@@ -331,8 +331,9 @@ a{process other char} {
 ```
 d{process open brace} {
 	if (! frag) {
-		static const char valids[] { "aAdDirR" };
-		if (strchr(valids, last) && blockLimit != 0) {
+		static const std::string valids { "aAdDirR" };
+		if (valids.find(static_cast<char>(last)) != std::string::npos
+			&& blockLimit != 0) {
 			openCh = last;
 			name.activate();
 			--blockLimit;
@@ -717,10 +718,10 @@ a{process open brace} {
 
 ```
 d{check valid names}
-	static const char valids[] { 
+	static const std::string valids { 
 		"fvsntkxeEgGpmb"
 	};
-	if (strchr(valids, last)) {
+	if (valids.find(static_cast<char>(last)) != std::string::npos) {
 		valid = true;
 	}
 x{check valid names}
