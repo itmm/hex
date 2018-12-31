@@ -51,6 +51,7 @@ a{input methods}
 		int ch { EOF };
 		if (file.is_open()) {
 			ch = file.get();
+			e{preprocess};
 			if (! file.good()) {
 				file.close();
 			}
@@ -154,7 +155,6 @@ A{global elements}
 		int ch { EOF };
 		while (input) {
 			ch = input->next();
-			e{preprocess char};
 			if (ch != EOF) { break; }
 			e{get next input file};
 		}
@@ -210,24 +210,25 @@ x{global elements}
 ```
 a{additional input elements}
 	int line;
+	bool shouldAdd;
 x{additional input elements}
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
+* `shouldAdd` signalisiert, dass das nächse Zeichen in einer neuen Zeile
+  ist
 
 ```
 d{direct input constr}
-	, line(1)
+	, line { 0 }
+	, shouldAdd { true }
 x{direct input constr}
 ```
 * Zeile wird mit `1` initialisiert
 
 ```
-d{preprocess char}
-	if (ch == '\n') {
-		++input->line;
-	}
-x{preprocess char}
+d{preprocess}
+	if (shouldAdd) { ++line; }
+	shouldAdd = (ch == '\n');
+x{preprocess}
 ```
-* Wenn ein Zeilenumbruch gelesen wird, wird die aktuelle Zeile
-  erhöht
 

@@ -120,6 +120,8 @@
 
 <span class="in3"></span><span class="var">ch</span> = <span class="var">file</span>.<span class="fn">get</span>();<br/>
 
+<span class="in3"></span><span class="macro">@expand(<span class="name">preprocess</span>)</span>;<br/>
+
 <span class="in3"></span><span class="keyword">if</span> (! <span class="var">file</span>.<span class="fn">good</span>()) {<br/>
 
 <span class="in4"></span><span class="var">file</span>.<span class="fn">close</span>();<br/>
@@ -342,8 +344,6 @@
 
 <span class="in3"></span><span class="var">ch</span> = <span class="var">input</span>-&gt;<span class="fn">next</span>();<br/>
 
-<span class="in3"></span><span class="macro">@expand(<span class="name">preprocess char</span>)</span>;<br/>
-
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span>) { <span class="keyword">break</span>; }<br/>
 
 <span class="in3"></span><span class="macro">@expand(<span class="name">get next input file</span>)</span>;<br/>
@@ -456,6 +456,8 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">line</span>;<br/>
 
+<span class="in1"></span><span class="type">bool</span> <span class="var">shouldAdd</span>;<br/>
+
 <span class="macro">@end(<span class="name">additional input elements</span>)</span><br/>
 
 </code>
@@ -463,6 +465,9 @@
 
 <ul><li>
  Pro Datei wird die aktuelle Zeile festgehalten
+</li><li>
+ <code>shouldAdd</code> signalisiert, dass das nächse Zeichen in einer neuen Zeile
+  ist
 </li></ul></div>
 
 <div><div>
@@ -470,7 +475,9 @@
 
 <span class="macro">@def(<span class="name">direct input constr</span>)</span><br/>
 
-<span class="in1"></span>, <span class="fn">line</span>(<span class="num">1</span>)<br/>
+<span class="in1"></span>, <span class="var">line</span> { <span class="num">0</span> }<br/>
+
+<span class="in1"></span>, <span class="var">shouldAdd</span> { <span class="num">true</span> }<br/>
 
 <span class="macro">@end(<span class="name">direct input constr</span>)</span><br/>
 
@@ -484,21 +491,15 @@
 <div><div>
 <code>
 
-<span class="macro">@def(<span class="name">preprocess char</span>)</span><br/>
+<span class="macro">@def(<span class="name">preprocess</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">ch</span> == <span class="str">'\n'</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">shouldAdd</span>) { ++<span class="var">line</span>; }<br/>
 
-<span class="in2"></span>++<span class="var">input</span>-&gt;<span class="var">line</span>;<br/>
+<span class="in1"></span><span class="var">shouldAdd</span> = (<span class="var">ch</span> == <span class="str">'\n'</span>);<br/>
 
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">preprocess char</span>)</span><br/>
+<span class="macro">@end(<span class="name">preprocess</span>)</span><br/>
 
 </code>
 </div>
 
-<ul><li>
- Wenn ein Zeilenumbruch gelesen wird, wird die aktuelle Zeile
-  erhöht
-</li></ul></div>
 

@@ -459,6 +459,7 @@
 	FragMap frags;
 
 	int line;
+	bool shouldAdd;
 ;
 			
 	Input(
@@ -467,7 +468,8 @@
 		file { name.c_str() },
 		name { name }
 		
-	, line(1)
+	, line { 0 }
+	, shouldAdd { true }
 
 	{
 	}
@@ -476,6 +478,10 @@
 		int ch { EOF };
 		if (file.is_open()) {
 			ch = file.get();
+			
+	if (shouldAdd) { ++line; }
+	shouldAdd = (ch == '\n');
+;
 			if (! file.good()) {
 				file.close();
 			}
@@ -518,11 +524,6 @@
 		int ch { EOF };
 		while (input) {
 			ch = input->next();
-			
-	if (ch == '\n') {
-		++input->line;
-	}
-;
 			if (ch != EOF) { break; }
 			
 	used.push_back(std::move(input));
