@@ -453,24 +453,25 @@
 	class Input {
 		private:
 			std::ifstream file;
+			
+	int _line;
+	bool _shouldAdd;
+;
 		public:
 			const std::string name;
 			
 	FragMap frags;
-
-	int line;
-	bool shouldAdd;
 ;
 			
 	Input(
 		const std::string &name
 	):
 		file { name.c_str() },
-		name { name }
 		
-	, line { 0 }
-	, shouldAdd { true }
+	_line { 0 },
+	_shouldAdd { true },
 
+		name { name }
 	{
 	}
 
@@ -479,8 +480,8 @@
 		if (file.is_open()) {
 			ch = file.get();
 			
-	if (shouldAdd) { ++line; }
-	shouldAdd = (ch == '\n');
+	if (_shouldAdd) { ++_line; }
+	_shouldAdd = (ch == '\n');
 ;
 			if (! file.good()) {
 				file.close();
@@ -488,48 +489,68 @@
 		}
 		return ch;
 	}
+
+	int line() const {
+		return _line;
+	}
 ;
 	};
-
-	std::unique_ptr<Input> input;
-	std::vector<std::unique_ptr<Input>>
-		pending;
-	std::vector<std::unique_ptr<Input>>
-		used;
 
 	FragMap root;
 	FragMap *frags { &root };
 
-	void pushPath(const std::string &path) {
+	class Inputs {
+			
+	std::unique_ptr<Input> _input;
+	std::vector<std::unique_ptr<Input>>
+		_pending;
+	std::vector<std::unique_ptr<Input>>
+		_used;
+;
+		public:
+			
+	auto &cur() {
+		return _input;
+	}
+
+	auto begin() const {
+		return _used.cbegin();
+	}
+
+	auto end() const {
+		return _used.cend();
+	}
+
+	void push(const std::string &path) {
 		std::unique_ptr<Input> i {
 			std::make_unique<Input>(path)
 		};
 		
-	if (input) {
-		input->frags.setLink(frags);
-		frags = &input->frags;
+	if (_input) {
+		_input->frags.setLink(frags);
+		frags = &_input->frags;
 	}
 ;
 		
-	if (input) {
-		pending.push_back(
-			std::move(input)
+	if (_input) {
+		_pending.push_back(
+			std::move(_input)
 		);
 	}
 ;
-		input = std::move(i);
+		_input = std::move(i);
 	}
 
-	int nextCh() {
+	int get() {
 		int ch { EOF };
-		while (input) {
-			ch = input->next();
+		while (_input) {
+			ch = _input->next();
 			if (ch != EOF) { break; }
 			
-	used.push_back(std::move(input));
-	if (! pending.empty()) {
-		input = std::move(pending.back());
-		pending.pop_back();
+	_used.push_back(std::move(_input));
+	if (! _pending.empty()) {
+		_input = std::move(_pending.back());
+		_pending.pop_back();
 	}
 	frags = frags->setLink(nullptr);
 ;
@@ -537,26 +558,30 @@
 		return ch;
 	}
 
-	bool alreadyUsed(const std::string &name) {
-		if (input && input->name == name) {
+	bool has(const std::string &name) const {
+		if (_input && _input->name == name) {
 			return true;
 		}
-		for (auto &j : pending) {
+		for (const auto &j : _pending) {
 			if (j->name == name) {
 				return true;
 			}
 		}
-		for (auto &j : used) {
+		for (const auto &j : _used) {
 			if (j->name == name) {
 				return true;
 			}
 		}
 		return false;
 	}
+;
+	};
 
 	std::string stylesheet {
 		"slides/slides.css"
 	};
+
+	Inputs inputs;
 
 	enum class HtmlState {
 		nothingWritten,
@@ -960,7 +985,7 @@
 	}
 } 
 	if (! someFile) {
-		pushPath(argv[1]);
+		inputs.push(argv[1]);
 		someFile = true;
 		continue;
 	}
@@ -972,7 +997,7 @@
 	}
 
 	if (! someFile) {
-		pushPath("index.x");
+		inputs.push("index.x");
 	}
 ;
 	 {
@@ -984,8 +1009,8 @@
 
 	Buf name;
 ;
-	int last { nextCh() };
-	int ch { last != EOF ? nextCh() : EOF };
+	int last { inputs.get() };
+	int ch { last != EOF ? inputs.get() : EOF };
 	while (ch != EOF) {
 		
 	switch (ch) {
@@ -1018,7 +1043,7 @@
 	}
 } 
 	if (frag) {
-		buffer.add(last, input->name, input->line);
+		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
 	}
 ;
 			break;
@@ -1029,7 +1054,7 @@
 		
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
-		FragMap *fm { &input->frags };
+		FragMap *fm { &inputs.cur()->frags };
 		
 	frag = fm->find(name.str());
 	if (isPopulatedFrag(frag)) {
@@ -1063,7 +1088,7 @@
 
 	if (openCh == 'a') {
 		ASSERT(! frag, "add in frag");
-		FragMap *fm { &input->frags };
+		FragMap *fm { &inputs.cur()->frags };
 		FragMap *ins { fm };
 		frag = fm->find(name.str());
 		
@@ -1093,7 +1118,7 @@
 
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = &(input->frags[name.str()]);
+		frag = &(inputs.cur()->frags[name.str()]);
 		ASSERT(
 			frag, "frag ", name.str(), " not defined"
 		);
@@ -1132,8 +1157,8 @@
 
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
-		if (! alreadyUsed(name.str())) {
-			pushPath(name.str());
+		if (! inputs.has(name.str())) {
+			inputs.push(name.str());
 		}
 		processed = true;
 	}
@@ -1146,7 +1171,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub = input->frags[name.str()];
+		Frag &sub = inputs.cur()->frags[name.str()];
 		
 	if (sub.expands()) {
 		std::cerr << "multiple expands of ["
@@ -1194,7 +1219,7 @@
 		buffer.clear();
 	}
 ;
-		Frag &sub { input->frags[name.str()] };
+		Frag &sub { inputs.cur()->frags[name.str()] };
 		
 	if (sub.expands()) {
 		std::cerr
@@ -1233,7 +1258,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name.str())
+		h(inputs.cur()->name + ':' + name.str())
 			& 0x7fffffff
 	};
 
@@ -1247,7 +1272,7 @@
 	hashed << "_private_"
 		<< cur << '_' << name.str();
 	frag->add(
-		hashed.str(), input->name,
+		hashed.str(), inputs.cur()->name,
 		name.startLine()
 	);
 ;
@@ -1259,7 +1284,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name.str())
+		h(inputs.cur()->name + ':' + name.str())
 			& 0x7fffffff
 	};
 
@@ -1279,7 +1304,7 @@
 ;
 	frag->add(
 		value.str(),
-		input->name, input->line
+		inputs.cur()->name, inputs.cur()->line()
 	);
 ;
 		processed = true;
@@ -1296,11 +1321,11 @@
 ;
 		name.clear();
 		last = ch;
-		ch = nextCh();
+		ch = inputs.get();
 	}
 } 
 	if (frag && ! processed) {
-		buffer.add(last, input->name, input->line);
+		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
 	}
 ;
 			break;
@@ -1308,17 +1333,17 @@
 		default:
 			 {
 	if (name.active()) {
-		name.add(ch, input->name, input->line);
+		name.add(ch, inputs.cur()->name, inputs.cur()->line());
 		break;
 	}
 }  {
 	if (frag) {
-		buffer.add(last, input->name, input->line);
+		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
 	}
 } ;
 	}
 ;
-		last = ch; ch = nextCh();
+		last = ch; ch = inputs.get();
 	}
 } ;
 	 {
@@ -1362,7 +1387,7 @@
 ;
 	}
 }  {
-	for (auto &j : used)
+	for (auto &j : inputs)
 	{
 		for (auto &i : j->frags) {
 			const Frag *frag { &i.second };
@@ -1406,7 +1431,7 @@
 	}
 } ;
 	
-	for (auto &cur : used) {
+	for (auto &cur : inputs) {
 		
 	const std::string &name { cur->name };
 	std::string outPath {
@@ -2220,7 +2245,6 @@
 	out.close();
 ;
 	}
-	used.clear();
 ;
 
 	}

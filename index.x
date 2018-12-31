@@ -139,6 +139,12 @@ x{global elements}
 * Über die Kommandozeile kann eine alternative Datei angegeben werden
 
 ```
+a{global elements}
+	Inputs inputs;
+x{global elements}
+```
+
+```
 d{process arguments}
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
@@ -174,7 +180,7 @@ d{process argument} {
 ```
 a{process argument}
 	if (! someFile) {
-		pushPath(argv[1]);
+		inputs.push(argv[1]);
 		someFile = true;
 		continue;
 	}
@@ -187,19 +193,11 @@ x{process argument}
 ```
 a{process arguments}
 	if (! someFile) {
-		pushPath("index.x");
+		inputs.push("index.x");
 	}
 x{process arguments}
 ```
 * Wenn kein Pfad angegeben wurde, wird `index.x` als Vorgabe verwendet
-
-# Nächstes Zeichen
-* Die Funktion `nextCh` liest das nächste Zeichen aus der aktuellen
-  Datei
-* Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
-  Stapel der offenen Dateien geholt
-* Erst wenn die letzte Datei fertig gelesen wurde, wird ein `EOF`
-  zurück geliefert
 
 # Eingabe-Dateien lesen
 * In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
@@ -209,11 +207,11 @@ x{process arguments}
 ```
 d{read source file} {
 	e{additional read vars};
-	int last { nextCh() };
-	int ch { last != EOF ? nextCh() : EOF };
+	int last { inputs.get() };
+	int ch { last != EOF ? inputs.get() : EOF };
 	while (ch != EOF) {
 		e{process current char};
-		last = ch; ch = nextCh();
+		last = ch; ch = inputs.get();
 	}
 } x{read source file}
 ```
@@ -276,7 +274,7 @@ d{process close brace} {
 		e{process frag name};
 		name.clear();
 		last = ch;
-		ch = nextCh();
+		ch = inputs.get();
 	}
 } x{process close brace}
 ```
@@ -286,7 +284,7 @@ d{process close brace} {
 ```
 d{process other char} {
 	if (name.active()) {
-		name.add(ch, input->name, input->line);
+		name.add(ch, inputs.cur()->name, inputs.cur()->line());
 		break;
 	}
 } x{process other char}
@@ -297,7 +295,7 @@ d{process other char} {
 ```
 a{process other char} {
 	if (frag) {
-		buffer.add(last, input->name, input->line);
+		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
 	}
 } x{process other char}
 ```
@@ -327,7 +325,7 @@ d{process open brace} {
 d{process frag name}
 	if (openCh == 'd') {
 		ASSERT(! frag, "def in frag");
-		FragMap *fm { &input->frags };
+		FragMap *fm { &inputs.cur()->frags };
 		E{check for double def};
 		if (! frag) {
 			frag = &(*fm)[name.str()];
@@ -374,7 +372,7 @@ x{check for double def}
 a{process frag name}
 	if (openCh == 'a') {
 		ASSERT(! frag, "add in frag");
-		FragMap *fm { &input->frags };
+		FragMap *fm { &inputs.cur()->frags };
 		FragMap *ins { fm };
 		frag = fm->find(name.str());
 		E{check for add without def};
@@ -414,7 +412,7 @@ x{check for add without def}
 a{process frag name}
 	if (openCh == 'r') {
 		ASSERT(! frag, "replace in frag");
-		frag = &(input->frags[name.str()]);
+		frag = &(inputs.cur()->frags[name.str()]);
 		ASSERT(
 			frag, "frag ", name.str(), " not defined"
 		);
@@ -470,8 +468,8 @@ x{frag names must match}
 a{process frag name}
 	if (openCh == 'i') {
 		ASSERT(! frag, "include in frag");
-		if (! alreadyUsed(name.str())) {
-			pushPath(name.str());
+		if (! inputs.has(name.str())) {
+			inputs.push(name.str());
 		}
 		processed = true;
 	}
@@ -486,7 +484,7 @@ a{process frag name}
 	if (openCh == 'e') {
 		ASSERT(frag, "expand not in frag");
 		E{flush frag buffer};
-		Frag &sub = input->frags[name.str()];
+		Frag &sub = inputs.cur()->frags[name.str()];
 		E{check frag expand count};
 		sub.addExpand();
 		frag->add(&sub);
@@ -533,7 +531,7 @@ a{process frag name}
 	if (openCh == 'E') {
 		ASSERT(frag, "multiple not in frag");
 		E{flush frag buffer};
-		Frag &sub { input->frags[name.str()] };
+		Frag &sub { inputs.cur()->frags[name.str()] };
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
@@ -594,7 +592,7 @@ x{includes}
 d{process private frag}
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name.str())
+		h(inputs.cur()->name + ':' + name.str())
 			& 0x7fffffff
 	};
 x{process private frag}
@@ -610,7 +608,7 @@ a{process private frag}
 	hashed << "_private_"
 		<< cur << '_' << name.str();
 	frag->add(
-		hashed.str(), input->name,
+		hashed.str(), inputs.cur()->name,
 		name.startLine()
 	);
 x{process private frag}
@@ -638,7 +636,7 @@ x{process frag name}
 d{process magic frag}
 	std::hash<std::string> h;
 	unsigned cur {
-		h(input->name + ':' + name.str())
+		h(inputs.cur()->name + ':' + name.str())
 			& 0x7fffffff
 	};
 x{process magic frag}
@@ -653,7 +651,7 @@ a{process magic frag}
 	E{flush frag buffer};
 	frag->add(
 		value.str(),
-		input->name, input->line
+		inputs.cur()->name, inputs.cur()->line()
 	);
 x{process magic frag}
 ```
@@ -722,7 +720,7 @@ x{process frag name}
 ```
 a{process open brace}
 	if (frag) {
-		buffer.add(last, input->name, input->line);
+		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
 	}
 x{process open brace}
 ```
@@ -733,7 +731,7 @@ x{process open brace}
 ```
 a{process close brace}
 	if (frag && ! processed) {
-		buffer.add(last, input->name, input->line);
+		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
 	}
 x{process close brace}
 ```
@@ -760,7 +758,7 @@ d{serialize fragments} {
 
 ```
 a{serialize fragments} {
-	for (auto &j : used)
+	for (auto &j : inputs)
 	{
 		for (auto &i : j->frags) {
 			const Frag *frag { &i.second };

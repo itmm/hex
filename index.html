@@ -346,6 +346,20 @@
 <div><div>
 <code>
 
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">Inputs</span> <span class="var">inputs</span>;<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
 <span class="macro">@def(<span class="name">process arguments</span>)</span><br/>
 
 <span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> { <span class="num">false</span> };<br/>
@@ -419,7 +433,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 
-<span class="in2"></span><span class="fn">pushPath</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
 
 <span class="in2"></span><span class="var">someFile</span> = <span class="num">true</span>;<br/>
 
@@ -447,7 +461,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 
-<span class="in2"></span><span class="fn">pushPath</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="str">"index.x"</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -458,24 +472,6 @@
 
 <ul><li>
  Wenn kein Pfad angegeben wurde, wird <code>index.x</code> als Vorgabe verwendet
-</li></ul></div>
-
-</div>
-<h1>Nächstes Zeichen</h1>
-<div class="slides">
-<div><div>
-<h1>Nächstes Zeichen</h1>
-</div>
-
-<ul><li>
- Die Funktion <code>nextCh</code> liest das nächste Zeichen aus der aktuellen
-  Datei
-</li><li>
- Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
-  Stapel der offenen Dateien geholt
-</li><li>
- Erst wenn die letzte Datei fertig gelesen wurde, wird ein <code>EOF</code>
-  zurück geliefert
 </li></ul></div>
 
 </div>
@@ -498,15 +494,15 @@
 
 <span class="in1"></span><span class="macro">@expand(<span class="name">additional read vars</span>)</span>;<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">last</span> { <span class="fn">nextCh</span>() };<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">last</span> { <span class="var">inputs</span>.<span class="fn">get</span>() };<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">ch</span> { <span class="var">last</span> != <span class="num">EOF</span> ? <span class="fn">nextCh</span>() : <span class="num">EOF</span> };<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">ch</span> { <span class="var">last</span> != <span class="num">EOF</span> ? <span class="var">inputs</span>.<span class="fn">get</span>() : <span class="num">EOF</span> };<br/>
 
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">ch</span> != <span class="num">EOF</span>) {<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">process current char</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>; <span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
+<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>; <span class="var">ch</span> = <span class="var">inputs</span>.<span class="fn">get</span>();<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -638,7 +634,7 @@
 
 <span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
 
-<span class="in2"></span><span class="var">ch</span> = <span class="fn">nextCh</span>();<br/>
+<span class="in2"></span><span class="var">ch</span> = <span class="var">inputs</span>.<span class="fn">get</span>();<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -660,7 +656,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">active</span>()) {<br/>
 
-<span class="in2"></span><span class="var">name</span>.<span class="fn">add</span>(<span class="var">ch</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">add</span>(<span class="var">ch</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
 
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 
@@ -683,7 +679,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -743,7 +739,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">input</span>-&gt;<span class="var">frags</span> };<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span> };<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">check for double def</span>)</span>;<br/>
 
@@ -843,7 +839,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
 
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">input</span>-&gt;<span class="var">frags</span> };<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span> };<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { <span class="var">fm</span> };<br/>
 
@@ -929,7 +925,7 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
 
-<span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()]);<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()]);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT</span>(<br/>
 
@@ -1048,9 +1044,9 @@
 
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"include in frag"</span>);<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">alreadyUsed</span>(<span class="var">name</span>.<span class="fn">str</span>())) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">inputs</span>.<span class="fn">has</span>(<span class="var">name</span>.<span class="fn">str</span>())) {<br/>
 
-<span class="in3"></span><span class="fn">pushPath</span>(<span class="var">name</span>.<span class="fn">str</span>());<br/>
+<span class="in3"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">name</span>.<span class="fn">str</span>());<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -1081,7 +1077,7 @@
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()];<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()];<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">check frag expand count</span>)</span>;<br/>
 
@@ -1179,7 +1175,7 @@
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">input</span>-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()] };<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()] };<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
 
@@ -1309,7 +1305,7 @@
 
 <span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
 
-<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>.<span class="fn">str</span>())<br/>
+<span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>.<span class="fn">str</span>())<br/>
 
 <span class="in3"></span>&amp; <span class="num">0x7fffffff</span><br/>
 
@@ -1343,7 +1339,7 @@
 
 <span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 
-<span class="in2"></span><span class="var">hashed</span>.<span class="fn">str</span>(), <span class="var">input</span>-&gt;<span class="var">name</span>,<br/>
+<span class="in2"></span><span class="var">hashed</span>.<span class="fn">str</span>(), <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
 
 <span class="in2"></span><span class="var">name</span>.<span class="fn">startLine</span>()<br/>
 
@@ -1402,7 +1398,7 @@
 
 <span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
 
-<span class="in2"></span><span class="fn">h</span>(<span class="var">input</span>-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>.<span class="fn">str</span>())<br/>
+<span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span> + <span class="str">':'</span> + <span class="var">name</span>.<span class="fn">str</span>())<br/>
 
 <span class="in3"></span>&amp; <span class="num">0x7fffffff</span><br/>
 
@@ -1434,7 +1430,7 @@
 
 <span class="in2"></span><span class="var">value</span>.<span class="fn">str</span>(),<br/>
 
-<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span><br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1578,7 +1574,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1600,7 +1596,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
 
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">input</span>-&gt;<span class="var">name</span>, <span class="var">input</span>-&gt;<span class="var">line</span>);<br/>
+<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">last</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1659,7 +1655,7 @@
 
 <span class="macro">@add(<span class="name">serialize fragments</span>)</span> {<br/>
 
-<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">used</span>)<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>)<br/>
 
 <span class="in1"></span>{<br/>
 

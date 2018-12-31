@@ -16,6 +16,7 @@ A{global elements}
 	class Input {
 		private:
 			std::ifstream file;
+			e{private input elements};
 		public:
 			const std::string name;
 			e{additional input elements};
@@ -36,8 +37,8 @@ d{input methods}
 		const std::string &name
 	):
 		file { name.c_str() },
+		e{private input constr}
 		name { name }
-		e{direct input constr}
 	{
 	}
 x{input methods}
@@ -66,12 +67,32 @@ x{input methods}
 
 ```
 A{global elements}
-	std::unique_ptr<Input> input;
-	std::vector<std::unique_ptr<Input>>
-		pending;
-	std::vector<std::unique_ptr<Input>>
-		used;
+	FragMap root;
+	FragMap *frags { &root };
 x{global elements}
+```
+* Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
+  angelegt
+
+
+```
+A{global elements}
+	class Inputs {
+			e{inputs attributes};
+		public:
+			e{inputs methods};
+	};
+x{global elements}
+```
+
+```
+d{inputs attributes}
+	std::unique_ptr<Input> _input;
+	std::vector<std::unique_ptr<Input>>
+		_pending;
+	std::vector<std::unique_ptr<Input>>
+		_used;
+x{inputs attributes}
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
 * Mitten während des Lesens können andere Dateien eingelesen
@@ -84,25 +105,40 @@ x{global elements}
   werden müssen
 
 ```
-A{global elements}
-	FragMap root;
-	FragMap *frags { &root };
-x{global elements}
+d{inputs methods}
+	auto &cur() {
+		return _input;
+	}
+x{inputs methods}
 ```
-* Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
-  angelegt
 
 ```
-A{global elements}
-	void pushPath(const std::string &path) {
+a{inputs methods}
+	auto begin() const {
+		return _used.cbegin();
+	}
+x{inputs methods}
+```
+
+```
+a{inputs methods}
+	auto end() const {
+		return _used.cend();
+	}
+x{inputs methods}
+```
+
+```
+a{inputs methods}
+	void push(const std::string &path) {
 		std::unique_ptr<Input> i {
 			std::make_unique<Input>(path)
 		};
 		e{init additional input fields};
 		e{push to pending};
-		input = std::move(i);
+		_input = std::move(i);
 	}
-x{global elements}
+x{inputs methods}
 ```
 * Dateien werden über ihren Pfad identifiziert
 * Dieser wird als Name gespeichert
@@ -111,14 +147,80 @@ x{global elements}
 
 ```
 d{push to pending}
-	if (input) {
-		pending.push_back(
-			std::move(input)
+	if (_input) {
+		_pending.push_back(
+			std::move(_input)
 		);
 	}
 x{push to pending}
 ```
 * Falls schon eine Datei offen ist, wird sie nach `pending` verschoben
+
+# Nächstes Zeichen
+* Die Funktion `get` liest das nächste Zeichen aus der aktuellen
+  Datei
+* Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
+  Stapel der offenen Dateien geholt
+* Erst wenn die letzte Datei fertig gelesen wurde, wird ein `EOF`
+  zurück geliefert
+
+```
+a{inputs methods}
+	int get() {
+		int ch { EOF };
+		while (_input) {
+			ch = _input->next();
+			if (ch != EOF) { break; }
+			e{get next input file};
+		}
+		return ch;
+	}
+x{inputs methods}
+```
+* Wenn kein `EOF` gelesen wurde, dann wird das Zeichen zurück
+  geliefert
+* Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
+
+```
+d{get next input file}
+	_used.push_back(std::move(_input));
+	if (! _pending.empty()) {
+		_input = std::move(_pending.back());
+		_pending.pop_back();
+	}
+	frags = frags->setLink(nullptr);
+x{get next input file}
+```
+* Die aktuelle Datei wird geschlossen und in die Liste der bereits
+  verarbeiteten Dateien eingereiht
+* Dann wird der Vorgänger zur aktuellen Datei erklärt
+* Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
+
+```
+a{inputs methods}
+	bool has(const std::string &name) const {
+		if (_input && _input->name == name) {
+			return true;
+		}
+		for (const auto &j : _pending) {
+			if (j->name == name) {
+				return true;
+			}
+		}
+		for (const auto &j : _used) {
+			if (j->name == name) {
+				return true;
+			}
+		}
+		return false;
+	}
+x{inputs methods}
+```
+* Prüft ob eine Datei bereits verwendet wurde
+* Sowohl die offenen als auch die bereits prozessierten Dateien werden
+  durchgegangen
+* Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
+  verarbeitet wird
 
 # Lokale Fragmente
 
@@ -132,103 +234,46 @@ x{additional input elements}
 
 ```
 d{init additional input fields}
-	if (input) {
-		input->frags.setLink(frags);
-		frags = &input->frags;
+	if (_input) {
+		_input->frags.setLink(frags);
+		frags = &_input->frags;
 	}
 x{init additional input fields}
 ```
 * Wenn es bereits eine offene Input-Datei gibt, dann wird deren lokale
   Fragmente in den globalen Namensraum aufgenommen
 
-# Nächstes Zeichen
-* Die Funktion `nextCh` liest das nächste Zeichen aus der aktuellen
-  Datei
-* Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
-  Stapel der offenen Dateien geholt
-* Erst wenn die letzte Datei fertig gelesen wurde, wird ein `EOF`
-  zurück geliefert
+# Zeilennummern
 
 ```
-A{global elements}
-	int nextCh() {
-		int ch { EOF };
-		while (input) {
-			ch = input->next();
-			if (ch != EOF) { break; }
-			e{get next input file};
-		}
-		return ch;
-	}
-x{global elements}
-```
-* Wenn kein `EOF` gelesen wurde, dann wird das Zeichen zurück
-  geliefert
-* Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
-
-```
-d{get next input file}
-	used.push_back(std::move(input));
-	if (! pending.empty()) {
-		input = std::move(pending.back());
-		pending.pop_back();
-	}
-	frags = frags->setLink(nullptr);
-x{get next input file}
-```
-* Die aktuelle Datei wird geschlossen und in die Liste der bereits
-  verarbeiteten Dateien eingereiht
-* Dann wird der Vorgänger zur aktuellen Datei erklärt
-* Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
-
-```
-A{global elements}
-	bool alreadyUsed(const std::string &name) {
-		if (input && input->name == name) {
-			return true;
-		}
-		for (auto &j : pending) {
-			if (j->name == name) {
-				return true;
-			}
-		}
-		for (auto &j : used) {
-			if (j->name == name) {
-				return true;
-			}
-		}
-		return false;
-	}
-x{global elements}
-```
-* Prüft ob eine Datei bereits verwendet wurde
-* Sowohl die offenen als auch die bereits prozessierten Dateien werden
-  durchgegangen
-* Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
-  verarbeitet wird
-
-```
-a{additional input elements}
-	int line;
-	bool shouldAdd;
-x{additional input elements}
+d{private input elements}
+	int _line;
+	bool _shouldAdd;
+x{private input elements}
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
-* `shouldAdd` signalisiert, dass das nächse Zeichen in einer neuen Zeile
+* `_shouldAdd` signalisiert, dass das nächse Zeichen in einer neuen Zeile
   ist
 
 ```
-d{direct input constr}
-	, line { 0 }
-	, shouldAdd { true }
-x{direct input constr}
+d{private input constr}
+	_line { 0 },
+	_shouldAdd { true },
+x{private input constr}
 ```
-* Zeile wird mit `1` initialisiert
+
+```
+a{input methods}
+	int line() const {
+		return _line;
+	}
+x{input methods}
+```
 
 ```
 d{preprocess}
-	if (shouldAdd) { ++line; }
-	shouldAdd = (ch == '\n');
+	if (_shouldAdd) { ++_line; }
+	_shouldAdd = (ch == '\n');
 x{preprocess}
 ```
 

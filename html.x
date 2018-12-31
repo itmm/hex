@@ -4,10 +4,9 @@
 
 ```
 D{write HTML file}
-	for (auto &cur : used) {
+	for (auto &cur : inputs) {
 		e{write cur HTML file};
 	}
-	used.clear();
 x{write HTML file}
 ```
 * Alle bisher prozessierten Dateien werden erneut durchgegangen

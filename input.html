@@ -48,6 +48,8 @@
 
 <span class="in3"></span><span class="var">std</span>::<span class="var">ifstream</span> <span class="var">file</span>;<br/>
 
+<span class="in3"></span><span class="macro">@expand(<span class="name">private input elements</span>)</span>;<br/>
+
 <span class="in2"></span><span class="var">public</span>:<br/>
 
 <span class="in3"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
@@ -88,9 +90,9 @@
 
 <span class="in2"></span><span class="var">file</span> { <span class="var">name</span>.<span class="fn">c_str</span>() },<br/>
 
-<span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">private input constr</span>)</span><br/>
 
-<span class="in2"></span><span class="macro">@expand(<span class="name">direct input constr</span>)</span><br/>
+<span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 
 <span class="in1"></span>{<br/>
 
@@ -152,17 +154,59 @@
 
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">input</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt;<br/>
-
-<span class="in2"></span><span class="var">pending</span>;<br/>
-
-<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt;<br/>
-
-<span class="in2"></span><span class="var">used</span>;<br/>
+<span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> { &amp;<span class="var">root</span> };<br/>
 
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
+  angelegt
+</li></ul></div>
+
+
+<div><div>
+<code>
+
+<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="var">class</span> <span class="type">Inputs</span> {<br/>
+
+<span class="in3"></span><span class="macro">@expand(<span class="name">inputs attributes</span>)</span>;<br/>
+
+<span class="in2"></span><span class="var">public</span>:<br/>
+
+<span class="in3"></span><span class="macro">@expand(<span class="name">inputs methods</span>)</span>;<br/>
+
+<span class="in1"></span>};<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@def(<span class="name">inputs attributes</span>)</span><br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">_input</span>;<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt;<br/>
+
+<span class="in2"></span><span class="var">_pending</span>;<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt;&gt;<br/>
+
+<span class="in2"></span><span class="var">_used</span>;<br/>
+
+<span class="macro">@end(<span class="name">inputs attributes</span>)</span><br/>
 
 </code>
 </div>
@@ -188,28 +232,63 @@
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@def(<span class="name">inputs methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
+<span class="in1"></span><span class="var">auto</span> &amp;<span class="fn">cur</span>() {<br/>
 
-<span class="in1"></span><span class="type">FragMap</span> *<span class="var">frags</span> { &amp;<span class="var">root</span> };<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_input</span>;<br/>
 
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
 
 </code>
 </div>
 
-<ul><li>
- Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
-  angelegt
-</li></ul></div>
 
+</div>
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">inputs methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">pushPath</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
+<span class="in1"></span><span class="var">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">cbegin</span>();<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">inputs methods</span>)</span><br/>
+
+<span class="in1"></span><span class="var">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">cend</span>();<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">inputs methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">path</span>) {<br/>
 
 <span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> {<br/>
 
@@ -221,11 +300,11 @@
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">push to pending</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
+<span class="in2"></span><span class="var">_input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
 
 </code>
 </div>
@@ -245,11 +324,11 @@
 
 <span class="macro">@def(<span class="name">push to pending</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_input</span>) {<br/>
 
-<span class="in2"></span><span class="var">pending</span>.<span class="fn">push_back</span>(<br/>
+<span class="in2"></span><span class="var">_pending</span>.<span class="fn">push_back</span>(<br/>
 
-<span class="in3"></span><span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>)<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="fn">move</span>(<span class="var">_input</span>)<br/>
 
 <span class="in2"></span>);<br/>
 
@@ -262,6 +341,142 @@
 
 <ul><li>
  Falls schon eine Datei offen ist, wird sie nach <code>pending</code> verschoben
+</li></ul></div>
+
+</div>
+<h1>Nächstes Zeichen</h1>
+<div class="slides">
+<div><div>
+<h1>Nächstes Zeichen</h1>
+</div>
+
+<ul><li>
+ Die Funktion <code>get</code> liest das nächste Zeichen aus der aktuellen
+  Datei
+</li><li>
+ Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
+  Stapel der offenen Dateien geholt
+</li><li>
+ Erst wenn die letzte Datei fertig gelesen wurde, wird ein <code>EOF</code>
+  zurück geliefert
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">inputs methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">get</span>() {<br/>
+
+<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="num">EOF</span> };<br/>
+
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">_input</span>) {<br/>
+
+<span class="in3"></span><span class="var">ch</span> = <span class="var">_input</span>-&gt;<span class="fn">next</span>();<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span>) { <span class="keyword">break</span>; }<br/>
+
+<span class="in3"></span><span class="macro">@expand(<span class="name">get next input file</span>)</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Wenn kein <code>EOF</code> gelesen wurde, dann wird das Zeichen zurück
+  geliefert
+</li><li>
+ Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@def(<span class="name">get next input file</span>)</span><br/>
+
+<span class="in1"></span><span class="var">_used</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">_input</span>));<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">_pending</span>.<span class="fn">empty</span>()) {<br/>
+
+<span class="in2"></span><span class="var">_input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">_pending</span>.<span class="fn">back</span>());<br/>
+
+<span class="in2"></span><span class="var">_pending</span>.<span class="fn">pop_back</span>();<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="in1"></span><span class="var">frags</span> = <span class="var">frags</span>-&gt;<span class="fn">setLink</span>(<span class="num">nullptr</span>);<br/>
+
+<span class="macro">@end(<span class="name">get next input file</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Die aktuelle Datei wird geschlossen und in die Liste der bereits
+  verarbeiteten Dateien eingereiht
+</li><li>
+ Dann wird der Vorgänger zur aktuellen Datei erklärt
+</li><li>
+ Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
+</li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">inputs methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">has</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_input</span> &amp;&amp; <span class="var">_input</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">_pending</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">j</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
+
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">_used</span>) {<br/>
+
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">j</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
+
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
+
+</code>
+</div>
+
+<ul><li>
+ Prüft ob eine Datei bereits verwendet wurde
+</li><li>
+ Sowohl die offenen als auch die bereits prozessierten Dateien werden
+  durchgegangen
+</li><li>
+ Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
+  verarbeitet wird
 </li></ul></div>
 
 </div>
@@ -295,11 +510,11 @@
 
 <span class="macro">@def(<span class="name">init additional input fields</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">input</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_input</span>) {<br/>
 
-<span class="in2"></span><span class="var">input</span>-&gt;<span class="var">frags</span>.<span class="fn">setLink</span>(<span class="var">frags</span>);<br/>
+<span class="in2"></span><span class="var">_input</span>-&gt;<span class="var">frags</span>.<span class="fn">setLink</span>(<span class="var">frags</span>);<br/>
 
-<span class="in2"></span><span class="var">frags</span> = &amp;<span class="var">input</span>-&gt;<span class="var">frags</span>;<br/>
+<span class="in2"></span><span class="var">frags</span> = &amp;<span class="var">_input</span>-&gt;<span class="var">frags</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -314,151 +529,24 @@
 </li></ul></div>
 
 </div>
-<h1>Nächstes Zeichen</h1>
+<h1>Zeilennummern</h1>
 <div class="slides">
 <div><div>
-<h1>Nächstes Zeichen</h1>
+<h1>Zeilennummern</h1>
 </div>
 
-<ul><li>
- Die Funktion <code>nextCh</code> liest das nächste Zeichen aus der aktuellen
-  Datei
-</li><li>
- Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
-  Stapel der offenen Dateien geholt
-</li><li>
- Erst wenn die letzte Datei fertig gelesen wurde, wird ein <code>EOF</code>
-  zurück geliefert
-</li></ul></div>
 
+</div>
 <div><div>
 <code>
 
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@def(<span class="name">private input elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="fn">nextCh</span>() {<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">_line</span>;<br/>
 
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="num">EOF</span> };<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">_shouldAdd</span>;<br/>
 
-<span class="in2"></span><span class="keyword">while</span> (<span class="var">input</span>) {<br/>
-
-<span class="in3"></span><span class="var">ch</span> = <span class="var">input</span>-&gt;<span class="fn">next</span>();<br/>
-
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span>) { <span class="keyword">break</span>; }<br/>
-
-<span class="in3"></span><span class="macro">@expand(<span class="name">get next input file</span>)</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn kein <code>EOF</code> gelesen wurde, dann wird das Zeichen zurück
-  geliefert
-</li><li>
- Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@def(<span class="name">get next input file</span>)</span><br/>
-
-<span class="in1"></span><span class="var">used</span>.<span class="fn">push_back</span>(<span class="var">std</span>::<span class="fn">move</span>(<span class="var">input</span>));<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">pending</span>.<span class="fn">empty</span>()) {<br/>
-
-<span class="in2"></span><span class="var">input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">pending</span>.<span class="fn">back</span>());<br/>
-
-<span class="in2"></span><span class="var">pending</span>.<span class="fn">pop_back</span>();<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="in1"></span><span class="var">frags</span> = <span class="var">frags</span>-&gt;<span class="fn">setLink</span>(<span class="num">nullptr</span>);<br/>
-
-<span class="macro">@end(<span class="name">get next input file</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Die aktuelle Datei wird geschlossen und in die Liste der bereits
-  verarbeiteten Dateien eingereiht
-</li><li>
- Dann wird der Vorgänger zur aktuellen Datei erklärt
-</li><li>
- Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
-
-<span class="in1"></span><span class="type">bool</span> <span class="fn">alreadyUsed</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">input</span> &amp;&amp; <span class="var">input</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
-
-<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">pending</span>) {<br/>
-
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">j</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
-
-<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
-<span class="in3"></span>}<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">for</span> (<span class="var">auto</span> &amp;<span class="var">j</span> : <span class="var">used</span>) {<br/>
-
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">j</span>-&gt;<span class="var">name</span> == <span class="var">name</span>) {<br/>
-
-<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
-<span class="in3"></span>}<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Prüft ob eine Datei bereits verwendet wurde
-</li><li>
- Sowohl die offenen als auch die bereits prozessierten Dateien werden
-  durchgegangen
-</li><li>
- Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
-  verarbeitet wird
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">additional input elements</span>)</span><br/>
-
-<span class="in1"></span><span class="type">int</span> <span class="var">line</span>;<br/>
-
-<span class="in1"></span><span class="type">bool</span> <span class="var">shouldAdd</span>;<br/>
-
-<span class="macro">@end(<span class="name">additional input elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">private input elements</span>)</span><br/>
 
 </code>
 </div>
@@ -466,36 +554,52 @@
 <ul><li>
  Pro Datei wird die aktuelle Zeile festgehalten
 </li><li>
- <code>shouldAdd</code> signalisiert, dass das nächse Zeichen in einer neuen Zeile
+ <code>_shouldAdd</code> signalisiert, dass das nächse Zeichen in einer neuen Zeile
   ist
 </li></ul></div>
 
 <div><div>
 <code>
 
-<span class="macro">@def(<span class="name">direct input constr</span>)</span><br/>
+<span class="macro">@def(<span class="name">private input constr</span>)</span><br/>
 
-<span class="in1"></span>, <span class="var">line</span> { <span class="num">0</span> }<br/>
+<span class="in1"></span><span class="var">_line</span> { <span class="num">0</span> },<br/>
 
-<span class="in1"></span>, <span class="var">shouldAdd</span> { <span class="num">true</span> }<br/>
+<span class="in1"></span><span class="var">_shouldAdd</span> { <span class="num">true</span> },<br/>
 
-<span class="macro">@end(<span class="name">direct input constr</span>)</span><br/>
+<span class="macro">@end(<span class="name">private input constr</span>)</span><br/>
 
 </code>
 </div>
 
-<ul><li>
- Zeile wird mit <code>1</code> initialisiert
-</li></ul></div>
 
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">input methods</span>)</span><br/>
+
+<span class="in1"></span><span class="type">int</span> <span class="fn">line</span>() <span class="type">const</span> {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">input methods</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
 <div><div>
 <code>
 
 <span class="macro">@def(<span class="name">preprocess</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">shouldAdd</span>) { ++<span class="var">line</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_shouldAdd</span>) { ++<span class="var">_line</span>; }<br/>
 
-<span class="in1"></span><span class="var">shouldAdd</span> = (<span class="var">ch</span> == <span class="str">'\n'</span>);<br/>
+<span class="in1"></span><span class="var">_shouldAdd</span> = (<span class="var">ch</span> == <span class="str">'\n'</span>);<br/>
 
 <span class="macro">@end(<span class="name">preprocess</span>)</span><br/>
 
