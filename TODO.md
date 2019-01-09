@@ -1,3 +1,10 @@
+* Überschriften pro Folie/Notizen
+* Converter von Fragmenten
+* Jedes Fragment ist in ein Knoten in einer bestimmten Sprache
+* Converter für Code-Highlighting nutzen
+* Converter für Compiling nutzen
+* Man-Pages
+* Autobuild
 * html.x dokumentieren
 * Code-Formattierung in Headern
 * Navigierbare Verweise
