@@ -577,7 +577,7 @@ A{global elements}
 	bool isType(const std::string &s) {
 		static std::set<std::string> reserved {
 			"FILE", "auto",
-			"bool", "char", "const", "enum",
+			"bool", "char", "const", "enum", "extern",
 			"int", "let", "long", "signed", "struct",
 			"union", "unsigned", "void"
 		};
