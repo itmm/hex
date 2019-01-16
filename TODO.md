@@ -13,3 +13,4 @@
 * SVG-Grafiken in Slides
 * Directories richtig behandeln
 * #line Makros in .c und .h Dateien
+* Normale Absätze zwischen Folien
