@@ -14,7 +14,7 @@ $(SRCs): $(Xs)
 	@hx
 
 $(EXEs): $(SRCs)
-	@echo "  G++ $@"
+	@echo "  CXX $@"
 	@$(CXX) $(CXXFLAGS) -o $@ $^
 
 install: $(EXEs)

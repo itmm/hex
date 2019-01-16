@@ -46,6 +46,8 @@ x{file: hx.cpp}
 * Das Hauptprogramm besteht aus der `main`-Funktion
 * Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
   definiert werden können
+* Übergeben wird der Funktion die Anzahl der Argumente in `argc`
+* Und der Aufrufname mit Argumenten als Array in `argv`
 
 ```
 d{main body}

@@ -1,4 +1,5 @@
 * Überschriften pro Folie/Notizen
+* Überschriften ohne Notizen generieren keine Folien
 * Converter von Fragmenten
 * Jedes Fragment ist in ein Knoten in einer bestimmten Sprache
 * Converter für Code-Highlighting nutzen
