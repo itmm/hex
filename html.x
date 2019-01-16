@@ -785,10 +785,8 @@ x{handle special codes}
 ```
 d{handle html include}
 	auto ext = status.name.str().find_last_of('.');
-	ASSERT(
-		ext != std::string::npos,
-		"no period"
-	);
+	ASSERT(ext != std::string::npos) <<
+		"no period";
 	out << "<a href=\"" 
 		<< status.name.str().substr(0, ext) << ".html\">";
 	out << status.name.str() << "</a>)</span>";

@@ -9,14 +9,51 @@ x{includes}
 
 ```
 D{define logging}
-	#define ASSERT(COND, ...) \
-		if (! (COND)) { \
-			std::cerr << __FILE__ << ':' \
-				<< __LINE__ << ' ' \
-				<< #COND << " FAILED: "; \
-			failSuffix(__VA_ARGS__); \
-			throw std::exception(); \
+	class LogContainer {
+		public:
+			bool log;
+			bool first;
+			LogContainer(const char *file, int line, const char *cond): log { true }, first { true } {
+				std::cerr << '[' << file << ':' << line << "] " << cond << " FAILED";
+			}
+			LogContainer(bool l, bool f):
+				log {l}, first {f}
+			{
+			}
+			LogContainer(LogContainer &&l):
+				log {l.log}, first {l.first}
+			{
+				l.log = false;
+			}
+			~LogContainer() noexcept(false) {
+				if (log) {
+					std::cerr << std::endl;
+					throw std::exception();
+				}
+			}
+	};
+
+	template<typename T>
+	inline LogContainer operator<<(
+		LogContainer lc, T t
+	) {
+		if (lc.log) {
+			if (lc.first) { std::cerr << ": "; }
+			std::cerr << t;
+			return LogContainer(true, false);
+		} else {
+			return LogContainer(false, false);
 		}
+	}
+x{define logging}
+```
+
+```
+A{define logging}
+	#define ASSERT(COND) \
+		((COND) ? LogContainer { false, true } : \
+			LogContainer { __FILE__, __LINE__, #COND } \
+		)
 x{define logging}
 ```
 * Wenn Bedingung falsch ist, wird Fehlermeldung ausgegeben
@@ -24,32 +61,4 @@ x{define logging}
 * Datei und Zeile des Tests wird ausgegeben
 * Eine variable Anzahl von weiteren Parametern kann mit ausgegeben
   werden
-
-```
-A{define logging}
-	inline void failSuffix() {
-		std::cerr << std::endl;
-	}
-x{define logging}
-```
-* Die Ausgabe der zusätzlichen Parameter erfolgt über variadic
-  Funktionen
-* Im einfachsten Fall wird nur ein Zeilenumbruch ausgegeben
-
-```
-A{define logging}
-	template<typename T, typename... Args>
-	inline void failSuffix(
-		const T& a, Args... args
-	) {
-		std::cerr << a;
-		failSuffix(args...);
-	}
-x{define logging}
-```
-* Bei einer variablen Anzahl von Parametern wird zuerst der erste
-  Parameter ausgegeben
-* Dann wird die Suffix-Funktion für den Rest mit weniger Parametern
-  aufgerufen
-* wenn es keine Parameter mehr gibt, bricht die Kette ab
 

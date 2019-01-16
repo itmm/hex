@@ -159,10 +159,8 @@ d{process arguments}
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
 		e{process argument};
-		ASSERT(
-			false,
-			"unknown argument [", argv[i], ']'
-		);
+		ASSERT(false) <<
+			"unknown argument [" << argv[i] << ']';
 	}
 x{process arguments}
 ```
@@ -354,7 +352,7 @@ d{process open brace} {
 ```
 d{process frag name}
 	if (openCh == 'd') {
-		ASSERT(! frag, "def in frag");
+		ASSERT(! frag) << "def in frag";
 		FragMap *fm { &inputs.cur()->frags };
 		E{check for double def};
 		if (! frag) {
@@ -370,7 +368,7 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'D') {
-		ASSERT(! frag, "def in frag");
+		ASSERT(! frag) << "def in frag";
 		FragMap *fm { frags };
 		E{check for double def};
 		if (! frag) {
@@ -401,7 +399,7 @@ x{check for double def}
 ```
 a{process frag name}
 	if (openCh == 'a') {
-		ASSERT(! frag, "add in frag");
+		ASSERT(! frag) << "add in frag";
 		FragMap *fm { &inputs.cur()->frags };
 		FragMap *ins { fm };
 		frag = fm->find(name.str());
@@ -416,7 +414,7 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'A') {
-		ASSERT(! frag, "add in frag");
+		ASSERT(! frag) << "add in frag";
 		FragMap *fm { frags };
 		FragMap *ins { &root };
 		frag = fm->find(name.str());
@@ -441,11 +439,10 @@ x{check for add without def}
 ```
 a{process frag name}
 	if (openCh == 'r') {
-		ASSERT(! frag, "replace in frag");
+		ASSERT(! frag) << "replace in frag";
 		frag = &(inputs.cur()->frags[name.str()]);
-		ASSERT(
-			frag, "frag ", name.str(), " not defined"
-		);
+		ASSERT(frag) <<
+			"frag " << name.str() << " not defined";
 		frag->clear();
 		processed = true;
 	}
@@ -457,11 +454,10 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'R') {
-		ASSERT(! frag, "replace in frag");
+		ASSERT(! frag) << "replace in frag";
 		frag = &frags->get(name.str(), root);
-		ASSERT(
-			frag, "frag ", name.str(), " not defined"
-		);
+		ASSERT(frag) <<
+			"frag " << name.str() << " not defined";
 		frag->clear();
 		processed = true;
 	}
@@ -472,7 +468,7 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'x') {
-		ASSERT(frag, "end not in frag");
+		ASSERT(frag) << "end not in frag";
 		e{frag names must match};
 		E{flush frag buffer};
 		frag = nullptr;
@@ -484,11 +480,9 @@ x{process frag name}
 
 ```
 d{frag names must match}
-	ASSERT(
-		frag->name == name.str(),
-		"closing [", name.str(), "] != [",
-			frag->name, ']'
-	);
+	ASSERT(frag->name == name.str()) <<
+		"closing [" << name.str() << "] != [" <<
+			frag->name << ']';
 x{frag names must match}
 ```
 * Wenn der öffnende und schließende Name nicht passt, wird die
@@ -497,7 +491,7 @@ x{frag names must match}
 ```
 a{process frag name}
 	if (openCh == 'i') {
-		ASSERT(! frag, "include in frag");
+		ASSERT(! frag) << "include in frag";
 		if (! inputs.has(name.str())) {
 			inputs.push(name.str());
 		}
@@ -512,7 +506,7 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'e') {
-		ASSERT(frag, "expand not in frag");
+		ASSERT(frag) << "expand not in frag";
 		E{flush frag buffer};
 		Frag &sub = inputs.cur()->frags[name.str()];
 		E{check frag expand count};
@@ -528,7 +522,7 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'g') {
-		ASSERT(frag, "expand not in frag");
+		ASSERT(frag) << "expand not in frag";
 		E{flush frag buffer};
 		Frag &sub = frags->get(name.str(), root);
 		E{check frag expand count};
@@ -559,7 +553,7 @@ x{check frag expand count}
 ```
 a{process frag name}
 	if (openCh == 'E') {
-		ASSERT(frag, "multiple not in frag");
+		ASSERT(frag) << "multiple not in frag";
 		E{flush frag buffer};
 		Frag &sub { inputs.cur()->frags[name.str()] };
 		E{check for prev expands};
@@ -575,7 +569,7 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'G') {
-		ASSERT(frag, "multiple not in frag");
+		ASSERT(frag) << "multiple not in frag";
 		E{flush frag buffer};
 		Frag &sub { frags->get(name.str(), root) };
 		E{check for prev expands};
@@ -601,7 +595,7 @@ x{check for prev expands}
 ```
 a{process frag name}
 	if (openCh == 'p') {
-		ASSERT(frag, "private not in frag");
+		ASSERT(frag) << "private not in frag";
 		e{process private frag};
 		processed = true;
 	}
@@ -652,7 +646,7 @@ x{process private frag}
 ```
 a{process frag name}
 	if (openCh == 'm') {
-		ASSERT(frag, "magic not in frag");
+		ASSERT(frag) << "magic not in frag";
 		e{process magic frag};
 		processed = true;
 	}
@@ -734,10 +728,8 @@ x{check valid names}
 ```
 a{process frag name}
 	if (! processed) {
-		ASSERT(
-			frag, "unknown frag ",
-			v{name}.str()
-		);
+		ASSERT(frag) << "unknown frag "
+			<< v{name}.str();
 		buffer.add(name);
 		processed = true;
 	}

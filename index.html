@@ -389,13 +389,9 @@
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">process argument</span>)</span>;<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="num">false</span>) &lt;&lt;<br/>
 
-<span class="in3"></span><span class="num">false</span>,<br/>
-
-<span class="in3"></span><span class="str">"unknown argument ["</span>, <span class="var">argv</span>[<span class="var">i</span>], <span class="str">']'</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="str">"unknown argument ["</span> &lt;&lt; <span class="var">argv</span>[<span class="var">i</span>] &lt;&lt; <span class="str">']'</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -800,7 +796,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'d'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"def in frag"</span>;<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span> };<br/>
 
@@ -834,7 +830,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"def in frag"</span>;<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
 
@@ -900,7 +896,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'a'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"add in frag"</span>;<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { &amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span> };<br/>
 
@@ -932,7 +928,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'A'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"add in frag"</span>;<br/>
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
 
@@ -986,15 +982,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"replace in frag"</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<span class="var">name</span>.<span class="fn">str</span>()]);<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag "</span>, <span class="var">name</span>.<span class="fn">str</span>(), <span class="str">" not defined"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="str">"frag "</span> &lt;&lt; <span class="var">name</span>.<span class="fn">str</span>() &lt;&lt; <span class="str">" not defined"</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">clear</span>();<br/>
 
@@ -1020,15 +1014,13 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'R'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"replace in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"replace in frag"</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<span class="var">name</span>.<span class="fn">str</span>(), <span class="var">root</span>);<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="str">"frag "</span>, <span class="var">name</span>.<span class="fn">str</span>(), <span class="str">" not defined"</span><br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span><span class="str">"frag "</span> &lt;&lt; <span class="var">name</span>.<span class="fn">str</span>() &lt;&lt; <span class="str">" not defined"</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">clear</span>();<br/>
 
@@ -1052,7 +1044,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'x'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"end not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"end not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">frag names must match</span>)</span>;<br/>
 
@@ -1078,15 +1070,11 @@
 
 <span class="macro">@def(<span class="name">frag names must match</span>)</span><br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">name</span>.<span class="fn">str</span>()) &lt;&lt;<br/>
 
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">name</span>.<span class="fn">str</span>(),<br/>
+<span class="in2"></span><span class="str">"closing ["</span> &lt;&lt; <span class="var">name</span>.<span class="fn">str</span>() &lt;&lt; <span class="str">"] != ["</span> &lt;&lt;<br/>
 
-<span class="in2"></span><span class="str">"closing ["</span>, <span class="var">name</span>.<span class="fn">str</span>(), <span class="str">"] != ["</span>,<br/>
-
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span>, <span class="str">']'</span><br/>
-
-<span class="in1"></span>);<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span>;<br/>
 
 <span class="macro">@end(<span class="name">frag names must match</span>)</span><br/>
 
@@ -1105,7 +1093,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'i'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>, <span class="str">"include in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">frag</span>) &lt;&lt; <span class="str">"include in frag"</span>;<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">inputs</span>.<span class="fn">has</span>(<span class="var">name</span>.<span class="fn">str</span>())) {<br/>
 
@@ -1136,7 +1124,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'e'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"expand not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
@@ -1170,7 +1158,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'g'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"expand not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"expand not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
@@ -1234,7 +1222,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"multiple not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
@@ -1267,7 +1255,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'G'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"multiple not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"multiple not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
@@ -1322,7 +1310,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'p'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"private not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"private not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">process private frag</span>)</span>;<br/>
 
@@ -1432,7 +1420,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'m'</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>, <span class="str">"magic not in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"magic not in frag"</span>;<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">process magic frag</span>)</span>;<br/>
 
@@ -1604,13 +1592,9 @@
 
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
 
-<span class="in2"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">frag</span>) &lt;&lt; <span class="str">"unknown frag "</span><br/>
 
-<span class="in3"></span><span class="var">frag</span>, <span class="str">"unknown frag "</span>,<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>()<br/>
-
-<span class="in2"></span>);<br/>
+<span class="in3"></span>&lt;&lt; <span class="var">name</span>.<span class="fn">str</span>();<br/>
 
 <span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
 
