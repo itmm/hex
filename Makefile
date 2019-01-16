@@ -3,20 +3,28 @@ CXXFLAGS += -Wall -std=c++14 -g
 .PHONY: all install clean test
 
 Xs := $(wildcard *.x)
-HTMLs := ${Xs:.x=.html}
+SRCs := $(shell hx-files.sh $(Xs))
+EXEs := hx
+DOCs := $(Xs:.x=.html)
 
-all: hx.cpp
+all: $(SRCs) $(DOCs)
 
-hx.cpp: ${Xs}
-	hx
+$(SRCs): $(Xs)
+	@echo "  HX"
+	@hx
 
-hx: hx.cpp
+$(EXEs): $(SRCs)
+	@echo "  G++ $@"
+	@$(CXX) $(CXXFLAGS) -o $@ $^
 
-install: hx
-	cp hx ~/bin
+install: $(EXEs)
+	@echo "  INSTALL"
+	@cp $(EXEs) hx-files.sh ~/bin
 
-test: hx
-	./hx
+test: $(EXEs)
+	@echo "  ./HX"
+	@./hx
 
 clean:
-	rm -f hx.cpp ${HTMLs}
+	@echo "  RM generated files"
+	@rm -f $(SRCs) $(EXEs) $(DOCs)
