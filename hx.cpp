@@ -1659,6 +1659,12 @@
 			status.codeSpecial = '`';
 			status.name.clear(true);
 			
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -1688,6 +1694,12 @@
 			)
 		) {
 			
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -1730,6 +1742,12 @@
 		 
 	if (ch == '\n') {
 		
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -1897,6 +1915,12 @@
 		)
 	) {
 		
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -1959,6 +1983,12 @@
 	}
 ;
 		
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -2023,6 +2053,12 @@
 		status.state == HtmlState::inNotes
 	) {
 		
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -2174,6 +2210,12 @@
 		)
 	) {
 		
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
@@ -2249,6 +2291,12 @@
  
 	if (status.state == HtmlState::inNotes) {
 		
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);

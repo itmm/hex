@@ -609,6 +609,12 @@ x{global elements}
 
 ```
 d{flush pending}
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
 	if (! ident.empty()) {
 		if (ch == '(') {
 			escapeIdent(out, "fn", ident);
