@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="de"l>
 <head>
 <meta charset="utf-8">
 <title>HTML-Präsentation generieren</title>
@@ -1327,19 +1327,45 @@
 
 <span class="macro">@add(<span class="name">process ch for HTML</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<span class="var">std</span>::<span class="fn">isalnum</span>(<span class="var">ch</span>) || <span class="var">ch</span> == <span class="str">'_'</span>)) {<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span><br/>
 
-<span class="in3"></span><span class="var">ident</span>.<span class="fn">push_back</span>(<span class="var">ch</span>);<br/>
+<span class="in1"></span>) {<br/>
 
-<span class="in3"></span><span class="keyword">continue</span>;<br/>
-
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">process ident</span>)</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
 <span class="macro">@end(<span class="name">process ch for HTML</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@def(<span class="name">process ident</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+
+<span class="in2"></span>! <span class="var">status</span>.<span class="var">codeSpecial</span> &amp;&amp; (<br/>
+
+<span class="in3"></span><span class="var">std</span>::<span class="fn">isalnum</span>(<span class="var">ch</span>) || <span class="var">ch</span> == <span class="str">'_'</span><br/>
+
+<span class="in2"></span>)<br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="var">ident</span>.<span class="fn">push_back</span>(<span class="var">ch</span>);<br/>
+
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">process ident</span>)</span><br/>
 
 </code>
 </div>
@@ -1361,9 +1387,11 @@
 
 <span class="in1"></span>) {<br/>
 
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\""</span> &lt;&lt; <span class="var">cls</span> &lt;&lt; <span class="str">"\"&gt;"</span><br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\""</span> &lt;&lt;<br/>
 
-<span class="in3"></span>&lt;&lt; <span class="var">s</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
+<span class="in3"></span><span class="var">cls</span> &lt;&lt; <span class="str">"\"&gt;"</span> &lt;&lt; <span class="var">s</span> &lt;&lt;<br/>
+
+<span class="in3"></span><span class="str">"&lt;/span&gt;"</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1381,19 +1409,19 @@
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isKeyword</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">reserved</span> {<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt;<br/>
 
-<span class="in3"></span><span class="str">"break"</span>, <span class="str">"case"</span>, <span class="str">"catch"</span>, <span class="str">"continue"</span>,<br/>
+<span class="in3"></span><span class="var">reserved</span> {<br/>
 
-<span class="in3"></span><span class="str">"default"</span>, <span class="str">"delete"</span>, <span class="str">"else"</span>, <span class="str">"for"</span>,<br/>
+<span class="in4"></span><span class="macro">@expand(<span class="name">keywords</span>)</span><br/>
 
-<span class="in3"></span><span class="str">"if"</span>, <span class="str">"in"</span>, <span class="str">"new"</span>, <span class="str">"return"</span>, <span class="str">"static"</span>,<br/>
+<span class="in3"></span>};<br/>
 
-<span class="in3"></span><span class="str">"switch"</span>, <span class="str">"try"</span>, <span class="str">"typeof"</span>, <span class="str">"while"</span><br/>
+<span class="in2"></span><span class="keyword">return</span><br/>
 
-<span class="in2"></span>};<br/>
+<span class="in3"></span><span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) !=<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) != <span class="var">reserved</span>.<span class="fn">end</span>();<br/>
+<span class="in4"></span><span class="var">reserved</span>.<span class="fn">end</span>();<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1407,43 +1435,113 @@
 <div><div>
 <code>
 
+<span class="macro">@def(<span class="name">keywords</span>)</span><br/>
+
+<span class="in1"></span><span class="str">"break"</span>, <span class="str">"case"</span>, <span class="str">"catch"</span>, <span class="str">"continue"</span>,<br/>
+
+<span class="in1"></span><span class="str">"default"</span>, <span class="str">"delete"</span>, <span class="str">"else"</span>, <span class="str">"for"</span>,<br/>
+
+<span class="in1"></span><span class="str">"if"</span>, <span class="str">"in"</span>, <span class="str">"new"</span>, <span class="str">"return"</span>, <span class="str">"static"</span>,<br/>
+
+<span class="in1"></span><span class="str">"switch"</span>, <span class="str">"try"</span>, <span class="str">"typeof"</span>, <span class="str">"while"</span><br/>
+
+<span class="macro">@end(<span class="name">keywords</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt; <span class="var">reserved</span> {<br/>
-
-<span class="in3"></span><span class="str">"FILE"</span>, <span class="str">"auto"</span>,<br/>
-
-<span class="in3"></span><span class="str">"bool"</span>, <span class="str">"char"</span>, <span class="str">"const"</span>, <span class="str">"enum"</span>, <span class="str">"extern"</span>,<br/>
-
-<span class="in3"></span><span class="str">"int"</span>, <span class="str">"let"</span>, <span class="str">"long"</span>, <span class="str">"signed"</span>, <span class="str">"struct"</span>,<br/>
-
-<span class="in3"></span><span class="str">"union"</span>, <span class="str">"unsigned"</span>, <span class="str">"void"</span><br/>
-
-<span class="in2"></span>};<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) != <span class="var">reserved</span>.<span class="fn">end</span>()) {<br/>
-
-<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">s</span>.<span class="fn">size</span>() &gt;= <span class="num">2</span>) {<br/>
-
-<span class="in3"></span><span class="keyword">if</span> (<span class="fn">isupper</span>(<span class="var">s</span>[<span class="num">0</span>]) &amp;&amp; <span class="fn">islower</span>(<span class="var">s</span>[<span class="num">1</span>])) {<br/>
-
-<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
-<span class="in3"></span>}<br/>
-
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">is type</span>)</span>;<br/>
 
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@def(<span class="name">is type</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">static</span> <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt;<br/>
+
+<span class="in2"></span><span class="var">reserved</span> {<br/>
+
+<span class="in3"></span><span class="macro">@expand(<span class="name">types</span>)</span><br/>
+
+<span class="in2"></span>};<br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) !=<br/>
+
+<span class="in2"></span><span class="var">reserved</span>.<span class="fn">end</span>()<br/>
+
+<span class="in1"></span>) {<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">is type</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@def(<span class="name">types</span>)</span><br/>
+
+<span class="in1"></span><span class="str">"FILE"</span>, <span class="str">"auto"</span>, <span class="str">"bool"</span>, <span class="str">"char"</span>,<br/>
+
+<span class="in1"></span><span class="str">"const"</span>, <span class="str">"enum"</span>, <span class="str">"extern"</span>, <span class="str">"int"</span>,<br/>
+
+<span class="in1"></span><span class="str">"let"</span>, <span class="str">"long"</span>, <span class="str">"signed"</span>, <span class="str">"struct"</span>,<br/>
+
+<span class="in1"></span><span class="str">"union"</span>, <span class="str">"unsigned"</span>, <span class="str">"void"</span><br/>
+
+<span class="macro">@end(<span class="name">types</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">is type</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>.<span class="fn">size</span>() &gt;= <span class="num">2</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isupper</span>(<span class="var">s</span>[<span class="num">0</span>]) &amp;&amp;<br/>
+
+<span class="in3"></span><span class="fn">islower</span>(<span class="var">s</span>[<span class="num">1</span>])<br/>
+
+<span class="in2"></span>) {<br/>
+
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">is type</span>)</span><br/>
 
 </code>
 </div>

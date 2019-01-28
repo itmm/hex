@@ -611,13 +611,25 @@ x{includes}
 
 ```
 a{process ch for HTML}
-	if (status.state == HtmlState::inCode) {
-		if (! status.codeSpecial && (std::isalnum(ch) || ch == '_')) {
-			ident.push_back(ch);
-			continue;
-		}
+	if (
+		status.state == HtmlState::inCode
+	) {
+		e{process ident};
 	}
 x{process ch for HTML}
+```
+
+```
+d{process ident}
+	if (
+		! status.codeSpecial && (
+			std::isalnum(ch) || ch == '_'
+		)
+	) {
+		ident.push_back(ch);
+		continue;
+	}
+x{process ident}
 ```
 
 ```
@@ -627,8 +639,9 @@ A{global elements}
 		const char *cls,
 		const std::string &s
 	) {
-		out << "<span class=\"" << cls << "\">"
-			<< s << "</span>";
+		out << "<span class=\"" <<
+			cls << "\">" << s <<
+			"</span>";
 	}
 x{global elements}
 ```
@@ -636,37 +649,68 @@ x{global elements}
 ```
 A{global elements}
 	bool isKeyword(const std::string &s) {
-		static std::set<std::string> reserved {
-			"break", "case", "catch", "continue",
-			"default", "delete", "else", "for",
-			"if", "in", "new", "return", "static",
-			"switch", "try", "typeof", "while"
-		};
-		return reserved.find(s) != reserved.end();
+		static std::set<std::string>
+			reserved {
+				e{keywords}
+			};
+		return
+			reserved.find(s) !=
+				reserved.end();
 	}
 x{global elements}
 ```
 
 ```
+d{keywords}
+	"break", "case", "catch", "continue",
+	"default", "delete", "else", "for",
+	"if", "in", "new", "return", "static",
+	"switch", "try", "typeof", "while"
+x{keywords}
+```
+
+```
 A{global elements}
 	bool isType(const std::string &s) {
-		static std::set<std::string> reserved {
-			"FILE", "auto",
-			"bool", "char", "const", "enum", "extern",
-			"int", "let", "long", "signed", "struct",
-			"union", "unsigned", "void"
-		};
-		if (reserved.find(s) != reserved.end()) {
-			return true;
-		}
-		if (s.size() >= 2) {
-			if (isupper(s[0]) && islower(s[1])) {
-				return true;
-			}
-		}
+		e{is type};
 		return false;
 	}
 x{global elements}
+```
+
+```
+d{is type}
+	static std::set<std::string>
+		reserved {
+			e{types}
+		};
+	if (reserved.find(s) !=
+		reserved.end()
+	) {
+		return true;
+	}
+x{is type}
+```
+
+```
+d{types}
+	"FILE", "auto", "bool", "char",
+	"const", "enum", "extern", "int",
+	"let", "long", "signed", "struct",
+	"union", "unsigned", "void"
+x{types}
+```
+
+```
+a{is type}
+	if (s.size() >= 2) {
+		if (isupper(s[0]) &&
+			islower(s[1])
+		) {
+			return true;
+		}
+	}
+x{is type}
 ```
 
 ```
