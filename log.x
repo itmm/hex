@@ -16,9 +16,12 @@ D{define logging}
 	class LogContainer;
 	#define ASSERT(COND) \
 		((COND) ? \
-			LogContainer { false, true } : \
 			LogContainer { \
-				__FILE__, __LINE__, #COND \
+				false, true \
+			} : \
+			LogContainer { \
+				__FILE__, __LINE__, \
+				#COND \
 			} \
 		)
 x{define logging}
@@ -95,7 +98,7 @@ x{log container}
 a{log container}
 	~LogContainer() noexcept(false) {
 		if (log) {
-			std::cerr << std::endl;
+			std::cerr << '\n';
 			throw std::exception();
 		}
 	}
@@ -113,14 +116,11 @@ A{define logging}
 		const LogContainer &lc, T t
 	) {
 		if (lc.log) {
-			if (lc.first) {
-				std::cerr << ": ";
-			}
-			std::cerr << t;
-			return LogContainer(true, false);
-		} else {
-			return LogContainer(false, false);
+			e{log t};
 		}
+		return LogContainer {
+			false, false
+		};
 	}
 x{define logging}
 ```
@@ -128,4 +128,16 @@ x{define logging}
   Fehlerausgabe geschoben werden
 * Falls die Bedingung falsch war und Logging aktiviert ist
 * Vor dem ersten Argument wird ein Doppelpunkt ausgegeben
+
+```
+d{log t}
+	if (lc.first) {
+		std::cerr << ": ";
+	}
+	std::cerr << t;
+	return LogContainer {
+		true, false 
+	};
+x{log t}
+```
 

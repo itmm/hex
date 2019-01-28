@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de"l>
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <title>Logging</title>
@@ -48,11 +48,17 @@
 
 <span class="in2"></span>((<span class="var">COND</span>) ? \<br/>
 
-<span class="in3"></span><span class="type">LogContainer</span> { <span class="num">false</span>, <span class="num">true</span> } : \<br/>
+<span class="in3"></span><span class="type">LogContainer</span> { \<br/>
+
+<span class="in4"></span><span class="num">false</span>, <span class="num">true</span> \<br/>
+
+<span class="in3"></span>} : \<br/>
 
 <span class="in3"></span><span class="type">LogContainer</span> { \<br/>
 
-<span class="in4"></span><span class="var">__FILE__</span>, <span class="var">__LINE__</span>, #<span class="var">COND</span> \<br/>
+<span class="in4"></span><span class="var">__FILE__</span>, <span class="var">__LINE__</span>, \<br/>
+
+<span class="in4"></span>#<span class="var">COND</span> \<br/>
 
 <span class="in3"></span>} \<br/>
 
@@ -209,7 +215,7 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">log</span>) {<br/>
 
-<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">std</span>::<span class="var">endl</span>;<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 
 <span class="in3"></span><span class="var">throw</span> <span class="var">std</span>::<span class="fn">exception</span>();<br/>
 
@@ -246,21 +252,15 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">lc</span>.<span class="var">log</span>) {<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">lc</span>.<span class="var">first</span>) {<br/>
-
-<span class="in4"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">": "</span>;<br/>
-
-<span class="in3"></span>}<br/>
-
-<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">t</span>;<br/>
-
-<span class="in3"></span><span class="keyword">return</span> <span class="fn">LogContainer</span>(<span class="num">true</span>, <span class="num">false</span>);<br/>
-
-<span class="in2"></span>} <span class="keyword">else</span> {<br/>
-
-<span class="in3"></span><span class="keyword">return</span> <span class="fn">LogContainer</span>(<span class="num">false</span>, <span class="num">false</span>);<br/>
+<span class="in3"></span><span class="macro">@expand(<span class="name">log t</span>)</span>;<br/>
 
 <span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="type">LogContainer</span> {<br/>
+
+<span class="in3"></span><span class="num">false</span>, <span class="num">false</span><br/>
+
+<span class="in2"></span>};<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -277,4 +277,29 @@
 </li><li>
  Vor dem ersten Argument wird ein Doppelpunkt ausgegeben
 </li></ul></div>
+
+<div><div>
+<code>
+
+<span class="macro">@def(<span class="name">log t</span>)</span><br/>
+
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">lc</span>.<span class="var">first</span>) {<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">": "</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">t</span>;<br/>
+
+<span class="in1"></span><span class="keyword">return</span> <span class="type">LogContainer</span> {<br/>
+
+<span class="in2"></span><span class="num">true</span>, <span class="num">false</span> <br/>
+
+<span class="in1"></span>};<br/>
+
+<span class="macro">@end(<span class="name">log t</span>)</span><br/>
+
+</code>
+</div>
+
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de"l>
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <title>Buffer</title>
@@ -344,7 +344,9 @@
 
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
 
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span> = <span class="str">"/dev/null"</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span> =<br/>
+
+<span class="in3"></span><span class="str">"/dev/null"</span>,<br/>
 
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span> = <span class="num">1</span><br/>
 
@@ -378,7 +380,9 @@
 
 <span class="in2"></span><span class="type">int</span> <span class="var">ch</span>,<br/>
 
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span> = <span class="str">"/dev/null"</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span> =<br/>
+
+<span class="in3"></span><span class="str">"/dev/null"</span>,<br/>
 
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span> = <span class="num">1</span><br/>
 
@@ -386,7 +390,13 @@
 
 <span class="in2"></span><span class="type">char</span> <span class="var">c</span> = <span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">ch</span>);<br/>
 
-<span class="in2"></span><span class="fn">add</span>(<span class="var">std</span>::<span class="fn">string</span>(&amp;<span class="var">c</span>, &amp;<span class="var">c</span> + <span class="num">1</span>), <span class="var">file</span>, <span class="var">line</span>);<br/>
+<span class="in2"></span><span class="fn">add</span>(<br/>
+
+<span class="in3"></span><span class="var">std</span>::<span class="fn">string</span>(&amp;<span class="var">c</span>, &amp;<span class="var">c</span> + <span class="num">1</span>),<br/>
+
+<span class="in3"></span><span class="var">file</span>, <span class="var">line</span><br/>
+
+<span class="in2"></span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -408,7 +418,11 @@
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
 
-<span class="in2"></span><span class="fn">assertCont</span>(<span class="var">b</span>.<span class="var">_file</span>, <span class="var">b</span>.<span class="var">_startLine</span>);<br/>
+<span class="in2"></span><span class="fn">assertCont</span>(<br/>
+
+<span class="in3"></span><span class="var">b</span>.<span class="var">_file</span>, <span class="var">b</span>.<span class="var">_startLine</span><br/>
+
+<span class="in2"></span>);<br/>
 
 <span class="in2"></span><span class="var">_value</span> += <span class="var">b</span>.<span class="var">_value</span>;<br/>
 
@@ -703,7 +717,13 @@
 
 <span class="in1"></span><span class="macro">@multiple(<span class="name">bar entry</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">startLine</span>() == <span class="var">b</span>.<span class="fn">startLine</span>());<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span><span class="var">c</span>.<span class="fn">startLine</span>() ==<br/>
+
+<span class="in3"></span><span class="var">b</span>.<span class="fn">startLine</span>()<br/>
+
+<span class="in1"></span>);<br/>
 
 } <span class="macro">@end(<span class="name">unit tests</span>)</span><br/>
 
@@ -719,7 +739,13 @@
 
 <span class="in1"></span><span class="macro">@multiple(<span class="name">bar entry</span>)</span>;<br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">endLine</span>() == <span class="var">b</span>.<span class="fn">endLine</span>());<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span><span class="var">c</span>.<span class="fn">endLine</span>() ==<br/>
+
+<span class="in3"></span><span class="var">b</span>.<span class="fn">endLine</span>()<br/>
+
+<span class="in1"></span>);<br/>
 
 } <span class="macro">@end(<span class="name">unit tests</span>)</span><br/>
 
@@ -757,7 +783,13 @@
 
 <span class="in1"></span><span class="macro">@multiple(<span class="name">bar two entry</span>)</span><br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">c</span>.<span class="fn">str</span>() == <span class="str">"abc\ndef\nghi"</span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+
+<span class="in2"></span><span class="var">c</span>.<span class="fn">str</span>() ==<br/>
+
+<span class="in3"></span><span class="str">"abc\ndef\nghi"</span><br/>
+
+<span class="in1"></span>);<br/>
 
 } <span class="macro">@end(<span class="name">unit tests</span>)</span><br/>
 

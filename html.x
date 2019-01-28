@@ -28,8 +28,10 @@ x{write cur HTML file}
 
 ```
 d{write cur HTML file to out} 
-	std::ifstream in { cur->name.c_str() };
-	e{write HTML file from in to out};
+	std::ifstream in {
+		cur->name.c_str()
+	};
+	e{write from in to out};
 	in.close();
 x{write cur HTML file to out}
 ```
@@ -71,7 +73,9 @@ x{html state elements}
 ```
 A{global elements}
 	inline HtmlStatus::HtmlStatus():
-		state { HtmlState::nothingWritten }
+		state {
+			HtmlState::nothingWritten
+		}
 		e{init html status}
 	{ }
 x{global elements}
@@ -85,7 +89,7 @@ x{includes}
 ```
 
 ```
-d{write HTML file from in to out} {
+d{write from in to out} {
 	HtmlStatus status;
 	bool newline { true };
 	std::string ident;
@@ -95,7 +99,7 @@ d{write HTML file from in to out} {
 		if (ch == EOF) { break; }
 		E{move ch to last};
 	}
-} x{write HTML file from in to out}
+} x{write from in to out}
 ```
 * Beim Schreiben einer Datei wird zuerst der Status initialisiert
 * Wir befinden uns am Anfang einer Zeile
@@ -114,7 +118,10 @@ x{html state enums}
 ```
 d{move ch to last}
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 x{move ch to last}
@@ -137,7 +144,10 @@ x{global elements}
 
 ```
 d{check html special state}
-	if (s->state == HtmlState::inHeader) {
+	if (
+		s->state ==
+			HtmlState::inHeader
+	) {
 		return false;
 	}
 x{check html special state}
@@ -167,15 +177,12 @@ x{init html status}
 ```
 d{process ch for HTML} 
 	if (ch == '#' && newline) {
-		if (isOutOfHtmlSpecial(&status) ||
-			status.state == HtmlState::inHeader
+		if (
+			isOutOfHtmlSpecial(&status) ||
+				status.state ==
+					HtmlState::inHeader
 		) {
-			++status.headerLevel;
-			if (status.state != HtmlState::inHeader) {
-				status.headerState =
-					status.state;
-			}
-			status.state = HtmlState::inHeader;
+			e{inc header};
 			continue;
 		}
 	}
@@ -187,10 +194,28 @@ x{process ch for HTML}
 * Bei der ersten Raute muss der alte Zustand gesichert werden
 
 ```
+d{inc header}
+	++status.headerLevel;
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
+		status.headerState =
+			status.state;
+	}
+	status.state =
+		HtmlState::inHeader;
+x{inc header}
+```
+
+```
 a{process ch for HTML} 
-	if (status.state == HtmlState::inHeader) {
+	if (
+		status.state ==
+			HtmlState::inHeader
+	) {
 		if (ch == '\n') {
-			e{process header in HTML};
+			e{process header};
 			e{reset header state};
 			E{move ch to last};
 			continue;
@@ -203,10 +228,12 @@ x{process ch for HTML}
 
 ```
 d{reset header state} 
-	status.state = HtmlState::inSlide;
+	status.state =
+		HtmlState::inSlide;
 	status.headerLevel = 0;
 	status.headerName.clear();
-	status.headerState = HtmlState::inSlide;
+	status.headerState =
+		HtmlState::inSlide;
 x{reset header state}
 ```
 * Beim Zurücksetzen des Zustands wird sichergestellt, das der Level und
@@ -214,9 +241,13 @@ x{reset header state}
 
 ```
 a{process ch for HTML} 
-	if (status.state == HtmlState::inHeader) {
-		if (! status.headerName.empty()) {
-			status.headerName.push_back(ch);
+	if (
+		status.state ==
+			HtmlState::inHeader
+	) {
+		auto &hn { status.headerName };
+		if (! hn.empty()) {
+			hn.push_back(ch);
 			E{move ch to last};
 			continue;
 		}
@@ -228,9 +259,13 @@ x{process ch for HTML}
 
 ```
 a{process ch for HTML} 
-	if (status.state == HtmlState::inHeader) {
-		if (ch > ' ' && status.headerName.empty()) {
-			status.headerName.push_back(ch);
+	if (
+		status.state ==
+			HtmlState::inHeader
+	) {
+		auto &hn { status.headerName };
+		if (ch > ' ' && hn.empty()) {
+			hn.push_back(ch);
 			E{move ch to last};
 			continue;
 		}
@@ -240,15 +275,15 @@ x{process ch for HTML}
 * Leerzeichen zwischen den Rauten und der Überschrift werden ignoriert
 
 ```
-d{process header in HTML} 
+d{process header} 
 	ASSERT(! status.headerName.empty());
 	e{close previous HTML page};
 	E{write header tag};
-	out << "<div class=\"slides\">" << std::endl;
-	out << "<div><div>" << std::endl;
+	out << "<div class=\"slides\">\n";
+	out << "<div><div>\n";
 	E{write header tag};
-	out << "</div>" << std::endl;
-x{process header in HTML}
+	out << "</div>\n";
+x{process header}
 ```
 * Falls schon eine Seite offen ist, dann wird diese geschlossen
 * Dann wird eine HTML-Überschrift ausgegeben
@@ -300,11 +335,14 @@ x{escape special}
 
 ```
 d{write header tag} 
-	out << "<h" << status.headerLevel << '>';
+	out << "<h" <<
+		status.headerLevel << '>';
 	writeEscaped(
 		out, status.headerName
 	);
-	out << "</h" << status.headerLevel << '>' << std::endl;
+	out << "</h" <<
+		status.headerLevel <<
+		">\n";
 x{write header tag}
 ```
 * Die HTML-Überschrift enthält den eingelesenen Level
@@ -317,12 +355,10 @@ d{close previous HTML page}
 			break;
 		}
 		case HtmlState::inSlide: {
-			out << "</div>" << std::endl;
-			out << "</div>" << std::endl;
-			break;
+			out << "</div>\n";
 		}
 		default: {
-			out << "</div>" << std::endl;
+			out << "</div>\n";
 		}
 	}
 x{close previous HTML page}
@@ -332,12 +368,12 @@ x{close previous HTML page}
 
 ```
 d{write HTML header} 
-	out << "<!doctype html>" << std::endl;
-	out << "<html lang=\"de\"l>" << std::endl;
-	out << "<head>" << std::endl;
+	out << "<!doctype html>\n";
+	out << "<html lang=\"de\">\n";
+	out << "<head>\n";
 	e{write HTML header entries};
-	out << "</head>" << std::endl;
-	out << "<body>" << std::endl;
+	out << "</head>\n";
+	out << "<body>\n";
 x{write HTML header}
 ```
 * Dies wird am Anfang der HTML-Datei ausgegeben
@@ -346,12 +382,12 @@ x{write HTML header}
 
 ```
 d{write HTML header entries} 
-	out << "<meta charset=\"utf-8\">" << std::endl;
+	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
 	writeEscaped(
 		out, status.headerName
 	);
-	out << "</title>" << std::endl;
+	out << "</title>\n";
 	out << "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\""
 		<< stylesheet << "\">";
@@ -421,7 +457,8 @@ x{init html status}
 a{process ch for HTML} 
 	if (newline && ch == '`') {
 		if (isOutOfHtmlSpecial(&status) ||
-			status.state == HtmlState::inCode
+			status.state ==
+				HtmlState::inCode
 		) {
 			++status.codeOpening;
 			continue;
@@ -434,18 +471,11 @@ x{process ch for HTML}
 ```
 a{process ch for HTML} 
 	if (
-		ch == '\n' && status.codeOpening == 3
+		ch == '\n' &&
+		status.codeOpening == 3
 	) {
 		status.codeOpening = 0;
-		if (isOutOfHtmlSpecial(&status)) {
-			e{open code page};
-			continue;
-		} else if (
-			status.state == HtmlState::inCode
-		) {
-			e{close code page};
-			continue;
-		}
+		e{process code tag};
 	}
 x{process ch for HTML}
 ```
@@ -453,33 +483,74 @@ x{process ch for HTML}
   Code-Modus betreten oder verlassen
 
 ```
+d{process code tag}
+	if (isOutOfHtmlSpecial(&status)) {
+		e{open code page};
+		continue;
+	} else if (status.state ==
+		HtmlState::inCode
+	) {
+		e{close code page};
+		continue;
+	}
+x{process code tag}
+```
+
+```
 a{process ch for HTML}
 	if (status.codeOpening == 1) {
-		if (! status.codeSpecial && status.state == HtmlState::inCode) {
-			status.codeSpecial = '`';
-			status.name.clear(true);
-			E{flush pending};
-			if (status.codeIndent) {
-				out << "<span class=\"in"
-					<< status.codeIndent
-					<< "\"></span>";
-				status.codeIndent = 0;
-			}
-			out << "<span class=\"str\">`";
-		} else if (
-			status.codeSpecial == '`' && (
-				status.name.str().empty() ||
-				status.name.str().back() != '\x5c'
-			)
-		) {
-			E{flush pending};
-			writeEscaped(out, status.name.str());
-			out << "`</span>";
-			status.codeSpecial = 0;
-			status.name.clear();
-		}
+		e{process backtick};
 	}
 x{process ch for HTML}
+```
+
+```
+d{process backtick}
+	const auto &s { status.name.str() };
+	if (! status.codeSpecial &&
+		status.state == HtmlState::inCode
+	) {
+		e{open bt str};
+	} else if (
+		status.codeSpecial == '`' && (
+			s.empty() ||
+			s.back() != '\x5c'
+		)
+	) { e{end bt str}; }
+x{process backtick}
+```
+
+```
+d{open bt str}
+	status.codeSpecial = '`';
+	status.name.clear(true);
+	E{flush pending};
+	e{may write indent};
+	out << "<span class=\"str\">`";
+x{open bt str}
+```
+
+```
+d{may write indent}
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
+x{may write indent}
+```
+
+```
+d{end bt str}
+	E{flush pending};
+	writeEscaped(
+		out, status.name.str()
+	);
+	out << "`</span>";
+	status.codeSpecial = 0;
+	status.name.clear();
+x{end bt str}
 ```
 
 ```
@@ -490,11 +561,13 @@ x{process ch for HTML}
 
 ```
 d{open code page}
-	if (status.state == HtmlState::inSlide) {
-		out << "</div>" << std::endl;
+	if (
+		status.state == HtmlState::inSlide
+	) {
+		out << "</div>\n";
 	}
-	out << "<div><div>" << std::endl;
-	out << "<code>" << std::endl;
+	out << "<div><div>\n";
+	out << "<code>\n";
 	status.state = HtmlState::inCode;
 	E{move ch to last};
 x{open code page}
@@ -504,8 +577,8 @@ x{open code page}
 
 ```
 d{close code page}
-	out << "</code>" << std::endl;
-	out << "</div>" << std::endl;
+	out << "</code>\n";
+	out << "</div>\n";
 	status.state = HtmlState::inSlide;
 	status.codeIndent = 0;
 	status.codeSpecial = '\0';
@@ -518,7 +591,9 @@ x{close code page}
 a{process ch for HTML}
 	if (status.state == HtmlState::inCode) {
 		if (ch == EOF) {
-			std::cerr << "unterminated code block" << std::endl;
+			std::cerr <<
+				"unterminated code " << 
+				"block\n";
 			break;
 		}
 	}
@@ -648,7 +723,7 @@ x{process ch for HTML}
 d{process ch in HTML code} 
 	if (ch == '\n') {
 		E{flush pending};
-		out << "<br/>" << std::endl;
+		out << "<br/>\n";
 		E{move ch to last};
 		continue;
 	}
@@ -1053,12 +1128,12 @@ a{process ch for HTML}
 		status.state == HtmlState::inNotes
 	) {
 		if (ch == '*') {
-			out << "</li><li>" << std::endl;
+			out << "</li><li>\n";
 			ident.clear();
 			newline = false;
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
-			out << "</li></ul></div>" << std::endl;
+			out << "</li></ul></div>\n";
 			status.state = HtmlState::afterSlide;
 			E{move ch to last};
 			continue;
@@ -1072,10 +1147,10 @@ a{process ch for HTML}
 	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
 			if (status.state != HtmlState::inSlide) {
-				out << "<div>" << std::endl;
+				out << "<div>\n";
 			}
 			status.state = HtmlState::inNotes;
-			out << "<ul><li>" << std::endl;
+			out << "<ul><li>\n";
 			ident.clear();
 			newline = false;
 			continue;

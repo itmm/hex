@@ -25,9 +25,12 @@
 	class LogContainer;
 	#define ASSERT(COND) \
 		((COND) ? \
-			LogContainer { false, true } : \
 			LogContainer { \
-				__FILE__, __LINE__, #COND \
+				false, true \
+			} : \
+			LogContainer { \
+				__FILE__, __LINE__, \
+				#COND \
 			} \
 		)
 
@@ -59,7 +62,7 @@
 
 	~LogContainer() noexcept(false) {
 		if (log) {
-			std::cerr << std::endl;
+			std::cerr << '\n';
 			throw std::exception();
 		}
 	}
@@ -71,14 +74,19 @@
 		const LogContainer &lc, T t
 	) {
 		if (lc.log) {
-			if (lc.first) {
-				std::cerr << ": ";
-			}
-			std::cerr << t;
-			return LogContainer(true, false);
-		} else {
-			return LogContainer(false, false);
+			
+	if (lc.first) {
+		std::cerr << ": ";
+	}
+	std::cerr << t;
+	return LogContainer {
+		true, false 
+	};
+;
 		}
+		return LogContainer {
+			false, false
+		};
 	}
 ;
 
@@ -168,7 +176,8 @@
 
 	void add(
 		const std::string &value,
-		const std::string &file = "/dev/null",
+		const std::string &file =
+			"/dev/null",
 		int line = 1
 	) {
 		activate();
@@ -180,17 +189,23 @@
 
 	void add(
 		int ch,
-		const std::string &file = "/dev/null",
+		const std::string &file =
+			"/dev/null",
 		int line = 1
 	) {
 		char c = static_cast<char>(ch);
-		add(std::string(&c, &c + 1), file, line);
+		add(
+			std::string(&c, &c + 1),
+			file, line
+		);
 	}
 
 	void add(const Buf &b) {
 		activate();
 		if (b.empty()) { return; }
-		assertCont(b._file, b._startLine);
+		assertCont(
+			b._file, b._startLine
+		);
 		_value += b._value;
 		_endLine = b._endLine;
 	}
@@ -656,7 +671,9 @@
 	};
 
 	inline HtmlStatus::HtmlStatus():
-		state { HtmlState::nothingWritten }
+		state {
+			HtmlState::nothingWritten
+		}
 		
 	, headerLevel { 0 }
 	, headerName {}
@@ -675,7 +692,10 @@
 		HtmlStatus *s
 	) {
 		
-	if (s->state == HtmlState::inHeader) {
+	if (
+		s->state ==
+			HtmlState::inHeader
+	) {
 		return false;
 	}
 
@@ -891,7 +911,10 @@
 	Buf c;
 	c.add(b);
 ;
-	ASSERT(c.startLine() == b.startLine());
+	ASSERT(
+		c.startLine() ==
+			b.startLine()
+	);
 }  {
 	
 	
@@ -905,7 +928,10 @@
 	Buf c;
 	c.add(b);
 ;
-	ASSERT(c.endLine() == b.endLine());
+	ASSERT(
+		c.endLine() ==
+			b.endLine()
+	);
 }  {
 	
 	
@@ -925,7 +951,10 @@
 	d.add("ghi", "foo.x", 3);
 	c.add(d);
 
-	ASSERT(c.str() == "abc\ndef\nghi");
+	ASSERT(
+		c.str() ==
+			"abc\ndef\nghi"
+	);
 }  {
 	
 	
@@ -1029,11 +1058,13 @@
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
-		std::istringstream iss {
-			arg.substr(prefix.length())
-		};
-		iss >> blockLimit;
-		continue;
+		
+	std::istringstream iss {
+		arg.substr(prefix.length())
+	};
+	iss >> blockLimit;
+	continue;
+;
 	}
 } 
 	if (! someFile) {
@@ -1043,7 +1074,8 @@
 	}
 ;
 		ASSERT(false) <<
-			"unknown argument [" << argv[i] << ']';
+			"unknown argument [" <<
+			argv[i] << ']';
 	}
 
 	if (! someFile) {
@@ -1060,30 +1092,48 @@
 	Buf name;
 ;
 	int last { inputs.get() };
-	int ch { last != EOF ? inputs.get() : EOF };
+	int ch {
+		last != EOF ? inputs.get() : EOF
+	};
 	while (ch != EOF) {
 		
 	switch (ch) {
 		case '{':
-			 {
+			
 	if (! frag) {
-		static const std::string valids { "aAdDirR" };
-		if (valids.find(static_cast<char>(last)) != std::string::npos
-			&& blockLimit != 0) {
-			openCh = last;
-			name.activate();
-			--blockLimit;
-			break;
-		}
+		
+	static const std::string valids {
+		"aAdDirR"
+	};
+	char lastCh =
+		static_cast<char>(last);
+	bool found {
+		valids.find(lastCh) !=
+			std::string::npos
+	};
+	if (found && blockLimit != 0) {
+		
+	openCh = last;
+	name.activate();
+	--blockLimit;
+	break;
+;
 	}
-}  {
+;
+	}
+ {
 	if (frag) {
 		bool valid { false };
 		
 	static const std::string valids { 
 		"fvsntkxeEgGpmb"
 	};
-	if (valids.find(static_cast<char>(last)) != std::string::npos) {
+	bool found {
+		valids.find(
+			static_cast<char>(last)
+		) != std::string::npos
+	};
+	if (found) {
 		valid = true;
 	}
 ;
@@ -1095,7 +1145,11 @@
 	}
 } 
 	if (frag) {
-		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
+		buffer.add(
+			last,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 ;
 			break;
@@ -1105,14 +1159,16 @@
 	if (name.active()) {
 		
 	if (openCh == 'd') {
-		ASSERT(! frag) << "def in frag";
-		FragMap *fm { &inputs.cur()->frags };
+		ASSERT(! frag) <<"def in frag";
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
 		
 	frag = fm->find(name.str());
 	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name.str() <<
-			"] already defined" <<
-			std::endl;
+		std::cerr << "frag [" <<
+			name.str() <<
+			"] already defined\n";
 	}
 ;
 		if (! frag) {
@@ -1127,9 +1183,9 @@
 		
 	frag = fm->find(name.str());
 	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name.str() <<
-			"] already defined" <<
-			std::endl;
+		std::cerr << "frag [" <<
+			name.str() <<
+			"] already defined\n";
 	}
 ;
 		if (! frag) {
@@ -1140,14 +1196,19 @@
 
 	if (openCh == 'a') {
 		ASSERT(! frag) << "add in frag";
-		FragMap *fm { &inputs.cur()->frags };
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
 		FragMap *ins { fm };
 		frag = fm->find(name.str());
 		
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name.str() <<
-			"] not defined" << std::endl;
-		frag = &fm->get(name.str(), *ins);
+		std::cerr << "frag [" <<
+			name.str() <<
+			"] not defined\n";
+		frag = &fm->get(
+			name.str(), *ins
+		);
 	}
 ;
 		processed = true;
@@ -1160,28 +1221,39 @@
 		frag = fm->find(name.str());
 		
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name.str() <<
-			"] not defined" << std::endl;
-		frag = &fm->get(name.str(), *ins);
+		std::cerr << "frag [" <<
+			name.str() <<
+			"] not defined\n";
+		frag = &fm->get(
+			name.str(), *ins
+		);
 	}
 ;
 		processed = true;
 	}
 
 	if (openCh == 'r') {
-		ASSERT(! frag) << "replace in frag";
-		frag = &(inputs.cur()->frags[name.str()]);
+		ASSERT(! frag) <<
+			"replace in frag";
+		frag = &(inputs.cur()->frags[
+			name.str()
+		]);
 		ASSERT(frag) <<
-			"frag " << name.str() << " not defined";
+			"frag " << name.str() <<
+			" not defined";
 		frag->clear();
 		processed = true;
 	}
 
 	if (openCh == 'R') {
-		ASSERT(! frag) << "replace in frag";
-		frag = &frags->get(name.str(), root);
-		ASSERT(frag) <<
-			"frag " << name.str() << " not defined";
+		ASSERT(! frag) <<
+			"replace in frag";
+		frag = &frags->get(
+			name.str(), root
+		);
+		ASSERT(frag) << "frag " <<
+			name.str() <<
+			" not defined";
 		frag->clear();
 		processed = true;
 	}
@@ -1190,8 +1262,8 @@
 		ASSERT(frag) << "end not in frag";
 		
 	ASSERT(frag->name == name.str()) <<
-		"closing [" << name.str() << "] != [" <<
-			frag->name << ']';
+		"closing [" << name.str() <<
+		"] != [" << frag->name << ']';
 ;
 		
 	if (! buffer.empty()) {
@@ -1204,7 +1276,8 @@
 	}
 
 	if (openCh == 'i') {
-		ASSERT(! frag) << "include in frag";
+		ASSERT(! frag) <<
+			"include in frag";
 		if (! inputs.has(name.str())) {
 			inputs.push(name.str());
 		}
@@ -1212,22 +1285,27 @@
 	}
 
 	if (openCh == 'e') {
-		ASSERT(frag) << "expand not in frag";
+		ASSERT(frag) <<
+			"expand not in frag";
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
 		buffer.clear();
 	}
 ;
-		Frag &sub = inputs.cur()->frags[name.str()];
+		Frag &sub = inputs.cur()->frags[
+			name.str()
+		];
 		
 	if (sub.expands()) {
-		std::cerr << "multiple expands of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
 	}
 	if (sub.multiples()) {
-		std::cerr << "expand after mult of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
 	}
 ;
 		sub.addExpand();
@@ -1236,22 +1314,27 @@
 	}
 
 	if (openCh == 'g') {
-		ASSERT(frag) << "expand not in frag";
+		ASSERT(frag) <<
+			"expand not in frag";
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
 		buffer.clear();
 	}
 ;
-		Frag &sub = frags->get(name.str(), root);
+		Frag &sub = frags->get(
+			name.str(), root
+		);
 		
 	if (sub.expands()) {
-		std::cerr << "multiple expands of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
 	}
 	if (sub.multiples()) {
-		std::cerr << "expand after mult of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
 	}
 ;
 		sub.addExpand();
@@ -1260,19 +1343,23 @@
 	}
 
 	if (openCh == 'E') {
-		ASSERT(frag) << "multiple not in frag";
+		ASSERT(frag) <<
+			"multiple not in frag";
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
 		buffer.clear();
 	}
 ;
-		Frag &sub { inputs.cur()->frags[name.str()] };
+		Frag &sub { inputs.cur()->frags[
+			name.str()
+		] };
 		
 	if (sub.expands()) {
-		std::cerr
-			<< "multiple after expand of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
 	}
 ;
 		sub.addMultiple();
@@ -1281,19 +1368,23 @@
 	}
 
 	if (openCh == 'G') {
-		ASSERT(frag) << "multiple not in frag";
+		ASSERT(frag) <<
+			"multiple not in frag";
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
 		buffer.clear();
 	}
 ;
-		Frag &sub { frags->get(name.str(), root) };
+		Frag &sub { frags->get(
+			name.str(), root
+		) };
 		
 	if (sub.expands()) {
-		std::cerr
-			<< "multiple after expand of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
 	}
 ;
 		sub.addMultiple();
@@ -1302,12 +1393,14 @@
 	}
 
 	if (openCh == 'p') {
-		ASSERT(frag) << "private not in frag";
+		ASSERT(frag) <<
+			"private not in frag";
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->name + ':' + name.str())
-			& 0x7fffffff
+		h(inputs.cur()->name +
+			':' + name.str()) &
+				0x7fffffff
 	};
 
 	
@@ -1317,10 +1410,12 @@
 	}
 ;
 	std::ostringstream hashed;
-	hashed << "_private_"
-		<< cur << '_' << name.str();
+	hashed << "_private_" <<
+		cur << '_' <<
+		name.str();
 	frag->add(
-		hashed.str(), inputs.cur()->name,
+		hashed.str(),
+		inputs.cur()->name,
 		name.startLine()
 	);
 ;
@@ -1328,12 +1423,14 @@
 	}
 
 	if (openCh == 'm') {
-		ASSERT(frag) << "magic not in frag";
+		ASSERT(frag) <<
+			"magic not in frag";
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->name + ':' + name.str())
-			& 0x7fffffff
+		h(inputs.cur()->name +
+			':' + name.str()) &
+				0x7fffffff
 	};
 
 	
@@ -1352,15 +1449,17 @@
 ;
 	frag->add(
 		value.str(),
-		inputs.cur()->name, inputs.cur()->line()
+		inputs.cur()->name,
+		inputs.cur()->line()
 	);
 ;
 		processed = true;
 	}
 
 	if (! processed) {
-		ASSERT(frag) << "unknown frag "
-			<< name.str();
+		ASSERT(frag) <<
+			"unknown frag " <<
+			name.str();
 		buffer.add(name);
 		processed = true;
 	}
@@ -1371,7 +1470,11 @@
 	}
 } 
 	if (frag && ! processed) {
-		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
+		buffer.add(
+			last,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 ;
 			break;
@@ -1379,12 +1482,20 @@
 		default:
 			 {
 	if (name.active()) {
-		name.add(ch, inputs.cur()->name, inputs.cur()->line());
+		name.add(
+			ch,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 		break;
 	}
 }  {
 	if (frag) {
-		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
+		buffer.add(
+			last,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 } ;
 	}
@@ -1392,7 +1503,7 @@
 		last = ch; ch = inputs.get();
 	}
 } ;
-	 {
+	
 	for (auto &i : root) {
 		const Frag *frag { &i.second };
 		 {
@@ -1411,32 +1522,31 @@
 			+ frag->multiples()
 	};
 	if (sum <= 0) {
-		std::cerr << "frag ["
-			<< frag->name
-			<< "] not called"
-			<< std::endl;
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not called\n";
 	}
 } 
 	if (frag->multiples() == 1) {
-		std::cerr << "multiple frag ["
-			<< frag->name
-			<< "] only used once"
-			<< std::endl;
+		std::cerr <<
+			"multiple frag [" <<
+			frag->name <<
+			"] only used once\n";
 	}
 
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag ["
-			<< frag->name
-			<< "] not populated"
-			<< std::endl;
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not populated\n";
 	}
 ;
 	}
-}  {
-	for (auto &j : inputs)
-	{
+
+	for (auto &j : inputs) {
 		for (auto &i : j->frags) {
-			const Frag *frag { &i.second };
+			const Frag *frag {
+				&i.second
+			};
 			 {
 	if (frag->isFile()) {
 		
@@ -1453,29 +1563,27 @@
 			+ frag->multiples()
 	};
 	if (sum <= 0) {
-		std::cerr << "frag ["
-			<< frag->name
-			<< "] not called"
-			<< std::endl;
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not called\n";
 	}
 } 
 	if (frag->multiples() == 1) {
-		std::cerr << "multiple frag ["
-			<< frag->name
-			<< "] only used once"
-			<< std::endl;
+		std::cerr <<
+			"multiple frag [" <<
+			frag->name <<
+			"] only used once\n";
 	}
 
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag ["
-			<< frag->name
-			<< "] not populated"
-			<< std::endl;
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not populated\n";
 	}
 ;
 		}
 	}
-} ;
+;
 	
 	for (auto &cur : inputs) {
 		
@@ -1486,7 +1594,9 @@
 	};
 	std::ofstream out { outPath.c_str() };
 	 
-	std::ifstream in { cur->name.c_str() };
+	std::ifstream in {
+		cur->name.c_str()
+	};
 	 {
 	HtmlStatus status;
 	bool newline { true };
@@ -1495,20 +1605,31 @@
 		int ch { in.get() };
 		 
 	if (ch == '#' && newline) {
-		if (isOutOfHtmlSpecial(&status) ||
-			status.state == HtmlState::inHeader
+		if (
+			isOutOfHtmlSpecial(&status) ||
+				status.state ==
+					HtmlState::inHeader
 		) {
-			++status.headerLevel;
-			if (status.state != HtmlState::inHeader) {
-				status.headerState =
-					status.state;
-			}
-			status.state = HtmlState::inHeader;
+			
+	++status.headerLevel;
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
+		status.headerState =
+			status.state;
+	}
+	status.state =
+		HtmlState::inHeader;
+;
 			continue;
 		}
 	}
  
-	if (status.state == HtmlState::inHeader) {
+	if (
+		status.state ==
+			HtmlState::inHeader
+	) {
 		if (ch == '\n') {
 			 
 	ASSERT(! status.headerName.empty());
@@ -1516,62 +1637,71 @@
 	switch (status.headerState) {
 		case HtmlState::nothingWritten: {
 			 
-	out << "<!doctype html>" << std::endl;
-	out << "<html lang=\"de\"l>" << std::endl;
-	out << "<head>" << std::endl;
+	out << "<!doctype html>\n";
+	out << "<html lang=\"de\">\n";
+	out << "<head>\n";
 	 
-	out << "<meta charset=\"utf-8\">" << std::endl;
+	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
 	writeEscaped(
 		out, status.headerName
 	);
-	out << "</title>" << std::endl;
+	out << "</title>\n";
 	out << "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\""
 		<< stylesheet << "\">";
 ;
-	out << "</head>" << std::endl;
-	out << "<body>" << std::endl;
+	out << "</head>\n";
+	out << "<body>\n";
 ;
 			break;
 		}
 		case HtmlState::inSlide: {
-			out << "</div>" << std::endl;
-			out << "</div>" << std::endl;
-			break;
+			out << "</div>\n";
 		}
 		default: {
-			out << "</div>" << std::endl;
+			out << "</div>\n";
 		}
 	}
 ;
 	 
-	out << "<h" << status.headerLevel << '>';
+	out << "<h" <<
+		status.headerLevel << '>';
 	writeEscaped(
 		out, status.headerName
 	);
-	out << "</h" << status.headerLevel << '>' << std::endl;
+	out << "</h" <<
+		status.headerLevel <<
+		">\n";
 ;
-	out << "<div class=\"slides\">" << std::endl;
-	out << "<div><div>" << std::endl;
+	out << "<div class=\"slides\">\n";
+	out << "<div><div>\n";
 	 
-	out << "<h" << status.headerLevel << '>';
+	out << "<h" <<
+		status.headerLevel << '>';
 	writeEscaped(
 		out, status.headerName
 	);
-	out << "</h" << status.headerLevel << '>' << std::endl;
+	out << "</h" <<
+		status.headerLevel <<
+		">\n";
 ;
-	out << "</div>" << std::endl;
+	out << "</div>\n";
 ;
 			 
-	status.state = HtmlState::inSlide;
+	status.state =
+		HtmlState::inSlide;
 	status.headerLevel = 0;
 	status.headerName.clear();
-	status.headerState = HtmlState::inSlide;
+	status.headerState =
+		HtmlState::inSlide;
 ;
 			
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -1579,12 +1709,19 @@
 		}
 	}
  
-	if (status.state == HtmlState::inHeader) {
-		if (! status.headerName.empty()) {
-			status.headerName.push_back(ch);
+	if (
+		status.state ==
+			HtmlState::inHeader
+	) {
+		auto &hn { status.headerName };
+		if (! hn.empty()) {
+			hn.push_back(ch);
 			
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -1592,12 +1729,19 @@
 		}
 	}
  
-	if (status.state == HtmlState::inHeader) {
-		if (ch > ' ' && status.headerName.empty()) {
-			status.headerName.push_back(ch);
+	if (
+		status.state ==
+			HtmlState::inHeader
+	) {
+		auto &hn { status.headerName };
+		if (ch > ' ' && hn.empty()) {
+			hn.push_back(ch);
 			
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -1607,7 +1751,8 @@
  
 	if (newline && ch == '`') {
 		if (isOutOfHtmlSpecial(&status) ||
-			status.state == HtmlState::inCode
+			status.state ==
+				HtmlState::inCode
 		) {
 			++status.codeOpening;
 			continue;
@@ -1615,50 +1760,66 @@
 	}
  
 	if (
-		ch == '\n' && status.codeOpening == 3
+		ch == '\n' &&
+		status.codeOpening == 3
 	) {
 		status.codeOpening = 0;
-		if (isOutOfHtmlSpecial(&status)) {
-			
-	if (status.state == HtmlState::inSlide) {
-		out << "</div>" << std::endl;
+		
+	if (isOutOfHtmlSpecial(&status)) {
+		
+	if (
+		status.state == HtmlState::inSlide
+	) {
+		out << "</div>\n";
 	}
-	out << "<div><div>" << std::endl;
-	out << "<code>" << std::endl;
+	out << "<div><div>\n";
+	out << "<code>\n";
 	status.state = HtmlState::inCode;
 	
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
 ;
-			continue;
-		} else if (
-			status.state == HtmlState::inCode
-		) {
-			
-	out << "</code>" << std::endl;
-	out << "</div>" << std::endl;
+		continue;
+	} else if (status.state ==
+		HtmlState::inCode
+	) {
+		
+	out << "</code>\n";
+	out << "</div>\n";
 	status.state = HtmlState::inSlide;
 	status.codeIndent = 0;
 	status.codeSpecial = '\0';
 	
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
 ;
-			continue;
-		}
+		continue;
+	}
+;
 	}
 
 	if (status.codeOpening == 1) {
-		if (! status.codeSpecial && status.state == HtmlState::inCode) {
-			status.codeSpecial = '`';
-			status.name.clear(true);
-			
+		
+	const auto &s { status.name.str() };
+	if (! status.codeSpecial &&
+		status.state == HtmlState::inCode
+	) {
+		
+	status.codeSpecial = '`';
+	status.name.clear(true);
+	
 	if (status.codeIndent) {
 		out << "<span class=\"in"
 			<< status.codeIndent
@@ -1680,20 +1841,23 @@
 		ident.clear();
 	}
 ;
-			if (status.codeIndent) {
-				out << "<span class=\"in"
-					<< status.codeIndent
-					<< "\"></span>";
-				status.codeIndent = 0;
-			}
-			out << "<span class=\"str\">`";
-		} else if (
-			status.codeSpecial == '`' && (
-				status.name.str().empty() ||
-				status.name.str().back() != '\x5c'
-			)
-		) {
-			
+	
+	if (status.codeIndent) {
+		out << "<span class=\"in"
+			<< status.codeIndent
+			<< "\"></span>";
+		status.codeIndent = 0;
+	}
+;
+	out << "<span class=\"str\">`";
+;
+	} else if (
+		status.codeSpecial == '`' && (
+			s.empty() ||
+			s.back() != '\x5c'
+		)
+	) { 
+	
 	if (status.codeIndent) {
 		out << "<span class=\"in"
 			<< status.codeIndent
@@ -1715,18 +1879,23 @@
 		ident.clear();
 	}
 ;
-			writeEscaped(out, status.name.str());
-			out << "`</span>";
-			status.codeSpecial = 0;
-			status.name.clear();
-		}
+	writeEscaped(
+		out, status.name.str()
+	);
+	out << "`</span>";
+	status.codeSpecial = 0;
+	status.name.clear();
+; }
+;
 	}
 
 	status.codeOpening = 0;
 
 	if (status.state == HtmlState::inCode) {
 		if (ch == EOF) {
-			std::cerr << "unterminated code block" << std::endl;
+			std::cerr <<
+				"unterminated code " << 
+				"block\n";
 			break;
 		}
 	}
@@ -1763,10 +1932,13 @@
 		ident.clear();
 	}
 ;
-		out << "<br/>" << std::endl;
+		out << "<br/>\n";
 		
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -2006,7 +2178,10 @@
 ;
 		
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -2018,16 +2193,19 @@
 		status.state == HtmlState::inNotes
 	) {
 		if (ch == '*') {
-			out << "</li><li>" << std::endl;
+			out << "</li><li>\n";
 			ident.clear();
 			newline = false;
 			continue;
 		} else if (ch != ' ' && ch != '\t') {
-			out << "</li></ul></div>" << std::endl;
+			out << "</li></ul></div>\n";
 			status.state = HtmlState::afterSlide;
 			
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -2038,10 +2216,10 @@
 	if (newline && ch == '*') {
 		if (isOutOfHtmlSpecial(&status)) {
 			if (status.state != HtmlState::inSlide) {
-				out << "<div>" << std::endl;
+				out << "<div>\n";
 			}
 			status.state = HtmlState::inNotes;
-			out << "<ul><li>" << std::endl;
+			out << "<ul><li>\n";
 			ident.clear();
 			newline = false;
 			continue;
@@ -2314,7 +2492,10 @@
 ;
 		
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;
@@ -2324,7 +2505,10 @@
 		if (ch == EOF) { break; }
 		
 	newline = ch == '\n';
-	if (status.state != HtmlState::inHeader) {
+	if (
+		status.state !=
+			HtmlState::inHeader
+	) {
 		writeOneEscaped(out, ch);
 	}
 ;

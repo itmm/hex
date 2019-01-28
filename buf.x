@@ -151,7 +151,8 @@ x{private methods}
 a{buf methods}
 	void add(
 		const std::string &value,
-		const std::string &file = "/dev/null",
+		const std::string &file =
+			"/dev/null",
 		int line = 1
 	) {
 		activate();
@@ -167,11 +168,15 @@ x{buf methods}
 a{buf methods}
 	void add(
 		int ch,
-		const std::string &file = "/dev/null",
+		const std::string &file =
+			"/dev/null",
 		int line = 1
 	) {
 		char c = static_cast<char>(ch);
-		add(std::string(&c, &c + 1), file, line);
+		add(
+			std::string(&c, &c + 1),
+			file, line
+		);
 	}
 x{buf methods}
 ```
@@ -181,7 +186,9 @@ a{buf methods}
 	void add(const Buf &b) {
 		activate();
 		if (b.empty()) { return; }
-		assertCont(b._file, b._startLine);
+		assertCont(
+			b._file, b._startLine
+		);
 		_value += b._value;
 		_endLine = b._endLine;
 	}
@@ -309,14 +316,20 @@ a{unit tests} {
 ```
 a{unit tests} {
 	E{bar entry};
-	ASSERT(c.startLine() == b.startLine());
+	ASSERT(
+		c.startLine() ==
+			b.startLine()
+	);
 } x{unit tests}
 ```
 
 ```
 a{unit tests} {
 	E{bar entry};
-	ASSERT(c.endLine() == b.endLine());
+	ASSERT(
+		c.endLine() ==
+			b.endLine()
+	);
 } x{unit tests}
 ```
 
@@ -333,7 +346,10 @@ x{bar two entry}
 ```
 a{unit tests} {
 	E{bar two entry}
-	ASSERT(c.str() == "abc\ndef\nghi");
+	ASSERT(
+		c.str() ==
+			"abc\ndef\nghi"
+	);
 } x{unit tests}
 ```
 

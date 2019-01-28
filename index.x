@@ -160,7 +160,8 @@ d{process arguments}
 	for (int i { 1 }; i < argc; ++i) {
 		e{process argument};
 		ASSERT(false) <<
-			"unknown argument [" << argv[i] << ']';
+			"unknown argument [" <<
+			argv[i] << ']';
 	}
 x{process arguments}
 ```
@@ -194,13 +195,19 @@ a{process argument} {
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
-		std::istringstream iss {
-			arg.substr(prefix.length())
-		};
-		iss >> blockLimit;
-		continue;
+		e{extract block limit};
 	}
 } x{process argument}
+```
+
+```
+d{extract block limit}
+	std::istringstream iss {
+		arg.substr(prefix.length())
+	};
+	iss >> blockLimit;
+	continue;
+x{extract block limit}
 ```
 
 ```
@@ -234,7 +241,9 @@ x{process arguments}
 d{read source file} {
 	e{additional read vars};
 	int last { inputs.get() };
-	int ch { last != EOF ? inputs.get() : EOF };
+	int ch {
+		last != EOF ? inputs.get() : EOF
+	};
 	while (ch != EOF) {
 		e{process current char};
 		last = ch; ch = inputs.get();
@@ -310,7 +319,11 @@ d{process close brace} {
 ```
 d{process other char} {
 	if (name.active()) {
-		name.add(ch, inputs.cur()->name, inputs.cur()->line());
+		name.add(
+			ch,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 		break;
 	}
 } x{process other char}
@@ -321,7 +334,11 @@ d{process other char} {
 ```
 a{process other char} {
 	if (frag) {
-		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
+		buffer.add(
+			last,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 } x{process other char}
 ```
@@ -329,18 +346,28 @@ a{process other char} {
   angefügt werden
 
 ```
-d{process open brace} {
+d{process open brace}
 	if (! frag) {
-		static const std::string valids { "aAdDirR" };
-		if (valids.find(static_cast<char>(last)) != std::string::npos
-			&& blockLimit != 0) {
-			openCh = last;
-			name.activate();
-			--blockLimit;
-			break;
-		}
+		e{may start block};
 	}
-} x{process open brace}
+x{process open brace}
+```
+
+```
+d{may start block}
+	static const std::string valids {
+		"aAdDirR"
+	};
+	char lastCh =
+		static_cast<char>(last);
+	bool found {
+		valids.find(lastCh) !=
+			std::string::npos
+	};
+	if (found && blockLimit != 0) {
+		e{start block};
+	}
+x{may start block}
 ```
 * Wenn außerhalb eines Fragments die Folge `a`, `{` gelesen wird, dann
   beginnt ein `@add`-Fragment
@@ -350,10 +377,21 @@ d{process open brace} {
   nächsten `}`
 
 ```
+d{start block}
+	openCh = last;
+	name.activate();
+	--blockLimit;
+	break;
+x{start block}
+```
+
+```
 d{process frag name}
 	if (openCh == 'd') {
-		ASSERT(! frag) << "def in frag";
-		FragMap *fm { &inputs.cur()->frags };
+		ASSERT(! frag) <<"def in frag";
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
 		E{check for double def};
 		if (! frag) {
 			frag = &(*fm)[name.str()];
@@ -385,9 +423,9 @@ x{process frag name}
 d{check for double def}
 	frag = fm->find(name.str());
 	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name.str() <<
-			"] already defined" <<
-			std::endl;
+		std::cerr << "frag [" <<
+			name.str() <<
+			"] already defined\n";
 	}
 x{check for double def}
 ```
@@ -400,10 +438,12 @@ x{check for double def}
 a{process frag name}
 	if (openCh == 'a') {
 		ASSERT(! frag) << "add in frag";
-		FragMap *fm { &inputs.cur()->frags };
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
 		FragMap *ins { fm };
 		frag = fm->find(name.str());
-		E{check for add without def};
+		E{check for add w/o def};
 		processed = true;
 	}
 x{process frag name}
@@ -418,7 +458,7 @@ a{process frag name}
 		FragMap *fm { frags };
 		FragMap *ins { &root };
 		frag = fm->find(name.str());
-		E{check for add without def};
+		E{check for add w/o def};
 		processed = true;
 	}
 x{process frag name}
@@ -426,23 +466,30 @@ x{process frag name}
 * Erweitert ein global definiertes Fragment
 
 ```
-d{check for add without def}
+d{check for add w/o def}
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" << name.str() <<
-			"] not defined" << std::endl;
-		frag = &fm->get(name.str(), *ins);
+		std::cerr << "frag [" <<
+			name.str() <<
+			"] not defined\n";
+		frag = &fm->get(
+			name.str(), *ins
+		);
 	}
-x{check for add without def}
+x{check for add w/o def}
 ```
 * Das Fragment muss bereits vorhanden und nicht leer sein
 
 ```
 a{process frag name}
 	if (openCh == 'r') {
-		ASSERT(! frag) << "replace in frag";
-		frag = &(inputs.cur()->frags[name.str()]);
+		ASSERT(! frag) <<
+			"replace in frag";
+		frag = &(inputs.cur()->frags[
+			name.str()
+		]);
 		ASSERT(frag) <<
-			"frag " << name.str() << " not defined";
+			"frag " << name.str() <<
+			" not defined";
 		frag->clear();
 		processed = true;
 	}
@@ -454,10 +501,14 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'R') {
-		ASSERT(! frag) << "replace in frag";
-		frag = &frags->get(name.str(), root);
-		ASSERT(frag) <<
-			"frag " << name.str() << " not defined";
+		ASSERT(! frag) <<
+			"replace in frag";
+		frag = &frags->get(
+			name.str(), root
+		);
+		ASSERT(frag) << "frag " <<
+			name.str() <<
+			" not defined";
 		frag->clear();
 		processed = true;
 	}
@@ -481,8 +532,8 @@ x{process frag name}
 ```
 d{frag names must match}
 	ASSERT(frag->name == name.str()) <<
-		"closing [" << name.str() << "] != [" <<
-			frag->name << ']';
+		"closing [" << name.str() <<
+		"] != [" << frag->name << ']';
 x{frag names must match}
 ```
 * Wenn der öffnende und schließende Name nicht passt, wird die
@@ -491,7 +542,8 @@ x{frag names must match}
 ```
 a{process frag name}
 	if (openCh == 'i') {
-		ASSERT(! frag) << "include in frag";
+		ASSERT(! frag) <<
+			"include in frag";
 		if (! inputs.has(name.str())) {
 			inputs.push(name.str());
 		}
@@ -506,10 +558,13 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'e') {
-		ASSERT(frag) << "expand not in frag";
+		ASSERT(frag) <<
+			"expand not in frag";
 		E{flush frag buffer};
-		Frag &sub = inputs.cur()->frags[name.str()];
-		E{check frag expand count};
+		Frag &sub = inputs.cur()->frags[
+			name.str()
+		];
+		E{check frag ex. count};
 		sub.addExpand();
 		frag->add(&sub);
 		processed = true;
@@ -522,10 +577,13 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'g') {
-		ASSERT(frag) << "expand not in frag";
+		ASSERT(frag) <<
+			"expand not in frag";
 		E{flush frag buffer};
-		Frag &sub = frags->get(name.str(), root);
-		E{check frag expand count};
+		Frag &sub = frags->get(
+			name.str(), root
+		);
+		E{check frag ex. count};
 		sub.addExpand();
 		frag->add(&sub);
 		processed = true;
@@ -534,16 +592,18 @@ x{process frag name}
 ```
 
 ```
-d{check frag expand count}
+d{check frag ex. count}
 	if (sub.expands()) {
-		std::cerr << "multiple expands of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
 	}
 	if (sub.multiples()) {
-		std::cerr << "expand after mult of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
 	}
-x{check frag expand count}
+x{check frag ex. count}
 ```
 * Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
   ausgegeben
@@ -553,9 +613,12 @@ x{check frag expand count}
 ```
 a{process frag name}
 	if (openCh == 'E') {
-		ASSERT(frag) << "multiple not in frag";
+		ASSERT(frag) <<
+			"multiple not in frag";
 		E{flush frag buffer};
-		Frag &sub { inputs.cur()->frags[name.str()] };
+		Frag &sub { inputs.cur()->frags[
+			name.str()
+		] };
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
@@ -569,9 +632,12 @@ x{process frag name}
 ```
 a{process frag name}
 	if (openCh == 'G') {
-		ASSERT(frag) << "multiple not in frag";
+		ASSERT(frag) <<
+			"multiple not in frag";
 		E{flush frag buffer};
-		Frag &sub { frags->get(name.str(), root) };
+		Frag &sub { frags->get(
+			name.str(), root
+		) };
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
@@ -583,9 +649,10 @@ x{process frag name}
 ```
 d{check for prev expands}
 	if (sub.expands()) {
-		std::cerr
-			<< "multiple after expand of ["
-			<< sub.name << "]" << std::endl;
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
 	}
 x{check for prev expands}
 ```
@@ -595,7 +662,8 @@ x{check for prev expands}
 ```
 a{process frag name}
 	if (openCh == 'p') {
-		ASSERT(frag) << "private not in frag";
+		ASSERT(frag) <<
+			"private not in frag";
 		e{process private frag};
 		processed = true;
 	}
@@ -616,8 +684,9 @@ x{includes}
 d{process private frag}
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->name + ':' + name.str())
-			& 0x7fffffff
+		h(inputs.cur()->name +
+			':' + name.str()) &
+				0x7fffffff
 	};
 x{process private frag}
 ```
@@ -629,10 +698,12 @@ x{process private frag}
 a{process private frag}
 	E{flush frag buffer};
 	std::ostringstream hashed;
-	hashed << "_private_"
-		<< cur << '_' << name.str();
+	hashed << "_private_" <<
+		cur << '_' <<
+		name.str();
 	frag->add(
-		hashed.str(), inputs.cur()->name,
+		hashed.str(),
+		inputs.cur()->name,
 		name.startLine()
 	);
 x{process private frag}
@@ -646,7 +717,8 @@ x{process private frag}
 ```
 a{process frag name}
 	if (openCh == 'm') {
-		ASSERT(frag) << "magic not in frag";
+		ASSERT(frag) <<
+			"magic not in frag";
 		e{process magic frag};
 		processed = true;
 	}
@@ -660,8 +732,9 @@ x{process frag name}
 d{process magic frag}
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->name + ':' + name.str())
-			& 0x7fffffff
+		h(inputs.cur()->name +
+			':' + name.str()) &
+				0x7fffffff
 	};
 x{process magic frag}
 ```
@@ -675,7 +748,8 @@ a{process magic frag}
 	E{flush frag buffer};
 	frag->add(
 		value.str(),
-		inputs.cur()->name, inputs.cur()->line()
+		inputs.cur()->name,
+		inputs.cur()->line()
 	);
 x{process magic frag}
 ```
@@ -717,7 +791,12 @@ d{check valid names}
 	static const std::string valids { 
 		"fvsntkxeEgGpmb"
 	};
-	if (valids.find(static_cast<char>(last)) != std::string::npos) {
+	bool found {
+		valids.find(
+			static_cast<char>(last)
+		) != std::string::npos
+	};
+	if (found) {
 		valid = true;
 	}
 x{check valid names}
@@ -728,8 +807,9 @@ x{check valid names}
 ```
 a{process frag name}
 	if (! processed) {
-		ASSERT(frag) << "unknown frag "
-			<< v{name}.str();
+		ASSERT(frag) <<
+			"unknown frag " <<
+			v{name}.str();
 		buffer.add(name);
 		processed = true;
 	}
@@ -742,7 +822,11 @@ x{process frag name}
 ```
 a{process open brace}
 	if (frag) {
-		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
+		buffer.add(
+			last,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 x{process open brace}
 ```
@@ -753,7 +837,11 @@ x{process open brace}
 ```
 a{process close brace}
 	if (frag && ! processed) {
-		buffer.add(last, inputs.cur()->name, inputs.cur()->line());
+		buffer.add(
+			last,
+			inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 x{process close brace}
 ```
@@ -766,12 +854,12 @@ x{process close brace}
   rausgeschrieben
 
 ```
-d{serialize fragments} {
+d{serialize fragments}
 	for (auto &i : root) {
 		const Frag *frag { &i.second };
 		E{serialize frag};
 	}
-} x{serialize fragments}
+x{serialize fragments}
 ```
 * Fragmente, die mit `file:` beginnen, werden in die entsprechenden
   Dateien rausgeschrieben
@@ -779,15 +867,16 @@ d{serialize fragments} {
   wurden
 
 ```
-a{serialize fragments} {
-	for (auto &j : inputs)
-	{
+a{serialize fragments}
+	for (auto &j : inputs) {
 		for (auto &i : j->frags) {
-			const Frag *frag { &i.second };
+			const Frag *frag {
+				&i.second
+			};
 			E{serialize frag};
 		}
 	}
-} x{serialize fragments}
+x{serialize fragments}
 ```
 * Auch alle lokalen Fragmente bearbeiten
 
@@ -809,10 +898,9 @@ a{serialize frag} {
 			+ frag->multiples()
 	};
 	if (sum <= 0) {
-		std::cerr << "frag ["
-			<< frag->name
-			<< "] not called"
-			<< std::endl;
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not called\n";
 	}
 } x{serialize frag}
 ```
@@ -822,10 +910,10 @@ a{serialize frag} {
 ```
 a{serialize frag}
 	if (frag->multiples() == 1) {
-		std::cerr << "multiple frag ["
-			<< frag->name
-			<< "] only used once"
-			<< std::endl;
+		std::cerr <<
+			"multiple frag [" <<
+			frag->name <<
+			"] only used once\n";
 	}
 x{serialize frag}
 ```
@@ -836,10 +924,9 @@ x{serialize frag}
 ```
 a{serialize frag}
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag ["
-			<< frag->name
-			<< "] not populated"
-			<< std::endl;
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not populated\n";
 	}
 x{serialize frag}
 ```
