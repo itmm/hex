@@ -597,13 +597,18 @@
 		}
 	}
 
-	void process_chars(Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
-		for (; i != e; ++i) {
-			process_char(frag, *i);
+	using SI =
+		std::string::const_iterator;
+
+	void process_chars(Frag *frag, SI i, SI e) {
+		if (frag) {
+			Buf buffer;
+			buffer.add(std::string {i, e}, inputs.cur()->name, inputs.cur()->line());
+			frag->add(buffer);
 		}
 	}
 
-	bool is_macro_start(const Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
+	bool is_macro_start(const Frag *frag, SI i, SI e) {
 		auto n = i + 1;
 		if (n >= e) { return false; }
 		if (*n != '{') { return false; }
@@ -645,14 +650,14 @@
 		return false;
 	}
 
-	std::string::const_iterator find_macro_end(std::string::const_iterator i, std::string::const_iterator e) {
+	std::string::const_iterator find_macro_end(SI i, SI e) {
 		while (i != e && *i != '}') {
 			++i;
 		}
 		return i;
 	}
 
-	void process_macro(Frag *&frag, std::string::const_iterator i, std::string::const_iterator e) {
+	void process_macro(Frag *&frag, SI i, SI e) {
 		char openCh{*i};
 		i += 2;
 		std::string name {i, e};

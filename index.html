@@ -657,11 +657,21 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+<span class="in1"></span><span class="var">using</span> <span class="var">SI</span> =<br/>
 
-<span class="in2"></span><span class="keyword">for</span> (; <span class="var">i</span> != <span class="var">e</span>; ++<span class="var">i</span>) {<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span>;<br/>
 
-<span class="in3"></span><span class="fn">process_char</span>(<span class="var">frag</span>, *<span class="var">i</span>);<br/>
+<br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
+
+<span class="in3"></span><span class="type">Buf</span> <span class="var">buffer</span>;<br/>
+
+<span class="in3"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">std</span>::<span class="var">string</span> {<span class="var">i</span>, <span class="var">e</span>}, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
+
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">buffer</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -679,7 +689,7 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="fn">is_macro_start</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">is_macro_start</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span>) {<br/>
 
 <span class="in2"></span><span class="type">auto</span> <span class="var">n</span> = <span class="var">i</span> + <span class="num">1</span>;<br/>
 
@@ -705,7 +715,7 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="fn">find_macro_end</span>(<span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="fn">find_macro_end</span>(<span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">while</span> (<span class="var">i</span> != <span class="var">e</span> &amp;&amp; *<span class="var">i</span> != <span class="str">'}'</span>) {<br/>
 
@@ -729,7 +739,7 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_macro</span>(<span class="type">Frag</span> *&amp;<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_macro</span>(<span class="type">Frag</span> *&amp;<span class="var">frag</span>, <span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span>) {<br/>
 
 <span class="in2"></span><span class="type">char</span> <span class="var">openCh</span>{*<span class="var">i</span>};<br/>
 
