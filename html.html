@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de"l>
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <title>HTML-Präsentation generieren</title>
@@ -1960,9 +1960,11 @@
 
 <span class="in1"></span><span class="type">auto</span> <span class="var">ext</span> = <span class="var">status</span>.<span class="var">name</span>.<span class="fn">str</span>().<span class="fn">find_last_of</span>(<span class="str">'.'</span>);<br/>
 
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">ext</span> != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span>) &lt;&lt;<br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">ext</span> != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span>,<br/>
 
-<span class="in2"></span><span class="str">"no period"</span>;<br/>
+<span class="in2"></span><span class="str">"no period"</span><br/>
+
+<span class="in1"></span>);<br/>
 
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;a href=\""</span> <br/>
 

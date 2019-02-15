@@ -22,72 +22,24 @@
 	#include <cctype>
 ;
 	
-	class LogContainer;
 	#define ASSERT(COND) \
-		((COND) ? \
-			LogContainer { \
-				false, true \
-			} : \
-			LogContainer { \
-				__FILE__, __LINE__, \
-				#COND \
-			} \
-		)
-
-	class LogContainer {
-		public:
-			bool log;
-			bool first;
-			
-	LogContainer(bool l, bool f):
-		log { l }, first { f }
-	{
-	}
-
-	LogContainer(
-		const char *file, int line,
-		const char *cond
-	): log { true }, first { true } {
-		std::cerr << '[' << file <<
-			':' << line << "] " <<
-			cond << " FAILED";
-	}
-
-	LogContainer(LogContainer &&l):
-		log { l.log },
-		first { l.first }
-	{
-		l.log = false;
-	}
-
-	~LogContainer() noexcept(false) {
-		if (log) {
-			std::cerr << '\n';
-			throw std::exception();
+		if (! (COND)) { \
+			std::cerr << __FILE__ << \
+				':' << __LINE__ << \
+				"] " << #COND << \
+				" FAILED\n"; \
+			throw std::exception(); \
 		}
-	}
-;
-	};
 
-	template<typename T>
-	inline LogContainer operator<<(
-		const LogContainer &lc, T t
-	) {
-		if (lc.log) {
-			
-	if (lc.first) {
-		std::cerr << ": ";
-	}
-	std::cerr << t;
-	return LogContainer {
-		true, false 
-	};
-;
+	#define ASSERT_MSG(COND, MSG) \
+		if (! (COND)) { \
+			std::cerr << __FILE__ << \
+				':' << __LINE__ << \
+				"] " << #COND << \
+				" FAILED: " << MSG << \
+				'\n'; \
+			throw std::exception(); \
 		}
-		return LogContainer {
-			false, false
-		};
-	}
 ;
 
 	
@@ -1089,9 +1041,10 @@
 		continue;
 	}
 ;
-		ASSERT(false) <<
+		ASSERT_MSG(false,
 			"unknown argument [" <<
-			argv[i] << ']';
+			argv[i] << ']'
+		);
 	}
 
 	if (! someFile) {
@@ -1175,7 +1128,7 @@
 	if (name.active()) {
 		
 	if (openCh == 'd') {
-		ASSERT(! frag) <<"def in frag";
+		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
@@ -1194,7 +1147,7 @@
 	}
 
 	if (openCh == 'D') {
-		ASSERT(! frag) << "def in frag";
+		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm { frags };
 		
 	frag = fm->find(name.str());
@@ -1211,7 +1164,7 @@
 	}
 
 	if (openCh == 'a') {
-		ASSERT(! frag) << "add in frag";
+		ASSERT_MSG(! frag, "add in frag");
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
@@ -1231,7 +1184,7 @@
 	}
 
 	if (openCh == 'A') {
-		ASSERT(! frag) << "add in frag";
+		ASSERT_MSG(! frag, "add in frag");
 		FragMap *fm { frags };
 		FragMap *ins { &root };
 		frag = fm->find(name.str());
@@ -1249,37 +1202,43 @@
 	}
 
 	if (openCh == 'r') {
-		ASSERT(! frag) <<
-			"replace in frag";
+		ASSERT_MSG(! frag,
+			"replace in frag"
+		);
 		frag = &(inputs.cur()->frags[
 			name.str()
 		]);
-		ASSERT(frag) <<
-			"frag " << name.str() <<
-			" not defined";
+		ASSERT_MSG(frag, "frag " <<
+			name.str() << " not defined"
+		);
 		frag->clear();
 		processed = true;
 	}
 
 	if (openCh == 'R') {
-		ASSERT(! frag) <<
-			"replace in frag";
+		ASSERT_MSG(! frag,
+			"replace in frag"
+		);
 		frag = &frags->get(
 			name.str(), root
 		);
-		ASSERT(frag) << "frag " <<
+		ASSERT_MSG(frag, "frag " <<
 			name.str() <<
-			" not defined";
+			" not defined"
+		);
 		frag->clear();
 		processed = true;
 	}
 
 	if (openCh == 'x') {
-		ASSERT(frag) << "end not in frag";
+		ASSERT_MSG(frag,
+			"end not in frag"
+		);
 		
-	ASSERT(frag->name == name.str()) <<
+	ASSERT_MSG(frag->name == name.str(),
 		"closing [" << name.str() <<
-		"] != [" << frag->name << ']';
+		"] != [" << frag->name << ']'
+	);
 ;
 		
 	if (! buffer.empty()) {
@@ -1292,8 +1251,9 @@
 	}
 
 	if (openCh == 'i') {
-		ASSERT(! frag) <<
-			"include in frag";
+		ASSERT_MSG(! frag,
+			"include in frag"
+		);
 		if (! inputs.has(name.str())) {
 			inputs.push(name.str());
 		}
@@ -1301,8 +1261,9 @@
 	}
 
 	if (openCh == 'e') {
-		ASSERT(frag) <<
-			"expand not in frag";
+		ASSERT_MSG(frag,
+			"expand not in frag"
+		);
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
@@ -1330,8 +1291,9 @@
 	}
 
 	if (openCh == 'g') {
-		ASSERT(frag) <<
-			"expand not in frag";
+		ASSERT_MSG(frag,
+			"expand not in frag"
+		);
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
@@ -1359,8 +1321,9 @@
 	}
 
 	if (openCh == 'E') {
-		ASSERT(frag) <<
-			"multiple not in frag";
+		ASSERT_MSG(frag,
+			"multiple not in frag"
+		);
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
@@ -1384,8 +1347,9 @@
 	}
 
 	if (openCh == 'G') {
-		ASSERT(frag) <<
-			"multiple not in frag";
+		ASSERT_MSG(frag,
+			"multiple not in frag"
+		);
 		
 	if (! buffer.empty()) {
 		frag->add(buffer);
@@ -1409,8 +1373,9 @@
 	}
 
 	if (openCh == 'p') {
-		ASSERT(frag) <<
-			"private not in frag";
+		ASSERT_MSG(frag,
+			"private not in frag"
+		);
 		
 	std::hash<std::string> h;
 	unsigned cur {
@@ -1439,8 +1404,9 @@
 	}
 
 	if (openCh == 'm') {
-		ASSERT(frag) <<
-			"magic not in frag";
+		ASSERT_MSG(frag,
+			"magic not in frag"
+		);
 		
 	std::hash<std::string> h;
 	unsigned cur {
@@ -1473,9 +1439,9 @@
 	}
 
 	if (! processed) {
-		ASSERT(frag) <<
-			"unknown frag " <<
-			name.str();
+		ASSERT_MSG(frag,
+			"unknown frag " << name.str()
+		);
 		buffer.add(name);
 		processed = true;
 	}
@@ -2142,8 +2108,9 @@
 	case 'i': {
 		
 	auto ext = status.name.str().find_last_of('.');
-	ASSERT(ext != std::string::npos) <<
-		"no period";
+	ASSERT_MSG(ext != std::string::npos,
+		"no period"
+	);
 	out << "<a href=\"" 
 		<< status.name.str().substr(0, ext) << ".html\">";
 	out << status.name.str() << "</a>)</span>";
@@ -2443,8 +2410,9 @@
 	case 'i': {
 		
 	auto ext = status.name.str().find_last_of('.');
-	ASSERT(ext != std::string::npos) <<
-		"no period";
+	ASSERT_MSG(ext != std::string::npos,
+		"no period"
+	);
 	out << "<a href=\"" 
 		<< status.name.str().substr(0, ext) << ".html\">";
 	out << status.name.str() << "</a>)</span>";

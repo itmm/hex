@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de"l>
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <title>Logging</title>
@@ -42,27 +42,21 @@
 
 <span class="macro">@globdef(<span class="name">define logging</span>)</span><br/>
 
-<span class="in1"></span><span class="var">class</span> <span class="type">LogContainer</span>;<br/>
-
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>) \<br/>
 
-<span class="in2"></span>((<span class="var">COND</span>) ? \<br/>
+<span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
 
-<span class="in3"></span><span class="type">LogContainer</span> { \<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; \<br/>
 
-<span class="in4"></span><span class="num">false</span>, <span class="num">true</span> \<br/>
+<span class="in4"></span><span class="str">':'</span> &lt;&lt; <span class="var">__LINE__</span> &lt;&lt; \<br/>
 
-<span class="in3"></span>} : \<br/>
+<span class="in4"></span><span class="str">"] "</span> &lt;&lt; #<span class="var">COND</span> &lt;&lt; \<br/>
 
-<span class="in3"></span><span class="type">LogContainer</span> { \<br/>
+<span class="in4"></span><span class="str">" FAILED\n"</span>; \<br/>
 
-<span class="in4"></span><span class="var">__FILE__</span>, <span class="var">__LINE__</span>, \<br/>
+<span class="in3"></span><span class="var">throw</span> <span class="var">std</span>::<span class="fn">exception</span>(); \<br/>
 
-<span class="in4"></span>#<span class="var">COND</span> \<br/>
-
-<span class="in3"></span>} \<br/>
-
-<span class="in2"></span>)<br/>
+<span class="in2"></span>}<br/>
 
 <span class="macro">@end(<span class="name">define logging</span>)</span><br/>
 
@@ -73,9 +67,6 @@
  Loggen wird über ein Makro realisiert
 </li><li>
  Nur so kann die aktuelle Position im Source-Code ermittelt werden
-</li><li>
- Das Loggen selbst übernimmt der <code>LogContainer</code>, um ein
-  Stream-Interface anzubieten
 </li><li>
  Wenn die Bedingung wahr ist, wird nicht geloggt
 </li><li>
@@ -91,17 +82,23 @@
 
 <span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
 
-<span class="in1"></span><span class="var">class</span> <span class="type">LogContainer</span> {<br/>
+<span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT_MSG</span>(<span class="var">COND</span>, <span class="var">MSG</span>) \<br/>
 
-<span class="in2"></span><span class="var">public</span>:<br/>
+<span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
 
-<span class="in3"></span><span class="type">bool</span> <span class="var">log</span>;<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; \<br/>
 
-<span class="in3"></span><span class="type">bool</span> <span class="var">first</span>;<br/>
+<span class="in4"></span><span class="str">':'</span> &lt;&lt; <span class="var">__LINE__</span> &lt;&lt; \<br/>
 
-<span class="in3"></span><span class="macro">@expand(<span class="name">log container</span>)</span>;<br/>
+<span class="in4"></span><span class="str">"] "</span> &lt;&lt; #<span class="var">COND</span> &lt;&lt; \<br/>
 
-<span class="in1"></span>};<br/>
+<span class="in4"></span><span class="str">" FAILED: "</span> &lt;&lt; <span class="var">MSG</span> &lt;&lt; \<br/>
+
+<span class="in4"></span><span class="str">'\n'</span>; \<br/>
+
+<span class="in3"></span><span class="var">throw</span> <span class="var">std</span>::<span class="fn">exception</span>(); \<br/>
+
+<span class="in2"></span>}<br/>
 
 <span class="macro">@end(<span class="name">define logging</span>)</span><br/>
 
@@ -109,197 +106,6 @@
 </div>
 
 <ul><li>
- Der <code>LogContainer</code> enthält zwei Flags
-</li><li>
- <code>log</code> signalisiert, ob eine Nachricht geschrieben werden soll
-</li><li>
- <code>first</code> signalisiert, dass noch kein Parameter herausgeschrieben
-  wurde
-</li><li>
- Beim ersten Parameter wird noch ein Doppelpunkt ausgegeben
+ Zusätzlich kann eine Nachricht mitgegegben werden
 </li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@def(<span class="name">log container</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">LogContainer</span>(<span class="type">bool</span> <span class="var">l</span>, <span class="type">bool</span> <span class="var">f</span>):<br/>
-
-<span class="in2"></span><span class="var">log</span> { <span class="var">l</span> }, <span class="var">first</span> { <span class="var">f</span> }<br/>
-
-<span class="in1"></span>{<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">log container</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Die beiden Parameter können in einem Konstruktor direkt gesetzt
-  werden
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">log container</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">LogContainer</span>(<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">file</span>, <span class="type">int</span> <span class="var">line</span>,<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">cond</span><br/>
-
-<span class="in1"></span>): <span class="var">log</span> { <span class="num">true</span> }, <span class="var">first</span> { <span class="num">true</span> } {<br/>
-
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">'['</span> &lt;&lt; <span class="var">file</span> &lt;&lt;<br/>
-
-<span class="in3"></span><span class="str">':'</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">"] "</span> &lt;&lt;<br/>
-
-<span class="in3"></span><span class="var">cond</span> &lt;&lt; <span class="str">" FAILED"</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">log container</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Alternativ kann der <code>LogContainer</code> mit den der Position eines
-  Fehlers im Source-Code initialisiert werden
-</li><li>
- In diesem Fall soll die Nachricht geloggt werden und es wurden
-  noch keine Parameter ausgegeben
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">log container</span>)</span><br/>
-
-<span class="in1"></span><span class="fn">LogContainer</span>(<span class="type">LogContainer</span> &amp;&amp;<span class="var">l</span>):<br/>
-
-<span class="in2"></span><span class="var">log</span> { <span class="var">l</span>.<span class="var">log</span> },<br/>
-
-<span class="in2"></span><span class="var">first</span> { <span class="var">l</span>.<span class="var">first</span> }<br/>
-
-<span class="in1"></span>{<br/>
-
-<span class="in2"></span><span class="var">l</span>.<span class="var">log</span> = <span class="num">false</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">log container</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Durch den Move-Constructor wird sichergestellt, dass nur eine
-  Instanz wirklich loggt
-</li><li>
- Im Destruktor dieser Instanz wird ein Zeilenvorschub ausgegeben und
-  eine Exception geworfen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">log container</span>)</span><br/>
-
-<span class="in1"></span>~<span class="fn">LogContainer</span>() <span class="fn">noexcept</span>(<span class="num">false</span>) {<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">log</span>) {<br/>
-
-<span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
-
-<span class="in3"></span><span class="var">throw</span> <span class="var">std</span>::<span class="fn">exception</span>();<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">log container</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn Logging aktiv ist, wird ein Zeilenvorschub ausgegeben
-</li><li>
- Und eine Exception geworfen
-</li><li>
- Das muss extra angezeigt werden, da Exceptions im Destructor
-  verboten sind
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
-
-<span class="in1"></span><span class="var">template</span>&lt;<span class="var">typename</span> <span class="var">T</span>&gt;<br/>
-
-<span class="in1"></span><span class="var">inline</span> <span class="type">LogContainer</span> <span class="var">operator</span>&lt;&lt;(<br/>
-
-<span class="in2"></span><span class="type">const</span> <span class="type">LogContainer</span> &amp;<span class="var">lc</span>, <span class="var">T</span> <span class="var">t</span><br/>
-
-<span class="in1"></span>) {<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">lc</span>.<span class="var">log</span>) {<br/>
-
-<span class="in3"></span><span class="macro">@expand(<span class="name">log t</span>)</span>;<br/>
-
-<span class="in2"></span>}<br/>
-
-<span class="in2"></span><span class="keyword">return</span> <span class="type">LogContainer</span> {<br/>
-
-<span class="in3"></span><span class="num">false</span>, <span class="num">false</span><br/>
-
-<span class="in2"></span>};<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">define logging</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Über diese Template-Funktion können weitere Parameter in die
-  Fehlerausgabe geschoben werden
-</li><li>
- Falls die Bedingung falsch war und Logging aktiviert ist
-</li><li>
- Vor dem ersten Argument wird ein Doppelpunkt ausgegeben
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@def(<span class="name">log t</span>)</span><br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">lc</span>.<span class="var">first</span>) {<br/>
-
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">": "</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="in1"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">t</span>;<br/>
-
-<span class="in1"></span><span class="keyword">return</span> <span class="type">LogContainer</span> {<br/>
-
-<span class="in2"></span><span class="num">true</span>, <span class="num">false</span> <br/>
-
-<span class="in1"></span>};<br/>
-
-<span class="macro">@end(<span class="name">log t</span>)</span><br/>
-
-</code>
-</div>
-
 
