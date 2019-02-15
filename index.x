@@ -249,10 +249,8 @@ d{read source file} {
 			if (is_macro_start(frag, i, end)) {
 				auto j = find_macro_end(i, end);
 				if (j != end) {
-					process_chars(frag, line.begin(), i);
 					process_macro(frag, i, j);
-					process_chars(frag, j, end);
-					break;
+					i += (j - i);
 				}
 			} else {
 				process_chars(frag, i, i + 1);
@@ -360,7 +358,7 @@ d{may start block}
 		valids.find(*i) !=
 			std::string::npos
 	};
-	if (found && blockLimit > 0) {
+	if (found && blockLimit != 0) {
 		e{start block};
 	}
 x{may start block}

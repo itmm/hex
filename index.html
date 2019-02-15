@@ -583,13 +583,9 @@
 
 <span class="in4"></span><span class="keyword">if</span> (<span class="var">j</span> != <span class="var">end</span>) {<br/>
 
-<span class="in5"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">i</span>);<br/>
-
 <span class="in5"></span><span class="fn">process_macro</span>(<span class="var">frag</span>, <span class="var">i</span>, <span class="var">j</span>);<br/>
 
-<span class="in5"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">j</span>, <span class="var">end</span>);<br/>
-
-<span class="in5"></span><span class="keyword">break</span>;<br/>
+<span class="in5"></span><span class="var">i</span> += (<span class="var">j</span> - <span class="var">i</span>);<br/>
 
 <span class="in4"></span>}<br/>
 
@@ -818,7 +814,7 @@
 
 <span class="in1"></span>};<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> &amp;&amp; <span class="var">blockLimit</span> &gt; <span class="num">0</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> &amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">start block</span>)</span>;<br/>
 
