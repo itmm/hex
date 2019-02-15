@@ -70,9 +70,9 @@
 </li><li>
  Zusätzlich kann sie eine offene Datei enthalten
 </li><li>
- Alle Eingabe-Dateien, die während einer Inklude-Kaskade eingebunden
-  werden bleiben offen, damit an der richtigen Stelle weiter gearbeitet
-  werden kann
+ Alle Eingabe-Dateien, die während einer Inkludierungs-Kaskade
+  eingebunden werden bleiben offen, damit an der richtigen Stelle weiter
+  gearbeitet werden kann
 </li><li>
  Weiter Attribute und Methoden können später definiert werden
 </li></ul></div>
@@ -114,17 +114,17 @@
 
 <span class="macro">@add(<span class="name">input methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="fn">next</span>() {<br/>
-
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="num">EOF</span> };<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">getLine</span>(<span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">line</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>.<span class="fn">is_open</span>()) {<br/>
 
-<span class="in3"></span><span class="var">ch</span> = <span class="var">file</span>.<span class="fn">get</span>();<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">std</span>::<span class="fn">getline</span>(<span class="var">file</span>, <span class="var">line</span>)) {<br/>
 
-<span class="in3"></span><span class="macro">@expand(<span class="name">preprocess</span>)</span>;<br/>
+<span class="in4"></span><span class="macro">@expand(<span class="name">line read</span>)</span>;<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (! <span class="var">file</span>.<span class="fn">good</span>()) {<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in3"></span>} <span class="keyword">else</span> {<br/>
 
 <span class="in4"></span><span class="var">file</span>.<span class="fn">close</span>();<br/>
 
@@ -132,7 +132,7 @@
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -141,14 +141,8 @@
 </code>
 </div>
 
-<ul><li>
- <code>next</code> liefert das nächste Zeichen aus der Datei
-</li><li>
- Wenn das Ende erreicht ist, wird <code>EOF</code> zurück gegeben
-</li><li>
- Und die Datei geschlossen
-</li></ul></div>
 
+</div>
 <div><div>
 <code>
 
@@ -366,21 +360,21 @@
 
 <span class="macro">@add(<span class="name">inputs methods</span>)</span><br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="fn">get</span>() {<br/>
-
-<span class="in2"></span><span class="type">int</span> <span class="var">ch</span> { <span class="num">EOF</span> };<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">getLine</span>(<span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">line</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">while</span> (<span class="var">_input</span>) {<br/>
 
-<span class="in3"></span><span class="var">ch</span> = <span class="var">_input</span>-&gt;<span class="fn">next</span>();<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">_input</span>-&gt;<span class="fn">getLine</span>(<span class="var">line</span>)) {<br/>
 
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">ch</span> != <span class="num">EOF</span>) { <span class="keyword">break</span>; }<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+
+<span class="in3"></span>}<br/>
 
 <span class="in3"></span><span class="macro">@expand(<span class="name">get next input file</span>)</span>;<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">return</span> <span class="var">ch</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -389,13 +383,8 @@
 </code>
 </div>
 
-<ul><li>
- Wenn kein <code>EOF</code> gelesen wurde, dann wird das Zeichen zurück
-  geliefert
-</li><li>
- Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
-</li></ul></div>
 
+</div>
 <div><div>
 <code>
 
@@ -544,8 +533,6 @@
 
 <span class="in1"></span><span class="type">int</span> <span class="var">_line</span>;<br/>
 
-<span class="in1"></span><span class="type">bool</span> <span class="var">_shouldAdd</span>;<br/>
-
 <span class="macro">@end(<span class="name">private input elements</span>)</span><br/>
 
 </code>
@@ -564,8 +551,6 @@
 <span class="macro">@def(<span class="name">private input constr</span>)</span><br/>
 
 <span class="in1"></span><span class="var">_line</span> { <span class="num">0</span> },<br/>
-
-<span class="in1"></span><span class="var">_shouldAdd</span> { <span class="num">true</span> },<br/>
 
 <span class="macro">@end(<span class="name">private input constr</span>)</span><br/>
 
@@ -595,13 +580,11 @@
 <div><div>
 <code>
 
-<span class="macro">@def(<span class="name">preprocess</span>)</span><br/>
+<span class="macro">@def(<span class="name">line read</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">_shouldAdd</span>) { ++<span class="var">_line</span>; }<br/>
+<span class="in1"></span>++<span class="var">_line</span>;<br/>
 
-<span class="in1"></span><span class="var">_shouldAdd</span> = (<span class="var">ch</span> == <span class="str">'\n'</span>);<br/>
-
-<span class="macro">@end(<span class="name">preprocess</span>)</span><br/>
+<span class="macro">@end(<span class="name">line read</span>)</span><br/>
 
 </code>
 </div>

@@ -567,19 +567,41 @@
 
 <span class="in1"></span><span class="macro">@expand(<span class="name">additional read vars</span>)</span>;<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">last</span> { <span class="var">inputs</span>.<span class="fn">get</span>() };<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">line</span>;<br/>
 
-<span class="in1"></span><span class="type">int</span> <span class="var">ch</span> {<br/>
+<br/>
 
-<span class="in2"></span><span class="var">last</span> != <span class="num">EOF</span> ? <span class="var">inputs</span>.<span class="fn">get</span>() : <span class="num">EOF</span><br/>
+<span class="in1"></span><span class="keyword">while</span> (<span class="var">inputs</span>.<span class="fn">getLine</span>(<span class="var">line</span>)) {<br/>
 
-<span class="in1"></span>};<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">line</span>.<span class="fn">end</span>();<br/>
 
-<span class="in1"></span><span class="keyword">while</span> (<span class="var">ch</span> != <span class="num">EOF</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> <span class="var">i</span> = <span class="var">line</span>.<span class="fn">begin</span>(); <span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span>) {<br/>
 
-<span class="in2"></span><span class="macro">@expand(<span class="name">process current char</span>)</span>;<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="fn">is_macro_start</span>(<span class="var">frag</span>, <span class="var">i</span>, <span class="var">end</span>)) {<br/>
 
-<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>; <span class="var">ch</span> = <span class="var">inputs</span>.<span class="fn">get</span>();<br/>
+<span class="in4"></span><span class="type">auto</span> <span class="var">j</span> = <span class="fn">find_macro_end</span>(<span class="var">i</span>, <span class="var">end</span>);<br/>
+
+<span class="in4"></span><span class="keyword">if</span> (<span class="var">j</span> != <span class="var">end</span>) {<br/>
+
+<span class="in5"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">i</span>);<br/>
+
+<span class="in5"></span><span class="fn">process_macro</span>(<span class="var">frag</span>, <span class="var">i</span>, <span class="var">j</span>);<br/>
+
+<span class="in5"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">j</span>, <span class="var">end</span>);<br/>
+
+<span class="in5"></span><span class="keyword">break</span>;<br/>
+
+<span class="in4"></span>}<br/>
+
+<span class="in3"></span>} <span class="keyword">else</span> {<br/>
+
+<span class="in4"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">i</span>, <span class="var">i</span> + <span class="num">1</span>);<br/>
+
+<span class="in3"></span>}<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>);<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -595,49 +617,135 @@
   schon das erste Zeichen ein <code>EOF</code> ist)
 </li></ul></div>
 
+
 <div><div>
 <code>
 
-<span class="macro">@def(<span class="name">process current char</span>)</span><br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">char</span> <span class="var">ch</span>) {<br/>
 
-<span class="in2"></span><span class="keyword">case</span> <span class="str">'{'</span>:<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="macro">@expand(<span class="name">process open brace</span>)</span>;<br/>
+<span class="in3"></span><span class="type">Buf</span> <span class="var">buffer</span>;<br/>
 
-<span class="in3"></span><span class="keyword">break</span>;<br/>
+<span class="in3"></span><span class="var">buffer</span>.<span class="fn">add</span>(<br/>
 
-<span class="in2"></span><span class="keyword">case</span> <span class="str">'}'</span>: {<br/>
+<span class="in4"></span><span class="var">ch</span>,<br/>
 
-<span class="in3"></span><span class="type">bool</span> <span class="var">processed</span> { <span class="num">false</span> };<br/>
+<span class="in4"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
 
-<span class="in3"></span><span class="macro">@expand(<span class="name">process close brace</span>)</span>;<br/>
+<span class="in4"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
 
-<span class="in3"></span><span class="keyword">break</span>;<br/>
+<span class="in3"></span>);<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="keyword">default</span>:<br/>
-
-<span class="in3"></span><span class="macro">@expand(<span class="name">process other char</span>)</span>;<br/>
-
 <span class="in1"></span>}<br/>
 
-<span class="macro">@end(<span class="name">process current char</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 
 </code>
 </div>
 
-<ul><li>
- Beim Parsen kommt es nur auf das Öffnen und Schließen von
-  Mengenklammern an
-</li><li>
- Diese bestimmen den Anfang und das Ende von Befehls-Sequenzen
-</li><li>
- Welche die Bearbeitung der sonstigen Zeichen steuern
-</li></ul></div>
 
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">i</span> != <span class="var">e</span>; ++<span class="var">i</span>) {<br/>
+
+<span class="in3"></span><span class="fn">process_char</span>(<span class="var">frag</span>, *<span class="var">i</span>);<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">bool</span> <span class="fn">is_macro_start</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+
+<span class="in2"></span><span class="type">auto</span> <span class="var">n</span> = <span class="var">i</span> + <span class="num">1</span>;<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">n</span> &gt;= <span class="var">e</span>) { <span class="keyword">return</span> <span class="num">false</span>; }<br/>
+
+<span class="in2"></span><span class="keyword">if</span> (*<span class="var">n</span> != <span class="str">'{'</span>) { <span class="keyword">return</span> <span class="num">false</span>; }<br/>
+
+<span class="in2"></span><span class="macro">@expand(<span class="name">process open brace</span>)</span>;<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="fn">find_macro_end</span>(<span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">i</span> != <span class="var">e</span> &amp;&amp; *<span class="var">i</span> != <span class="str">'}'</span>) {<br/>
+
+<span class="in3"></span>++<span class="var">i</span>;<br/>
+
+<span class="in2"></span>}<br/>
+
+<span class="in2"></span><span class="keyword">return</span> <span class="var">i</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
+<div><div>
+<code>
+
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_macro</span>(<span class="type">Frag</span> *&amp;<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+
+<span class="in2"></span><span class="type">char</span> <span class="var">openCh</span>{*<span class="var">i</span>};<br/>
+
+<span class="in2"></span><span class="var">i</span> += <span class="num">2</span>;<br/>
+
+<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">i</span>, <span class="var">e</span>};<br/>
+
+<span class="in2"></span><span class="macro">@expand(<span class="name">process frag name</span>)</span>;<br/>
+
+<span class="in1"></span>}<br/>
+
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+
+</code>
+</div>
+
+
+</div>
 <div><div>
 <code>
 
@@ -668,25 +776,6 @@
 
 <span class="macro">@add(<span class="name">additional read vars</span>)</span><br/>
 
-<span class="in1"></span><span class="type">char</span> <span class="var">openCh</span> { <span class="str">'\0'</span> };<br/>
-
-<span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Das Zeichenvor einer öffnenden Mengenklammer wird in <code>openCh</code>
-  zwischengespeichert
-</li><li>
- Es beschreibt, welcher Befehl ausgeführt werden soll
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">additional read vars</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Buf</span> <span class="var">name</span>;<br/>
 
 <span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
@@ -696,94 +785,6 @@
 
 <ul><li>
  Wenn <code>name</code> aktiv ist, dann wird ein Name in Buffer gelesen
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@def(<span class="name">process close brace</span>)</span> {<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">active</span>()) {<br/>
-
-<span class="in2"></span><span class="macro">@expand(<span class="name">process frag name</span>)</span>;<br/>
-
-<span class="in2"></span><span class="var">name</span>.<span class="fn">clear</span>();<br/>
-
-<span class="in2"></span><span class="var">last</span> = <span class="var">ch</span>;<br/>
-
-<span class="in2"></span><span class="var">ch</span> = <span class="var">inputs</span>.<span class="fn">get</span>();<br/>
-
-<span class="in1"></span>}<br/>
-
-} <span class="macro">@end(<span class="name">process close brace</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Bei einer schließenden Mengenklammer wird der Befehls-Name ausgewertet
-</li><li>
- Danach wird der Namenszeiger zurückgesetzt
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@def(<span class="name">process other char</span>)</span> {<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">active</span>()) {<br/>
-
-<span class="in2"></span><span class="var">name</span>.<span class="fn">add</span>(<br/>
-
-<span class="in3"></span><span class="var">ch</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in2"></span><span class="keyword">break</span>;<br/>
-
-<span class="in1"></span>}<br/>
-
-} <span class="macro">@end(<span class="name">process other char</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn ein Name geparst wird, dann der Namensbuffer entsprechend
-  erweitert
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">process other char</span>)</span> {<br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<br/>
-
-<span class="in3"></span><span class="var">last</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-} <span class="macro">@end(<span class="name">process other char</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn es ein aktuelles Fragment gibt, dann müssen sonstige Zeichen dort
-  angefügt werden
 </li></ul></div>
 
 <div><div>
@@ -815,19 +816,15 @@
 
 <span class="in1"></span>};<br/>
 
-<span class="in1"></span><span class="type">char</span> <span class="var">lastCh</span> =<br/>
-
-<span class="in2"></span><span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">last</span>);<br/>
-
 <span class="in1"></span><span class="type">bool</span> <span class="var">found</span> {<br/>
 
-<span class="in2"></span><span class="var">valids</span>.<span class="fn">find</span>(<span class="var">lastCh</span>) !=<br/>
+<span class="in2"></span><span class="var">valids</span>.<span class="fn">find</span>(*<span class="var">i</span>) !=<br/>
 
 <span class="in3"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span><br/>
 
 <span class="in1"></span>};<br/>
 
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> &amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> &amp;&amp; <span class="var">blockLimit</span> &gt; <span class="num">0</span>) {<br/>
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">start block</span>)</span>;<br/>
 
@@ -854,13 +851,9 @@
 
 <span class="macro">@def(<span class="name">start block</span>)</span><br/>
 
-<span class="in1"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
-
-<span class="in1"></span><span class="var">name</span>.<span class="fn">activate</span>();<br/>
-
 <span class="in1"></span>--<span class="var">blockLimit</span>;<br/>
 
-<span class="in1"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
 <span class="macro">@end(<span class="name">start block</span>)</span><br/>
 
@@ -888,11 +881,11 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="var">frag</span> = &amp;(*<span class="var">fm</span>)[<span class="var">name</span>.<span class="fn">str</span>()];<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;(*<span class="var">fm</span>)[<span class="var">name</span>];<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -922,11 +915,11 @@
 
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 
-<span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">name</span>.<span class="fn">str</span>()];<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">name</span>];<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -946,13 +939,13 @@
 
 <span class="macro">@def(<span class="name">check for double def</span>)</span><br/>
 
-<span class="in1"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>.<span class="fn">str</span>());<br/>
+<span class="in1"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 
 <span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>() &lt;&lt;<br/>
+<span class="in3"></span><span class="var">name</span> &lt;&lt;<br/>
 
 <span class="in3"></span><span class="str">"] already defined\n"</span>;<br/>
 
@@ -990,11 +983,11 @@
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { <span class="var">fm</span> };<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>.<span class="fn">str</span>());<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">check for add w/o def</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1022,11 +1015,11 @@
 
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { &amp;<span class="var">root</span> };<br/>
 
-<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>.<span class="fn">str</span>());<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span><span class="macro">@multiple(<span class="name">check for add w/o def</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1048,13 +1041,13 @@
 
 <span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>() &lt;&lt;<br/>
+<span class="in3"></span><span class="var">name</span> &lt;&lt;<br/>
 
 <span class="in3"></span><span class="str">"] not defined\n"</span>;<br/>
 
 <span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">fm</span>-&gt;<span class="fn">get</span>(<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>(), *<span class="var">ins</span><br/>
+<span class="in3"></span><span class="var">name</span>, *<span class="var">ins</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1084,19 +1077,19 @@
 
 <span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>()<br/>
+<span class="in3"></span><span class="var">name</span><br/>
 
 <span class="in2"></span>]);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"frag "</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>() &lt;&lt; <span class="str">" not defined"</span><br/>
+<span class="in3"></span><span class="var">name</span> &lt;&lt; <span class="str">" not defined"</span><br/>
 
 <span class="in2"></span>);<br/>
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">clear</span>();<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1126,13 +1119,13 @@
 
 <span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>(), <span class="var">root</span><br/>
+<span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
 
 <span class="in2"></span>);<br/>
 
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"frag "</span> &lt;&lt;<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>() &lt;&lt;<br/>
+<span class="in3"></span><span class="var">name</span> &lt;&lt;<br/>
 
 <span class="in3"></span><span class="str">" not defined"</span><br/>
 
@@ -1140,7 +1133,7 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">clear</span>();<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1168,11 +1161,9 @@
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">frag names must match</span>)</span>;<br/>
 
-<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in2"></span><span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1190,9 +1181,9 @@
 
 <span class="macro">@def(<span class="name">frag names must match</span>)</span><br/>
 
-<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">name</span>.<span class="fn">str</span>(),<br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">name</span>,<br/>
 
-<span class="in2"></span><span class="str">"closing ["</span> &lt;&lt; <span class="var">name</span>.<span class="fn">str</span>() &lt;&lt;<br/>
+<span class="in2"></span><span class="str">"closing ["</span> &lt;&lt; <span class="var">name</span> &lt;&lt;<br/>
 
 <span class="in2"></span><span class="str">"] != ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
 
@@ -1221,13 +1212,13 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">inputs</span>.<span class="fn">has</span>(<span class="var">name</span>.<span class="fn">str</span>())) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">inputs</span>.<span class="fn">has</span>(<span class="var">name</span>)) {<br/>
 
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">name</span>.<span class="fn">str</span>());<br/>
+<span class="in3"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">name</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1256,11 +1247,9 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>()<br/>
+<span class="in3"></span><span class="var">name</span><br/>
 
 <span class="in2"></span>];<br/>
 
@@ -1270,7 +1259,7 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1298,11 +1287,9 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>(), <span class="var">root</span><br/>
+<span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
 
 <span class="in2"></span>);<br/>
 
@@ -1312,7 +1299,7 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1374,11 +1361,9 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>()<br/>
+<span class="in3"></span><span class="var">name</span><br/>
 
 <span class="in2"></span>] };<br/>
 
@@ -1388,7 +1373,7 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1415,11 +1400,9 @@
 
 <span class="in2"></span>);<br/>
 
-<span class="in2"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
 
-<span class="in3"></span><span class="var">name</span>.<span class="fn">str</span>(), <span class="var">root</span><br/>
+<span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
 
 <span class="in2"></span>) };<br/>
 
@@ -1429,7 +1412,7 @@
 
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1482,7 +1465,7 @@
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">process private frag</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1526,7 +1509,7 @@
 
 <span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span> +<br/>
 
-<span class="in3"></span><span class="str">':'</span> + <span class="var">name</span>.<span class="fn">str</span>()) &amp;<br/>
+<span class="in3"></span><span class="str">':'</span> + <span class="var">name</span>) &amp;<br/>
 
 <span class="in4"></span><span class="num">0x7fffffff</span><br/>
 
@@ -1550,15 +1533,13 @@
 
 <span class="macro">@add(<span class="name">process private frag</span>)</span><br/>
 
-<span class="in1"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">hashed</span>;<br/>
 
 <span class="in1"></span><span class="var">hashed</span> &lt;&lt; <span class="str">"_private_"</span> &lt;&lt;<br/>
 
 <span class="in2"></span><span class="var">cur</span> &lt;&lt; <span class="str">'_'</span> &lt;&lt;<br/>
 
-<span class="in2"></span><span class="var">name</span>.<span class="fn">str</span>();<br/>
+<span class="in2"></span><span class="var">name</span>;<br/>
 
 <span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 
@@ -1566,7 +1547,7 @@
 
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
 
-<span class="in2"></span><span class="var">name</span>.<span class="fn">startLine</span>()<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
 
 <span class="in1"></span>);<br/>
 
@@ -1602,7 +1583,7 @@
 
 <span class="in2"></span><span class="macro">@expand(<span class="name">process magic frag</span>)</span>;<br/>
 
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1629,7 +1610,7 @@
 
 <span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span> +<br/>
 
-<span class="in3"></span><span class="str">':'</span> + <span class="var">name</span>.<span class="fn">str</span>()) &amp;<br/>
+<span class="in3"></span><span class="str">':'</span> + <span class="var">name</span>) &amp;<br/>
 
 <span class="in4"></span><span class="num">0x7fffffff</span><br/>
 
@@ -1649,13 +1630,9 @@
 
 <span class="macro">@add(<span class="name">process magic frag</span>)</span><br/>
 
-<span class="in1"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
-
 <span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">value</span>;<br/>
 
 <span class="in1"></span><span class="var">value</span> &lt;&lt; <span class="var">cur</span>;<br/>
-
-<span class="in1"></span><span class="macro">@multiple(<span class="name">flush frag buffer</span>)</span>;<br/>
 
 <span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 
@@ -1681,47 +1658,11 @@
 <div><div>
 <code>
 
-<span class="macro">@def(<span class="name">flush frag buffer</span>)</span><br/>
-
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">buffer</span>.<span class="fn">empty</span>()) {<br/>
-
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">buffer</span>);<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">clear</span>();<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">flush frag buffer</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Das Fragment fügt alle Bytes im Buffer an ein Fragment an
-</li><li>
- Danach wird der Buffer zurück gesetzt
-</li></ul></div>
-
-<div><div>
-<code>
-
 <span class="macro">@add(<span class="name">process open brace</span>)</span> {<br/>
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
-<span class="in2"></span><span class="type">bool</span> <span class="var">valid</span> { <span class="num">false</span> };<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">check valid names</span>)</span>;<br/>
-
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">valid</span>) {<br/>
-
-<span class="in3"></span><span class="var">openCh</span> = <span class="var">last</span>;<br/>
-
-<span class="in3"></span><span class="var">name</span>.<span class="fn">activate</span>();<br/>
-
-<span class="in3"></span><span class="keyword">break</span>;<br/>
-
-<span class="in2"></span>}<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1754,7 +1695,7 @@
 
 <span class="in2"></span><span class="var">valids</span>.<span class="fn">find</span>(<br/>
 
-<span class="in3"></span><span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(<span class="var">last</span>)<br/>
+<span class="in3"></span><span class="var">static_cast</span>&lt;<span class="type">char</span>&gt;(*<span class="var">i</span>)<br/>
 
 <span class="in2"></span>) != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span><br/>
 
@@ -1762,7 +1703,7 @@
 
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span>) {<br/>
 
-<span class="in2"></span><span class="var">valid</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 
 <span class="in1"></span>}<br/>
 
@@ -1782,19 +1723,15 @@
 
 <span class="macro">@add(<span class="name">process frag name</span>)</span><br/>
 
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">processed</span>) {<br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
 
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="str">"unknown frag "</span> &lt;&lt; <span class="var">name</span><br/>
 
-<span class="in3"></span><span class="str">"unknown frag "</span> &lt;&lt; <span class="var">name</span>.<span class="fn">str</span>()<br/>
+<span class="in1"></span>);<br/>
 
-<span class="in2"></span>);<br/>
+<span class="in1"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">name</span>.<span class="fn">end</span>());<br/>
 
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">name</span>);<br/>
-
-<span class="in2"></span><span class="var">processed</span> = <span class="num">true</span>;<br/>
-
-<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="keyword">return</span>;<br/>
 
 <span class="macro">@end(<span class="name">process frag name</span>)</span><br/>
 
@@ -1806,67 +1743,6 @@
   befehlsähnliche Eingabe Teil des Programms
 </li><li>
  Und wird daher in den entsprechenden Buffer kopiert
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">process open brace</span>)</span><br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<br/>
-
-<span class="in3"></span><span class="var">last</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">process open brace</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn wir uns in einem Fragment befinden und bis hier gekommen sind,
-  dann wird das Zeichen vor der öffnenden Klammer zum Fragment hinzu
-  gefügt
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">process close brace</span>)</span><br/>
-
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span> &amp;&amp; ! <span class="var">processed</span>) {<br/>
-
-<span class="in2"></span><span class="var">buffer</span>.<span class="fn">add</span>(<br/>
-
-<span class="in3"></span><span class="var">last</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
-
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
-
-<span class="in2"></span>);<br/>
-
-<span class="in1"></span>}<br/>
-
-<span class="macro">@end(<span class="name">process close brace</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn schließende Mengenklammern nicht Teil eines Befehls sind, können
-  sie Teil des Programms sein
-</li><li>
- Und werden daher zum Buffer direkt hinzugefügt
 </li></ul></div>
 
 </div>

@@ -241,13 +241,24 @@ x{process arguments}
 ```
 d{read source file} {
 	e{additional read vars};
-	int last { inputs.get() };
-	int ch {
-		last != EOF ? inputs.get() : EOF
-	};
-	while (ch != EOF) {
-		e{process current char};
-		last = ch; ch = inputs.get();
+	std::string line;
+
+	while (inputs.getLine(line)) {
+		auto end = line.end();
+		for (auto i = line.begin(); i != end; ++i) {
+			if (is_macro_start(frag, i, end)) {
+				auto j = find_macro_end(i, end);
+				if (j != end) {
+					process_chars(frag, line.begin(), i);
+					process_macro(frag, i, j);
+					process_chars(frag, j, end);
+					break;
+				}
+			} else {
+				process_chars(frag, i, i + 1);
+			}
+		}
+		process_char(frag, '\n');
 	}
 } x{read source file}
 ```
@@ -255,26 +266,65 @@ d{read source file} {
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
   schon das erste Zeichen ein `EOF` ist)
 
+
 ```
-d{process current char}
-	switch (ch) {
-		case '{':
-			e{process open brace};
-			break;
-		case '}': {
-			bool processed { false };
-			e{process close brace};
-			break;
+a{global elements}
+	void process_char(const Frag *frag, char ch) {
+		if (frag) {
+			Buf buffer;
+			buffer.add(
+				ch,
+				inputs.cur()->name,
+				inputs.cur()->line()
+			);
 		}
-		default:
-			e{process other char};
 	}
-x{process current char}
+x{global elements}
 ```
-* Beim Parsen kommt es nur auf das Öffnen und Schließen von
-  Mengenklammern an
-* Diese bestimmen den Anfang und das Ende von Befehls-Sequenzen
-* Welche die Bearbeitung der sonstigen Zeichen steuern
+
+```
+a{global elements}
+	void process_chars(const Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
+		for (; i != e; ++i) {
+			process_char(frag, *i);
+		}
+	}
+x{global elements}
+```
+
+```
+a{global elements}
+	bool is_macro_start(const Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
+		auto n = i + 1;
+		if (n >= e) { return false; }
+		if (*n != '{') { return false; }
+		e{process open brace};
+		return false;
+	}
+x{global elements}
+```
+
+```
+a{global elements}
+	std::string::const_iterator find_macro_end(std::string::const_iterator i, std::string::const_iterator e) {
+		while (i != e && *i != '}') {
+			++i;
+		}
+		return i;
+	}
+x{global elements}
+```
+
+```
+a{global elements}
+	void process_macro(Frag *&frag, std::string::const_iterator i, std::string::const_iterator e) {
+		char openCh{*i};
+		i += 2;
+		std::string name {i, e};
+		e{process frag name};
+	}
+x{global elements}
+```
 
 ```
 d{additional read vars}
@@ -290,61 +340,10 @@ x{additional read vars}
 
 ```
 a{additional read vars}
-	char openCh { '\0' };
-x{additional read vars}
-```
-* Das Zeichenvor einer öffnenden Mengenklammer wird in `openCh`
-  zwischengespeichert
-* Es beschreibt, welcher Befehl ausgeführt werden soll
-
-```
-a{additional read vars}
 	Buf name;
 x{additional read vars}
 ```
 * Wenn `name` aktiv ist, dann wird ein Name in Buffer gelesen
-
-```
-d{process close brace} {
-	if (name.active()) {
-		e{process frag name};
-		name.clear();
-		last = ch;
-		ch = inputs.get();
-	}
-} x{process close brace}
-```
-* Bei einer schließenden Mengenklammer wird der Befehls-Name ausgewertet
-* Danach wird der Namenszeiger zurückgesetzt
-
-```
-d{process other char} {
-	if (name.active()) {
-		name.add(
-			ch,
-			inputs.cur()->name,
-			inputs.cur()->line()
-		);
-		break;
-	}
-} x{process other char}
-```
-* Wenn ein Name geparst wird, dann der Namensbuffer entsprechend
-  erweitert
-
-```
-a{process other char} {
-	if (frag) {
-		buffer.add(
-			last,
-			inputs.cur()->name,
-			inputs.cur()->line()
-		);
-	}
-} x{process other char}
-```
-* Wenn es ein aktuelles Fragment gibt, dann müssen sonstige Zeichen dort
-  angefügt werden
 
 ```
 d{process open brace}
@@ -359,13 +358,11 @@ d{may start block}
 	static const std::string valids {
 		"aAdDirR"
 	};
-	char lastCh =
-		static_cast<char>(last);
 	bool found {
-		valids.find(lastCh) !=
+		valids.find(*i) !=
 			std::string::npos
 	};
-	if (found && blockLimit != 0) {
+	if (found && blockLimit > 0) {
 		e{start block};
 	}
 x{may start block}
@@ -379,10 +376,8 @@ x{may start block}
 
 ```
 d{start block}
-	openCh = last;
-	name.activate();
 	--blockLimit;
-	break;
+	return true;
 x{start block}
 ```
 
@@ -395,9 +390,9 @@ d{process frag name}
 		};
 		E{check for double def};
 		if (! frag) {
-			frag = &(*fm)[name.str()];
+			frag = &(*fm)[name];
 		}
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -411,9 +406,9 @@ a{process frag name}
 		FragMap *fm { frags };
 		E{check for double def};
 		if (! frag) {
-			frag = &root[name.str()];
+			frag = &root[name];
 		}
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -422,10 +417,10 @@ x{process frag name}
 
 ```
 d{check for double def}
-	frag = fm->find(name.str());
+	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
-			name.str() <<
+			name <<
 			"] already defined\n";
 	}
 x{check for double def}
@@ -443,9 +438,9 @@ a{process frag name}
 			&inputs.cur()->frags
 		};
 		FragMap *ins { fm };
-		frag = fm->find(name.str());
+		frag = fm->find(name);
 		E{check for add w/o def};
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -458,9 +453,9 @@ a{process frag name}
 		ASSERT_MSG(! frag, "add in frag");
 		FragMap *fm { frags };
 		FragMap *ins { &root };
-		frag = fm->find(name.str());
+		frag = fm->find(name);
 		E{check for add w/o def};
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -470,10 +465,10 @@ x{process frag name}
 d{check for add w/o def}
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
-			name.str() <<
+			name <<
 			"] not defined\n";
 		frag = &fm->get(
-			name.str(), *ins
+			name, *ins
 		);
 	}
 x{check for add w/o def}
@@ -487,13 +482,13 @@ a{process frag name}
 			"replace in frag"
 		);
 		frag = &(inputs.cur()->frags[
-			name.str()
+			name
 		]);
 		ASSERT_MSG(frag, "frag " <<
-			name.str() << " not defined"
+			name << " not defined"
 		);
 		frag->clear();
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -507,14 +502,14 @@ a{process frag name}
 			"replace in frag"
 		);
 		frag = &frags->get(
-			name.str(), root
+			name, root
 		);
 		ASSERT_MSG(frag, "frag " <<
-			name.str() <<
+			name <<
 			" not defined"
 		);
 		frag->clear();
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -527,9 +522,8 @@ a{process frag name}
 			"end not in frag"
 		);
 		e{frag names must match};
-		E{flush frag buffer};
 		frag = nullptr;
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -537,8 +531,8 @@ x{process frag name}
 
 ```
 d{frag names must match}
-	ASSERT_MSG(frag->name == name.str(),
-		"closing [" << name.str() <<
+	ASSERT_MSG(frag->name == name,
+		"closing [" << name <<
 		"] != [" << frag->name << ']'
 	);
 x{frag names must match}
@@ -552,10 +546,10 @@ a{process frag name}
 		ASSERT_MSG(! frag,
 			"include in frag"
 		);
-		if (! inputs.has(name.str())) {
-			inputs.push(name.str());
+		if (! inputs.has(name)) {
+			inputs.push(name);
 		}
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -569,14 +563,13 @@ a{process frag name}
 		ASSERT_MSG(frag,
 			"expand not in frag"
 		);
-		E{flush frag buffer};
 		Frag &sub = inputs.cur()->frags[
-			name.str()
+			name
 		];
 		E{check frag ex. count};
 		sub.addExpand();
 		frag->add(&sub);
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -589,14 +582,13 @@ a{process frag name}
 		ASSERT_MSG(frag,
 			"expand not in frag"
 		);
-		E{flush frag buffer};
 		Frag &sub = frags->get(
-			name.str(), root
+			name, root
 		);
 		E{check frag ex. count};
 		sub.addExpand();
 		frag->add(&sub);
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -626,14 +618,13 @@ a{process frag name}
 		ASSERT_MSG(frag,
 			"multiple not in frag"
 		);
-		E{flush frag buffer};
 		Frag &sub { inputs.cur()->frags[
-			name.str()
+			name
 		] };
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -646,14 +637,13 @@ a{process frag name}
 		ASSERT_MSG(frag,
 			"multiple not in frag"
 		);
-		E{flush frag buffer};
 		Frag &sub { frags->get(
-			name.str(), root
+			name, root
 		) };
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -678,7 +668,7 @@ a{process frag name}
 			"private not in frag"
 		);
 		e{process private frag};
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -698,7 +688,7 @@ d{process private frag}
 	std::hash<std::string> h;
 	unsigned cur {
 		h(inputs.cur()->name +
-			':' + name.str()) &
+			':' + name) &
 				0x7fffffff
 	};
 x{process private frag}
@@ -709,15 +699,14 @@ x{process private frag}
 
 ```
 a{process private frag}
-	E{flush frag buffer};
 	std::ostringstream hashed;
 	hashed << "_private_" <<
 		cur << '_' <<
-		name.str();
+		name;
 	frag->add(
 		hashed.str(),
 		inputs.cur()->name,
-		name.startLine()
+		inputs.cur()->line()
 	);
 x{process private frag}
 ```
@@ -734,7 +723,7 @@ a{process frag name}
 			"magic not in frag"
 		);
 		e{process magic frag};
-		processed = true;
+		return;
 	}
 x{process frag name}
 ```
@@ -747,7 +736,7 @@ d{process magic frag}
 	std::hash<std::string> h;
 	unsigned cur {
 		h(inputs.cur()->name +
-			':' + name.str()) &
+			':' + name) &
 				0x7fffffff
 	};
 x{process magic frag}
@@ -756,10 +745,8 @@ x{process magic frag}
 
 ```
 a{process magic frag}
-	E{flush frag buffer};
 	std::ostringstream value;
 	value << cur;
-	E{flush frag buffer};
 	frag->add(
 		value.str(),
 		inputs.cur()->name,
@@ -771,26 +758,9 @@ x{process magic frag}
 * Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 
 ```
-d{flush frag buffer}
-	if (! buffer.empty()) {
-		frag->add(buffer);
-		buffer.clear();
-	}
-x{flush frag buffer}
-```
-* Das Fragment fügt alle Bytes im Buffer an ein Fragment an
-* Danach wird der Buffer zurück gesetzt
-
-```
 a{process open brace} {
 	if (frag) {
-		bool valid { false };
 		e{check valid names};
-		if (valid) {
-			openCh = last;
-			name.activate();
-			break;
-		}
 	}
 } x{process open brace}
 ```
@@ -807,11 +777,11 @@ d{check valid names}
 	};
 	bool found {
 		valids.find(
-			static_cast<char>(last)
+			static_cast<char>(*i)
 		) != std::string::npos
 	};
 	if (found) {
-		valid = true;
+		return true;
 	}
 x{check valid names}
 ```
@@ -820,48 +790,16 @@ x{check valid names}
 
 ```
 a{process frag name}
-	if (! processed) {
-		ASSERT_MSG(frag,
-			"unknown frag " << name.str()
-		);
-		buffer.add(name);
-		processed = true;
-	}
+	ASSERT_MSG(frag,
+		"unknown frag " << name
+	);
+	process_chars(frag, name.begin(), name.end());
+	return;
 x{process frag name}
 ```
 * Wenn kein bekannter Befehl erkannt wurde, dann ist die
   befehlsähnliche Eingabe Teil des Programms
 * Und wird daher in den entsprechenden Buffer kopiert
-
-```
-a{process open brace}
-	if (frag) {
-		buffer.add(
-			last,
-			inputs.cur()->name,
-			inputs.cur()->line()
-		);
-	}
-x{process open brace}
-```
-* Wenn wir uns in einem Fragment befinden und bis hier gekommen sind,
-  dann wird das Zeichen vor der öffnenden Klammer zum Fragment hinzu
-  gefügt
-
-```
-a{process close brace}
-	if (frag && ! processed) {
-		buffer.add(
-			last,
-			inputs.cur()->name,
-			inputs.cur()->line()
-		);
-	}
-x{process close brace}
-```
-* Wenn schließende Mengenklammern nicht Teil eines Befehls sind, können
-  sie Teil des Programms sein
-* Und werden daher zum Buffer direkt hinzugefügt
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien

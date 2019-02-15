@@ -26,9 +26,9 @@ x{global elements}
 ```
 * Die `Input`-Klasse enthält den Dateinamen der Eingabe-Dateien
 * Zusätzlich kann sie eine offene Datei enthalten
-* Alle Eingabe-Dateien, die während einer Inklude-Kaskade eingebunden
-  werden bleiben offen, damit an der richtigen Stelle weiter gearbeitet
-  werden kann
+* Alle Eingabe-Dateien, die während einer Inkludierungs-Kaskade
+  eingebunden werden bleiben offen, damit an der richtigen Stelle weiter
+  gearbeitet werden kann
 * Weiter Attribute und Methoden können später definiert werden
 
 ```
@@ -48,22 +48,19 @@ x{input methods}
 
 ```
 a{input methods}
-	int next() {
-		int ch { EOF };
+	bool getLine(std::string &line) {
 		if (file.is_open()) {
-			ch = file.get();
-			e{preprocess};
-			if (! file.good()) {
+			if (std::getline(file, line)) {
+				e{line read};
+				return true;
+			} else {
 				file.close();
 			}
 		}
-		return ch;
+		return false;
 	}
 x{input methods}
 ```
-* `next` liefert das nächste Zeichen aus der Datei
-* Wenn das Ende erreicht ist, wird `EOF` zurück gegeben
-* Und die Datei geschlossen
 
 ```
 A{global elements}
@@ -166,20 +163,17 @@ x{push to pending}
 
 ```
 a{inputs methods}
-	int get() {
-		int ch { EOF };
+	bool getLine(std::string &line) {
 		while (_input) {
-			ch = _input->next();
-			if (ch != EOF) { break; }
+			if (_input->getLine(line)) {
+				return true;
+			}
 			e{get next input file};
 		}
-		return ch;
+		return false;
 	}
 x{inputs methods}
 ```
-* Wenn kein `EOF` gelesen wurde, dann wird das Zeichen zurück
-  geliefert
-* Ansonsten wird aus der nächsten Datei ein Zeichen gelesen
 
 ```
 d{get next input file}
@@ -248,7 +242,6 @@ x{init additional input fields}
 ```
 d{private input elements}
 	int _line;
-	bool _shouldAdd;
 x{private input elements}
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
@@ -258,7 +251,6 @@ x{private input elements}
 ```
 d{private input constr}
 	_line { 0 },
-	_shouldAdd { true },
 x{private input constr}
 ```
 
@@ -271,9 +263,8 @@ x{input methods}
 ```
 
 ```
-d{preprocess}
-	if (_shouldAdd) { ++_line; }
-	_shouldAdd = (ch == '\n');
-x{preprocess}
+d{line read}
+	++_line;
+x{line read}
 ```
 
