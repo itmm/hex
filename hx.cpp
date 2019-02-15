@@ -585,7 +585,7 @@
 
 	Inputs inputs;
 
-	void process_char(const Frag *frag, char ch) {
+	void process_char(Frag *frag, char ch) {
 		if (frag) {
 			Buf buffer;
 			buffer.add(
@@ -593,10 +593,11 @@
 				inputs.cur()->name,
 				inputs.cur()->line()
 			);
+			frag->add(buffer);
 		}
 	}
 
-	void process_chars(const Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
+	void process_chars(Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
 		for (; i != e; ++i) {
 			process_char(frag, *i);
 		}
@@ -1393,9 +1394,6 @@
 	 {
 	
 	Frag *frag { nullptr };
-	Buf buffer;
-
-	Buf name;
 ;
 	std::string line;
 

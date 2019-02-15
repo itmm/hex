@@ -269,7 +269,7 @@ d{read source file} {
 
 ```
 a{global elements}
-	void process_char(const Frag *frag, char ch) {
+	void process_char(Frag *frag, char ch) {
 		if (frag) {
 			Buf buffer;
 			buffer.add(
@@ -277,6 +277,7 @@ a{global elements}
 				inputs.cur()->name,
 				inputs.cur()->line()
 			);
+			frag->add(buffer);
 		}
 	}
 x{global elements}
@@ -284,7 +285,7 @@ x{global elements}
 
 ```
 a{global elements}
-	void process_chars(const Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
+	void process_chars(Frag *frag, std::string::const_iterator i, std::string::const_iterator e) {
 		for (; i != e; ++i) {
 			process_char(frag, *i);
 		}
@@ -329,7 +330,6 @@ x{global elements}
 ```
 d{additional read vars}
 	Frag *frag { nullptr };
-	Buf buffer;
 x{additional read vars}
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
@@ -337,13 +337,6 @@ x{additional read vars}
   gelesen wird
 * Am Anfang sind wir außerhalb eines Code-Blocks
 * In einem Code-Block ist `frag` nicht `nullptr`
-
-```
-a{additional read vars}
-	Buf name;
-x{additional read vars}
-```
-* Wenn `name` aktiv ist, dann wird ein Name in Buffer gelesen
 
 ```
 d{process open brace}

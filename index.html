@@ -623,7 +623,7 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">char</span> <span class="var">ch</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">char</span> <span class="var">ch</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 
@@ -638,6 +638,8 @@
 <span class="in4"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
 
 <span class="in3"></span>);<br/>
+
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">buffer</span>);<br/>
 
 <span class="in2"></span>}<br/>
 
@@ -655,7 +657,7 @@
 
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">i</span>, <span class="var">std</span>::<span class="var">string</span>::<span class="var">const_iterator</span> <span class="var">e</span>) {<br/>
 
 <span class="in2"></span><span class="keyword">for</span> (; <span class="var">i</span> != <span class="var">e</span>; ++<span class="var">i</span>) {<br/>
 
@@ -753,8 +755,6 @@
 
 <span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> { <span class="num">nullptr</span> };<br/>
 
-<span class="in1"></span><span class="type">Buf</span> <span class="var">buffer</span>;<br/>
-
 <span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
 
 </code>
@@ -769,22 +769,6 @@
  Am Anfang sind wir außerhalb eines Code-Blocks
 </li><li>
  In einem Code-Block ist <code>frag</code> nicht <code>nullptr</code>
-</li></ul></div>
-
-<div><div>
-<code>
-
-<span class="macro">@add(<span class="name">additional read vars</span>)</span><br/>
-
-<span class="in1"></span><span class="type">Buf</span> <span class="var">name</span>;<br/>
-
-<span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
-
-</code>
-</div>
-
-<ul><li>
- Wenn <code>name</code> aktiv ist, dann wird ein Name in Buffer gelesen
 </li></ul></div>
 
 <div><div>
