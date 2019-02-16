@@ -938,8 +938,6 @@
 		inSlide,
 		afterSlide
 		
-	, inHeader
-
 	, inCode
 
 	, inNotes
@@ -951,60 +949,23 @@
 	HtmlStatus();
 	HtmlState state;
 
-	int headerLevel;
-	std::string headerName;
-	HtmlState headerState;
-
-	int codeOpening;
-
-	int codeIndent;
-
-	char codeSpecial;
-	Buf name;
-
-	bool noteInCode;
-	bool noteInBold;
-
 	};
 
 	inline HtmlStatus::HtmlStatus():
 		state {
 			HtmlState::nothingWritten
 		}
-		
-	, headerLevel { 0 }
-	, headerName {}
-
-	, codeOpening { 0 }
-	, codeIndent { 0 }
-	, codeSpecial { '\0' }
-	, name {}
-
-	, noteInCode { false }
-	, noteInBold { false }
-
 	{ }
 
-	bool isOutOfHtmlSpecial(
+	bool in_code(
 		HtmlStatus *s
 	) {
 		
-	if (
-		s->state ==
-			HtmlState::inHeader
-	) {
-		return false;
-	}
-
 	if (s->state == HtmlState::inCode) {
-		return false;
-	}
-
-	if (s->state == HtmlState::inNotes) {
-		return false;
+		return true;
 	}
 ;
-		return true;
+		return false;
 	}
  
 	void writeOneEscaped(
@@ -1036,6 +997,7 @@
 		}
 	}
 
+	
 	void escapeIdent(
 		std::ostream &out,
 		const char *cls,
@@ -1098,25 +1060,287 @@
 		return reserved.find(s) != reserved.end();
 	}
 
+	void process_ident(std::ostream &out, const std::string ident, char w) {
+		if (w == '(') {
+			escapeIdent(out, "fn", ident);
+		} else if (isKeyword(ident)) {
+			escapeIdent(out, "keyword", ident);
+		} else if (isType(ident)) {
+			escapeIdent(out, "type", ident);
+		} else if (isNum(ident)) {
+			escapeIdent(out, "num", ident);
+		} else {
+			escapeIdent(out, "var", ident);
+		}
+	}
+
 	void writeMacroClass(
 		std::ostream &out,
-		HtmlStatus &status,
-		const char *name,
-		char special
+		const char *name
 	) {
 		out << "<span class=\"" << name << "\">";
-		status.codeSpecial = special;
-		status.name.clear(true);
 	}
 
 	void writeMacroHeader(
 		std::ostream &out,
-		HtmlStatus &status,
-		const char *name,
-		char special
+		const char *name
 	) {
-		writeMacroClass(out, status, "macro", special);
+		writeMacroClass(out, "macro");
 		out << '@' << name << "(<span class=\"name\">";
+	}
+;
+	void process_code(std::ostream &out, SI begin, SI end) {
+		
+	int indent = 0;
+	while (
+		begin != end && *begin == '\t'
+	) {
+		++indent; ++begin;
+	}
+	if (indent) {
+		out << "<span class=\"in"
+			<< indent
+			<< "\"></span>";
+	}
+
+	for (; begin != end; ++begin) {
+		
+	if (*begin == '`' || *begin == '\'' || *begin == '"') {
+		
+	auto w = begin + 1;
+	while (w != end && *w != *begin) {
+		if (*w == '\x5c') {
+			++w;
+			if (w == end) { break; }
+		}
+		++w;
+	}
+	if (w == end) {
+		writeOneEscaped(out, *begin);
+		continue;
+	}
+
+	std::string name {begin, w + 1};
+	out << "<span class=\"str\">";
+	writeEscaped(out, name);
+	out << "</span>";
+	begin = w;
+;
+		continue;
+	}
+
+	auto w = begin;
+	while (w != end && (std::isalnum(*w) || *w == '_')) {
+		++w;
+	}
+
+	if (w != begin) {
+		std::string ident {begin, w};
+		begin = w - 1;
+		if (w != end && *w == '{') {
+			
+	auto q = w + 1;
+	while (q != end && *q != '}') {
+		++q;
+	}
+	if (q == end) {
+		writeEscaped(out, ident);
+		writeOneEscaped(out, '{');
+		begin = w;
+	} else {
+		std::string name {w + 1, q};
+		
+	if (ident == "i") {
+		auto ext = name.find_last_of('.');
+		ASSERT_MSG(ext != std::string::npos,
+			"no period"
+		);
+		writeMacroHeader(out, "include");
+		out << "<a href=\"" 
+			<< name.substr(0, ext) << ".html\">";
+		out << name << "</a></span>)</span>";
+		begin = q;
+	}
+
+	else if (ident == "d") {
+		writeMacroHeader(out, "def");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "D") {
+		writeMacroHeader(out, "globdef");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "a") {
+		writeMacroHeader(out, "add");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "A") {
+		writeMacroHeader(out, "globadd");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "r") {
+		writeMacroHeader(out, "replace");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "R") {
+		writeMacroHeader(out, "globreplace");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "x") {
+		writeMacroHeader(out, "end");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "e") {
+		writeMacroHeader(out, "expand");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "E") {
+		writeMacroHeader(out, "multiple");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "g") {
+		writeMacroHeader(out, "globexpand");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "G") {
+		writeMacroHeader(out, "globmult");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "t") {
+		writeMacroClass(out, "type");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
+
+	else if (ident == "v") {
+		writeMacroClass(out, "var");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
+
+	else if (ident == "f") {
+		writeMacroClass(out, "fn");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
+
+	else if (ident == "k") {
+		writeMacroClass(out, "keyword");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
+
+	else if (ident == "s") {
+		writeMacroClass(out, "str");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
+
+	else if (ident == "n") {
+		writeMacroClass(out, "num");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
+
+	else if (ident == "p") {
+		writeMacroClass(out, "var");
+		out << "@priv(<span>";
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "m") {
+		writeMacroClass(out, "var");
+		out << "@magic(<span>";
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+
+	else if (ident == "b") {
+		writeMacroClass(out, "virt");
+		out << "</span><br/>";
+	}
+
+	else {
+		process_ident(out, ident, '{');
+		writeOneEscaped(out, '{');
+		q = w + 1;
+	}
+;
+		begin = q;
+	}
+;
+		} else {
+			process_ident(out, ident, w != end ? *w : ' ');
+		}
+	}
+
+	if (w == begin && w != end) {
+		writeOneEscaped(out, *begin);
+	}
+;
+	}
+;
+	}
+
+	void process_note_line(std::ostream &out, SI begin, SI end) {
+		
+	for(; begin != end; ++begin) {
+		
+	if (*begin == '`') {
+		auto w = begin + 1;
+		while (w != end && *w != '`') {
+			++w;
+		}
+		if (w != end) {
+			out << "<code>";
+			process_code(out, begin + 1, w);
+			out << "</code>";
+			begin = w;
+			continue;
+		}
+	}
+
+	if (*begin == '*' && (begin + 1) != end && *(begin + 1) == '*') {
+		auto w = begin + 2;
+		while (w != end && (w + 1) != end && (*w != '*' || *(w + 1) != '*')) {
+			++w;
+		}
+		if (w != end && (w + 1 ) != end && *w == '*' && *(w + 1) == '*') {
+			out << "<b>";
+			writeEscaped(out, std::string {begin + 2, w});
+			out << "</b>";
+			begin = w + 1;
+			continue;
+		}
+	}
+;
+		writeOneEscaped(out, *begin);
+	}
+	out << '\n';
+;
 	}
 
 	int main(
@@ -1512,44 +1736,61 @@
 	std::ifstream in {
 		cur->name.c_str()
 	};
-	 {
+	
 	HtmlStatus status;
-	bool newline { true };
 	std::string ident;
-	for (;;) {
-		int ch { in.get() };
+	std::string line;
+	while (std::getline(in, line)) {
 		 
-	if (ch == '#' && newline) {
-		if (
-			isOutOfHtmlSpecial(&status) ||
-				status.state ==
-					HtmlState::inHeader
-		) {
-			
-	++status.headerLevel;
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		status.headerState =
-			status.state;
-	}
-	status.state =
-		HtmlState::inHeader;
+	if (in_code(&status)) {
+		
+	if (line == "```") {
+		
+	out << "</code></div>\n";
+	status.state = HtmlState::inSlide;
 ;
-			continue;
+		continue;
+	}
+
+	process_code(out, line.begin(), line.end());
+	out << "<br/>\n";
+;
+		continue;
+	}
+
+	if (line == "") {
+		
+	if (status.state == HtmlState::inNotes) {
+		out << "</li></ul>\n";
+	}
+;
+		if (status.state != HtmlState::afterSlide && status.state != HtmlState::nothingWritten) {
+			out << "</div>\n";
+			status.state = HtmlState::afterSlide;
 		}
+		continue;
+	}
+
+	if (line[0] == '#') {
+		
+	int level = 1;
+	while (
+		level < (int) line.size() &&
+			line[level] == '#'
+	) {
+		++level;
+	}
+
+	auto e = line.end();
+	auto b = line.begin() + level;
+	while (b != e && *b <= ' ') {
+		++b;
 	}
  
-	if (
-		status.state ==
-			HtmlState::inHeader
-	) {
-		if (ch == '\n') {
-			 
-	ASSERT(! status.headerName.empty());
+	ASSERT(b != e);
+	std::string name {b, e};
 	 
-	switch (status.headerState) {
+	switch (status.state) {
 		case HtmlState::nothingWritten: {
 			 
 	out << "<!doctype html>\n";
@@ -1558,9 +1799,7 @@
 	 
 	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
-	writeEscaped(
-		out, status.headerName
-	);
+	writeEscaped(out, name);
 	out << "</title>\n";
 	out << "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\""
@@ -1573,6 +1812,7 @@
 		}
 		case HtmlState::inSlide: {
 			out << "</div>\n";
+			// fallthrough
 		}
 		default: {
 			out << "</div>\n";
@@ -1580,107 +1820,24 @@
 	}
 ;
 	 
-	out << "<h" <<
-		status.headerLevel << '>';
-	writeEscaped(
-		out, status.headerName
-	);
-	out << "</h" <<
-		status.headerLevel <<
-		">\n";
+	out << "<h" << level << '>';
+	writeEscaped(out, name);
+	out << "</h" << level << ">\n";
 ;
 	out << "<div class=\"slides\">\n";
 	out << "<div><div>\n";
 	 
-	out << "<h" <<
-		status.headerLevel << '>';
-	writeEscaped(
-		out, status.headerName
-	);
-	out << "</h" <<
-		status.headerLevel <<
-		">\n";
+	out << "<h" << level << '>';
+	writeEscaped(out, name);
+	out << "</h" << level << ">\n";
 ;
 	out << "</div>\n";
 ;
-			 
-	status.state =
-		HtmlState::inSlide;
-	status.headerLevel = 0;
-	status.headerName.clear();
-	status.headerState =
-		HtmlState::inSlide;
-;
-			
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-			continue;
-		}
+		status.state = HtmlState::inSlide;
+		continue;
 	}
  
-	if (
-		status.state ==
-			HtmlState::inHeader
-	) {
-		auto &hn { status.headerName };
-		if (! hn.empty()) {
-			hn.push_back(ch);
-			
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-			continue;
-		}
-	}
- 
-	if (
-		status.state ==
-			HtmlState::inHeader
-	) {
-		auto &hn { status.headerName };
-		if (ch > ' ' && hn.empty()) {
-			hn.push_back(ch);
-			
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-			continue;
-		}
-	}
- 
-	if (newline && ch == '`') {
-		if (isOutOfHtmlSpecial(&status) ||
-			status.state ==
-				HtmlState::inCode
-		) {
-			++status.codeOpening;
-			continue;
-		}
-	}
- 
-	if (
-		ch == '\n' &&
-		status.codeOpening == 3
-	) {
-		status.codeOpening = 0;
-		
-	if (isOutOfHtmlSpecial(&status)) {
+	if (line == "```") {
 		
 	if (
 		status.state == HtmlState::inSlide
@@ -1690,755 +1847,46 @@
 	out << "<div><div>\n";
 	out << "<code>\n";
 	status.state = HtmlState::inCode;
-	
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-;
-		continue;
-	} else if (status.state ==
-		HtmlState::inCode
-	) {
-		
-	out << "</code>\n";
-	out << "</div>\n";
-	status.state = HtmlState::inSlide;
-	status.codeIndent = 0;
-	status.codeSpecial = '\0';
-	
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-;
-		continue;
-	}
-;
-	}
-
-	if (status.codeOpening == 1) {
-		
-	const auto &s { status.name.str() };
-	if (! status.codeSpecial &&
-		status.state == HtmlState::inCode
-	) {
-		
-	status.codeSpecial = '`';
-	status.name.clear(true);
-	
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
-	}
-;
-	
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-;
-	out << "<span class=\"str\">`";
-;
-	} else if (
-		status.codeSpecial == '`' && (
-			s.empty() ||
-			s.back() != '\x5c'
-		)
-	) { 
-	
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
-	}
-;
-	writeEscaped(
-		out, status.name.str()
-	);
-	out << "`</span>";
-	status.codeSpecial = 0;
-	status.name.clear();
-; }
-;
-	}
-
-	status.codeOpening = 0;
-
-	if (status.state == HtmlState::inCode) {
-		if (ch == EOF) {
-			std::cerr <<
-				"unterminated code " << 
-				"block\n";
-			break;
-		}
-	}
-
-	if (
-		status.state == HtmlState::inCode
-	) {
-		
-	if (
-		! status.codeSpecial && (
-			std::isalnum(ch) || ch == '_'
-		)
-	) {
-		ident.push_back(ch);
-		continue;
-	}
-;
-	}
-
-	if (status.state == HtmlState::inCode) {
-		 
-	if (ch == '\n') {
-		
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
-	}
-;
-		out << "<br/>\n";
-		
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-		continue;
-	}
- 
-	if (newline && ch == '\t') {
-		++status.codeIndent;
-		continue;
-	}
- 
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-
-	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
-		status.codeSpecial = ch;
-		status.name.clear(true);
-		out << "<span class=\"str\">" << static_cast<char>(ch);
-		continue;
-	}
-
-	
-	if (ch == '{' && ident.size() == 1) {
-		char lc { ident.front() };
-		switch (lc) {
-			
-	case 'd':
-		writeMacroHeader(out, status, "def", lc);
-		break;
-
-	case 'D':
-		writeMacroHeader(out, status, "globdef", lc);
-		break;
-
-	case 'a':
-		writeMacroHeader(out, status, "add", lc);
-		break;
-
-	case 'A':
-		writeMacroHeader(out, status, "globadd", lc);
-		break;
-
-	case 'r':
-		writeMacroHeader(out, status, "replace", lc);
-		break;
-
-	case 'R':
-		writeMacroHeader(out, status, "globreplace", lc);
-		break;
-
-	case 'x':
-		writeMacroHeader(out, status, "end", lc);
-		break;
-
-	case 'e':
-		writeMacroHeader(out, status, "expand", lc);
-		break;
-
-	case 'E':
-		writeMacroHeader(out, status, "multiple", lc);
-		break;
-
-	case 'g':
-		writeMacroHeader(out, status, "globexpand", lc);
-		break;
-
-	case 'G':
-		writeMacroHeader(out, status, "globmult", lc);
-		break;
-
-	case 'i':
-		writeMacroHeader(out, status, "include", lc);
-		break;
-
-	case 't':
-		writeMacroClass(out, status, "type", lc);
-		break;
-
-	case 'v':
-		writeMacroClass(out, status, "var", lc);
-		break;
-
-	case 'f':
-		writeMacroClass(out, status, "fn", lc);
-		break;
-
-	case 'k':
-		writeMacroClass(out, status, "keyword", lc);
-		break;
-
-	case 's':
-		writeMacroClass(out, status, "str", lc);
-		break;
-
-	case 'n':
-		writeMacroClass(out, status, "num", lc);
-		break;
-
-	case 'p':
-		writeMacroClass(out, status, "var", lc);
-		out << "@priv(<span>";
-		break;
-
-	case 'm':
-		writeMacroClass(out, status, "var", lc);
-		out << "@magic(<span>";
-		break;
-
-	case 'b':
-		writeMacroClass(out, status, "virt", lc);
-		out << "</span><br/>";
-		break;
-
-			default: break;
-		}
-		if (status.codeSpecial) {
-			ident.clear();
-			newline = false;
-			continue;
-		}
-	}
-
-	if (
-		(
-			ch == '}' &&
-			status.codeSpecial &&
-			status.codeSpecial != '\'' &&
-			status.codeSpecial != '"' &&
-			status.codeSpecial != '`'
-		) 
-	||
-		(
-			(
-				status.codeSpecial == '\'' ||
-				status.codeSpecial == '"' ||
-				status.codeSpecial == '`'
-			) &&
-			ch == status.codeSpecial && (
-				status.name.str().empty() ||
-				status.name.str().back() != '\x5c'
-			)
-		)
-	) {
-		
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
-	}
-;
-		ident.clear();
-		newline = false;
-		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.name.str());
-		}
-		switch (status.codeSpecial) {
-			
-	case 'i': {
-		
-	auto ext = status.name.str().find_last_of('.');
-	ASSERT_MSG(ext != std::string::npos,
-		"no period"
-	);
-	out << "<a href=\"" 
-		<< status.name.str().substr(0, ext) << ".html\">";
-	out << status.name.str() << "</a>)</span>";
-	status.name.clear();
-;
-		break;
-	}
-	case 'a': case 'e': case 'E': case 'x':
-	case 'g': case 'G': case 'A': case 'D':
-	case 'R':
-	case 'r': case 'd': case 'p': case 'm': {
-		out << "</span>)";
-		break;
-	}
-	case '\'': case '"': case '`': {
-		out << status.codeSpecial;
-		break;
-	}
-
-		}
-		if (status.codeSpecial != 'b') {
-			out << "</span>";
-		}
-		status.codeSpecial = 0;
-		status.name.clear();
-		continue;
-	}
-;
-
-	if (ch != EOF && status.name.active()) {
-		status.name.add(ch);
-		continue;
-	}
-;
-		
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
-	}
-;
-		
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
 ;
 		continue;
 	}
  
 	if (
-		newline &&
+		line[0] == '*' ||
 		status.state == HtmlState::inNotes
 	) {
-		if (ch == '*') {
-			out << "</li><li>\n";
-			ident.clear();
-			newline = false;
-			continue;
-		} else if (ch != ' ' && ch != '\t') {
-			out << "</li></ul></div>\n";
-			status.state = HtmlState::afterSlide;
-			
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-			continue;
+		
+	if (line[0] == '*') {
+		auto end = line.end();
+		auto begin = line.begin() + 1;
+		while (begin != end && *begin == ' ') {
+			++begin;
 		}
-	}
- 
-	if (newline && ch == '*') {
-		if (isOutOfHtmlSpecial(&status)) {
+		if (status.state != HtmlState::inNotes) {
 			if (status.state != HtmlState::inSlide) {
 				out << "<div>\n";
 			}
 			status.state = HtmlState::inNotes;
 			out << "<ul><li>\n";
-			ident.clear();
-			newline = false;
-			continue;
-		}
-	}
- 
-	if (
-		ch == '`' &&
-		status.state == HtmlState::inNotes
-	) {
-		
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
 		} else {
-			escapeIdent(out, "var", ident);
+			out << "</li><li>\n";
 		}
-		ident.clear();
+		process_note_line(out, begin, end);
+	} else {
+		process_note_line(out, line.begin(), line.end());
 	}
 ;
-		if (status.noteInCode) {
-			out << "</code>";
-		} else {
-			out << "<code>";
-		}
-		status.noteInCode = ! status.noteInCode;
-		ident.clear();
-		newline = false;
-		continue;
 	}
- 
-	if (status.state == HtmlState::inNotes &&
-	status.noteInCode) {
-		
-	if (ch == '{' && ident.size() == 1) {
-		char lc { ident.front() };
-		switch (lc) {
-			
-	case 'd':
-		writeMacroHeader(out, status, "def", lc);
-		break;
-
-	case 'D':
-		writeMacroHeader(out, status, "globdef", lc);
-		break;
-
-	case 'a':
-		writeMacroHeader(out, status, "add", lc);
-		break;
-
-	case 'A':
-		writeMacroHeader(out, status, "globadd", lc);
-		break;
-
-	case 'r':
-		writeMacroHeader(out, status, "replace", lc);
-		break;
-
-	case 'R':
-		writeMacroHeader(out, status, "globreplace", lc);
-		break;
-
-	case 'x':
-		writeMacroHeader(out, status, "end", lc);
-		break;
-
-	case 'e':
-		writeMacroHeader(out, status, "expand", lc);
-		break;
-
-	case 'E':
-		writeMacroHeader(out, status, "multiple", lc);
-		break;
-
-	case 'g':
-		writeMacroHeader(out, status, "globexpand", lc);
-		break;
-
-	case 'G':
-		writeMacroHeader(out, status, "globmult", lc);
-		break;
-
-	case 'i':
-		writeMacroHeader(out, status, "include", lc);
-		break;
-
-	case 't':
-		writeMacroClass(out, status, "type", lc);
-		break;
-
-	case 'v':
-		writeMacroClass(out, status, "var", lc);
-		break;
-
-	case 'f':
-		writeMacroClass(out, status, "fn", lc);
-		break;
-
-	case 'k':
-		writeMacroClass(out, status, "keyword", lc);
-		break;
-
-	case 's':
-		writeMacroClass(out, status, "str", lc);
-		break;
-
-	case 'n':
-		writeMacroClass(out, status, "num", lc);
-		break;
-
-	case 'p':
-		writeMacroClass(out, status, "var", lc);
-		out << "@priv(<span>";
-		break;
-
-	case 'm':
-		writeMacroClass(out, status, "var", lc);
-		out << "@magic(<span>";
-		break;
-
-	case 'b':
-		writeMacroClass(out, status, "virt", lc);
-		out << "</span><br/>";
-		break;
-
-			default: break;
-		}
-		if (status.codeSpecial) {
-			ident.clear();
-			newline = false;
-			continue;
-		}
+;
 	}
 
 	if (
-		(
-			ch == '}' &&
-			status.codeSpecial &&
-			status.codeSpecial != '\'' &&
-			status.codeSpecial != '"' &&
-			status.codeSpecial != '`'
-		) 
-	||
-		(
-			(
-				status.codeSpecial == '\'' ||
-				status.codeSpecial == '"' ||
-				status.codeSpecial == '`'
-			) &&
-			ch == status.codeSpecial && (
-				status.name.str().empty() ||
-				status.name.str().back() != '\x5c'
-			)
-		)
+		status.state == HtmlState::inCode
 	) {
-		
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
+		std::cerr <<
+			"unterminated code block\n";
 	}
 ;
-		ident.clear();
-		newline = false;
-		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.name.str());
-		}
-		switch (status.codeSpecial) {
-			
-	case 'i': {
-		
-	auto ext = status.name.str().find_last_of('.');
-	ASSERT_MSG(ext != std::string::npos,
-		"no period"
-	);
-	out << "<a href=\"" 
-		<< status.name.str().substr(0, ext) << ".html\">";
-	out << status.name.str() << "</a>)</span>";
-	status.name.clear();
-;
-		break;
-	}
-	case 'a': case 'e': case 'E': case 'x':
-	case 'g': case 'G': case 'A': case 'D':
-	case 'R':
-	case 'r': case 'd': case 'p': case 'm': {
-		out << "</span>)";
-		break;
-	}
-	case '\'': case '"': case '`': {
-		out << status.codeSpecial;
-		break;
-	}
-
-		}
-		if (status.codeSpecial != 'b') {
-			out << "</span>";
-		}
-		status.codeSpecial = 0;
-		status.name.clear();
-		continue;
-	}
-;
-	}
- 
-	if (
-		false &&
-		ch == '*' && /*last == '*' && */
-		status.state == HtmlState::inNotes
-	) {
-		if (status.noteInBold) {
-			out << "</b>";
-		} else {
-			out << "<b>";
-		}
-		status.noteInBold =
-			! status.noteInBold;
-		newline = false;
-		continue;
-	}
- 
-	if (status.state == HtmlState::inNotes) {
-		
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
-		} else {
-			escapeIdent(out, "var", ident);
-		}
-		ident.clear();
-	}
-;
-		
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-		continue;
-	}
-;
-		if (ch == EOF) { break; }
-		
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-;
-	}
-} ;
 	in.close();
 ;
 	out.close();

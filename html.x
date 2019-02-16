@@ -76,7 +76,6 @@ A{global elements}
 		state {
 			HtmlState::nothingWritten
 		}
-		e{init html status}
 	{ }
 x{global elements}
 ```
@@ -89,17 +88,14 @@ x{includes}
 ```
 
 ```
-d{write from in to out} {
+d{write from in to out}
 	HtmlStatus status;
-	bool newline { true };
 	std::string ident;
-	for (;;) {
-		int ch { in.get() };
+	std::string line;
+	while (std::getline(in, line)) {
 		e{process ch for HTML};
-		if (ch == EOF) { break; }
-		E{move ch to last};
 	}
-} x{write from in to out}
+x{write from in to out}
 ```
 * Beim Schreiben einer Datei wird zuerst der Status initialisiert
 * Wir befinden uns am Anfang einer Zeile
@@ -108,33 +104,14 @@ d{write from in to out} {
 
 # Überschriften
 
-```
-d{html state enums}
-	, inHeader
-x{html state enums}
-```
-* Es gibt einen eigenen Zustand, wenn eine Überschrift gelesen wird
-
-```
-d{move ch to last}
-	newline = ch == '\n';
-	if (
-		status.state !=
-			HtmlState::inHeader
-	) {
-		writeOneEscaped(out, ch);
-	}
-x{move ch to last}
-```
-* Beim Kopieren des Zeichens wird `EOF` durch `'\0'` ersetzt
 
 ```
 A{global elements}
-	bool isOutOfHtmlSpecial(
+	bool in_code(
 		HtmlStatus *s
 	) {
 		e{check html special state};
-		return true;
+		return false;
 	}
 x{global elements}
 ```
@@ -143,48 +120,33 @@ x{global elements}
   Code, Notizen) befindet
 
 ```
-d{check html special state}
-	if (
-		s->state ==
-			HtmlState::inHeader
-	) {
-		return false;
-	}
-x{check html special state}
-```
-* Die Überschrift ist ein Sonder-Modus
-
-```
-a{html state elements}
-	int headerLevel;
-	std::string headerName;
-	HtmlState headerState;
-x{html state elements}
-```
-* Für Überschriften wird abgelegt, auf welchem Level sie vorkommen
-* Und der Titel der Überschrift wird gespeichert
-* Und der Zustand in dem sich der Parser beim Auftreten der Überschrift
-  befunden hat
-
-```
-d{init html status}
-	, headerLevel { 0 }
-	, headerName {}
-x{init html status}
-```
-* Level und Name werden leer initialisiert
-
-```
 d{process ch for HTML} 
-	if (ch == '#' && newline) {
-		if (
-			isOutOfHtmlSpecial(&status) ||
-				status.state ==
-					HtmlState::inHeader
-		) {
-			e{inc header};
-			continue;
+	if (in_code(&status)) {
+		e{process code};
+		continue;
+	}
+x{process ch for HTML}
+```
+
+```
+a{process ch for HTML}
+	if (line == "") {
+		e{close specials};
+		if (status.state != HtmlState::afterSlide && status.state != HtmlState::nothingWritten) {
+			out << "</div>\n";
+			status.state = HtmlState::afterSlide;
 		}
+		continue;
+	}
+x{process ch for HTML}
+```
+
+```
+a{process ch for HTML}
+	if (line[0] == '#') {
+		e{process header};
+		status.state = HtmlState::inSlide;
+		continue;
 	}
 x{process ch for HTML}
 ```
@@ -194,89 +156,31 @@ x{process ch for HTML}
 * Bei der ersten Raute muss der alte Zustand gesichert werden
 
 ```
-d{inc header}
-	++status.headerLevel;
-	if (
-		status.state !=
-			HtmlState::inHeader
+d{process header}
+	int level = 1;
+	while (
+		level < (int) line.size() &&
+			line[level] == '#'
 	) {
-		status.headerState =
-			status.state;
+		++level;
 	}
-	status.state =
-		HtmlState::inHeader;
-x{inc header}
+x{process header}
 ```
 
 ```
-a{process ch for HTML} 
-	if (
-		status.state ==
-			HtmlState::inHeader
-	) {
-		if (ch == '\n') {
-			e{process header};
-			e{reset header state};
-			E{move ch to last};
-			continue;
-		}
+a{process header}
+	auto e = line.end();
+	auto b = line.begin() + level;
+	while (b != e && *b <= ' ') {
+		++b;
 	}
-x{process ch for HTML}
+x{process header}
 ```
-* Wenn die Zeile mit der Überschrift beendet wurde, wird die
-  Überschrift ausgegeben
 
 ```
-d{reset header state} 
-	status.state =
-		HtmlState::inSlide;
-	status.headerLevel = 0;
-	status.headerName.clear();
-	status.headerState =
-		HtmlState::inSlide;
-x{reset header state}
-```
-* Beim Zurücksetzen des Zustands wird sichergestellt, das der Level und
-  Name der Überschrift zurückgesetzt sind
-
-```
-a{process ch for HTML} 
-	if (
-		status.state ==
-			HtmlState::inHeader
-	) {
-		auto &hn { status.headerName };
-		if (! hn.empty()) {
-			hn.push_back(ch);
-			E{move ch to last};
-			continue;
-		}
-	}
-x{process ch for HTML}
-```
-* Innerhalb der Überschrift wird das aktuelle Zeichen zur Überschrift
-  hinzugefügt
-
-```
-a{process ch for HTML} 
-	if (
-		status.state ==
-			HtmlState::inHeader
-	) {
-		auto &hn { status.headerName };
-		if (ch > ' ' && hn.empty()) {
-			hn.push_back(ch);
-			E{move ch to last};
-			continue;
-		}
-	}
-x{process ch for HTML}
-```
-* Leerzeichen zwischen den Rauten und der Überschrift werden ignoriert
-
-```
-d{process header} 
-	ASSERT(! status.headerName.empty());
+a{process header} 
+	ASSERT(b != e);
+	std::string name {b, e};
 	e{close previous HTML page};
 	E{write header tag};
 	out << "<div class=\"slides\">\n";
@@ -335,27 +239,23 @@ x{escape special}
 
 ```
 d{write header tag} 
-	out << "<h" <<
-		status.headerLevel << '>';
-	writeEscaped(
-		out, status.headerName
-	);
-	out << "</h" <<
-		status.headerLevel <<
-		">\n";
+	out << "<h" << level << '>';
+	writeEscaped(out, name);
+	out << "</h" << level << ">\n";
 x{write header tag}
 ```
 * Die HTML-Überschrift enthält den eingelesenen Level
 
 ```
 d{close previous HTML page} 
-	switch (status.headerState) {
+	switch (status.state) {
 		case HtmlState::nothingWritten: {
 			e{write HTML header};
 			break;
 		}
 		case HtmlState::inSlide: {
 			out << "</div>\n";
+			// fallthrough
 		}
 		default: {
 			out << "</div>\n";
@@ -384,9 +284,7 @@ x{write HTML header}
 d{write HTML header entries} 
 	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
-	writeEscaped(
-		out, status.headerName
-	);
+	writeEscaped(out, name);
 	out << "</title>\n";
 	out << "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\""
@@ -401,163 +299,31 @@ x{write HTML header entries}
 * Code kann auf Seiten oder in den Notizen ausgegeben werden
 
 ```
-a{html state enums}
+d{html state enums}
 	, inCode
 x{html state enums}
 ```
 * Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
 
 ```
-a{check html special state}
+d{check html special state}
 	if (s->state == HtmlState::inCode) {
-		return false;
+		return true;
 	}
 x{check html special state}
 ```
 * Die Code-Ausgabe ist ein besonderer Zustand
 
-```
-a{html state elements}
-	int codeOpening;
-x{html state elements}
-```
-* Der Code-Block wird mit drei Backticks betreten und verlassen
-* Die Anzahl der bisher gelesenen Backticks wird in `codeOpening`
-  festgehalten
-
-```
-a{html state elements}
-	int codeIndent;
-x{html state elements}
-```
-* Tabs am Anfang der Zeile werden durch passenden HTML-Elemente ersetzt
-* Um die Einrückung nachzubilden
-* In `codeIndent` wird der Einrück-Level gespeichert
-
-```
-a{html state elements}
-	char codeSpecial;
-	Buf name;
-x{html state elements}
-```
-* Wenn ein Befehl gelesen wurde, dann enthält `codeSpecial` den
-  Code des Befehls
-
-```
-a{init html status}
-	, codeOpening { 0 }
-	, codeIndent { 0 }
-	, codeSpecial { '\0' }
-	, name {}
-x{init html status}
-```
-* Zur Initialisierung werden die Parameter auf `0` gesetzt
 
 ```
 a{process ch for HTML} 
-	if (newline && ch == '`') {
-		if (isOutOfHtmlSpecial(&status) ||
-			status.state ==
-				HtmlState::inCode
-		) {
-			++status.codeOpening;
-			continue;
-		}
+	if (line == "```") {
+		e{open code page};
+		continue;
 	}
 x{process ch for HTML}
 ```
 * Wenn am Anfang der Zeile Backticks kommen, dann werden sie gezählt
-
-```
-a{process ch for HTML} 
-	if (
-		ch == '\n' &&
-		status.codeOpening == 3
-	) {
-		status.codeOpening = 0;
-		e{process code tag};
-	}
-x{process ch for HTML}
-```
-* Wenn die Anzahl der Backticks genau `3` war, dann wird der
-  Code-Modus betreten oder verlassen
-
-```
-d{process code tag}
-	if (isOutOfHtmlSpecial(&status)) {
-		e{open code page};
-		continue;
-	} else if (status.state ==
-		HtmlState::inCode
-	) {
-		e{close code page};
-		continue;
-	}
-x{process code tag}
-```
-
-```
-a{process ch for HTML}
-	if (status.codeOpening == 1) {
-		e{process backtick};
-	}
-x{process ch for HTML}
-```
-
-```
-d{process backtick}
-	const auto &s { status.name.str() };
-	if (! status.codeSpecial &&
-		status.state == HtmlState::inCode
-	) {
-		e{open bt str};
-	} else if (
-		status.codeSpecial == '`' && (
-			s.empty() ||
-			s.back() != '\x5c'
-		)
-	) { e{end bt str}; }
-x{process backtick}
-```
-
-```
-d{open bt str}
-	status.codeSpecial = '`';
-	status.name.clear(true);
-	E{flush pending};
-	e{may write indent};
-	out << "<span class=\"str\">`";
-x{open bt str}
-```
-
-```
-d{may write indent}
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-x{may write indent}
-```
-
-```
-d{end bt str}
-	E{flush pending};
-	writeEscaped(
-		out, status.name.str()
-	);
-	out << "`</span>";
-	status.codeSpecial = 0;
-	status.name.clear();
-x{end bt str}
-```
-
-```
-a{process ch for HTML}
-	status.codeOpening = 0;
-x{process ch for HTML}
-```
 
 ```
 d{open code page}
@@ -569,35 +335,113 @@ d{open code page}
 	out << "<div><div>\n";
 	out << "<code>\n";
 	status.state = HtmlState::inCode;
-	E{move ch to last};
 x{open code page}
 ```
 * Beim Betreten wird eine Seite mit einem `<code>`-Tag geöffnet
 * Und der Zustand passend gesetzt
 
 ```
+d{process code}
+	if (line == "```") {
+		e{close code page};
+		continue;
+	}
+x{process code}
+```
+
+```
 d{close code page}
-	out << "</code>\n";
-	out << "</div>\n";
+	out << "</code></div>\n";
 	status.state = HtmlState::inSlide;
-	status.codeIndent = 0;
-	status.codeSpecial = '\0';
-	E{move ch to last};
 x{close code page}
 ```
 * Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
 
 ```
-a{process ch for HTML}
-	if (status.state == HtmlState::inCode) {
-		if (ch == EOF) {
-			std::cerr <<
-				"unterminated code " << 
-				"block\n";
-			break;
-		}
+A{global elements}
+	e{process code helper};
+	void process_code(std::ostream &out, SI begin, SI end) {
+		e{do code};
 	}
-x{process ch for HTML}
+x{global elements}
+```
+
+```
+a{process code}
+	process_code(out, line.begin(), line.end());
+	out << "<br/>\n";
+x{process code}
+```
+
+```
+d{do code}
+	int indent = 0;
+	while (
+		begin != end && *begin == '\t'
+	) {
+		++indent; ++begin;
+	}
+	if (indent) {
+		out << "<span class=\"in"
+			<< indent
+			<< "\"></span>";
+	}
+x{do code}
+```
+
+```
+a{do code}
+	for (; begin != end; ++begin) {
+		e{process code ch};
+	}
+x{do code}
+```
+
+```
+d{process code ch}
+	if (*begin == '`' || *begin == '\'' || *begin == '"') {
+		e{process string};
+		continue;
+	}
+x{process code ch}
+```
+
+```
+d{process string}
+	auto w = begin + 1;
+	while (w != end && *w != *begin) {
+		if (*w == '\x5c') {
+			++w;
+			if (w == end) { break; }
+		}
+		++w;
+	}
+	if (w == end) {
+		writeOneEscaped(out, *begin);
+		continue;
+	}
+x{process string}
+```
+
+```
+a{process string}
+	std::string name {begin, w + 1};
+	out << "<span class=\"str\">";
+	writeEscaped(out, name);
+	out << "</span>";
+	begin = w;
+x{process string}
+```
+
+```
+a{write from in to out}
+	if (
+		status.state == HtmlState::inCode
+	) {
+		std::cerr <<
+			"unterminated code block\n";
+	}
+x{write from in to out}
 ```
 * Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann
   stimmt etwas nicht
@@ -610,30 +454,34 @@ x{includes}
 ```
 
 ```
-a{process ch for HTML}
-	if (
-		status.state == HtmlState::inCode
-	) {
-		e{process ident};
+a{process code ch}
+	auto w = begin;
+	while (w != end && (std::isalnum(*w) || *w == '_')) {
+		++w;
 	}
-x{process ch for HTML}
+
+	if (w != begin) {
+		std::string ident {begin, w};
+		begin = w - 1;
+		if (w != end && *w == '{') {
+			e{do macro};
+		} else {
+			process_ident(out, ident, w != end ? *w : ' ');
+		}
+	}
+x{process code ch}
 ```
 
 ```
-d{process ident}
-	if (
-		! status.codeSpecial && (
-			std::isalnum(ch) || ch == '_'
-		)
-	) {
-		ident.push_back(ch);
-		continue;
+a{process code ch}
+	if (w == begin && w != end) {
+		writeOneEscaped(out, *begin);
 	}
-x{process ident}
+x{process code ch}
 ```
 
 ```
-A{global elements}
+d{process code helper}
 	void escapeIdent(
 		std::ostream &out,
 		const char *cls,
@@ -643,11 +491,11 @@ A{global elements}
 			cls << "\">" << s <<
 			"</span>";
 	}
-x{global elements}
+x{process code helper}
 ```
 
 ```
-A{global elements}
+a{process code helper}
 	bool isKeyword(const std::string &s) {
 		static std::set<std::string>
 			reserved {
@@ -657,7 +505,7 @@ A{global elements}
 			reserved.find(s) !=
 				reserved.end();
 	}
-x{global elements}
+x{process code helper}
 ```
 
 ```
@@ -670,12 +518,12 @@ x{keywords}
 ```
 
 ```
-A{global elements}
+a{process code helper}
 	bool isType(const std::string &s) {
 		e{is type};
 		return false;
 	}
-x{global elements}
+x{process code helper}
 ```
 
 ```
@@ -714,7 +562,7 @@ x{is type}
 ```
 
 ```
-A{global elements}
+a{process code helper}
 	bool isNum(const std::string &s) {
 		static std::set<std::string> reserved {
 			"EOF", "NULL", "nullptr",
@@ -723,19 +571,13 @@ A{global elements}
 		if (std::isdigit(s[0])) { return true; }
 		return reserved.find(s) != reserved.end();
 	}
-x{global elements}
+x{process code helper}
 ```
 
 ```
-d{flush pending}
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-	if (! ident.empty()) {
-		if (ch == '(') {
+a{process code helper}
+	void process_ident(std::ostream &out, const std::string ident, char w) {
+		if (w == '(') {
 			escapeIdent(out, "fn", ident);
 		} else if (isKeyword(ident)) {
 			escapeIdent(out, "keyword", ident);
@@ -746,90 +588,26 @@ d{flush pending}
 		} else {
 			escapeIdent(out, "var", ident);
 		}
-		ident.clear();
 	}
-x{flush pending}
+x{process code helper}
 ```
 
 ```
-a{process ch for HTML}
-	if (status.state == HtmlState::inCode) {
-		e{process ch in HTML code};
-		E{flush pending};
-		E{move ch to last};
-		continue;
+d{do macro}
+	auto q = w + 1;
+	while (q != end && *q != '}') {
+		++q;
 	}
-x{process ch for HTML}
-```
-* Zeichen wird im Code-Modus verarbeitet
-
-```
-d{process ch in HTML code} 
-	if (ch == '\n') {
-		E{flush pending};
-		out << "<br/>\n";
-		E{move ch to last};
-		continue;
+	if (q == end) {
+		writeEscaped(out, ident);
+		writeOneEscaped(out, '{');
+		begin = w;
+	} else {
+		std::string name {w + 1, q};
+		e{escape html frag};
+		begin = q;
 	}
-x{process ch in HTML code}
-```
-* Bei Zeilen-Umbrüchen wird ein `<br/>`-Tag gesendet
-
-```
-a{process ch in HTML code} 
-	if (newline && ch == '\t') {
-		++status.codeIndent;
-		continue;
-	}
-x{process ch in HTML code}
-```
-* Am Anfang der Zeile werden Tabulatoren gezählt
-
-```
-a{process ch in HTML code} 
-	if (status.codeIndent) {
-		out << "<span class=\"in"
-			<< status.codeIndent
-			<< "\"></span>";
-		status.codeIndent = 0;
-	}
-x{process ch in HTML code}
-```
-* Wenn es Tabulatoren gab, dann werden sie als Span-Element ausgegeben
-
-```
-a{process ch in HTML code}
-	if (! status.codeSpecial && (ch == '\'' || ch == '"' || ch == '`')) {
-		status.codeSpecial = ch;
-		status.name.clear(true);
-		out << "<span class=\"str\">" << static_cast<char>(ch);
-		continue;
-	}
-x{process ch in HTML code}
-```
-
-```
-a{process ch in HTML code}
-	E{escape HTML code tag};
-x{process ch in HTML code}
-```
-* Ansonsten werden Befehle in HTML-Tags expandiert
-
-```
-d{escape HTML code tag}
-	if (ch == '{' && ident.size() == 1) {
-		char lc { ident.front() };
-		switch (lc) {
-			e{escape html frag}
-			default: break;
-		}
-		if (status.codeSpecial) {
-			ident.clear();
-			newline = false;
-			continue;
-		}
-	}
-x{escape HTML code tag}
+x{do macro}
 ```
 * Bei einer öffnenden Mengenklammer wird geprüft, ob ein bekannter
   Befehls-Code im vorherigen Zeichen liegt
@@ -839,318 +617,258 @@ x{escape HTML code tag}
 * Diese werden direkt kopiert
 
 ```
-a{escape HTML code tag}
-	if (
-		(
-			ch == '}' &&
-			status.codeSpecial &&
-			status.codeSpecial != '\'' &&
-			status.codeSpecial != '"' &&
-			status.codeSpecial != '`'
-		) 
-	||
-		(
-			(
-				status.codeSpecial == '\'' ||
-				status.codeSpecial == '"' ||
-				status.codeSpecial == '`'
-			) &&
-			ch == status.codeSpecial && (
-				status.name.str().empty() ||
-				status.name.str().back() != '\x5c'
-			)
-		)
-	) {
-		E{flush pending};
-		ident.clear();
-		newline = false;
-		if (status.codeSpecial != 'i') {
-			writeEscaped(out, status.name.str());
-		}
-		switch (status.codeSpecial) {
-			e{handle special codes}
-		}
-		if (status.codeSpecial != 'b') {
-			out << "</span>";
-		}
-		status.codeSpecial = 0;
-		status.name.clear();
-		continue;
+d{escape html frag}
+	if (ident == "i") {
+		auto ext = name.find_last_of('.');
+		ASSERT_MSG(ext != std::string::npos,
+			"no period"
+		);
+		writeMacroHeader(out, "include");
+		out << "<a href=\"" 
+			<< name.substr(0, ext) << ".html\">";
+		out << name << "</a></span>)</span>";
+		begin = q;
 	}
-x{escape HTML code tag}
+x{escape html frag}
 ```
-* Nach dem Lesen eines Arguments muss das HTML-Tag wieder geschlossen
-  werden
-* Bei besonderen Befehlen müssen mehrere Tags geschlossen werden
 
 ```
-d{handle special codes}
-	case 'i': {
-		e{handle html include};
-		break;
+a{escape html frag}
+	else if (ident == "d") {
+		writeMacroHeader(out, "def");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
 	}
-	case 'a': case 'e': case 'E': case 'x':
-	case 'g': case 'G': case 'A': case 'D':
-	case 'R':
-	case 'r': case 'd': case 'p': case 'm': {
-		out << "</span>)";
-		break;
-	}
-	case '\'': case '"': case '`': {
-		out << status.codeSpecial;
-		break;
-	}
-x{handle special codes}
+x{escape html frag}
 ```
-* `@include`-Befehle haben eine Sonderbehandlung, da sie einen Link
-  generieren
-* Ansonsten werden alle Befehle, die nicht der Formatierung gelten mit
-  zwei schließenden Tags abgeschlossen
 
 ```
-d{handle html include}
-	auto ext = status.name.str().find_last_of('.');
-	ASSERT_MSG(ext != std::string::npos,
-		"no period"
-	);
-	out << "<a href=\"" 
-		<< status.name.str().substr(0, ext) << ".html\">";
-	out << status.name.str() << "</a>)</span>";
-	status.name.clear();
-x{handle html include}
-```
-* Statt der ursprünglichen `.x`-Datei verweist der Link auf eine
-  HTML-Datei
-* Mit dem gleichen Basis-Namen
-
-```
-a{process ch in HTML code}
-	if (ch != EOF && status.name.active()) {
-		status.name.add(ch);
-		continue;
-	}
-x{process ch in HTML code}
-```
-* Wenn das Argument gespeichert werden soll (d.h. wenn `codeNameEnd`
-  nicht `nullptr`)
-
-```
-A{global elements}
+a{process code helper}
 	void writeMacroClass(
 		std::ostream &out,
-		HtmlStatus &status,
-		const char *name,
-		char special
+		const char *name
 	) {
 		out << "<span class=\"" << name << "\">";
-		status.codeSpecial = special;
-		status.name.clear(true);
 	}
-x{global elements}
+x{process code helper}
 ```
 
 ```
-A{global elements}
+a{process code helper}
 	void writeMacroHeader(
 		std::ostream &out,
-		HtmlStatus &status,
-		const char *name,
-		char special
+		const char *name
 	) {
-		writeMacroClass(out, status, "macro", special);
+		writeMacroClass(out, "macro");
 		out << '@' << name << "(<span class=\"name\">";
 	}
-x{global elements}
+x{process code helper}
 ```
 
 ```
-d{escape html frag}
-	case 'd':
-		writeMacroHeader(out, status, "def", lc);
-		break;
+a{escape html frag}
+	else if (ident == "D") {
+		writeMacroHeader(out, "globdef");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'D':
-		writeMacroHeader(out, status, "globdef", lc);
-		break;
+	else if (ident == "a") {
+		writeMacroHeader(out, "add");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'a':
-		writeMacroHeader(out, status, "add", lc);
-		break;
+	else if (ident == "A") {
+		writeMacroHeader(out, "globadd");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'A':
-		writeMacroHeader(out, status, "globadd", lc);
-		break;
+	else if (ident == "r") {
+		writeMacroHeader(out, "replace");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'r':
-		writeMacroHeader(out, status, "replace", lc);
-		break;
+	else if (ident == "R") {
+		writeMacroHeader(out, "globreplace");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'R':
-		writeMacroHeader(out, status, "globreplace", lc);
-		break;
+	else if (ident == "x") {
+		writeMacroHeader(out, "end");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'x':
-		writeMacroHeader(out, status, "end", lc);
-		break;
+	else if (ident == "e") {
+		writeMacroHeader(out, "expand");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'e':
-		writeMacroHeader(out, status, "expand", lc);
-		break;
+	else if (ident == "E") {
+		writeMacroHeader(out, "multiple");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'E':
-		writeMacroHeader(out, status, "multiple", lc);
-		break;
+	else if (ident == "g") {
+		writeMacroHeader(out, "globexpand");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'g':
-		writeMacroHeader(out, status, "globexpand", lc);
-		break;
+	else if (ident == "G") {
+		writeMacroHeader(out, "globmult");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'G':
-		writeMacroHeader(out, status, "globmult", lc);
-		break;
+	else if (ident == "t") {
+		writeMacroClass(out, "type");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'i':
-		writeMacroHeader(out, status, "include", lc);
-		break;
+	else if (ident == "v") {
+		writeMacroClass(out, "var");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 't':
-		writeMacroClass(out, status, "type", lc);
-		break;
+	else if (ident == "f") {
+		writeMacroClass(out, "fn");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'v':
-		writeMacroClass(out, status, "var", lc);
-		break;
+	else if (ident == "k") {
+		writeMacroClass(out, "keyword");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'f':
-		writeMacroClass(out, status, "fn", lc);
-		break;
+	else if (ident == "s") {
+		writeMacroClass(out, "str");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'k':
-		writeMacroClass(out, status, "keyword", lc);
-		break;
+	else if (ident == "n") {
+		writeMacroClass(out, "num");
+		writeEscaped(out, name);
+		out << "</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 's':
-		writeMacroClass(out, status, "str", lc);
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case 'n':
-		writeMacroClass(out, status, "num", lc);
-		break;
-x{escape html frag}
-```
-
-```
-a{escape html frag}
-	case 'p':
-		writeMacroClass(out, status, "var", lc);
+	else if (ident == "p") {
+		writeMacroClass(out, "var");
 		out << "@priv(<span>";
-		break;
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 
 ```
 a{escape html frag}
-	case 'm':
-		writeMacroClass(out, status, "var", lc);
+	else if (ident == "m") {
+		writeMacroClass(out, "var");
 		out << "@magic(<span>";
-		break;
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
 x{escape html frag}
 ```
 * `@magic`-Befehle werden als Zahlen formatiert
 
 ```
 a{escape html frag}
-	case 'b':
-		writeMacroClass(out, status, "virt", lc);
+	else if (ident == "b") {
+		writeMacroClass(out, "virt");
 		out << "</span><br/>";
-		break;
+	}
 x{escape html frag}
 ```
 * Zeilenumbrüche
 
+```
+a{escape html frag}
+	else {
+		process_ident(out, ident, '{');
+		writeOneEscaped(out, '{');
+		q = w + 1;
+	}
+x{escape html frag}
+```
+
 # Notizen
-
-```
-a{html state elements}
-	bool noteInCode;
-	bool noteInBold;
-x{html state elements}
-```
-
-```
-a{init html status}
-	, noteInCode { false }
-	, noteInBold { false }
-x{init html status}
-```
 
 ```
 a{html state enums}
@@ -1159,106 +877,99 @@ x{html state enums}
 ```
 
 ```
-a{check html special state}
-	if (s->state == HtmlState::inNotes) {
-		return false;
-	}
-x{check html special state}
-```
-
-```
 a{process ch for HTML} 
 	if (
-		newline &&
+		line[0] == '*' ||
 		status.state == HtmlState::inNotes
 	) {
-		if (ch == '*') {
-			out << "</li><li>\n";
-			ident.clear();
-			newline = false;
-			continue;
-		} else if (ch != ' ' && ch != '\t') {
-			out << "</li></ul></div>\n";
-			status.state = HtmlState::afterSlide;
-			E{move ch to last};
-			continue;
-		}
+		e{process note};
 	}
 x{process ch for HTML}
 ```
 
 ```
-a{process ch for HTML} 
-	if (newline && ch == '*') {
-		if (isOutOfHtmlSpecial(&status)) {
+A{global elements}
+	void process_note_line(std::ostream &out, SI begin, SI end) {
+		e{process note line};
+	}
+x{global elements}
+```
+
+```
+d{close specials}
+	if (status.state == HtmlState::inNotes) {
+		out << "</li></ul>\n";
+	}
+x{close specials}
+```
+
+```
+d{process note}
+	if (line[0] == '*') {
+		auto end = line.end();
+		auto begin = line.begin() + 1;
+		while (begin != end && *begin == ' ') {
+			++begin;
+		}
+		if (status.state != HtmlState::inNotes) {
 			if (status.state != HtmlState::inSlide) {
 				out << "<div>\n";
 			}
 			status.state = HtmlState::inNotes;
 			out << "<ul><li>\n";
-			ident.clear();
-			newline = false;
+		} else {
+			out << "</li><li>\n";
+		}
+		process_note_line(out, begin, end);
+	} else {
+		process_note_line(out, line.begin(), line.end());
+	}
+x{process note}
+```
+
+```
+d{process note line}
+	for(; begin != end; ++begin) {
+		e{special note line};
+		writeOneEscaped(out, *begin);
+	}
+	out << '\n';
+x{process note line}
+```
+
+```
+d{special note line}
+	if (*begin == '`') {
+		auto w = begin + 1;
+		while (w != end && *w != '`') {
+			++w;
+		}
+		if (w != end) {
+			out << "<code>";
+			process_code(out, begin + 1, w);
+			out << "</code>";
+			begin = w;
 			continue;
 		}
 	}
-x{process ch for HTML}
+x{special note line}
 ```
 
 ```
-a{process ch for HTML} 
-	if (
-		ch == '`' &&
-		status.state == HtmlState::inNotes
-	) {
-		E{flush pending};
-		if (status.noteInCode) {
-			out << "</code>";
-		} else {
-			out << "<code>";
+a{special note line}
+	if (*begin == '*' && (begin + 1) != end && *(begin + 1) == '*') {
+		auto w = begin + 2;
+		while (w != end && (w + 1) != end && (*w != '*' || *(w + 1) != '*')) {
+			++w;
 		}
-		status.noteInCode = ! status.noteInCode;
-		ident.clear();
-		newline = false;
-		continue;
-	}
-x{process ch for HTML}
-```
-
-```
-a{process ch for HTML} 
-	if (status.state == HtmlState::inNotes &&
-	status.noteInCode) {
-		E{escape HTML code tag};
-	}
-x{process ch for HTML}
-```
-
-```
-a{process ch for HTML} 
-	if (
-		false &&
-		ch == '*' && /*last == '*' && */
-		status.state == HtmlState::inNotes
-	) {
-		if (status.noteInBold) {
-			out << "</b>";
-		} else {
+		if (w != end && (w + 1 ) != end && *w == '*' && *(w + 1) == '*') {
 			out << "<b>";
+			writeEscaped(out, std::string {begin + 2, w});
+			out << "</b>";
+			begin = w + 1;
+			continue;
 		}
-		status.noteInBold =
-			! status.noteInBold;
-		newline = false;
-		continue;
 	}
-x{process ch for HTML}
+x{special note line}
 ```
 
-```
-a{process ch for HTML} 
-	if (status.state == HtmlState::inNotes) {
-		E{flush pending};
-		E{move ch to last};
-		continue;
-	}
-x{process ch for HTML}
-```

@@ -10,396 +10,235 @@
 <div><div>
 <h1>Fragmente</h1>
 </div>
-
 <ul><li>
- Fragmente bilden einen gerichteten azyklischen Graph
+Fragmente bilden einen gerichteten azyklischen Graph
 </li><li>
- Die Infix-Traversierung dieses Graphen bildet die generierten
+Die Infix-Traversierung dieses Graphen bildet die generierten
   Source-Code Dateien
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
-
 <span class="in1"></span><span class="macro">@expand(<span class="name">define frag</span>)</span>;<br/>
-
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Fragmente sind global sichtbare Strukturen
-</li></ul></div>
-
+Fragmente sind global sichtbare Strukturen
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="var">class</span> <span class="type">Frag</span>;<br/>
-
 <br/>
-
 <span class="in1"></span><span class="var">class</span> <span class="type">FragEntry</span> {<br/>
-
 <span class="in2"></span><span class="type">Buf</span> <span class="var">_buf</span>;<br/>
-
 <span class="in1"></span><span class="var">public</span>:<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>;<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">entry methods</span>)</span>;<br/>
-
 <span class="in1"></span>};<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
+Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
   dieses an der aktuellen Stelle expandiert werden soll)
 </li><li>
- Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
+Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
 </li><li>
- Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
+Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
   zuerst das Fragment ausgegeben
 </li><li>
- So können die Bytes leicht erweitert werden
-</li></ul></div>
-
+So können die Bytes leicht erweitert werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">FragEntry</span>(<br/>
-
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span><br/>
-
 <span class="in1"></span>):<br/>
-
 <span class="in2"></span><span class="var">frag</span> { <span class="var">frag</span> }<br/>
-
 <span class="in1"></span>{}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein Eintrag kann direkt mit Fragment und Zeichenkette initialisiert
+Ein Eintrag kann direkt mit Fragment und Zeichenkette initialisiert
   werden
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">FragEntry</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span> = <span class="str">"/dev/null"</span>,<br/>
-
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span> = <span class="num">1</span><br/>
-
 <span class="in1"></span>): <br/>
-
 <span class="in2"></span><span class="var">frag</span> { <span class="num">nullptr</span>}<br/>
-
 <span class="in1"></span>{<br/>
-
 <span class="in2"></span><span class="var">_buf</span>.<span class="fn">add</span>(<span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein Fragment kann auch nur mit einer Zeichenkette initialisiert werden
-</li></ul></div>
-
+Ein Fragment kann auch nur mit einer Zeichenkette initialisiert werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">FragEntry</span>(): <br/>
-
 <span class="in2"></span><span class="var">frag</span> { <span class="num">nullptr</span>}<br/>
-
 <span class="in1"></span>{}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein Fragment kann auch leer initialisiert werden
-</li></ul></div>
-
+Ein Fragment kann auch leer initialisiert werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="fn">str</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_buf</span>.<span class="fn">str</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Auf die Bytes kann mit <code>str()</code> nur lesend zugegriffen werden
-</li></ul></div>
-
+Auf die Bytes kann mit <code><span class="fn">str</span>()</code> nur lesend zugegriffen werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
-
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="var">_buf</span>.<span class="fn">add</span>(<span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Bytes können direkt hinzugefügt werden
-</li></ul></div>
-
+Bytes können direkt hinzugefügt werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Buf</span> &amp;<span class="var">b</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="var">_buf</span>.<span class="fn">add</span>(<span class="var">b</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">bool</span> <span class="fn">canAdd</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
-
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_buf</span>.<span class="fn">canContinue</span>(<span class="var">file</span>, <span class="var">line</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">list</span>&gt;<br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">map</span>&gt;<br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">sstream</span>&gt;<br/>
-
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="var">class</span> <span class="type">Frag</span> {<br/>
-
 <span class="in2"></span><span class="var">std</span>::<span class="var">list</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">_entries</span>;<br/>
-
 <span class="in2"></span><span class="type">int</span> <span class="var">_expands</span>;<br/>
-
 <span class="in2"></span><span class="type">int</span> <span class="var">_multiples</span>;<br/>
-
 <span class="in1"></span><span class="var">public</span>:<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">frag methods</span>)</span>;<br/>
-
 <span class="in1"></span>};<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Fragmente erden in einfach verketteten Listen gesammelt
+Fragmente erden in einfach verketteten Listen gesammelt
 </li><li>
- Genauso werden die Einträge eines Fragments in einer einfach
+Genauso werden die Einträge eines Fragments in einer einfach
   verketteten Liste organisiert
 </li><li>
- Um schnell Einträge einfügen zu können, gibt es auch einen Verweis auf
+Um schnell Einträge einfügen zu können, gibt es auch einen Verweis auf
   das letzte Element
 </li><li>
- Je nach Namen werden für ein Fragment unterschiedlich viele Bytes im
+Je nach Namen werden für ein Fragment unterschiedlich viele Bytes im
   Heap angefordert
-</li></ul></div>
-
+</li></ul>
+</div>
 </div>
 <h1>Neues Fragment anlegen</h1>
 <div class="slides">
 <div><div>
 <h1>Neues Fragment anlegen</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> { <span class="str">"file: "</span> };<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">size</span>()) == <span class="var">prefix</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Beschreibt das Fragment eine Datei?
-</li></ul></div>
-
+Beschreibt das Fragment eine Datei?
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">Frag</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
-
 <span class="in1"></span>):<br/>
-
 <span class="in2"></span><span class="var">_entries</span> {},<br/>
-
 <span class="in2"></span><span class="var">_expands</span> { <span class="num">0</span> },<br/>
-
 <span class="in2"></span><span class="var">_multiples</span> { <span class="num">0</span> },<br/>
-
 <span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
-
 <span class="in1"></span>{<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFile</span>()) { ++<span class="var">_expands</span>; }<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Die Zeiger werden mit <code>nullptr</code> initialisiert
-</li></ul></div>
-
+Die Zeiger werden mit <code><span class="num">nullptr</span></code> initialisiert
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
-
 <span class="in2"></span><span class="var">_entries</span>.<span class="fn">clear</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">empty</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 </div>
 <h1>Unit Tests</h1>
@@ -407,101 +246,58 @@
 <div><div>
 <h1>Unit Tests</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@globadd(<span class="name">perform unit-tests</span>)</span><br/>
-
 <span class="in1"></span><span class="macro">@expand(<span class="name">frag unit tests</span>)</span>;<br/>
-
 <span class="macro">@end(<span class="name">perform unit-tests</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFragName</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="type">Frag</span> <span class="fn">f</span>(<span class="var">name</span>);<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>.<span class="var">name</span> == <span class="var">name</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- <code>testFragName</code> prüft, ob der Name korrekt in ein Fragment kopiert
+<code><span class="var">testFragName</span></code> prüft, ob der Name korrekt in ein Fragment kopiert
   wurde
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">frag unit tests</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">testFragName</span>(<span class="str">"abc"</span>);<br/>
-
 <span class="in1"></span><span class="fn">testFragName</span>(<span class="str">""</span>);<br/>
-
 <span class="in1"></span><span class="fn">testFragName</span>(<span class="str">"A c"</span>);<br/>
-
 <span class="in1"></span>{<br/>
-
 <span class="in2"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">"ab"</span> };<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>.<span class="fn">empty</span>());<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag unit tests</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Zum einen wird getestet, ob die Namen korrekt kopiert werden
+Zum einen wird getestet, ob die Namen korrekt kopiert werden
 </li><li>
- Zum anderen wird sichergestellt, dass die Verweise <code>nullptr</code> sind
-</li></ul></div>
-
+Zum anderen wird sichergestellt, dass die Verweise <code><span class="num">nullptr</span></code> sind
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">f</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">f</span> &amp;&amp; ! <span class="var">f</span>-&gt;<span class="fn">empty</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 </div>
 <h1>Unit Tests</h1>
@@ -509,359 +305,203 @@
 <div><div>
 <h1>Unit Tests</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag unit tests</span>)</span><br/>
-
 <span class="in1"></span>{<br/>
-
 <span class="in2"></span><span class="type">FragEntry</span> <span class="var">entry</span>;<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">entry</span>.<span class="var">frag</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag unit tests</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein leerer Eintrag hat keinen Nachfolger
+Ein leerer Eintrag hat keinen Nachfolger
 </li><li>
- Und kein Fragment
-</li></ul></div>
-
+Und kein Fragment
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag unit tests</span>)</span><br/>
-
 <span class="in1"></span>{<br/>
-
 <span class="in2"></span><span class="type">FragEntry</span> <span class="var">entry</span>;<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="fn">str</span>().<span class="fn">empty</span>());<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag unit tests</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein leerer Eintrag hat keine Bytes
-</li></ul></div>
-
+Ein leerer Eintrag hat keine Bytes
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag unit tests</span>)</span><br/>
-
 <span class="in1"></span>{<br/>
-
 <span class="in2"></span><span class="type">FragEntry</span> <span class="var">entry</span> { <span class="str">"abc"</span> };<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="fn">str</span>() == <span class="str">"abc"</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag unit tests</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Die Bytes eines Eintrags stimmen überein
-</li></ul></div>
-
+Die Bytes eines Eintrags stimmen überein
+</li></ul>
+</div>
 </div>
 <h1>Einträge zu Fragmenten hinzufügen</h1>
 <div class="slides">
 <div><div>
 <h1>Einträge zu Fragmenten hinzufügen</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
-
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">value</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> *<span class="var">this</span>; }<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_entries</span>.<span class="fn">empty</span>()) {<br/>
-
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">FragEntry</span> {<br/>
-
 <span class="in4"></span><span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span><br/>
-
 <span class="in3"></span>});<br/>
-
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (! <span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">canAdd</span>(<br/>
-
 <span class="in3"></span><span class="var">file</span>, <span class="var">line</span><br/>
-
 <span class="in2"></span>)) {<br/>
-
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">FragEntry</span> {<br/>
-
 <span class="in4"></span><span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span><br/>
-
 <span class="in3"></span>});<br/>
-
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
-
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">add</span>(<br/>
-
 <span class="in4"></span><span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span><br/>
-
 <span class="in3"></span>);<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">Buf</span> &amp;<span class="var">b</span>) {<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_entries</span>.<span class="fn">empty</span>()) {<br/>
-
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">FragEntry</span> {});<br/>
-
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (! <span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">canAdd</span>(<br/>
-
 <span class="in3"></span><span class="var">b</span>.<span class="fn">file</span>(), <span class="var">b</span>.<span class="fn">startLine</span>()<br/>
-
 <span class="in2"></span>)) {<br/>
-
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">FragEntry</span> {});<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="in2"></span><span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">add</span>(<span class="var">b</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>);<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="macro">@expand(<span class="name">define cycle check</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>) {<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">avoid frag cycles</span>)</span>;<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">add frag entry</span>)</span>;<br/>
-
 <span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
+Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
   dass kein Zykel entsteht
 </li><li>
- Ein Zykel liegt vor, wenn <code>frag</code> gleich <code>child</code> ist
+Ein Zykel liegt vor, wenn <code><span class="var">frag</span></code> gleich <code><span class="var">child</span></code> ist
 </li><li>
- Oder bereits direkt oder indirekt zu <code>child</code> hinzugefügt wurde
+Oder bereits direkt oder indirekt zu <code><span class="var">child</span></code> hinzugefügt wurde
 </li><li>
- Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
+Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
   verwendet
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">add frag entry</span>)</span><br/>
-
 <span class="in1"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<br/>
-
 <span class="in2"></span><span class="type">FragEntry</span> { <span class="var">child</span> }<br/>
-
 <span class="in1"></span>);<br/>
-
 <span class="macro">@end(<span class="name">add frag entry</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Es muss ein neuer Eintrag in dem Fragment angelegt werden
-</li></ul></div>
-
+Es muss ein neuer Eintrag in dem Fragment angelegt werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">cbegin</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Begin eines konstanten Iterators auf den Einträgen
-</li></ul></div>
-
+Begin eines konstanten Iterators auf den Einträgen
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">cend</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ende eines konstanten Iterators auf den Einträgen
-</li></ul></div>
-
+Ende eines konstanten Iterators auf den Einträgen
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">int</span> <span class="fn">expands</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_expands</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">addExpand</span>() {<br/>
-
 <span class="in2"></span>++<span class="var">_expands</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">int</span> <span class="fn">multiples</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_multiples</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">addMultiple</span>() {<br/>
-
 <span class="in2"></span>++<span class="var">_multiples</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
-
-</code>
-</div>
-
-
+</code></div>
 </div>
 </div>
 <h1>Fragmente serialisieren</h1>
@@ -869,533 +509,324 @@
 <div><div>
 <h1>Fragmente serialisieren</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>, <span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-
 <span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">iterate entries</span>)</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Jeder Eintrag wird nacheinander bearbeitet
+Jeder Eintrag wird nacheinander bearbeitet
 </li><li>
- Fragmente in Einträgen werden rekursiv ausgegeben
-</li></ul></div>
-
+Fragmente in Einträgen werden rekursiv ausgegeben
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">iterate entries</span>)</span><br/>
-
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">entry</span> : <span class="var">frag</span>) {<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
-
 <span class="in3"></span><span class="fn">serializeFrag</span>(<br/>
-
 <span class="in4"></span>*<span class="var">entry</span>.<span class="var">frag</span>, <span class="var">out</span>,<br/>
-
 <span class="in4"></span><span class="var">writeLineMacros</span><br/>
-
 <span class="in3"></span>);<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="var">entry</span>.<span class="fn">str</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">iterate entries</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Rekursiv wird das Fragment ausgegeben, falls vorhanden
+Rekursiv wird das Fragment ausgegeben, falls vorhanden
 </li><li>
- Dann werden die Bytes des Eintrags ausgegeben
-</li></ul></div>
-
+Dann werden die Bytes des Eintrags ausgegeben
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">expected</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">serialize test frag</span>)</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
+Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
   Erwartung entspricht
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">serialize test frag</span>)</span><br/>
-
 <span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
-
 <span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">buffer</span>, <span class="num">false</span>);<br/>
-
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="fn">str</span>() == <span class="var">expected</span>);<br/>
-
 <span class="macro">@end(<span class="name">serialize test frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Serialisiert das Fragment
+Serialisiert das Fragment
 </li><li>
- Der Buffer muss die erwarteten Werte enthalten
-</li></ul></div>
-
+Der Buffer muss die erwarteten Werte enthalten
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="type">void</span> <span class="fn">addStringToFrag</span>(<br/>
-
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">str</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
-
 <span class="in3"></span><span class="var">str</span>, <span class="var">std</span>::<span class="var">string</span> {}, <span class="num">0</span><br/>
-
 <span class="in2"></span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Zu Testzwecken kann eine Null-terminierte Zeichenkette hinzugefügt
+Zu Testzwecken kann eine Null-terminierte Zeichenkette hinzugefügt
   werden
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag unit tests</span>)</span> {<br/>
-
 <span class="in1"></span><span class="type">Frag</span> <span class="var">frag</span> {<span class="str">""</span>};<br/>
-
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"abc"</span>);<br/>
-
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"def"</span>);<br/>
-
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
-
 } <span class="macro">@end(<span class="name">frag unit tests</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Prüft, ob zwei Strings richtig serialisiert werden
-</li></ul></div>
-
+Prüft, ob zwei Strings richtig serialisiert werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag unit tests</span>)</span> {<br/>
-
 <span class="in1"></span><span class="type">Frag</span> <span class="var">a</span> { <span class="str">""</span> };<br/>
-
 <span class="in1"></span><span class="type">Frag</span> <span class="var">b</span> { <span class="str">""</span> };<br/>
-
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
-
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
-
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
-
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
-
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
-
 } <span class="macro">@end(<span class="name">frag unit tests</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Prüft, ob Fragmente expandiert werden
-</li></ul></div>
-
+Prüft, ob Fragmente expandiert werden
+</li></ul>
+</div>
 </div>
 <h1>Zykel im Fragment-Graph finden</h1>
 <div class="slides">
 <div><div>
 <h1>Zykel im Fragment-Graph finden</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">define cycle check</span>)</span><br/>
-
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">needle</span>,<br/>
-
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">haystack</span><br/>
-
 <span class="in1"></span>) {<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">needle</span>);<br/>
-
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">haystack</span>);<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">check cycle frag</span>)</span>;<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">check cycle entries</span>)</span>;<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define cycle check</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Wenn das Fragment das gesuchte ist, dann wurde ein Zykel gefunden
+Wenn das Fragment das gesuchte ist, dann wurde ein Zykel gefunden
 </li><li>
- Danach wird über alle Einträge gesucht
+Danach wird über alle Einträge gesucht
 </li><li>
- Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht
+Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht
   enthalten
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">avoid frag cycles</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">ASSERT</span>(! <span class="fn">isFragInFrag</span>(<br/>
-
 <span class="in2"></span><span class="var">this</span>, <span class="var">child</span><br/>
-
 <span class="in1"></span>));<br/>
-
 <span class="macro">@end(<span class="name">avoid frag cycles</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht
+Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht
   bereits enthält
-</li></ul></div>
-
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">check cycle frag</span>)</span><br/>
-
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">haystack</span>) {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">check cycle frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Wenn der Container selbst das gesuchte Fragment ist, liefert die
-  Funktion <code>true</code> zurück
-</li></ul></div>
-
+Wenn der Container selbst das gesuchte Fragment ist, liefert die
+  Funktion <code><span class="num">true</span></code> zurück
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">check cycle entries</span>)</span><br/>
-
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : *<span class="var">haystack</span>)  {<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">i</span>.<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFragInFrag</span>(<br/>
-
 <span class="in3"></span><span class="var">needle</span>, <span class="var">i</span>.<span class="var">frag</span><br/>
-
 <span class="in2"></span>)) {<br/>
-
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">check cycle entries</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Alle Fragment in den Einträgen werden rekursiv untersucht
+Alle Fragment in den Einträgen werden rekursiv untersucht
 </li><li>
- Damit wird der ganze Graph durchsucht
-</li></ul></div>
-
+Damit wird der ganze Graph durchsucht
+</li></ul>
+</div>
 </div>
 <h1>Fragment-Kollektion</h1>
 <div class="slides">
 <div><div>
 <h1>Fragment-Kollektion</h1>
 </div>
-
-
 </div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-
 <span class="in1"></span><span class="var">class</span> <span class="type">FragMap</span> {<br/>
-
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">_link</span>;<br/>
-
 <span class="in2"></span><span class="var">std</span>::<span class="var">map</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt; <span class="var">map</span>;<br/>
-
 <span class="in1"></span><span class="var">public</span>:<br/>
-
 <span class="in2"></span><span class="macro">@expand(<span class="name">frag map methods</span>)</span>;<br/>
-
 <span class="in1"></span>};<br/>
-
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
+Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
 </li><li>
- Alle Felder müssen mit <code>nullptr</code> initialisiert werden
-</li></ul></div>
-
+Alle Felder müssen mit <code><span class="num">nullptr</span></code> initialisiert werden
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@def(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="fn">FragMap</span>(): <span class="var">_link</span> { <span class="num">nullptr</span> } {}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Map wird ohne Verknüpfung und Elementen als leere Struktur angelegt
-</li></ul></div>
-
+Map wird ohne Verknüpfung und Elementen als leere Struktur angelegt
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">FragMap</span> *<span class="fn">setLink</span>(<span class="type">FragMap</span> *<span class="var">link</span>) {<br/>
-
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">old</span> { <span class="var">_link</span> };<br/>
-
 <span class="in2"></span><span class="var">_link</span> = <span class="var">link</span>;<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">old</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Der Link kann dynamisch geändert werden
+Der Link kann dynamisch geändert werden
 </li><li>
- Der vorher aktive Link wird zurück geliefert
-</li></ul></div>
-
+Der vorher aktive Link wird zurück geliefert
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
-
 <span class="in2"></span><span class="type">auto</span> <span class="var">found</span> { <span class="var">map</span>.<span class="fn">find</span>(<span class="var">name</span>) };<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span> != <span class="var">map</span>.<span class="fn">end</span>()) {<br/>
-
 <span class="in3"></span><span class="keyword">return</span> &amp;<span class="var">found</span>-&gt;<span class="var">second</span>;<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_link</span>) {<br/>
-
 <span class="in3"></span><span class="keyword">return</span> <span class="var">_link</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Sucht ein Element in der Map
+Sucht ein Element in der Map
 </li><li>
- Oder in verlinkten Maps
+Oder in verlinkten Maps
 </li><li>
- Wenn es nicht gefunden wird, wird <code>nullptr</code> zurück geliefert
-</li></ul></div>
-
+Wenn es nicht gefunden wird, wird <code><span class="num">nullptr</span></code> zurück geliefert
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>, <span class="type">FragMap</span> &amp;<span class="var">insert</span>) {<br/>
-
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">found</span> { <span class="fn">find</span>(<span class="var">name</span>) };<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span>) { <span class="keyword">return</span> *<span class="var">found</span>; }<br/>
-
 <span class="in2"></span><span class="type">auto</span> <span class="var">created</span> { <span class="var">insert</span>.<span class="var">map</span>.<span class="fn">insert</span>(<br/>
-
 <span class="in3"></span><span class="var">std</span>::<span class="var">pair</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;(<span class="var">name</span>, <span class="var">name</span>)<br/>
-
 <span class="in2"></span>) };<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">created</span>.<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Sucht ein Element in der Map
+Sucht ein Element in der Map
 </li><li>
- Oder in verlinkten Map
+Oder in verlinkten Map
 </li><li>
- Wenn es nicht gefunden wird, wird es in der Map <code>insert</code> angelegt
+Wenn es nicht gefunden wird, wird es in der Map <code><span class="var">insert</span></code> angelegt
 </li><li>
- Und zurück geliefert
-</li></ul></div>
-
+Und zurück geliefert
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">operator</span>[](<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">get</span>(<span class="var">name</span>, *<span class="var">this</span>);<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Kurzform für <code>get</code>
-</li></ul></div>
-
+Kurzform für <code><span class="var">get</span></code>
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">map</span>.<span class="fn">cbegin</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Beginn eines konstanten Iterators über Elemente der Map
-</li></ul></div>
-
+Beginn eines konstanten Iterators über Elemente der Map
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-
 <span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
-
 <span class="in2"></span><span class="keyword">return</span> <span class="var">map</span>.<span class="fn">cend</span>();<br/>
-
 <span class="in1"></span>}<br/>
-
 <span class="macro">@end(<span class="name">frag map methods</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Ende eines kostanten Iterators über Elemente der Map
-</li></ul></div>
-�
+Ende eines kostanten Iterators über Elemente der Map

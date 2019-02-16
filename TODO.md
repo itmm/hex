@@ -13,5 +13,5 @@
 * Slides ohne Kommentare loggen
 * SVG-Grafiken in Slides
 * Directories richtig behandeln
-* #line Makros in .c und .h Dateien
+* #line Makros in .c, .cpp und .h Dateien
 * Normale Absätze zwischen Folien

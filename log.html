@@ -10,102 +10,67 @@
 <div><div>
 <h1>Logging</h1>
 </div>
-
 <ul><li>
- In dieser Datei wird der Logging-Mechanismus beschrieben
+In dieser Datei wird der Logging-Mechanismus beschrieben
 </li><li>
- Es wird nur etwas geloggt, wenn ein Fehler aufgetreten ist
-</li></ul></div>
-
+Es wird nur etwas geloggt, wenn ein Fehler aufgetreten ist
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@globdef(<span class="name">includes</span>)</span><br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">iostream</span>&gt;<br/>
-
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">exception</span>&gt;<br/>
-
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Geschrieben wird nach <code>std::cerr</code>, das in <code>&lt;iostream&gt;</code> definiert ist
+Geschrieben wird nach <code><span class="var">std</span>::<span class="var">cerr</span></code>, das in <code>&lt;<span class="var">iostream</span>&gt;</code> definiert ist
 </li><li>
- Nach dem Herausschreiben der Nachricht wird eine Exception generiert
-</li></ul></div>
-
+Nach dem Herausschreiben der Nachricht wird eine Exception generiert
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@globdef(<span class="name">define logging</span>)</span><br/>
-
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>) \<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
-
 <span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">':'</span> &lt;&lt; <span class="var">__LINE__</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">"] "</span> &lt;&lt; #<span class="var">COND</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">" FAILED\n"</span>; \<br/>
-
 <span class="in3"></span><span class="var">throw</span> <span class="var">std</span>::<span class="fn">exception</span>(); \<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define logging</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Loggen wird über ein Makro realisiert
+Loggen wird über ein Makro realisiert
 </li><li>
- Nur so kann die aktuelle Position im Source-Code ermittelt werden
+Nur so kann die aktuelle Position im Source-Code ermittelt werden
 </li><li>
- Wenn die Bedingung wahr ist, wird nicht geloggt
+Wenn die Bedingung wahr ist, wird nicht geloggt
 </li><li>
- Ansonsten wird eine Fehlermeldung ausgegeben
+Ansonsten wird eine Fehlermeldung ausgegeben
 </li><li>
- Und das Programm beendet
+Und das Programm beendet
 </li><li>
- Datei und Zeile des Tests wird ausgegeben
-</li></ul></div>
-
+Datei und Zeile des Tests wird ausgegeben
+</li></ul>
+</div>
 <div><div>
 <code>
-
 <span class="macro">@globadd(<span class="name">define logging</span>)</span><br/>
-
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT_MSG</span>(<span class="var">COND</span>, <span class="var">MSG</span>) \<br/>
-
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
-
 <span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">':'</span> &lt;&lt; <span class="var">__LINE__</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">"] "</span> &lt;&lt; #<span class="var">COND</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">" FAILED: "</span> &lt;&lt; <span class="var">MSG</span> &lt;&lt; \<br/>
-
 <span class="in4"></span><span class="str">'\n'</span>; \<br/>
-
 <span class="in3"></span><span class="var">throw</span> <span class="var">std</span>::<span class="fn">exception</span>(); \<br/>
-
 <span class="in2"></span>}<br/>
-
 <span class="macro">@end(<span class="name">define logging</span>)</span><br/>
-
-</code>
-</div>
-
+</code></div>
 <ul><li>
- Zusätzlich kann eine Nachricht mitgegegben werden
-</li></ul></div>
-
+Zusätzlich kann eine Nachricht mitgegegben werden
+</li></ul>
+</div>
