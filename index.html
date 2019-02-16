@@ -198,26 +198,6 @@ Während des Lesens kann die aktuelle Datei unterbrochen und zuerst
 </code></div>
 </div>
 </div>
-<h1>Buffer</h1>
-<div class="slides">
-<div><div>
-<h1>Buffer</h1>
-</div>
-<ul><li>
-Buffer können als Erweiterung von Strings aktiv gesetzt werden
-</li><li>
-Und tracken den enthaltenen Range
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@include(<span class="name"><a href="buf.html">buf.x</a></span>)</span><br/>
-</code></div>
-<ul><li>
-Buffer werden in einer eigenen Datei definiert
-</li></ul>
-</div>
-</div>
 <h1>Fragmente</h1>
 <div class="slides">
 <div><div>
@@ -438,13 +418,7 @@ Dabei kann <code><span class="var">hx</span></code> auch mit einer leeren Eingab
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">char</span> <span class="var">ch</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in3"></span><span class="type">Buf</span> <span class="var">buffer</span>;<br/>
-<span class="in3"></span><span class="var">buffer</span>.<span class="fn">add</span>(<br/>
-<span class="in4"></span><span class="var">ch</span>,<br/>
-<span class="in4"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>,<br/>
-<span class="in4"></span><span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>()<br/>
-<span class="in3"></span>);<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">buffer</span>);<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">ch</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
@@ -458,9 +432,8 @@ Dabei kann <code><span class="var">hx</span></code> auch mit einer leeren Eingab
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in3"></span><span class="type">Buf</span> <span class="var">buffer</span>;<br/>
-<span class="in3"></span><span class="var">buffer</span>.<span class="fn">add</span>(<span class="var">std</span>::<span class="var">string</span> {<span class="var">i</span>, <span class="var">e</span>}, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">buffer</span>);<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">str</span> {<span class="var">i</span>, <span class="var">e</span>};<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">str</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">name</span>, <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="fn">line</span>());<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>

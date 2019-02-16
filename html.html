@@ -1064,7 +1064,7 @@ Zeilenumbrüche
 <div><div>
 <code>
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_note_line</span>(<span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span>) {<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span>) {<br/>
 <span class="in2"></span><span class="macro">@expand(<span class="name">process note line</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
@@ -1097,9 +1097,9 @@ Zeilenumbrüche
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/li&gt;&lt;li&gt;\n"</span>;<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="fn">process_note_line</span>(<span class="var">out</span>, <span class="var">begin</span>, <span class="var">end</span>);<br/>
+<span class="in2"></span><span class="fn">process_content</span>(<span class="var">out</span>, <span class="var">begin</span>, <span class="var">end</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
-<span class="in2"></span><span class="fn">process_note_line</span>(<span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>());<br/>
+<span class="in2"></span><span class="fn">process_content</span>(<span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>());<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process note</span>)</span><br/>
 </code></div>

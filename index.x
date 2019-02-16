@@ -100,15 +100,6 @@ x{global elements}
 i{log.x}
 ```
 
-# Buffer
-* Buffer können als Erweiterung von Strings aktiv gesetzt werden
-* Und tracken den enthaltenen Range
-
-```
-i{buf.x}
-```
-* Buffer werden in einer eigenen Datei definiert
-
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
   angewendet werden
@@ -269,13 +260,7 @@ d{read source file} {
 a{global elements}
 	void process_char(Frag *frag, char ch) {
 		if (frag) {
-			Buf buffer;
-			buffer.add(
-				ch,
-				inputs.cur()->name,
-				inputs.cur()->line()
-			);
-			frag->add(buffer);
+			frag->add(ch, inputs.cur()->name, inputs.cur()->line());
 		}
 	}
 x{global elements}
@@ -288,9 +273,8 @@ a{global elements}
 
 	void process_chars(Frag *frag, SI i, SI e) {
 		if (frag) {
-			Buf buffer;
-			buffer.add(std::string {i, e}, inputs.cur()->name, inputs.cur()->line());
-			frag->add(buffer);
+			std::string str {i, e};
+			frag->add(str, inputs.cur()->name, inputs.cur()->line());
 		}
 	}
 x{global elements}

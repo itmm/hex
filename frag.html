@@ -33,7 +33,10 @@ Fragmente sind global sichtbare Strukturen
 <span class="in1"></span><span class="var">class</span> <span class="type">Frag</span>;<br/>
 <br/>
 <span class="in1"></span><span class="var">class</span> <span class="type">FragEntry</span> {<br/>
-<span class="in2"></span><span class="type">Buf</span> <span class="var">_buf</span>;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_str</span>;<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_file</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">_first_line</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">_last_line</span>;<br/>
 <span class="in1"></span><span class="var">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>;<br/>
 <span class="in2"></span><span class="macro">@expand(<span class="name">entry methods</span>)</span>;<br/>
@@ -75,9 +78,12 @@ Ein Eintrag kann direkt mit Fragment und Zeichenkette initialisiert
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span> = <span class="str">"/dev/null"</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span> = <span class="num">1</span><br/>
 <span class="in1"></span>): <br/>
+<span class="in2"></span><span class="var">_str</span> { <span class="var">value</span> },<br/>
+<span class="in2"></span><span class="var">_file</span> { <span class="var">file</span> },<br/>
+<span class="in2"></span><span class="var">_first_line</span> { <span class="var">line</span> },<br/>
+<span class="in2"></span><span class="var">_last_line</span> { <span class="var">line</span> },<br/>
 <span class="in2"></span><span class="var">frag</span> { <span class="num">nullptr</span>}<br/>
 <span class="in1"></span>{<br/>
-<span class="in2"></span><span class="var">_buf</span>.<span class="fn">add</span>(<span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -101,7 +107,7 @@ Ein Fragment kann auch leer initialisiert werden
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="fn">str</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_buf</span>.<span class="fn">str</span>();<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_str</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -113,11 +119,33 @@ Auf die Bytes kann mit <code><span class="fn">str</span>()</code> nur lesend zug
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">ch</span>, <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">empty</span>() || <span class="var">_first_line</span> &lt;= <span class="num">0</span>) {<br/>
+<span class="in3"></span><span class="var">_file</span> = <span class="var">file</span>;<br/>
+<span class="in3"></span><span class="var">_first_line</span> = <span class="var">line</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">_last_line</span> = <span class="var">line</span>;<br/>
+<span class="in2"></span><span class="var">_str</span> += <span class="var">ch</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">_buf</span>.<span class="fn">add</span>(<span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">empty</span>() || <span class="var">_first_line</span> &lt;= <span class="num">0</span>) {<br/>
+<span class="in3"></span><span class="var">_file</span> = <span class="var">file</span>;<br/>
+<span class="in3"></span><span class="var">_first_line</span> = <span class="var">line</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">_last_line</span> = <span class="var">line</span>;<br/>
+<span class="in2"></span><span class="var">_str</span> += <span class="var">value</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -128,22 +156,17 @@ Bytes können direkt hinzugefügt werden
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">Buf</span> &amp;<span class="var">b</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">_buf</span>.<span class="fn">add</span>(<span class="var">b</span>);<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
-</code></div>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">canAdd</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_buf</span>.<span class="fn">canContinue</span>(<span class="var">file</span>, <span class="var">line</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">_file</span>.<span class="fn">empty</span>() &amp;&amp; <span class="var">file</span> != <span class="var">_file</span>) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_last_line</span> &gt; <span class="num">0</span> &amp;&amp; <span class="var">_last_line</span> != <span class="var">line</span> &amp;&amp; <span class="var">_last_line</span> + <span class="num">1</span> != <span class="var">line</span>) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -249,7 +272,7 @@ Die Zeiger werden mit <code><span class="num">nullptr</span></code> initialisier
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">perform unit-tests</span>)</span><br/>
+<span class="macro">@globdef(<span class="name">perform unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="macro">@expand(<span class="name">frag unit tests</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">perform unit-tests</span>)</span><br/>
 </code></div>
@@ -386,16 +409,15 @@ Die Bytes eines Eintrags stimmen überein
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">Buf</span> &amp;<span class="var">b</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">char</span> <span class="var">ch</span>, <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>, <span class="type">int</span> <span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_entries</span>.<span class="fn">empty</span>()) {<br/>
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">FragEntry</span> {});<br/>
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (! <span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">canAdd</span>(<br/>
-<span class="in3"></span><span class="var">b</span>.<span class="fn">file</span>(), <span class="var">b</span>.<span class="fn">startLine</span>()<br/>
+<span class="in3"></span><span class="var">file</span>, <span class="var">line</span><br/>
 <span class="in2"></span>)) {<br/>
 <span class="in3"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">FragEntry</span> {});<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">add</span>(<span class="var">b</span>);<br/>
+<span class="in2"></span><span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">add</span>(<span class="var">ch</span>, <span class="var">file</span>, <span class="var">line</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>

@@ -43,133 +43,13 @@
 ;
 
 	
-	class Buf {
-		std::string _value;
-		std::string _file;
-		int _startLine;
-		int _endLine;
-		bool _active;
-		
-	bool _canContinue(
-		const std::string &file,
-		int line
-	) {
-		if (_file != file) {
-			return false;
-		}
-		return 
-			line == _endLine ||
-			line == _endLine + 1;
-	}
-
-	void assertCont(
-		const std::string &file,
-		int line
-	) {
-		if (_file.empty()) {
-			_file = file;
-			_startLine = line;
-			_endLine = line;
-		}
-		ASSERT(_canContinue(file, line));
-	}
-;
-	public:
-		
-	Buf(): _active(false) {}
-
-	bool active() const {
-		return _active;
-	}
-
-	bool empty() const {
-		return _value.empty();
-	}
-
-	void activate() {
-		_active = true;
-	}
-
-	void clear(bool active = false) {
-		_value.clear();
-		_file.clear();
-		_startLine = 0;
-		_endLine = 0;
-		_active = active;
-	}
-
-	const std::string &str() const {
-		return _value;
-	}
-
-	const std::string &file() const {
-		return _file;
-	}
-
-	int startLine() const {
-		return _startLine;
-	}
-
-	int endLine() const {
-		return _endLine;
-	}
-
-	bool canContinue(
-		const std::string &file,
-		int line
-	) {
-		if (_file.empty()) {
-			return true;
-		}
-		return _canContinue(
-			file, line
-		);
-	}
-
-	void add(
-		const std::string &value,
-		const std::string &file =
-			"/dev/null",
-		int line = 1
-	) {
-		activate();
-		if (value.empty()) { return; }
-		assertCont(file, line);
-		_value += value;
-		_endLine = line;
-	}
-
-	void add(
-		int ch,
-		const std::string &file =
-			"/dev/null",
-		int line = 1
-	) {
-		char c = static_cast<char>(ch);
-		add(
-			std::string(&c, &c + 1),
-			file, line
-		);
-	}
-
-	void add(const Buf &b) {
-		activate();
-		if (b.empty()) { return; }
-		assertCont(
-			b._file, b._startLine
-		);
-		_value += b._value;
-		_endLine = b._endLine;
-	}
-;
-	};
-;
-
-	
 	class Frag;
 
 	class FragEntry {
-		Buf _buf;
+		std::string _str;
+		std::string _file;
+		int _first_line;
+		int _last_line;
 	public:
 		const Frag *frag;
 		
@@ -184,9 +64,12 @@
 		const std::string &file = "/dev/null",
 		int line = 1
 	): 
+		_str { value },
+		_file { file },
+		_first_line { line },
+		_last_line { line },
 		frag { nullptr}
 	{
-		_buf.add(value, file, line);
 	}
 
 	FragEntry(): 
@@ -194,7 +77,19 @@
 	{}
 
 	const std::string &str() const {
-		return _buf.str();
+		return _str;
+	}
+
+	void add(
+		char ch, const std::string &file,
+		int line
+	) {
+		if (_file.empty() || _first_line <= 0) {
+			_file = file;
+			_first_line = line;
+		}
+		_last_line = line;
+		_str += ch;
 	}
 
 	void add(
@@ -202,20 +97,25 @@
 		const std::string &file,
 		int line
 	) {
-		_buf.add(value, file, line);
-	}
-
-	void add(
-		const Buf &b
-	) {
-		_buf.add(b);
+		if (_file.empty() || _first_line <= 0) {
+			_file = file;
+			_first_line = line;
+		}
+		_last_line = line;
+		_str += value;
 	}
 
 	bool canAdd(
 		const std::string &file,
 		int line
 	) {
-		return _buf.canContinue(file, line);
+		if (! _file.empty() && file != _file) {
+			return false;
+		}
+		if (_last_line > 0 && _last_line != line && _last_line + 1 != line) {
+			return false;
+		}
+		return true;
 	}
 ;
 	};
@@ -275,16 +175,15 @@
 		return *this;
 	}
 
-	void add(const Buf &b) {
-		if (b.empty()) { return; }
+	void add(char ch, const std::string &file, int line) {
 		if (_entries.empty()) {
 			_entries.push_back(FragEntry {});
 		} else if (! _entries.back().canAdd(
-			b.file(), b.startLine()
+			file, line
 		)) {
 			_entries.push_back(FragEntry {});
 		}
-		_entries.back().add(b);
+		_entries.back().add(ch, file, line);
 	}
 
 	Frag &add(Frag *child);
@@ -587,13 +486,7 @@
 
 	void process_char(Frag *frag, char ch) {
 		if (frag) {
-			Buf buffer;
-			buffer.add(
-				ch,
-				inputs.cur()->name,
-				inputs.cur()->line()
-			);
-			frag->add(buffer);
+			frag->add(ch, inputs.cur()->name, inputs.cur()->line());
 		}
 	}
 
@@ -602,9 +495,8 @@
 
 	void process_chars(Frag *frag, SI i, SI e) {
 		if (frag) {
-			Buf buffer;
-			buffer.add(std::string {i, e}, inputs.cur()->name, inputs.cur()->line());
-			frag->add(buffer);
+			std::string str {i, e};
+			frag->add(str, inputs.cur()->name, inputs.cur()->line());
 		}
 	}
 
@@ -1305,7 +1197,7 @@
 ;
 	}
 
-	void process_note_line(std::ostream &out, SI begin, SI end) {
+	void process_content(std::ostream &out, SI begin, SI end) {
 		
 	for(; begin != end; ++begin) {
 		
@@ -1349,191 +1241,6 @@
 	) {
 		
 	
-	 {
-	Buf b;
-	ASSERT(! b.active());
-}  {
-	Buf b;
-	b.activate();
-	ASSERT(b.active());
-}  {
-	Buf b;
-	b.activate();
-	b.clear();
-	ASSERT(! b.active());
-}  {
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	ASSERT(b.active());
-}  {
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	ASSERT(b.str() == "abc");
-}  {
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	ASSERT(b.file() == "foo.x");
-}  {
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	ASSERT(b.startLine() == 1);
-}  {
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	ASSERT(b.endLine() == 1);
-}  {
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	ASSERT(b.str() == "abc\ndef");
-}  {
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	ASSERT(b.startLine() == 1);
-}  {
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	ASSERT(b.endLine() == 2);
-}  {
-	
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	Buf c;
-	c.add(b);
-;
-	ASSERT(c.str() == b.str());
-}  {
-	
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	Buf c;
-	c.add(b);
-;
-	ASSERT(
-		c.startLine() ==
-			b.startLine()
-	);
-}  {
-	
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	Buf c;
-	c.add(b);
-;
-	ASSERT(
-		c.endLine() ==
-			b.endLine()
-	);
-}  {
-	
-	
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	Buf c;
-	c.add(b);
-;
-	Buf d;
-	d.add("\n", "foo.x", 2);
-	d.add("ghi", "foo.x", 3);
-	c.add(d);
-
-	ASSERT(
-		c.str() ==
-			"abc\ndef\nghi"
-	);
-}  {
-	
-	
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	Buf c;
-	c.add(b);
-;
-	Buf d;
-	d.add("\n", "foo.x", 2);
-	d.add("ghi", "foo.x", 3);
-	c.add(d);
-
-	ASSERT(c.startLine() == 1);
-}  {
-	
-	
-	
-	
-	Buf b;
-	b.add("abc", "foo.x", 1);
-;
-	b.add("\n", "foo.x", 1);
-	b.add("def", "foo.x", 2);
-;
-	Buf c;
-	c.add(b);
-;
-	Buf d;
-	d.add("\n", "foo.x", 2);
-	d.add("ghi", "foo.x", 3);
-	c.add(d);
-
-	ASSERT(c.endLine() == 3);
-} ;
-
 	
 	testFragName("abc");
 	testFragName("");
@@ -1871,9 +1578,9 @@
 		} else {
 			out << "</li><li>\n";
 		}
-		process_note_line(out, begin, end);
+		process_content(out, begin, end);
 	} else {
-		process_note_line(out, line.begin(), line.end());
+		process_content(out, line.begin(), line.end());
 	}
 ;
 	}

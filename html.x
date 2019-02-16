@@ -889,7 +889,7 @@ x{process ch for HTML}
 
 ```
 A{global elements}
-	void process_note_line(std::ostream &out, SI begin, SI end) {
+	void process_content(std::ostream &out, SI begin, SI end) {
 		e{process note line};
 	}
 x{global elements}
@@ -920,9 +920,9 @@ d{process note}
 		} else {
 			out << "</li><li>\n";
 		}
-		process_note_line(out, begin, end);
+		process_content(out, begin, end);
 	} else {
-		process_note_line(out, line.begin(), line.end());
+		process_content(out, line.begin(), line.end());
 	}
 x{process note}
 ```

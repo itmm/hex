@@ -15,7 +15,10 @@ d{define frag}
 	class Frag;
 
 	class FragEntry {
-		Buf _buf;
+		std::string _str;
+		std::string _file;
+		int _first_line;
+		int _last_line;
 	public:
 		const Frag *frag;
 		e{entry methods};
@@ -48,9 +51,12 @@ a{entry methods}
 		const std::string &file = "/dev/null",
 		int line = 1
 	): 
+		_str { value },
+		_file { file },
+		_first_line { line },
+		_last_line { line },
 		frag { nullptr}
 	{
-		_buf.add(value, file, line);
 	}
 x{entry methods}
 ```
@@ -68,7 +74,7 @@ x{entry methods}
 ```
 a{entry methods}
 	const std::string &str() const {
-		return _buf.str();
+		return _str;
 	}
 x{entry methods}
 ```
@@ -77,11 +83,32 @@ x{entry methods}
 ```
 a{entry methods}
 	void add(
+		char ch, const std::string &file,
+		int line
+	) {
+		if (_file.empty() || _first_line <= 0) {
+			_file = file;
+			_first_line = line;
+		}
+		_last_line = line;
+		_str += ch;
+	}
+x{entry methods}
+```
+
+```
+a{entry methods}
+	void add(
 		const std::string &value,
 		const std::string &file,
 		int line
 	) {
-		_buf.add(value, file, line);
+		if (_file.empty() || _first_line <= 0) {
+			_file = file;
+			_first_line = line;
+		}
+		_last_line = line;
+		_str += value;
 	}
 x{entry methods}
 ```
@@ -89,21 +116,17 @@ x{entry methods}
 
 ```
 a{entry methods}
-	void add(
-		const Buf &b
-	) {
-		_buf.add(b);
-	}
-x{entry methods}
-```
-
-```
-a{entry methods}
 	bool canAdd(
 		const std::string &file,
 		int line
 	) {
-		return _buf.canContinue(file, line);
+		if (! _file.empty() && file != _file) {
+			return false;
+		}
+		if (_last_line > 0 && _last_line != line && _last_line + 1 != line) {
+			return false;
+		}
+		return true;
 	}
 x{entry methods}
 ```
@@ -183,7 +206,7 @@ x{frag methods}
 # Unit Tests
 
 ```
-A{perform unit-tests}
+D{perform unit-tests}
 	e{frag unit tests};
 x{perform unit-tests}
 ```
@@ -290,16 +313,15 @@ x{frag methods}
 
 ```
 a{frag methods}
-	void add(const Buf &b) {
-		if (b.empty()) { return; }
+	void add(char ch, const std::string &file, int line) {
 		if (_entries.empty()) {
 			_entries.push_back(FragEntry {});
 		} else if (! _entries.back().canAdd(
-			b.file(), b.startLine()
+			file, line
 		)) {
 			_entries.push_back(FragEntry {});
 		}
-		_entries.back().add(b);
+		_entries.back().add(ch, file, line);
 	}
 x{frag methods}
 ```
