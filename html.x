@@ -40,7 +40,7 @@ x{write cur HTML file to out}
 ```
 A{global elements}
 	enum class HtmlState {
-		nothingWritten,
+		nothing,
 		inSlide,
 		afterSlide
 		e{html state enums}
@@ -68,24 +68,26 @@ d{html state elements}
 	HtmlState state;
 x{html state elements}
 ```
+* Status hat einen Konstruktor
 * Der aktuelle Zustand wird im Status abgelegt
 
 ```
 A{global elements}
 	inline HtmlStatus::HtmlStatus():
 		state {
-			HtmlState::nothingWritten
+			HtmlState::nothing
 		}
 	{ }
 x{global elements}
 ```
+* Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 
 ```
 A{includes}
-	#include <set>
 	#include <string>
 x{includes}
 ```
+* Die Anwendung verwendet `std::string` überall
 
 ```
 d{write from in to out}
@@ -93,17 +95,13 @@ d{write from in to out}
 	std::string ident;
 	std::string line;
 	while (std::getline(in, line)) {
-		e{process ch for HTML};
+		e{process line};
 	}
 x{write from in to out}
 ```
 * Beim Schreiben einer Datei wird zuerst der Status initialisiert
-* Wir befinden uns am Anfang einer Zeile
-* Jedes Zeichen wird prozessiert
+* Die Eingabe wird Zeile für Zeile abgearbeitet
 * Bis das Datei-Ende erreicht ist
-
-# Überschriften
-
 
 ```
 A{global elements}
@@ -115,45 +113,60 @@ A{global elements}
 	}
 x{global elements}
 ```
-* Die Funktion `{isOutOfHtmlSpecial}` liefert `true`, wenn sich
-  der Zustands-Automat gerade nicht in einem Sonder-Modus (Überschrift,
-  Code, Notizen) befindet
+* Die Funktion `f{in_code}` liefert `true`, wenn sich
+  der Zustands-Automat gerade in einem Fragment befindet
 
 ```
-d{process ch for HTML} 
+d{process line} 
 	if (in_code(&status)) {
 		e{process code};
 		continue;
 	}
-x{process ch for HTML}
+x{process line}
 ```
+* Während Code bearbeitet wird, gelten viele andere Regeln nicht mehr
+* Daher wird dieser Block als erstes abgehandelt
 
 ```
-a{process ch for HTML}
+a{process line}
 	if (line == "") {
 		e{close specials};
-		if (status.state != HtmlState::afterSlide && status.state != HtmlState::nothingWritten) {
-			out << "</div>\n";
-			status.state = HtmlState::afterSlide;
+		switch (status.state) {
+			case HtmlState::afterSlide:
+			case HtmlState::nothing:
+				break;
+			default:
+				e{close slide};
 		}
 		continue;
 	}
-x{process ch for HTML}
+x{process line}
 ```
+* Eine leere Seite schließt eine offene Folie ab
 
 ```
-a{process ch for HTML}
+d{close slide}
+	out << "</div>\n";
+	status.state = HtmlState::afterSlide;
+x{close slide}
+```
+* Die Funktion schreibt das schließende `</div>`
+* Und setzt den Zustand passend
+
+# Überschriften
+* Überschriften beginnen mit Rauten `#`
+
+```
+a{process line}
 	if (line[0] == '#') {
 		e{process header};
 		status.state = HtmlState::inSlide;
 		continue;
 	}
-x{process ch for HTML}
+x{process line}
 ```
 * Wenn am Anfang einer Zeile eine Raute gelesen wird, dann beginnt eine
   Überschrift
-* Solange weitere Rauten folgen, wird der Level erhöht
-* Bei der ersten Raute muss der alte Zustand gesichert werden
 
 ```
 d{process header}
@@ -166,6 +179,7 @@ d{process header}
 	}
 x{process header}
 ```
+* Solange weitere Rauten folgen, wird der Level erhöht
 
 ```
 a{process header}
@@ -176,6 +190,7 @@ a{process header}
 	}
 x{process header}
 ```
+* Nach den Rauten dürfen beliebig viele Leerzeichen vorkommen
 
 ```
 a{process header} 
@@ -206,6 +221,9 @@ A{global elements}
 	}
 x{global elements}
 ```
+* Schreibt ein Zeichen
+* Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
+  Entitäten
 
 ```
 A{global elements}
@@ -219,8 +237,9 @@ A{global elements}
 	}
 x{global elements}
 ```
-* Zeichen, die einen HTML-Befehl einleiten können, werden durch passende
-  Entitäten ersetzt
+* Schreibt mehrere Zeichen
+* Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
+  Entitäten
 
 ```
 d{escape special}
@@ -235,7 +254,7 @@ d{escape special}
 		break;
 x{escape special}
 ```
-* Die Zeichen `<`, `>` und `&` müssen ersetzt werden
+* Die Zeichen `<`, `>` und `&` werden ersetzt
 
 ```
 d{write header tag} 
@@ -249,7 +268,7 @@ x{write header tag}
 ```
 d{close previous HTML page} 
 	switch (status.state) {
-		case HtmlState::nothingWritten: {
+		case HtmlState::nothing: {
 			e{write HTML header};
 			break;
 		}
@@ -316,14 +335,14 @@ x{check html special state}
 
 
 ```
-a{process ch for HTML} 
+a{process line} 
 	if (line == "```") {
 		e{open code page};
 		continue;
 	}
-x{process ch for HTML}
+x{process line}
 ```
-* Wenn am Anfang der Zeile Backticks kommen, dann werden sie gezählt
+* Eine Zeile mit drei Backticks wechselt in den Code Modus
 
 ```
 d{open code page}
@@ -348,6 +367,7 @@ d{process code}
 	}
 x{process code}
 ```
+* Eine Zeile mit drei Backticks wechselt aus dem Code Modus zurück
 
 ```
 d{close code page}
@@ -356,82 +376,6 @@ d{close code page}
 x{close code page}
 ```
 * Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
-
-```
-A{global elements}
-	e{process code helper};
-	void process_code(std::ostream &out, SI begin, SI end) {
-		e{do code};
-	}
-x{global elements}
-```
-
-```
-a{process code}
-	process_code(out, line.begin(), line.end());
-	out << "<br/>\n";
-x{process code}
-```
-
-```
-d{do code}
-	int indent = 0;
-	while (
-		begin != end && *begin == '\t'
-	) {
-		++indent; ++begin;
-	}
-	if (indent) {
-		out << "<span class=\"in"
-			<< indent
-			<< "\"></span>";
-	}
-x{do code}
-```
-
-```
-a{do code}
-	for (; begin != end; ++begin) {
-		e{process code ch};
-	}
-x{do code}
-```
-
-```
-d{process code ch}
-	if (*begin == '`' || *begin == '\'' || *begin == '"') {
-		e{process string};
-		continue;
-	}
-x{process code ch}
-```
-
-```
-d{process string}
-	auto w = begin + 1;
-	while (w != end && *w != *begin) {
-		if (*w == '\x5c') {
-			++w;
-			if (w == end) { break; }
-		}
-		++w;
-	}
-	if (w == end) {
-		writeOneEscaped(out, *begin);
-		continue;
-	}
-x{process string}
-```
-
-```
-a{process string}
-	std::string name {begin, w + 1};
-	out << "<span class=\"str\">";
-	writeEscaped(out, name);
-	out << "</span>";
-	begin = w;
-x{process string}
-```
 
 ```
 a{write from in to out}
@@ -448,65 +392,211 @@ x{write from in to out}
 * Eine Fehlermeldung wird ausgegeben
 
 ```
-A{includes}
-	#include <cctype>
-x{includes}
-```
-
-```
-a{process code ch}
-	auto w = begin;
-	while (w != end && (std::isalnum(*w) || *w == '_' || *w == '$')) {
-		++w;
+a{write from in to out}
+	if (
+		status.state != HtmlState::nothing
+	) {
+		out << "</body>\n</html>\n";
 	}
+x{write from in to out}
+```
+* Am Ende der Datei schließt die Funktion
+  die HTML-Tags
 
-	if (w != begin) {
-		std::string ident {begin, w};
-		begin = w - 1;
-		if (w != end && *w == '{') {
-			e{do macro};
-		} else {
-			process_ident(out, ident, w != end ? *w : ' ');
-		}
+```
+A{global elements}
+	e{process code helper};
+	void process_code(
+		std::ostream &out,
+		SI begin, SI end
+	) {
+		e{do code};
 	}
-x{process code ch}
+x{global elements}
 ```
+* Verarbeitet ein Code-Fragment
+* Dies Funktion wird im Code Modus verwendet
+* Und wenn in Notizen Code-Fragmente eingebettet sind
 
 ```
-a{process code ch}
-	if (w == begin && w != end) {
+a{process code}
+	process_code(
+		out, line.begin(), line.end()
+	);
+	out << "<br/>\n";
+x{process code}
+```
+* Im Code Modus wird die Funktion aufgerufen
+* Und danach ein Zeilenumbruch ausgegeben
+
+```
+d{do code}
+	int indent = 0;
+	while (
+		begin != end && *begin == '\t'
+	) {
+		++indent; ++begin;
+	}
+	if (indent) {
+		out << "<span class=\"in"
+			<< indent
+			<< "\"></span>";
+	}
+x{do code}
+```
+* Die Funktion zählt Tabulatoren am Anfang der Zeile
+* Und gibt ein Tag für die passende Einrückung aus
+
+```
+a{do code}
+	for (; begin != end; ++begin) {
+		e{process code ch};
 		writeOneEscaped(out, *begin);
 	}
+x{do code}
+```
+* Danach wird die Zeile Zeichen für Zeichen verarbeitet
+* Wenn keine besondere Verarbeitung geschieht, gibt die Funktion das
+  Zeichen direkt aus
+
+```
+d{process code ch}
+	if (
+		*begin == '`' ||
+		*begin == '\'' ||
+		*begin == '"'
+	) {
+		e{process string};
+		continue;
+	}
 x{process code ch}
 ```
+* Wenn ein Zeichen eine Zeichenkette einleitet, wird diese geparst
+
+```
+d{process string}
+	auto w = begin + 1;
+	while (w != end && *w != *begin) {
+		if (*w == '\\') {
+			++w;
+			if (w == end) { break; }
+		}
+		++w;
+	}
+	if (w == end) {
+		writeOneEscaped(out, *begin);
+		continue;
+	}
+x{process string}
+```
+* Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie angefangen
+  hat
+* Wenn dieses nicht durch einen Backslash escaped ist
 
 ```
 d{process code helper}
-	void escapeIdent(
+	void span_str(
 		std::ostream &out,
 		const char *cls,
 		const std::string &s
 	) {
 		out << "<span class=\"" <<
-			cls << "\">" << s <<
-			"</span>";
+			cls << "\">";
+		writeEscaped(out, s);
+		out << "</span>";
 	}
 x{process code helper}
 ```
+* Diese Hilfsfunktion umgibt einen Bezeichner mit einem `<span>`-Tag
+  einer bestimmten Klasse
+
+```
+a{process string}
+	std::string name {begin, w + 1};
+	span_str(out, "str", name);
+	begin = w;
+x{process string}
+```
+* Die Funktion gibt die Zeichenkette als `<span>` mit der Klasse `s{str}`
+  aus
+
+```
+A{includes}
+	#include <cctype>
+x{includes}
+```
+* Die Funktion verwendet `std::isalnum`
+
+```
+a{process code ch}
+	auto w = begin;
+	e{find identifier end};
+	if (w != begin) {
+		e{process identifier};
+		continue;
+	}
+x{process code ch}
+```
+* An der aktuellen Position wird ein Identifier gesucht
+* Wenn dieser gefunden wird, dann wird er abgearbeitet
+
+```
+d{find identifier end}
+	while (w != end && (
+		std::isalnum(*w) ||
+			*w == '_' || *w == '$'
+	)) {
+		++w;
+	}
+x{find identifier end};
+```
+* Zeichen und Ziffern können einen Identifier bilden
+* Zusätzlich noch der Unterstrich und das Dollar-Zeichen
+
+```
+d{process identifier}
+	std::string ident {begin, w};
+	begin = w - 1;
+	if (w != end && *w == '{') {
+		e{do macro};
+	} else {
+		process_ident(
+			out, ident,
+			w != end ? *w : ' '
+		);
+	}
+x{process identifier}
+```
+* Wenn dem Identifier eine öffnende Mengen-Klammer folgt, dann wird
+  ein Makro-Aufruf geparst
+* `begin` wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.
+  korrigiert
+* Sonst wird der Identifier normal verarbeitet
+* Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem
+  Identifier folgt
+
+```
+A{includes}
+	#include <set>
+x{includes}
+```
+* Besondere Bezeichner werden in `std::set` abgelegt
 
 ```
 a{process code helper}
+	using Set = std::set<std::string>;
+
 	bool isKeyword(const std::string &s) {
-		static std::set<std::string>
-			reserved {
-				e{keywords}
-			};
+		static Set reserved {
+			e{keywords}
+		};
 		return
 			reserved.find(s) !=
 				reserved.end();
 	}
 x{process code helper}
 ```
+* Prüft ob ein Bezeichner ein reserviertes Schlüsselwort ist
 
 ```
 d{keywords}
@@ -516,6 +606,7 @@ d{keywords}
 	"switch", "try", "typeof", "while"
 x{keywords}
 ```
+* Reservierte Schlüsselwörter
 
 ```
 a{process code helper}
@@ -525,13 +616,13 @@ a{process code helper}
 	}
 x{process code helper}
 ```
+* Prüft, ob ein Bezeichner ein Typ ist
 
 ```
 d{is type}
-	static std::set<std::string>
-		reserved {
-			e{types}
-		};
+	static Set reserved {
+		e{types}
+	};
 	if (reserved.find(s) !=
 		reserved.end()
 	) {
@@ -539,6 +630,8 @@ d{is type}
 	}
 x{is type}
 ```
+* Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion
+  `true`
 
 ```
 d{types}
@@ -548,6 +641,7 @@ d{types}
 	"union", "unsigned", "void"
 x{types}
 ```
+* Reservierte Typen
 
 ```
 a{is type}
@@ -560,87 +654,107 @@ a{is type}
 	}
 x{is type}
 ```
+* Ein Bezeichner ist zusätzlich ein Typ, wenn das sei erstes Zeichen
+  groß geschrieben ist
+* und das zweite Zeichen klein geschrieben ist
 
 ```
 a{process code helper}
 	bool isNum(const std::string &s) {
-		static std::set<std::string> reserved {
+		static Set reserved {
 			"EOF", "NULL", "nullptr",
-			"false", "null", "true", "undefined"
+			"false", "null", "true",
+			"undefined"
 		};
-		if (std::isdigit(s[0])) { return true; }
-		return reserved.find(s) != reserved.end();
+		if (std::isdigit(s[0])) {
+			return true;
+		}
+		return reserved.find(s) !=
+			reserved.end();
 	}
 x{process code helper}
 ```
+* Ein Bezeichner ist eine Zahl, wenn er mit einer Ziffer beginnt
+* Oder wenn er einen reservierten Namen hat
 
 ```
 a{process code helper}
-	void process_ident(std::ostream &out, const std::string ident, char w) {
+	void process_ident(
+		std::ostream &out,
+		const std::string ident,
+		char w
+	) {
 		if (w == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
+			span_str(out, "fn", ident);
+		e{special ident classes}
 		} else {
-			escapeIdent(out, "var", ident);
+			span_str(out, "var", ident);
 		}
 	}
 x{process code helper}
 ```
+* Ein Bezeichner, dem eine öffnende Klammer folgt, wird immer als
+  Funktion dargestellt
+* Wenn keine andere Regel greift, wird der Bezeichner als Variable
+  formatiert
+
+```
+d{special ident classes}
+	} else if (isKeyword(ident)) {
+		span_str(out, "keyword", ident);
+	} else if (isType(ident)) {
+		span_str(out, "type", ident);
+	} else if (isNum(ident)) {
+		span_str(out, "num", ident);
+x{special ident classes}
+```
+* Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
+  identifiziert
 
 ```
 d{do macro}
-	auto q = w + 1;
-	while (q != end && *q != '}') {
-		++q;
-	}
+	auto q = std::find(w + 1, end, '}');
 	if (q == end) {
 		writeEscaped(out, ident);
 		writeOneEscaped(out, '{');
 		begin = w;
 	} else {
 		std::string name {w + 1, q};
-		e{escape html frag};
+		e{write macro};
 		begin = q;
 	}
 x{do macro}
 ```
-* Bei einer öffnenden Mengenklammer wird geprüft, ob ein bekannter
-  Befehls-Code im vorherigen Zeichen liegt
-* In diesem Fall wird die weiter Abarbeitung abgebrochen
-* Statt dessen wurden passende Tags generiert und die nächsten Zeichen
-  sind das Argument des Befehls
-* Diese werden direkt kopiert
+* Wenn keine schließende Mengen-Klammer gefunden wird, dann ist der
+  Bezeichner kein Makro
+* Sonst wird das Makro ausgegeben
 
 ```
-d{escape html frag}
+d{write macro}
 	if (ident == "i") {
-		auto ext = name.find_last_of('.');
-		ASSERT_MSG(ext != std::string::npos,
-			"no period"
-		);
-		writeMacroHeader(out, "include");
-		out << "<a href=\"" 
-			<< name.substr(0, ext) << ".html\">";
-		out << name << "</a></span>)</span>";
-		begin = q;
+		e{write include};
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{i}` steht für ein `@include`-Makro
 
 ```
-a{escape html frag}
-	else if (ident == "d") {
-		writeMacroHeader(out, "def");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-x{escape html frag}
+d{write include}
+	auto ext = name.find_last_of('.');
+	ASSERT_MSG(
+		ext != std::string::npos,
+		"no period"
+	);
+	writeMacroHeader(out, "include");
+	out << "<a href=\"" <<
+		name.substr(0, ext) <<
+		".html\">";
+	out << name <<
+		"</a></span>)</span>";
+x{write include}
 ```
+* Die Datei-Extension wird beim generierten Link durch `s{.html}`
+  ersetzt
 
 ```
 a{process code helper}
@@ -648,10 +762,12 @@ a{process code helper}
 		std::ostream &out,
 		const char *name
 	) {
-		out << "<span class=\"" << name << "\">";
+		out << "<span class=\"" <<
+			name << "\">";
 	}
 x{process code helper}
 ```
+* Öffnet ein `<span>`-Tag mit einer bestimmten Klasse
 
 ```
 a{process code helper}
@@ -664,312 +780,438 @@ a{process code helper}
 	}
 x{process code helper}
 ```
+* Öffnet ein Makro mit einem bestimmetn Namen
 
 ```
-a{escape html frag}
+a{write macro}
+	else if (ident == "d") {
+		writeMacroHeader(out, "def");
+		writeEscaped(out, name);
+		out << "</span>)</span>";
+	}
+x{write macro}
+```
+* Der Bezeichner `s{d}` steht für ein `@def`-Makro
+
+```
+a{write macro}
 	else if (ident == "D") {
 		writeMacroHeader(out, "globdef");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{D}` steht für ein `@globdef`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "a") {
 		writeMacroHeader(out, "add");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{a}` steht für ein `@add`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "A") {
 		writeMacroHeader(out, "globadd");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{A}` steht für ein `@globadd`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "r") {
 		writeMacroHeader(out, "replace");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{r}` steht für ein `@replace`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "R") {
-		writeMacroHeader(out, "globreplace");
+		writeMacroHeader(
+			out, "globreplace"
+		);
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{R}` steht für ein `@globreplace`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "x") {
 		writeMacroHeader(out, "end");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{x}` steht für ein `@end`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "e") {
 		writeMacroHeader(out, "expand");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{e}` steht für ein `@expand`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "E") {
 		writeMacroHeader(out, "multiple");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{E}` steht für ein `@multiple`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "g") {
-		writeMacroHeader(out, "globexpand");
+		writeMacroHeader(
+			out, "globexpand"
+		);
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{g}` steht für ein `@globexpand`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "G") {
 		writeMacroHeader(out, "globmult");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{G}` steht für ein `@globmult`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "t") {
 		writeMacroClass(out, "type");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{t}` steht für eine Typ-Formatierung
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "v") {
 		writeMacroClass(out, "var");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{v}` steht für eine Variablen-Formatierung
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "f") {
 		writeMacroClass(out, "fn");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{f}` steht für eine Funktion-Formatierung
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "k") {
 		writeMacroClass(out, "keyword");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{k}` steht für eine Schlüsselwort-Formatierung
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "s") {
 		writeMacroClass(out, "str");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{s}` steht für eine Zeichenketten-Formatierung
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "n") {
 		writeMacroClass(out, "num");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{n}` steht für eine Werte-Formatierung
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "p") {
 		writeMacroClass(out, "var");
 		out << "@priv(<span>";
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Der Bezeichner `s{p}` steht für ein `@priv`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "m") {
 		writeMacroClass(out, "var");
 		out << "@magic(<span>";
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
-x{escape html frag}
+x{write macro}
 ```
-* `@magic`-Befehle werden als Zahlen formatiert
+* Der Bezeichner `s{m}` steht für ein `@magic`-Makro
 
 ```
-a{escape html frag}
+a{write macro}
 	else if (ident == "b") {
 		writeMacroClass(out, "virt");
 		out << "</span><br/>";
 	}
-x{escape html frag}
+x{write macro}
 ```
-* Zeilenumbrüche
+* Der Bezeichner `s{b}` wird als Zeilenumbruch dargestellt
 
 ```
-a{escape html frag}
+a{write macro}
 	else {
 		process_ident(out, ident, '{');
 		writeOneEscaped(out, '{');
 		q = w + 1;
 	}
-x{escape html frag}
+x{write macro}
 ```
+* Andere Bezeichner werden nicht als Makro formatiert
 
 # Notizen
+* Zu den Folien können Notizen mit `*` markiert werden
+* Notizen sind Teil einer Seite, aber nicht Teil einer Folie
 
 ```
 a{html state enums}
 	, inNotes
 x{html state enums}
 ```
+* Notizen sind ein eigener Zustand
+* Da sie mehrzeilig sein können
 
 ```
-a{process ch for HTML} 
+a{process line} 
 	if (
 		line[0] == '*' ||
 		status.state == HtmlState::inNotes
 	) {
 		e{process note};
 	}
-x{process ch for HTML}
+x{process line}
 ```
+* Eine Notiz beginnt entweder mit `*` oder folgt einer solchen Zeile
 
 ```
 A{global elements}
-	void process_content(std::ostream &out, SI begin, SI end) {
-		e{process note line};
+	void process_content(
+		std::ostream &out,
+		SI begin, SI end
+	) {
+		e{process content line};
 	}
 x{global elements}
 ```
+* Diese Funktion formatiert beliebigen Markdown-Text als HTML
+* Code-Schnippsel werden ebenfalls formatiert
 
 ```
 d{close specials}
-	if (status.state == HtmlState::inNotes) {
+	if (
+		status.state == HtmlState::inNotes
+	) {
 		out << "</li></ul>\n";
 	}
 x{close specials}
 ```
+* Bei einer Leerzeile werden Notizen beendet
 
 ```
 d{process note}
 	if (line[0] == '*') {
-		auto end = line.end();
-		auto begin = line.begin() + 1;
-		while (begin != end && *begin == ' ') {
-			++begin;
-		}
-		if (status.state != HtmlState::inNotes) {
-			if (status.state != HtmlState::inSlide) {
-				out << "<div>\n";
-			}
-			status.state = HtmlState::inNotes;
-			out << "<ul><li>\n";
-		} else {
-			out << "</li><li>\n";
-		}
-		process_content(out, begin, end);
+		e{process note line};
 	} else {
-		process_content(out, line.begin(), line.end());
+		process_content(
+			out, line.begin(), line.end()
+		);
 	}
 x{process note}
 ```
+* Notizen die mit `*` beginnen, müssen eine neue Notiz einleiten
+* Folge-Zeilen werden direkt ausgegeben
 
 ```
 d{process note line}
+	auto end = line.end();
+	auto begin = line.begin() + 1;
+	while (
+		begin != end && *begin == ' '
+	) {
+		++begin;
+	}
+x{process note line}
+```
+* Die Funktion überspringt den Stern und folgende Leerzeichen
+
+```
+a{process note line}
+	if (
+		status.state != HtmlState::inNotes
+	) {
+		e{switch into note mode};
+	} else {
+		out << "</li><li>\n";
+	}
+	process_content(out, begin, end);
+x{process note line}
+```
+* Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus
+  gewechselt
+* Andernfalls wird nur eine neue Notiz geöffnet
+
+```
+d{switch into note mode}
+	if (
+		status.state != HtmlState::inSlide
+	) {
+		out << "<div>\n";
+	}
+	status.state = HtmlState::inNotes;
+	out << "<ul><li>\n";
+x{switch into note mode}
+```
+* Notizen können nur auf einer Seite erscheinen
+* Wenn noch keine Seite offen ist, dann öffnet die Funktion eine Seite
+* Die Funktion schreibt passende HTML-Tags
+
+```
+d{process content line}
 	for(; begin != end; ++begin) {
-		e{special note line};
+		e{special content line};
 		writeOneEscaped(out, *begin);
 	}
 	out << '\n';
-x{process note line}
+x{process content line}
 ```
+* Die Zeile wird Zeichen für Zeichen abgearbeitet
+* Wenn keine Sonderbehandlung erfolgt, wird das Zeichen ausgegeben
 
 ```
-d{special note line}
+d{special content line}
 	if (*begin == '`') {
-		auto w = begin + 1;
-		while (w != end && *w != '`') {
-			++w;
-		}
-		if (w != end) {
-			out << "<code>";
-			process_code(out, begin + 1, w);
-			out << "</code>";
-			begin = w;
-			continue;
-		}
+		e{inline code};
 	}
-x{special note line}
+x{special content line}
 ```
+* Ein Backtick signalisiert eingeschobene Code-Schnippsel
 
 ```
-a{special note line}
-	if (*begin == '*' && (begin + 1) != end && *(begin + 1) == '*') {
-		auto w = begin + 2;
-		while (w != end && (w + 1) != end && (*w != '*' || *(w + 1) != '*')) {
-			++w;
-		}
-		if (w != end && (w + 1 ) != end && *w == '*' && *(w + 1) == '*') {
-			out << "<b>";
-			writeEscaped(out, std::string {begin + 2, w});
-			out << "</b>";
-			begin = w + 1;
-			continue;
-		}
+d{inline code}
+	auto w = begin + 1;
+	while (w != end && *w != '`') {
+		++w;
 	}
-x{special note line}
+	if (w != end) {
+		out << "<code>";
+		process_code(out, begin + 1, w);
+		out << "</code>";
+		begin = w;
+		continue;
+	}
+x{inline code}
 ```
+* Eingeschobene Code-Schnippsel werden ebenfalls mit `f{process_code}`
+  formatiert
+
+```
+a{special content line}
+	if (
+		*begin == '*' &&
+		(begin + 1) != end &&
+		*(begin + 1) == '*'
+	) {
+		e{bold block};
+	}
+x{special content line}
+```
+* Zwei Sterne markieren den Start eines fetten Textes
+
+```
+d{bold block}
+	auto w = begin + 2;
+	while (
+		w != end && (w + 1) != end &&
+		(*w != '*' || *(w + 1) != '*')
+	) {
+		++w;
+	}
+x{bold block}
+```
+* Funktion sucht zwei weitere Sterne
+
+```
+a{bold block}
+	if (
+		w != end && (w + 1 ) != end &&
+		*w == '*' && *(w + 1) == '*'
+	) {
+		e{do bold};
+		continue;
+	}
+x{bold block}
+```
+* Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett
+  formatiert
+
+```
+d{do bold}
+	out << "<b>";
+	writeEscaped(
+		out, std::string {begin + 2, w}
+	);
+	out << "</b>";
+	begin = w + 1;
+x{do bold}
+```
+* Formatiert Text fett
 

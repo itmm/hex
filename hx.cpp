@@ -4,22 +4,27 @@
 	#include <iostream>
 	#include <exception>
 
-	#include <list>
-	#include <map>
+	#include <vector>
+
 	#include <sstream>
+
+	#include <map>
 
 	#include <fstream>
 	#include <iostream>
 	#include <memory>
 	#include <vector>
 
+	#include <algorithm>
+
 	#include <functional>
 	#include <sstream>
 
-	#include <set>
 	#include <string>
 
 	#include <cctype>
+
+	#include <set>
 ;
 	
 	#define ASSERT(COND) \
@@ -54,26 +59,9 @@
 		const Frag *frag;
 		
 	FragEntry(
-		Frag *frag
+		Frag *frag = nullptr
 	):
 		frag { frag }
-	{}
-
-	FragEntry(
-		const std::string &value,
-		const std::string &file = "/dev/null",
-		int line = 1
-	): 
-		_str { value },
-		_file { file },
-		_first_line { line },
-		_last_line { line },
-		frag { nullptr}
-	{
-	}
-
-	FragEntry(): 
-		frag { nullptr}
 	{}
 
 	const std::string &str() const {
@@ -84,11 +72,15 @@
 		char ch, const std::string &file,
 		int line
 	) {
-		if (_file.empty() || _first_line <= 0) {
-			_file = file;
-			_first_line = line;
-		}
-		_last_line = line;
+		
+	if (
+		_file.empty() || _first_line <= 0
+	) {
+		_file = file;
+		_first_line = line;
+	}
+	_last_line = line;
+;
 		_str += ch;
 	}
 
@@ -97,11 +89,15 @@
 		const std::string &file,
 		int line
 	) {
-		if (_file.empty() || _first_line <= 0) {
-			_file = file;
-			_first_line = line;
-		}
-		_last_line = line;
+		
+	if (
+		_file.empty() || _first_line <= 0
+	) {
+		_file = file;
+		_first_line = line;
+	}
+	_last_line = line;
+;
 		_str += value;
 	}
 
@@ -109,27 +105,43 @@
 		const std::string &file,
 		int line
 	) {
-		if (! _file.empty() && file != _file) {
-			return false;
-		}
-		if (_last_line > 0 && _last_line != line && _last_line + 1 != line) {
-			return false;
-		}
-		return true;
+		
+	if (
+		! _file.empty() && file != _file
+	) {
+		return false;
+	}
+
+	if (
+		_last_line > 0 &&
+		_last_line != line &&
+		_last_line + 1 != line
+	) {
+		return false;
+	}
+
+	return true;
+;
+		return false;
 	}
 ;
 	};
 
 	class Frag {
-		std::list<FragEntry> _entries;
+		std::vector<FragEntry> _entries;
 		int _expands;
 		int _multiples;
 	public:
 		const std::string name;
 		
 	bool isFile() const {
-		static const std::string prefix { "file: " };
-		return name.substr(0, prefix.size()) == prefix;
+		static const std::string prefix {
+			"file: "
+		};
+		std::string p {
+			name.substr(0, prefix.size())
+		};
+		return p == prefix;
 	}
 
 	Frag(
@@ -151,39 +163,47 @@
 		return _entries.empty();
 	}
 
-	Frag &add(
+	void add(
 		const std::string &value,
 		const std::string &file,
 		int line
 	) {
-		if (value.empty()) { return *this; }
-		if (_entries.empty()) {
-			_entries.push_back(FragEntry {
-				value, file, line
-			});
-		} else if (! _entries.back().canAdd(
+		if (value.empty()) { return; }
+		
+	if (_entries.empty()) {
+		_entries.push_back(FragEntry {});
+	} else if (
+		! _entries.back().canAdd(
 			file, line
-		)) {
-			_entries.push_back(FragEntry {
-				value, file, line
-			});
-		} else {
-			_entries.back().add(
-				value, file, line
-			);
-		}
-		return *this;
+		)
+	) {
+		_entries.push_back(FragEntry {});
+	}
+;
+		_entries.back().add(
+			value, file, line
+		);
 	}
 
-	void add(char ch, const std::string &file, int line) {
-		if (_entries.empty()) {
-			_entries.push_back(FragEntry {});
-		} else if (! _entries.back().canAdd(
+	void add(
+		char ch,
+		const std::string &file,
+		int line
+	) {
+		
+	if (_entries.empty()) {
+		_entries.push_back(FragEntry {});
+	} else if (
+		! _entries.back().canAdd(
 			file, line
-		)) {
-			_entries.push_back(FragEntry {});
-		}
-		_entries.back().add(ch, file, line);
+		)
+	) {
+		_entries.push_back(FragEntry {});
+	}
+;
+		_entries.back().add(
+			ch, file, line
+		);
 	}
 
 	Frag &add(Frag *child);
@@ -268,7 +288,8 @@
 	}
 
 	void serializeFrag(
-		const Frag &frag, std::ostream &out,
+		const Frag &frag,
+		std::ostream &out,
 		bool writeLineMacros
 	) {
 		
@@ -306,7 +327,9 @@
 
 	class FragMap {
 		FragMap *_link;
-		std::map<std::string, Frag> map;
+		using Map =
+			std::map<std::string, Frag>;
+		Map map;
 	public:
 		
 	FragMap(): _link { nullptr } {}
@@ -328,16 +351,21 @@
 		return nullptr;
 	}
 
-	Frag &get(const std::string &name, FragMap &insert) {
+	Frag &get(
+		const std::string &name,
+		FragMap &insert
+	) {
 		Frag *found { find(name) };
 		if (found) { return *found; }
 		auto created { insert.map.insert(
-			std::pair<std::string, Frag>(name, name)
+			Map::value_type { name, name }
 		) };
 		return created.first->second;
 	}
 
-	Frag &operator[](const std::string &name) {
+	Frag &operator[](
+		const std::string &name
+	) {
 		return get(name, *this);
 	}
 
@@ -493,7 +521,10 @@
 		
 	if (frag) {
 		std::string str {i, e};
-		frag->add(str, inputs.cur()->name, inputs.cur()->line());
+		frag->add(
+			str, inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 ;
 	}
@@ -501,26 +532,29 @@
 	void process_char(Frag *frag, char ch) {
 		
 	if (frag) {
-		frag->add(ch, inputs.cur()->name, inputs.cur()->line());
+		frag->add(
+			ch, inputs.cur()->name,
+			inputs.cur()->line()
+		);
 	}
 ;
 	}
 
 	bool is_macro_start(
-		const Frag *frag, SI i, SI e
+		const Frag *frag, SI begin, SI end
 	) {
 		
-	auto n = i + 1;
-	if (n >= e) { return false; }
+	auto n = begin + 1;
+	if (n >= end) { return false; }
 	if (*n != '{') { return false; }
-	
+
 	if (! frag) {
 		
 	static const std::string valids {
 		"aAdDirR"
 	};
 	bool found {
-		valids.find(*i) !=
+		valids.find(*begin) !=
 			std::string::npos
 	};
 	if (found && blockLimit != 0) {
@@ -539,7 +573,7 @@
 	};
 	bool found {
 		valids.find(
-			static_cast<char>(*i)
+			static_cast<char>(*begin)
 		) != std::string::npos
 	};
 	if (found) {
@@ -548,22 +582,18 @@
 ;
 	}
 } ;
-;
 		return false;
 	}
 
 	SI find_macro_end(SI i, SI e) {
 		
-	while (i != e && *i != '}') {
-		++i;
-	}
-	return i;
+	return std::find(i, e, '}');
 ;
-		return e;
+		return i;
 	}
 
 	enum class HtmlState {
-		nothingWritten,
+		nothing,
 		inSlide,
 		afterSlide
 		
@@ -582,7 +612,7 @@
 
 	inline HtmlStatus::HtmlStatus():
 		state {
-			HtmlState::nothingWritten
+			HtmlState::nothing
 		}
 	{ }
 
@@ -627,26 +657,28 @@
 	}
 
 	
-	void escapeIdent(
+	void span_str(
 		std::ostream &out,
 		const char *cls,
 		const std::string &s
 	) {
 		out << "<span class=\"" <<
-			cls << "\">" << s <<
-			"</span>";
+			cls << "\">";
+		writeEscaped(out, s);
+		out << "</span>";
 	}
 
+	using Set = std::set<std::string>;
+
 	bool isKeyword(const std::string &s) {
-		static std::set<std::string>
-			reserved {
-				
+		static Set reserved {
+			
 	"break", "case", "catch", "continue",
 	"default", "delete", "else", "for",
 	"if", "in", "new", "return", "static",
 	"switch", "try", "typeof", "while"
 
-			};
+		};
 		return
 			reserved.find(s) !=
 				reserved.end();
@@ -654,15 +686,14 @@
 
 	bool isType(const std::string &s) {
 		
-	static std::set<std::string>
-		reserved {
-			
+	static Set reserved {
+		
 	"FILE", "auto", "bool", "char",
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
 	"union", "unsigned", "void"
 
-		};
+	};
 	if (reserved.find(s) !=
 		reserved.end()
 	) {
@@ -681,25 +712,35 @@
 	}
 
 	bool isNum(const std::string &s) {
-		static std::set<std::string> reserved {
+		static Set reserved {
 			"EOF", "NULL", "nullptr",
-			"false", "null", "true", "undefined"
+			"false", "null", "true",
+			"undefined"
 		};
-		if (std::isdigit(s[0])) { return true; }
-		return reserved.find(s) != reserved.end();
+		if (std::isdigit(s[0])) {
+			return true;
+		}
+		return reserved.find(s) !=
+			reserved.end();
 	}
 
-	void process_ident(std::ostream &out, const std::string ident, char w) {
+	void process_ident(
+		std::ostream &out,
+		const std::string ident,
+		char w
+	) {
 		if (w == '(') {
-			escapeIdent(out, "fn", ident);
-		} else if (isKeyword(ident)) {
-			escapeIdent(out, "keyword", ident);
-		} else if (isType(ident)) {
-			escapeIdent(out, "type", ident);
-		} else if (isNum(ident)) {
-			escapeIdent(out, "num", ident);
+			span_str(out, "fn", ident);
+		
+	} else if (isKeyword(ident)) {
+		span_str(out, "keyword", ident);
+	} else if (isType(ident)) {
+		span_str(out, "type", ident);
+	} else if (isNum(ident)) {
+		span_str(out, "num", ident);
+
 		} else {
-			escapeIdent(out, "var", ident);
+			span_str(out, "var", ident);
 		}
 	}
 
@@ -707,7 +748,8 @@
 		std::ostream &out,
 		const char *name
 	) {
-		out << "<span class=\"" << name << "\">";
+		out << "<span class=\"" <<
+			name << "\">";
 	}
 
 	void writeMacroHeader(
@@ -718,7 +760,10 @@
 		out << '@' << name << "(<span class=\"name\">";
 	}
 ;
-	void process_code(std::ostream &out, SI begin, SI end) {
+	void process_code(
+		std::ostream &out,
+		SI begin, SI end
+	) {
 		
 	int indent = 0;
 	while (
@@ -734,11 +779,15 @@
 
 	for (; begin != end; ++begin) {
 		
-	if (*begin == '`' || *begin == '\'' || *begin == '"') {
+	if (
+		*begin == '`' ||
+		*begin == '\'' ||
+		*begin == '"'
+	) {
 		
 	auto w = begin + 1;
 	while (w != end && *w != *begin) {
-		if (*w == '\x5c') {
+		if (*w == '\\') {
 			++w;
 			if (w == end) { break; }
 		}
@@ -750,28 +799,28 @@
 	}
 
 	std::string name {begin, w + 1};
-	out << "<span class=\"str\">";
-	writeEscaped(out, name);
-	out << "</span>";
+	span_str(out, "str", name);
 	begin = w;
 ;
 		continue;
 	}
 
 	auto w = begin;
-	while (w != end && (std::isalnum(*w) || *w == '_' || *w == '$')) {
+	
+	while (w != end && (
+		std::isalnum(*w) ||
+			*w == '_' || *w == '$'
+	)) {
 		++w;
 	}
-
+;
 	if (w != begin) {
-		std::string ident {begin, w};
-		begin = w - 1;
-		if (w != end && *w == '{') {
-			
-	auto q = w + 1;
-	while (q != end && *q != '}') {
-		++q;
-	}
+		
+	std::string ident {begin, w};
+	begin = w - 1;
+	if (w != end && *w == '{') {
+		
+	auto q = std::find(w + 1, end, '}');
 	if (q == end) {
 		writeEscaped(out, ident);
 		writeOneEscaped(out, '{');
@@ -780,15 +829,19 @@
 		std::string name {w + 1, q};
 		
 	if (ident == "i") {
-		auto ext = name.find_last_of('.');
-		ASSERT_MSG(ext != std::string::npos,
-			"no period"
-		);
-		writeMacroHeader(out, "include");
-		out << "<a href=\"" 
-			<< name.substr(0, ext) << ".html\">";
-		out << name << "</a></span>)</span>";
-		begin = q;
+		
+	auto ext = name.find_last_of('.');
+	ASSERT_MSG(
+		ext != std::string::npos,
+		"no period"
+	);
+	writeMacroHeader(out, "include");
+	out << "<a href=\"" <<
+		name.substr(0, ext) <<
+		".html\">";
+	out << name <<
+		"</a></span>)</span>";
+;
 	}
 
 	else if (ident == "d") {
@@ -822,7 +875,9 @@
 	}
 
 	else if (ident == "R") {
-		writeMacroHeader(out, "globreplace");
+		writeMacroHeader(
+			out, "globreplace"
+		);
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
@@ -846,7 +901,9 @@
 	}
 
 	else if (ident == "g") {
-		writeMacroHeader(out, "globexpand");
+		writeMacroHeader(
+			out, "globexpand"
+		);
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
@@ -921,49 +978,73 @@
 		begin = q;
 	}
 ;
-		} else {
-			process_ident(out, ident, w != end ? *w : ' ');
-		}
+	} else {
+		process_ident(
+			out, ident,
+			w != end ? *w : ' '
+		);
 	}
-
-	if (w == begin && w != end) {
+;
+		continue;
+	}
+;
 		writeOneEscaped(out, *begin);
 	}
 ;
 	}
-;
-	}
 
-	void process_content(std::ostream &out, SI begin, SI end) {
+	void process_content(
+		std::ostream &out,
+		SI begin, SI end
+	) {
 		
 	for(; begin != end; ++begin) {
 		
 	if (*begin == '`') {
-		auto w = begin + 1;
-		while (w != end && *w != '`') {
-			++w;
-		}
-		if (w != end) {
-			out << "<code>";
-			process_code(out, begin + 1, w);
-			out << "</code>";
-			begin = w;
-			continue;
-		}
+		
+	auto w = begin + 1;
+	while (w != end && *w != '`') {
+		++w;
+	}
+	if (w != end) {
+		out << "<code>";
+		process_code(out, begin + 1, w);
+		out << "</code>";
+		begin = w;
+		continue;
+	}
+;
 	}
 
-	if (*begin == '*' && (begin + 1) != end && *(begin + 1) == '*') {
-		auto w = begin + 2;
-		while (w != end && (w + 1) != end && (*w != '*' || *(w + 1) != '*')) {
-			++w;
-		}
-		if (w != end && (w + 1 ) != end && *w == '*' && *(w + 1) == '*') {
-			out << "<b>";
-			writeEscaped(out, std::string {begin + 2, w});
-			out << "</b>";
-			begin = w + 1;
-			continue;
-		}
+	if (
+		*begin == '*' &&
+		(begin + 1) != end &&
+		*(begin + 1) == '*'
+	) {
+		
+	auto w = begin + 2;
+	while (
+		w != end && (w + 1) != end &&
+		(*w != '*' || *(w + 1) != '*')
+	) {
+		++w;
+	}
+
+	if (
+		w != end && (w + 1 ) != end &&
+		*w == '*' && *(w + 1) == '*'
+	) {
+		
+	out << "<b>";
+	writeEscaped(
+		out, std::string {begin + 2, w}
+	);
+	out << "</b>";
+	begin = w + 1;
+;
+		continue;
+	}
+;
 	}
 ;
 		writeOneEscaped(out, *begin);
@@ -996,13 +1077,8 @@
 		FragEntry entry;
 		ASSERT(entry.str().empty());
 	}
-
-	{
-		FragEntry entry { "abc" };
-		ASSERT(entry.str() == "abc");
-	}
  {
-	Frag frag {""};
+	Frag frag { "" };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
@@ -1084,8 +1160,8 @@
 				
 	char openCh {*i};
 	i += 2;
-	std::string name(i, j);
-	
+	std::string name {i, j};
+
 	if (openCh == 'd') {
 		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm {
@@ -1167,10 +1243,13 @@
 		frag = &(inputs.cur()->frags[
 			name
 		]);
-		ASSERT_MSG(frag, "frag " <<
-			name << " not defined"
-		);
-		frag->clear();
+		
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
+;
 		break;
 	}
 
@@ -1181,11 +1260,13 @@
 		frag = &frags->get(
 			name, root
 		);
-		ASSERT_MSG(frag, "frag " <<
-			name <<
-			" not defined"
-		);
-		frag->clear();
+		
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
+;
 		break;
 	}
 
@@ -1239,7 +1320,7 @@
 
 	if (openCh == 'g') {
 		ASSERT_MSG(frag,
-			"expand not in frag"
+			"globexpand not in frag"
 		);
 		Frag &sub = frags->get(
 			name, root
@@ -1283,7 +1364,7 @@
 
 	if (openCh == 'G') {
 		ASSERT_MSG(frag,
-			"multiple not in frag"
+			"globmult not in frag"
 		);
 		Frag &sub { frags->get(
 			name, root
@@ -1352,9 +1433,6 @@
 	ASSERT_MSG(frag,
 		"unknown frag " << name
 	);
-	process_chars(frag, name.begin(), name.end());
-	continue;
-;
 ;
 			} while (false); 
 			i += (j - i);
@@ -1478,7 +1556,9 @@
 		continue;
 	}
 
-	process_code(out, line.begin(), line.end());
+	process_code(
+		out, line.begin(), line.end()
+	);
 	out << "<br/>\n";
 ;
 		continue;
@@ -1486,13 +1566,21 @@
 
 	if (line == "") {
 		
-	if (status.state == HtmlState::inNotes) {
+	if (
+		status.state == HtmlState::inNotes
+	) {
 		out << "</li></ul>\n";
 	}
 ;
-		if (status.state != HtmlState::afterSlide && status.state != HtmlState::nothingWritten) {
-			out << "</div>\n";
-			status.state = HtmlState::afterSlide;
+		switch (status.state) {
+			case HtmlState::afterSlide:
+			case HtmlState::nothing:
+				break;
+			default:
+				
+	out << "</div>\n";
+	status.state = HtmlState::afterSlide;
+;
 		}
 		continue;
 	}
@@ -1517,7 +1605,7 @@
 	std::string name {b, e};
 	 
 	switch (status.state) {
-		case HtmlState::nothingWritten: {
+		case HtmlState::nothing: {
 			 
 	out << "<!doctype html>\n";
 	out << "<html lang=\"de\">\n";
@@ -1583,23 +1671,36 @@
 	) {
 		
 	if (line[0] == '*') {
-		auto end = line.end();
-		auto begin = line.begin() + 1;
-		while (begin != end && *begin == ' ') {
-			++begin;
-		}
-		if (status.state != HtmlState::inNotes) {
-			if (status.state != HtmlState::inSlide) {
-				out << "<div>\n";
-			}
-			status.state = HtmlState::inNotes;
-			out << "<ul><li>\n";
-		} else {
-			out << "</li><li>\n";
-		}
-		process_content(out, begin, end);
+		
+	auto end = line.end();
+	auto begin = line.begin() + 1;
+	while (
+		begin != end && *begin == ' '
+	) {
+		++begin;
+	}
+
+	if (
+		status.state != HtmlState::inNotes
+	) {
+		
+	if (
+		status.state != HtmlState::inSlide
+	) {
+		out << "<div>\n";
+	}
+	status.state = HtmlState::inNotes;
+	out << "<ul><li>\n";
+;
 	} else {
-		process_content(out, line.begin(), line.end());
+		out << "</li><li>\n";
+	}
+	process_content(out, begin, end);
+;
+	} else {
+		process_content(
+			out, line.begin(), line.end()
+		);
 	}
 ;
 	}
@@ -1611,6 +1712,12 @@
 	) {
 		std::cerr <<
 			"unterminated code block\n";
+	}
+
+	if (
+		status.state != HtmlState::nothing
+	) {
+		out << "</body>\n</html>\n";
 	}
 ;
 	in.close();

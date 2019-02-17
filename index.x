@@ -306,7 +306,7 @@ x{process line}
 ```
 a{global elements}
 	bool is_macro_start(
-		const Frag *frag, SI i, SI e
+		const Frag *frag, SI begin, SI end
 	) {
 		e{is macro start};
 		return false;
@@ -319,10 +319,11 @@ x{global elements}
 a{global elements}
 	SI find_macro_end(SI i, SI e) {
 		e{find macro end};
-		return e;
+		return i;
 	}
 x{global elements}
 ```
+* Liefert das Ende des Makros
 
 ```
 d{process special lines}
@@ -338,54 +339,20 @@ d{process special lines}
 	}
 x{process special lines}
 ```
-* Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
-* Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
-  schon das erste Zeichen ein `EOF` ist)
+* Wenn in einer Zeile ein Makro gefunden wird, dann wird dieses
+  verarbeitet
+* In `s{process macro}` kann bei Erfolg mit `break` der Block verlassen
+  werden
 
 
 ```
 d{is macro start}
-	auto n = i + 1;
-	if (n >= e) { return false; }
+	auto n = begin + 1;
+	if (n >= end) { return false; }
 	if (*n != '{') { return false; }
-	e{process open brace};
 x{is macro start}
 ```
-
-```
-d{process chars}
-	if (frag) {
-		std::string str {i, e};
-		frag->add(str, inputs.cur()->name, inputs.cur()->line());
-	}
-x{process chars}
-```
-
-```
-d{process char}
-	if (frag) {
-		frag->add(ch, inputs.cur()->name, inputs.cur()->line());
-	}
-x{process char}
-```
-
-```
-d{find macro end}
-	while (i != e && *i != '}') {
-		++i;
-	}
-	return i;
-x{find macro end}
-```
-
-```
-d{process macro}
-	char openCh {*i};
-	i += 2;
-	std::string name(i, j);
-	e{process frag name};
-x{process macro}
-```
+* Hinter dem Bezeichner muss eine öffnende Mengen-Klammer stehen
 
 ```
 d{additional read vars}
@@ -399,12 +366,62 @@ x{additional read vars}
 * In einem Code-Block ist `frag` nicht `nullptr`
 
 ```
-d{process open brace}
+d{process chars}
+	if (frag) {
+		std::string str {i, e};
+		frag->add(
+			str, inputs.cur()->name,
+			inputs.cur()->line()
+		);
+	}
+x{process chars}
+```
+* Fügt mehrere Zeichen an das aktuelle Fragment an
+
+```
+d{process char}
+	if (frag) {
+		frag->add(
+			ch, inputs.cur()->name,
+			inputs.cur()->line()
+		);
+	}
+x{process char}
+```
+* Fügt einzelnes Zeichen an das aktuelle Fragment an
+
+```
+a{includes}
+	#include <algorithm>
+x{includes}
+```
+* `find_macro_end` benötigt `std::find`
+
+```
+d{find macro end}
+	return std::find(i, e, '}');
+x{find macro end}
+```
+* Eine schließende Mengen-Klammer markiert das Ende des Makros
+
+```
+d{process macro}
+	char openCh {*i};
+	i += 2;
+	std::string name {i, j};
+x{process macro}
+```
+* `openCh` enthält Makro-Indikator
+* Die Zeichen zwischen den Mengen-Klammern sind der Name des Makros
+
+```
+a{is macro start}
 	if (! frag) {
 		e{may start block};
 	}
-x{process open brace}
+x{is macro start}
 ```
+* Prüft ob ein Makro außerhalb eines Fragments gültig ist
 
 ```
 d{may start block}
@@ -412,7 +429,7 @@ d{may start block}
 		"aAdDirR"
 	};
 	bool found {
-		valids.find(*i) !=
+		valids.find(*begin) !=
 			std::string::npos
 	};
 	if (found && blockLimit != 0) {
@@ -420,12 +437,11 @@ d{may start block}
 	}
 x{may start block}
 ```
-* Wenn außerhalb eines Fragments die Folge `a`, `{` gelesen wird, dann
-  beginnt ein `@add`-Fragment
-* Falls ein `i`, `{` gelesen wird, dann muss eine andere Datei mit
-  `@include` eingebunden werden
-* Es folgt der Name des Fragments oder der Pfad der Datei bis zum
-  nächsten `}`
+* Außerhalb eines Fragments können nur Makros verwendet werden, um ein
+  Fragment zu erweitern
+* Oder um eine weitere `hx`-Datei einzubinden
+* Das Makro wird nur verarbeitet, wenn die Anzahl der zu verarbeitenden
+  Folien noch nicht erreicht wurde
 
 ```
 d{start block}
@@ -433,9 +449,11 @@ d{start block}
 	return true;
 x{start block}
 ```
+* Reduziert die Anzahl der noch zu verarbeitenden Folien
+* Und liefert `true` zurück
 
 ```
-d{process frag name}
+a{process macro}
 	if (openCh == 'd') {
 		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm {
@@ -447,13 +465,13 @@ d{process frag name}
 		}
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Erzeugt ein neues Fragment
 * Das Fragment darf nicht mehrfach definiert werden
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'D') {
 		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm { frags };
@@ -463,7 +481,7 @@ a{process frag name}
 		}
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Erzeugt ein neues Fragment im globalen Namensraum
 * Das Fragment darf nicht mehrfach definiert werden
@@ -484,7 +502,7 @@ x{check for double def}
 * Bricht aber die Abarbeitung nicht ab
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'a') {
 		ASSERT_MSG(! frag, "add in frag");
 		FragMap *fm {
@@ -495,13 +513,13 @@ a{process frag name}
 		E{check for add w/o def};
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Bei einem öffnenden Befehl wird das passende Fragment gesucht
 * Weitere Bytes können zu diesem Fragment hinzugefügt werden
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'A') {
 		ASSERT_MSG(! frag, "add in frag");
 		FragMap *fm { frags };
@@ -510,7 +528,7 @@ a{process frag name}
 		E{check for add w/o def};
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Erweitert ein global definiertes Fragment
 
@@ -529,7 +547,7 @@ x{check for add w/o def}
 * Das Fragment muss bereits vorhanden und nicht leer sein
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'r') {
 		ASSERT_MSG(! frag,
 			"replace in frag"
@@ -537,19 +555,27 @@ a{process frag name}
 		frag = &(inputs.cur()->frags[
 			name
 		]);
-		ASSERT_MSG(frag, "frag " <<
-			name << " not defined"
-		);
-		frag->clear();
+		E{clear frag};
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Bei einem `@replace` wird der Inhalt eines Fragments zurückgesetzt
 * Das Fragment muss bereits vorhanden sein
 
 ```
-a{process frag name}
+d{clear frag}
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
+x{clear frag}
+```
+* Löscht das aktuelle Fragment
+
+```
+a{process macro}
 	if (openCh == 'R') {
 		ASSERT_MSG(! frag,
 			"replace in frag"
@@ -557,19 +583,15 @@ a{process frag name}
 		frag = &frags->get(
 			name, root
 		);
-		ASSERT_MSG(frag, "frag " <<
-			name <<
-			" not defined"
-		);
-		frag->clear();
+		E{clear frag};
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Ersetzt ein global definiertes Fragment
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'x') {
 		ASSERT_MSG(frag,
 			"end not in frag"
@@ -578,7 +600,7 @@ a{process frag name}
 		frag = nullptr;
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
 
@@ -594,7 +616,7 @@ x{frag names must match}
   Abarbeitung abgebrochen
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'i') {
 		ASSERT_MSG(! frag,
 			"include in frag"
@@ -604,14 +626,14 @@ a{process frag name}
 		}
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
   auf den Stapel der offenen Dateien gelegt
 * Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'e') {
 		ASSERT_MSG(frag,
 			"expand not in frag"
@@ -624,16 +646,16 @@ a{process frag name}
 		frag->add(&sub);
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Bei einem `@expand` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'g') {
 		ASSERT_MSG(frag,
-			"expand not in frag"
+			"globexpand not in frag"
 		);
 		Frag &sub = frags->get(
 			name, root
@@ -643,8 +665,10 @@ a{process frag name}
 		frag->add(&sub);
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
+* Bei einem `@globexpand` wird das Fragment in den umschließenden
+  `FragMap`s gesucht
 
 ```
 d{check frag ex. count}
@@ -666,7 +690,7 @@ x{check frag ex. count}
   ebenfalls eine Meldung ausgegeben
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'E') {
 		ASSERT_MSG(frag,
 			"multiple not in frag"
@@ -679,16 +703,16 @@ a{process frag name}
 		frag->add(&sub);
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'G') {
 		ASSERT_MSG(frag,
-			"multiple not in frag"
+			"globmult not in frag"
 		);
 		Frag &sub { frags->get(
 			name, root
@@ -698,8 +722,9 @@ a{process frag name}
 		frag->add(&sub);
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
+* `@globmult` expandiert ein globales Fragment an mehreren Stellen
 
 ```
 d{check for prev expands}
@@ -715,7 +740,7 @@ x{check for prev expands}
   wurde
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'p') {
 		ASSERT_MSG(frag,
 			"private not in frag"
@@ -723,7 +748,7 @@ a{process frag name}
 		e{process private frag};
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Private Bezeichner werden durch einen Hash erweitert
 * Um sie global unique zu machen
@@ -770,7 +795,7 @@ x{process private frag}
 * Und dem alten Bezeichner
 
 ```
-a{process frag name}
+a{process macro}
 	if (openCh == 'm') {
 		ASSERT_MSG(frag,
 			"magic not in frag"
@@ -778,7 +803,7 @@ a{process frag name}
 		e{process magic frag};
 		break;
 	}
-x{process frag name}
+x{process macro}
 ```
 * Der `@magic`-Befehl erzeugt einen Hash-Wert
 * Der sich aus dem Dateinamen und dem Argument des Befehls
@@ -811,11 +836,11 @@ x{process magic frag}
 * Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 
 ```
-a{process open brace} {
+a{is macro start} {
 	if (frag) {
 		e{check valid names};
 	}
-} x{process open brace}
+} x{is macro start}
 ```
 * Prüft, ob ein Befehl innerhalb eines Fragments mit einem gültigen
   Zeichen beginnt
@@ -830,7 +855,7 @@ d{check valid names}
 	};
 	bool found {
 		valids.find(
-			static_cast<char>(*i)
+			static_cast<char>(*begin)
 		) != std::string::npos
 	};
 	if (found) {
@@ -842,17 +867,15 @@ x{check valid names}
 * Wenn das Zeichen im String vorkommt, dann ist es gültig
 
 ```
-a{process frag name}
+a{process macro}
 	ASSERT_MSG(frag,
 		"unknown frag " << name
 	);
-	process_chars(frag, name.begin(), name.end());
-	continue;
-x{process frag name}
+x{process macro}
 ```
-* Wenn kein bekannter Befehl erkannt wurde, dann ist die
-  befehlsähnliche Eingabe Teil des Programms
-* Und wird daher in den entsprechenden Buffer kopiert
+* Eigentlich sollte diese Stelle nie erreicht werden
+* Sie zeigt, dass ein Makro als gültiges Makro akzeptiert wurde, aber
+  dann nicht verarbeitet werden konnte
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
@@ -910,7 +933,7 @@ a{serialize frag} {
 } x{serialize frag}
 ```
 * Ein Fragment wurde nicht aufgerufen
-* Dies wird mit einer Meldung quittiert
+* Dies wird mit einer Meldung protokolliert
 
 ```
 a{serialize frag}
@@ -924,7 +947,7 @@ x{serialize frag}
 ```
 * Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur
   einmal verwendet
-* Dies wird mit einer Meldung quittiert
+* Dies wird mit einer Meldung protokolliert
 
 ```
 a{serialize frag}
