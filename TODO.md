@@ -4,7 +4,6 @@
 * Converter für Compiling nutzen
 * Man-Pages
 * Autobuild
-* html.x dokumentieren
 * Code-Formattierung in Headern
 * Navigierbare Verweise
 * Slides ohne Kommentare loggen

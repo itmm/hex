@@ -405,14 +405,16 @@
 
 	bool getLine(std::string &line) {
 		if (file.is_open()) {
-			if (std::getline(file, line)) {
-				
+			
+	if (std::getline(file, line)) {
+		
 	++_line;
 ;
-				return true;
-			} else {
-				file.close();
-			}
+		return true;
+	} else {
+		file.close();
+	}
+;
 		}
 		return false;
 	}
@@ -476,7 +478,8 @@
 			
 	_used.push_back(std::move(_input));
 	if (! _pending.empty()) {
-		_input = std::move(_pending.back());
+		_input =
+			std::move(_pending.back());
 		_pending.pop_back();
 	}
 	frags = frags->setLink(nullptr);
@@ -485,20 +488,26 @@
 		return false;
 	}
 
-	bool has(const std::string &name) const {
-		if (_input && _input->name == name) {
+	bool has(
+		const std::string &name
+	) const {
+		
+	if (_input && _input->name == name) {
+		return true;
+	}
+
+	for (const auto &j : _pending) {
+		if (j->name == name) {
 			return true;
 		}
-		for (const auto &j : _pending) {
-			if (j->name == name) {
-				return true;
-			}
+	}
+
+	for (const auto &j : _used) {
+		if (j->name == name) {
+			return true;
 		}
-		for (const auto &j : _used) {
-			if (j->name == name) {
-				return true;
-			}
-		}
+	}
+;
 		return false;
 	}
 ;
