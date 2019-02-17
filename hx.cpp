@@ -484,27 +484,36 @@
 
 	Inputs inputs;
 
-	void process_char(Frag *frag, char ch) {
-		if (frag) {
-			frag->add(ch, inputs.cur()->name, inputs.cur()->line());
-		}
-	}
-
 	using SI =
 		std::string::const_iterator;
 
-	void process_chars(Frag *frag, SI i, SI e) {
-		if (frag) {
-			std::string str {i, e};
-			frag->add(str, inputs.cur()->name, inputs.cur()->line());
-		}
+	void process_chars(
+		Frag *frag, SI i, SI e
+	) {
+		
+	if (frag) {
+		std::string str {i, e};
+		frag->add(str, inputs.cur()->name, inputs.cur()->line());
+	}
+;
 	}
 
-	bool is_macro_start(const Frag *frag, SI i, SI e) {
-		auto n = i + 1;
-		if (n >= e) { return false; }
-		if (*n != '{') { return false; }
+	void process_char(Frag *frag, char ch) {
 		
+	if (frag) {
+		frag->add(ch, inputs.cur()->name, inputs.cur()->line());
+	}
+;
+	}
+
+	bool is_macro_start(
+		const Frag *frag, SI i, SI e
+	) {
+		
+	auto n = i + 1;
+	if (n >= e) { return false; }
+	if (*n != '{') { return false; }
+	
 	if (! frag) {
 		
 	static const std::string valids {
@@ -539,290 +548,18 @@
 ;
 	}
 } ;
+;
 		return false;
 	}
 
-	std::string::const_iterator find_macro_end(SI i, SI e) {
-		while (i != e && *i != '}') {
-			++i;
-		}
-		return i;
-	}
-
-	void process_macro(Frag *&frag, SI i, SI e) {
-		char openCh{*i};
-		i += 2;
-		std::string name {i, e};
+	SI find_macro_end(SI i, SI e) {
 		
-	if (openCh == 'd') {
-		ASSERT_MSG(! frag, "def in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		
-	frag = fm->find(name);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] already defined\n";
+	while (i != e && *i != '}') {
+		++i;
 	}
+	return i;
 ;
-		if (! frag) {
-			frag = &(*fm)[name];
-		}
-		return;
-	}
-
-	if (openCh == 'D') {
-		ASSERT_MSG(! frag, "def in frag");
-		FragMap *fm { frags };
-		
-	frag = fm->find(name);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] already defined\n";
-	}
-;
-		if (! frag) {
-			frag = &root[name];
-		}
-		return;
-	}
-
-	if (openCh == 'a') {
-		ASSERT_MSG(! frag, "add in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		FragMap *ins { fm };
-		frag = fm->find(name);
-		
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] not defined\n";
-		frag = &fm->get(
-			name, *ins
-		);
-	}
-;
-		return;
-	}
-
-	if (openCh == 'A') {
-		ASSERT_MSG(! frag, "add in frag");
-		FragMap *fm { frags };
-		FragMap *ins { &root };
-		frag = fm->find(name);
-		
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] not defined\n";
-		frag = &fm->get(
-			name, *ins
-		);
-	}
-;
-		return;
-	}
-
-	if (openCh == 'r') {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &(inputs.cur()->frags[
-			name
-		]);
-		ASSERT_MSG(frag, "frag " <<
-			name << " not defined"
-		);
-		frag->clear();
-		return;
-	}
-
-	if (openCh == 'R') {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &frags->get(
-			name, root
-		);
-		ASSERT_MSG(frag, "frag " <<
-			name <<
-			" not defined"
-		);
-		frag->clear();
-		return;
-	}
-
-	if (openCh == 'x') {
-		ASSERT_MSG(frag,
-			"end not in frag"
-		);
-		
-	ASSERT_MSG(frag->name == name,
-		"closing [" << name <<
-		"] != [" << frag->name << ']'
-	);
-;
-		frag = nullptr;
-		return;
-	}
-
-	if (openCh == 'i') {
-		ASSERT_MSG(! frag,
-			"include in frag"
-		);
-		if (! inputs.has(name)) {
-			inputs.push(name);
-		}
-		return;
-	}
-
-	if (openCh == 'e') {
-		ASSERT_MSG(frag,
-			"expand not in frag"
-		);
-		Frag &sub = inputs.cur()->frags[
-			name
-		];
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub.name << "]\n";
-	}
-	if (sub.multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub.name << "]\n";
-	}
-;
-		sub.addExpand();
-		frag->add(&sub);
-		return;
-	}
-
-	if (openCh == 'g') {
-		ASSERT_MSG(frag,
-			"expand not in frag"
-		);
-		Frag &sub = frags->get(
-			name, root
-		);
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub.name << "]\n";
-	}
-	if (sub.multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub.name << "]\n";
-	}
-;
-		sub.addExpand();
-		frag->add(&sub);
-		return;
-	}
-
-	if (openCh == 'E') {
-		ASSERT_MSG(frag,
-			"multiple not in frag"
-		);
-		Frag &sub { inputs.cur()->frags[
-			name
-		] };
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub.name << "]\n";
-	}
-;
-		sub.addMultiple();
-		frag->add(&sub);
-		return;
-	}
-
-	if (openCh == 'G') {
-		ASSERT_MSG(frag,
-			"multiple not in frag"
-		);
-		Frag &sub { frags->get(
-			name, root
-		) };
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub.name << "]\n";
-	}
-;
-		sub.addMultiple();
-		frag->add(&sub);
-		return;
-	}
-
-	if (openCh == 'p') {
-		ASSERT_MSG(frag,
-			"private not in frag"
-		);
-		
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur()->name +
-			':' + name) &
-				0x7fffffff
-	};
-
-	std::ostringstream hashed;
-	hashed << "_private_" <<
-		cur << '_' <<
-		name;
-	frag->add(
-		hashed.str(),
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-;
-		return;
-	}
-
-	if (openCh == 'm') {
-		ASSERT_MSG(frag,
-			"magic not in frag"
-		);
-		
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur()->name +
-			':' + name) &
-				0x7fffffff
-	};
-
-	std::ostringstream value;
-	value << cur;
-	frag->add(
-		value.str(),
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-;
-		return;
-	}
-
-	ASSERT_MSG(frag,
-		"unknown frag " << name
-	);
-	process_chars(frag, name.begin(), name.end());
-	return;
-;
+		return e;
 	}
 
 	enum class HtmlState {
@@ -1332,21 +1069,303 @@
 	Frag *frag { nullptr };
 ;
 	std::string line;
-
 	while (inputs.getLine(line)) {
-		auto end = line.end();
-		for (auto i = line.begin(); i != end; ++i) {
-			if (is_macro_start(frag, i, end)) {
-				auto j = find_macro_end(i, end);
-				if (j != end) {
-					process_macro(frag, i, j);
-					i += (j - i);
-				}
-			} else {
-				process_chars(frag, i, i + 1);
-			}
+		
+	auto end = line.cend();
+	for (
+		auto i = line.cbegin();
+		i != end; ++i
+	) {
+		
+	if (is_macro_start(frag, i, end)) {
+		auto j = find_macro_end(i, end);
+		if (j != end) {
+			do {
+				
+	char openCh {*i};
+	i += 2;
+	std::string name(i, j);
+	
+	if (openCh == 'd') {
+		ASSERT_MSG(! frag, "def in frag");
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
+		
+	frag = fm->find(name);
+	if (isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			name <<
+			"] already defined\n";
+	}
+;
+		if (! frag) {
+			frag = &(*fm)[name];
 		}
-		process_char(frag, '\n');
+		break;
+	}
+
+	if (openCh == 'D') {
+		ASSERT_MSG(! frag, "def in frag");
+		FragMap *fm { frags };
+		
+	frag = fm->find(name);
+	if (isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			name <<
+			"] already defined\n";
+	}
+;
+		if (! frag) {
+			frag = &root[name];
+		}
+		break;
+	}
+
+	if (openCh == 'a') {
+		ASSERT_MSG(! frag, "add in frag");
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
+		FragMap *ins { fm };
+		frag = fm->find(name);
+		
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			name <<
+			"] not defined\n";
+		frag = &fm->get(
+			name, *ins
+		);
+	}
+;
+		break;
+	}
+
+	if (openCh == 'A') {
+		ASSERT_MSG(! frag, "add in frag");
+		FragMap *fm { frags };
+		FragMap *ins { &root };
+		frag = fm->find(name);
+		
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			name <<
+			"] not defined\n";
+		frag = &fm->get(
+			name, *ins
+		);
+	}
+;
+		break;
+	}
+
+	if (openCh == 'r') {
+		ASSERT_MSG(! frag,
+			"replace in frag"
+		);
+		frag = &(inputs.cur()->frags[
+			name
+		]);
+		ASSERT_MSG(frag, "frag " <<
+			name << " not defined"
+		);
+		frag->clear();
+		break;
+	}
+
+	if (openCh == 'R') {
+		ASSERT_MSG(! frag,
+			"replace in frag"
+		);
+		frag = &frags->get(
+			name, root
+		);
+		ASSERT_MSG(frag, "frag " <<
+			name <<
+			" not defined"
+		);
+		frag->clear();
+		break;
+	}
+
+	if (openCh == 'x') {
+		ASSERT_MSG(frag,
+			"end not in frag"
+		);
+		
+	ASSERT_MSG(frag->name == name,
+		"closing [" << name <<
+		"] != [" << frag->name << ']'
+	);
+;
+		frag = nullptr;
+		break;
+	}
+
+	if (openCh == 'i') {
+		ASSERT_MSG(! frag,
+			"include in frag"
+		);
+		if (! inputs.has(name)) {
+			inputs.push(name);
+		}
+		break;
+	}
+
+	if (openCh == 'e') {
+		ASSERT_MSG(frag,
+			"expand not in frag"
+		);
+		Frag &sub = inputs.cur()->frags[
+			name
+		];
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
+	}
+	if (sub.multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
+	}
+;
+		sub.addExpand();
+		frag->add(&sub);
+		break;
+	}
+
+	if (openCh == 'g') {
+		ASSERT_MSG(frag,
+			"expand not in frag"
+		);
+		Frag &sub = frags->get(
+			name, root
+		);
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
+	}
+	if (sub.multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
+	}
+;
+		sub.addExpand();
+		frag->add(&sub);
+		break;
+	}
+
+	if (openCh == 'E') {
+		ASSERT_MSG(frag,
+			"multiple not in frag"
+		);
+		Frag &sub { inputs.cur()->frags[
+			name
+		] };
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
+	}
+;
+		sub.addMultiple();
+		frag->add(&sub);
+		break;
+	}
+
+	if (openCh == 'G') {
+		ASSERT_MSG(frag,
+			"multiple not in frag"
+		);
+		Frag &sub { frags->get(
+			name, root
+		) };
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
+	}
+;
+		sub.addMultiple();
+		frag->add(&sub);
+		break;
+	}
+
+	if (openCh == 'p') {
+		ASSERT_MSG(frag,
+			"private not in frag"
+		);
+		
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur()->name +
+			':' + name) &
+				0x7fffffff
+	};
+
+	std::ostringstream hashed;
+	hashed << "_private_" <<
+		cur << '_' <<
+		name;
+	frag->add(
+		hashed.str(),
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+;
+		break;
+	}
+
+	if (openCh == 'm') {
+		ASSERT_MSG(frag,
+			"magic not in frag"
+		);
+		
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur()->name +
+			':' + name) &
+				0x7fffffff
+	};
+
+	std::ostringstream value;
+	value << cur;
+	frag->add(
+		value.str(),
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+;
+		break;
+	}
+
+	ASSERT_MSG(frag,
+		"unknown frag " << name
+	);
+	process_chars(frag, name.begin(), name.end());
+	continue;
+;
+;
+			} while (false); 
+			i += (j - i);
+			continue;
+		}
+	}
+;
+		process_chars(frag, i, i + 1);
+	}
+	process_char(frag, '\n');
+;
 	}
 } ;
 	

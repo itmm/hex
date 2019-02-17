@@ -95,10 +95,13 @@ x{global elements}
   eine weitere Datei gelesen werden
 
 # Logging
+* Mehrere Programme verwenden die gleichen Log-Makros
+* Daher enthält eine eigene Datei diese Makros
 
 ```
 i{log.x}
 ```
+* Bindet Logging ein
 
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
@@ -113,10 +116,15 @@ i{frag.x}
 * Fragment-Behandlung wird in einer eigenen Datei definiert
 
 # Input
+* Eine Klasse für Eingabe-Dateien enthält neben der offenen Datei noch
+  die aktuelle Zeilennummer oder verweise auf offene inkludierte Dateien
+* Die Definition der Klasse mit allen Methoden ist in einer eigenen
+  Datei ausgelagert
 
 ```
 i{input.x}
 ```
+* Bindet Datei-Klasse ein
 
 # Kommandozeile
 * Die Kommandozeile wird Element für Element abgearbeitet
@@ -144,6 +152,9 @@ a{global elements}
 	Inputs inputs;
 x{global elements}
 ```
+* `inputs` enthält neben der gerade offenen Datei auch alle Dateien, die
+  noch prozessiert werden müssen
+* Und alle bereits gelesenen Dateien
 
 ```
 d{process arguments}
@@ -191,6 +202,9 @@ a{process argument} {
 	}
 } x{process argument}
 ```
+* Der Benutzer kann die Anzahl der Folien beschränken, aus denen der
+  Code generiert wird
+* So können Teilabschnitte validiert werden
 
 ```
 d{extract block limit}
@@ -201,6 +215,8 @@ d{extract block limit}
 	continue;
 x{extract block limit}
 ```
+* Das Programm legt das Argument in einen Input-Stream
+* Und liest aus diesem eine Zahl
 
 ```
 a{process argument}
@@ -233,23 +249,94 @@ x{process arguments}
 d{read source file} {
 	e{additional read vars};
 	std::string line;
-
 	while (inputs.getLine(line)) {
-		auto end = line.end();
-		for (auto i = line.begin(); i != end; ++i) {
-			if (is_macro_start(frag, i, end)) {
-				auto j = find_macro_end(i, end);
-				if (j != end) {
-					process_macro(frag, i, j);
-					i += (j - i);
-				}
-			} else {
-				process_chars(frag, i, i + 1);
-			}
-		}
-		process_char(frag, '\n');
+		e{process line};
 	}
 } x{read source file}
+```
+* `hx` liest die Eingabe-Dateien zeilenweise
+* Inkludierungen werden transparent in `inputs` behandelt
+
+```
+a{global elements}
+	using SI =
+		std::string::const_iterator;
+x{global elements}
+```
+* Die Anwendung verwendet den String-Iterator an vielen Stellen
+* Daher definiert sie eine Abkürzung, damit die Folien nicht überlaufen
+
+```
+a{global elements}
+	void process_chars(
+		Frag *frag, SI i, SI e
+	) {
+		e{process chars};
+	}
+x{global elements}
+```
+* Fügt ein Range an den Inhalt von `frag` an
+
+```
+a{global elements}
+	void process_char(Frag *frag, char ch) {
+		e{process char};
+	}
+x{global elements}
+```
+* Fügt ein Zeichen an den Inhalt von `frag` an
+
+```
+d{process line}
+	auto end = line.cend();
+	for (
+		auto i = line.cbegin();
+		i != end; ++i
+	) {
+		e{process special lines};
+		process_chars(frag, i, i + 1);
+	}
+	process_char(frag, '\n');
+x{process line}
+```
+* Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
+* Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
+  schon das erste Zeichen ein `EOF` ist)
+
+```
+a{global elements}
+	bool is_macro_start(
+		const Frag *frag, SI i, SI e
+	) {
+		e{is macro start};
+		return false;
+	}
+x{global elements}
+```
+* Diese Funktion gibt an, ob an der Stelle `i` ein Makro beginnt
+
+```
+a{global elements}
+	SI find_macro_end(SI i, SI e) {
+		e{find macro end};
+		return e;
+	}
+x{global elements}
+```
+
+```
+d{process special lines}
+	if (is_macro_start(frag, i, end)) {
+		auto j = find_macro_end(i, end);
+		if (j != end) {
+			do {
+				e{process macro};
+			} while (false); 
+			i += (j - i);
+			continue;
+		}
+	}
+x{process special lines}
 ```
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
@@ -257,61 +344,47 @@ d{read source file} {
 
 
 ```
-a{global elements}
-	void process_char(Frag *frag, char ch) {
-		if (frag) {
-			frag->add(ch, inputs.cur()->name, inputs.cur()->line());
-		}
-	}
-x{global elements}
+d{is macro start}
+	auto n = i + 1;
+	if (n >= e) { return false; }
+	if (*n != '{') { return false; }
+	e{process open brace};
+x{is macro start}
 ```
 
 ```
-a{global elements}
-	using SI =
-		std::string::const_iterator;
-
-	void process_chars(Frag *frag, SI i, SI e) {
-		if (frag) {
-			std::string str {i, e};
-			frag->add(str, inputs.cur()->name, inputs.cur()->line());
-		}
+d{process chars}
+	if (frag) {
+		std::string str {i, e};
+		frag->add(str, inputs.cur()->name, inputs.cur()->line());
 	}
-x{global elements}
+x{process chars}
 ```
 
 ```
-a{global elements}
-	bool is_macro_start(const Frag *frag, SI i, SI e) {
-		auto n = i + 1;
-		if (n >= e) { return false; }
-		if (*n != '{') { return false; }
-		e{process open brace};
-		return false;
+d{process char}
+	if (frag) {
+		frag->add(ch, inputs.cur()->name, inputs.cur()->line());
 	}
-x{global elements}
+x{process char}
 ```
 
 ```
-a{global elements}
-	std::string::const_iterator find_macro_end(SI i, SI e) {
-		while (i != e && *i != '}') {
-			++i;
-		}
-		return i;
+d{find macro end}
+	while (i != e && *i != '}') {
+		++i;
 	}
-x{global elements}
+	return i;
+x{find macro end}
 ```
 
 ```
-a{global elements}
-	void process_macro(Frag *&frag, SI i, SI e) {
-		char openCh{*i};
-		i += 2;
-		std::string name {i, e};
-		e{process frag name};
-	}
-x{global elements}
+d{process macro}
+	char openCh {*i};
+	i += 2;
+	std::string name(i, j);
+	e{process frag name};
+x{process macro}
 ```
 
 ```
@@ -372,7 +445,7 @@ d{process frag name}
 		if (! frag) {
 			frag = &(*fm)[name];
 		}
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -388,7 +461,7 @@ a{process frag name}
 		if (! frag) {
 			frag = &root[name];
 		}
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -420,7 +493,7 @@ a{process frag name}
 		FragMap *ins { fm };
 		frag = fm->find(name);
 		E{check for add w/o def};
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -435,7 +508,7 @@ a{process frag name}
 		FragMap *ins { &root };
 		frag = fm->find(name);
 		E{check for add w/o def};
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -468,7 +541,7 @@ a{process frag name}
 			name << " not defined"
 		);
 		frag->clear();
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -489,7 +562,7 @@ a{process frag name}
 			" not defined"
 		);
 		frag->clear();
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -503,7 +576,7 @@ a{process frag name}
 		);
 		e{frag names must match};
 		frag = nullptr;
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -529,7 +602,7 @@ a{process frag name}
 		if (! inputs.has(name)) {
 			inputs.push(name);
 		}
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -549,7 +622,7 @@ a{process frag name}
 		E{check frag ex. count};
 		sub.addExpand();
 		frag->add(&sub);
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -568,7 +641,7 @@ a{process frag name}
 		E{check frag ex. count};
 		sub.addExpand();
 		frag->add(&sub);
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -604,7 +677,7 @@ a{process frag name}
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -623,7 +696,7 @@ a{process frag name}
 		E{check for prev expands};
 		sub.addMultiple();
 		frag->add(&sub);
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -648,7 +721,7 @@ a{process frag name}
 			"private not in frag"
 		);
 		e{process private frag};
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -703,7 +776,7 @@ a{process frag name}
 			"magic not in frag"
 		);
 		e{process magic frag};
-		return;
+		break;
 	}
 x{process frag name}
 ```
@@ -774,7 +847,7 @@ a{process frag name}
 		"unknown frag " << name
 	);
 	process_chars(frag, name.begin(), name.end());
-	return;
+	continue;
 x{process frag name}
 ```
 * Wenn kein bekannter Befehl erkannt wurde, dann ist die
