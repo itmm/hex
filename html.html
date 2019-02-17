@@ -579,7 +579,7 @@ Eine Fehlermeldung wird ausgegeben
 <code>
 <span class="macro">@add(<span class="name">process code ch</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">w</span> = <span class="var">begin</span>;<br/>
-<span class="in1"></span><span class="keyword">while</span> (<span class="var">w</span> != <span class="var">end</span> &amp;&amp; (<span class="var">std</span>::<span class="fn">isalnum</span>(*<span class="var">w</span>) || *<span class="var">w</span> == <span class="str">'_'</span>)) {<br/>
+<span class="in1"></span><span class="keyword">while</span> (<span class="var">w</span> != <span class="var">end</span> &amp;&amp; (<span class="var">std</span>::<span class="fn">isalnum</span>(*<span class="var">w</span>) || *<span class="var">w</span> == <span class="str">'_'</span> || *<span class="var">w</span> == <span class="str">'$'</span>)) {<br/>
 <span class="in2"></span>++<span class="var">w</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>

@@ -1022,7 +1022,7 @@
 	}
 
 	auto w = begin;
-	while (w != end && (std::isalnum(*w) || *w == '_')) {
+	while (w != end && (std::isalnum(*w) || *w == '_' || *w == '$')) {
 		++w;
 	}
 
