@@ -869,13 +869,19 @@ x{check valid names}
 ```
 a{process macro}
 	ASSERT_MSG(frag,
-		"unknown frag " << name
+		"must be in frag " << openCh <<
+		 	'{' << name << '}'
+	);
+	frag->add(
+		name,
+		inputs.cur()->name,
+		inputs.cur()->line()
 	);
 x{process macro}
 ```
-* Eigentlich sollte diese Stelle nie erreicht werden
-* Sie zeigt, dass ein Makro als gültiges Makro akzeptiert wurde, aber
-  dann nicht verarbeitet werden konnte
+* Sonstige Makros dürfen nur in Fragmenten vorkommen
+* Sie dienen der Formatierung und können bei der Code-Generierung
+  ignoriert werden
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien

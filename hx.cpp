@@ -1440,7 +1440,13 @@
 	}
 
 	ASSERT_MSG(frag,
-		"unknown frag " << name
+		"must be in frag " << openCh <<
+		 	'{' << name << '}'
+	);
+	frag->add(
+		name,
+		inputs.cur()->name,
+		inputs.cur()->line()
 	);
 ;
 			} while (false); 
