@@ -560,7 +560,7 @@
 	if (! frag) {
 		
 	static const std::string valids {
-		"aAdDirR"
+		"ADirR"
 	};
 	bool found {
 		valids.find(*begin) !=
@@ -578,7 +578,7 @@
 	if (frag) {
 		
 	static const std::string valids { 
-		"fvsntkxeEgGpmb"
+		"fvsntkEgGpmb"
 	};
 	bool found {
 		valids.find(
@@ -763,7 +763,7 @@
 
 	void writeMacroHeader(
 		std::ostream &out,
-		const char *name
+		const std::string &name
 	) {
 		writeMacroClass(out, "macro");
 		out << '@' << name << "(<span class=\"name\">";
@@ -814,6 +814,48 @@
 		continue;
 	}
 
+	if (*begin == '@') {
+		auto nb = begin + 1;
+		auto ne = std::find(nb, end, '(');
+		if (ne != end) {
+			std::string name {nb, ne};
+			auto ab = ne + 1;
+			auto ae =
+				std::find(ab, end, ')');
+			if (ae != end) {
+				std::string arg {ab, ae};
+				
+	do {
+		
+	static Set macros = {
+		"def", "end", "add", "expand"
+	};
+	if (
+		macros.find(name) != macros.end()
+	) {
+		writeMacroHeader(out, name);
+		writeEscaped(out, arg);
+		out << "</span>)</span>";
+		break;
+	}
+;
+		
+	std::cerr << "unknown macro @" <<
+		name << '(' << arg << ")\n";
+	writeOneEscaped(out, '@');
+	writeEscaped(out, name);
+	writeOneEscaped(out, '(');
+	writeEscaped(out, arg);
+	writeOneEscaped(out, ')');
+;
+	} while (false);
+	begin = ae;
+;
+				continue;
+			}
+		}
+	}
+
 	auto w = begin;
 	
 	while (w != end && (
@@ -853,20 +895,8 @@
 ;
 	}
 
-	else if (ident == "d") {
-		writeMacroHeader(out, "def");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
 	else if (ident == "D") {
 		writeMacroHeader(out, "globdef");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "a") {
-		writeMacroHeader(out, "add");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
@@ -887,18 +917,6 @@
 		writeMacroHeader(
 			out, "globreplace"
 		);
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "x") {
-		writeMacroHeader(out, "end");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "e") {
-		writeMacroHeader(out, "expand");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
 	}
@@ -1171,25 +1189,6 @@
 	i += 2;
 	std::string name {i, j};
 
-	if (openCh == 'd') {
-		ASSERT_MSG(! frag, "def in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		
-	frag = fm->find(name);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] already defined\n";
-	}
-;
-		if (! frag) {
-			frag = &(*fm)[name];
-		}
-		break;
-	}
-
 	if (openCh == 'D') {
 		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm { frags };
@@ -1204,26 +1203,6 @@
 		if (! frag) {
 			frag = &root[name];
 		}
-		break;
-	}
-
-	if (openCh == 'a') {
-		ASSERT_MSG(! frag, "add in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		FragMap *ins { fm };
-		frag = fm->find(name);
-		
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] not defined\n";
-		frag = &fm->get(
-			name, *ins
-		);
-	}
-;
 		break;
 	}
 
@@ -1279,20 +1258,6 @@
 		break;
 	}
 
-	if (openCh == 'x') {
-		ASSERT_MSG(frag,
-			"end not in frag"
-		);
-		
-	ASSERT_MSG(frag->name == name,
-		"closing [" << name <<
-		"] != [" << frag->name << ']'
-	);
-;
-		frag = nullptr;
-		break;
-	}
-
 	if (openCh == 'i') {
 		ASSERT_MSG(! frag,
 			"include in frag"
@@ -1300,30 +1265,6 @@
 		if (! inputs.has(name)) {
 			inputs.push(name);
 		}
-		break;
-	}
-
-	if (openCh == 'e') {
-		ASSERT_MSG(frag,
-			"expand not in frag"
-		);
-		Frag &sub = inputs.cur()->frags[
-			name
-		];
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub.name << "]\n";
-	}
-	if (sub.multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub.name << "]\n";
-	}
-;
-		sub.addExpand();
-		frag->add(&sub);
 		break;
 	}
 
@@ -1454,6 +1395,122 @@
 			continue;
 		}
 	}
+
+	if (*i == '@') {
+		auto nb = i + 1;
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			++ne;
+		}
+		if (ne != end && ne != nb) {
+			std::string name {nb, ne};
+			
+	auto ab = ne + 1;
+	auto ae = ab;
+	while (ae != end && *ae != ')') {
+		++ae;
+	}
+	if (ae != end) {
+		std::string arg {ab, ae};
+		
+	i = ae;
+	do {
+		
+	if (name == "def") {
+		ASSERT_MSG(! frag, "def in frag");
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
+		
+	frag = fm->find(arg);
+	if (isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			arg <<
+			"] already defined\n";
+	}
+;
+		if (! frag) {
+			frag = &(*fm)[arg];
+		}
+		break;
+	}
+
+	if (name == "end") {
+		ASSERT_MSG(frag,
+			"end not in frag"
+		);
+		
+	ASSERT_MSG(frag->name == arg,
+		"closing [" << arg <<
+		"] != [" << frag->name << ']'
+	);
+;
+		frag = nullptr;
+		break;
+	}
+
+	if (name == "add") {
+		ASSERT_MSG(! frag, "add in frag");
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
+		FragMap *ins { fm };
+		frag = fm->find(arg);
+		
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			arg <<
+			"] not defined\n";
+		frag = &fm->get(
+			arg, *ins
+		);
+	}
+;
+		break;
+	}
+
+	if (name == "expand") {
+		ASSERT_MSG(frag,
+			"expand not in frag"
+		);
+		Frag &sub = inputs.cur()->frags[
+			arg
+		];
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
+	}
+	if (sub.multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
+	}
+;
+		sub.addExpand();
+		frag->add(&sub);
+		break;
+	}
+;
+		
+	ASSERT_MSG(frag,
+		"must be in frag @" << name <<
+		 	'(' << arg << ')'
+	);
+	frag->add(
+		arg,
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+;
+	} while (false);
+;
+		continue;
+	}
+;
+		}
+	}
 ;
 		process_chars(frag, i, i + 1);
 	}
@@ -1551,7 +1608,7 @@
 		".html"
 	};
 	std::ofstream out { outPath.c_str() };
-	 
+	
 	std::ifstream in {
 		cur->name.c_str()
 	};
@@ -1560,7 +1617,7 @@
 	std::string ident;
 	std::string line;
 	while (std::getline(in, line)) {
-		 
+		
 	if (in_code(&status)) {
 		
 	if (line == "```") {
@@ -1615,17 +1672,17 @@
 	while (b != e && *b <= ' ') {
 		++b;
 	}
- 
+
 	ASSERT(b != e);
 	std::string name {b, e};
-	 
+	
 	switch (status.state) {
 		case HtmlState::nothing: {
-			 
+			
 	out << "<!doctype html>\n";
 	out << "<html lang=\"de\">\n";
 	out << "<head>\n";
-	 
+	
 	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
 	writeEscaped(out, name);
@@ -1648,14 +1705,14 @@
 		}
 	}
 ;
-	 
+	
 	out << "<h" << level << '>';
 	writeEscaped(out, name);
 	out << "</h" << level << ">\n";
 ;
 	out << "<div class=\"slides\">\n";
 	out << "<div><div>\n";
-	 
+	
 	out << "<h" << level << '>';
 	writeEscaped(out, name);
 	out << "</h" << level << ">\n";
@@ -1665,7 +1722,7 @@
 		status.state = HtmlState::inSlide;
 		continue;
 	}
- 
+
 	if (line == "```") {
 		
 	if (
@@ -1679,7 +1736,7 @@
 ;
 		continue;
 	}
- 
+
 	if (
 		line[0] == '*' ||
 		status.state == HtmlState::inNotes

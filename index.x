@@ -33,14 +33,14 @@
 
 ```
 D{file: hx.cpp}
-	e{global elements}
+	@expand(global elements)
 	int main(
 		int argc,
 		const char **argv
 	) {
-		e{main body}
+		@expand(main body)
 	}
-x{file: hx.cpp}
+@end(file: hx.cpp)
 ```
 * Hex ist in C++ geschrieben
 * Das Hauptprogramm besteht aus der `main`-Funktion
@@ -50,13 +50,13 @@ x{file: hx.cpp}
 * Und der Aufrufname mit Argumenten als Array in `argv`
 
 ```
-d{main body}
-	e{perform unit-tests};
-	e{process arguments};
-	e{read source file};
-	e{serialize fragments};
-	e{write HTML file};
-x{main body}
+@def(main body)
+	@expand(perform unit-tests);
+	@expand(process arguments);
+	@expand(read source file);
+	@expand(serialize fragments);
+	@expand(write HTML file);
+@end(main body)
 ```
 * Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
   umfangreiche Testabdeckung zu sichern)
@@ -77,10 +77,10 @@ x{main body}
 * Für mehrfache Auflösungen muss `@mulitple` verwendet werden
 
 ```
-d{global elements}
-	e{includes};
-	e{define logging};
-x{global elements}
+@def(global elements)
+	@expand(includes);
+	@expand(define logging);
+@end(global elements)
 ```
 * System-Dateien werden vor der Definition von Strukturen und Funktionen
   eingebunden
@@ -130,49 +130,49 @@ i{input.x}
 * Die Kommandozeile wird Element für Element abgearbeitet
 
 ```
-a{global elements}
+@add(global elements)
 	std::string stylesheet {
 		"slides/slides.css"
 	};
-x{global elements}
+@end(global elements)
 ```
 * Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
 * Über die Kommandozeile kann eine alternative Datei angegeben werden
 
 ```
-a{global elements}
+@add(global elements)
 	int blockLimit = -1;
-x{global elements}
+@end(global elements)
 ```
 * Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit
   diesem Parameter limitiert werden
 
 ```
-a{global elements}
+@add(global elements)
 	Inputs inputs;
-x{global elements}
+@end(global elements)
 ```
 * `inputs` enthält neben der gerade offenen Datei auch alle Dateien, die
   noch prozessiert werden müssen
 * Und alle bereits gelesenen Dateien
 
 ```
-d{process arguments}
+@def(process arguments)
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
-		e{process argument};
+		@expand(process argument);
 		ASSERT_MSG(false,
 			"unknown argument [" <<
 			argv[i] << ']'
 		);
 	}
-x{process arguments}
+@end(process arguments)
 ```
 * Die Argumente werden einzeln durchgegangen
 * Wenn sie nicht verwendet werden, bricht das Programm ab
 
 ```
-d{process argument} {
+@def(process argument) {
 	static const std::string prefix {
 		"--css="
 	};
@@ -184,13 +184,13 @@ d{process argument} {
 			arg.substr(prefix.length());
 		continue;
 	}
-} x{process argument}
+} @end(process argument)
 ```
 * Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
   werden
 
 ```
-a{process argument} {
+@add(process argument) {
 	static const std::string prefix {
 		"--limit="
 	};
@@ -198,45 +198,45 @@ a{process argument} {
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
-		e{extract block limit};
+		@expand(extract block limit);
 	}
-} x{process argument}
+} @end(process argument)
 ```
 * Der Benutzer kann die Anzahl der Folien beschränken, aus denen der
   Code generiert wird
 * So können Teilabschnitte validiert werden
 
 ```
-d{extract block limit}
+@def(extract block limit)
 	std::istringstream iss {
 		arg.substr(prefix.length())
 	};
 	iss >> blockLimit;
 	continue;
-x{extract block limit}
+@end(extract block limit)
 ```
 * Das Programm legt das Argument in einen Input-Stream
 * Und liest aus diesem eine Zahl
 
 ```
-a{process argument}
+@add(process argument)
 	if (! someFile) {
 		inputs.push(argv[1]);
 		someFile = true;
 		continue;
 	}
-x{process argument}
+@end(process argument)
 ```
 * Ansonsten wird das Argument als Pfad der `.x`-Datei interpretiert
 * Aus dieser werden HTML-Slides und Source-Code generiert
 * Es kann nur eine Datei angegeben werden
 
 ```
-a{process arguments}
+@add(process arguments)
 	if (! someFile) {
 		inputs.push("index.x");
 	}
-x{process arguments}
+@end(process arguments)
 ```
 * Wenn kein Pfad angegeben wurde, wird `index.x` als Vorgabe verwendet
 
@@ -246,98 +246,98 @@ x{process arguments}
   einzelnen Folien zu finden
 
 ```
-d{read source file} {
-	e{additional read vars};
+@def(read source file) {
+	@expand(additional read vars);
 	std::string line;
 	while (inputs.getLine(line)) {
-		e{process line};
+		@expand(process line);
 	}
-} x{read source file}
+} @end(read source file)
 ```
 * `hx` liest die Eingabe-Dateien zeilenweise
 * Inkludierungen werden transparent in `inputs` behandelt
 
 ```
-a{global elements}
+@add(global elements)
 	using SI =
 		std::string::const_iterator;
-x{global elements}
+@end(global elements)
 ```
 * Die Anwendung verwendet den String-Iterator an vielen Stellen
 * Daher definiert sie eine Abkürzung, damit die Folien nicht überlaufen
 
 ```
-a{global elements}
+@add(global elements)
 	void process_chars(
 		Frag *frag, SI i, SI e
 	) {
-		e{process chars};
+		@expand(process chars);
 	}
-x{global elements}
+@end(global elements)
 ```
 * Fügt ein Range an den Inhalt von `frag` an
 
 ```
-a{global elements}
+@add(global elements)
 	void process_char(Frag *frag, char ch) {
-		e{process char};
+		@expand(process char);
 	}
-x{global elements}
+@end(global elements)
 ```
 * Fügt ein Zeichen an den Inhalt von `frag` an
 
 ```
-d{process line}
+@def(process line)
 	auto end = line.cend();
 	for (
 		auto i = line.cbegin();
 		i != end; ++i
 	) {
-		e{process special lines};
+		@expand(process special lines);
 		process_chars(frag, i, i + 1);
 	}
 	process_char(frag, '\n');
-x{process line}
+@end(process line)
 ```
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
   schon das erste Zeichen ein `EOF` ist)
 
 ```
-a{global elements}
+@add(global elements)
 	bool is_macro_start(
 		const Frag *frag, SI begin, SI end
 	) {
-		e{is macro start};
+		@expand(is macro start);
 		return false;
 	}
-x{global elements}
+@end(global elements)
 ```
 * Diese Funktion gibt an, ob an der Stelle `i` ein Makro beginnt
 
 ```
-a{global elements}
+@add(global elements)
 	SI find_macro_end(SI i, SI e) {
-		e{find macro end};
+		@expand(find macro end);
 		return i;
 	}
-x{global elements}
+@end(global elements)
 ```
 * Liefert das Ende des Makros
 
 ```
-d{process special lines}
+@def(process special lines)
 	if (is_macro_start(frag, i, end)) {
 		auto j = find_macro_end(i, end);
 		if (j != end) {
 			do {
-				e{process macro};
+				@expand(process macro);
 			} while (false); 
 			i += (j - i);
 			continue;
 		}
 	}
-x{process special lines}
+@end(process special lines)
 ```
 * Wenn in einer Zeile ein Makro gefunden wird, dann wird dieses
   verarbeitet
@@ -346,18 +346,18 @@ x{process special lines}
 
 
 ```
-d{is macro start}
+@def(is macro start)
 	auto n = begin + 1;
 	if (n >= end) { return false; }
 	if (*n != '{') { return false; }
-x{is macro start}
+@end(is macro start)
 ```
 * Hinter dem Bezeichner muss eine öffnende Mengen-Klammer stehen
 
 ```
-d{additional read vars}
+@def(additional read vars)
 	Frag *frag { nullptr };
-x{additional read vars}
+@end(additional read vars)
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
 * In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
@@ -366,7 +366,7 @@ x{additional read vars}
 * In einem Code-Block ist `frag` nicht `nullptr`
 
 ```
-d{process chars}
+@def(process chars)
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
@@ -374,68 +374,68 @@ d{process chars}
 			inputs.cur()->line()
 		);
 	}
-x{process chars}
+@end(process chars)
 ```
 * Fügt mehrere Zeichen an das aktuelle Fragment an
 
 ```
-d{process char}
+@def(process char)
 	if (frag) {
 		frag->add(
 			ch, inputs.cur()->name,
 			inputs.cur()->line()
 		);
 	}
-x{process char}
+@end(process char)
 ```
 * Fügt einzelnes Zeichen an das aktuelle Fragment an
 
 ```
-a{includes}
+@add(includes)
 	#include <algorithm>
-x{includes}
+@end(includes)
 ```
 * `find_macro_end` benötigt `std::find`
 
 ```
-d{find macro end}
+@def(find macro end)
 	return std::find(i, e, '}');
-x{find macro end}
+@end(find macro end)
 ```
 * Eine schließende Mengen-Klammer markiert das Ende des Makros
 
 ```
-d{process macro}
+@def(process macro)
 	char openCh {*i};
 	i += 2;
 	std::string name {i, j};
-x{process macro}
+@end(process macro)
 ```
 * `openCh` enthält Makro-Indikator
 * Die Zeichen zwischen den Mengen-Klammern sind der Name des Makros
 
 ```
-a{is macro start}
+@add(is macro start)
 	if (! frag) {
-		e{may start block};
+		@expand(may start block);
 	}
-x{is macro start}
+@end(is macro start)
 ```
 * Prüft ob ein Makro außerhalb eines Fragments gültig ist
 
 ```
-d{may start block}
+@def(may start block)
 	static const std::string valids {
-		"aAdDirR"
+		"ADirR"
 	};
 	bool found {
 		valids.find(*begin) !=
 			std::string::npos
 	};
 	if (found && blockLimit != 0) {
-		e{start block};
+		@expand(start block);
 	}
-x{may start block}
+@end(may start block)
 ```
 * Außerhalb eines Fragments können nur Makros verwendet werden, um ein
   Fragment zu erweitern
@@ -444,57 +444,39 @@ x{may start block}
   Folien noch nicht erreicht wurde
 
 ```
-d{start block}
+@def(start block)
 	--blockLimit;
 	return true;
-x{start block}
+@end(start block)
 ```
 * Reduziert die Anzahl der noch zu verarbeitenden Folien
 * Und liefert `true` zurück
 
 ```
-a{process macro}
-	if (openCh == 'd') {
-		ASSERT_MSG(! frag, "def in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		E{check for double def};
-		if (! frag) {
-			frag = &(*fm)[name];
-		}
-		break;
-	}
-x{process macro}
-```
-* Erzeugt ein neues Fragment
-* Das Fragment darf nicht mehrfach definiert werden
-
-```
-a{process macro}
+@add(process macro)
 	if (openCh == 'D') {
 		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm { frags };
-		E{check for double def};
+		@expand(check for double def);
 		if (! frag) {
 			frag = &root[name];
 		}
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Erzeugt ein neues Fragment im globalen Namensraum
 * Das Fragment darf nicht mehrfach definiert werden
 
 ```
-d{check for double def}
+@def(check for double def)
 	frag = fm->find(name);
 	if (isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
 			name <<
 			"] already defined\n";
 	}
-x{check for double def}
+@end(check for double def)
 ```
 * Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
 * Es muss geprüft werden, ob es schon Inhalt hat
@@ -502,38 +484,21 @@ x{check for double def}
 * Bricht aber die Abarbeitung nicht ab
 
 ```
-a{process macro}
-	if (openCh == 'a') {
-		ASSERT_MSG(! frag, "add in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		FragMap *ins { fm };
-		frag = fm->find(name);
-		E{check for add w/o def};
-		break;
-	}
-x{process macro}
-```
-* Bei einem öffnenden Befehl wird das passende Fragment gesucht
-* Weitere Bytes können zu diesem Fragment hinzugefügt werden
-
-```
-a{process macro}
+@add(process macro)
 	if (openCh == 'A') {
 		ASSERT_MSG(! frag, "add in frag");
 		FragMap *fm { frags };
 		FragMap *ins { &root };
 		frag = fm->find(name);
-		E{check for add w/o def};
+		@expand(check for add w/o def);
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Erweitert ein global definiertes Fragment
 
 ```
-d{check for add w/o def}
+@def(check for add w/o def)
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
 			name <<
@@ -542,12 +507,12 @@ d{check for add w/o def}
 			name, *ins
 		);
 	}
-x{check for add w/o def}
+@end(check for add w/o def)
 ```
 * Das Fragment muss bereits vorhanden und nicht leer sein
 
 ```
-a{process macro}
+@add(process macro)
 	if (openCh == 'r') {
 		ASSERT_MSG(! frag,
 			"replace in frag"
@@ -558,24 +523,24 @@ a{process macro}
 		E{clear frag};
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Bei einem `@replace` wird der Inhalt eines Fragments zurückgesetzt
 * Das Fragment muss bereits vorhanden sein
 
 ```
-d{clear frag}
+@def(clear frag)
 	ASSERT_MSG(frag, "frag " <<
 		name <<
 		" not defined"
 	);
 	frag->clear();
-x{clear frag}
+@end(clear frag)
 ```
 * Löscht das aktuelle Fragment
 
 ```
-a{process macro}
+@add(process macro)
 	if (openCh == 'R') {
 		ASSERT_MSG(! frag,
 			"replace in frag"
@@ -586,37 +551,12 @@ a{process macro}
 		E{clear frag};
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Ersetzt ein global definiertes Fragment
 
 ```
-a{process macro}
-	if (openCh == 'x') {
-		ASSERT_MSG(frag,
-			"end not in frag"
-		);
-		e{frag names must match};
-		frag = nullptr;
-		break;
-	}
-x{process macro}
-```
-* Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
-
-```
-d{frag names must match}
-	ASSERT_MSG(frag->name == name,
-		"closing [" << name <<
-		"] != [" << frag->name << ']'
-	);
-x{frag names must match}
-```
-* Wenn der öffnende und schließende Name nicht passt, wird die
-  Abarbeitung abgebrochen
-
-```
-a{process macro}
+@add(process macro)
 	if (openCh == 'i') {
 		ASSERT_MSG(! frag,
 			"include in frag"
@@ -626,33 +566,14 @@ a{process macro}
 		}
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
   auf den Stapel der offenen Dateien gelegt
 * Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
 ```
-a{process macro}
-	if (openCh == 'e') {
-		ASSERT_MSG(frag,
-			"expand not in frag"
-		);
-		Frag &sub = inputs.cur()->frags[
-			name
-		];
-		E{check frag ex. count};
-		sub.addExpand();
-		frag->add(&sub);
-		break;
-	}
-x{process macro}
-```
-* Bei einem `@expand` wird das Fragment gesucht und eingebunden
-* Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
-
-```
-a{process macro}
+@add(process macro)
 	if (openCh == 'g') {
 		ASSERT_MSG(frag,
 			"globexpand not in frag"
@@ -665,13 +586,13 @@ a{process macro}
 		frag->add(&sub);
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Bei einem `@globexpand` wird das Fragment in den umschließenden
   `FragMap`s gesucht
 
 ```
-d{check frag ex. count}
+@def(check frag ex. count)
 	if (sub.expands()) {
 		std::cerr <<
 			"multiple expands of [" <<
@@ -682,7 +603,7 @@ d{check frag ex. count}
 			"expand after mult of ["
 			<< sub.name << "]\n";
 	}
-x{check frag ex. count}
+@end(check frag ex. count)
 ```
 * Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
   ausgegeben
@@ -690,7 +611,7 @@ x{check frag ex. count}
   ebenfalls eine Meldung ausgegeben
 
 ```
-a{process macro}
+@add(process macro)
 	if (openCh == 'E') {
 		ASSERT_MSG(frag,
 			"multiple not in frag"
@@ -703,13 +624,13 @@ a{process macro}
 		frag->add(&sub);
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
 
 ```
-a{process macro}
+@add(process macro)
 	if (openCh == 'G') {
 		ASSERT_MSG(frag,
 			"globmult not in frag"
@@ -722,61 +643,61 @@ a{process macro}
 		frag->add(&sub);
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * `@globmult` expandiert ein globales Fragment an mehreren Stellen
 
 ```
-d{check for prev expands}
+@def(check for prev expands)
 	if (sub.expands()) {
 		std::cerr <<
 			"multiple after " <<
 			"expand of [" <<
 			sub.name << "]\n";
 	}
-x{check for prev expands}
+@end(check for prev expands)
 ```
 * Es ist ein Fehler, wenn das Fragment bereits normal `@expand`iert
   wurde
 
 ```
-a{process macro}
+@add(process macro)
 	if (openCh == 'p') {
 		ASSERT_MSG(frag,
 			"private not in frag"
 		);
-		e{process private frag};
+		@expand(process private frag);
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Private Bezeichner werden durch einen Hash erweitert
 * Um sie global unique zu machen
 
 ```
-a{includes}
+@add(includes)
 	#include <functional>
 	#include <sstream>
-x{includes}
+@end(includes)
 ```
 * Enthält Hash-Funktion
 
 ```
-d{process private frag}
+@def(process private frag)
 	std::hash<std::string> h;
 	unsigned cur {
 		h(inputs.cur()->name +
 			':' + name) &
 				0x7fffffff
 	};
-x{process private frag}
+@end(process private frag)
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
 * Und dem aktuellen Bezeichner berechnet
 * Zum Schluss wird er auf eine positive Zahl maskiert
 
 ```
-a{process private frag}
+@add(process private frag)
 	std::ostringstream hashed;
 	hashed << "_private_" <<
 		cur << '_' <<
@@ -786,7 +707,7 @@ a{process private frag}
 		inputs.cur()->name,
 		inputs.cur()->line()
 	);
-x{process private frag}
+@end(process private frag)
 ```
 * Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
 * Dann kommt der neue Bezeichner
@@ -795,34 +716,34 @@ x{process private frag}
 * Und dem alten Bezeichner
 
 ```
-a{process macro}
+@add(process macro)
 	if (openCh == 'm') {
 		ASSERT_MSG(frag,
 			"magic not in frag"
 		);
-		e{process magic frag};
+		@expand(process magic frag);
 		break;
 	}
-x{process macro}
+@end(process macro)
 ```
 * Der `@magic`-Befehl erzeugt einen Hash-Wert
 * Der sich aus dem Dateinamen und dem Argument des Befehls
   zusammen setzt
 
 ```
-d{process magic frag}
+@def(process magic frag)
 	std::hash<std::string> h;
 	unsigned cur {
 		h(inputs.cur()->name +
 			':' + name) &
 				0x7fffffff
 	};
-x{process magic frag}
+@end(process magic frag)
 ```
 * Berechnet Hash-Wert
 
 ```
-a{process magic frag}
+@add(process magic frag)
 	std::ostringstream value;
 	value << cur;
 	frag->add(
@@ -830,17 +751,17 @@ a{process magic frag}
 		inputs.cur()->name,
 		inputs.cur()->line()
 	);
-x{process magic frag}
+@end(process magic frag)
 ```
 * Gibt den Hash-Wert aus
 * Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 
 ```
-a{is macro start} {
+@add(is macro start) {
 	if (frag) {
-		e{check valid names};
+		@expand(check valid names);
 	}
-} x{is macro start}
+} @end(is macro start)
 ```
 * Prüft, ob ein Befehl innerhalb eines Fragments mit einem gültigen
   Zeichen beginnt
@@ -849,9 +770,9 @@ a{is macro start} {
   Mengenklammer zu speichern
 
 ```
-d{check valid names}
+@def(check valid names)
 	static const std::string valids { 
-		"fvsntkxeEgGpmb"
+		"fvsntkEgGpmb"
 	};
 	bool found {
 		valids.find(
@@ -861,13 +782,13 @@ d{check valid names}
 	if (found) {
 		return true;
 	}
-x{check valid names}
+@end(check valid names)
 ```
 * Gültige Kommando-Zeichen sind in einem String abgelegt
 * Wenn das Zeichen im String vorkommt, dann ist es gültig
 
 ```
-a{process macro}
+@add(process macro)
 	ASSERT_MSG(frag,
 		"must be in frag " << openCh <<
 		 	'{' << name << '}'
@@ -877,23 +798,196 @@ a{process macro}
 		inputs.cur()->name,
 		inputs.cur()->line()
 	);
-x{process macro}
+@end(process macro)
 ```
 * Sonstige Makros dürfen nur in Fragmenten vorkommen
 * Sie dienen der Formatierung und können bei der Code-Generierung
   ignoriert werden
+
+```
+@add(process special lines)
+	if (*i == '@') {
+		auto nb = i + 1;
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			++ne;
+		}
+		if (ne != end && ne != nb) {
+			std::string name {nb, ne};
+			@expand(macro argument);
+		}
+	}
+@end(process special lines)
+```
+* Makros können mit dem Ampersand eingeleitet werden
+* Danach kommt der Name des Makros
+
+```
+@def(macro argument)
+	auto ab = ne + 1;
+	auto ae = ab;
+	while (ae != end && *ae != ')') {
+		++ae;
+	}
+	if (ae != end) {
+		std::string arg {ab, ae};
+		@expand(macro found);
+		continue;
+	}
+@end(macro argument)
+```
+* Argument des Makros wird von Klammern umschlossen
+
+```
+@def(macro found)
+	i = ae;
+	do {
+		@expand(do macro);
+		@expand(default expansion);
+	} while (false);
+@end(macro found)
+```
+* Besondere Makros werden zuerst ausgewertet
+* Wenn diese Auswertung nicht greift, wird die Standard-Expandierung
+  verwendet
+
+
+```
+@def(default expansion)
+	ASSERT_MSG(frag,
+		"must be in frag @" << name <<
+		 	'(' << arg << ')'
+	);
+	frag->add(
+		arg,
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+@end(default expansion)
+```
+* Wenn das Makro nicht behandelt wurde, dann muss es sich um eine
+  Formatierung handeln, die nur in Fragmenten vorkommen darf
+* Es wird einfach nur das Argument ausgegeben
+
+```
+@def(do macro)
+	if (name == "def") {
+		ASSERT_MSG(! frag, "def in frag");
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
+		@expand(check for double def2);
+		if (! frag) {
+			frag = &(*fm)[arg];
+		}
+		break;
+	}
+@end(do macro)
+```
+* Erzeugt ein neues Fragment
+* Das Fragment darf nicht mehrfach definiert werden
+
+```
+@def(check for double def2)
+	frag = fm->find(arg);
+	if (isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			arg <<
+			"] already defined\n";
+	}
+@end(check for double def2)
+```
+* Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
+* Es muss geprüft werden, ob es schon Inhalt hat
+* Das wäre dann eine Fehlermeldung wert
+* Bricht aber die Abarbeitung nicht ab
+
+```
+@add(do macro)
+	if (name == "end") {
+		ASSERT_MSG(frag,
+			"end not in frag"
+		);
+		@expand(frag names must match);
+		frag = nullptr;
+		break;
+	}
+@end(do macro)
+```
+* Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
+
+```
+@def(frag names must match)
+	ASSERT_MSG(frag->name == arg,
+		"closing [" << arg <<
+		"] != [" << frag->name << ']'
+	);
+@end(frag names must match)
+```
+* Wenn der öffnende und schließende Name nicht passt, wird die
+  Abarbeitung abgebrochen
+
+```
+@add(do macro)
+	if (name == "add") {
+		ASSERT_MSG(! frag, "add in frag");
+		FragMap *fm {
+			&inputs.cur()->frags
+		};
+		FragMap *ins { fm };
+		frag = fm->find(arg);
+		@expand(check for add w/o def2);
+		break;
+	}
+@end(do macro)
+```
+* Bei einem öffnenden Befehl wird das passende Fragment gesucht
+* Weitere Bytes können zu diesem Fragment hinzugefügt werden
+
+```
+@def(check for add w/o def2)
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			arg <<
+			"] not defined\n";
+		frag = &fm->get(
+			arg, *ins
+		);
+	}
+@end(check for add w/o def2)
+```
+* Das Fragment muss bereits vorhanden und nicht leer sein
+
+```
+@add(do macro)
+	if (name == "expand") {
+		ASSERT_MSG(frag,
+			"expand not in frag"
+		);
+		Frag &sub = inputs.cur()->frags[
+			arg
+		];
+		E{check frag ex. count};
+		sub.addExpand();
+		frag->add(&sub);
+		break;
+	}
+@end(do macro)
+```
+* Bei einem `@expand` wird das Fragment gesucht und eingebunden
+* Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
   rausgeschrieben
 
 ```
-d{serialize fragments}
+@def(serialize fragments)
 	for (auto &i : root) {
 		const Frag *frag { &i.second };
 		E{serialize frag};
 	}
-x{serialize fragments}
+@end(serialize fragments)
 ```
 * Fragmente, die mit `file:` beginnen, werden in die entsprechenden
   Dateien rausgeschrieben
@@ -901,7 +995,7 @@ x{serialize fragments}
   wurden
 
 ```
-a{serialize fragments}
+@add(serialize fragments)
 	for (auto &j : inputs) {
 		for (auto &i : j->frags) {
 			const Frag *frag {
@@ -910,23 +1004,23 @@ a{serialize fragments}
 			E{serialize frag};
 		}
 	}
-x{serialize fragments}
+@end(serialize fragments)
 ```
 * Auch alle lokalen Fragmente bearbeiten
 
 ```
-d{serialize frag} {
+@def(serialize frag) {
 	if (frag->isFile()) {
-		e{write in file};
+		@expand(write in file);
 	}
-} x{serialize frag}
+} @end(serialize frag)
 ```
 * Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in
   die passende Datei geschrieben
 * Zusätzlich zählt das als eine Expansion
 
 ```
-a{serialize frag} {
+@add(serialize frag) {
 	int sum {
 		frag->expands()
 			+ frag->multiples()
@@ -936,45 +1030,45 @@ a{serialize frag} {
 			frag->name <<
 			"] not called\n";
 	}
-} x{serialize frag}
+} @end(serialize frag)
 ```
 * Ein Fragment wurde nicht aufgerufen
 * Dies wird mit einer Meldung protokolliert
 
 ```
-a{serialize frag}
+@add(serialize frag)
 	if (frag->multiples() == 1) {
 		std::cerr <<
 			"multiple frag [" <<
 			frag->name <<
 			"] only used once\n";
 	}
-x{serialize frag}
+@end(serialize frag)
 ```
 * Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur
   einmal verwendet
 * Dies wird mit einer Meldung protokolliert
 
 ```
-a{serialize frag}
+@add(serialize frag)
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
 			frag->name <<
 			"] not populated\n";
 	}
-x{serialize frag}
+@end(serialize frag)
 ```
 * Für jedes Fragment, das nicht befüllt wurde wird eine Meldung
   ausgegeben
 
 ```
-d{write in file}
+@def(write in file)
 	std::ofstream out(
 		frag->name.substr(6).c_str()
 	);
 	serializeFrag(*frag, out, false);
 	out.close();
-x{write in file}
+@end(write in file)
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
 

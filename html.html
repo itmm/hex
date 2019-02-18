@@ -48,7 +48,7 @@ Die HTML hat den gleichen Pfad mit der Endung <code>.<span class="var">html</spa
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">write cur HTML file to out</span>)</span> <br/>
+<span class="macro">@def(<span class="name">write cur HTML file to out</span>)</span><br/>
 <span class="in1"></span><span class="var">std</span>::<span class="var">ifstream</span> <span class="keyword">in</span> {<br/>
 <span class="in2"></span><span class="var">cur</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 <span class="in1"></span>};<br/>
@@ -168,7 +168,7 @@ Die Funktion <code><span class="fn">in_code</span></code> liefert <code><span cl
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">process line</span>)</span> <br/>
+<span class="macro">@def(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">in_code</span>(&amp;<span class="var">status</span>)) {<br/>
 <span class="in2"></span><span class="macro">@expand(<span class="name">process code</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
@@ -271,7 +271,7 @@ Nach den Rauten dürfen beliebig viele Leerzeichen vorkommen
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process header</span>)</span> <br/>
+<span class="macro">@add(<span class="name">process header</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span> != <span class="var">e</span>);<br/>
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">b</span>, <span class="var">e</span>};<br/>
 <span class="in1"></span><span class="macro">@expand(<span class="name">close previous HTML page</span>)</span>;<br/>
@@ -351,7 +351,7 @@ Die Zeichen <code>&lt;</code>, <code>&gt;</code> und <code>&amp;</code> werden e
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">write header tag</span>)</span> <br/>
+<span class="macro">@def(<span class="name">write header tag</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;h"</span> &lt;&lt; <span class="var">level</span> &lt;&lt; <span class="str">'&gt;'</span>;<br/>
 <span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/h"</span> &lt;&lt; <span class="var">level</span> &lt;&lt; <span class="str">"&gt;\n"</span>;<br/>
@@ -363,7 +363,7 @@ Die HTML-Überschrift enthält den eingelesenen Level
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">close previous HTML page</span>)</span> <br/>
+<span class="macro">@def(<span class="name">close previous HTML page</span>)</span><br/>
 <span class="in1"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">state</span>) {<br/>
 <span class="in2"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">nothing</span>: {<br/>
 <span class="in3"></span><span class="macro">@expand(<span class="name">write HTML header</span>)</span>;<br/>
@@ -386,7 +386,7 @@ Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">write HTML header</span>)</span> <br/>
+<span class="macro">@def(<span class="name">write HTML header</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;!doctype html&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;html lang=\"de\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;head&gt;\n"</span>;<br/>
@@ -405,7 +405,7 @@ Diese Überschrift ist dann auch der Titel der HTML-Datei
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">write HTML header entries</span>)</span> <br/>
+<span class="macro">@def(<span class="name">write HTML header entries</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;meta charset=\"utf-8\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;title&gt;"</span>;<br/>
 <span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
@@ -457,7 +457,7 @@ Die Code-Ausgabe ist ein besonderer Zustand
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process line</span>)</span> <br/>
+<span class="macro">@add(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span> == <span class="str">"```"</span>) {<br/>
 <span class="in2"></span><span class="macro">@expand(<span class="name">open code page</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
@@ -693,6 +693,68 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">process code ch</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (*<span class="var">begin</span> == <span class="str">'@'</span>) {<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">nb</span> = <span class="var">begin</span> + <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">ne</span> = <span class="var">std</span>::<span class="fn">find</span>(<span class="var">nb</span>, <span class="var">end</span>, <span class="str">'('</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">ne</span> != <span class="var">end</span>) {<br/>
+<span class="in3"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">nb</span>, <span class="var">ne</span>};<br/>
+<span class="in3"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>;<br/>
+<span class="in3"></span><span class="type">auto</span> <span class="var">ae</span> =<br/>
+<span class="in4"></span><span class="var">std</span>::<span class="fn">find</span>(<span class="var">ab</span>, <span class="var">end</span>, <span class="str">')'</span>);<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">ae</span> != <span class="var">end</span>) {<br/>
+<span class="in4"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">arg</span> {<span class="var">ab</span>, <span class="var">ae</span>};<br/>
+<span class="in4"></span><span class="macro">@expand(<span class="name">got macro</span>)</span>;<br/>
+<span class="in4"></span><span class="keyword">continue</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">got macro</span>)</span><br/>
+<span class="in1"></span><span class="var">do</span> {<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">special macro</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@expand(<span class="name">macro default</span>)</span>;<br/>
+<span class="in1"></span>} <span class="keyword">while</span> (<span class="num">false</span>);<br/>
+<span class="in1"></span><span class="var">begin</span> = <span class="var">ae</span>;<br/>
+<span class="macro">@end(<span class="name">got macro</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">macro default</span>)</span><br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"unknown macro @"</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">name</span> &lt;&lt; <span class="str">'('</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">")\n"</span>;<br/>
+<span class="in1"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">'@'</span>);<br/>
+<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
+<span class="in1"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">'('</span>);<br/>
+<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">arg</span>);<br/>
+<span class="in1"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">')'</span>);<br/>
+<span class="macro">@end(<span class="name">macro default</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">special macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">Set</span> <span class="var">macros</span> = {<br/>
+<span class="in2"></span><span class="str">"def"</span>, <span class="str">"end"</span>, <span class="str">"add"</span>, <span class="str">"expand"</span><br/>
+<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">macros</span>.<span class="fn">find</span>(<span class="var">name</span>) != <span class="var">macros</span>.<span class="fn">end</span>()<br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
+<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">special macro</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">cctype</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
@@ -727,7 +789,7 @@ Wenn dieser gefunden wird, dann wird er abgearbeitet
 <span class="in1"></span>)) {<br/>
 <span class="in2"></span>++<span class="var">w</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">find identifier end</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">find identifier end</span>)</span><br/>
 </code></div>
 <ul><li>
 Zeichen und Ziffern können einen Identifier bilden
@@ -1008,7 +1070,7 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeMacroHeader</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"macro"</span>);<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">'@'</span> &lt;&lt; <span class="var">name</span> &lt;&lt; <span class="str">"(&lt;span class=\"name\"&gt;"</span>;<br/>
@@ -1017,20 +1079,6 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 </code></div>
 <ul><li>
 Öffnet ein Makro mit einem bestimmetn Namen
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"d"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"def"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">d</span></code> steht für ein <code>@<span class="var">def</span></code>-Makro
 </li></ul>
 </div>
 <div><div>
@@ -1045,20 +1093,6 @@ Der Bezeichner <code><span class="str">d</span></code> steht für ein <code>@<sp
 </code></div>
 <ul><li>
 Der Bezeichner <code><span class="str">D</span></code> steht für ein <code>@<span class="var">globdef</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"a"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"add"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">a</span></code> steht für ein <code>@<span class="var">add</span></code>-Makro
 </li></ul>
 </div>
 <div><div>
@@ -1103,34 +1137,6 @@ Der Bezeichner <code><span class="str">r</span></code> steht für ein <code>@<sp
 </code></div>
 <ul><li>
 Der Bezeichner <code><span class="str">R</span></code> steht für ein <code>@<span class="var">globreplace</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"x"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"end"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">x</span></code> steht für ein <code>@<span class="var">end</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"e"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"expand"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">e</span></code> steht für ein <code>@<span class="var">expand</span></code>-Makro
 </li></ul>
 </div>
 <div><div>
@@ -1344,7 +1350,7 @@ Da sie mehrzeilig sein können
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process line</span>)</span> <br/>
+<span class="macro">@add(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">'*'</span> ||<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>

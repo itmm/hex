@@ -6,7 +6,7 @@
 D{includes}
 	#include <iostream>
 	#include <exception>
-x{includes}
+@end(includes)
 ```
 * Geschrieben wird nach `std::cerr`, das in `<iostream>` definiert ist
 * Nach dem Herausschreiben der Nachricht wird eine Exception generiert
@@ -21,7 +21,7 @@ D{define logging}
 				" FAILED\n"; \
 			throw std::exception(); \
 		}
-x{define logging}
+@end(define logging)
 ```
 * Loggen wird über ein Makro realisiert
 * Nur so kann die aktuelle Position im Source-Code ermittelt werden
@@ -41,7 +41,7 @@ A{define logging}
 				'\n'; \
 			throw std::exception(); \
 		}
-x{define logging}
+@end(define logging)
 ```
 * Zusätzlich kann eine Nachricht mitgegegben werden
 
