@@ -32,11 +32,11 @@ Aus <code><span class="var">memory</span></code> wird <code><span class="var">un
 <span class="in1"></span><span class="var">class</span> <span class="type">Input</span> {<br/>
 <span class="in2"></span><span class="var">private</span>:<br/>
 <span class="in3"></span><span class="var">std</span>::<span class="var">ifstream</span> <span class="var">file</span>;<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">private elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">private elements</span>)</span>;<br/>
 <span class="in2"></span><span class="var">public</span>:<br/>
 <span class="in3"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">additional elements</span>)</span>;<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">input methods</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">additional elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">input methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -59,7 +59,7 @@ Weiter Attribute und Methoden können später definiert werden
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>):<br/>
 <span class="in2"></span><span class="var">file</span> { <span class="var">name</span>.<span class="fn">c_str</span>() },<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">private input constr</span>)</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">private input constr</span>)</span><br/>
 <span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 <span class="in1"></span>{<br/>
 <span class="in1"></span>}<br/>
@@ -76,7 +76,7 @@ Später eingeführte Attribute können auch dann initialisiert werden
 <span class="macro">@add(<span class="name">input methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">getLine</span>(<span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>.<span class="fn">is_open</span>()) {<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">get line</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -90,7 +90,7 @@ Liest Zeile aus der offenen Datei
 <code>
 <span class="macro">@def(<span class="name">get line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">std</span>::<span class="fn">getline</span>(<span class="var">file</span>, <span class="var">line</span>)) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">line read</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">line read</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="var">file</span>.<span class="fn">close</span>();<br/>
@@ -119,9 +119,9 @@ Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
 <code>
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="var">class</span> <span class="type">Inputs</span> {<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">inputs attributes</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">inputs attributes</span>)</span>;<br/>
 <span class="in2"></span><span class="var">public</span>:<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">inputs methods</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">inputs methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -200,8 +200,8 @@ Liefert zuletzt benutzte Datei
 <span class="in2"></span><span class="var">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Input</span>&gt; <span class="var">i</span> {<br/>
 <span class="in3"></span><span class="var">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Input</span>&gt;(<span class="var">path</span>)<br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">init additional fields</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">push to pending</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">init additional fields</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">push to pending</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_input</span> = <span class="var">std</span>::<span class="fn">move</span>(<span class="var">i</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>
@@ -255,7 +255,7 @@ Erst wenn die letzte Datei fertig gelesen wurde, wird <code><span class="num">fa
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">_input</span>-&gt;<span class="fn">getLine</span>(<span class="var">line</span>)) {<br/>
 <span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in3"></span>}<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">get next input file</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">get next input file</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -294,7 +294,7 @@ Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
 <span class="in1"></span><span class="type">bool</span> <span class="fn">has</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">has checks</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">has checks</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">inputs methods</span>)</span><br/>

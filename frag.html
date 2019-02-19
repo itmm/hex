@@ -20,7 +20,7 @@ Die Infix-Traversierung dieses Graphen bildet die generierten
 <div><div>
 <code>
 <span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">define frag</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">define frag</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -39,7 +39,7 @@ Fragmente sind global sichtbare Strukturen
 <span class="in2"></span><span class="type">int</span> <span class="var">_last_line</span>;<br/>
 <span class="in1"></span><span class="var">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>;<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">entry methods</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">entry methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -147,7 +147,7 @@ Bytes können direkt hinzugefügt werden
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">can add</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">can add</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -218,14 +218,14 @@ Das Fragment legt die Einträge in einem Vektor ab
 <span class="in2"></span><span class="type">int</span> <span class="var">_multiples</span>;<br/>
 <span class="in1"></span><span class="var">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">frag methods</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>
 Die Einträge eines Fragments werden in einem Vektor gesammelt
 </li><li>
-Das Fragment zählt wie häufig es mit <code>@<span class="var">expand</span></code>, <code>@<span class="var">globexpand</span></code> und
+Das Fragment zählt wie häufig es mit <code>@<span class="var">put</span></code>, <code>@<span class="var">globexpand</span></code> und
   <code>@<span class="var">multiple</span></code>, <code>@<span class="var">globmult</span></code> aufgerufen wurde, um Struktur-Fehler zu
   erkennen
 </li></ul>
@@ -312,7 +312,7 @@ Ein Fragment ist leer, wenn es keine Einträge enthält
 <div><div>
 <code>
 <span class="macro">@globdef(<span class="name">perform unit-tests</span>)</span><br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">unit tests</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">unit tests</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">perform unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -497,11 +497,11 @@ Da es die notwendigen Methoden noch nicht gibt, wird die Methode
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">define cycle check</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">define cycle check</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">avoid frag cycles</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">add frag entry</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">avoid frag cycles</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">add frag entry</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -563,7 +563,7 @@ Ende eines konstanten Iterators auf den Einträgen
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
 <ul><li>
-Anzahl der <code>@<span class="var">expand</span></code> und <code>@<span class="var">globexpand</span></code> Aufrufe
+Anzahl der <code>@<span class="var">put</span></code> und <code>@<span class="var">globexpand</span></code> Aufrufe
 </li></ul>
 </div>
 <div><div>
@@ -575,7 +575,7 @@ Anzahl der <code>@<span class="var">expand</span></code> und <code>@<span class=
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
 <ul><li>
-Fügt <code>@<span class="var">expand</span></code> oder <code>@<span class="var">globexpand</span></code> hinzu
+Fügt <code>@<span class="var">put</span></code> oder <code>@<span class="var">globexpand</span></code> hinzu
 </li></ul>
 </div>
 <div><div>
@@ -620,7 +620,7 @@ Serialisiert Fragmente in einen <code><span class="var">std</span>::<span class=
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">iterate entries</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">iterate entries</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -657,7 +657,7 @@ Dann werden die Bytes des Eintrags ausgegeben
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">expected</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">serialize test frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">serialize test frag</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -756,8 +756,8 @@ Prüft ob das Hinzufügen eines Fragments zu einem Zykel führt
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">needle</span>);<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">haystack</span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check cycle frag</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check cycle entries</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check cycle frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check cycle entries</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define cycle check</span>)</span><br/>
@@ -846,7 +846,7 @@ Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
 <span class="in3"></span><span class="var">std</span>::<span class="var">map</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;;<br/>
 <span class="in2"></span><span class="type">Map</span> <span class="var">map</span>;<br/>
 <span class="in1"></span><span class="var">public</span>:<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">frag map methods</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">frag map methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>

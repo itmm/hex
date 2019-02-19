@@ -5,7 +5,7 @@
 ```
 D{write HTML file}
 	for (auto &cur : inputs) {
-		@expand(write cur HTML file);
+		@put(write cur HTML file);
 	}
 @end(write HTML file)
 ```
@@ -20,7 +20,7 @@ D{write HTML file}
 		".html"
 	};
 	std::ofstream out { outPath.c_str() };
-	@expand(write cur HTML file to out);
+	@put(write cur HTML file to out);
 	out.close();
 @end(write cur HTML file)
 ```
@@ -31,7 +31,7 @@ D{write HTML file}
 	std::ifstream in {
 		cur->name.c_str()
 	};
-	@expand(write from in to out);
+	@put(write from in to out);
 	in.close();
 @end(write cur HTML file to out)
 ```
@@ -43,7 +43,7 @@ A{global elements}
 		nothing,
 		inSlide,
 		afterSlide
-		@expand(html state enums)
+		@put(html state enums)
 	};
 @end(global elements)
 ```
@@ -56,7 +56,7 @@ A{global elements}
 ```
 A{global elements}
 	struct HtmlStatus {
-		@expand(html state elements)
+		@put(html state elements)
 	};
 @end(global elements)
 ```
@@ -95,7 +95,7 @@ A{includes}
 	std::string ident;
 	std::string line;
 	while (std::getline(in, line)) {
-		@expand(process line);
+		@put(process line);
 	}
 @end(write from in to out)
 ```
@@ -108,7 +108,7 @@ A{global elements}
 	bool in_code(
 		HtmlStatus *s
 	) {
-		@expand(check html special state);
+		@put(check html special state);
 		return false;
 	}
 @end(global elements)
@@ -119,7 +119,7 @@ A{global elements}
 ```
 @def(process line)
 	if (in_code(&status)) {
-		@expand(process code);
+		@put(process code);
 		continue;
 	}
 @end(process line)
@@ -130,13 +130,13 @@ A{global elements}
 ```
 @add(process line)
 	if (line == "") {
-		@expand(close specials);
+		@put(close specials);
 		switch (status.state) {
 			case HtmlState::afterSlide:
 			case HtmlState::nothing:
 				break;
 			default:
-				@expand(close slide);
+				@put(close slide);
 		}
 		continue;
 	}
@@ -159,7 +159,7 @@ A{global elements}
 ```
 @add(process line)
 	if (line[0] == '#') {
-		@expand(process header);
+		@put(process header);
 		status.state = HtmlState::inSlide;
 		continue;
 	}
@@ -196,7 +196,7 @@ A{global elements}
 @add(process header)
 	ASSERT(b != e);
 	std::string name {b, e};
-	@expand(close previous HTML page);
+	@put(close previous HTML page);
 	E{write header tag};
 	out << "<div class=\"slides\">\n";
 	out << "<div><div>\n";
@@ -214,7 +214,7 @@ A{global elements}
 		std::ostream &out, char ch
 	) {
 		switch (ch) {
-			@expand(escape special)
+			@put(escape special)
 			default:
 				out << ch;
 		}
@@ -269,7 +269,7 @@ A{global elements}
 @def(close previous HTML page)
 	switch (status.state) {
 		case HtmlState::nothing: {
-			@expand(write HTML header);
+			@put(write HTML header);
 			break;
 		}
 		case HtmlState::inSlide: {
@@ -290,7 +290,7 @@ A{global elements}
 	out << "<!doctype html>\n";
 	out << "<html lang=\"de\">\n";
 	out << "<head>\n";
-	@expand(write HTML header entries);
+	@put(write HTML header entries);
 	out << "</head>\n";
 	out << "<body>\n";
 @end(write HTML header)
@@ -337,7 +337,7 @@ A{global elements}
 ```
 @add(process line)
 	if (line == "```") {
-		@expand(open code page);
+		@put(open code page);
 		continue;
 	}
 @end(process line)
@@ -362,7 +362,7 @@ A{global elements}
 ```
 @def(process code)
 	if (line == "```") {
-		@expand(close code page);
+		@put(close code page);
 		continue;
 	}
 @end(process code)
@@ -405,12 +405,12 @@ A{global elements}
 
 ```
 A{global elements}
-	@expand(process code helper);
+	@put(process code helper);
 	void process_code(
 		std::ostream &out,
 		SI begin, SI end
 	) {
-		@expand(do code);
+		@put(do code);
 	}
 @end(global elements)
 ```
@@ -450,7 +450,7 @@ A{global elements}
 ```
 @add(do code)
 	for (; begin != end; ++begin) {
-		@expand(process code ch);
+		@put(process code ch);
 		writeOneEscaped(out, *begin);
 	}
 @end(do code)
@@ -466,7 +466,7 @@ A{global elements}
 		*begin == '\'' ||
 		*begin == '"'
 	) {
-		@expand(process string);
+		@put(process string);
 		continue;
 	}
 @end(process code ch)
@@ -532,7 +532,7 @@ A{global elements}
 				std::find(ab, end, ')');
 			if (ae != end) {
 				std::string arg {ab, ae};
-				@expand(got macro);
+				@put(got macro);
 				continue;
 			}
 		}
@@ -543,8 +543,8 @@ A{global elements}
 ```
 @def(got macro)
 	do {
-		@expand(special macro);
-		@expand(macro default);
+		@put(special macro);
+		@put(macro default);
 	} while (false);
 	begin = ae;
 @end(got macro)
@@ -565,7 +565,7 @@ A{global elements}
 ```
 @def(special macro)
 	static Set macros = {
-		"def", "end", "add", "expand"
+		"def", "end", "add", "put"
 	};
 	if (
 		macros.find(name) != macros.end()
@@ -588,9 +588,9 @@ A{includes}
 ```
 @add(process code ch)
 	auto w = begin;
-	@expand(find identifier end);
+	@put(find identifier end);
 	if (w != begin) {
-		@expand(process identifier);
+		@put(process identifier);
 		continue;
 	}
 @end(process code ch)
@@ -616,7 +616,7 @@ A{includes}
 	std::string ident {begin, w};
 	begin = w - 1;
 	if (w != end && *w == '{') {
-		@expand(do macro);
+		@put(do macro);
 	} else {
 		process_ident(
 			out, ident,
@@ -646,7 +646,7 @@ A{includes}
 
 	bool isKeyword(const std::string &s) {
 		static Set reserved {
-			@expand(keywords)
+			@put(keywords)
 		};
 		return
 			reserved.find(s) !=
@@ -669,7 +669,7 @@ A{includes}
 ```
 @add(process code helper)
 	bool isType(const std::string &s) {
-		@expand(is type);
+		@put(is type);
 		return false;
 	}
 @end(process code helper)
@@ -679,7 +679,7 @@ A{includes}
 ```
 @def(is type)
 	static Set reserved {
-		@expand(types)
+		@put(types)
 	};
 	if (reserved.find(s) !=
 		reserved.end()
@@ -744,7 +744,7 @@ A{includes}
 	) {
 		if (w == '(') {
 			span_str(out, "fn", ident);
-		@expand(special ident classes)
+		@put(special ident classes)
 		} else {
 			span_str(out, "var", ident);
 		}
@@ -778,7 +778,7 @@ A{includes}
 		begin = w;
 	} else {
 		std::string name {w + 1, q};
-		@expand(write macro);
+		@put(write macro);
 		begin = q;
 	}
 @end(do macro)
@@ -790,7 +790,7 @@ A{includes}
 ```
 @def(write macro)
 	if (ident == "i") {
-		@expand(write include);
+		@put(write include);
 	}
 @end(write macro)
 ```
@@ -1050,7 +1050,7 @@ A{includes}
 		line[0] == '*' ||
 		status.state == HtmlState::inNotes
 	) {
-		@expand(process note);
+		@put(process note);
 	}
 @end(process line)
 ```
@@ -1062,7 +1062,7 @@ A{global elements}
 		std::ostream &out,
 		SI begin, SI end
 	) {
-		@expand(process content line);
+		@put(process content line);
 	}
 @end(global elements)
 ```
@@ -1083,7 +1083,7 @@ A{global elements}
 ```
 @def(process note)
 	if (line[0] == '*') {
-		@expand(process note line);
+		@put(process note line);
 	} else {
 		process_content(
 			out, line.begin(), line.end()
@@ -1112,7 +1112,7 @@ A{global elements}
 	if (
 		status.state != HtmlState::inNotes
 	) {
-		@expand(switch into note mode);
+		@put(switch into note mode);
 	} else {
 		out << "</li><li>\n";
 	}
@@ -1141,7 +1141,7 @@ A{global elements}
 ```
 @def(process content line)
 	for(; begin != end; ++begin) {
-		@expand(special content line);
+		@put(special content line);
 		writeOneEscaped(out, *begin);
 	}
 	out << '\n';
@@ -1153,7 +1153,7 @@ A{global elements}
 ```
 @def(special content line)
 	if (*begin == '`') {
-		@expand(inline code);
+		@put(inline code);
 	}
 @end(special content line)
 ```
@@ -1184,7 +1184,7 @@ A{global elements}
 		(begin + 1) != end &&
 		*(begin + 1) == '*'
 	) {
-		@expand(bold block);
+		@put(bold block);
 	}
 @end(special content line)
 ```
@@ -1209,7 +1209,7 @@ A{global elements}
 		w != end && (w + 1 ) != end &&
 		*w == '*' && *(w + 1) == '*'
 	) {
-		@expand(do bold);
+		@put(do bold);
 		continue;
 	}
 @end(bold block)

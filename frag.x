@@ -5,7 +5,7 @@
 
 ```
 A{global elements}
-	@expand(define frag);
+	@put(define frag);
 @end(global elements)
 ```
 * Fragmente sind global sichtbare Strukturen
@@ -21,7 +21,7 @@ A{global elements}
 		int _last_line;
 	public:
 		const Frag *frag;
-		@expand(entry methods);
+		@put(entry methods);
 	};
 @end(define frag)
 ```
@@ -104,7 +104,7 @@ A{global elements}
 		const std::string &file,
 		int line
 	) {
-		@expand(can add);
+		@put(can add);
 		return false;
 	}
 @end(entry methods)
@@ -160,12 +160,12 @@ A{includes}
 		int _multiples;
 	public:
 		const std::string name;
-		@expand(frag methods);
+		@put(frag methods);
 	};
 @end(define frag)
 ```
 * Die Einträge eines Fragments werden in einem Vektor gesammelt
-* Das Fragment zählt wie häufig es mit `@expand`, `@globexpand` und
+* Das Fragment zählt wie häufig es mit `@put`, `@globexpand` und
   `@multiple`, `@globmult` aufgerufen wurde, um Struktur-Fehler zu
   erkennen
 
@@ -226,7 +226,7 @@ A{includes}
 
 ```
 D{perform unit-tests}
-	@expand(unit tests);
+	@put(unit tests);
 @end(perform unit-tests)
 ```
 * Fragmente haben einen eigenes Unit-Test Fragment
@@ -360,11 +360,11 @@ D{perform unit-tests}
 
 ```
 @add(define frag)
-	@expand(define cycle check)
+	@put(define cycle check)
 	Frag &Frag::add(Frag *child) {
 		ASSERT(child);
-		@expand(avoid frag cycles);
-		@expand(add frag entry);
+		@put(avoid frag cycles);
+		@put(add frag entry);
 		return *this;
 	}
 @end(define frag)
@@ -410,7 +410,7 @@ D{perform unit-tests}
 	}
 @end(frag methods)
 ```
-* Anzahl der `@expand` und `@globexpand` Aufrufe
+* Anzahl der `@put` und `@globexpand` Aufrufe
 
 ```
 @add(frag methods)
@@ -419,7 +419,7 @@ D{perform unit-tests}
 	}
 @end(frag methods)
 ```
-* Fügt `@expand` oder `@globexpand` hinzu
+* Fügt `@put` oder `@globexpand` hinzu
 
 ```
 @add(frag methods)
@@ -449,7 +449,7 @@ D{perform unit-tests}
 		std::ostream &out,
 		bool writeLineMacros
 	) {
-		@expand(iterate entries);
+		@put(iterate entries);
 	}
 @end(define frag)
 ```
@@ -478,7 +478,7 @@ D{perform unit-tests}
 		const Frag &frag,
 		const std::string &expected
 	) {
-		@expand(serialize test frag);
+		@put(serialize test frag);
 	}
 @end(define frag)
 ```
@@ -551,8 +551,8 @@ A{includes}
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
-		@expand(check cycle frag);
-		@expand(check cycle entries);
+		@put(check cycle frag);
+		@put(check cycle entries);
 		return false;
 	}
 @end(define cycle check)
@@ -616,7 +616,7 @@ A{includes}
 			std::map<std::string, Frag>;
 		Map map;
 	public:
-		@expand(frag map methods);
+		@put(frag map methods);
 	};
 @end(define frag)
 ```

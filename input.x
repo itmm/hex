@@ -16,11 +16,11 @@ A{global elements}
 	class Input {
 		private:
 			std::ifstream file;
-			@expand(private elements);
+			@put(private elements);
 		public:
 			const std::string name;
-			@expand(additional elements);
-			@expand(input methods);
+			@put(additional elements);
+			@put(input methods);
 	};
 @end(global elements)
 ```
@@ -37,7 +37,7 @@ A{global elements}
 		const std::string &name
 	):
 		file { name.c_str() },
-		@expand(private input constr)
+		@put(private input constr)
 		name { name }
 	{
 	}
@@ -50,7 +50,7 @@ A{global elements}
 @add(input methods)
 	bool getLine(std::string &line) {
 		if (file.is_open()) {
-			@expand(get line);
+			@put(get line);
 		}
 		return false;
 	}
@@ -61,7 +61,7 @@ A{global elements}
 ```
 @def(get line)
 	if (std::getline(file, line)) {
-		@expand(line read);
+		@put(line read);
 		return true;
 	} else {
 		file.close();
@@ -84,9 +84,9 @@ A{global elements}
 ```
 A{global elements}
 	class Inputs {
-			@expand(inputs attributes);
+			@put(inputs attributes);
 		public:
-			@expand(inputs methods);
+			@put(inputs methods);
 	};
 @end(global elements)
 ```
@@ -144,8 +144,8 @@ A{global elements}
 		std::unique_ptr<Input> i {
 			std::make_unique<Input>(path)
 		};
-		@expand(init additional fields);
-		@expand(push to pending);
+		@put(init additional fields);
+		@put(push to pending);
 		_input = std::move(i);
 	}
 @end(inputs methods)
@@ -181,7 +181,7 @@ A{global elements}
 			if (_input->getLine(line)) {
 				return true;
 			}
-			@expand(get next input file);
+			@put(get next input file);
 		}
 		return false;
 	}
@@ -211,7 +211,7 @@ A{global elements}
 	bool has(
 		const std::string &name
 	) const {
-		@expand(has checks);
+		@put(has checks);
 		return false;
 	}
 @end(inputs methods)

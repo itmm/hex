@@ -87,12 +87,12 @@ Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 <div><div>
 <code>
 <span class="macro">@globdef(<span class="name">file: hx.cpp</span>)</span><br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> **<span class="var">argv</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">main body</span>)</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">file: hx.cpp</span>)</span><br/>
 </code></div>
@@ -112,11 +112,11 @@ Und der Aufrufname mit Argumenten als Array in <code><span class="var">argv</spa
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">main body</span>)</span><br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">perform unit-tests</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">process arguments</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">read source file</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">serialize fragments</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">write HTML file</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">perform unit-tests</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">process arguments</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">read source file</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">serialize fragments</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">write HTML file</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">main body</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -134,13 +134,13 @@ Zum Schluss wird die HTML-Präsentation der Seiten in einem zweiten
 </li></ul>
 </div>
 </div>
-<h2>Was macht `@expand`?</h2>
+<h2>Was macht `@put`?</h2>
 <div class="slides">
 <div><div>
-<h2>Was macht `@expand`?</h2>
+<h2>Was macht `@put`?</h2>
 </div>
 <ul><li>
-<code>@<span class="var">expand</span></code>-Blöcke beschreiben Fragment-Aufrufe
+<code>@<span class="var">put</span></code>-Blöcke beschreiben Fragment-Aufrufe
 </li><li>
 Der Wert des Fragments mit dem Namen in Klammern wird anstelle des
   Aufrufs im endgültigen Programm gesetzt
@@ -151,7 +151,7 @@ Sie können mit <code>@<span class="var">def</span></code>-<code>@<span class="v
 </li><li>
 Oder mit <code>@<span class="var">add</span></code>-<code>@<span class="var">end</span></code> erweitert werden
 </li><li>
-Ein <code>@<span class="var">expand</span></code> darf nur einmal aufgelöst werden
+Ein <code>@<span class="var">put</span></code> darf nur einmal aufgelöst werden
 </li><li>
 Für mehrfache Auflösungen muss <code>@<span class="var">mulitple</span></code> verwendet werden
 </li></ul>
@@ -159,8 +159,8 @@ Für mehrfache Auflösungen muss <code>@<span class="var">mulitple</span></code>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">includes</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">define logging</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">includes</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">define logging</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -304,7 +304,7 @@ Und alle bereits gelesenen Dateien
 <span class="macro">@def(<span class="name">process arguments</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> { <span class="num">false</span> };<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> { <span class="num">1</span> }; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process argument</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process argument</span>)</span>;<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="num">false</span>,<br/>
 <span class="in3"></span><span class="str">"unknown argument ["</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">argv</span>[<span class="var">i</span>] &lt;&lt; <span class="str">']'</span><br/>
@@ -349,7 +349,7 @@ Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<br/>
 <span class="in2"></span><span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()<br/>
 <span class="in1"></span>) == <span class="var">prefix</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">extract block limit</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">extract block limit</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">process argument</span>)</span><br/>
 </code></div>
@@ -421,10 +421,10 @@ In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">read source file</span>)</span> {<br/>
-<span class="in1"></span><span class="macro">@expand(<span class="name">additional read vars</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">additional read vars</span>)</span>;<br/>
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">line</span>;<br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">inputs</span>.<span class="fn">getLine</span>(<span class="var">line</span>)) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process line</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">read source file</span>)</span><br/>
 </code></div>
@@ -453,7 +453,7 @@ Daher definiert sie eine Abkürzung, damit die Folien nicht überlaufen
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process chars</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process chars</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -465,7 +465,7 @@ Fügt ein Range an den Inhalt von <code><span class="var">frag</span></code> an
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">char</span> <span class="var">ch</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process char</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process char</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -481,7 +481,7 @@ Fügt ein Zeichen an den Inhalt von <code><span class="var">frag</span></code> a
 <span class="in2"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">line</span>.<span class="fn">cbegin</span>();<br/>
 <span class="in2"></span><span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process special lines</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process special lines</span>)</span>;<br/>
 <span class="in2"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">i</span>, <span class="var">i</span> + <span class="num">1</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>);<br/>
@@ -500,7 +500,7 @@ Dabei kann <code><span class="var">hx</span></code> auch mit einer leeren Eingab
 <span class="in1"></span><span class="type">bool</span> <span class="fn">is_macro_start</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">is macro start</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">is macro start</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
@@ -513,7 +513,7 @@ Diese Funktion gibt an, ob an der Stelle <code><span class="var">i</span></code>
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="var">SI</span> <span class="fn">find_macro_end</span>(<span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">find macro end</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">find macro end</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">i</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
@@ -529,7 +529,7 @@ Liefert das Ende des Makros
 <span class="in2"></span><span class="type">auto</span> <span class="var">j</span> = <span class="fn">find_macro_end</span>(<span class="var">i</span>, <span class="var">end</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span> != <span class="var">end</span>) {<br/>
 <span class="in3"></span><span class="var">do</span> {<br/>
-<span class="in4"></span><span class="macro">@expand(<span class="name">process macro</span>)</span>;<br/>
+<span class="in4"></span><span class="macro">@put(<span class="name">process macro</span>)</span>;<br/>
 <span class="in3"></span>} <span class="keyword">while</span> (<span class="num">false</span>); <br/>
 <span class="in3"></span><span class="var">i</span> += (<span class="var">j</span> - <span class="var">i</span>);<br/>
 <span class="in3"></span><span class="keyword">continue</span>;<br/>
@@ -643,7 +643,7 @@ Die Zeichen zwischen den Mengen-Klammern sind der Name des Makros
 <code>
 <span class="macro">@add(<span class="name">is macro start</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">may start block</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">may start block</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">is macro start</span>)</span><br/>
 </code></div>
@@ -662,7 +662,7 @@ Prüft ob ein Makro außerhalb eines Fragments gültig ist
 <span class="in3"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span><br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> &amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">start block</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">start block</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">may start block</span>)</span><br/>
 </code></div>
@@ -695,7 +695,7 @@ Und liefert <code><span class="num">true</span></code> zurück
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check for double def</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check for double def</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">name</span>];<br/>
 <span class="in2"></span>}<br/>
@@ -738,7 +738,7 @@ Bricht aber die Abarbeitung nicht ab
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { &amp;<span class="var">root</span> };<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check for add w/o def</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check for add w/o def</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process macro</span>)</span><br/>
@@ -939,7 +939,7 @@ Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragme
 <span class="macro">@end(<span class="name">check for prev expands</span>)</span><br/>
 </code></div>
 <ul><li>
-Es ist ein Fehler, wenn das Fragment bereits normal <code>@<span class="var">expand</span></code>iert
+Es ist ein Fehler, wenn das Fragment bereits mit <code>@<span class="var">put</span></code> eingebunden
   wurde
 </li></ul>
 </div>
@@ -950,7 +950,7 @@ Es ist ein Fehler, wenn das Fragment bereits normal <code>@<span class="var">exp
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
 <span class="in3"></span><span class="str">"private not in frag"</span><br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process private frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process private frag</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process macro</span>)</span><br/>
@@ -1024,7 +1024,7 @@ Und dem alten Bezeichner
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
 <span class="in3"></span><span class="str">"magic not in frag"</span><br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">process magic frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process magic frag</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process macro</span>)</span><br/>
@@ -1073,7 +1073,7 @@ Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 <code>
 <span class="macro">@add(<span class="name">is macro start</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check valid names</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check valid names</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">is macro start</span>)</span><br/>
 </code></div>
@@ -1140,7 +1140,7 @@ Sie dienen der Formatierung und können bei der Code-Generierung
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ne</span> != <span class="var">end</span> &amp;&amp; <span class="var">ne</span> != <span class="var">nb</span>) {<br/>
 <span class="in3"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">nb</span>, <span class="var">ne</span>};<br/>
-<span class="in3"></span><span class="macro">@expand(<span class="name">macro argument</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">macro argument</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process special lines</span>)</span><br/>
@@ -1161,7 +1161,7 @@ Danach kommt der Name des Makros
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">ae</span> != <span class="var">end</span>) {<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">arg</span> {<span class="var">ab</span>, <span class="var">ae</span>};<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">macro found</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">macro found</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">macro argument</span>)</span><br/>
@@ -1175,8 +1175,8 @@ Argument des Makros wird von Klammern umschlossen
 <span class="macro">@def(<span class="name">macro found</span>)</span><br/>
 <span class="in1"></span><span class="var">i</span> = <span class="var">ae</span>;<br/>
 <span class="in1"></span><span class="var">do</span> {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">do macro</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">default expansion</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do macro</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">default expansion</span>)</span>;<br/>
 <span class="in1"></span>} <span class="keyword">while</span> (<span class="num">false</span>);<br/>
 <span class="macro">@end(<span class="name">macro found</span>)</span><br/>
 </code></div>
@@ -1216,7 +1216,7 @@ Es wird einfach nur das Argument ausgegeben
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check for double def2</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check for double def2</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="var">frag</span> = &amp;(*<span class="var">fm</span>)[<span class="var">arg</span>];<br/>
 <span class="in2"></span>}<br/>
@@ -1258,7 +1258,7 @@ Bricht aber die Abarbeitung nicht ab
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
 <span class="in3"></span><span class="str">"end not in frag"</span><br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">frag names must match</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">frag names must match</span>)</span>;<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1292,7 +1292,7 @@ Wenn der öffnende und schließende Name nicht passt, wird die
 <span class="in2"></span>};<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { <span class="var">fm</span> };<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">arg</span>);<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">check for add w/o def2</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check for add w/o def2</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do macro</span>)</span><br/>
@@ -1323,7 +1323,7 @@ Das Fragment muss bereits vorhanden und nicht leer sein
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">do macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"expand"</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"put"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
 <span class="in3"></span><span class="str">"expand not in frag"</span><br/>
 <span class="in2"></span>);<br/>
@@ -1338,7 +1338,7 @@ Das Fragment muss bereits vorhanden und nicht leer sein
 <span class="macro">@end(<span class="name">do macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einem <code>@<span class="var">expand</span></code> wird das Fragment gesucht und eingebunden
+Bei einem <code>@<span class="var">put</span></code> wird das Fragment gesucht und eingebunden
 </li><li>
 Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
 </li></ul>
@@ -1392,7 +1392,7 @@ Auch alle lokalen Fragmente bearbeiten
 <code>
 <span class="macro">@def(<span class="name">serialize frag</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">isFile</span>()) {<br/>
-<span class="in2"></span><span class="macro">@expand(<span class="name">write in file</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">write in file</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 </code></div>

@@ -33,12 +33,12 @@
 
 ```
 D{file: hx.cpp}
-	@expand(global elements)
+	@put(global elements)
 	int main(
 		int argc,
 		const char **argv
 	) {
-		@expand(main body)
+		@put(main body)
 	}
 @end(file: hx.cpp)
 ```
@@ -51,11 +51,11 @@ D{file: hx.cpp}
 
 ```
 @def(main body)
-	@expand(perform unit-tests);
-	@expand(process arguments);
-	@expand(read source file);
-	@expand(serialize fragments);
-	@expand(write HTML file);
+	@put(perform unit-tests);
+	@put(process arguments);
+	@put(read source file);
+	@put(serialize fragments);
+	@put(write HTML file);
 @end(main body)
 ```
 * Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
@@ -66,20 +66,20 @@ D{file: hx.cpp}
 * Zum Schluss wird die HTML-Präsentation der Seiten in einem zweiten
   Durchgang herausgeschrieben
 
-## Was macht `@expand`?
-* `@expand`-Blöcke beschreiben Fragment-Aufrufe
+## Was macht `@put`?
+* `@put`-Blöcke beschreiben Fragment-Aufrufe
 * Der Wert des Fragments mit dem Namen in Klammern wird anstelle des
   Aufrufs im endgültigen Programm gesetzt
 * Diese Fragmente bilden ein zentrales Element von `hx`
 * Sie können mit `@def`-`@end`-Sequenzen definiert werden
 * Oder mit `@add`-`@end` erweitert werden
-* Ein `@expand` darf nur einmal aufgelöst werden
+* Ein `@put` darf nur einmal aufgelöst werden
 * Für mehrfache Auflösungen muss `@mulitple` verwendet werden
 
 ```
 @def(global elements)
-	@expand(includes);
-	@expand(define logging);
+	@put(includes);
+	@put(define logging);
 @end(global elements)
 ```
 * System-Dateien werden vor der Definition von Strukturen und Funktionen
@@ -160,7 +160,7 @@ i{input.x}
 @def(process arguments)
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
-		@expand(process argument);
+		@put(process argument);
 		ASSERT_MSG(false,
 			"unknown argument [" <<
 			argv[i] << ']'
@@ -198,7 +198,7 @@ i{input.x}
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
-		@expand(extract block limit);
+		@put(extract block limit);
 	}
 } @end(process argument)
 ```
@@ -247,10 +247,10 @@ i{input.x}
 
 ```
 @def(read source file) {
-	@expand(additional read vars);
+	@put(additional read vars);
 	std::string line;
 	while (inputs.getLine(line)) {
-		@expand(process line);
+		@put(process line);
 	}
 } @end(read source file)
 ```
@@ -271,7 +271,7 @@ i{input.x}
 	void process_chars(
 		Frag *frag, SI i, SI e
 	) {
-		@expand(process chars);
+		@put(process chars);
 	}
 @end(global elements)
 ```
@@ -280,7 +280,7 @@ i{input.x}
 ```
 @add(global elements)
 	void process_char(Frag *frag, char ch) {
-		@expand(process char);
+		@put(process char);
 	}
 @end(global elements)
 ```
@@ -293,7 +293,7 @@ i{input.x}
 		auto i = line.cbegin();
 		i != end; ++i
 	) {
-		@expand(process special lines);
+		@put(process special lines);
 		process_chars(frag, i, i + 1);
 	}
 	process_char(frag, '\n');
@@ -308,7 +308,7 @@ i{input.x}
 	bool is_macro_start(
 		const Frag *frag, SI begin, SI end
 	) {
-		@expand(is macro start);
+		@put(is macro start);
 		return false;
 	}
 @end(global elements)
@@ -318,7 +318,7 @@ i{input.x}
 ```
 @add(global elements)
 	SI find_macro_end(SI i, SI e) {
-		@expand(find macro end);
+		@put(find macro end);
 		return i;
 	}
 @end(global elements)
@@ -331,7 +331,7 @@ i{input.x}
 		auto j = find_macro_end(i, end);
 		if (j != end) {
 			do {
-				@expand(process macro);
+				@put(process macro);
 			} while (false); 
 			i += (j - i);
 			continue;
@@ -417,7 +417,7 @@ i{input.x}
 ```
 @add(is macro start)
 	if (! frag) {
-		@expand(may start block);
+		@put(may start block);
 	}
 @end(is macro start)
 ```
@@ -433,7 +433,7 @@ i{input.x}
 			std::string::npos
 	};
 	if (found && blockLimit != 0) {
-		@expand(start block);
+		@put(start block);
 	}
 @end(may start block)
 ```
@@ -457,7 +457,7 @@ i{input.x}
 	if (openCh == 'D') {
 		ASSERT_MSG(! frag, "def in frag");
 		FragMap *fm { frags };
-		@expand(check for double def);
+		@put(check for double def);
 		if (! frag) {
 			frag = &root[name];
 		}
@@ -490,7 +490,7 @@ i{input.x}
 		FragMap *fm { frags };
 		FragMap *ins { &root };
 		frag = fm->find(name);
-		@expand(check for add w/o def);
+		@put(check for add w/o def);
 		break;
 	}
 @end(process macro)
@@ -657,7 +657,7 @@ i{input.x}
 	}
 @end(check for prev expands)
 ```
-* Es ist ein Fehler, wenn das Fragment bereits normal `@expand`iert
+* Es ist ein Fehler, wenn das Fragment bereits mit `@put` eingebunden
   wurde
 
 ```
@@ -666,7 +666,7 @@ i{input.x}
 		ASSERT_MSG(frag,
 			"private not in frag"
 		);
-		@expand(process private frag);
+		@put(process private frag);
 		break;
 	}
 @end(process macro)
@@ -721,7 +721,7 @@ i{input.x}
 		ASSERT_MSG(frag,
 			"magic not in frag"
 		);
-		@expand(process magic frag);
+		@put(process magic frag);
 		break;
 	}
 @end(process macro)
@@ -759,7 +759,7 @@ i{input.x}
 ```
 @add(is macro start) {
 	if (frag) {
-		@expand(check valid names);
+		@put(check valid names);
 	}
 } @end(is macro start)
 ```
@@ -814,7 +814,7 @@ i{input.x}
 		}
 		if (ne != end && ne != nb) {
 			std::string name {nb, ne};
-			@expand(macro argument);
+			@put(macro argument);
 		}
 	}
 @end(process special lines)
@@ -831,7 +831,7 @@ i{input.x}
 	}
 	if (ae != end) {
 		std::string arg {ab, ae};
-		@expand(macro found);
+		@put(macro found);
 		continue;
 	}
 @end(macro argument)
@@ -842,8 +842,8 @@ i{input.x}
 @def(macro found)
 	i = ae;
 	do {
-		@expand(do macro);
-		@expand(default expansion);
+		@put(do macro);
+		@put(default expansion);
 	} while (false);
 @end(macro found)
 ```
@@ -876,7 +876,7 @@ i{input.x}
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
-		@expand(check for double def2);
+		@put(check for double def2);
 		if (! frag) {
 			frag = &(*fm)[arg];
 		}
@@ -908,7 +908,7 @@ i{input.x}
 		ASSERT_MSG(frag,
 			"end not in frag"
 		);
-		@expand(frag names must match);
+		@put(frag names must match);
 		frag = nullptr;
 		break;
 	}
@@ -936,7 +936,7 @@ i{input.x}
 		};
 		FragMap *ins { fm };
 		frag = fm->find(arg);
-		@expand(check for add w/o def2);
+		@put(check for add w/o def2);
 		break;
 	}
 @end(do macro)
@@ -960,7 +960,7 @@ i{input.x}
 
 ```
 @add(do macro)
-	if (name == "expand") {
+	if (name == "put") {
 		ASSERT_MSG(frag,
 			"expand not in frag"
 		);
@@ -974,7 +974,7 @@ i{input.x}
 	}
 @end(do macro)
 ```
-* Bei einem `@expand` wird das Fragment gesucht und eingebunden
+* Bei einem `@put` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
 
 # Fragmente serialisieren
@@ -1011,7 +1011,7 @@ i{input.x}
 ```
 @def(serialize frag) {
 	if (frag->isFile()) {
-		@expand(write in file);
+		@put(write in file);
 	}
 } @end(serialize frag)
 ```

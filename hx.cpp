@@ -828,7 +828,7 @@
 	do {
 		
 	static Set macros = {
-		"def", "end", "add", "expand"
+		"def", "end", "add", "put"
 	};
 	if (
 		macros.find(name) != macros.end()
@@ -1469,7 +1469,7 @@
 		break;
 	}
 
-	if (name == "expand") {
+	if (name == "put") {
 		ASSERT_MSG(frag,
 			"expand not in frag"
 		);
