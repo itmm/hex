@@ -426,7 +426,7 @@
 ```
 @def(may start block)
 	static const std::string valids {
-		"ADrR"
+		"ArR"
 	};
 	bool found {
 		valids.find(*begin) !=
@@ -451,65 +451,6 @@
 ```
 * Reduziert die Anzahl der noch zu verarbeitenden Folien
 * Und liefert `true` zurück
-
-```
-@add(process macro)
-	if (openCh == 'D') {
-		ASSERT_MSG(! frag, "def in frag");
-		FragMap *fm { frags };
-		@put(check for double def);
-		if (! frag) {
-			frag = &root[name];
-		}
-		break;
-	}
-@end(process macro)
-```
-* Erzeugt ein neues Fragment im globalen Namensraum
-* Das Fragment darf nicht mehrfach definiert werden
-
-```
-@def(check for double def)
-	frag = fm->find(name);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] already defined\n";
-	}
-@end(check for double def)
-```
-* Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
-* Es muss geprüft werden, ob es schon Inhalt hat
-* Das wäre dann eine Fehlermeldung wert
-* Bricht aber die Abarbeitung nicht ab
-
-```
-@add(process macro)
-	if (openCh == 'A') {
-		ASSERT_MSG(! frag, "add in frag");
-		FragMap *fm { frags };
-		FragMap *ins { &root };
-		frag = fm->find(name);
-		@put(check for add w/o def);
-		break;
-	}
-@end(process macro)
-```
-* Erweitert ein global definiertes Fragment
-
-```
-@def(check for add w/o def)
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] not defined\n";
-		frag = &fm->get(
-			name, *ins
-		);
-	}
-@end(check for add w/o def)
-```
-* Das Fragment muss bereits vorhanden und nicht leer sein
 
 ```
 @add(process macro)
@@ -840,7 +781,7 @@
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
-		@mul(check for double def2);
+		@mul(check for double def);
 		if (! frag) {
 			frag = &(*fm)[arg];
 		}
@@ -852,14 +793,14 @@
 * Das Fragment darf nicht mehrfach definiert werden
 
 ```
-@def(check for double def2)
+@def(check for double def)
 	frag = fm->find(arg);
 	if (isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
 			arg <<
 			"] already defined\n";
 	}
-@end(check for double def2)
+@end(check for double def)
 ```
 * Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
 * Es muss geprüft werden, ob es schon Inhalt hat
@@ -900,7 +841,7 @@
 		};
 		FragMap *ins { fm };
 		frag = fm->find(arg);
-		@put(check for add w/o def2);
+		@mul(check for add w/o def);
 		break;
 	}
 @end(do macro)
@@ -909,7 +850,7 @@
 * Weitere Bytes können zu diesem Fragment hinzugefügt werden
 
 ```
-@def(check for add w/o def2)
+@def(check for add w/o def)
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
 			arg <<
@@ -918,7 +859,7 @@
 			arg, *ins
 		);
 	}
-@end(check for add w/o def2)
+@end(check for add w/o def)
 ```
 * Das Fragment muss bereits vorhanden und nicht leer sein
 
@@ -982,7 +923,7 @@
 	if (name == "Def") {
 		ASSERT_MSG(! frag, "Def in frag");
 		FragMap *fm { frags };
-		@mul(check for double def2);
+		@mul(check for double def);
 		if (! frag) {
 			frag = &root[arg];
 		}
@@ -992,6 +933,20 @@
 ```
 * Erzeugt ein neues Fragment im globalen Namensraum
 * Das Fragment darf nicht mehrfach definiert werden
+
+```
+@add(do macro)
+	if (name == "Add") {
+		ASSERT_MSG(! frag, "Add in frag");
+		FragMap *fm { frags };
+		FragMap *ins { &root };
+		frag = fm->find(arg);
+		@mul(check for add w/o def);
+		break;
+	}
+@end(do macro)
+```
+* Erweitert ein global definiertes Fragment
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien

@@ -31,7 +31,7 @@
 * Datei und Zeile des Tests wird ausgegeben
 
 ```
-A{define logging}
+@Add(define logging)
 	#define ASSERT_MSG(COND, MSG) \
 		if (! (COND)) { \
 			std::cerr << __FILE__ << \

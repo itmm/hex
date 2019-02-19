@@ -560,7 +560,7 @@
 	if (! frag) {
 		
 	static const std::string valids {
-		"ADrR"
+		"ArR"
 	};
 	bool found {
 		valids.find(*begin) !=
@@ -1139,41 +1139,6 @@
 	i += 2;
 	std::string name {i, j};
 
-	if (openCh == 'D') {
-		ASSERT_MSG(! frag, "def in frag");
-		FragMap *fm { frags };
-		
-	frag = fm->find(name);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] already defined\n";
-	}
-;
-		if (! frag) {
-			frag = &root[name];
-		}
-		break;
-	}
-
-	if (openCh == 'A') {
-		ASSERT_MSG(! frag, "add in frag");
-		FragMap *fm { frags };
-		FragMap *ins { &root };
-		frag = fm->find(name);
-		
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			name <<
-			"] not defined\n";
-		frag = &fm->get(
-			name, *ins
-		);
-	}
-;
-		break;
-	}
-
 	if (openCh == 'r') {
 		ASSERT_MSG(! frag,
 			"replace in frag"
@@ -1457,6 +1422,24 @@
 		if (! frag) {
 			frag = &root[arg];
 		}
+		break;
+	}
+
+	if (name == "Add") {
+		ASSERT_MSG(! frag, "Add in frag");
+		FragMap *fm { frags };
+		FragMap *ins { &root };
+		frag = fm->find(arg);
+		
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			arg <<
+			"] not defined\n";
+		frag = &fm->get(
+			arg, *ins
+		);
+	}
+;
 		break;
 	}
 ;

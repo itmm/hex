@@ -62,7 +62,7 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">enum</span> <span class="var">class</span> <span class="type">HtmlState</span> {<br/>
 <span class="in2"></span><span class="var">nothing</span>,<br/>
 <span class="in2"></span><span class="var">inSlide</span>,<br/>
@@ -84,7 +84,7 @@ Oder ob gerade keine Folie offen ist
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">struct</span> <span class="type">HtmlStatus</span> {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">html state elements</span>)</span><br/>
 <span class="in1"></span>};<br/>
@@ -109,7 +109,7 @@ Der aktuelle Zustand wird im Status abgelegt
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="var">inline</span> <span class="type">HtmlStatus</span>::<span class="fn">HtmlStatus</span>():<br/>
 <span class="in2"></span><span class="var">state</span> {<br/>
 <span class="in3"></span><span class="type">HtmlState</span>::<span class="var">nothing</span><br/>
@@ -123,7 +123,7 @@ Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">string</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -152,7 +152,7 @@ Bis das Datei-Ende erreicht ist
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">in_code</span>(<br/>
 <span class="in2"></span><span class="type">HtmlStatus</span> *<span class="var">s</span><br/>
 <span class="in1"></span>) {<br/>
@@ -292,7 +292,7 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>} <br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span> <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeOneEscaped</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="type">char</span> <span class="var">ch</span><br/>
 <span class="in1"></span>) {<br/>
@@ -313,7 +313,7 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">str</span><br/>
@@ -546,7 +546,7 @@ Am Ende der Datei schließt die Funktion
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
@@ -787,7 +787,7 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">cctype</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -859,7 +859,7 @@ Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">set</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -1248,7 +1248,7 @@ Eine Notiz beginnt entweder mit <code>*</code> oder folgt einer solchen Zeile
 </div>
 <div><div>
 <code>
-<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>

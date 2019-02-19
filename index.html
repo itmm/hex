@@ -655,7 +655,7 @@ Prüft ob ein Makro außerhalb eines Fragments gültig ist
 <code>
 <span class="macro">@def(<span class="name">may start block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">valids</span> {<br/>
-<span class="in2"></span><span class="str">"ADrR"</span><br/>
+<span class="in2"></span><span class="str">"ArR"</span><br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">found</span> {<br/>
 <span class="in2"></span><span class="var">valids</span>.<span class="fn">find</span>(*<span class="var">begin</span>) !=<br/>
@@ -687,81 +687,6 @@ Das Makro wird nur verarbeitet, wenn die Anzahl der zu verarbeitenden
 Reduziert die Anzahl der noch zu verarbeitenden Folien
 </li><li>
 Und liefert <code><span class="num">true</span></code> zurück
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'D'</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check for double def</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
-<span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">name</span>];<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">break</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Erzeugt ein neues Fragment im globalen Namensraum
-</li><li>
-Das Fragment darf nicht mehrfach definiert werden
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">check for double def</span>)</span><br/>
-<span class="in1"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="var">name</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="str">"] already defined\n"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">check for double def</span>)</span><br/>
-</code></div>
-<ul><li>
-Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
-</li><li>
-Es muss geprüft werden, ob es schon Inhalt hat
-</li><li>
-Das wäre dann eine Fehlermeldung wert
-</li><li>
-Bricht aber die Abarbeitung nicht ab
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'A'</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
-<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { &amp;<span class="var">root</span> };<br/>
-<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check for add w/o def</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">break</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Erweitert ein global definiertes Fragment
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">check for add w/o def</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="var">name</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="str">"] not defined\n"</span>;<br/>
-<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">fm</span>-&gt;<span class="fn">get</span>(<br/>
-<span class="in3"></span><span class="var">name</span>, *<span class="var">ins</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">check for add w/o def</span>)</span><br/>
-</code></div>
-<ul><li>
-Das Fragment muss bereits vorhanden und nicht leer sein
 </li></ul>
 </div>
 <div><div>
@@ -1173,7 +1098,7 @@ Es wird einfach nur das Argument ausgegeben
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">check for double def2</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for double def</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="var">frag</span> = &amp;(*<span class="var">fm</span>)[<span class="var">arg</span>];<br/>
 <span class="in2"></span>}<br/>
@@ -1189,14 +1114,14 @@ Das Fragment darf nicht mehrfach definiert werden
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">check for double def2</span>)</span><br/>
+<span class="macro">@def(<span class="name">check for double def</span>)</span><br/>
 <span class="in1"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">arg</span>);<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">arg</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="str">"] already defined\n"</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">check for double def2</span>)</span><br/>
+<span class="macro">@end(<span class="name">check for double def</span>)</span><br/>
 </code></div>
 <ul><li>
 Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
@@ -1249,7 +1174,7 @@ Wenn der öffnende und schließende Name nicht passt, wird die
 <span class="in2"></span>};<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { <span class="var">fm</span> };<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">arg</span>);<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check for add w/o def2</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for add w/o def</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do macro</span>)</span><br/>
@@ -1262,7 +1187,7 @@ Weitere Bytes können zu diesem Fragment hinzugefügt werden
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">check for add w/o def2</span>)</span><br/>
+<span class="macro">@def(<span class="name">check for add w/o def</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">arg</span> &lt;&lt;<br/>
@@ -1271,7 +1196,7 @@ Weitere Bytes können zu diesem Fragment hinzugefügt werden
 <span class="in3"></span><span class="var">arg</span>, *<span class="var">ins</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">check for add w/o def2</span>)</span><br/>
+<span class="macro">@end(<span class="name">check for add w/o def</span>)</span><br/>
 </code></div>
 <ul><li>
 Das Fragment muss bereits vorhanden und nicht leer sein
@@ -1349,7 +1274,7 @@ Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragme
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Def"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"Def in frag"</span>);<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">check for double def2</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for double def</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">arg</span>];<br/>
 <span class="in2"></span>}<br/>
@@ -1361,6 +1286,23 @@ Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragme
 Erzeugt ein neues Fragment im globalen Namensraum
 </li><li>
 Das Fragment darf nicht mehrfach definiert werden
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">do macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Add"</span>) {<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"Add in frag"</span>);<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">ins</span> { &amp;<span class="var">root</span> };<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for add w/o def</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Erweitert ein global definiertes Fragment
 </li></ul>
 </div>
 </div>

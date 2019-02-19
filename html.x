@@ -38,7 +38,7 @@
 * Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 
 ```
-A{global elements}
+@Add(global elements)
 	enum class HtmlState {
 		nothing,
 		inSlide,
@@ -54,7 +54,7 @@ A{global elements}
 * Oder ob gerade keine Folie offen ist
 
 ```
-A{global elements}
+@Add(global elements)
 	struct HtmlStatus {
 		@put(html state elements)
 	};
@@ -72,7 +72,7 @@ A{global elements}
 * Der aktuelle Zustand wird im Status abgelegt
 
 ```
-A{global elements}
+@Add(global elements)
 	inline HtmlStatus::HtmlStatus():
 		state {
 			HtmlState::nothing
@@ -83,7 +83,7 @@ A{global elements}
 * Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 
 ```
-A{includes}
+@Add(includes)
 	#include <string>
 @end(includes)
 ```
@@ -104,7 +104,7 @@ A{includes}
 * Bis das Datei-Ende erreicht ist
 
 ```
-A{global elements}
+@Add(global elements)
 	bool in_code(
 		HtmlStatus *s
 	) {
@@ -209,7 +209,7 @@ A{global elements}
 * Und eine Folie mit einer HTML-Überschrift wird erzeugt
 
 ```
-A{global elements} 
+@Add(global elements) 
 	void writeOneEscaped(
 		std::ostream &out, char ch
 	) {
@@ -226,7 +226,7 @@ A{global elements}
   Entitäten
 
 ```
-A{global elements}
+@Add(global elements)
 	void writeEscaped(
 		std::ostream &out,
 		const std::string &str
@@ -404,7 +404,7 @@ A{global elements}
   die HTML-Tags
 
 ```
-A{global elements}
+@Add(global elements)
 	@put(process code helper);
 	void process_code(
 		std::ostream &out,
@@ -607,7 +607,7 @@ A{global elements}
   ersetzt
 
 ```
-A{includes}
+@Add(includes)
 	#include <cctype>
 @end(includes)
 ```
@@ -662,7 +662,7 @@ A{includes}
   Identifier folgt
 
 ```
-A{includes}
+@Add(includes)
 	#include <set>
 @end(includes)
 ```
@@ -966,7 +966,7 @@ A{includes}
 * Eine Notiz beginnt entweder mit `*` oder folgt einer solchen Zeile
 
 ```
-A{global elements}
+@Add(global elements)
 	void process_content(
 		std::ostream &out,
 		SI begin, SI end

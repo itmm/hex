@@ -1,7 +1,7 @@
 # Eingabe-Dateien
 
 ```
-A{includes}
+@Add(includes)
 	#include <fstream>
 	#include <iostream>
 	#include <memory>
@@ -12,7 +12,7 @@ A{includes}
 * `vector` ist ein Container für Source-Dateien
 
 ```
-A{global elements}
+@Add(global elements)
 	class Input {
 		private:
 			std::ifstream file;
@@ -72,7 +72,7 @@ A{global elements}
 * die erst später definiert werden
 
 ```
-A{global elements}
+@Add(global elements)
 	FragMap root;
 	FragMap *frags { &root };
 @end(global elements)
@@ -82,7 +82,7 @@ A{global elements}
 
 
 ```
-A{global elements}
+@Add(global elements)
 	class Inputs {
 			@put(inputs attributes);
 		public:

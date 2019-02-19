@@ -4,7 +4,7 @@
   Source-Code Dateien
 
 ```
-A{global elements}
+@Add(global elements)
 	@put(define frag);
 @end(global elements)
 ```
@@ -146,7 +146,7 @@ A{global elements}
 * Ansonsten können die Zeichen angefügt werden
 
 ```
-A{includes}
+@Add(includes)
 	#include <vector>
 @end(includes)
 ```
@@ -486,7 +486,7 @@ A{includes}
   Erwartung entspricht
 
 ```
-A{includes}
+@Add(includes)
 	#include <sstream>
 @end(includes)
 ```
@@ -602,7 +602,7 @@ A{includes}
   werden
 
 ```
-A{includes}
+@Add(includes)
 	#include <map>
 @end(includes)
 ```
