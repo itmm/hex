@@ -225,7 +225,7 @@ A{includes}
 # Unit Tests
 
 ```
-D{perform unit-tests}
+@Def(perform unit-tests)
 	@put(unit tests);
 @end(perform unit-tests)
 ```

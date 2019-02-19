@@ -3,7 +3,7 @@
   HTML-Präsentationen zu erzeugen
 
 ```
-D{write HTML file}
+@Def(write HTML file)
 	for (auto &cur : inputs) {
 		@put(write cur HTML file);
 	}

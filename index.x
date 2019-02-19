@@ -32,7 +32,7 @@
 * Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 
 ```
-D{file: hx.cpp}
+@Def(file: hx.cpp)
 	@put(global elements)
 	int main(
 		int argc,
@@ -840,7 +840,7 @@ D{file: hx.cpp}
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
-		@put(check for double def2);
+		@mul(check for double def2);
 		if (! frag) {
 			frag = &(*fm)[arg];
 		}
@@ -976,6 +976,22 @@ D{file: hx.cpp}
 ```
 * Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
+
+```
+@add(do macro)
+	if (name == "Def") {
+		ASSERT_MSG(! frag, "Def in frag");
+		FragMap *fm { frags };
+		@mul(check for double def2);
+		if (! frag) {
+			frag = &root[arg];
+		}
+		break;
+	}
+@end(do macro)
+```
+* Erzeugt ein neues Fragment im globalen Namensraum
+* Das Fragment darf nicht mehrfach definiert werden
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien

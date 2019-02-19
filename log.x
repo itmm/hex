@@ -3,7 +3,7 @@
 * Es wird nur etwas geloggt, wenn ein Fehler aufgetreten ist
 
 ```
-D{includes}
+@Def(includes)
 	#include <iostream>
 	#include <exception>
 @end(includes)
@@ -12,7 +12,7 @@ D{includes}
 * Nach dem Herausschreiben der Nachricht wird eine Exception generiert
 
 ```
-D{define logging}
+@Def(define logging)
 	#define ASSERT(COND) \
 		if (! (COND)) { \
 			std::cerr << __FILE__ << \

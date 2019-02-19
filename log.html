@@ -18,7 +18,7 @@ Es wird nur etwas geloggt, wenn ein Fehler aufgetreten ist
 </div>
 <div><div>
 <code>
-<span class="var">D</span>{<span class="var">ncludes</span>}<br/>
+<span class="macro">@Def(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">iostream</span>&gt;<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">exception</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
@@ -31,7 +31,7 @@ Nach dem Herausschreiben der Nachricht wird eine Exception generiert
 </div>
 <div><div>
 <code>
-<span class="var">D</span>{<span class="var">efine</span> <span class="var">logging</span>}<br/>
+<span class="macro">@Def(<span class="name">define logging</span>)</span><br/>
 <span class="in1"></span>#<span class="var">define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>) \<br/>
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
 <span class="in3"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; \<br/>

@@ -86,7 +86,7 @@ Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 </div>
 <div><div>
 <code>
-<span class="var">D</span>{<span class="var">ile</span>: <span class="var">hx</span>.<span class="var">cpp</span>}<br/>
+<span class="macro">@Def(<span class="name">file: hx.cpp</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
@@ -1173,7 +1173,7 @@ Es wird einfach nur das Argument ausgegeben
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check for double def2</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for double def2</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="var">frag</span> = &amp;(*<span class="var">fm</span>)[<span class="var">arg</span>];<br/>
 <span class="in2"></span>}<br/>
@@ -1341,6 +1341,26 @@ Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 <ul><li>
 Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">do macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Def"</span>) {<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"Def in frag"</span>);<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for double def2</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
+<span class="in3"></span><span class="var">frag</span> = &amp;<span class="var">root</span>[<span class="var">arg</span>];<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Erzeugt ein neues Fragment im globalen Namensraum
+</li><li>
+Das Fragment darf nicht mehrfach definiert werden
 </li></ul>
 </div>
 </div>

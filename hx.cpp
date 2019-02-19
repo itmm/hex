@@ -1442,6 +1442,23 @@
 		frag->add(&sub);
 		break;
 	}
+
+	if (name == "Def") {
+		ASSERT_MSG(! frag, "Def in frag");
+		FragMap *fm { frags };
+		
+	frag = fm->find(arg);
+	if (isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			arg <<
+			"] already defined\n";
+	}
+;
+		if (! frag) {
+			frag = &root[arg];
+		}
+		break;
+	}
 ;
 		
 	ASSERT_MSG(frag,
