@@ -17,7 +17,7 @@ Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-
 </div>
 <div><div>
 <code>
-<span class="macro">@globdef(<span class="name">write HTML file</span>)</span><br/>
+<span class="var">D</span>{<span class="var">rite</span> <span class="var">HTML</span> <span class="var">file</span>}<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">write cur HTML file</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -62,7 +62,7 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="type">enum</span> <span class="var">class</span> <span class="type">HtmlState</span> {<br/>
 <span class="in2"></span><span class="var">nothing</span>,<br/>
 <span class="in2"></span><span class="var">inSlide</span>,<br/>
@@ -84,7 +84,7 @@ Oder ob gerade keine Folie offen ist
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="type">struct</span> <span class="type">HtmlStatus</span> {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">html state elements</span>)</span><br/>
 <span class="in1"></span>};<br/>
@@ -109,7 +109,7 @@ Der aktuelle Zustand wird im Status abgelegt
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="var">inline</span> <span class="type">HtmlStatus</span>::<span class="fn">HtmlStatus</span>():<br/>
 <span class="in2"></span><span class="var">state</span> {<br/>
 <span class="in3"></span><span class="type">HtmlState</span>::<span class="var">nothing</span><br/>
@@ -123,7 +123,7 @@ Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">string</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -152,7 +152,7 @@ Bis das Datei-Ende erreicht ist
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">in_code</span>(<br/>
 <span class="in2"></span><span class="type">HtmlStatus</span> *<span class="var">s</span><br/>
 <span class="in1"></span>) {<br/>
@@ -275,10 +275,10 @@ Nach den Rauten dürfen beliebig viele Leerzeichen vorkommen
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span> != <span class="var">e</span>);<br/>
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">b</span>, <span class="var">e</span>};<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">close previous HTML page</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@multiple(<span class="name">write header tag</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="macro">@multiple(<span class="name">write header tag</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">process header</span>)</span><br/>
 </code></div>
@@ -292,7 +292,7 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span> <br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>} <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeOneEscaped</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="type">char</span> <span class="var">ch</span><br/>
 <span class="in1"></span>) {<br/>
@@ -313,7 +313,7 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">str</span><br/>
@@ -546,7 +546,7 @@ Am Ende der Datei schließt die Funktion
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
@@ -740,7 +740,8 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <code>
 <span class="macro">@def(<span class="name">special macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">Set</span> <span class="var">macros</span> = {<br/>
-<span class="in2"></span><span class="str">"def"</span>, <span class="str">"end"</span>, <span class="str">"add"</span>, <span class="str">"put"</span><br/>
+<span class="in2"></span><span class="str">"def"</span>, <span class="str">"end"</span>, <span class="str">"add"</span>, <span class="str">"put"</span>, <span class="str">"mul"</span>,<br/>
+<span class="in2"></span><span class="str">"Def"</span>, <span class="str">"Add"</span>, <span class="str">"Mul"</span>, <span class="str">"rep"</span>, <span class="str">"Rep"</span><br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">macros</span>.<span class="fn">find</span>(<span class="var">name</span>) != <span class="var">macros</span>.<span class="fn">end</span>()<br/>
@@ -786,7 +787,7 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">cctype</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -858,7 +859,7 @@ Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">set</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -1082,123 +1083,7 @@ Sonst wird das Makro ausgegeben
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"D"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"globdef"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">D</span></code> steht für ein <code>@<span class="var">globdef</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"A"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"globadd"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">A</span></code> steht für ein <code>@<span class="var">globadd</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"r"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"replace"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">r</span></code> steht für ein <code>@<span class="var">replace</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"R"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<br/>
-<span class="in3"></span><span class="var">out</span>, <span class="str">"globreplace"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">R</span></code> steht für ein <code>@<span class="var">globreplace</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"E"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"multiple"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">E</span></code> steht für ein <code>@<span class="var">multiple</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"g"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<br/>
-<span class="in3"></span><span class="var">out</span>, <span class="str">"globexpand"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">g</span></code> steht für ein <code>@<span class="var">globexpand</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"G"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="str">"globmult"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">G</span></code> steht für ein <code>@<span class="var">globmult</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"t"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"type"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">t</span></code> steht für eine Typ-Formatierung
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"v"</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"v"</span>) {<br/>
 <span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"var"</span>);<br/>
 <span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
@@ -1363,7 +1248,7 @@ Eine Notiz beginnt entweder mit <code>*</code> oder folgt einer solchen Zeile
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>

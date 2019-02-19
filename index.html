@@ -86,7 +86,7 @@ Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 </div>
 <div><div>
 <code>
-<span class="macro">@globdef(<span class="name">file: hx.cpp</span>)</span><br/>
+<span class="var">D</span>{<span class="var">ile</span>: <span class="var">hx</span>.<span class="var">cpp</span>}<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
@@ -774,7 +774,7 @@ Das Fragment muss bereits vorhanden und nicht leer sein
 <span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
 <span class="in3"></span><span class="var">name</span><br/>
 <span class="in2"></span>]);<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">clear frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process macro</span>)</span><br/>
@@ -809,7 +809,7 @@ Löscht das aktuelle Fragment
 <span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
 <span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">clear frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process macro</span>)</span><br/>
@@ -828,7 +828,7 @@ Ersetzt ein global definiertes Fragment
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
 <span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">check frag ex. count</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check frag ex. count</span>)</span>;<br/>
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addExpand</span>();<br/>
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
@@ -866,28 +866,6 @@ Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">process macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'E'</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"multiple not in frag"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
-<span class="in3"></span><span class="var">name</span><br/>
-<span class="in2"></span>] };<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
-<span class="in2"></span><span class="var">sub</span>.<span class="fn">addMultiple</span>();<br/>
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
-<span class="in2"></span><span class="keyword">break</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragment an mehreren Stellen
-  expandiert werden
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'G'</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
 <span class="in3"></span><span class="str">"globmult not in frag"</span><br/>
@@ -895,7 +873,7 @@ Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragme
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
 <span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
 <span class="in2"></span>) };<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">check for prev expands</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for prev expands</span>)</span>;<br/>
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addMultiple</span>();<br/>
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
@@ -1069,7 +1047,7 @@ In diesem Fall wird das Zeichen als Befehls-Opcode gesichert und der
 <code>
 <span class="macro">@def(<span class="name">check valid names</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">valids</span> { <br/>
-<span class="in2"></span><span class="str">"fvsntkEgGpmb"</span><br/>
+<span class="in2"></span><span class="str">"fvsntkgGpmb"</span><br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">found</span> {<br/>
 <span class="in2"></span><span class="var">valids</span>.<span class="fn">find</span>(<br/>
@@ -1309,7 +1287,7 @@ Das Fragment muss bereits vorhanden und nicht leer sein
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
 <span class="in3"></span><span class="var">arg</span><br/>
 <span class="in2"></span>];<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">check frag ex. count</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check frag ex. count</span>)</span>;<br/>
 <span class="in2"></span><span class="var">sub</span>.<span class="fn">addExpand</span>();<br/>
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
@@ -1343,6 +1321,28 @@ Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
 Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 </li></ul>
 </div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">do macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"mul"</span>) {<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
+<span class="in3"></span><span class="str">"mul not in frag"</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">sub</span> { <span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
+<span class="in3"></span><span class="var">arg</span><br/>
+<span class="in2"></span>] };<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for prev expands</span>)</span>;<br/>
+<span class="in2"></span><span class="var">sub</span>.<span class="fn">addMultiple</span>();<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(&amp;<span class="var">sub</span>);<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Mit einem <code>@<span class="var">multiple</span></code> Befehl kann ein Fragment an mehreren Stellen
+  expandiert werden
+</li></ul>
+</div>
 </div>
 <h1>Fragmente serialisieren</h1>
 <div class="slides">
@@ -1359,7 +1359,7 @@ Fragmente, die Dateien spezifizieren werden in diese Dateien
 <span class="macro">@def(<span class="name">serialize fragments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>) {<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
 </code></div>
@@ -1379,7 +1379,7 @@ Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft expandiert
 <span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in3"></span>};<br/>
-<span class="in3"></span><span class="macro">@multiple(<span class="name">serialize frag</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>

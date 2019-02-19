@@ -60,7 +60,7 @@ A{global elements}
 		char ch, const std::string &file,
 		int line
 	) {
-		E{copy file and line};
+		@mul(copy file and line);
 		_str += ch;
 	}
 @end(entry methods)
@@ -91,7 +91,7 @@ A{global elements}
 		const std::string &file,
 		int line
 	) {
-		E{copy file and line};
+		@mul(copy file and line);
 		_str += value;
 	}
 @end(entry methods)
@@ -304,7 +304,7 @@ D{perform unit-tests}
 		int line
 	) {
 		if (value.empty()) { return; }
-		E{assure frag entry};
+		@mul(assure frag entry);
 		_entries.back().add(
 			value, file, line
 		);
@@ -339,7 +339,7 @@ D{perform unit-tests}
 		const std::string &file,
 		int line
 	) {
-		E{assure frag entry};
+		@mul(assure frag entry);
 		_entries.back().add(
 			ch, file, line
 		);

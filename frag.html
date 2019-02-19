@@ -19,7 +19,7 @@ Die Infix-Traversierung dieses Graphen bildet die generierten
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">global elements</span>)</span><br/>
+<span class="var">A</span>{<span class="var">lobal</span> <span class="var">elements</span>}<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define frag</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -92,7 +92,7 @@ Auf die Bytes kann mit <code><span class="fn">str</span>()</code> nur lesend zug
 <span class="in2"></span><span class="type">char</span> <span class="var">ch</span>, <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">copy file and line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_str</span> += <span class="var">ch</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -131,7 +131,7 @@ Die letzte Zeile wird immer gesetzt
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">copy file and line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_str</span> += <span class="var">value</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -201,7 +201,7 @@ Ansonsten können die Zeichen angefügt werden
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">vector</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -311,7 +311,7 @@ Ein Fragment ist leer, wenn es keine Einträge enthält
 </div>
 <div><div>
 <code>
-<span class="macro">@globdef(<span class="name">perform unit-tests</span>)</span><br/>
+<span class="var">D</span>{<span class="var">erform</span> <span class="var">unit</span>-<span class="var">tests</span>}<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">unit tests</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">perform unit-tests</span>)</span><br/>
 </code></div>
@@ -424,7 +424,7 @@ fügt Text oder Fragmente an ein Fragment an
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">value</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">assure frag entry</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">add</span>(<br/>
 <span class="in3"></span><span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span><br/>
 <span class="in2"></span>);<br/>
@@ -468,7 +468,7 @@ Wenn der letzte Eintrag unpassende Dateinamen oder Zeilennummern hat,
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@multiple(<span class="name">assure frag entry</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">add</span>(<br/>
 <span class="in3"></span><span class="var">ch</span>, <span class="var">file</span>, <span class="var">line</span><br/>
 <span class="in2"></span>);<br/>
@@ -668,7 +668,7 @@ Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">sstream</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -829,7 +829,7 @@ Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
 </div>
 <div><div>
 <code>
-<span class="macro">@globadd(<span class="name">includes</span>)</span><br/>
+<span class="var">A</span>{<span class="var">ncludes</span>}<br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">map</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>

@@ -520,7 +520,7 @@ D{file: hx.cpp}
 		frag = &(inputs.cur()->frags[
 			name
 		]);
-		E{clear frag};
+		@mul(clear frag);
 		break;
 	}
 @end(process macro)
@@ -548,7 +548,7 @@ D{file: hx.cpp}
 		frag = &frags->get(
 			name, root
 		);
-		E{clear frag};
+		@mul(clear frag);
 		break;
 	}
 @end(process macro)
@@ -564,7 +564,7 @@ D{file: hx.cpp}
 		Frag &sub = frags->get(
 			name, root
 		);
-		E{check frag ex. count};
+		@mul(check frag ex. count);
 		sub.addExpand();
 		frag->add(&sub);
 		break;
@@ -595,25 +595,6 @@ D{file: hx.cpp}
 
 ```
 @add(process macro)
-	if (openCh == 'E') {
-		ASSERT_MSG(frag,
-			"multiple not in frag"
-		);
-		Frag &sub { inputs.cur()->frags[
-			name
-		] };
-		E{check for prev expands};
-		sub.addMultiple();
-		frag->add(&sub);
-		break;
-	}
-@end(process macro)
-```
-* Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
-  expandiert werden
-
-```
-@add(process macro)
 	if (openCh == 'G') {
 		ASSERT_MSG(frag,
 			"globmult not in frag"
@@ -621,7 +602,7 @@ D{file: hx.cpp}
 		Frag &sub { frags->get(
 			name, root
 		) };
-		E{check for prev expands};
+		@mul(check for prev expands);
 		sub.addMultiple();
 		frag->add(&sub);
 		break;
@@ -755,7 +736,7 @@ D{file: hx.cpp}
 ```
 @def(check valid names)
 	static const std::string valids { 
-		"fvsntkEgGpmb"
+		"fvsntkgGpmb"
 	};
 	bool found {
 		valids.find(
@@ -950,7 +931,7 @@ D{file: hx.cpp}
 		Frag &sub = inputs.cur()->frags[
 			arg
 		];
-		E{check frag ex. count};
+		@mul(check frag ex. count);
 		sub.addExpand();
 		frag->add(&sub);
 		break;
@@ -977,6 +958,25 @@ D{file: hx.cpp}
   auf den Stapel der offenen Dateien gelegt
 * Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
+```
+@add(do macro)
+	if (name == "mul") {
+		ASSERT_MSG(frag,
+			"mul not in frag"
+		);
+		Frag &sub { inputs.cur()->frags[
+			arg
+		] };
+		@mul(check for prev expands);
+		sub.addMultiple();
+		frag->add(&sub);
+		break;
+	}
+@end(do macro)
+```
+* Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
+  expandiert werden
+
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
   rausgeschrieben
@@ -985,7 +985,7 @@ D{file: hx.cpp}
 @def(serialize fragments)
 	for (auto &i : root) {
 		const Frag *frag { &i.second };
-		E{serialize frag};
+		@mul(serialize frag);
 	}
 @end(serialize fragments)
 ```
@@ -1001,7 +1001,7 @@ D{file: hx.cpp}
 			const Frag *frag {
 				&i.second
 			};
-			E{serialize frag};
+			@mul(serialize frag);
 		}
 	}
 @end(serialize fragments)

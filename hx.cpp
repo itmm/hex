@@ -578,7 +578,7 @@
 	if (frag) {
 		
 	static const std::string valids { 
-		"fvsntkEgGpmb"
+		"fvsntkgGpmb"
 	};
 	bool found {
 		valids.find(
@@ -828,7 +828,8 @@
 	do {
 		
 	static Set macros = {
-		"def", "end", "add", "put"
+		"def", "end", "add", "put", "mul",
+		"Def", "Add", "Mul", "rep", "Rep"
 	};
 	if (
 		macros.find(name) != macros.end()
@@ -896,59 +897,7 @@
 	} else {
 		std::string name {w + 1, q};
 		
-	if (ident == "D") {
-		writeMacroHeader(out, "globdef");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "A") {
-		writeMacroHeader(out, "globadd");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "r") {
-		writeMacroHeader(out, "replace");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "R") {
-		writeMacroHeader(
-			out, "globreplace"
-		);
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "E") {
-		writeMacroHeader(out, "multiple");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "g") {
-		writeMacroHeader(
-			out, "globexpand"
-		);
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "G") {
-		writeMacroHeader(out, "globmult");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "t") {
-		writeMacroClass(out, "type");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-
-	else if (ident == "v") {
+	if (ident == "v") {
 		writeMacroClass(out, "var");
 		writeEscaped(out, name);
 		out << "</span>";
@@ -1283,26 +1232,6 @@
 		break;
 	}
 
-	if (openCh == 'E') {
-		ASSERT_MSG(frag,
-			"multiple not in frag"
-		);
-		Frag &sub { inputs.cur()->frags[
-			name
-		] };
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub.name << "]\n";
-	}
-;
-		sub.addMultiple();
-		frag->add(&sub);
-		break;
-	}
-
 	if (openCh == 'G') {
 		ASSERT_MSG(frag,
 			"globmult not in frag"
@@ -1491,6 +1420,26 @@
 		if (! inputs.has(arg)) {
 			inputs.push(arg);
 		}
+		break;
+	}
+
+	if (name == "mul") {
+		ASSERT_MSG(frag,
+			"mul not in frag"
+		);
+		Frag &sub { inputs.cur()->frags[
+			arg
+		] };
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
+	}
+;
+		sub.addMultiple();
+		frag->add(&sub);
 		break;
 	}
 ;

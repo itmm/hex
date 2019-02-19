@@ -197,10 +197,10 @@ A{global elements}
 	ASSERT(b != e);
 	std::string name {b, e};
 	@put(close previous HTML page);
-	E{write header tag};
+	@mul(write header tag);
 	out << "<div class=\"slides\">\n";
 	out << "<div><div>\n";
-	E{write header tag};
+	@mul(write header tag);
 	out << "</div>\n";
 @end(process header)
 ```
@@ -565,7 +565,8 @@ A{global elements}
 ```
 @def(special macro)
 	static Set macros = {
-		"def", "end", "add", "put"
+		"def", "end", "add", "put", "mul",
+		"Def", "Add", "Mul", "rep", "Rep"
 	};
 	if (
 		macros.find(name) != macros.end()
@@ -842,99 +843,7 @@ A{includes}
 
 ```
 @def(write macro)
-	if (ident == "D") {
-		writeMacroHeader(out, "globdef");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{D}` steht für ein `@globdef`-Makro
-
-```
-@add(write macro)
-	else if (ident == "A") {
-		writeMacroHeader(out, "globadd");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{A}` steht für ein `@globadd`-Makro
-
-```
-@add(write macro)
-	else if (ident == "r") {
-		writeMacroHeader(out, "replace");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{r}` steht für ein `@replace`-Makro
-
-```
-@add(write macro)
-	else if (ident == "R") {
-		writeMacroHeader(
-			out, "globreplace"
-		);
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{R}` steht für ein `@globreplace`-Makro
-
-```
-@add(write macro)
-	else if (ident == "E") {
-		writeMacroHeader(out, "multiple");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{E}` steht für ein `@multiple`-Makro
-
-```
-@add(write macro)
-	else if (ident == "g") {
-		writeMacroHeader(
-			out, "globexpand"
-		);
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{g}` steht für ein `@globexpand`-Makro
-
-```
-@add(write macro)
-	else if (ident == "G") {
-		writeMacroHeader(out, "globmult");
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{G}` steht für ein `@globmult`-Makro
-
-```
-@add(write macro)
-	else if (ident == "t") {
-		writeMacroClass(out, "type");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{t}` steht für eine Typ-Formatierung
-
-```
-@add(write macro)
-	else if (ident == "v") {
+	if (ident == "v") {
 		writeMacroClass(out, "var");
 		writeEscaped(out, name);
 		out << "</span>";
