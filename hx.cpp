@@ -560,7 +560,7 @@
 	if (! frag) {
 		
 	static const std::string valids {
-		"ADirR"
+		"ADrR"
 	};
 	bool found {
 		valids.find(*begin) !=
@@ -838,6 +838,23 @@
 		out << "</span>)</span>";
 		break;
 	}
+
+	if (name == "inc") {
+		
+	auto ext = arg.find_last_of('.');
+	ASSERT_MSG(
+		ext != std::string::npos,
+		"no period"
+	);
+	writeMacroHeader(out, name);
+	out << "<a href=\"" <<
+		arg.substr(0, ext) <<
+		".html\">";
+	out << arg <<
+		"</a></span>)</span>";
+;
+		break;
+	}
 ;
 		
 	std::cerr << "unknown macro @" <<
@@ -879,23 +896,7 @@
 	} else {
 		std::string name {w + 1, q};
 		
-	if (ident == "i") {
-		
-	auto ext = name.find_last_of('.');
-	ASSERT_MSG(
-		ext != std::string::npos,
-		"no period"
-	);
-	writeMacroHeader(out, "include");
-	out << "<a href=\"" <<
-		name.substr(0, ext) <<
-		".html\">";
-	out << name <<
-		"</a></span>)</span>";
-;
-	}
-
-	else if (ident == "D") {
+	if (ident == "D") {
 		writeMacroHeader(out, "globdef");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
@@ -1258,16 +1259,6 @@
 		break;
 	}
 
-	if (openCh == 'i') {
-		ASSERT_MSG(! frag,
-			"include in frag"
-		);
-		if (! inputs.has(name)) {
-			inputs.push(name);
-		}
-		break;
-	}
-
 	if (openCh == 'g') {
 		ASSERT_MSG(frag,
 			"globexpand not in frag"
@@ -1490,6 +1481,16 @@
 ;
 		sub.addExpand();
 		frag->add(&sub);
+		break;
+	}
+
+	if (name == "inc") {
+		ASSERT_MSG(! frag,
+			"include in frag"
+		);
+		if (! inputs.has(arg)) {
+			inputs.push(arg);
+		}
 		break;
 	}
 ;

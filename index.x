@@ -99,7 +99,7 @@ D{file: hx.cpp}
 * Daher enthält eine eigene Datei diese Makros
 
 ```
-i{log.x}
+@inc(log.x)
 ```
 * Bindet Logging ein
 
@@ -111,7 +111,7 @@ i{log.x}
 * Und Fragment an mehreren Stellen zu erweitern
 
 ```
-i{frag.x}
+@inc(frag.x)
 ```
 * Fragment-Behandlung wird in einer eigenen Datei definiert
 
@@ -122,7 +122,7 @@ i{frag.x}
   Datei ausgelagert
 
 ```
-i{input.x}
+@inc(input.x)
 ```
 * Bindet Datei-Klasse ein
 
@@ -426,7 +426,7 @@ i{input.x}
 ```
 @def(may start block)
 	static const std::string valids {
-		"ADirR"
+		"ADrR"
 	};
 	bool found {
 		valids.find(*begin) !=
@@ -554,23 +554,6 @@ i{input.x}
 @end(process macro)
 ```
 * Ersetzt ein global definiertes Fragment
-
-```
-@add(process macro)
-	if (openCh == 'i') {
-		ASSERT_MSG(! frag,
-			"include in frag"
-		);
-		if (! inputs.has(name)) {
-			inputs.push(name);
-		}
-		break;
-	}
-@end(process macro)
-```
-* Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
-  auf den Stapel der offenen Dateien gelegt
-* Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
 ```
 @add(process macro)
@@ -977,6 +960,23 @@ i{input.x}
 * Bei einem `@put` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
 
+```
+@add(do macro)
+	if (name == "inc") {
+		ASSERT_MSG(! frag,
+			"include in frag"
+		);
+		if (! inputs.has(arg)) {
+			inputs.push(arg);
+		}
+		break;
+	}
+@end(do macro)
+```
+* Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
+  auf den Stapel der offenen Dateien gelegt
+* Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
+
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
   rausgeschrieben
@@ -1076,7 +1076,7 @@ i{input.x}
 * Aus `hx`-Dateien wird ein HTML-Foliensatz generiert
 
 ```
-i{html.x}
+@inc(html.x)
 ```
 * Die Generierung liegt in einer eigenen Datei
 

@@ -579,6 +579,33 @@ A{global elements}
 ```
 
 ```
+@add(special macro)
+	if (name == "inc") {
+		@put(write include);
+		break;
+	}
+@end(special macro)
+```
+
+```
+@def(write include)
+	auto ext = arg.find_last_of('.');
+	ASSERT_MSG(
+		ext != std::string::npos,
+		"no period"
+	);
+	writeMacroHeader(out, name);
+	out << "<a href=\"" <<
+		arg.substr(0, ext) <<
+		".html\">";
+	out << arg <<
+		"</a></span>)</span>";
+@end(write include)
+```
+* Die Datei-Extension wird beim generierten Link durch `s{.html}`
+  ersetzt
+
+```
 A{includes}
 	#include <cctype>
 @end(includes)
@@ -788,33 +815,6 @@ A{includes}
 * Sonst wird das Makro ausgegeben
 
 ```
-@def(write macro)
-	if (ident == "i") {
-		@put(write include);
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{i}` steht für ein `@include`-Makro
-
-```
-@def(write include)
-	auto ext = name.find_last_of('.');
-	ASSERT_MSG(
-		ext != std::string::npos,
-		"no period"
-	);
-	writeMacroHeader(out, "include");
-	out << "<a href=\"" <<
-		name.substr(0, ext) <<
-		".html\">";
-	out << name <<
-		"</a></span>)</span>";
-@end(write include)
-```
-* Die Datei-Extension wird beim generierten Link durch `s{.html}`
-  ersetzt
-
-```
 @add(process code helper)
 	void writeMacroClass(
 		std::ostream &out,
@@ -841,8 +841,8 @@ A{includes}
 * Öffnet ein Makro mit einem bestimmetn Namen
 
 ```
-@add(write macro)
-	else if (ident == "D") {
+@def(write macro)
+	if (ident == "D") {
 		writeMacroHeader(out, "globdef");
 		writeEscaped(out, name);
 		out << "</span>)</span>";
