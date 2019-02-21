@@ -560,7 +560,7 @@
 	if (frag) {
 		
 	static const std::string valids { 
-		"fvsntkgGpmb"
+		"fvsntkpmb"
 	};
 	bool found {
 		valids.find(
@@ -811,7 +811,8 @@
 		
 	static Set macros = {
 		"def", "end", "add", "put", "mul",
-		"Def", "Add", "Mul", "rep", "Rep"
+		"Def", "Add", "Mul", "rep", "Rep",
+		"Put"
 	};
 	if (
 		macros.find(name) != macros.end()
@@ -1121,50 +1122,6 @@
 	i += 2;
 	std::string name {i, j};
 
-	if (openCh == 'g') {
-		ASSERT_MSG(frag,
-			"globexpand not in frag"
-		);
-		Frag &sub = frags->get(
-			name, root
-		);
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub.name << "]\n";
-	}
-	if (sub.multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub.name << "]\n";
-	}
-;
-		sub.addExpand();
-		frag->add(&sub);
-		break;
-	}
-
-	if (openCh == 'G') {
-		ASSERT_MSG(frag,
-			"globmult not in frag"
-		);
-		Frag &sub { frags->get(
-			name, root
-		) };
-		
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub.name << "]\n";
-	}
-;
-		sub.addMultiple();
-		frag->add(&sub);
-		break;
-	}
-
 	if (openCh == 'p') {
 		ASSERT_MSG(frag,
 			"private not in frag"
@@ -1423,6 +1380,50 @@
 	);
 	frag->clear();
 ;
+		break;
+	}
+
+	if (name == "Put") {
+		ASSERT_MSG(frag,
+			"Put not in frag"
+		);
+		Frag &sub = frags->get(
+			arg, root
+		);
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
+	}
+	if (sub.multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
+	}
+;
+		sub.addExpand();
+		frag->add(&sub);
+		break;
+	}
+
+	if (name == "Mul") {
+		ASSERT_MSG(frag,
+			"globmult not in frag"
+		);
+		Frag &sub { frags->get(
+			arg, root
+		) };
+		
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
+	}
+;
+		sub.addMultiple();
+		frag->add(&sub);
 		break;
 	}
 ;

@@ -566,7 +566,8 @@
 @def(special macro)
 	static Set macros = {
 		"def", "end", "add", "put", "mul",
-		"Def", "Add", "Mul", "rep", "Rep"
+		"Def", "Add", "Mul", "rep", "Rep",
+		"Put"
 	};
 	if (
 		macros.find(name) != macros.end()

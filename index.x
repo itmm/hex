@@ -416,75 +416,6 @@
 
 ```
 @add(process macro)
-	if (openCh == 'g') {
-		ASSERT_MSG(frag,
-			"globexpand not in frag"
-		);
-		Frag &sub = frags->get(
-			name, root
-		);
-		@mul(check frag ex. count);
-		sub.addExpand();
-		frag->add(&sub);
-		break;
-	}
-@end(process macro)
-```
-* Bei einem `@globexpand` wird das Fragment in den umschließenden
-  `FragMap`s gesucht
-
-```
-@def(check frag ex. count)
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub.name << "]\n";
-	}
-	if (sub.multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub.name << "]\n";
-	}
-@end(check frag ex. count)
-```
-* Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
-  ausgegeben
-* Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
-  ebenfalls eine Meldung ausgegeben
-
-```
-@add(process macro)
-	if (openCh == 'G') {
-		ASSERT_MSG(frag,
-			"globmult not in frag"
-		);
-		Frag &sub { frags->get(
-			name, root
-		) };
-		@mul(check for prev expands);
-		sub.addMultiple();
-		frag->add(&sub);
-		break;
-	}
-@end(process macro)
-```
-* `@globmult` expandiert ein globales Fragment an mehreren Stellen
-
-```
-@def(check for prev expands)
-	if (sub.expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub.name << "]\n";
-	}
-@end(check for prev expands)
-```
-* Es ist ein Fehler, wenn das Fragment bereits mit `@put` eingebunden
-  wurde
-
-```
-@add(process macro)
 	if (openCh == 'p') {
 		ASSERT_MSG(frag,
 			"private not in frag"
@@ -595,7 +526,7 @@
 ```
 @def(check valid names)
 	static const std::string valids { 
-		"fvsntkgGpmb"
+		"fvsntkpmb"
 	};
 	bool found {
 		valids.find(
@@ -802,6 +733,25 @@
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
 
 ```
+@def(check frag ex. count)
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub.name << "]\n";
+	}
+	if (sub.multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub.name << "]\n";
+	}
+@end(check frag ex. count)
+```
+* Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
+  ausgegeben
+* Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
+  ebenfalls eine Meldung ausgegeben
+
+```
 @add(do macro)
 	if (name == "inc") {
 		ASSERT_MSG(! frag,
@@ -834,8 +784,21 @@
 	}
 @end(do macro)
 ```
-* Mit einem `@multiple` Befehl kann ein Fragment an mehreren Stellen
+* Mit einem `@mul` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
+
+```
+@def(check for prev expands)
+	if (sub.expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub.name << "]\n";
+	}
+@end(check for prev expands)
+```
+* Es ist ein Fehler, wenn das Fragment bereits mit `@put` eingebunden
+  wurde
 
 ```
 @add(do macro)
@@ -910,6 +873,43 @@
 @end(do macro)
 ```
 * Ersetzt ein global definiertes Fragment
+
+```
+@add(do macro)
+	if (name == "Put") {
+		ASSERT_MSG(frag,
+			"Put not in frag"
+		);
+		Frag &sub = frags->get(
+			arg, root
+		);
+		@mul(check frag ex. count);
+		sub.addExpand();
+		frag->add(&sub);
+		break;
+	}
+@end(do macro)
+```
+* Bei einem `@Put` wird das Fragment in den umschließenden
+  `FragMap`s gesucht
+
+```
+@add(do macro)
+	if (name == "Mul") {
+		ASSERT_MSG(frag,
+			"globmult not in frag"
+		);
+		Frag &sub { frags->get(
+			arg, root
+		) };
+		@mul(check for prev expands);
+		sub.addMultiple();
+		frag->add(&sub);
+		break;
+	}
+@end(do macro)
+```
+* `@Mul` expandiert ein globales Fragment an mehreren Stellen
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien
