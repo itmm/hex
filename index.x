@@ -415,88 +415,6 @@
 * Die Zeichen zwischen den Mengen-Klammern sind der Name des Makros
 
 ```
-@add(is macro start)
-	if (! frag) {
-		@put(may start block);
-	}
-@end(is macro start)
-```
-* Prüft ob ein Makro außerhalb eines Fragments gültig ist
-
-```
-@def(may start block)
-	static const std::string valids {
-		"ArR"
-	};
-	bool found {
-		valids.find(*begin) !=
-			std::string::npos
-	};
-	if (found && blockLimit != 0) {
-		@put(start block);
-	}
-@end(may start block)
-```
-* Außerhalb eines Fragments können nur Makros verwendet werden, um ein
-  Fragment zu erweitern
-* Oder um eine weitere `hx`-Datei einzubinden
-* Das Makro wird nur verarbeitet, wenn die Anzahl der zu verarbeitenden
-  Folien noch nicht erreicht wurde
-
-```
-@def(start block)
-	--blockLimit;
-	return true;
-@end(start block)
-```
-* Reduziert die Anzahl der noch zu verarbeitenden Folien
-* Und liefert `true` zurück
-
-```
-@add(process macro)
-	if (openCh == 'r') {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &(inputs.cur()->frags[
-			name
-		]);
-		@mul(clear frag);
-		break;
-	}
-@end(process macro)
-```
-* Bei einem `@replace` wird der Inhalt eines Fragments zurückgesetzt
-* Das Fragment muss bereits vorhanden sein
-
-```
-@def(clear frag)
-	ASSERT_MSG(frag, "frag " <<
-		name <<
-		" not defined"
-	);
-	frag->clear();
-@end(clear frag)
-```
-* Löscht das aktuelle Fragment
-
-```
-@add(process macro)
-	if (openCh == 'R') {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &frags->get(
-			name, root
-		);
-		@mul(clear frag);
-		break;
-	}
-@end(process macro)
-```
-* Ersetzt ein global definiertes Fragment
-
-```
 @add(process macro)
 	if (openCh == 'g') {
 		ASSERT_MSG(frag,
@@ -948,6 +866,50 @@
 @end(do macro)
 ```
 * Erweitert ein global definiertes Fragment
+
+```
+@add(do macro)
+	if (name == "rep") {
+		ASSERT_MSG(! frag,
+			"rep in frag"
+		);
+		frag = &(inputs.cur()->frags[
+			arg
+		]);
+		@mul(clear frag);
+		break;
+	}
+@end(do macro)
+```
+* Bei einem `@rep` wird der Inhalt eines Fragments zurückgesetzt
+* Das Fragment muss bereits vorhanden sein
+
+```
+@def(clear frag)
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
+@end(clear frag)
+```
+* Löscht das aktuelle Fragment
+
+```
+@add(do macro)
+	if (name == "rep") {
+		ASSERT_MSG(! frag,
+			"replace in frag"
+		);
+		frag = &frags->get(
+			arg, root
+		);
+		@mul(clear frag);
+		break;
+	}
+@end(do macro)
+```
+* Ersetzt ein global definiertes Fragment
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien

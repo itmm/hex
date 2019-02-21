@@ -641,110 +641,6 @@ Die Zeichen zwischen den Mengen-Klammern sind der Name des Makros
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">is macro start</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">frag</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">may start block</span>)</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">is macro start</span>)</span><br/>
-</code></div>
-<ul><li>
-Prüft ob ein Makro außerhalb eines Fragments gültig ist
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">may start block</span>)</span><br/>
-<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">valids</span> {<br/>
-<span class="in2"></span><span class="str">"ArR"</span><br/>
-<span class="in1"></span>};<br/>
-<span class="in1"></span><span class="type">bool</span> <span class="var">found</span> {<br/>
-<span class="in2"></span><span class="var">valids</span>.<span class="fn">find</span>(*<span class="var">begin</span>) !=<br/>
-<span class="in3"></span><span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span><br/>
-<span class="in1"></span>};<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">found</span> &amp;&amp; <span class="var">blockLimit</span> != <span class="num">0</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">start block</span>)</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">may start block</span>)</span><br/>
-</code></div>
-<ul><li>
-Außerhalb eines Fragments können nur Makros verwendet werden, um ein
-  Fragment zu erweitern
-</li><li>
-Oder um eine weitere <code><span class="var">hx</span></code>-Datei einzubinden
-</li><li>
-Das Makro wird nur verarbeitet, wenn die Anzahl der zu verarbeitenden
-  Folien noch nicht erreicht wurde
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">start block</span>)</span><br/>
-<span class="in1"></span>--<span class="var">blockLimit</span>;<br/>
-<span class="in1"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-<span class="macro">@end(<span class="name">start block</span>)</span><br/>
-</code></div>
-<ul><li>
-Reduziert die Anzahl der noch zu verarbeitenden Folien
-</li><li>
-Und liefert <code><span class="num">true</span></code> zurück
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'r'</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"replace in frag"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
-<span class="in3"></span><span class="var">name</span><br/>
-<span class="in2"></span>]);<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">break</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Bei einem <code>@<span class="var">replace</span></code> wird der Inhalt eines Fragments zurückgesetzt
-</li><li>
-Das Fragment muss bereits vorhanden sein
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">clear frag</span>)</span><br/>
-<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"frag "</span> &lt;&lt;<br/>
-<span class="in2"></span><span class="var">name</span> &lt;&lt;<br/>
-<span class="in2"></span><span class="str">" not defined"</span><br/>
-<span class="in1"></span>);<br/>
-<span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">clear</span>();<br/>
-<span class="macro">@end(<span class="name">clear frag</span>)</span><br/>
-</code></div>
-<ul><li>
-Löscht das aktuelle Fragment
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'R'</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"replace in frag"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
-<span class="in3"></span><span class="var">name</span>, <span class="var">root</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">break</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Ersetzt ein global definiertes Fragment
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@add(<span class="name">process macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">openCh</span> == <span class="str">'g'</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
@@ -1304,6 +1200,60 @@ Das Fragment darf nicht mehrfach definiert werden
 </code></div>
 <ul><li>
 Erweitert ein global definiertes Fragment
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">do macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"rep"</span>) {<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
+<span class="in3"></span><span class="str">"rep in frag"</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;(<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span>[<br/>
+<span class="in3"></span><span class="var">arg</span><br/>
+<span class="in2"></span>]);<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Bei einem <code>@<span class="var">rep</span></code> wird der Inhalt eines Fragments zurückgesetzt
+</li><li>
+Das Fragment muss bereits vorhanden sein
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">clear frag</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"frag "</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">name</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="str">" not defined"</span><br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">clear</span>();<br/>
+<span class="macro">@end(<span class="name">clear frag</span>)</span><br/>
+</code></div>
+<ul><li>
+Löscht das aktuelle Fragment
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">do macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"rep"</span>) {<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
+<span class="in3"></span><span class="str">"replace in frag"</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">frag</span> = &amp;<span class="var">frags</span>-&gt;<span class="fn">get</span>(<br/>
+<span class="in3"></span><span class="var">arg</span>, <span class="var">root</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Ersetzt ein global definiertes Fragment
 </li></ul>
 </div>
 </div>

@@ -556,24 +556,6 @@
 	auto n = begin + 1;
 	if (n >= end) { return false; }
 	if (*n != '{') { return false; }
-
-	if (! frag) {
-		
-	static const std::string valids {
-		"ArR"
-	};
-	bool found {
-		valids.find(*begin) !=
-			std::string::npos
-	};
-	if (found && blockLimit != 0) {
-		
-	--blockLimit;
-	return true;
-;
-	}
-;
-	}
  {
 	if (frag) {
 		
@@ -1139,40 +1121,6 @@
 	i += 2;
 	std::string name {i, j};
 
-	if (openCh == 'r') {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &(inputs.cur()->frags[
-			name
-		]);
-		
-	ASSERT_MSG(frag, "frag " <<
-		name <<
-		" not defined"
-	);
-	frag->clear();
-;
-		break;
-	}
-
-	if (openCh == 'R') {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &frags->get(
-			name, root
-		);
-		
-	ASSERT_MSG(frag, "frag " <<
-		name <<
-		" not defined"
-	);
-	frag->clear();
-;
-		break;
-	}
-
 	if (openCh == 'g') {
 		ASSERT_MSG(frag,
 			"globexpand not in frag"
@@ -1440,6 +1388,40 @@
 			arg, *ins
 		);
 	}
+;
+		break;
+	}
+
+	if (name == "rep") {
+		ASSERT_MSG(! frag,
+			"rep in frag"
+		);
+		frag = &(inputs.cur()->frags[
+			arg
+		]);
+		
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
+;
+		break;
+	}
+
+	if (name == "rep") {
+		ASSERT_MSG(! frag,
+			"replace in frag"
+		);
+		frag = &frags->get(
+			arg, root
+		);
+		
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
 ;
 		break;
 	}
