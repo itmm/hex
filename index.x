@@ -341,7 +341,7 @@
 ```
 * Wenn in einer Zeile ein Makro gefunden wird, dann wird dieses
   verarbeitet
-* In `s{process macro}` kann bei Erfolg mit `break` der Block verlassen
+* In `@s(process macro)` kann bei Erfolg mit `break` der Block verlassen
   werden
 
 
@@ -526,7 +526,7 @@
 ```
 @def(check valid names)
 	static const std::string valids { 
-		"fvsntkpmb"
+		"fvntkpmb"
 	};
 	bool found {
 		valids.find(
@@ -562,10 +562,7 @@
 @add(process special lines)
 	if (*i == '@') {
 		auto nb = i + 1;
-		auto ne = nb;
-		while (ne != end && *ne != '(') {
-			++ne;
-		}
+		auto ne = std::find(nb, end, '(');
 		if (ne != end && ne != nb) {
 			std::string name {nb, ne};
 			@put(macro argument);
@@ -581,6 +578,9 @@
 	auto ab = ne + 1;
 	auto ae = ab;
 	while (ae != end && *ae != ')') {
+		if (*ae == '@') {
+			if (++ae == end) { break; }
+		}
 		++ae;
 	}
 	if (ae != end) {
@@ -607,16 +607,39 @@
 
 
 ```
+@add(global elements)
+	void expand_macro_arg(
+		Frag *f, const std::string &arg
+	) {
+		auto b = arg.begin();
+		auto e = arg.end();
+		while (b != e) {
+			auto x = std::find(b, e, '@');
+			if (x != e) {
+				f->add(
+					std::string { b, x },
+					inputs.cur()->name,
+					inputs.cur()->line()
+				);
+				b = x + 1;
+			} else {
+				f->add(
+					std::string { b, e },
+					inputs.cur()->name,
+					inputs.cur()->line()
+				);
+				b = e;
+			}
+		}
+	}
+@end(global elements)
+```
+
+```
 @def(default expansion)
-	ASSERT_MSG(frag,
-		"must be in frag @" << name <<
-		 	'(' << arg << ')'
-	);
-	frag->add(
-		arg,
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
+	if (frag) {
+		expand_macro_arg(frag, arg);
+	}
 @end(default expansion)
 ```
 * Wenn das Makro nicht behandelt wurde, dann muss es sich um eine

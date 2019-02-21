@@ -185,7 +185,7 @@
 @end(frag methods)
 ```
 * Beschreibt das Fragment eine Datei?
-* Nur wenn sein Name mit der Zeichenkette `s{file: }` beginnt
+* Nur wenn sein Name mit der Zeichenkette `@s(file: )` beginnt
 
 ```
 @add(frag methods)

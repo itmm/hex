@@ -517,7 +517,7 @@
 	begin = w;
 @end(process string)
 ```
-* Die Funktion gibt die Zeichenkette als `<span>` mit der Klasse `s{str}`
+* Die Funktion gibt die Zeichenkette als `<span>` mit der Klasse `@s(str)`
   aus
 
 ```
@@ -528,8 +528,14 @@
 		if (ne != end) {
 			std::string name {nb, ne};
 			auto ab = ne + 1;
-			auto ae =
-				std::find(ab, end, ')');
+			auto ae = ab;
+			while (ae != end && *ae != ')') {
+				if (*ae == '@') {
+					++ae;
+					if (ae == end) { break; }
+				}
+				++ae;
+			}
 			if (ae != end) {
 				std::string arg {ab, ae};
 				@put(got macro);
@@ -604,8 +610,19 @@
 		"</a></span>)</span>";
 @end(write include)
 ```
-* Die Datei-Extension wird beim generierten Link durch `s{.html}`
+* Die Datei-Extension wird beim generierten Link durch `@s(.html)`
   ersetzt
+
+```
+@add(special macro)
+	if (name == "s" || name == "str") {
+		writeMacroClass(out, "str");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+@end(special macro)
+```
 
 ```
 @Add(includes)
@@ -851,7 +868,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{v}` steht für eine Variablen-Formatierung
+* Der Bezeichner `@s(v)` steht für eine Variablen-Formatierung
 
 ```
 @add(write macro)
@@ -862,7 +879,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{f}` steht für eine Funktion-Formatierung
+* Der Bezeichner `@s(f)` steht für eine Funktion-Formatierung
 
 ```
 @add(write macro)
@@ -873,18 +890,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{k}` steht für eine Schlüsselwort-Formatierung
-
-```
-@add(write macro)
-	else if (ident == "s") {
-		writeMacroClass(out, "str");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `s{s}` steht für eine Zeichenketten-Formatierung
+* Der Bezeichner `@s(k)` steht für eine Schlüsselwort-Formatierung
 
 ```
 @add(write macro)
@@ -895,7 +901,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{n}` steht für eine Werte-Formatierung
+* Der Bezeichner `@s(n)` steht für eine Werte-Formatierung
 
 ```
 @add(write macro)
@@ -907,7 +913,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{p}` steht für ein `@priv`-Makro
+* Der Bezeichner `@s(p)` steht für ein `@priv`-Makro
 
 ```
 @add(write macro)
@@ -919,7 +925,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{m}` steht für ein `@magic`-Makro
+* Der Bezeichner `@s(m)` steht für ein `@magic`-Makro
 
 ```
 @add(write macro)
@@ -929,7 +935,7 @@
 	}
 @end(write macro)
 ```
-* Der Bezeichner `s{b}` wird als Zeilenumbruch dargestellt
+* Der Bezeichner `@s(b)` wird als Zeilenumbruch dargestellt
 
 ```
 @add(write macro)

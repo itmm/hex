@@ -560,7 +560,7 @@
 	if (frag) {
 		
 	static const std::string valids { 
-		"fvsntkpmb"
+		"fvntkpmb"
 	};
 	bool found {
 		valids.find(
@@ -581,6 +581,31 @@
 	return std::find(i, e, '}');
 ;
 		return i;
+	}
+
+	void expand_macro_arg(
+		Frag *f, const std::string &arg
+	) {
+		auto b = arg.begin();
+		auto e = arg.end();
+		while (b != e) {
+			auto x = std::find(b, e, '@');
+			if (x != e) {
+				f->add(
+					std::string { b, x },
+					inputs.cur()->name,
+					inputs.cur()->line()
+				);
+				b = x + 1;
+			} else {
+				f->add(
+					std::string { b, e },
+					inputs.cur()->name,
+					inputs.cur()->line()
+				);
+				b = e;
+			}
+		}
 	}
 
 	enum class HtmlState {
@@ -802,8 +827,14 @@
 		if (ne != end) {
 			std::string name {nb, ne};
 			auto ab = ne + 1;
-			auto ae =
-				std::find(ab, end, ')');
+			auto ae = ab;
+			while (ae != end && *ae != ')') {
+				if (*ae == '@') {
+					++ae;
+					if (ae == end) { break; }
+				}
+				++ae;
+			}
 			if (ae != end) {
 				std::string arg {ab, ae};
 				
@@ -837,6 +868,13 @@
 	out << arg <<
 		"</a></span>)</span>";
 ;
+		break;
+	}
+
+	if (name == "s" || name == "str") {
+		writeMacroClass(out, "str");
+		writeEscaped(out, arg);
+		out << "</span>";
 		break;
 	}
 ;
@@ -894,12 +932,6 @@
 
 	else if (ident == "k") {
 		writeMacroClass(out, "keyword");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-
-	else if (ident == "s") {
-		writeMacroClass(out, "str");
 		writeEscaped(out, name);
 		out << "</span>";
 	}
@@ -1188,16 +1220,16 @@
 
 	if (*i == '@') {
 		auto nb = i + 1;
-		auto ne = nb;
-		while (ne != end && *ne != '(') {
-			++ne;
-		}
+		auto ne = std::find(nb, end, '(');
 		if (ne != end && ne != nb) {
 			std::string name {nb, ne};
 			
 	auto ab = ne + 1;
 	auto ae = ab;
 	while (ae != end && *ae != ')') {
+		if (*ae == '@') {
+			if (++ae == end) { break; }
+		}
 		++ae;
 	}
 	if (ae != end) {
@@ -1428,15 +1460,9 @@
 	}
 ;
 		
-	ASSERT_MSG(frag,
-		"must be in frag @" << name <<
-		 	'(' << arg << ')'
-	);
-	frag->add(
-		arg,
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
+	if (frag) {
+		expand_macro_arg(frag, arg);
+	}
 ;
 	} while (false);
 ;
