@@ -935,7 +935,7 @@
 	else {
 		process_ident(out, ident, '{');
 		writeOneEscaped(out, '{');
-		q = w + 1;
+		q = w;
 	}
 @end(write macro)
 ```

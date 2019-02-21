@@ -777,7 +777,7 @@
 ```
 @def(do macro)
 	if (name == "def") {
-		ASSERT_MSG(! frag, "def in frag");
+		ASSERT_MSG(! frag, "def(" << arg << ") in frag");
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
@@ -811,7 +811,8 @@
 @add(do macro)
 	if (name == "end") {
 		ASSERT_MSG(frag,
-			"end not in frag"
+			"end(" << arg <<
+			") not in frag"
 		);
 		@put(frag names must match);
 		frag = nullptr;

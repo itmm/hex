@@ -949,7 +949,7 @@
 	else {
 		process_ident(out, ident, '{');
 		writeOneEscaped(out, '{');
-		q = w + 1;
+		q = w;
 	}
 ;
 		begin = q;
@@ -1302,7 +1302,7 @@
 	do {
 		
 	if (name == "def") {
-		ASSERT_MSG(! frag, "def in frag");
+		ASSERT_MSG(! frag, "def(" << arg << ") in frag");
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
@@ -1322,7 +1322,8 @@
 
 	if (name == "end") {
 		ASSERT_MSG(frag,
-			"end not in frag"
+			"end(" << arg <<
+			") not in frag"
 		);
 		
 	ASSERT_MSG(frag->name == arg,

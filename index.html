@@ -1094,7 +1094,7 @@ Es wird einfach nur das Argument ausgegeben
 <code>
 <span class="macro">@def(<span class="name">do macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"def"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"def in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"def("</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">") in frag"</span>);<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>};<br/>
@@ -1138,7 +1138,8 @@ Bricht aber die Abarbeitung nicht ab
 <span class="macro">@add(<span class="name">do macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"end"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"end not in frag"</span><br/>
+<span class="in3"></span><span class="str">"end("</span> &lt;&lt; <span class="var">arg</span> &lt;&lt;<br/>
+<span class="in3"></span><span class="str">") not in frag"</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag names must match</span>)</span>;<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="num">nullptr</span>;<br/>
