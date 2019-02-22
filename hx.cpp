@@ -914,6 +914,12 @@
 		out << "</span>";
 		break;
 	}
+
+	if (name == "b" || name == "br") {
+		writeMacroClass(out, "virt");
+		out << "</span><br/>";
+		break;
+	}
 ;
 		
 	std::cerr << "unknown macro @" <<

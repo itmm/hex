@@ -873,6 +873,20 @@ Der Bezeichner <code><span class="str">n</span></code> steht für eine Wert-Form
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">special macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"b"</span> || <span class="var">name</span> == <span class="str">"br"</span>) {<br/>
+<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"virt"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;&lt;br/&gt;"</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">special macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch dargestellt
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">cctype</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>

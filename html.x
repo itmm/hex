@@ -679,6 +679,17 @@
 * Der Bezeichner `@s(n)` steht für eine Wert-Formatierung
 
 ```
+@add(special macro)
+	if (name == "b" || name == "br") {
+		writeMacroClass(out, "virt");
+		out << "</span><br/>";
+		break;
+	}
+@end(special macro)
+```
+* Der Bezeichner `@s(b)` wird als Zeilenumbruch dargestellt
+
+```
 @Add(includes)
 	#include <cctype>
 @end(includes)
