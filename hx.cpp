@@ -692,7 +692,8 @@
 	"break", "case", "catch", "continue",
 	"default", "delete", "else", "for",
 	"if", "in", "new", "return", "static",
-	"switch", "try", "typeof", "while"
+	"switch", "try", "typeof", "while",
+	"class", "public", "private"
 
 		};
 		return
@@ -707,7 +708,7 @@
 	"FILE", "auto", "bool", "char",
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
-	"union", "unsigned", "void"
+	"union", "unsigned", "void", "double"
 
 	};
 	if (reserved.find(s) !=

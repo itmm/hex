@@ -707,7 +707,8 @@
 	"break", "case", "catch", "continue",
 	"default", "delete", "else", "for",
 	"if", "in", "new", "return", "static",
-	"switch", "try", "typeof", "while"
+	"switch", "try", "typeof", "while",
+	"class", "public", "private"
 @end(keywords)
 ```
 * Reservierte Schlüsselwörter
@@ -742,7 +743,7 @@
 	"FILE", "auto", "bool", "char",
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
-	"union", "unsigned", "void"
+	"union", "unsigned", "void", "double"
 @end(types)
 ```
 * Reservierte Typen
