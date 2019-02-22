@@ -644,7 +644,7 @@
 
 ```
 @add(special macro)
-	if (name == "var" || name == "var") {
+	if (name == "v" || name == "var") {
 		writeMacroClass(out, "var");
 		writeEscaped(out, arg);
 		out << "</span>";
