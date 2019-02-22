@@ -30,14 +30,14 @@ Fragmente sind global sichtbare Strukturen
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="var">class</span> <span class="type">Frag</span>;<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
 <br/>
-<span class="in1"></span><span class="var">class</span> <span class="type">FragEntry</span> {<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">FragEntry</span> {<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_str</span>;<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_file</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_first_line</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_last_line</span>;<br/>
-<span class="in1"></span><span class="var">public</span>:<br/>
+<span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">entry methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
@@ -212,11 +212,11 @@ Das Fragment legt die Einträge in einem Vektor ab
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="var">class</span> <span class="type">Frag</span> {<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span> {<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">_entries</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_expands</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_multiples</span>;<br/>
-<span class="in1"></span><span class="var">public</span>:<br/>
+<span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
@@ -840,12 +840,12 @@ Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="var">class</span> <span class="type">FragMap</span> {<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">FragMap</span> {<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">_link</span>;<br/>
 <span class="in2"></span><span class="var">using</span> <span class="type">Map</span> =<br/>
 <span class="in3"></span><span class="var">std</span>::<span class="var">map</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;;<br/>
 <span class="in2"></span><span class="type">Map</span> <span class="var">map</span>;<br/>
-<span class="in1"></span><span class="var">public</span>:<br/>
+<span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag map methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>

@@ -588,24 +588,31 @@
 	) {
 		auto b = arg.begin();
 		auto e = arg.end();
-		while (b != e) {
-			auto x = std::find(b, e, '@');
-			if (x != e) {
-				f->add(
-					std::string { b, x },
-					inputs.cur()->name,
-					inputs.cur()->line()
-				);
-				b = x + 1;
-			} else {
-				f->add(
-					std::string { b, e },
-					inputs.cur()->name,
-					inputs.cur()->line()
-				);
-				b = e;
-			}
+		
+	while (b != e) {
+		auto x = std::find(b, e, '@');
+		if (x != e) {
+			
+	f->add(
+		std::string { b, x },
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+;
+			b = x + 1;
+		} else {
+			
+	f->add(
+		std::string { b, e },
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+	b = e;
+;
+			b = e;
 		}
+	}
+;
 	}
 
 	enum class HtmlState {
@@ -829,16 +836,17 @@
 			std::string name {nb, ne};
 			auto ab = ne + 1;
 			auto ae = ab;
-			while (ae != end && *ae != ')') {
-				if (*ae == '@') {
-					++ae;
-					if (ae == end) { break; }
-				}
-				++ae;
-			}
-			if (ae != end) {
-				std::string arg {ab, ae};
-				
+			
+	while (ae != end && *ae != ')') {
+		if (*ae == '@') {
+			++ae;
+			if (ae == end) { break; }
+		}
+		++ae;
+	}
+	if (ae != end) {
+		std::string arg {ab, ae};
+		
 	do {
 		
 	static Set macros = {
@@ -878,6 +886,34 @@
 		out << "</span>";
 		break;
 	}
+
+	if (name == "f" || name == "fn") {
+		writeMacroClass(out, "fn");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+
+	if (name == "var" || name == "var") {
+		writeMacroClass(out, "var");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+
+	if (name == "k" || name == "key") {
+		writeMacroClass(out, "key");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+
+	if (name == "n" || name == "num") {
+		writeMacroClass(out, "num");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
 ;
 		
 	std::cerr << "unknown macro @" <<
@@ -891,8 +927,9 @@
 	} while (false);
 	begin = ae;
 ;
-				continue;
-			}
+		continue;
+	}
+;
 		}
 	}
 
@@ -919,31 +956,7 @@
 	} else {
 		std::string name {w + 1, q};
 		
-	if (ident == "v") {
-		writeMacroClass(out, "var");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-
-	else if (ident == "f") {
-		writeMacroClass(out, "fn");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-
-	else if (ident == "k") {
-		writeMacroClass(out, "keyword");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-
-	else if (ident == "n") {
-		writeMacroClass(out, "num");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-
-	else if (ident == "p") {
+	if (ident == "p") {
 		writeMacroClass(out, "var");
 		out << "@priv(<span>";
 		writeEscaped(out, name);

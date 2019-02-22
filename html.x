@@ -113,7 +113,7 @@
 	}
 @end(global elements)
 ```
-* Die Funktion `f{in_code}` liefert `true`, wenn sich
+* Die Funktion `@f(in_code)` liefert `true`, wenn sich
   der Zustands-Automat gerade in einem Fragment befindet
 
 ```
@@ -529,21 +529,27 @@
 			std::string name {nb, ne};
 			auto ab = ne + 1;
 			auto ae = ab;
-			while (ae != end && *ae != ')') {
-				if (*ae == '@') {
-					++ae;
-					if (ae == end) { break; }
-				}
-				++ae;
-			}
-			if (ae != end) {
-				std::string arg {ab, ae};
-				@put(got macro);
-				continue;
-			}
+			@put(macro loop);
 		}
 	}
 @end(process code ch)
+```
+
+```
+@def(macro loop)
+	while (ae != end && *ae != ')') {
+		if (*ae == '@') {
+			++ae;
+			if (ae == end) { break; }
+		}
+		++ae;
+	}
+	if (ae != end) {
+		std::string arg {ab, ae};
+		@put(got macro);
+		continue;
+	}
+@end(macro loop)
 ```
 
 ```
@@ -623,6 +629,54 @@
 	}
 @end(special macro)
 ```
+
+```
+@add(special macro)
+	if (name == "f" || name == "fn") {
+		writeMacroClass(out, "fn");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+@end(special macro)
+```
+* Der Bezeichner `@s(f)` steht für eine Funktion-Formatierung
+
+```
+@add(special macro)
+	if (name == "var" || name == "var") {
+		writeMacroClass(out, "var");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+@end(special macro)
+```
+* Der Bezeichner `@s(v)` steht für eine Variablen-Formatierung
+
+```
+@add(special macro)
+	if (name == "k" || name == "key") {
+		writeMacroClass(out, "key");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+@end(special macro)
+```
+* Der Bezeichner `@s(k)` steht für eine Schlüsselwort-Formatierung
+
+```
+@add(special macro)
+	if (name == "n" || name == "num") {
+		writeMacroClass(out, "num");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+@end(special macro)
+```
+* Der Bezeichner `@s(n)` steht für eine Wert-Formatierung
 
 ```
 @Add(includes)
@@ -862,51 +916,7 @@
 
 ```
 @def(write macro)
-	if (ident == "v") {
-		writeMacroClass(out, "var");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(v)` steht für eine Variablen-Formatierung
-
-```
-@add(write macro)
-	else if (ident == "f") {
-		writeMacroClass(out, "fn");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(f)` steht für eine Funktion-Formatierung
-
-```
-@add(write macro)
-	else if (ident == "k") {
-		writeMacroClass(out, "keyword");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(k)` steht für eine Schlüsselwort-Formatierung
-
-```
-@add(write macro)
-	else if (ident == "n") {
-		writeMacroClass(out, "num");
-		writeEscaped(out, name);
-		out << "</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(n)` steht für eine Werte-Formatierung
-
-```
-@add(write macro)
-	else if (ident == "p") {
+	if (ident == "p") {
 		writeMacroClass(out, "var");
 		out << "@priv(<span>";
 		writeEscaped(out, name);
@@ -1091,7 +1101,7 @@
 	}
 @end(inline code)
 ```
-* Eingeschobene Code-Schnippsel werden ebenfalls mit `f{process_code}`
+* Eingeschobene Code-Schnippsel werden ebenfalls mit `@f(process_code)`
   formatiert
 
 ```

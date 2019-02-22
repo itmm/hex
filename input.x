@@ -167,7 +167,7 @@
 * Falls schon eine Datei offen ist, wird sie nach `pending` verschoben
 
 # Nächste Zeile
-* Die Funktion `f{getLine}` liest die nächste Zeile aus der aktuellen
+* Die Funktion `@f(getLine)` liest die nächste Zeile aus der aktuellen
   Datei
 * Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
   Stapel der offenen Dateien geholt

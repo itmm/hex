@@ -613,26 +613,45 @@
 	) {
 		auto b = arg.begin();
 		auto e = arg.end();
-		while (b != e) {
-			auto x = std::find(b, e, '@');
-			if (x != e) {
-				f->add(
-					std::string { b, x },
-					inputs.cur()->name,
-					inputs.cur()->line()
-				);
-				b = x + 1;
-			} else {
-				f->add(
-					std::string { b, e },
-					inputs.cur()->name,
-					inputs.cur()->line()
-				);
-				b = e;
-			}
-		}
+		@put(expand loop);
 	}
 @end(global elements)
+```
+
+```
+@def(expand loop)
+	while (b != e) {
+		auto x = std::find(b, e, '@');
+		if (x != e) {
+			@put(expand inner);
+			b = x + 1;
+		} else {
+			@put(expand rest);
+			b = e;
+		}
+	}
+@end(expand loop)
+```
+
+```
+@def(expand inner)
+	f->add(
+		std::string { b, x },
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+@end(expand inner)
+```
+
+```
+@def(expand rest)
+	f->add(
+		std::string { b, e },
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+	b = e;
+@end(expand rest)
 ```
 
 ```

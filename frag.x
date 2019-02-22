@@ -354,7 +354,7 @@
 	Frag &add(Frag *child);
 @end(frag methods)
 ```
-* Die `f{add}`-Methode muss sicherstellen, dass keine Zykel entstehen
+* Die `@f(add)`-Methode muss sicherstellen, dass keine Zykel entstehen
 * Da es die notwendigen Methoden noch nicht gibt, wird die Methode
   außerhalb der Klasse definiert
 
@@ -490,7 +490,7 @@
 	#include <sstream>
 @end(includes)
 ```
-* `f{testFrag}` benötigt `std::ostringstream`
+* `@f(testFrag)` benötigt `std::ostringstream`
 
 ```
 @def(serialize test frag)
