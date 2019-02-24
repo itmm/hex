@@ -1,6 +1,10 @@
 HEX
 ===
 
+A documentation of how to use `hex` is available at
+
+https://itmm.github.io/using-hex/
+
 `hex` ist eine Slideshow, die den Sourcecode enthält, um aus einem
 XML-Dokument sowohl eine Slideshow (in HTML), als auch ein ausführbares
 Programm zu erstellen.
