@@ -657,7 +657,7 @@
 ```
 @add(special macro)
 	if (name == "k" || name == "key") {
-		writeMacroClass(out, "key");
+		writeMacroClass(out, "keyword");
 		writeEscaped(out, arg);
 		out << "</span>";
 		break;
