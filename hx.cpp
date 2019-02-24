@@ -1776,7 +1776,6 @@
 	process_content(
 		out, line.begin(), line.end()
 	);
-	out << "\n";
 ;
 ;
 	}

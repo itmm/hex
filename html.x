@@ -1209,7 +1209,6 @@
 	process_content(
 		out, line.begin(), line.end()
 	);
-	out << "\n";
 @end(process para)
 ```
 * Am Anfang wird ein Absatz geöffnet
