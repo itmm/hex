@@ -618,7 +618,8 @@
 	enum class HtmlState {
 		nothing,
 		inSlide,
-		afterSlide
+		afterSlide,
+		afterSlides
 		
 	, inCode
 
@@ -1630,10 +1631,13 @@
 		status.state == HtmlState::inPara
 	) {
 		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
 	}
 ;
 		switch (status.state) {
 			case HtmlState::afterSlide:
+			case HtmlState::afterSlides:
 			case HtmlState::nothing:
 				break;
 			default:
@@ -1714,6 +1718,11 @@
 	if (line == "```") {
 		
 	if (
+		status.state == HtmlState::afterSlides
+	) {
+		out << "<div class=\"slides\">\n";
+	}
+	if (
 		status.state == HtmlState::inSlide
 	) {
 		out << "</div>\n";
@@ -1767,6 +1776,9 @@
 	}
 
 	
+	if (status.state == HtmlState::afterSlide) {
+		out << "</div>\n";
+	}
 	if (
 		status.state != HtmlState::inPara
 	) {

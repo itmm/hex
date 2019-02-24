@@ -42,7 +42,8 @@
 	enum class HtmlState {
 		nothing,
 		inSlide,
-		afterSlide
+		afterSlide,
+		afterSlides
 		@put(html state enums)
 	};
 @end(global elements)
@@ -133,6 +134,7 @@
 		@put(close specials);
 		switch (status.state) {
 			case HtmlState::afterSlide:
+			case HtmlState::afterSlides:
 			case HtmlState::nothing:
 				break;
 			default:
@@ -346,6 +348,11 @@
 
 ```
 @def(open code page)
+	if (
+		status.state == HtmlState::afterSlides
+	) {
+		out << "<div class=\"slides\">\n";
+	}
 	if (
 		status.state == HtmlState::inSlide
 	) {
@@ -1193,6 +1200,8 @@
 		status.state == HtmlState::inPara
 	) {
 		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
 	}
 @end(close specials)
 ```
@@ -1200,6 +1209,9 @@
 
 ```
 @def(process para)
+	if (status.state == HtmlState::afterSlide) {
+		out << "</div>\n";
+	}
 	if (
 		status.state != HtmlState::inPara
 	) {

@@ -66,7 +66,8 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 <span class="in1"></span><span class="type">enum</span> <span class="keyword">class</span> <span class="type">HtmlState</span> {<br/>
 <span class="in2"></span><span class="var">nothing</span>,<br/>
 <span class="in2"></span><span class="var">inSlide</span>,<br/>
-<span class="in2"></span><span class="var">afterSlide</span><br/>
+<span class="in2"></span><span class="var">afterSlide</span>,<br/>
+<span class="in2"></span><span class="var">afterSlides</span><br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">html state enums</span>)</span><br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
@@ -188,6 +189,7 @@ Daher wird dieser Block als erstes abgehandelt
 <span class="in2"></span><span class="macro">@put(<span class="name">close specials</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">state</span>) {<br/>
 <span class="in3"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">afterSlide</span>:<br/>
+<span class="in3"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">afterSlides</span>:<br/>
 <span class="in3"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">nothing</span>:<br/>
 <span class="in4"></span><span class="keyword">break</span>;<br/>
 <span class="in3"></span><span class="keyword">default</span>:<br/>
@@ -471,6 +473,11 @@ Eine Zeile mit drei Backticks wechselt in den Code Modus
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">open code page</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">afterSlides</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inSlide</span><br/>
 <span class="in1"></span>) {<br/>
@@ -1536,6 +1543,8 @@ Wenn nichts anderes bearbeitet wurde, dann verarbeitet der Renderer
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inPara</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/p&gt;\n"</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> =<br/>
+<span class="in3"></span><span class="type">HtmlState</span>::<span class="var">afterSlides</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">close specials</span>)</span><br/>
 </code></div>
@@ -1546,6 +1555,9 @@ Bei einer Leerzeile werden Absätze beendet beendet
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process para</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">afterSlide</span>) {<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inPara</span><br/>
 <span class="in1"></span>) {<br/>
