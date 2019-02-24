@@ -989,6 +989,7 @@
 		status.state == HtmlState::inNotes
 	) {
 		@put(process note);
+		continue;
 	}
 @end(process line)
 ```
@@ -1166,4 +1167,51 @@
 @end(do bold)
 ```
 * Formatiert Text fett
+
+# Absätze
+* Zwischen Folien verarbeitet `hex` Absätze mit normalen Text
+
+```
+@add(html state enums)
+	, inPara
+@end(html state enums)
+```
+* Absätze sind ein eigener Zustand
+* Da sie mehrzeilig sein können
+
+```
+@add(process line)
+	@put(process para);
+@end(process line)
+```
+* Wenn nichts anderes bearbeitet wurde, dann verarbeitet der Renderer
+  einen Absatz
+
+```
+@add(close specials)
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+	}
+@end(close specials)
+```
+* Bei einer Leerzeile werden Absätze beendet beendet
+
+```
+@def(process para)
+	if (
+		status.state != HtmlState::inPara
+	) {
+		out << "<p>";
+		status.state = HtmlState::inPara;
+	}
+	process_content(
+		out, line.begin(), line.end()
+	);
+	out << "\n";
+@end(process para)
+```
+* Am Anfang wird ein Absatz geöffnet
+* Danach gibt `hex` die Zeilen aus
 

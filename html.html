@@ -1270,6 +1270,7 @@ Da sie mehrzeilig sein können
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process note</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process line</span>)</span><br/>
 </code></div>
@@ -1493,6 +1494,74 @@ Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett
 </code></div>
 <ul><li>
 Formatiert Text fett
+</li></ul>
+</div>
+</div>
+<h1>Absätze</h1>
+<div class="slides">
+<div><div>
+<h1>Absätze</h1>
+</div>
+<ul><li>
+Zwischen Folien verarbeitet <code><span class="var">hex</span></code> Absätze mit normalen Text
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">html state enums</span>)</span><br/>
+<span class="in1"></span>, <span class="var">inPara</span><br/>
+<span class="macro">@end(<span class="name">html state enums</span>)</span><br/>
+</code></div>
+<ul><li>
+Absätze sind ein eigener Zustand
+</li><li>
+Da sie mehrzeilig sein können
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">process line</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">process para</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">process line</span>)</span><br/>
+</code></div>
+<ul><li>
+Wenn nichts anderes bearbeitet wurde, dann verarbeitet der Renderer
+  einen Absatz
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">close specials</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inPara</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/p&gt;\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">close specials</span>)</span><br/>
+</code></div>
+<ul><li>
+Bei einer Leerzeile werden Absätze beendet beendet
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">process para</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inPara</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;p&gt;"</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inPara</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="fn">process_content</span>(<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>()<br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"\n"</span>;<br/>
+<span class="macro">@end(<span class="name">process para</span>)</span><br/>
+</code></div>
+<ul><li>
+Am Anfang wird ein Absatz geöffnet
+</li><li>
+Danach gibt <code><span class="var">hex</span></code> die Zeilen aus
 </li></ul>
 </div>
 </body>

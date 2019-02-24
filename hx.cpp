@@ -624,6 +624,8 @@
 
 	, inNotes
 
+	, inPara
+
 	};
 
 	struct HtmlStatus {
@@ -1623,6 +1625,12 @@
 	) {
 		out << "</li></ul>\n";
 	}
+
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+	}
 ;
 		switch (status.state) {
 			case HtmlState::afterSlide:
@@ -1755,7 +1763,21 @@
 		);
 	}
 ;
+		continue;
 	}
+
+	
+	if (
+		status.state != HtmlState::inPara
+	) {
+		out << "<p>";
+		status.state = HtmlState::inPara;
+	}
+	process_content(
+		out, line.begin(), line.end()
+	);
+	out << "\n";
+;
 ;
 	}
 
