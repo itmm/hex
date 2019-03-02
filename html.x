@@ -697,6 +697,32 @@
 * Der Bezeichner `@s(b)` wird als Zeilenumbruch dargestellt
 
 ```
+@add(special macro)
+	if (name == "priv") {
+		writeMacroClass(out, "var");
+		out << "@priv(<span>";
+		writeEscaped(out, arg);
+		out << "</span>)</span>";
+		break;
+	}
+@end(special macro)
+```
+* `@priv`-Makro ist ein Bezeichner
+
+```
+@add(special macro)
+	if (name == "macro") {
+		writeMacroClass(out, "num");
+		out << "@magic(<span>";
+		writeEscaped(out, arg);
+		out << "</span>)</span>";
+		break;
+	}
+@end(special macro)
+```
+* `@magic`-Makro ist ein Wert
+
+```
 @Add(includes)
 	#include <cctype>
 @end(includes)
@@ -733,18 +759,12 @@
 @def(process identifier)
 	std::string ident {begin, w};
 	begin = w - 1;
-	if (w != end && *w == '{') {
-		@put(do macro);
-	} else {
-		process_ident(
-			out, ident,
-			w != end ? *w : ' '
-		);
-	}
+	process_ident(
+		out, ident,
+		w != end ? *w : ' '
+	);
 @end(process identifier)
 ```
-* Wenn dem Identifier eine öffnende Mengen-Klammer folgt, dann wird
-  ein Makro-Aufruf geparst
 * `begin` wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.
   korrigiert
 * Sonst wird der Identifier normal verarbeitet
@@ -889,24 +909,6 @@
   identifiziert
 
 ```
-@def(do macro)
-	auto q = std::find(w + 1, end, '}');
-	if (q == end) {
-		writeEscaped(out, ident);
-		writeOneEscaped(out, '{');
-		begin = w;
-	} else {
-		std::string name {w + 1, q};
-		@put(write macro);
-		begin = q;
-	}
-@end(do macro)
-```
-* Wenn keine schließende Mengen-Klammer gefunden wird, dann ist der
-  Bezeichner kein Makro
-* Sonst wird das Makro ausgegeben
-
-```
 @add(process code helper)
 	void writeMacroClass(
 		std::ostream &out,
@@ -931,51 +933,6 @@
 @end(process code helper)
 ```
 * Öffnet ein Makro mit einem bestimmetn Namen
-
-```
-@def(write macro)
-	if (ident == "p") {
-		writeMacroClass(out, "var");
-		out << "@priv(<span>";
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(p)` steht für ein `@priv`-Makro
-
-```
-@add(write macro)
-	else if (ident == "m") {
-		writeMacroClass(out, "var");
-		out << "@magic(<span>";
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(m)` steht für ein `@magic`-Makro
-
-```
-@add(write macro)
-	else if (ident == "b") {
-		writeMacroClass(out, "virt");
-		out << "</span><br/>";
-	}
-@end(write macro)
-```
-* Der Bezeichner `@s(b)` wird als Zeilenumbruch dargestellt
-
-```
-@add(write macro)
-	else {
-		process_ident(out, ident, '{');
-		writeOneEscaped(out, '{');
-		q = w;
-	}
-@end(write macro)
-```
-* Andere Bezeichner werden nicht als Makro formatiert
 
 # Notizen
 * Zu den Folien können Notizen mit `*` markiert werden

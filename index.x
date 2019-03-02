@@ -303,56 +303,6 @@
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
   schon das erste Zeichen ein `EOF` ist)
 
-```
-@add(global elements)
-	bool is_macro_start(
-		const Frag *frag, SI begin, SI end
-	) {
-		@put(is macro start);
-		return false;
-	}
-@end(global elements)
-```
-* Diese Funktion gibt an, ob an der Stelle `i` ein Makro beginnt
-
-```
-@add(global elements)
-	SI find_macro_end(SI i, SI e) {
-		@put(find macro end);
-		return i;
-	}
-@end(global elements)
-```
-* Liefert das Ende des Makros
-
-```
-@def(process special lines)
-	if (is_macro_start(frag, i, end)) {
-		auto j = find_macro_end(i, end);
-		if (j != end) {
-			do {
-				@put(process macro);
-			} while (false); 
-			i += (j - i);
-			continue;
-		}
-	}
-@end(process special lines)
-```
-* Wenn in einer Zeile ein Makro gefunden wird, dann wird dieses
-  verarbeitet
-* In `@s(process macro)` kann bei Erfolg mit `break` der Block verlassen
-  werden
-
-
-```
-@def(is macro start)
-	auto n = begin + 1;
-	if (n >= end) { return false; }
-	if (*n != '{') { return false; }
-@end(is macro start)
-```
-* Hinter dem Bezeichner muss eine öffnende Mengen-Klammer stehen
 
 ```
 @def(additional read vars)
@@ -395,171 +345,10 @@
 	#include <algorithm>
 @end(includes)
 ```
-* `find_macro_end` benötigt `std::find`
+* Wird für find benötigt
 
 ```
-@def(find macro end)
-	return std::find(i, e, '}');
-@end(find macro end)
-```
-* Eine schließende Mengen-Klammer markiert das Ende des Makros
-
-```
-@def(process macro)
-	char openCh {*i};
-	i += 2;
-	std::string name {i, j};
-@end(process macro)
-```
-* `openCh` enthält Makro-Indikator
-* Die Zeichen zwischen den Mengen-Klammern sind der Name des Makros
-
-```
-@add(process macro)
-	if (openCh == 'p') {
-		ASSERT_MSG(frag,
-			"private not in frag"
-		);
-		@put(process private frag);
-		break;
-	}
-@end(process macro)
-```
-* Private Bezeichner werden durch einen Hash erweitert
-* Um sie global unique zu machen
-
-```
-@add(includes)
-	#include <functional>
-	#include <sstream>
-@end(includes)
-```
-* Enthält Hash-Funktion
-
-```
-@def(process private frag)
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur()->name +
-			':' + name) &
-				0x7fffffff
-	};
-@end(process private frag)
-```
-* Der Hash wird aus dem aktuellen Dateinamen
-* Und dem aktuellen Bezeichner berechnet
-* Zum Schluss wird er auf eine positive Zahl maskiert
-
-```
-@add(process private frag)
-	std::ostringstream hashed;
-	hashed << "_private_" <<
-		cur << '_' <<
-		name;
-	frag->add(
-		hashed.str(),
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-@end(process private frag)
-```
-* Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
-* Dann kommt der neue Bezeichner
-* Dieser besteht aus einem konstanten Präfix
-* Dem Hash-Wert
-* Und dem alten Bezeichner
-
-```
-@add(process macro)
-	if (openCh == 'm') {
-		ASSERT_MSG(frag,
-			"magic not in frag"
-		);
-		@put(process magic frag);
-		break;
-	}
-@end(process macro)
-```
-* Der `@magic`-Befehl erzeugt einen Hash-Wert
-* Der sich aus dem Dateinamen und dem Argument des Befehls
-  zusammen setzt
-
-```
-@def(process magic frag)
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur()->name +
-			':' + name) &
-				0x7fffffff
-	};
-@end(process magic frag)
-```
-* Berechnet Hash-Wert
-
-```
-@add(process magic frag)
-	std::ostringstream value;
-	value << cur;
-	frag->add(
-		value.str(),
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-@end(process magic frag)
-```
-* Gibt den Hash-Wert aus
-* Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
-
-```
-@add(is macro start) {
-	if (frag) {
-		@put(check valid names);
-	}
-} @end(is macro start)
-```
-* Prüft, ob ein Befehl innerhalb eines Fragments mit einem gültigen
-  Zeichen beginnt
-* In diesem Fall wird das Zeichen als Befehls-Opcode gesichert und der
-  Buffer aktiviert um alle Zeichen bis zu eine schließenden
-  Mengenklammer zu speichern
-
-```
-@def(check valid names)
-	static const std::string valids { 
-		"fvntkpmb"
-	};
-	bool found {
-		valids.find(
-			static_cast<char>(*begin)
-		) != std::string::npos
-	};
-	if (found) {
-		return true;
-	}
-@end(check valid names)
-```
-* Gültige Kommando-Zeichen sind in einem String abgelegt
-* Wenn das Zeichen im String vorkommt, dann ist es gültig
-
-```
-@add(process macro)
-	ASSERT_MSG(frag,
-		"must be in frag " << openCh <<
-		 	'{' << name << '}'
-	);
-	frag->add(
-		name,
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-@end(process macro)
-```
-* Sonstige Makros dürfen nur in Fragmenten vorkommen
-* Sie dienen der Formatierung und können bei der Code-Generierung
-  ignoriert werden
-
-```
-@add(process special lines)
+@def(process special lines)
 	if (*i == '@') {
 		auto nb = i + 1;
 		auto ne = std::find(nb, end, '(');
@@ -952,6 +741,102 @@
 @end(do macro)
 ```
 * `@Mul` expandiert ein globales Fragment an mehreren Stellen
+
+```
+@add(do macro)
+	if (name == "priv") {
+		ASSERT_MSG(frag,
+			"@priv not in frag"
+		);
+		@put(process private frag 2);
+		break;
+	}
+@end(do macro)
+```
+* Private Bezeichner werden durch einen Hash erweitert
+* Um sie global unique zu machen
+
+```
+@add(includes)
+	#include <functional>
+	#include <sstream>
+@end(includes)
+```
+* Enthält Hash-Funktion
+
+```
+@def(process private frag 2)
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur()->name +
+			':' + arg) &
+				0x7fffffff
+	};
+@end(process private frag 2)
+```
+* Der Hash wird aus dem aktuellen Dateinamen
+* Und dem aktuellen Bezeichner berechnet
+* Zum Schluss wird er auf eine positive Zahl maskiert
+
+```
+@add(process private frag 2)
+	std::ostringstream hashed;
+	hashed << "_private_" <<
+		cur << '_' <<
+		name;
+	frag->add(
+		hashed.str(),
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+@end(process private frag 2)
+```
+* Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
+* Dann kommt der neue Bezeichner
+* Dieser besteht aus einem konstanten Präfix
+* Dem Hash-Wert
+* Und dem alten Bezeichner
+
+```
+@add(do macro)
+	if (name == "magic") {
+		ASSERT_MSG(frag,
+			"@magic not in frag"
+		);
+		@put(process magic frag 2);
+		break;
+	}
+@end(do macro)
+```
+* Der `@magic`-Befehl erzeugt einen Hash-Wert
+* Der sich aus dem Dateinamen und dem Argument des Befehls
+  zusammen setzt
+
+```
+@def(process magic frag 2)
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur()->name +
+			':' + arg) &
+				0x7fffffff
+	};
+@end(process magic frag 2)
+```
+* Berechnet Hash-Wert
+
+```
+@add(process magic frag 2)
+	std::ostringstream value;
+	value << cur;
+	frag->add(
+		value.str(),
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+@end(process magic frag 2)
+```
+* Gibt den Hash-Wert aus
+* Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
 
 # Fragmente serialisieren
 * Fragmente, die Dateien spezifizieren werden in diese Dateien

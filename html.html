@@ -894,6 +894,38 @@ Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch da
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">special macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"priv"</span>) {<br/>
+<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"var"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"@priv(&lt;span&gt;"</span>;<br/>
+<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">special macro</span>)</span><br/>
+</code></div>
+<ul><li>
+<code>@<span class="var">priv</span></code>-Makro ist ein Bezeichner
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">special macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"macro"</span>) {<br/>
+<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"num"</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"@magic(&lt;span&gt;"</span>;<br/>
+<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">special macro</span>)</span><br/>
+</code></div>
+<ul><li>
+<code>@<span class="var">magic</span></code>-Makro ist ein Wert
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">cctype</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
@@ -941,20 +973,13 @@ Zusätzlich noch der Unterstrich und das Dollar-Zeichen
 <span class="macro">@def(<span class="name">process identifier</span>)</span><br/>
 <span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">ident</span> {<span class="var">begin</span>, <span class="var">w</span>};<br/>
 <span class="in1"></span><span class="var">begin</span> = <span class="var">w</span> - <span class="num">1</span>;<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">w</span> != <span class="var">end</span> &amp;&amp; *<span class="var">w</span> == <span class="str">'{'</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">do macro</span>)</span>;<br/>
-<span class="in1"></span>} <span class="keyword">else</span> {<br/>
-<span class="in2"></span><span class="fn">process_ident</span>(<br/>
-<span class="in3"></span><span class="var">out</span>, <span class="var">ident</span>,<br/>
-<span class="in3"></span><span class="var">w</span> != <span class="var">end</span> ? *<span class="var">w</span> : <span class="str">' '</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="fn">process_ident</span>(<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="var">ident</span>,<br/>
+<span class="in2"></span><span class="var">w</span> != <span class="var">end</span> ? *<span class="var">w</span> : <span class="str">' '</span><br/>
+<span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">process identifier</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn dem Identifier eine öffnende Mengen-Klammer folgt, dann wird
-  ein Makro-Aufruf geparst
-</li><li>
 <code><span class="var">begin</span></code> wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.
   korrigiert
 </li><li>
@@ -1136,28 +1161,6 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">do macro</span>)</span><br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">q</span> = <span class="var">std</span>::<span class="fn">find</span>(<span class="var">w</span> + <span class="num">1</span>, <span class="var">end</span>, <span class="str">'}'</span>);<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">q</span> == <span class="var">end</span>) {<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">ident</span>);<br/>
-<span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">'{'</span>);<br/>
-<span class="in2"></span><span class="var">begin</span> = <span class="var">w</span>;<br/>
-<span class="in1"></span>} <span class="keyword">else</span> {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">w</span> + <span class="num">1</span>, <span class="var">q</span>};<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">write macro</span>)</span>;<br/>
-<span class="in2"></span><span class="var">begin</span> = <span class="var">q</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Wenn keine schließende Mengen-Klammer gefunden wird, dann ist der
-  Bezeichner kein Makro
-</li><li>
-Sonst wird das Makro ausgegeben
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeMacroClass</span>(<br/>
 <span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
@@ -1186,63 +1189,6 @@ Sonst wird das Makro ausgegeben
 </code></div>
 <ul><li>
 Öffnet ein Makro mit einem bestimmetn Namen
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"p"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"var"</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"@priv(&lt;span&gt;"</span>;<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">p</span></code> steht für ein <code>@<span class="var">priv</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"m"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"var"</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"@magic(&lt;span&gt;"</span>;<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;)&lt;/span&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">m</span></code> steht für ein <code>@<span class="var">magic</span></code>-Makro
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">ident</span> == <span class="str">"b"</span>) {<br/>
-<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"virt"</span>);<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;&lt;br/&gt;"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch dargestellt
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">write macro</span>)</span><br/>
-<span class="in1"></span><span class="keyword">else</span> {<br/>
-<span class="in2"></span><span class="fn">process_ident</span>(<span class="var">out</span>, <span class="var">ident</span>, <span class="str">'{'</span>);<br/>
-<span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">'{'</span>);<br/>
-<span class="in2"></span><span class="var">q</span> = <span class="var">w</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">write macro</span>)</span><br/>
-</code></div>
-<ul><li>
-Andere Bezeichner werden nicht als Makro formatiert
 </li></ul>
 </div>
 </div>

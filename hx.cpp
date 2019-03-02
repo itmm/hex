@@ -549,40 +549,6 @@
 ;
 	}
 
-	bool is_macro_start(
-		const Frag *frag, SI begin, SI end
-	) {
-		
-	auto n = begin + 1;
-	if (n >= end) { return false; }
-	if (*n != '{') { return false; }
- {
-	if (frag) {
-		
-	static const std::string valids { 
-		"fvntkpmb"
-	};
-	bool found {
-		valids.find(
-			static_cast<char>(*begin)
-		) != std::string::npos
-	};
-	if (found) {
-		return true;
-	}
-;
-	}
-} ;
-		return false;
-	}
-
-	SI find_macro_end(SI i, SI e) {
-		
-	return std::find(i, e, '}');
-;
-		return i;
-	}
-
 	void expand_macro_arg(
 		Frag *f, const std::string &arg
 	) {
@@ -923,6 +889,22 @@
 		out << "</span><br/>";
 		break;
 	}
+
+	if (name == "priv") {
+		writeMacroClass(out, "var");
+		out << "@priv(<span>";
+		writeEscaped(out, arg);
+		out << "</span>)</span>";
+		break;
+	}
+
+	if (name == "macro") {
+		writeMacroClass(out, "num");
+		out << "@magic(<span>";
+		writeEscaped(out, arg);
+		out << "</span>)</span>";
+		break;
+	}
 ;
 		
 	std::cerr << "unknown macro @" <<
@@ -955,50 +937,10 @@
 		
 	std::string ident {begin, w};
 	begin = w - 1;
-	if (w != end && *w == '{') {
-		
-	auto q = std::find(w + 1, end, '}');
-	if (q == end) {
-		writeEscaped(out, ident);
-		writeOneEscaped(out, '{');
-		begin = w;
-	} else {
-		std::string name {w + 1, q};
-		
-	if (ident == "p") {
-		writeMacroClass(out, "var");
-		out << "@priv(<span>";
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "m") {
-		writeMacroClass(out, "var");
-		out << "@magic(<span>";
-		writeEscaped(out, name);
-		out << "</span>)</span>";
-	}
-
-	else if (ident == "b") {
-		writeMacroClass(out, "virt");
-		out << "</span><br/>";
-	}
-
-	else {
-		process_ident(out, ident, '{');
-		writeOneEscaped(out, '{');
-		q = w;
-	}
-;
-		begin = q;
-	}
-;
-	} else {
-		process_ident(
-			out, ident,
-			w != end ? *w : ' '
-		);
-	}
+	process_ident(
+		out, ident,
+		w != end ? *w : ' '
+	);
 ;
 		continue;
 	}
@@ -1168,79 +1110,6 @@
 		i != end; ++i
 	) {
 		
-	if (is_macro_start(frag, i, end)) {
-		auto j = find_macro_end(i, end);
-		if (j != end) {
-			do {
-				
-	char openCh {*i};
-	i += 2;
-	std::string name {i, j};
-
-	if (openCh == 'p') {
-		ASSERT_MSG(frag,
-			"private not in frag"
-		);
-		
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur()->name +
-			':' + name) &
-				0x7fffffff
-	};
-
-	std::ostringstream hashed;
-	hashed << "_private_" <<
-		cur << '_' <<
-		name;
-	frag->add(
-		hashed.str(),
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-;
-		break;
-	}
-
-	if (openCh == 'm') {
-		ASSERT_MSG(frag,
-			"magic not in frag"
-		);
-		
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur()->name +
-			':' + name) &
-				0x7fffffff
-	};
-
-	std::ostringstream value;
-	value << cur;
-	frag->add(
-		value.str(),
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-;
-		break;
-	}
-
-	ASSERT_MSG(frag,
-		"must be in frag " << openCh <<
-		 	'{' << name << '}'
-	);
-	frag->add(
-		name,
-		inputs.cur()->name,
-		inputs.cur()->line()
-	);
-;
-			} while (false); 
-			i += (j - i);
-			continue;
-		}
-	}
-
 	if (*i == '@') {
 		auto nb = i + 1;
 		auto ne = std::find(nb, end, '(');
@@ -1479,6 +1348,54 @@
 ;
 		sub.addMultiple();
 		frag->add(&sub);
+		break;
+	}
+
+	if (name == "priv") {
+		ASSERT_MSG(frag,
+			"@priv not in frag"
+		);
+		
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur()->name +
+			':' + arg) &
+				0x7fffffff
+	};
+
+	std::ostringstream hashed;
+	hashed << "_private_" <<
+		cur << '_' <<
+		name;
+	frag->add(
+		hashed.str(),
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+;
+		break;
+	}
+
+	if (name == "magic") {
+		ASSERT_MSG(frag,
+			"@magic not in frag"
+		);
+		
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur()->name +
+			':' + arg) &
+				0x7fffffff
+	};
+
+	std::ostringstream value;
+	value << cur;
+	frag->add(
+		value.str(),
+		inputs.cur()->name,
+		inputs.cur()->line()
+	);
+;
 		break;
 	}
 ;
