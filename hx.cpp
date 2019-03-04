@@ -144,6 +144,18 @@
 		return p == prefix;
 	}
 
+	std::string cmd() const {
+		static const std::string prefix {
+			"| "
+		};
+		std::string p {
+			name.substr(0, prefix.size())
+		};
+		return p == prefix ?
+			name.substr(prefix.size()) :
+			std::string {};
+	}
+
 	Frag(
 		const std::string &name
 	):
@@ -153,6 +165,7 @@
 		name { name }
 	{
 		if (isFile()) { ++_expands; }
+		if (cmd().size()) { ++_expands; }
 	}
 
 	void clear() {
@@ -1518,6 +1531,52 @@
 			"] not populated\n";
 	}
 ;
+		}
+	}
+
+	for (auto &i : root) {
+		const Frag *frag { &i.second };
+		 {
+	const std::string cmd { frag->cmd() };
+	if (cmd.size()) {
+		
+	std::ostringstream out {};
+	serializeFrag(*frag, out, false);
+	std::string o { out.str() };
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(o.c_str(), o.size(), 1, f);
+		pclose(f);
+	}
+;
+	}
+} ;
+	}
+
+	for (auto &j : inputs) {
+		for (auto &i : j->frags) {
+			const Frag *frag {
+				&i.second
+			};
+			 {
+	const std::string cmd { frag->cmd() };
+	if (cmd.size()) {
+		
+	std::ostringstream out {};
+	serializeFrag(*frag, out, false);
+	std::string o { out.str() };
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(o.c_str(), o.size(), 1, f);
+		pclose(f);
+	}
+;
+	}
+} ;
 		}
 	}
 ;

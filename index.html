@@ -1297,15 +1297,55 @@ Für jedes Fragment, das nicht befüllt wurde wird eine Meldung
 Das Fragment wird in die entsprechende Datei geschrieben
 </li></ul>
 </div>
-</div>
-<h1>HTML generieren</h1>
-<div class="slides">
 <div><div>
-<h1>HTML generieren</h1>
+<code>
+<span class="macro">@add(<span class="name">serialize fragments</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>) {<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> { &amp;<span class="var">i</span>.<span class="var">second</span> };<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
+</code></div>
 </div>
-<ul><li>
-Aus <code><span class="var">hx</span></code>-Dateien wird ein HTML-Foliensatz generiert
-</li></ul>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">serialize fragments</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>-&gt;<span class="var">frags</span>) {<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
+<span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
+<span class="in3"></span>};<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">serialize cmd</span>)</span> {<br/>
+<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">cmd</span> { <span class="var">frag</span>-&gt;<span class="fn">cmd</span>() };<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span>.<span class="fn">size</span>()) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">write cmd in file</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+} <span class="macro">@end(<span class="name">serialize cmd</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">write cmd in file</span>)</span><br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">out</span> {};<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">o</span> { <span class="var">out</span>.<span class="fn">str</span>() };<br/>
+<span class="in1"></span><span class="var">std</span>::<span class="type">FILE</span> *<span class="var">f</span> {<br/>
+<span class="in2"></span><span class="fn">popen</span>(<span class="var">cmd</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>)<br/>
+<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
+<span class="in2"></span><span class="var">std</span>::<span class="fn">fwrite</span>(<span class="var">o</span>.<span class="fn">c_str</span>(), <span class="var">o</span>.<span class="fn">size</span>(), <span class="num">1</span>, <span class="var">f</span>);<br/>
+<span class="in2"></span><span class="fn">pclose</span>(<span class="var">f</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">write cmd in file</span>)</span><br/>
+</code></div>
 </div>
 <div><div>
 <code>

@@ -948,8 +948,51 @@
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
 
-# HTML generieren
-* Aus `hx`-Dateien wird ein HTML-Foliensatz generiert
+```
+@add(serialize fragments)
+	for (auto &i : root) {
+		const Frag *frag { &i.second };
+		@mul(serialize cmd);
+	}
+@end(serialize fragments)
+```
+
+```
+@add(serialize fragments)
+	for (auto &j : inputs) {
+		for (auto &i : j->frags) {
+			const Frag *frag {
+				&i.second
+			};
+			@mul(serialize cmd);
+		}
+	}
+@end(serialize fragments)
+```
+
+```
+@def(serialize cmd) {
+	const std::string cmd { frag->cmd() };
+	if (cmd.size()) {
+		@put(write cmd in file);
+	}
+} @end(serialize cmd)
+```
+
+```
+@def(write cmd in file)
+	std::ostringstream out {};
+	serializeFrag(*frag, out, false);
+	std::string o { out.str() };
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(o.c_str(), o.size(), 1, f);
+		pclose(f);
+	}
+@end(write cmd in file)
+```
 
 ```
 @inc(html.x)

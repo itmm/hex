@@ -189,6 +189,22 @@
 
 ```
 @add(frag methods)
+	std::string cmd() const {
+		static const std::string prefix {
+			"| "
+		};
+		std::string p {
+			name.substr(0, prefix.size())
+		};
+		return p == prefix ?
+			name.substr(prefix.size()) :
+			std::string {};
+	}
+@end(frag methods)
+```
+
+```
+@add(frag methods)
 	Frag(
 		const std::string &name
 	):
@@ -198,6 +214,7 @@
 		name { name }
 	{
 		if (isFile()) { ++_expands; }
+		if (cmd().size()) { ++_expands; }
 	}
 @end(frag methods)
 ```
