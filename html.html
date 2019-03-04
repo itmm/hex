@@ -703,7 +703,14 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="macro">@add(<span class="name">process code ch</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (*<span class="var">begin</span> == <span class="str">'@'</span>) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">nb</span> = <span class="var">begin</span> + <span class="num">1</span>;<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">ne</span> = <span class="var">std</span>::<span class="fn">find</span>(<span class="var">nb</span>, <span class="var">end</span>, <span class="str">'('</span>);<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">ne</span> = <span class="var">nb</span>;<br/>
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">ne</span> != <span class="var">end</span> &amp;&amp; *<span class="var">ne</span> != <span class="str">'('</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (! <span class="fn">isalpha</span>(*<span class="var">ne</span>)) {<br/>
+<span class="in4"></span><span class="var">ne</span> = <span class="var">end</span>;<br/>
+<span class="in4"></span><span class="keyword">break</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span>++<span class="var">ne</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ne</span> != <span class="var">end</span>) {<br/>
 <span class="in3"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">nb</span>, <span class="var">ne</span>};<br/>
 <span class="in3"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>;<br/>

@@ -351,7 +351,14 @@
 @def(process special lines)
 	if (*i == '@') {
 		auto nb = i + 1;
-		auto ne = std::find(nb, end, '(');
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			if (! isalpha(*ne)) {
+				ne = end;
+				break;
+			}
+			++ne;
+		}
 		if (ne != end && ne != nb) {
 			std::string name {nb, ne};
 			@put(macro argument);
@@ -414,6 +421,14 @@
 		if (x != e) {
 			@put(expand inner);
 			b = x + 1;
+			if (b != e) {
+				f->add(
+					*b,
+					inputs.cur()->name,
+					inputs.cur()->line()
+				);
+				++b;
+			}
 		} else {
 			@put(expand rest);
 			b = e;

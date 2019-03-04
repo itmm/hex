@@ -531,7 +531,14 @@
 @add(process code ch)
 	if (*begin == '@') {
 		auto nb = begin + 1;
-		auto ne = std::find(nb, end, '(');
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			if (! isalpha(*ne)) {
+				ne = end;
+				break;
+			}
+			++ne;
+		}
 		if (ne != end) {
 			std::string name {nb, ne};
 			auto ab = ne + 1;

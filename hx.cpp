@@ -566,6 +566,14 @@
 	);
 ;
 			b = x + 1;
+			if (b != e) {
+				f->add(
+					*b,
+					inputs.cur()->name,
+					inputs.cur()->line()
+				);
+				++b;
+			}
 		} else {
 			
 	f->add(
@@ -800,7 +808,14 @@
 
 	if (*begin == '@') {
 		auto nb = begin + 1;
-		auto ne = std::find(nb, end, '(');
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			if (! isalpha(*ne)) {
+				ne = end;
+				break;
+			}
+			++ne;
+		}
 		if (ne != end) {
 			std::string name {nb, ne};
 			auto ab = ne + 1;
@@ -1112,7 +1127,14 @@
 		
 	if (*i == '@') {
 		auto nb = i + 1;
-		auto ne = std::find(nb, end, '(');
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			if (! isalpha(*ne)) {
+				ne = end;
+				break;
+			}
+			++ne;
+		}
 		if (ne != end && ne != nb) {
 			std::string name {nb, ne};
 			
