@@ -898,7 +898,7 @@
 		break;
 	}
 
-	if (name == "macro") {
+	if (name == "magic") {
 		writeMacroClass(out, "num");
 		out << "@magic(<span>";
 		writeEscaped(out, arg);
