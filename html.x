@@ -637,7 +637,13 @@
 @add(special macro)
 	if (name == "s" || name == "str") {
 		writeMacroClass(out, "str");
-		writeEscaped(out, arg);
+		for (auto x = arg.begin();; ++x) {
+			if (*x == '@') {
+				++x;
+			}
+			if (x == arg.end()) { break; }
+			writeOneEscaped(out, *x);
+		}
 		out << "</span>";
 		break;
 	}

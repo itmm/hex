@@ -818,7 +818,13 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 <span class="macro">@add(<span class="name">special macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"s"</span> || <span class="var">name</span> == <span class="str">"str"</span>) {<br/>
 <span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"str"</span>);<br/>
-<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> <span class="var">x</span> = <span class="var">arg</span>.<span class="fn">begin</span>();; ++<span class="var">x</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (*<span class="var">x</span> == <span class="str">'@'</span>) {<br/>
+<span class="in4"></span>++<span class="var">x</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">x</span> == <span class="var">arg</span>.<span class="fn">end</span>()) { <span class="keyword">break</span>; }<br/>
+<span class="in3"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, *<span class="var">x</span>);<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
