@@ -33,8 +33,8 @@ Fragmente sind global sichtbare Strukturen
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
 <br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">FragEntry</span> {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_str</span>;<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">_file</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_str</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_file</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_first_line</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_last_line</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
@@ -76,7 +76,7 @@ Die Zeichenkette ist immer leer
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="fn">str</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">str</span>() <span class="type">const</span> {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_str</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -89,7 +89,7 @@ Auf die Bytes kann mit <code><span class="fn">str</span>()</code> nur lesend zug
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
-<span class="in2"></span><span class="type">char</span> <span class="var">ch</span>, <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">ch</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span>;<br/>
@@ -127,8 +127,8 @@ Die letzte Zeile wird immer gesetzt
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">value</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span>;<br/>
@@ -144,7 +144,7 @@ Bytes können direkt hinzugefügt werden
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">canAdd</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">can add</span>)</span>;<br/>
@@ -202,7 +202,7 @@ Ansonsten können die Zeichen angefügt werden
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">vector</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">vector</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -213,11 +213,11 @@ Das Fragment legt die Einträge in einem Vektor ab
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span> {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">vector</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">_entries</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">_entries</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_expands</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_multiples</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">name</span>;<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -241,10 +241,10 @@ Das Fragment zählt wie häufig es mit <code>@<span class="var">put</span></code
 <code>
 <span class="macro">@def(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> {<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
 <span class="in3"></span><span class="str">"file: "</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">p</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> {<br/>
 <span class="in3"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">size</span>())<br/>
 <span class="in2"></span>};<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">p</span> == <span class="var">prefix</span>;<br/>
@@ -260,16 +260,16 @@ Nur wenn sein Name mit der Zeichenkette <code><span class="str">file: </span></c
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="fn">cmd</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">prefix</span> {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">cmd</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
 <span class="in3"></span><span class="str">"| "</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">p</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> {<br/>
 <span class="in3"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">size</span>())<br/>
 <span class="in2"></span>};<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">p</span> == <span class="var">prefix</span> ?<br/>
 <span class="in3"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">size</span>()) :<br/>
-<span class="in3"></span><span class="var">std</span>::<span class="var">string</span> {};<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="type">string</span> {};<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
@@ -278,7 +278,7 @@ Nur wenn sein Name mit der Zeichenkette <code><span class="str">file: </span></c
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="fn">Frag</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>):<br/>
 <span class="in2"></span><span class="var">_entries</span> {},<br/>
 <span class="in2"></span><span class="var">_expands</span> { <span class="num">0</span> },<br/>
@@ -341,7 +341,7 @@ Fragmente haben einen eigenes Unit-Test Fragment
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFragName</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="type">Frag</span> <span class="fn">f</span>(<span class="var">name</span>);<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>.<span class="var">name</span> == <span class="var">name</span>);<br/>
@@ -437,8 +437,8 @@ fügt Text oder Fragmente an ein Fragment an
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">value</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">value</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">value</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
@@ -483,7 +483,7 @@ Wenn der letzte Eintrag unpassende Dateinamen oder Zeilennummern hat,
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
 <span class="in2"></span><span class="type">char</span> <span class="var">ch</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">file</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span>;<br/>
@@ -627,7 +627,7 @@ Fügt <code>@<span class="var">multiple</span></code> oder <code>@<span class="v
 <h1>Fragmente serialisieren</h1>
 </div>
 <ul><li>
-Serialisiert Fragmente in einen <code><span class="var">std</span>::<span class="var">ostream</span></code>
+Serialisiert Fragmente in einen <code><span class="type">std</span>::<span class="var">ostream</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -635,7 +635,7 @@ Serialisiert Fragmente in einen <code><span class="var">std</span>::<span class=
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">iterate entries</span>)</span>;<br/>
@@ -673,7 +673,7 @@ Dann werden die Bytes des Eintrags ausgegeben
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">expected</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">expected</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">serialize test frag</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -687,17 +687,17 @@ Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">sstream</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">sstream</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="fn">testFrag</span></code> benötigt <code><span class="var">std</span>::<span class="var">ostringstream</span></code>
+<code><span class="fn">testFrag</span></code> benötigt <code><span class="type">std</span>::<span class="var">ostringstream</span></code>
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">serialize test frag</span>)</span><br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
 <span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">buffer</span>, <span class="num">false</span>);<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="fn">str</span>() == <span class="var">expected</span>);<br/>
 <span class="macro">@end(<span class="name">serialize test frag</span>)</span><br/>
@@ -713,10 +713,10 @@ Der Buffer muss die erwarteten Werte enthalten
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">addStringToFrag</span>(<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">str</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">str</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
-<span class="in3"></span><span class="var">str</span>, <span class="var">std</span>::<span class="var">string</span> {}, <span class="num">0</span><br/>
+<span class="in3"></span><span class="var">str</span>, <span class="type">std</span>::<span class="type">string</span> {}, <span class="num">0</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -848,11 +848,11 @@ Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">map</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">map</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="type">FragMap</span></code> enthält eine <code><span class="var">std</span>::<span class="var">map</span></code>
+<code><span class="type">FragMap</span></code> enthält eine <code><span class="type">std</span>::<span class="var">map</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -860,8 +860,8 @@ Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">FragMap</span> {<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">_link</span>;<br/>
-<span class="in2"></span><span class="var">using</span> <span class="type">Map</span> =<br/>
-<span class="in3"></span><span class="var">std</span>::<span class="var">map</span>&lt;<span class="var">std</span>::<span class="var">string</span>, <span class="type">Frag</span>&gt;;<br/>
+<span class="in2"></span><span class="keyword">using</span> <span class="type">Map</span> =<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag</span>&gt;;<br/>
 <span class="in2"></span><span class="type">Map</span> <span class="var">map</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag map methods</span>)</span>;<br/>
@@ -903,7 +903,7 @@ Der vorher aktive Link wird zurück geliefert
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">found</span> { <span class="var">map</span>.<span class="fn">find</span>(<span class="var">name</span>) };<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">found</span> != <span class="var">map</span>.<span class="fn">end</span>()) {<br/>
 <span class="in3"></span><span class="keyword">return</span> &amp;<span class="var">found</span>-&gt;<span class="var">second</span>;<br/>
@@ -927,7 +927,7 @@ Wenn es nicht gefunden wird, wird <code><span class="num">nullptr</span></code> 
 <code>
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>,<br/>
 <span class="in2"></span><span class="type">FragMap</span> &amp;<span class="var">insert</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">found</span> { <span class="fn">find</span>(<span class="var">name</span>) };<br/>
@@ -953,7 +953,7 @@ Und zurück geliefert
 <code>
 <span class="macro">@add(<span class="name">frag map methods</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">operator</span>[](<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">get</span>(<span class="var">name</span>, *<span class="var">this</span>);<br/>
 <span class="in1"></span>}<br/>

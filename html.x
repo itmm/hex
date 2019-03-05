@@ -694,6 +694,18 @@
 
 ```
 @add(special macro)
+	if (name == "t" || name == "typ") {
+		writeMacroClass(out, "type");
+		writeEscaped(out, arg);
+		out << "</span>";
+		break;
+	}
+@end(special macro)
+```
+* Der Bezeichner `@s(t)` steht für eine Typ-Formatierung
+
+```
+@add(special macro)
 	if (name == "b" || name == "br") {
 		writeMacroClass(out, "virt");
 		out << "</span><br/>";
@@ -753,7 +765,8 @@
 @def(find identifier end)
 	while (w != end && (
 		std::isalnum(*w) ||
-			*w == '_' || *w == '$'
+			*w == '_' || *w == '$' ||
+			*w == '#'
 	)) {
 		++w;
 	}
@@ -795,7 +808,8 @@
 		};
 		return
 			reserved.find(s) !=
-				reserved.end();
+				reserved.end() ||
+					(s.size() && s[0] == '#');
 	}
 @end(process code helper)
 ```
@@ -807,7 +821,8 @@
 	"default", "delete", "else", "for",
 	"if", "in", "new", "return", "static",
 	"switch", "try", "typeof", "while",
-	"class", "public", "private"
+	"class", "public", "private",
+	"template", "typename", "using"
 @end(keywords)
 ```
 * Reservierte Schlüsselwörter
@@ -842,7 +857,8 @@
 	"FILE", "auto", "bool", "char",
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
-	"union", "unsigned", "void", "double"
+	"union", "unsigned", "void", "double",
+	"string", "std"
 @end(types)
 ```
 * Reservierte Typen

@@ -32,12 +32,12 @@ Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file</span>)</span><br/>
-<span class="in1"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span> { <span class="var">cur</span>-&gt;<span class="var">name</span> };<br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">outPath</span> {<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span> { <span class="var">cur</span>-&gt;<span class="var">name</span> };<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">outPath</span> {<br/>
 <span class="in2"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">name</span>.<span class="fn">size</span>() - <span class="num">2</span>) +<br/>
 <span class="in2"></span><span class="str">".html"</span><br/>
 <span class="in1"></span>};<br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">ofstream</span> <span class="var">out</span> { <span class="var">outPath</span>.<span class="fn">c_str</span>() };<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">ofstream</span> <span class="var">out</span> { <span class="var">outPath</span>.<span class="fn">c_str</span>() };<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write cur HTML file to out</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span>.<span class="fn">close</span>();<br/>
 <span class="macro">@end(<span class="name">write cur HTML file</span>)</span><br/>
@@ -49,7 +49,7 @@ Die HTML hat den gleichen Pfad mit der Endung <code>.<span class="var">html</spa
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file to out</span>)</span><br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">ifstream</span> <span class="keyword">in</span> {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">ifstream</span> <span class="keyword">in</span> {<br/>
 <span class="in2"></span><span class="var">cur</span>-&gt;<span class="var">name</span>.<span class="fn">c_str</span>()<br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write from in to out</span>)</span>;<br/>
@@ -125,20 +125,20 @@ Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">string</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">string</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Anwendung verwendet <code><span class="var">std</span>::<span class="var">string</span></code> überall
+Die Anwendung verwendet <code><span class="type">std</span>::<span class="type">string</span></code> überall
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write from in to out</span>)</span><br/>
 <span class="in1"></span><span class="type">HtmlStatus</span> <span class="var">status</span>;<br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">ident</span>;<br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">line</span>;<br/>
-<span class="in1"></span><span class="keyword">while</span> (<span class="var">std</span>::<span class="fn">getline</span>(<span class="keyword">in</span>, <span class="var">line</span>)) {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
+<span class="in1"></span><span class="keyword">while</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="keyword">in</span>, <span class="var">line</span>)) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process line</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
@@ -223,7 +223,7 @@ Und setzt den Zustand passend
 <h1>Überschriften</h1>
 </div>
 <ul><li>
-Überschriften beginnen mit Rauten <code>#</code>
+Überschriften beginnen mit Rauten <code><span class="keyword">#</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -275,7 +275,7 @@ Nach den Rauten dürfen beliebig viele Leerzeichen vorkommen
 <code>
 <span class="macro">@add(<span class="name">process header</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span> != <span class="var">e</span>);<br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">b</span>, <span class="var">e</span>};<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">name</span> {<span class="var">b</span>, <span class="var">e</span>};<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">close previous HTML page</span>)</span>;<br/>
 <span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
@@ -296,7 +296,7 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span> <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeOneEscaped</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="type">char</span> <span class="var">ch</span><br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>, <span class="type">char</span> <span class="var">ch</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">ch</span>) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">escape special</span>)</span><br/>
@@ -317,8 +317,8 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">str</span><br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">str</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">char</span> <span class="var">ch</span> : <span class="var">str</span>) {<br/>
 <span class="in3"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="var">ch</span>);<br/>
@@ -524,7 +524,7 @@ Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="str">"unterminated code block\n"</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
@@ -556,7 +556,7 @@ Am Ende der Datei schließt die Funktion
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">do code</span>)</span>;<br/>
@@ -669,9 +669,9 @@ Wenn dieses nicht durch einen Backslash escaped ist
 <code>
 <span class="macro">@def(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">span_str</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">cls</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\""</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">cls</span> &lt;&lt; <span class="str">"\"&gt;"</span>;<br/>
@@ -688,7 +688,7 @@ Diese Hilfsfunktion umgibt einen Bezeichner mit einem <code>&lt;<span class="var
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">process string</span>)</span><br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">begin</span>, <span class="var">w</span> + <span class="num">1</span>};<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">name</span> {<span class="var">begin</span>, <span class="var">w</span> + <span class="num">1</span>};<br/>
 <span class="in1"></span><span class="fn">span_str</span>(<span class="var">out</span>, <span class="str">"str"</span>, <span class="var">name</span>);<br/>
 <span class="in1"></span><span class="var">begin</span> = <span class="var">w</span>;<br/>
 <span class="macro">@end(<span class="name">process string</span>)</span><br/>
@@ -712,7 +712,7 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in3"></span>++<span class="var">ne</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ne</span> != <span class="var">end</span>) {<br/>
-<span class="in3"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">name</span> {<span class="var">nb</span>, <span class="var">ne</span>};<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">name</span> {<span class="var">nb</span>, <span class="var">ne</span>};<br/>
 <span class="in3"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>;<br/>
 <span class="in3"></span><span class="type">auto</span> <span class="var">ae</span> = <span class="var">ab</span>;<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">macro loop</span>)</span>;<br/>
@@ -732,7 +732,7 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in2"></span>++<span class="var">ae</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">ae</span> != <span class="var">end</span>) {<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">arg</span> {<span class="var">ab</span>, <span class="var">ae</span>};<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">arg</span> {<span class="var">ab</span>, <span class="var">ae</span>};<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">got macro</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -753,7 +753,7 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">macro default</span>)</span><br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"unknown macro @"</span> &lt;&lt;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"unknown macro @"</span> &lt;&lt;<br/>
 <span class="in2"></span><span class="var">name</span> &lt;&lt; <span class="str">'('</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">")\n"</span>;<br/>
 <span class="in1"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">'@'</span>);<br/>
 <span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
@@ -797,7 +797,7 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="macro">@def(<span class="name">write include</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">ext</span> = <span class="var">arg</span>.<span class="fn">find_last_of</span>(<span class="str">'.'</span>);<br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(<br/>
-<span class="in2"></span><span class="var">ext</span> != <span class="var">std</span>::<span class="var">string</span>::<span class="var">npos</span>,<br/>
+<span class="in2"></span><span class="var">ext</span> != <span class="type">std</span>::<span class="type">string</span>::<span class="var">npos</span>,<br/>
 <span class="in2"></span><span class="str">"no period"</span><br/>
 <span class="in1"></span>);<br/>
 <span class="in1"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
@@ -888,6 +888,21 @@ Der Bezeichner <code><span class="str">n</span></code> steht für eine Wert-Form
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">special macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"t"</span> || <span class="var">name</span> == <span class="str">"typ"</span>) {<br/>
+<span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"type"</span>);<br/>
+<span class="in2"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;"</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">special macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Der Bezeichner <code><span class="str">t</span></code> steht für eine Typ-Formatierung
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">special macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"b"</span> || <span class="var">name</span> == <span class="str">"br"</span>) {<br/>
 <span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"virt"</span>);<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/span&gt;&lt;br/&gt;"</span>;<br/>
@@ -934,11 +949,11 @@ Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch da
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">cctype</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">cctype</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion verwendet <code><span class="var">std</span>::<span class="var">isalnum</span></code>
+Die Funktion verwendet <code><span class="type">std</span>::<span class="var">isalnum</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -962,8 +977,9 @@ Wenn dieser gefunden wird, dann wird er abgearbeitet
 <code>
 <span class="macro">@def(<span class="name">find identifier end</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">w</span> != <span class="var">end</span> &amp;&amp; (<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="fn">isalnum</span>(*<span class="var">w</span>) ||<br/>
-<span class="in3"></span>*<span class="var">w</span> == <span class="str">'_'</span> || *<span class="var">w</span> == <span class="str">'$'</span><br/>
+<span class="in2"></span><span class="type">std</span>::<span class="fn">isalnum</span>(*<span class="var">w</span>) ||<br/>
+<span class="in3"></span>*<span class="var">w</span> == <span class="str">'_'</span> || *<span class="var">w</span> == <span class="str">'$'</span> ||<br/>
+<span class="in3"></span>*<span class="var">w</span> == <span class="str">'#'</span><br/>
 <span class="in1"></span>)) {<br/>
 <span class="in2"></span>++<span class="var">w</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -978,7 +994,7 @@ Zusätzlich noch der Unterstrich und das Dollar-Zeichen
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process identifier</span>)</span><br/>
-<span class="in1"></span><span class="var">std</span>::<span class="var">string</span> <span class="var">ident</span> {<span class="var">begin</span>, <span class="var">w</span>};<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span> {<span class="var">begin</span>, <span class="var">w</span>};<br/>
 <span class="in1"></span><span class="var">begin</span> = <span class="var">w</span> - <span class="num">1</span>;<br/>
 <span class="in1"></span><span class="fn">process_ident</span>(<br/>
 <span class="in2"></span><span class="var">out</span>, <span class="var">ident</span>,<br/>
@@ -999,25 +1015,26 @@ Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">set</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">set</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Besondere Bezeichner werden in <code><span class="var">std</span>::<span class="var">set</span></code> abgelegt
+Besondere Bezeichner werden in <code><span class="type">std</span>::<span class="var">set</span></code> abgelegt
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
-<span class="in1"></span><span class="var">using</span> <span class="type">Set</span> = <span class="var">std</span>::<span class="var">set</span>&lt;<span class="var">std</span>::<span class="var">string</span>&gt;;<br/>
+<span class="in1"></span><span class="keyword">using</span> <span class="type">Set</span> = <span class="type">std</span>::<span class="var">set</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt;;<br/>
 <br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isKeyword</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isKeyword</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
 <span class="in2"></span><span class="keyword">static</span> <span class="type">Set</span> <span class="var">reserved</span> {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">keywords</span>)</span><br/>
 <span class="in2"></span>};<br/>
 <span class="in2"></span><span class="keyword">return</span><br/>
 <span class="in3"></span><span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) !=<br/>
-<span class="in4"></span><span class="var">reserved</span>.<span class="fn">end</span>();<br/>
+<span class="in4"></span><span class="var">reserved</span>.<span class="fn">end</span>() ||<br/>
+<span class="in5"></span>(<span class="var">s</span>.<span class="fn">size</span>() &amp;&amp; <span class="var">s</span>[<span class="num">0</span>] == <span class="str">'#'</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
@@ -1032,7 +1049,8 @@ Prüft ob ein Bezeichner ein reserviertes Schlüsselwort ist
 <span class="in1"></span><span class="str">"default"</span>, <span class="str">"delete"</span>, <span class="str">"else"</span>, <span class="str">"for"</span>,<br/>
 <span class="in1"></span><span class="str">"if"</span>, <span class="str">"in"</span>, <span class="str">"new"</span>, <span class="str">"return"</span>, <span class="str">"static"</span>,<br/>
 <span class="in1"></span><span class="str">"switch"</span>, <span class="str">"try"</span>, <span class="str">"typeof"</span>, <span class="str">"while"</span>,<br/>
-<span class="in1"></span><span class="str">"class"</span>, <span class="str">"public"</span>, <span class="str">"private"</span><br/>
+<span class="in1"></span><span class="str">"class"</span>, <span class="str">"public"</span>, <span class="str">"private"</span>,<br/>
+<span class="in1"></span><span class="str">"template"</span>, <span class="str">"typename"</span>, <span class="str">"using"</span><br/>
 <span class="macro">@end(<span class="name">keywords</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1042,7 +1060,7 @@ Reservierte Schlüsselwörter
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">is type</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1076,7 +1094,8 @@ Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion
 <span class="in1"></span><span class="str">"FILE"</span>, <span class="str">"auto"</span>, <span class="str">"bool"</span>, <span class="str">"char"</span>,<br/>
 <span class="in1"></span><span class="str">"const"</span>, <span class="str">"enum"</span>, <span class="str">"extern"</span>, <span class="str">"int"</span>,<br/>
 <span class="in1"></span><span class="str">"let"</span>, <span class="str">"long"</span>, <span class="str">"signed"</span>, <span class="str">"struct"</span>,<br/>
-<span class="in1"></span><span class="str">"union"</span>, <span class="str">"unsigned"</span>, <span class="str">"void"</span>, <span class="str">"double"</span><br/>
+<span class="in1"></span><span class="str">"union"</span>, <span class="str">"unsigned"</span>, <span class="str">"void"</span>, <span class="str">"double"</span>,<br/>
+<span class="in1"></span><span class="str">"string"</span>, <span class="str">"std"</span><br/>
 <span class="macro">@end(<span class="name">types</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1105,13 +1124,13 @@ und das zweite Zeichen klein geschrieben ist
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isNum</span>(<span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">isNum</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
 <span class="in2"></span><span class="keyword">static</span> <span class="type">Set</span> <span class="var">reserved</span> {<br/>
 <span class="in3"></span><span class="str">"EOF"</span>, <span class="str">"NULL"</span>, <span class="str">"nullptr"</span>,<br/>
 <span class="in3"></span><span class="str">"false"</span>, <span class="str">"null"</span>, <span class="str">"true"</span>,<br/>
 <span class="in3"></span><span class="str">"undefined"</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">std</span>::<span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">reserved</span>.<span class="fn">find</span>(<span class="var">s</span>) !=<br/>
@@ -1129,8 +1148,8 @@ Oder wenn er einen reservierten Namen hat
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_ident</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> <span class="var">ident</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span>,<br/>
 <span class="in2"></span><span class="type">char</span> <span class="var">w</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">w</span> == <span class="str">'('</span>) {<br/>
@@ -1170,7 +1189,7 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeMacroClass</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">char</span> *<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;span class=\""</span> &lt;&lt;<br/>
@@ -1186,8 +1205,8 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeMacroHeader</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="var">std</span>::<span class="var">string</span> &amp;<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">writeMacroClass</span>(<span class="var">out</span>, <span class="str">"macro"</span>);<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">'@'</span> &lt;&lt; <span class="var">name</span> &lt;&lt; <span class="str">"(&lt;span class=\"name\"&gt;"</span>;<br/>
@@ -1242,7 +1261,7 @@ Eine Notiz beginnt entweder mit <code>*</code> oder folgt einer solchen Zeile
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<br/>
-<span class="in2"></span><span class="var">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process content line</span>)</span>;<br/>
@@ -1446,7 +1465,7 @@ Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett
 <span class="macro">@def(<span class="name">do bold</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;b&gt;"</span>;<br/>
 <span class="in1"></span><span class="fn">writeEscaped</span>(<br/>
-<span class="in2"></span><span class="var">out</span>, <span class="var">std</span>::<span class="var">string</span> {<span class="var">begin</span> + <span class="num">2</span>, <span class="var">w</span>}<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="type">std</span>::<span class="type">string</span> {<span class="var">begin</span> + <span class="num">2</span>, <span class="var">w</span>}<br/>
 <span class="in1"></span>);<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/b&gt;"</span>;<br/>
 <span class="in1"></span><span class="var">begin</span> = <span class="var">w</span> + <span class="num">1</span>;<br/>
