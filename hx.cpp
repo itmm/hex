@@ -1051,7 +1051,6 @@
 ;
 		writeOneEscaped(out, *begin);
 	}
-	out << '\n';
 ;
 	}
 
@@ -1780,11 +1779,13 @@
 		out << "</li><li>\n";
 	}
 	process_content(out, begin, end);
+	out << '\n';
 ;
 	} else {
 		process_content(
 			out, line.begin(), line.end()
 		);
+		out << '\n';
 	}
 ;
 		continue;
@@ -1803,6 +1804,7 @@
 	process_content(
 		out, line.begin(), line.end()
 	);
+	out << '\n';
 ;
 ;
 	}

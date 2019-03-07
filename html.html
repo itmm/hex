@@ -5,12 +5,10 @@
 <title>HTML-Präsentation generieren</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
-<h1>HTML-Präsentation generieren
-</h1>
+<h1>HTML-Präsentation generieren</h1>
 <div class="slides">
 <div><div>
-<h1>HTML-Präsentation generieren
-</h1>
+<h1>HTML-Präsentation generieren</h1>
 </div>
 <ul><li>
 Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-Quelldateien
@@ -219,12 +217,10 @@ Und setzt den Zustand passend
 </li></ul>
 </div>
 </div>
-<h1>Überschriften
-</h1>
+<h1>Überschriften</h1>
 <div class="slides">
 <div><div>
-<h1>Überschriften
-</h1>
+<h1>Überschriften</h1>
 </div>
 <ul><li>
 Überschriften beginnen mit Rauten <code><span class="keyword">#</span></code>
@@ -467,12 +463,10 @@ Und die Stylesheet-Datei eingebunden
 </li></ul>
 </div>
 </div>
-<h1>Code formatieren
-</h1>
+<h1>Code formatieren</h1>
 <div class="slides">
 <div><div>
-<h1>Code formatieren
-</h1>
+<h1>Code formatieren</h1>
 </div>
 <ul><li>
 Code kann auf Seiten oder in den Notizen ausgegeben werden
@@ -1247,12 +1241,10 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
 </li></ul>
 </div>
 </div>
-<h1>Notizen
-</h1>
+<h1>Notizen</h1>
 <div class="slides">
 <div><div>
-<h1>Notizen
-</h1>
+<h1>Notizen</h1>
 </div>
 <ul><li>
 Zu den Folien können Notizen mit <code>*</code> markiert werden
@@ -1311,6 +1303,7 @@ Bei einer Leerzeile werden Notizen beendet
 <span class="in2"></span><span class="fn">process_content</span>(<br/>
 <span class="in3"></span><span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>()<br/>
 <span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process note</span>)</span><br/>
 </code></div>
@@ -1347,6 +1340,7 @@ Die Funktion überspringt den Stern und folgende Leerzeichen
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/li&gt;&lt;li&gt;\n"</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="fn">process_content</span>(<span class="var">out</span>, <span class="var">begin</span>, <span class="var">end</span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="macro">@end(<span class="name">process note line</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1383,7 +1377,6 @@ Die Funktion schreibt passende HTML-Tags
 <span class="in2"></span><span class="macro">@put(<span class="name">special content line</span>)</span>;<br/>
 <span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, *<span class="var">begin</span>);<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="macro">@end(<span class="name">process content line</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1490,12 +1483,10 @@ Formatiert Text fett
 </li></ul>
 </div>
 </div>
-<h1>Absätze
-</h1>
+<h1>Absätze</h1>
 <div class="slides">
 <div><div>
-<h1>Absätze
-</h1>
+<h1>Absätze</h1>
 </div>
 <ul><li>
 Zwischen Folien verarbeitet <code><span class="var">hex</span></code> Absätze mit normalen Text
@@ -1555,6 +1546,7 @@ Bei einer Leerzeile werden Absätze beendet beendet
 <span class="in1"></span><span class="fn">process_content</span>(<br/>
 <span class="in2"></span><span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>()<br/>
 <span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="macro">@end(<span class="name">process para</span>)</span><br/>
 </code></div>
 <ul><li>

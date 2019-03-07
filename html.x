@@ -1020,6 +1020,7 @@
 		process_content(
 			out, line.begin(), line.end()
 		);
+		out << '\n';
 	}
 @end(process note)
 ```
@@ -1049,6 +1050,7 @@
 		out << "</li><li>\n";
 	}
 	process_content(out, begin, end);
+	out << '\n';
 @end(process note line)
 ```
 * Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus
@@ -1076,7 +1078,6 @@
 		@put(special content line);
 		writeOneEscaped(out, *begin);
 	}
-	out << '\n';
 @end(process content line)
 ```
 * Die Zeile wird Zeichen für Zeichen abgearbeitet
@@ -1207,6 +1208,7 @@
 	process_content(
 		out, line.begin(), line.end()
 	);
+	out << '\n';
 @end(process para)
 ```
 * Am Anfang wird ein Absatz geöffnet
