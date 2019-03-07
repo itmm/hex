@@ -5,10 +5,12 @@
 <title>HTML-Präsentation generieren</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
-<h1>HTML-Präsentation generieren</h1>
+<h1>HTML-Präsentation generieren
+</h1>
 <div class="slides">
 <div><div>
-<h1>HTML-Präsentation generieren</h1>
+<h1>HTML-Präsentation generieren
+</h1>
 </div>
 <ul><li>
 Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-Quelldateien
@@ -217,10 +219,12 @@ Und setzt den Zustand passend
 </li></ul>
 </div>
 </div>
-<h1>Überschriften</h1>
+<h1>Überschriften
+</h1>
 <div class="slides">
 <div><div>
-<h1>Überschriften</h1>
+<h1>Überschriften
+</h1>
 </div>
 <ul><li>
 Überschriften beginnen mit Rauten <code><span class="keyword">#</span></code>
@@ -353,9 +357,46 @@ Die Zeichen <code>&lt;</code>, <code>&gt;</code> und <code>&amp;</code> werden e
 </div>
 <div><div>
 <code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do code</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+Verarbeitet ein Code-Fragment
+</li><li>
+Dies Funktion wird im Code Modus verwendet
+</li><li>
+Und wenn in Notizen Code-Fragmente eingebettet sind
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
+<span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process content line</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+Diese Funktion formatiert beliebigen Markdown-Text als HTML
+</li><li>
+Code-Schnippsel werden ebenfalls formatiert
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">write header tag</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;h"</span> &lt;&lt; <span class="var">level</span> &lt;&lt; <span class="str">'&gt;'</span>;<br/>
-<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
+<span class="in1"></span><span class="fn">process_content</span>(<span class="var">out</span>, <span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">name</span>.<span class="fn">end</span>());<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/h"</span> &lt;&lt; <span class="var">level</span> &lt;&lt; <span class="str">"&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">write header tag</span>)</span><br/>
 </code></div>
@@ -426,10 +467,12 @@ Und die Stylesheet-Datei eingebunden
 </li></ul>
 </div>
 </div>
-<h1>Code formatieren</h1>
+<h1>Code formatieren
+</h1>
 <div class="slides">
 <div><div>
-<h1>Code formatieren</h1>
+<h1>Code formatieren
+</h1>
 </div>
 <ul><li>
 Code kann auf Seiten oder in den Notizen ausgegeben werden
@@ -549,26 +592,6 @@ Eine Fehlermeldung wird ausgegeben
 <ul><li>
 Am Ende der Datei schließt die Funktion
   die HTML-Tags
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">do code</span>)</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-</code></div>
-<ul><li>
-Verarbeitet ein Code-Fragment
-</li><li>
-Dies Funktion wird im Code Modus verwendet
-</li><li>
-Und wenn in Notizen Code-Fragmente eingebettet sind
 </li></ul>
 </div>
 <div><div>
@@ -1224,10 +1247,12 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
 </li></ul>
 </div>
 </div>
-<h1>Notizen</h1>
+<h1>Notizen
+</h1>
 <div class="slides">
 <div><div>
-<h1>Notizen</h1>
+<h1>Notizen
+</h1>
 </div>
 <ul><li>
 Zu den Folien können Notizen mit <code>*</code> markiert werden
@@ -1261,23 +1286,6 @@ Da sie mehrzeilig sein können
 </code></div>
 <ul><li>
 Eine Notiz beginnt entweder mit <code>*</code> oder folgt einer solchen Zeile
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process content line</span>)</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-</code></div>
-<ul><li>
-Diese Funktion formatiert beliebigen Markdown-Text als HTML
-</li><li>
-Code-Schnippsel werden ebenfalls formatiert
 </li></ul>
 </div>
 <div><div>
@@ -1482,10 +1490,12 @@ Formatiert Text fett
 </li></ul>
 </div>
 </div>
-<h1>Absätze</h1>
+<h1>Absätze
+</h1>
 <div class="slides">
 <div><div>
-<h1>Absätze</h1>
+<h1>Absätze
+</h1>
 </div>
 <ul><li>
 Zwischen Folien verarbeitet <code><span class="var">hex</span></code> Absätze mit normalen Text

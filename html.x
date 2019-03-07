@@ -259,9 +259,37 @@
 * Die Zeichen `<`, `>` und `&` werden ersetzt
 
 ```
+@Add(global elements)
+	@put(process code helper);
+	void process_code(
+		std::ostream &out,
+		SI begin, SI end
+	) {
+		@put(do code);
+	}
+@end(global elements)
+```
+* Verarbeitet ein Code-Fragment
+* Dies Funktion wird im Code Modus verwendet
+* Und wenn in Notizen Code-Fragmente eingebettet sind
+
+```
+@Add(global elements)
+	void process_content(
+		std::ostream &out,
+		SI begin, SI end
+	) {
+		@put(process content line);
+	}
+@end(global elements)
+```
+* Diese Funktion formatiert beliebigen Markdown-Text als HTML
+* Code-Schnippsel werden ebenfalls formatiert
+
+```
 @def(write header tag)
 	out << "<h" << level << '>';
-	writeEscaped(out, name);
+	process_content(out, name.begin(), name.end());
 	out << "</h" << level << ">\n";
 @end(write header tag)
 ```
@@ -409,21 +437,6 @@
 ```
 * Am Ende der Datei schließt die Funktion
   die HTML-Tags
-
-```
-@Add(global elements)
-	@put(process code helper);
-	void process_code(
-		std::ostream &out,
-		SI begin, SI end
-	) {
-		@put(do code);
-	}
-@end(global elements)
-```
-* Verarbeitet ein Code-Fragment
-* Dies Funktion wird im Code Modus verwendet
-* Und wenn in Notizen Code-Fragmente eingebettet sind
 
 ```
 @add(process code)
@@ -987,19 +1000,6 @@
 @end(process line)
 ```
 * Eine Notiz beginnt entweder mit `*` oder folgt einer solchen Zeile
-
-```
-@Add(global elements)
-	void process_content(
-		std::ostream &out,
-		SI begin, SI end
-	) {
-		@put(process content line);
-	}
-@end(global elements)
-```
-* Diese Funktion formatiert beliebigen Markdown-Text als HTML
-* Code-Schnippsel werden ebenfalls formatiert
 
 ```
 @def(close specials)

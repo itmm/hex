@@ -17,3 +17,6 @@
 * Links auf Usages
 * Folien nummerieren
 * Doku auf englisch
+* Aufteilung in Dateien nach Entstehung, nicht nach Themen
+* Links formatieren
+

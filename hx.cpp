@@ -1714,14 +1714,14 @@
 ;
 	
 	out << "<h" << level << '>';
-	writeEscaped(out, name);
+	process_content(out, name.begin(), name.end());
 	out << "</h" << level << ">\n";
 ;
 	out << "<div class=\"slides\">\n";
 	out << "<div><div>\n";
 	
 	out << "<h" << level << '>';
-	writeEscaped(out, name);
+	process_content(out, name.begin(), name.end());
 	out << "</h" << level << ">\n";
 ;
 	out << "</div>\n";
