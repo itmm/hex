@@ -11,3 +11,9 @@
 * Directories richtig behandeln
 * #line Makros in .c, .cpp und .h Dateien
 * Normale Absätze zwischen Folien
+* Absatz in Slides
+* Überschriften automatisch numerieren
+* Link auf Definition/Weiterführung
+* Links auf Usages
+* Folien nummerieren
+* Doku auf englisch
