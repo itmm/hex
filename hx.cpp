@@ -852,7 +852,7 @@
 	static Set macros = {
 		"def", "end", "add", "put", "mul",
 		"Def", "Add", "Mul", "rep", "Rep",
-		"Put"
+		"Put", "End"
 	};
 	if (
 		macros.find(name) != macros.end()
@@ -1200,9 +1200,9 @@
 		break;
 	}
 
-	if (name == "end") {
+	if (name == "end" || name == "End") {
 		ASSERT_MSG(frag,
-			"end(" << arg <<
+			'@' << name << "(" << arg <<
 			") not in frag"
 		);
 		

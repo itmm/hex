@@ -504,9 +504,9 @@
 
 ```
 @add(do macro)
-	if (name == "end") {
+	if (name == "end" || name == "End") {
 		ASSERT_MSG(frag,
-			"end(" << arg <<
+			'@' << name << "(" << arg <<
 			") not in frag"
 		);
 		@put(frag names must match);

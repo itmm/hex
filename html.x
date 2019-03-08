@@ -606,7 +606,7 @@
 	static Set macros = {
 		"def", "end", "add", "put", "mul",
 		"Def", "Add", "Mul", "rep", "Rep",
-		"Put"
+		"Put", "End"
 	};
 	if (
 		macros.find(name) != macros.end()
