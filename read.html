@@ -16,52 +16,152 @@ Processes the input files line by line
 </div>
 <div><div>
 <code>
-<span class="macro">@Def(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">fstream</span>&gt;<br/>
-<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">string</span>&gt;<br/>
-<span class="macro">@End(<span class="name">includes</span>)</span><br/>
-</code></div>
-</div>
-<div><div>
-<code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span>;<br/>
-<span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
-<span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">ifstream</span> <span class="var">file</span>;<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">private elements</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">additional elements</span>)</span>;<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">input methods</span>)</span>;<br/>
-<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">inputs prereqs</span>)</span>;<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Die <code><span class="type">Input</span></code>-Klasse enthält den Dateinamen der Eingabe-Dateien
+Some elements are used by the <code><span class="type">Inputs</span></code> and <code><span class="type">Input</span></code> classes
 </li><li>
-Zusätzlich kann sie eine offene Datei enthalten
+and must be defined before its definition
 </li><li>
-Alle Eingabe-Dateien, die während einer Inkludierungs-Kaskade
-  eingebunden werden bleiben offen, damit an der richtigen Stelle weiter
-  gearbeitet werden kann
+These can be grouped in the fragment <code><span class="str">inputs prereqs</span></code>
+</li></ul>
+</div>
+</div>
+<h2><code><span class="type">Inputs</span></code> class</h2>
+<div class="slides">
+<div><div>
+<h2><code><span class="type">Inputs</span></code> class</h2>
+</div>
+<ul><li>
+This class manages multiple files
 </li><li>
-Weiter Attribute und Methoden können später definiert werden
+Some are open, because of include hierarchies
+</li><li>
+Some are waiting to be processed
+</li><li>
+All is abstracted away, so that the interface provides lines until
+  everything is processed
 </li></ul>
 </div>
 <div><div>
 <code>
-<span class="macro">@Def(<span class="name">input methods</span>)</span><br/>
-<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>):<br/>
-<span class="in2"></span><span class="var">file</span> { <span class="var">name</span>.<span class="fn">c_str</span>() },<br/>
-<span class="in2"></span><span class="macro">@Put(<span class="name">private input constr</span>)</span><br/>
-<span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
-<span class="in1"></span>{}<br/>
-<span class="macro">@End(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Inputs</span> {<br/>
+<span class="in2"></span><span class="keyword">public</span>:<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">inputs methods</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">private</span>:<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">inputs attributes</span>)</span>;<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Im Konstruktor werden Datei und Name gesetzt
+Enthält alle verarbeiteten Dateien
 </li><li>
-Später eingeführte Attribute können auch dann initialisiert werden
+<code><span class="keyword">@Put</span></code> inserts a fragment from the global scope
+</li></ul>
+</div>
+</div>
+<h2>What is a file?</h2>
+<div class="slides">
+<div><div>
+<h2>What is a file?</h2>
+</div>
+<ul><li>
+C++ represent open files as <code><span class="type">std</span>::<span class="type">ifstream</span></code>
+</li><li>
+Also a file is represented by its path
+</li><li>
+<code><span class="var">hx</span></code> also store more information on a file by file basis
+</li><li>
+For example the local fragments
+</li><li>
+So a special class <code><span class="type">Input</span></code> will represent a file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;fstream&gt;</span><br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+<ul><li>
+Defines <code><span class="type">std</span>::<span class="type">ifstream</span></code>
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;string&gt;</span><br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+<ul><li>
+Defines <code><span class="type">std</span>::<span class="type">string</span></code>
+</li><li>
+<code><span class="keyword">@Add</span></code> extends a globally defined fragment
+</li></ul>
+</div>
+</div>
+<h2><code><span class="type">Input</span></code> class</h2>
+<div class="slides">
+<div><div>
+<h2><code><span class="type">Input</span></code> class</h2>
+</div>
+<ul><li>
+Defines the <code><span class="type">Input</span></code> class
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">inputs prereqs</span>)</span><br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">inputs prereqs</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">inputs prereqs</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
+<span class="in2"></span><span class="keyword">public</span>:<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">path</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">input elements</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">private</span>:<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="var">_file</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">private input elements</span>)</span>;<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@end(<span class="name">inputs prereqs</span>)</span><br/>
+</code></div>
+<ul><li>
+The <code><span class="var">path</span></code> can be public, because it is <code><span class="type">const</span></code>
+</li><li>
+But the <code><span class="var">_file</span></code> should only be modified via methods
+</li><li>
+so it is private
+</li><li>
+A bunch of fragments make room for later extensions
+</li><li>
+They are declared global, so they can be modified in different
+  <code><span class="var">x</span></code>-files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">input elements</span>)</span><br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>):<br/>
+<span class="in2"></span><span class="var">path</span> { <span class="var">path</span> },<br/>
+<span class="in2"></span><span class="var">_file</span> { <span class="var">path</span>.<span class="fn">c_str</span>() }<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">private input constructor</span>)</span><br/>
+<span class="in1"></span>{}<br/>
+<span class="macro">@End(<span class="name">input elements</span>)</span><br/>
+</code></div>
+<ul><li>
+In the constructor the <code><span class="var">name</span></code> will be saved
+</li><li>
+and the file with that path will be opened
+</li><li>
+Additional elements can be initialized later
+</li></ul>
+</div>
 </body>
 </html>

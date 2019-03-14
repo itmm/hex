@@ -12,24 +12,24 @@
 
 
 ```
-@Add(input methods)
+@Add(input elements)
 	bool getLine(std::string &line) {
-		if (file.is_open()) {
+		if (_file.is_open()) {
 			@put(get line);
 		}
 		return false;
 	}
-@end(input methods)
+@end(input elements)
 ```
 * Liest Zeile aus der offenen Datei
 
 ```
 @def(get line)
-	if (std::getline(file, line)) {
+	if (std::getline(_file, line)) {
 		@put(line read);
 		return true;
 	} else {
-		file.close();
+		_file.close();
 	}
 @end(get line)
 ```
@@ -37,34 +37,23 @@
 * die erst später definiert werden
 
 ```
-@Add(global elements)
+@Add(input prereqs)
 	FragMap root;
 	FragMap *frags { &root };
-@end(global elements)
+@End(input prereqs)
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
   angelegt
 
 
 ```
-@Add(global elements)
-	class Inputs {
-			@put(inputs attributes);
-		public:
-			@put(inputs methods);
-	};
-@end(global elements)
-```
-* Enthält alle verarbeiteten Dateien
-
-```
-@def(inputs attributes)
+@Def(inputs attributes)
 	std::unique_ptr<Input> _input;
 	std::vector<std::unique_ptr<Input>>
 		_pending;
 	std::vector<std::unique_ptr<Input>>
 		_used;
-@end(inputs attributes)
+@End(inputs attributes)
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
 * Mitten während des Lesens können andere Dateien eingelesen
@@ -77,34 +66,34 @@
   werden müssen
 
 ```
-@def(inputs methods)
+@Def(inputs methods)
 	auto &cur() {
 		return _input;
 	}
-@end(inputs methods)
+@End(inputs methods)
 ```
 * Liefert zuletzt geöffnete Datei
 
 ```
-@add(inputs methods)
+@Add(inputs methods)
 	auto begin() const {
 		return _used.cbegin();
 	}
-@end(inputs methods)
+@End(inputs methods)
 ```
 * Liefert erste benutzte Datei
 
 ```
-@add(inputs methods)
+@Add(inputs methods)
 	auto end() const {
 		return _used.cend();
 	}
-@end(inputs methods)
+@End(inputs methods)
 ```
 * Liefert zuletzt benutzte Datei
 
 ```
-@add(inputs methods)
+@Add(inputs methods)
 	void push(const std::string &path) {
 		std::unique_ptr<Input> i {
 			std::make_unique<Input>(path)
@@ -113,7 +102,7 @@
 		@put(push to pending);
 		_input = std::move(i);
 	}
-@end(inputs methods)
+@End(inputs methods)
 ```
 * Dateien werden über ihren Pfad identifiziert
 * Dieser wird als Name gespeichert
@@ -140,7 +129,7 @@
   zurück geliefert
 
 ```
-@add(inputs methods)
+@Add(inputs methods)
 	bool getLine(std::string &line) {
 		while (_input) {
 			if (_input->getLine(line)) {
@@ -150,7 +139,7 @@
 		}
 		return false;
 	}
-@end(inputs methods)
+@End(inputs methods)
 ```
 * Probiert aus aktueller Datei eine Zeile zu lesen
 * Wandert bei Misserfolg durch andere offenen Dateien
@@ -172,14 +161,14 @@
 * Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
 
 ```
-@add(inputs methods)
+@Add(inputs methods)
 	bool has(
 		const std::string &name
 	) const {
 		@put(has checks);
 		return false;
 	}
-@end(inputs methods)
+@End(inputs methods)
 ```
 * Prüft ob eine Datei bereits verwendet wurde
 * Alle bearbeiteten Dateien werden inspiziert
@@ -188,7 +177,7 @@
 
 ```
 @def(has checks)
-	if (_input && _input->name == name) {
+	if (_input && _input->path == name) {
 		return true;
 	}
 @end(has checks)
@@ -198,7 +187,7 @@
 ```
 @add(has checks)
 	for (const auto &j : _pending) {
-		if (j->name == name) {
+		if (j->path == name) {
 			return true;
 		}
 	}
@@ -209,7 +198,7 @@
 ```
 @add(has checks)
 	for (const auto &j : _used) {
-		if (j->name == name) {
+		if (j->path == name) {
 			return true;
 		}
 	}
@@ -222,9 +211,9 @@
 * Die Kollektionen bereits offener Dateien werden hierarchisch integriert
 
 ```
-@Def(additional elements)
+@Add(input elements)
 	FragMap frags;
-@end(additional elements)
+@end(input elements)
 ```
 * Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
   Definitionen
@@ -244,26 +233,26 @@
 * Jede Datei führt die aktuelle Zeiennummer mit
 
 ```
-@Def(private elements)
+@Def(private input elements)
 	int _line;
-@end(private elements)
+@end(private input elements)
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
 
 ```
-@Def(private input constr)
-	_line { 0 },
-@end(private input constr)
+@Def(private input constructor),
+	_line { 0 }
+@end(private input constructor)
 ```
 * Wenn keine Zeile prozessiert wurde, steht die Zeilennummer noch auf
   `0`
 
 ```
-@Add(input methods)
+@Add(input elements)
 	int line() const {
 		return _line;
 	}
-@end(input methods)
+@end(input elements)
 ```
 * Liefert Zeilennummer
 

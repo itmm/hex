@@ -14,7 +14,7 @@
 
 ```
 @def(write cur HTML file)
-	const std::string &name { cur->name };
+	const std::string &name { cur->path };
 	std::string outPath {
 		name.substr(0, name.size() - 2) +
 		".html"
@@ -29,7 +29,7 @@
 ```
 @def(write cur HTML file to out)
 	std::ifstream in {
-		cur->name.c_str()
+		cur->path.c_str()
 	};
 	@put(write from in to out);
 	in.close();
@@ -878,7 +878,8 @@
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
 	"union", "unsigned", "void", "double",
-	"string", "std"
+	"string", "std", "ifstream", "istream",
+	"ofstream", "ostream"
 @end(types)
 ```
 * Reservierte Typen

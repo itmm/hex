@@ -2,6 +2,7 @@
 	
 	
 	#include <fstream>
+
 	#include <string>
 
 	#include <iostream>
@@ -29,6 +30,7 @@
 	#include <set>
 ;
 
+	
 	
 	
 	#define ASSERT(COND) \
@@ -407,60 +409,54 @@
 ;
 	};
 ;
-;
-	class Input {
-		private:
-			std::ifstream file;
-			
-	int _line;
-;
-		public:
-			const std::string name;
-			
-	FragMap frags;
-;
-			
-	Input(const std::string &name):
-		file { name.c_str() },
-		
-	_line { 0 },
 
-		name { name }
+	FragMap root;
+	FragMap *frags { &root };
+;
+
+	class Input {
+		public:
+			const std::string path;
+			
+	Input(const std::string &path):
+		path { path },
+		_file { path.c_str() }
+		,
+	_line { 0 }
+
 	{}
 
 	bool getLine(std::string &line) {
-		if (file.is_open()) {
+		if (_file.is_open()) {
 			
-	if (std::getline(file, line)) {
+	if (std::getline(_file, line)) {
 		
 	++_line;
 ;
 		return true;
 	} else {
-		file.close();
+		_file.close();
 	}
 ;
 		}
 		return false;
 	}
 
+	FragMap frags;
+
 	int line() const {
 		return _line;
 	}
 ;
+		private:
+			std::ifstream _file;
+			
+	int _line;
+;
 	};
-
-	FragMap root;
-	FragMap *frags { &root };
+;
 
 	class Inputs {
-			
-	std::unique_ptr<Input> _input;
-	std::vector<std::unique_ptr<Input>>
-		_pending;
-	std::vector<std::unique_ptr<Input>>
-		_used;
-;
 		public:
 			
 	auto &cur() {
@@ -517,24 +513,32 @@
 		const std::string &name
 	) const {
 		
-	if (_input && _input->name == name) {
+	if (_input && _input->path == name) {
 		return true;
 	}
 
 	for (const auto &j : _pending) {
-		if (j->name == name) {
+		if (j->path == name) {
 			return true;
 		}
 	}
 
 	for (const auto &j : _used) {
-		if (j->name == name) {
+		if (j->path == name) {
 			return true;
 		}
 	}
 ;
 		return false;
 	}
+;
+		private:
+			
+	std::unique_ptr<Input> _input;
+	std::vector<std::unique_ptr<Input>>
+		_pending;
+	std::vector<std::unique_ptr<Input>>
+		_used;
 ;
 	};
 
@@ -556,7 +560,7 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur()->name,
+			str, inputs.cur()->path,
 			inputs.cur()->line()
 		);
 	}
@@ -567,7 +571,7 @@
 		
 	if (frag) {
 		frag->add(
-			ch, inputs.cur()->name,
+			ch, inputs.cur()->path,
 			inputs.cur()->line()
 		);
 	}
@@ -586,7 +590,7 @@
 			
 	f->add(
 		std::string { b, x },
-		inputs.cur()->name,
+		inputs.cur()->path,
 		inputs.cur()->line()
 	);
 ;
@@ -594,7 +598,7 @@
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur()->name,
+					inputs.cur()->path,
 					inputs.cur()->line()
 				);
 				++b;
@@ -603,7 +607,7 @@
 			
 	f->add(
 		std::string { b, e },
-		inputs.cur()->name,
+		inputs.cur()->path,
 		inputs.cur()->line()
 	);
 	b = e;
@@ -721,7 +725,8 @@
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
 	"union", "unsigned", "void", "double",
-	"string", "std"
+	"string", "std", "ifstream", "istream",
+	"ofstream", "ostream"
 
 	};
 	if (reserved.find(s) !=
@@ -1444,7 +1449,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->name +
+		h(inputs.cur()->path +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1455,7 +1460,7 @@
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur()->name,
+		inputs.cur()->path,
 		inputs.cur()->line()
 	);
 ;
@@ -1469,7 +1474,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->name +
+		h(inputs.cur()->path +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1478,7 +1483,7 @@
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur()->name,
+		inputs.cur()->path,
 		inputs.cur()->line()
 	);
 ;
@@ -1639,7 +1644,7 @@
 	
 	for (auto &cur : inputs) {
 		
-	const std::string &name { cur->name };
+	const std::string &name { cur->path };
 	std::string outPath {
 		name.substr(0, name.size() - 2) +
 		".html"
@@ -1647,7 +1652,7 @@
 	std::ofstream out { outPath.c_str() };
 	
 	std::ifstream in {
-		cur->name.c_str()
+		cur->path.c_str()
 	};
 	
 	HtmlStatus status;
