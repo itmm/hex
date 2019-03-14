@@ -16,3 +16,5 @@
 * Aufteilung in Dateien nach Entstehung, nicht nach Themen
 * Links formatieren
 * @inc außerhalb von Code-Blöcken für HTML
+* `hx -i` for interactive viewer (later extended to IDE)
+
