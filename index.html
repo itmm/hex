@@ -970,6 +970,26 @@ Das Fragment muss bereits vorhanden sein
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">do macro</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Rep"</span>) {<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
+<span class="in3"></span><span class="str">"Rep in frag"</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> { <span class="var">frags</span> };<br/>
+<span class="in2"></span><span class="var">frag</span> = <span class="var">fm</span>-&gt;<span class="fn">find</span>(<span class="var">arg</span>);<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do macro</span>)</span><br/>
+</code></div>
+<ul><li>
+Bei einem <code>@<span class="var">rep</span></code> wird der Inhalt eines Fragments zurückgesetzt
+</li><li>
+Das Fragment muss bereits vorhanden sein
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">clear frag</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"frag "</span> &lt;&lt;<br/>
 <span class="in2"></span><span class="var">name</span> &lt;&lt;<br/>

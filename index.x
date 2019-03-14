@@ -694,6 +694,22 @@
 * Das Fragment muss bereits vorhanden sein
 
 ```
+@add(do macro)
+	if (name == "Rep") {
+		ASSERT_MSG(! frag,
+			"Rep in frag"
+		);
+		FragMap *fm { frags };
+		frag = fm->find(arg);
+		@mul(clear frag);
+		break;
+	}
+@end(do macro)
+```
+* Bei einem `@rep` wird der Inhalt eines Fragments zurückgesetzt
+* Das Fragment muss bereits vorhanden sein
+
+```
 @def(clear frag)
 	ASSERT_MSG(frag, "frag " <<
 		name <<

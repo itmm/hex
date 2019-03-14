@@ -1341,6 +1341,22 @@
 		break;
 	}
 
+	if (name == "Rep") {
+		ASSERT_MSG(! frag,
+			"Rep in frag"
+		);
+		FragMap *fm { frags };
+		frag = fm->find(arg);
+		
+	ASSERT_MSG(frag, "frag " <<
+		name <<
+		" not defined"
+	);
+	frag->clear();
+;
+		break;
+	}
+
 	if (name == "rep") {
 		ASSERT_MSG(! frag,
 			"replace in frag"
