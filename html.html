@@ -1176,7 +1176,9 @@ Oder wenn er einen reservierten Namen hat
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span>,<br/>
 <span class="in2"></span><span class="type">char</span> <span class="var">w</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">w</span> == <span class="str">'('</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isKeyword</span>(<span class="var">ident</span>)) {<br/>
+<span class="in3"></span><span class="fn">span_str</span>(<span class="var">out</span>, <span class="str">"keyword"</span>, <span class="var">ident</span>);<br/>
+<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="var">w</span> == <span class="str">'('</span>) {<br/>
 <span class="in3"></span><span class="fn">span_str</span>(<span class="var">out</span>, <span class="str">"fn"</span>, <span class="var">ident</span>);<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">special ident classes</span>)</span><br/>
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
@@ -1196,8 +1198,6 @@ Wenn keine andere Regel greift, wird der Bezeichner als Variable
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">special ident classes</span>)</span><br/>
-<span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="fn">isKeyword</span>(<span class="var">ident</span>)) {<br/>
-<span class="in2"></span><span class="fn">span_str</span>(<span class="var">out</span>, <span class="str">"keyword"</span>, <span class="var">ident</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="fn">isType</span>(<span class="var">ident</span>)) {<br/>
 <span class="in2"></span><span class="fn">span_str</span>(<span class="var">out</span>, <span class="str">"type"</span>, <span class="var">ident</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="fn">isNum</span>(<span class="var">ident</span>)) {<br/>
@@ -1374,7 +1374,7 @@ Die Funktion schreibt passende HTML-Tags
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process content line</span>)</span><br/>
-<span class="in1"></span><span class="fn">for</span>(; <span class="var">begin</span> != <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
+<span class="in1"></span><span class="keyword">for</span>(; <span class="var">begin</span> != <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">special content line</span>)</span>;<br/>
 <span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, *<span class="var">begin</span>);<br/>
 <span class="in1"></span>}<br/>

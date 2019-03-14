@@ -924,7 +924,9 @@
 		const std::string ident,
 		char w
 	) {
-		if (w == '(') {
+		if (isKeyword(ident)) {
+			span_str(out, "keyword", ident);
+		} else if (w == '(') {
 			span_str(out, "fn", ident);
 		@put(special ident classes)
 		} else {
@@ -940,8 +942,6 @@
 
 ```
 @def(special ident classes)
-	} else if (isKeyword(ident)) {
-		span_str(out, "keyword", ident);
 	} else if (isType(ident)) {
 		span_str(out, "type", ident);
 	} else if (isNum(ident)) {
