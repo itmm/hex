@@ -691,7 +691,8 @@
 	"if", "in", "new", "return", "static",
 	"switch", "try", "typeof", "while",
 	"class", "public", "private",
-	"template", "typename", "using"
+	"template", "typename", "using",
+	"function"
 
 		};
 		return
