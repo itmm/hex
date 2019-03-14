@@ -1,47 +1,75 @@
 # Logging
-* In dieser Datei wird der Logging-Mechanismus beschrieben
-* Es wird nur etwas geloggt, wenn ein Fehler aufgetreten ist
+* Only if the condition is `false` (or `0`, or `NULL`) something will be
+  logged
+* There are no log levels
+* The macro will throw an `std::exception` if the condition was not met
+* This normally terminates the running program
 
 ```
-@Def(includes)
-	#include <iostream>
-	#include <exception>
-@end(includes)
+@Add(includes)
+	#include @s(<iostream>)
+	#include @s(<exception>)
+@End(includes)
 ```
-* Geschrieben wird nach `std::cerr`, das in `<iostream>` definiert ist
-* Nach dem Herausschreiben der Nachricht wird eine Exception generiert
+* `std::cerr` from `@s(<iostream>)` is used to write log messages
+* A standard exception from `@s(<exception>)` is used to indicate failed
+  conditions
 
 ```
-@Def(define logging)
+@Def(frag prereqs)
 	#define ASSERT(COND) \
 		if (! (COND)) { \
-			std::cerr << __FILE__ << \
-				':' << __LINE__ << \
-				"] " << #COND << \
-				" FAILED\n"; \
-			throw std::exception(); \
+			@mul(log preamble); \
+			@mul(log newline); \
+			@mul(throw); \
 		}
-@end(define logging)
+@End(frag prereqs)
 ```
-* Loggen wird über ein Makro realisiert
-* Nur so kann die aktuelle Position im Source-Code ermittelt werden
-* Wenn die Bedingung wahr ist, wird nicht geloggt
-* Ansonsten wird eine Fehlermeldung ausgegeben
-* Und das Programm beendet
-* Datei und Zeile des Tests wird ausgegeben
+* The plain `@f(ASSERT)` macro does nothing if the condition evaluates
+  to `true`
+* Otherwise the position of the line with the assertion will be written
+* and a small message
+* No details are given and the line is terminated with a newline
+* Then an exception is raised
 
 ```
-@Add(define logging)
+@Add(frag prereqs)
 	#define ASSERT_MSG(COND, MSG) \
 		if (! (COND)) { \
-			std::cerr << __FILE__ << \
-				':' << __LINE__ << \
-				"] " << #COND << \
-				" FAILED: " << MSG << \
-				'\n'; \
-			throw std::exception(); \
+			@mul(log preamble); \
+			std::cerr << ": " << MSG; \
+			@mul(log newline); \
+			@mul(throw); \
 		}
-@end(define logging)
+@End(frag prereqs)
 ```
-* Zusätzlich kann eine Nachricht mitgegegben werden
+* The macro `@f(ASSERT_MSG)` has an additional argument that the macro
+  writes after the preamble
+* `MSG` can be multiple parameters concatenated by `<<`
+
+```
+@def(log preamble) \
+	std::cerr << \
+		__FILE__ << ':' << __LINE__ << \
+		' ' << #COND << " FAILED"; \
+@end(log preamble)
+```
+* The preamble starts with the position in the format `filename:line`
+* This is recognized by a number of editors
+* Afterwards a short error message is written
+
+```
+@def(log newline) \
+	std::cerr << '\n'; \
+@end(log newline)
+```
+* A simple newline terminates an error message
+
+```
+@def(throw) \
+	throw std::exception(); \
+@end(throw)
+```
+* The macros throw a generic `std::exception` if the condition was not
+  met
 

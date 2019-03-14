@@ -14,7 +14,6 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">fstream</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">iostream</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">memory</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">vector</span>&gt;<br/>
@@ -28,52 +27,7 @@ Aus <code><span class="var">memory</span></code> wird <code><span class="var">un
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
-<span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">ifstream</span> <span class="var">file</span>;<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">private elements</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">additional elements</span>)</span>;<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">input methods</span>)</span>;<br/>
-<span class="in1"></span>};<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-</code></div>
-<ul><li>
-Die <code><span class="type">Input</span></code>-Klasse enthält den Dateinamen der Eingabe-Dateien
-</li><li>
-Zusätzlich kann sie eine offene Datei enthalten
-</li><li>
-Alle Eingabe-Dateien, die während einer Inkludierungs-Kaskade
-  eingebunden werden bleiben offen, damit an der richtigen Stelle weiter
-  gearbeitet werden kann
-</li><li>
-Weiter Attribute und Methoden können später definiert werden
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">input methods</span>)</span><br/>
-<span class="in1"></span><span class="fn">Input</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
-<span class="in1"></span>):<br/>
-<span class="in2"></span><span class="var">file</span> { <span class="var">name</span>.<span class="fn">c_str</span>() },<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">private input constr</span>)</span><br/>
-<span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
-<span class="in1"></span>{<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">input methods</span>)</span><br/>
-</code></div>
-<ul><li>
-Im Konstruktor werden Datei und Name gesetzt
-</li><li>
-Später eingeführte Attribute können auch dann initialisiert werden
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@Add(<span class="name">input methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">getLine</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">file</span>.<span class="fn">is_open</span>()) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
@@ -362,7 +316,7 @@ Die Kollektionen bereits offener Dateien werden hierarchisch integriert
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">additional elements</span>)</span><br/>
+<span class="macro">@Def(<span class="name">additional elements</span>)</span><br/>
 <span class="in1"></span><span class="type">FragMap</span> <span class="var">frags</span>;<br/>
 <span class="macro">@end(<span class="name">additional elements</span>)</span><br/>
 </code></div>
@@ -397,7 +351,7 @@ Jede Datei führt die aktuelle Zeiennummer mit
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">private elements</span>)</span><br/>
+<span class="macro">@Def(<span class="name">private elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">_line</span>;<br/>
 <span class="macro">@end(<span class="name">private elements</span>)</span><br/>
 </code></div>
@@ -407,7 +361,7 @@ Pro Datei wird die aktuelle Zeile festgehalten
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">private input constr</span>)</span><br/>
+<span class="macro">@Def(<span class="name">private input constr</span>)</span><br/>
 <span class="in1"></span><span class="var">_line</span> { <span class="num">0</span> },<br/>
 <span class="macro">@end(<span class="name">private input constr</span>)</span><br/>
 </code></div>
@@ -418,7 +372,7 @@ Wenn keine Zeile prozessiert wurde, steht die Zeilennummer noch auf
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">input methods</span>)</span><br/>
+<span class="macro">@Add(<span class="name">input methods</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">line</span>() <span class="type">const</span> {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span>;<br/>
 <span class="in1"></span>}<br/>

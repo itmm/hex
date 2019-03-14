@@ -4,9 +4,10 @@
   Source-Code Dateien
 
 ```
-@Add(global elements)
+@Def(input prereqs)
+	@Put(frag prereqs);
 	@put(define frag);
-@end(global elements)
+@end(input prereqs)
 ```
 * Fragmente sind global sichtbare Strukturen
 

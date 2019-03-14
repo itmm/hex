@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Read the input files</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Read the input files</h1>
+<div class="slides">
+<div><div>
+<h1>Read the input files</h1>
+</div>
+<ul><li>
+Processes the input files line by line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">fstream</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">string</span>&gt;<br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
+<span class="in2"></span><span class="keyword">private</span>:<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">ifstream</span> <span class="var">file</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">private elements</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">public</span>:<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">additional elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">input methods</span>)</span>;<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+Die <code><span class="type">Input</span></code>-Klasse enthält den Dateinamen der Eingabe-Dateien
+</li><li>
+Zusätzlich kann sie eine offene Datei enthalten
+</li><li>
+Alle Eingabe-Dateien, die während einer Inkludierungs-Kaskade
+  eingebunden werden bleiben offen, damit an der richtigen Stelle weiter
+  gearbeitet werden kann
+</li><li>
+Weiter Attribute und Methoden können später definiert werden
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">input methods</span>)</span><br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>):<br/>
+<span class="in2"></span><span class="var">file</span> { <span class="var">name</span>.<span class="fn">c_str</span>() },<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">private input constr</span>)</span><br/>
+<span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
+<span class="in1"></span>{}<br/>
+<span class="macro">@End(<span class="name">input methods</span>)</span><br/>
+</code></div>
+<ul><li>
+Im Konstruktor werden Datei und Name gesetzt
+</li><li>
+Später eingeführte Attribute können auch dann initialisiert werden
+</body>
+</html>

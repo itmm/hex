@@ -1,6 +1,9 @@
 
 	
 	
+	#include <fstream>
+	#include <string>
+
 	#include <iostream>
 	#include <exception>
 
@@ -10,7 +13,6 @@
 
 	#include <map>
 
-	#include <fstream>
 	#include <iostream>
 	#include <memory>
 	#include <vector>
@@ -26,27 +28,40 @@
 
 	#include <set>
 ;
+
+	
 	
 	#define ASSERT(COND) \
 		if (! (COND)) { \
-			std::cerr << __FILE__ << \
-				':' << __LINE__ << \
-				"] " << #COND << \
-				" FAILED\n"; \
-			throw std::exception(); \
+			 \
+	std::cerr << \
+		__FILE__ << ':' << __LINE__ << \
+		' ' << #COND << " FAILED"; \
+; \
+			 \
+	std::cerr << '\n'; \
+; \
+			 \
+	throw std::exception(); \
+; \
 		}
 
 	#define ASSERT_MSG(COND, MSG) \
 		if (! (COND)) { \
-			std::cerr << __FILE__ << \
-				':' << __LINE__ << \
-				"] " << #COND << \
-				" FAILED: " << MSG << \
-				'\n'; \
-			throw std::exception(); \
+			 \
+	std::cerr << \
+		__FILE__ << ':' << __LINE__ << \
+		' ' << #COND << " FAILED"; \
+; \
+			std::cerr << ": " << MSG; \
+			 \
+	std::cerr << '\n'; \
+; \
+			 \
+	throw std::exception(); \
+; \
 		}
 ;
-
 	
 	class Frag;
 
@@ -392,7 +407,7 @@
 ;
 	};
 ;
-
+;
 	class Input {
 		private:
 			std::ifstream file;
@@ -405,16 +420,13 @@
 	FragMap frags;
 ;
 			
-	Input(
-		const std::string &name
-	):
+	Input(const std::string &name):
 		file { name.c_str() },
 		
 	_line { 0 },
 
 		name { name }
-	{
-	}
+	{}
 
 	bool getLine(std::string &line) {
 		if (file.is_open()) {
@@ -1060,7 +1072,8 @@
 		const char **argv
 	) {
 		
-	
+	#if ! NDEBUG
+		
 	
 	testFragName("abc");
 	testFragName("");
@@ -1094,6 +1107,8 @@
 	testFrag(b, "abcdefabc");
 } ;
 ;
+	#endif
+
 	
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
@@ -1142,6 +1157,7 @@
 		inputs.push("index.x");
 	}
 ;
+
 	 {
 	
 	Frag *frag { nullptr };
@@ -1180,7 +1196,9 @@
 		std::string arg {ab, ae};
 		
 	i = ae;
+	bool outside = !frag;
 	do {
+		if (! frag && ! blockLimit) { break; }
 		
 	if (name == "def") {
 		ASSERT_MSG(! frag, "def(" << arg << ") in frag");
@@ -1473,6 +1491,9 @@
 	}
 ;
 	} while (false);
+	if (blockLimit && outside && frag) {
+		--blockLimit;
+	}
 ;
 		continue;
 	}
@@ -1486,6 +1507,7 @@
 ;
 	}
 } ;
+
 	
 	for (auto &i : root) {
 		const Frag *frag { &i.second };
@@ -1613,6 +1635,7 @@
 		}
 	}
 ;
+
 	
 	for (auto &cur : inputs) {
 		

@@ -2,7 +2,6 @@
 
 ```
 @Add(includes)
-	#include <fstream>
 	#include <iostream>
 	#include <memory>
 	#include <vector>
@@ -11,43 +10,9 @@
 * Aus `memory` wird `unique_ptr` verwendet
 * `vector` ist ein Container für Source-Dateien
 
-```
-@Add(global elements)
-	class Input {
-		private:
-			std::ifstream file;
-			@put(private elements);
-		public:
-			const std::string name;
-			@put(additional elements);
-			@put(input methods);
-	};
-@end(global elements)
-```
-* Die `Input`-Klasse enthält den Dateinamen der Eingabe-Dateien
-* Zusätzlich kann sie eine offene Datei enthalten
-* Alle Eingabe-Dateien, die während einer Inkludierungs-Kaskade
-  eingebunden werden bleiben offen, damit an der richtigen Stelle weiter
-  gearbeitet werden kann
-* Weiter Attribute und Methoden können später definiert werden
 
 ```
-@def(input methods)
-	Input(
-		const std::string &name
-	):
-		file { name.c_str() },
-		@put(private input constr)
-		name { name }
-	{
-	}
-@end(input methods)
-```
-* Im Konstruktor werden Datei und Name gesetzt
-* Später eingeführte Attribute können auch dann initialisiert werden
-
-```
-@add(input methods)
+@Add(input methods)
 	bool getLine(std::string &line) {
 		if (file.is_open()) {
 			@put(get line);
@@ -257,7 +222,7 @@
 * Die Kollektionen bereits offener Dateien werden hierarchisch integriert
 
 ```
-@def(additional elements)
+@Def(additional elements)
 	FragMap frags;
 @end(additional elements)
 ```
@@ -279,14 +244,14 @@
 * Jede Datei führt die aktuelle Zeiennummer mit
 
 ```
-@def(private elements)
+@Def(private elements)
 	int _line;
 @end(private elements)
 ```
 * Pro Datei wird die aktuelle Zeile festgehalten
 
 ```
-@def(private input constr)
+@Def(private input constr)
 	_line { 0 },
 @end(private input constr)
 ```
@@ -294,7 +259,7 @@
   `0`
 
 ```
-@add(input methods)
+@Add(input methods)
 	int line() const {
 		return _line;
 	}

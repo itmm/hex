@@ -1,35 +1,38 @@
 # HTML Extractor
-* Dieses Dokument ist eine Präsentation, welche die Entwicklung des
-  **HTML Extractors** (`hx`) beschreibt
-* Es enthält zusätzlich den gesamten Source-Code von `hx`
-* Es handelt sich um den Versuch eines neuen Programmier-Konzeptes:
-  das **Slideware-Programming** (SWP).
-* Viel Spass.
+* This presentation is the program **HTML Extractor** (`hx`)
+* It contains all source code that is needed to build the executable
+* But the code is spread over multiple slides
+* To form an extreme form of Literate Programming
+* that I call **Slideware-Programming** (SWP)
+* Have fun!
 
-## Funktionsweise von `hx`
-* `hx` generiert Source-Code und HTML-Präsentationen aus einem
-  Basis-Format
-* Dieses lehnt an Markdown an und hat die Datei-Endung `.x`
-* Die Präsentationen bauen Schritt für Schritt das Programm auf
-* `hx` kann ebenfalls navigierbare Verweise in die Präsentation einbauen
+## What is `hx`?
+* `hx` is a program that parses a `x`-document and extracts source
+  code or an executable program out of it
+* Think of it as a very powerful macro processor that combines, extends
+  and orders small fragments of code
+* But also it generates a HTML documentation like the one you are
+  currently reading
 
-## Slideware Programming (SWP)
-* Aus dem Source-Code, der vollständing in einer HTML-Präsentation
-  enthalten ist, kann ein ausführbares Programm generiert werden
-* Dabei wird das Programm schrittweise aufgebaut
+## What is a `x`-document?
+* `x`-documents are text documents with a markdown-like syntax
+* It contains sections at different levels, paragraphs and code snippets
+* The sections and code snippets are automatically formatted as slides
+  of a very big slide show
+* These slides can be decorated with notes
 
 ## SWP ≠ Literate Programming
-* SWP beschreibt nicht nur ein fertiges Programm
-* Sondern wie das Programm aufgebaut wird
-* Zu jedem Zeitpunkt muss das bisher beschriebene Programm ausführbar
-  sein
-* Nicht definierte Fragmente werden zu nichts expandieren
-* So kann das Verständnis für ein Programm schrittweise erarbeitet
-  werden
+* SWP should not document a finished program
+* but it should document the process of creating a program instead
+* After every slide you can generate the code from all the slides that
+  you have read
+* and without peeking in the future a runnable program must result
+* So it does not contain features that are described the later slides
 
-# Definition des Ablaufs
-* Zuerst wird das Haupt-Programm in ganz groben Pinselstrichen skizziert
-* Nach und nach werden die einzelnen Elemente mit Leben gefüllt
+## A very top-down view of `hx`
+* In the first code slide contains the highest view of the `hx` program
+* While not very interesting, it contains a lot of commands that show
+  how `hx` works
 
 ```
 @Def(file: hx.cpp)
@@ -40,68 +43,153 @@
 	) {
 		@put(main body)
 	}
-@end(file: hx.cpp)
+@End(file: hx.cpp)
 ```
-* Hex ist in C++ geschrieben
-* Das Hauptprogramm besteht aus der `main`-Funktion
-* Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
-  definiert werden können
-* Übergeben wird der Funktion die Anzahl der Argumente in `argc`
-* Und der Aufrufname mit Argumenten als Array in `argv`
+* `hx` is written in C++ and consists of one source file `@s(hx.cpp)`
+* Global elements like types, macros and functions are defined before
+  the central `@f(main)` function is defined
+* These elements and the body of the `@f(main)` function will be defined
+  and refined in later slides
+
+### Commands
+* The first code slide has three `hx` commands: `@k(@Def)`, `@k(@put)`,
+  and `@k(@End)`
+* Each command starts with an ampersand (`@`), some letters and an
+  argument block
+* The argument block consists of an opening parenthesis, the argument
+  value, and a closing parenthesis
+* For now assume, that no closing parenthesis or ampersand is part of
+  the argument value
+
+### Fragments
+* `hx` processes code fragments
+* A fragment starts with an opening command like `@k(@Def)`
+* and ends with a matching `@k(@End)` or `@k(@end)` closing command
+* The **name** of the fragment is the argument value of the opening
+  command
+* and must be the same as the argument value of the closing command
+
+### Defined Fragments
+* Three fragments are defined on the first code page
+* They have the names `@s(file: hx.cpp)`, `@s(global elements)`, and
+  `@s(main body)`
+* Not all `hx` commands use their argument value as fragment name
+* but the three presented so far all do
+
+### Including fragments
+* A fragment can be included into another fragment with the `@k(@put)`
+  command
+* Of course you must not include a fragment that directly or indirectly
+  includes the current fragment
+* The inclusion will happen after all slides are processed
+* So it is possible to include a fragment that is not defined yet
+
+### Naming files
+* Fragments whose name start with `@s(file: )` are special
+* `hx` writes them into files
+* the file name is the rest of the argument value after the `@s(file: )`
+  prefix
+* The first code slide creates one fragment that is written into the
+  file named `@s(hx.cpp)`
+
+### Generating the first source code
+* If we stop here and run `hx`, the following code will be generated
+
+```
+	int main(
+		int argc,
+		const char **argv
+	) {
+	}
+```
+* The unknown fragments are noted in the output of `hx`
+* But the file compiles without errors
+* So it does not do much
+
+### Steps in `@f(main)`
+* The next code slides identify multiple steps to perform in the
+  `@f(main)` function
 
 ```
 @def(main body)
-	@put(perform unit-tests);
+	#if ! NDEBUG
+		@put(perform unit-tests);
+	#endif
+@end(main body)
+```
+* The unit-tests are performed at every start of the program
+* unless a release version is build
+* The use of `@k(@def)` instead of `@k(@Def)` is no mistake
+* `@k(@Def)` defines a global fragment that is visible in all `x`-files
+* `@k(@def)` defines a local fragment that is only visible in the
+  current `x`-file and in all included `x`-files
+
+```
+@add(main body)
 	@put(process arguments);
-	@put(read source file);
+@end(main body)
+```
+* After the unit-tests `@f(main)` parses the arguments passed to it from
+  the command line
+* `@k(@add)` extends an existing local fragment
+* The ability of macros to grow with time is borrowed from Literate
+  Programming
+* But is is far more important in SWP, as a slide provides only limited
+  space
+
+```
+@add(main body)
+	@put(read source files);
+@end(main body)
+```
+* Next the source files are read into a fragment tree
+* Here a lot of interesting things are happening but right now it will
+  expand to nothing as nothing is described yet
+
+```
+@add(main body)
 	@put(serialize fragments);
+@end(main body)
+```
+* In the next step `hx` writes the content of every file fragment in its
+  designated file
+
+```
+@add(main body)
 	@put(write HTML file);
 @end(main body)
 ```
-* Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
-  umfangreiche Testabdeckung zu sichern)
-* Parameter von der Kommandozeile werden ausgewertet
-* Dann wird ein Parse-Graph aus Fragmenten aufgebaut
-* Und das daraus resultierende Programm generiert und übersetzt
-* Zum Schluss wird die HTML-Präsentation der Seiten in einem zweiten
-  Durchgang herausgeschrieben
-
-## Was macht `@put`?
-* `@put`-Blöcke beschreiben Fragment-Aufrufe
-* Der Wert des Fragments mit dem Namen in Klammern wird anstelle des
-  Aufrufs im endgültigen Programm gesetzt
-* Diese Fragmente bilden ein zentrales Element von `hx`
-* Sie können mit `@def`-`@end`-Sequenzen definiert werden
-* Oder mit `@add`-`@end` erweitert werden
-* Ein `@put` darf nur einmal aufgelöst werden
-* Für mehrfache Auflösungen muss `@mulitple` verwendet werden
+* And lastly the HTML documentation is generated
 
 ```
 @def(global elements)
 	@put(includes);
-	@put(define logging);
 @end(global elements)
 ```
-* System-Dateien werden vor der Definition von Strukturen und Funktionen
-  eingebunden
-* Auch müssen Macros für das Logging vor den Funktionen definiert
-  werden, die sie verwenden
+* `hx` defines a global fragment for included files
 
+## Next steps
+* The following slides refer to documents that document the next steps
+  of `hx`
+* Follow them in order so that you do not miss important concepts
 
-# Minimale Vorbereitung für das Parsen
-* In diesem Abschnitt wird die Grundlage gelegt, um Dateien lesen zu
-  können
-* Während des Lesens kann die aktuelle Datei unterbrochen und zuerst
-  eine weitere Datei gelesen werden
+```
+@inc(read.x)
+```
+* Defines the mechanisms of reading files line by line
+* The `@k(@inc)` command includes a different `x`-file at the current
+  position
+* The file is read only once, no matter how often it is included
+* You can click on the argument value in the HTML documentation to
+  navigate to the documentation from this file
 
-# Logging
-* Mehrere Programme verwenden die gleichen Log-Makros
-* Daher enthält eine eigene Datei diese Makros
+# WORKING HERE
+
 
 ```
 @inc(log.x)
 ```
-* Bindet Logging ein
+* Defines logging mechanism
 
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
@@ -246,13 +334,13 @@
   einzelnen Folien zu finden
 
 ```
-@def(read source file) {
+@def(read source files) {
 	@put(additional read vars);
 	std::string line;
 	while (inputs.getLine(line)) {
 		@put(process line);
 	}
-} @end(read source file)
+} @end(read source files)
 ```
 * `hx` liest die Eingabe-Dateien zeilenweise
 * Inkludierungen werden transparent in `inputs` behandelt
@@ -391,10 +479,15 @@
 ```
 @def(macro found)
 	i = ae;
+	bool outside = !frag;
 	do {
+		if (! frag && ! blockLimit) { break; }
 		@put(do macro);
 		@put(default expansion);
 	} while (false);
+	if (blockLimit && outside && frag) {
+		--blockLimit;
+	}
 @end(macro found)
 ```
 * Besondere Makros werden zuerst ausgewertet

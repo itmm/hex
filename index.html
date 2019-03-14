@@ -11,45 +11,51 @@
 <h1>HTML Extractor</h1>
 </div>
 <ul><li>
-Dieses Dokument ist eine Präsentation, welche die Entwicklung des
-  <b>HTML Extractors</b> (<code><span class="var">hx</span></code>) beschreibt
+This presentation is the program <b>HTML Extractor</b> (<code><span class="var">hx</span></code>)
 </li><li>
-Es enthält zusätzlich den gesamten Source-Code von <code><span class="var">hx</span></code>
+It contains all source code that is needed to build the executable
 </li><li>
-Es handelt sich um den Versuch eines neuen Programmier-Konzeptes:
-  das <b>Slideware-Programming</b> (SWP).
+But the code is spread over multiple slides
 </li><li>
-Viel Spass.
+To form an extreme form of Literate Programming
+</li><li>
+that I call <b>Slideware-Programming</b> (SWP)
+</li><li>
+Have fun!
 </li></ul>
 </div>
 </div>
-<h2>Funktionsweise von <code><span class="var">hx</span></code></h2>
+<h2>What is <code><span class="var">hx</span></code>?</h2>
 <div class="slides">
 <div><div>
-<h2>Funktionsweise von <code><span class="var">hx</span></code></h2>
+<h2>What is <code><span class="var">hx</span></code>?</h2>
 </div>
 <ul><li>
-<code><span class="var">hx</span></code> generiert Source-Code und HTML-Präsentationen aus einem
-  Basis-Format
+<code><span class="var">hx</span></code> is a program that parses a <code><span class="var">x</span></code>-document and extracts source
+  code or an executable program out of it
 </li><li>
-Dieses lehnt an Markdown an und hat die Datei-Endung <code>.<span class="var">x</span></code>
+Think of it as a very powerful macro processor that combines, extends
+  and orders small fragments of code
 </li><li>
-Die Präsentationen bauen Schritt für Schritt das Programm auf
-</li><li>
-<code><span class="var">hx</span></code> kann ebenfalls navigierbare Verweise in die Präsentation einbauen
+But also it generates a HTML documentation like the one you are
+  currently reading
 </li></ul>
 </div>
 </div>
-<h2>Slideware Programming (SWP)</h2>
+<h2>What is a <code><span class="var">x</span></code>-document?</h2>
 <div class="slides">
 <div><div>
-<h2>Slideware Programming (SWP)</h2>
+<h2>What is a <code><span class="var">x</span></code>-document?</h2>
 </div>
 <ul><li>
-Aus dem Source-Code, der vollständing in einer HTML-Präsentation
-  enthalten ist, kann ein ausführbares Programm generiert werden
+<code><span class="var">x</span></code>-documents are text documents with a markdown-like syntax
 </li><li>
-Dabei wird das Programm schrittweise aufgebaut
+It contains sections at different levels, paragraphs and code snippets
+</li><li>
+The sections and code snippets are automatically formatted as slides
+  of a very big slide show
+</li><li>
+These slides can be decorated with notes
 </li></ul>
 </div>
 </div>
@@ -59,29 +65,29 @@ Dabei wird das Programm schrittweise aufgebaut
 <h2>SWP ≠ Literate Programming</h2>
 </div>
 <ul><li>
-SWP beschreibt nicht nur ein fertiges Programm
+SWP should not document a finished program
 </li><li>
-Sondern wie das Programm aufgebaut wird
+but it should document the process of creating a program instead
 </li><li>
-Zu jedem Zeitpunkt muss das bisher beschriebene Programm ausführbar
-  sein
+After every slide you can generate the code from all the slides that
+  you have read
 </li><li>
-Nicht definierte Fragmente werden zu nichts expandieren
+and without peeking in the future a runnable program must result
 </li><li>
-So kann das Verständnis für ein Programm schrittweise erarbeitet
-  werden
+So it does not contain features that are described the later slides
 </li></ul>
 </div>
 </div>
-<h1>Definition des Ablaufs</h1>
+<h2>A very top-down view of <code><span class="var">hx</span></code></h2>
 <div class="slides">
 <div><div>
-<h1>Definition des Ablaufs</h1>
+<h2>A very top-down view of <code><span class="var">hx</span></code></h2>
 </div>
 <ul><li>
-Zuerst wird das Haupt-Programm in ganz groben Pinselstrichen skizziert
+In the first code slide contains the highest view of the <code><span class="var">hx</span></code> program
 </li><li>
-Nach und nach werden die einzelnen Elemente mit Leben gefüllt
+While not very interesting, it contains a lot of commands that show
+  how <code><span class="var">hx</span></code> works
 </li></ul>
 </div>
 <div><div>
@@ -94,115 +100,273 @@ Nach und nach werden die einzelnen Elemente mit Leben gefüllt
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">file: hx.cpp</span>)</span><br/>
+<span class="macro">@End(<span class="name">file: hx.cpp</span>)</span><br/>
 </code></div>
 <ul><li>
-Hex ist in C++ geschrieben
+<code><span class="var">hx</span></code> is written in C++ and consists of one source file <code><span class="str">hx.cpp</span></code>
 </li><li>
-Das Hauptprogramm besteht aus der <code><span class="var">main</span></code>-Funktion
+Global elements like types, macros and functions are defined before
+  the central <code><span class="fn">main</span></code> function is defined
 </li><li>
-Zusätzlich wird ein Fragment definiert, in welchem globale Elemente
-  definiert werden können
+These elements and the body of the <code><span class="fn">main</span></code> function will be defined
+  and refined in later slides
+</li></ul>
+</div>
+</div>
+<h3>Commands</h3>
+<div class="slides">
+<div><div>
+<h3>Commands</h3>
+</div>
+<ul><li>
+The first code slide has three <code><span class="var">hx</span></code> commands: <code><span class="keyword">@Def</span></code>, <code><span class="keyword">@put</span></code>,
+  and <code><span class="keyword">@End</span></code>
 </li><li>
-Übergeben wird der Funktion die Anzahl der Argumente in <code><span class="var">argc</span></code>
+Each command starts with an ampersand (<code>@</code>), some letters and an
+  argument block
 </li><li>
-Und der Aufrufname mit Argumenten als Array in <code><span class="var">argv</span></code>
+The argument block consists of an opening parenthesis, the argument
+  value, and a closing parenthesis
+</li><li>
+For now assume, that no closing parenthesis or ampersand is part of
+  the argument value
+</li></ul>
+</div>
+</div>
+<h3>Fragments</h3>
+<div class="slides">
+<div><div>
+<h3>Fragments</h3>
+</div>
+<ul><li>
+<code><span class="var">hx</span></code> processes code fragments
+</li><li>
+A fragment starts with an opening command like <code><span class="keyword">@Def</span></code>
+</li><li>
+and ends with a matching <code><span class="keyword">@End</span></code> or <code><span class="keyword">@end</span></code> closing command
+</li><li>
+The <b>name</b> of the fragment is the argument value of the opening
+  command
+</li><li>
+and must be the same as the argument value of the closing command
+</li></ul>
+</div>
+</div>
+<h3>Defined Fragments</h3>
+<div class="slides">
+<div><div>
+<h3>Defined Fragments</h3>
+</div>
+<ul><li>
+Three fragments are defined on the first code page
+</li><li>
+They have the names <code><span class="str">file: hx.cpp</span></code>, <code><span class="str">global elements</span></code>, and
+  <code><span class="str">main body</span></code>
+</li><li>
+Not all <code><span class="var">hx</span></code> commands use their argument value as fragment name
+</li><li>
+but the three presented so far all do
+</li></ul>
+</div>
+</div>
+<h3>Including fragments</h3>
+<div class="slides">
+<div><div>
+<h3>Including fragments</h3>
+</div>
+<ul><li>
+A fragment can be included into another fragment with the <code><span class="keyword">@put</span></code>
+  command
+</li><li>
+Of course you must not include a fragment that directly or indirectly
+  includes the current fragment
+</li><li>
+The inclusion will happen after all slides are processed
+</li><li>
+So it is possible to include a fragment that is not defined yet
+</li></ul>
+</div>
+</div>
+<h3>Naming files</h3>
+<div class="slides">
+<div><div>
+<h3>Naming files</h3>
+</div>
+<ul><li>
+Fragments whose name start with <code><span class="str">file: </span></code> are special
+</li><li>
+<code><span class="var">hx</span></code> writes them into files
+</li><li>
+the file name is the rest of the argument value after the <code><span class="str">file: </span></code>
+  prefix
+</li><li>
+The first code slide creates one fragment that is written into the
+  file named <code><span class="str">hx.cpp</span></code>
+</li></ul>
+</div>
+</div>
+<h3>Generating the first source code</h3>
+<div class="slides">
+<div><div>
+<h3>Generating the first source code</h3>
+</div>
+<ul><li>
+If we stop here and run <code><span class="var">hx</span></code>, the following code will be generated
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="in1"></span><span class="type">int</span> <span class="fn">main</span>(<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">char</span> **<span class="var">argv</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in1"></span>}<br/>
+</code></div>
+<ul><li>
+The unknown fragments are noted in the output of <code><span class="var">hx</span></code>
+</li><li>
+But the file compiles without errors
+</li><li>
+So it does not do much
+</li></ul>
+</div>
+</div>
+<h3>Steps in <code><span class="fn">main</span></code></h3>
+<div class="slides">
+<div><div>
+<h3>Steps in <code><span class="fn">main</span></code></h3>
+</div>
+<ul><li>
+The next code slides identify multiple steps to perform in the
+  <code><span class="fn">main</span></code> function
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">main body</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">perform unit-tests</span>)</span>;<br/>
+<span class="in1"></span><span class="keyword">#if</span> ! <span class="var">NDEBUG</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">perform unit-tests</span>)</span>;<br/>
+<span class="in1"></span><span class="keyword">#endif</span><br/>
+<span class="macro">@end(<span class="name">main body</span>)</span><br/>
+</code></div>
+<ul><li>
+The unit-tests are performed at every start of the program
+</li><li>
+unless a release version is build
+</li><li>
+The use of <code><span class="keyword">@def</span></code> instead of <code><span class="keyword">@Def</span></code> is no mistake
+</li><li>
+<code><span class="keyword">@Def</span></code> defines a global fragment that is visible in all <code><span class="var">x</span></code>-files
+</li><li>
+<code><span class="keyword">@def</span></code> defines a local fragment that is only visible in the
+  current <code><span class="var">x</span></code>-file and in all included <code><span class="var">x</span></code>-files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">process arguments</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">read source file</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">main body</span>)</span><br/>
+</code></div>
+<ul><li>
+After the unit-tests <code><span class="fn">main</span></code> parses the arguments passed to it from
+  the command line
+</li><li>
+<code><span class="keyword">@add</span></code> extends an existing local fragment
+</li><li>
+The ability of macros to grow with time is borrowed from Literate
+  Programming
+</li><li>
+But is is far more important in SWP, as a slide provides only limited
+  space
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">main body</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">read source files</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">main body</span>)</span><br/>
+</code></div>
+<ul><li>
+Next the source files are read into a fragment tree
+</li><li>
+Here a lot of interesting things are happening but right now it will
+  expand to nothing as nothing is described yet
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">serialize fragments</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">main body</span>)</span><br/>
+</code></div>
+<ul><li>
+In the next step <code><span class="var">hx</span></code> writes the content of every file fragment in its
+  designated file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write HTML file</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">main body</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei jedem Start werden alle Unit-Tests ausgeführt (um eine
-  umfangreiche Testabdeckung zu sichern)
-</li><li>
-Parameter von der Kommandozeile werden ausgewertet
-</li><li>
-Dann wird ein Parse-Graph aus Fragmenten aufgebaut
-</li><li>
-Und das daraus resultierende Programm generiert und übersetzt
-</li><li>
-Zum Schluss wird die HTML-Präsentation der Seiten in einem zweiten
-  Durchgang herausgeschrieben
-</li></ul>
-</div>
-</div>
-<h2>Was macht <code>@<span class="var">put</span></code>?</h2>
-<div class="slides">
-<div><div>
-<h2>Was macht <code>@<span class="var">put</span></code>?</h2>
-</div>
-<ul><li>
-<code>@<span class="var">put</span></code>-Blöcke beschreiben Fragment-Aufrufe
-</li><li>
-Der Wert des Fragments mit dem Namen in Klammern wird anstelle des
-  Aufrufs im endgültigen Programm gesetzt
-</li><li>
-Diese Fragmente bilden ein zentrales Element von <code><span class="var">hx</span></code>
-</li><li>
-Sie können mit <code>@<span class="var">def</span></code>-<code>@<span class="var">end</span></code>-Sequenzen definiert werden
-</li><li>
-Oder mit <code>@<span class="var">add</span></code>-<code>@<span class="var">end</span></code> erweitert werden
-</li><li>
-Ein <code>@<span class="var">put</span></code> darf nur einmal aufgelöst werden
-</li><li>
-Für mehrfache Auflösungen muss <code>@<span class="var">mulitple</span></code> verwendet werden
+And lastly the HTML documentation is generated
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">includes</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">define logging</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
-System-Dateien werden vor der Definition von Strukturen und Funktionen
-  eingebunden
-</li><li>
-Auch müssen Macros für das Logging vor den Funktionen definiert
-  werden, die sie verwenden
+<code><span class="var">hx</span></code> defines a global fragment for included files
 </li></ul>
 </div>
 </div>
-<h1>Minimale Vorbereitung für das Parsen</h1>
+<h2>Next steps</h2>
 <div class="slides">
 <div><div>
-<h1>Minimale Vorbereitung für das Parsen</h1>
+<h2>Next steps</h2>
 </div>
 <ul><li>
-In diesem Abschnitt wird die Grundlage gelegt, um Dateien lesen zu
-  können
+The following slides refer to documents that document the next steps
+  of <code><span class="var">hx</span></code>
 </li><li>
-Während des Lesens kann die aktuelle Datei unterbrochen und zuerst
-  eine weitere Datei gelesen werden
+Follow them in order so that you do not miss important concepts
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@inc(<span class="name"><a href="read.html">read.x</a></span>)</span><br/>
+</code></div>
+<ul><li>
+Defines the mechanisms of reading files line by line
+</li><li>
+The <code><span class="keyword">@inc</span></code> command includes a different <code><span class="var">x</span></code>-file at the current
+  position
+</li><li>
+The file is read only once, no matter how often it is included
+</li><li>
+You can click on the argument value in the HTML documentation to
+  navigate to the documentation from this file
 </li></ul>
 </div>
 </div>
-<h1>Logging</h1>
+<h1>WORKING HERE</h1>
 <div class="slides">
 <div><div>
-<h1>Logging</h1>
+<h1>WORKING HERE</h1>
 </div>
-<ul><li>
-Mehrere Programme verwenden die gleichen Log-Makros
-</li><li>
-Daher enthält eine eigene Datei diese Makros
-</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="log.html">log.x</a></span>)</span><br/>
 </code></div>
 <ul><li>
-Bindet Logging ein
+Defines logging mechanism
 </li></ul>
 </div>
 </div>
@@ -420,13 +584,13 @@ In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">read source file</span>)</span> {<br/>
+<span class="macro">@def(<span class="name">read source files</span>)</span> {<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">additional read vars</span>)</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">inputs</span>.<span class="fn">getLine</span>(<span class="var">line</span>)) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process line</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-} <span class="macro">@end(<span class="name">read source file</span>)</span><br/>
+} <span class="macro">@end(<span class="name">read source files</span>)</span><br/>
 </code></div>
 <ul><li>
 <code><span class="var">hx</span></code> liest die Eingabe-Dateien zeilenweise
@@ -604,10 +768,15 @@ Argument des Makros wird von Klammern umschlossen
 <code>
 <span class="macro">@def(<span class="name">macro found</span>)</span><br/>
 <span class="in1"></span><span class="var">i</span> = <span class="var">ae</span>;<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">outside</span> = !<span class="var">frag</span>;<br/>
 <span class="in1"></span><span class="var">do</span> {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">frag</span> &amp;&amp; ! <span class="var">blockLimit</span>) { <span class="keyword">break</span>; }<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">do macro</span>)</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">default expansion</span>)</span>;<br/>
 <span class="in1"></span>} <span class="keyword">while</span> (<span class="num">false</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">blockLimit</span> &amp;&amp; <span class="var">outside</span> &amp;&amp; <span class="var">frag</span>) {<br/>
+<span class="in2"></span>--<span class="var">blockLimit</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">macro found</span>)</span><br/>
 </code></div>
 <ul><li>
