@@ -940,7 +940,7 @@ Wenn der öffnende und schließende Name nicht passt, wird die
 <code>
 <span class="macro">@add(<span class="name">do macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"add"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"add in frag"</span>);<br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"add in frag "</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span>);<br/>
 <span class="in2"></span><span class="type">FragMap</span> *<span class="var">fm</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">inputs</span>.<span class="fn">cur</span>()-&gt;<span class="var">frags</span><br/>
 <span class="in2"></span>};<br/>

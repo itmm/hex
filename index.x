@@ -624,7 +624,7 @@
 ```
 @add(do macro)
 	if (name == "add") {
-		ASSERT_MSG(! frag, "add in frag");
+		ASSERT_MSG(! frag, "add in frag " << frag->name);
 		FragMap *fm {
 			&inputs.cur()->frags
 		};
