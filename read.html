@@ -2,12 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Read the input files</title>
+<title>read.x</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
 <h1>Read the input files</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Read the input files</h1>
 </div>
 <ul><li>
@@ -39,7 +40,8 @@ These can be grouped in the fragment <code><span class="str">inputs prereqs</spa
 </div>
 <h2><code><span class="type">Inputs</span></code> class</h2>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h2><code><span class="type">Inputs</span></code> class</h2>
 </div>
 <ul><li>
@@ -110,14 +112,15 @@ Defines <code><span class="type">std</span>::<span class="type">string</span></c
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">inputs read line</span>)</span><br/>
-<span class="in1"></span><span class="var">throw</span> <span class="type">No_More_Lines</span> {};<br/>
+<span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="macro">@end(<span class="name">inputs read line</span>)</span><br/>
 </code></div>
 </div>
 </div>
 <h2>Reading everything</h2>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h2>Reading everything</h2>
 </div>
 </div>
@@ -155,7 +158,8 @@ Inkludierungen werden transparent in <code><span class="var">inputs</span></code
 </div>
 <h2>What is a file?</h2>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h2>What is a file?</h2>
 </div>
 <ul><li>
@@ -173,7 +177,8 @@ So a special class <code><span class="type">Input</span></code> will represent a
 </div>
 <h2><code><span class="type">Input</span></code> class</h2>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h2><code><span class="type">Input</span></code> class</h2>
 </div>
 <ul><li>
@@ -348,7 +353,7 @@ Simple accessor
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">is_open</span>()) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">throw</span> <span class="type">No_More_Lines</span> {};<br/>
+<span class="in2"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -375,8 +380,8 @@ die erst später definiert werden
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">private inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">_open</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">_open</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
 <span class="macro">@end(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -409,7 +414,7 @@ Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
 <span class="in2"></span><span class="macro">@put(<span class="name">save open input</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_open</span>.<span class="fn">pop_back</span>();<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">throw</span> <span class="type">No_More_Lines</span> {};<br/>
+<span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="macro">@end(<span class="name">inputs read line</span>)</span><br/>
 </code></div>
 <ul><li>

@@ -28,11 +28,7 @@
 
 ```
 @def(write cur HTML file to out)
-	std::ifstream in {
-		cur.path().c_str()
-	};
 	@put(write from in to out);
-	in.close();
 @end(write cur HTML file to out)
 ```
 * Zuerst wird die Eingabe-Datei zum Lesen geöffnet
@@ -95,14 +91,50 @@
 	HtmlStatus status;
 	std::string ident;
 	std::string line;
-	while (std::getline(in, line)) {
-		@put(process line);
+	for (const auto &b : cur.blocks) {
+		@put(process block);
 	}
 @end(write from in to out)
 ```
 * Beim Schreiben einer Datei wird zuerst der Status initialisiert
 * Die Eingabe wird Zeile für Zeile abgearbeitet
 * Bis das Datei-Ende erreicht ist
+
+```
+@def(process block)
+	if (b.state == RS::header) {
+		@put(process header);
+	}
+@end(process block)
+```
+
+```
+@add(process block)
+	if (b.state == RS::code) {
+		@put(open code page);
+		for (const auto &code : b.value) {
+			@put(process code);
+		}
+		@put(close code page);
+		for (const auto &note : b.notes) {
+			@mul(process note);
+		}
+		@mul(close specials);
+		@mul(close slide);
+	}
+@end(process block)
+```
+
+```
+@add(process block)
+	if (b.state == RS::para) {
+		for (const auto &para : b.value) {
+			@put(process para);
+		}
+		@mul(close specials);
+	}
+@end(process block)
+```
 
 ```
 @Add(global elements)
@@ -118,35 +150,6 @@
   der Zustands-Automat gerade in einem Fragment befindet
 
 ```
-@def(process line)
-	if (in_code(&status)) {
-		@put(process code);
-		continue;
-	}
-@end(process line)
-```
-* Während Code bearbeitet wird, gelten viele andere Regeln nicht mehr
-* Daher wird dieser Block als erstes abgehandelt
-
-```
-@add(process line)
-	if (line == "") {
-		@put(close specials);
-		switch (status.state) {
-			case HtmlState::afterSlide:
-			case HtmlState::afterSlides:
-			case HtmlState::nothing:
-				break;
-			default:
-				@put(close slide);
-		}
-		continue;
-	}
-@end(process line)
-```
-* Eine leere Seite schließt eine offene Folie ab
-
-```
 @def(close slide)
 	out << "</div>\n";
 	status.state = HtmlState::afterSlide;
@@ -159,51 +162,20 @@
 * Überschriften beginnen mit Rauten `#`
 
 ```
-@add(process line)
-	if (line[0] == '#') {
-		@put(process header);
-		status.state = HtmlState::inSlide;
-		continue;
-	}
-@end(process line)
-```
-* Wenn am Anfang einer Zeile eine Raute gelesen wird, dann beginnt eine
-  Überschrift
-
-```
 @def(process header)
-	int level = 1;
-	while (
-		level < (int) line.size() &&
-			line[level] == '#'
-	) {
-		++level;
-	}
-@end(process header)
-```
-* Solange weitere Rauten folgen, wird der Level erhöht
-
-```
-@add(process header)
-	auto e = line.end();
-	auto b = line.begin() + level;
-	while (b != e && *b <= ' ') {
-		++b;
-	}
-@end(process header)
-```
-* Nach den Rauten dürfen beliebig viele Leerzeichen vorkommen
-
-```
-@add(process header)
-	ASSERT(b != e);
-	std::string name {b, e};
 	@put(close previous HTML page);
 	@mul(write header tag);
 	out << "<div class=\"slides\">\n";
-	out << "<div><div>\n";
+	out << "<div>\n";
+	out << "<div>\n";
 	@mul(write header tag);
 	out << "</div>\n";
+	status.state = HtmlState::inSlide;
+	for (const auto &note : b.notes) {
+		@mul(process note);
+	}
+	@mul(close specials);
+	@mul(close slide);
 @end(process header)
 ```
 * Falls schon eine Seite offen ist, dann wird diese geschlossen
@@ -287,11 +259,12 @@
 * Code-Schnippsel werden ebenfalls formatiert
 
 ```
-@def(write header tag)
-	out << "<h" << level << '>';
-	process_content(out, name.begin(), name.end());
-	out << "</h" << level << ">\n";
-@end(write header tag)
+@def(write header tag) {
+	out << "<h" << b.level << '>';
+	const auto &n = b.value[0];
+	process_content(out, n.begin(), n.end());
+	out << "</h" << b.level << ">\n";
+} @end(write header tag)
 ```
 * Die HTML-Überschrift enthält den eingelesenen Level
 
@@ -333,7 +306,7 @@
 @def(write HTML header entries)
 	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
-	writeEscaped(out, name);
+	writeEscaped(out, b.value[0]);
 	out << "</title>\n";
 	out << "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\""
@@ -365,16 +338,6 @@
 
 
 ```
-@add(process line)
-	if (line == "```") {
-		@put(open code page);
-		continue;
-	}
-@end(process line)
-```
-* Eine Zeile mit drei Backticks wechselt in den Code Modus
-
-```
 @def(open code page)
 	if (
 		status.state == HtmlState::afterSlides
@@ -393,16 +356,6 @@
 ```
 * Beim Betreten wird eine Seite mit einem `<code>`-Tag geöffnet
 * Und der Zustand passend gesetzt
-
-```
-@def(process code)
-	if (line == "```") {
-		@put(close code page);
-		continue;
-	}
-@end(process code)
-```
-* Eine Zeile mit drei Backticks wechselt aus dem Code Modus zurück
 
 ```
 @def(close code page)
@@ -439,9 +392,9 @@
   die HTML-Tags
 
 ```
-@add(process code)
+@def(process code)
 	process_code(
-		out, line.begin(), line.end()
+		out, code.begin(), code.end()
 	);
 	out << "<br/>\n";
 @end(process code)
@@ -992,19 +945,6 @@
 * Da sie mehrzeilig sein können
 
 ```
-@add(process line)
-	if (
-		line[0] == '*' ||
-		status.state == HtmlState::inNotes
-	) {
-		@put(process note);
-		continue;
-	}
-@end(process line)
-```
-* Eine Notiz beginnt entweder mit `*` oder folgt einer solchen Zeile
-
-```
 @def(close specials)
 	if (
 		status.state == HtmlState::inNotes
@@ -1017,11 +957,11 @@
 
 ```
 @def(process note)
-	if (line[0] == '*') {
+	if (note[0] == '*') {
 		@put(process note line);
 	} else {
 		process_content(
-			out, line.begin(), line.end()
+			out, note.begin(), note.end()
 		);
 		out << '\n';
 	}
@@ -1032,8 +972,8 @@
 
 ```
 @def(process note line)
-	auto end = line.end();
-	auto begin = line.begin() + 1;
+	auto end = note.end();
+	auto begin = note.begin() + 1;
 	while (
 		begin != end && *begin == ' '
 	) {
@@ -1177,14 +1117,6 @@
 * Da sie mehrzeilig sein können
 
 ```
-@add(process line)
-	@put(process para);
-@end(process line)
-```
-* Wenn nichts anderes bearbeitet wurde, dann verarbeitet der Renderer
-  einen Absatz
-
-```
 @add(close specials)
 	if (
 		status.state == HtmlState::inPara
@@ -1209,7 +1141,7 @@
 		status.state = HtmlState::inPara;
 	}
 	process_content(
-		out, line.begin(), line.end()
+		out, para.begin(), para.end()
 	);
 	out << '\n';
 @end(process para)

@@ -2,12 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Fragmente</title>
+<title>frag.x</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
 <h1>Fragmente</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Fragmente</h1>
 </div>
 <ul><li>
@@ -203,7 +204,7 @@ Ansonsten können die Zeichen angefügt werden
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">vector</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">vector</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -214,7 +215,7 @@ Das Fragment legt die Einträge in einem Vektor ab
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span> {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">_entries</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">FragEntry</span>&gt; <span class="var">_entries</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_expands</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_multiples</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
@@ -234,7 +235,8 @@ Das Fragment zählt wie häufig es mit <code>@<span class="var">put</span></code
 </div>
 <h1>Neues Fragment anlegen</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Neues Fragment anlegen</h1>
 </div>
 </div>
@@ -324,7 +326,8 @@ Ein Fragment ist leer, wenn es keine Einträge enthält
 </div>
 <h1>Unit Tests</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Unit Tests</h1>
 </div>
 </div>
@@ -389,7 +392,8 @@ Prüft, ob ein Fragment nicht leer ist
 </div>
 <h1>Unit Tests</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Unit Tests</h1>
 </div>
 <ul><li>
@@ -427,7 +431,8 @@ Ein leerer Eintrag hat keine Bytes
 </div>
 <h1>Einträge zu Fragmenten hinzufügen</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Einträge zu Fragmenten hinzufügen</h1>
 </div>
 <ul><li>
@@ -624,7 +629,8 @@ Fügt <code>@<span class="var">multiple</span></code> oder <code>@<span class="v
 </div>
 <h1>Fragmente serialisieren</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Fragmente serialisieren</h1>
 </div>
 <ul><li>
@@ -759,7 +765,8 @@ Prüft, ob Fragmente expandiert werden
 </div>
 <h1>Zykel im Fragment-Graph finden</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Zykel im Fragment-Graph finden</h1>
 </div>
 <ul><li>
@@ -838,7 +845,8 @@ Damit wird der ganze Graph durchsucht
 </div>
 <h1>Fragment-Kollektion</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Fragment-Kollektion</h1>
 </div>
 <ul><li>
@@ -849,18 +857,18 @@ Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">map</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">map</span>&gt;<br/>
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="type">FragMap</span></code> enthält eine <code><span class="type">std</span>::<span class="var">map</span></code>
+<code><span class="type">FragMap</span></code> enthält eine <code><span class="type">std</span>::<span class="type">map</span></code>
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="type">FragMap</span> =<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag</span>&gt;;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag</span>&gt;;<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>

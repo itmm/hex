@@ -64,11 +64,17 @@
 ```
 
 ```
+@def(unknown line)
+	std::cerr << "!! " << line << '\n';
+@end(unknown line)
+```
+
+```
 @add(globals)
 	struct Block {
 		Read_State state;
-		std::string value;
-		std::string notes;
+		std::vector<std::string> value;
+		std::vector<std::string> notes;
 		int level;
 	};
 @end(globals)
@@ -103,7 +109,7 @@
 	) {}
 	for (; b != e && *b == ' '; ++b) {}
 	blocks.push_back({
-		RS::header, { b, e }, {}, l
+		RS::header, {{ b, e }}, {}, l
 	});
 @end(got header line)
 ```
@@ -151,8 +157,9 @@
 
 ```
 @def(got code line)
-	blocks.back().value +=
-		line + "\n";
+	blocks.back().value.push_back(
+		line
+	);
 @end(got code line)
 ```
 
@@ -192,13 +199,48 @@
 
 ```
 @def(got note)
-	blocks.back().notes +=
-		line + "\n";
+	blocks.back().notes.push_back(
+		line
+	);
 @end(got note)
 ```
 
 ```
-@def(unknown line)
-	std::cerr << "!! " << line << '\n';
-@end(unknown line)
+@add(read states),
+	para
+@end(read states)
+```
+
+```
+@add(states without newlines)
+	if (line[0] != ' ') {
+		if (
+			state == RS::new_element ||
+			state == RS::para
+		) {
+			@put(create para);
+			@put(add para);
+			state = RS::para;
+			break;
+		}
+	}
+@end(states without newlines)
+```
+
+```
+@def(create para)
+	if (state == RS::new_element) {
+		blocks.push_back({
+			RS::para, {}, {}, 0
+		});
+	}
+@end(create para)
+```
+
+```
+@def(add para)
+	blocks.back().value.push_back(
+		line
+	);
+@end(add para)
 ```

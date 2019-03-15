@@ -2,12 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>HTML-Präsentation generieren</title>
+<title>html.x</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
 <h1>HTML-Präsentation generieren</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>HTML-Präsentation generieren</h1>
 </div>
 <ul><li>
@@ -49,11 +50,7 @@ Die HTML hat den gleichen Pfad mit der Endung <code>.<span class="var">html</spa
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file to out</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="keyword">in</span> {<br/>
-<span class="in2"></span><span class="var">cur</span>.<span class="fn">path</span>().<span class="fn">c_str</span>()<br/>
-<span class="in1"></span>};<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write from in to out</span>)</span>;<br/>
-<span class="in1"></span><span class="keyword">in</span>.<span class="fn">close</span>();<br/>
 <span class="macro">@end(<span class="name">write cur HTML file to out</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -138,8 +135,8 @@ Die Anwendung verwendet <code><span class="type">std</span>::<span class="type">
 <span class="in1"></span><span class="type">HtmlStatus</span> <span class="var">status</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
-<span class="in1"></span><span class="keyword">while</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="keyword">in</span>, <span class="var">line</span>)) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process line</span>)</span>;<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">b</span> : <span class="var">cur</span>.<span class="var">blocks</span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process block</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
@@ -150,6 +147,45 @@ Die Eingabe wird Zeile für Zeile abgearbeitet
 </li><li>
 Bis das Datei-Ende erreicht ist
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">process block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process header</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">process block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">process block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">open code page</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">code</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">process code</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">close code page</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close slide</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">process block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">process block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">para</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">process para</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">process block</span>)</span><br/>
+</code></div>
 </div>
 <div><div>
 <code>
@@ -169,42 +205,6 @@ Die Funktion <code><span class="fn">in_code</span></code> liefert <code><span cl
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">process line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="fn">in_code</span>(&amp;<span class="var">status</span>)) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process code</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">continue</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
-</code></div>
-<ul><li>
-Während Code bearbeitet wird, gelten viele andere Regeln nicht mehr
-</li><li>
-Daher wird dieser Block als erstes abgehandelt
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span> == <span class="str">""</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">close specials</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">state</span>) {<br/>
-<span class="in3"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">afterSlide</span>:<br/>
-<span class="in3"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">afterSlides</span>:<br/>
-<span class="in3"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">nothing</span>:<br/>
-<span class="in4"></span><span class="keyword">break</span>;<br/>
-<span class="in3"></span><span class="keyword">default</span>:<br/>
-<span class="in4"></span><span class="macro">@put(<span class="name">close slide</span>)</span>;<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">continue</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
-</code></div>
-<ul><li>
-Eine leere Seite schließt eine offene Folie ab
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@def(<span class="name">close slide</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">afterSlide</span>;<br/>
@@ -219,7 +219,8 @@ Und setzt den Zustand passend
 </div>
 <h1>Überschriften</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Überschriften</h1>
 </div>
 <ul><li>
@@ -228,60 +229,20 @@ Und setzt den Zustand passend
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'#'</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process header</span>)</span>;<br/>
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
-<span class="in2"></span><span class="keyword">continue</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
-</code></div>
-<ul><li>
-Wenn am Anfang einer Zeile eine Raute gelesen wird, dann beginnt eine
-  Überschrift
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@def(<span class="name">process header</span>)</span><br/>
-<span class="in1"></span><span class="type">int</span> <span class="var">level</span> = <span class="num">1</span>;<br/>
-<span class="in1"></span><span class="keyword">while</span> (<br/>
-<span class="in2"></span><span class="var">level</span> &lt; (<span class="type">int</span>) <span class="var">line</span>.<span class="fn">size</span>() &amp;&amp;<br/>
-<span class="in3"></span><span class="var">line</span>[<span class="var">level</span>] == <span class="str">'#'</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span>++<span class="var">level</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process header</span>)</span><br/>
-</code></div>
-<ul><li>
-Solange weitere Rauten folgen, wird der Level erhöht
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process header</span>)</span><br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">e</span> = <span class="var">line</span>.<span class="fn">end</span>();<br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">b</span> = <span class="var">line</span>.<span class="fn">begin</span>() + <span class="var">level</span>;<br/>
-<span class="in1"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> &lt;= <span class="str">' '</span>) {<br/>
-<span class="in2"></span>++<span class="var">b</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process header</span>)</span><br/>
-</code></div>
-<ul><li>
-Nach den Rauten dürfen beliebig viele Leerzeichen vorkommen
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process header</span>)</span><br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">b</span> != <span class="var">e</span>);<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">name</span> {<span class="var">b</span>, <span class="var">e</span>};<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">close previous HTML page</span>)</span>;<br/>
 <span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">process note</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">close slide</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">process header</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -390,11 +351,12 @@ Code-Schnippsel werden ebenfalls formatiert
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">write header tag</span>)</span><br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;h"</span> &lt;&lt; <span class="var">level</span> &lt;&lt; <span class="str">'&gt;'</span>;<br/>
-<span class="in1"></span><span class="fn">process_content</span>(<span class="var">out</span>, <span class="var">name</span>.<span class="fn">begin</span>(), <span class="var">name</span>.<span class="fn">end</span>());<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/h"</span> &lt;&lt; <span class="var">level</span> &lt;&lt; <span class="str">"&gt;\n"</span>;<br/>
-<span class="macro">@end(<span class="name">write header tag</span>)</span><br/>
+<span class="macro">@def(<span class="name">write header tag</span>)</span> {<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;h"</span> &lt;&lt; <span class="var">b</span>.<span class="var">level</span> &lt;&lt; <span class="str">'&gt;'</span>;<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">n</span> = <span class="var">b</span>.<span class="var">value</span>[<span class="num">0</span>];<br/>
+<span class="in1"></span><span class="fn">process_content</span>(<span class="var">out</span>, <span class="var">n</span>.<span class="fn">begin</span>(), <span class="var">n</span>.<span class="fn">end</span>());<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/h"</span> &lt;&lt; <span class="var">b</span>.<span class="var">level</span> &lt;&lt; <span class="str">"&gt;\n"</span>;<br/>
+} <span class="macro">@end(<span class="name">write header tag</span>)</span><br/>
 </code></div>
 <ul><li>
 Die HTML-Überschrift enthält den eingelesenen Level
@@ -447,7 +409,7 @@ Diese Überschrift ist dann auch der Titel der HTML-Datei
 <span class="macro">@def(<span class="name">write HTML header entries</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;meta charset=\"utf-8\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;title&gt;"</span>;<br/>
-<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
+<span class="in1"></span><span class="fn">writeEscaped</span>(<span class="var">out</span>, <span class="var">b</span>.<span class="var">value</span>[<span class="num">0</span>]);<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/title&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;link rel=\"stylesheet\" "</span><br/>
 <span class="in2"></span><span class="str">"type=\"text/css\" href=\""</span><br/>
@@ -465,7 +427,8 @@ Und die Stylesheet-Datei eingebunden
 </div>
 <h1>Code formatieren</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Code formatieren</h1>
 </div>
 <ul><li>
@@ -496,19 +459,6 @@ Die Code-Ausgabe ist ein besonderer Zustand
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span> == <span class="str">"```"</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">open code page</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">continue</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
-</code></div>
-<ul><li>
-Eine Zeile mit drei Backticks wechselt in den Code Modus
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@def(<span class="name">open code page</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">afterSlides</span><br/>
@@ -529,19 +479,6 @@ Eine Zeile mit drei Backticks wechselt in den Code Modus
 Beim Betreten wird eine Seite mit einem <code>&lt;<span class="var">code</span>&gt;</code>-Tag geöffnet
 </li><li>
 Und der Zustand passend gesetzt
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">process code</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span> == <span class="str">"```"</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">close code page</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">continue</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process code</span>)</span><br/>
-</code></div>
-<ul><li>
-Eine Zeile mit drei Backticks wechselt aus dem Code Modus zurück
 </li></ul>
 </div>
 <div><div>
@@ -590,9 +527,9 @@ Am Ende der Datei schließt die Funktion
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process code</span>)</span><br/>
+<span class="macro">@def(<span class="name">process code</span>)</span><br/>
 <span class="in1"></span><span class="fn">process_code</span>(<br/>
-<span class="in2"></span><span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>()<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="var">code</span>.<span class="fn">begin</span>(), <span class="var">code</span>.<span class="fn">end</span>()<br/>
 <span class="in1"></span>);<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;br/&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">process code</span>)</span><br/>
@@ -1246,7 +1183,8 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
 </div>
 <h1>Notizen</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Notizen</h1>
 </div>
 <ul><li>
@@ -1269,22 +1207,6 @@ Da sie mehrzeilig sein können
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">process line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">'*'</span> ||<br/>
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process note</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">continue</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
-</code></div>
-<ul><li>
-Eine Notiz beginnt entweder mit <code>*</code> oder folgt einer solchen Zeile
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@def(<span class="name">close specials</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
@@ -1300,11 +1222,11 @@ Bei einer Leerzeile werden Notizen beendet
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process note</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'*'</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">note</span>[<span class="num">0</span>] == <span class="str">'*'</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process note line</span>)</span>;<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="fn">process_content</span>(<br/>
-<span class="in3"></span><span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>()<br/>
+<span class="in3"></span><span class="var">out</span>, <span class="var">note</span>.<span class="fn">begin</span>(), <span class="var">note</span>.<span class="fn">end</span>()<br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1319,8 +1241,8 @@ Folge-Zeilen werden direkt ausgegeben
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process note line</span>)</span><br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">line</span>.<span class="fn">end</span>();<br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">begin</span> = <span class="var">line</span>.<span class="fn">begin</span>() + <span class="num">1</span>;<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">note</span>.<span class="fn">end</span>();<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">begin</span> = <span class="var">note</span>.<span class="fn">begin</span>() + <span class="num">1</span>;<br/>
 <span class="in1"></span><span class="keyword">while</span> (<br/>
 <span class="in2"></span><span class="var">begin</span> != <span class="var">end</span> &amp;&amp; *<span class="var">begin</span> == <span class="str">' '</span><br/>
 <span class="in1"></span>) {<br/>
@@ -1488,7 +1410,8 @@ Formatiert Text fett
 </div>
 <h1>Absätze</h1>
 <div class="slides">
-<div><div>
+<div>
+<div>
 <h1>Absätze</h1>
 </div>
 <ul><li>
@@ -1505,17 +1428,6 @@ Zwischen Folien verarbeitet <code><span class="var">hex</span></code> Absätze m
 Absätze sind ein eigener Zustand
 </li><li>
 Da sie mehrzeilig sein können
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process line</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">process para</span>)</span>;<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
-</code></div>
-<ul><li>
-Wenn nichts anderes bearbeitet wurde, dann verarbeitet der Renderer
-  einen Absatz
 </li></ul>
 </div>
 <div><div>
@@ -1547,7 +1459,7 @@ Bei einer Leerzeile werden Absätze beendet beendet
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inPara</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="fn">process_content</span>(<br/>
-<span class="in2"></span><span class="var">out</span>, <span class="var">line</span>.<span class="fn">begin</span>(), <span class="var">line</span>.<span class="fn">end</span>()<br/>
+<span class="in2"></span><span class="var">out</span>, <span class="var">para</span>.<span class="fn">begin</span>(), <span class="var">para</span>.<span class="fn">end</span>()<br/>
 <span class="in1"></span>);<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="macro">@end(<span class="name">process para</span>)</span><br/>

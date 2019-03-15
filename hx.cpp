@@ -47,14 +47,16 @@
 	after_code
 ,
 	notes
+,
+	para
 
 	};
 	using RS = Read_State;
 
 	struct Block {
 		Read_State state;
-		std::string value;
-		std::string notes;
+		std::vector<std::string> value;
+		std::vector<std::string> notes;
 		int level;
 	};
 
@@ -1258,8 +1260,9 @@
 			state = RS::after_code;
 		} else {
 			
-	blocks.back().value +=
-		line + "\n";
+	blocks.back().value.push_back(
+		line
+	);
 ;
 		}
 		break;
@@ -1286,7 +1289,7 @@
 	) {}
 	for (; b != e && *b == ' '; ++b) {}
 	blocks.push_back({
-		RS::header, { b, e }, {}, l
+		RS::header, {{ b, e }}, {}, l
 	});
 ;
 		break;
@@ -1300,8 +1303,9 @@
 		) {
 			state = RS::notes;
 			
-	blocks.back().notes +=
-		line + "\n";
+	blocks.back().notes.push_back(
+		line
+	);
 ;
 			break;
 		}
@@ -1312,10 +1316,33 @@
 		state == RS::notes
 	) {
 		
-	blocks.back().notes +=
-		line + "\n";
+	blocks.back().notes.push_back(
+		line
+	);
 ;
 		break;
+	}
+
+	if (line[0] != ' ') {
+		if (
+			state == RS::new_element ||
+			state == RS::para
+		) {
+			
+	if (state == RS::new_element) {
+		blocks.push_back({
+			RS::para, {}, {}, 0
+		});
+	}
+;
+			
+	blocks.back().value.push_back(
+		line
+	);
+;
+			state = RS::para;
+			break;
+		}
 	}
 ;
 		
@@ -1749,81 +1776,14 @@
 	};
 	std::ofstream out { outPath.c_str() };
 	
-	std::ifstream in {
-		cur.path().c_str()
-	};
 	
 	HtmlStatus status;
 	std::string ident;
 	std::string line;
-	while (std::getline(in, line)) {
+	for (const auto &b : cur.blocks) {
 		
-	if (in_code(&status)) {
+	if (b.state == RS::header) {
 		
-	if (line == "```") {
-		
-	out << "</code></div>\n";
-	status.state = HtmlState::inSlide;
-;
-		continue;
-	}
-
-	process_code(
-		out, line.begin(), line.end()
-	);
-	out << "<br/>\n";
-;
-		continue;
-	}
-
-	if (line == "") {
-		
-	if (
-		status.state == HtmlState::inNotes
-	) {
-		out << "</li></ul>\n";
-	}
-
-	if (
-		status.state == HtmlState::inPara
-	) {
-		out << "</p>\n";
-		status.state =
-			HtmlState::afterSlides;
-	}
-;
-		switch (status.state) {
-			case HtmlState::afterSlide:
-			case HtmlState::afterSlides:
-			case HtmlState::nothing:
-				break;
-			default:
-				
-	out << "</div>\n";
-	status.state = HtmlState::afterSlide;
-;
-		}
-		continue;
-	}
-
-	if (line[0] == '#') {
-		
-	int level = 1;
-	while (
-		level < (int) line.size() &&
-			line[level] == '#'
-	) {
-		++level;
-	}
-
-	auto e = line.end();
-	auto b = line.begin() + level;
-	while (b != e && *b <= ' ') {
-		++b;
-	}
-
-	ASSERT(b != e);
-	std::string name {b, e};
 	
 	switch (status.state) {
 		case HtmlState::nothing: {
@@ -1834,7 +1794,7 @@
 	
 	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
-	writeEscaped(out, name);
+	writeEscaped(out, b.value[0]);
 	out << "</title>\n";
 	out << "<link rel=\"stylesheet\" "
 		"type=\"text/css\" href=\""
@@ -1854,52 +1814,29 @@
 		}
 	}
 ;
-	
-	out << "<h" << level << '>';
-	process_content(out, name.begin(), name.end());
-	out << "</h" << level << ">\n";
-;
+	 {
+	out << "<h" << b.level << '>';
+	const auto &n = b.value[0];
+	process_content(out, n.begin(), n.end());
+	out << "</h" << b.level << ">\n";
+} ;
 	out << "<div class=\"slides\">\n";
-	out << "<div><div>\n";
-	
-	out << "<h" << level << '>';
-	process_content(out, name.begin(), name.end());
-	out << "</h" << level << ">\n";
-;
+	out << "<div>\n";
+	out << "<div>\n";
+	 {
+	out << "<h" << b.level << '>';
+	const auto &n = b.value[0];
+	process_content(out, n.begin(), n.end());
+	out << "</h" << b.level << ">\n";
+} ;
 	out << "</div>\n";
-;
-		status.state = HtmlState::inSlide;
-		continue;
-	}
-
-	if (line == "```") {
+	status.state = HtmlState::inSlide;
+	for (const auto &note : b.notes) {
 		
-	if (
-		status.state == HtmlState::afterSlides
-	) {
-		out << "<div class=\"slides\">\n";
-	}
-	if (
-		status.state == HtmlState::inSlide
-	) {
-		out << "</div>\n";
-	}
-	out << "<div><div>\n";
-	out << "<code>\n";
-	status.state = HtmlState::inCode;
-;
-		continue;
-	}
-
-	if (
-		line[0] == '*' ||
-		status.state == HtmlState::inNotes
-	) {
+	if (note[0] == '*') {
 		
-	if (line[0] == '*') {
-		
-	auto end = line.end();
-	auto begin = line.begin() + 1;
+	auto end = note.end();
+	auto begin = note.begin() + 1;
 	while (
 		begin != end && *begin == ' '
 	) {
@@ -1926,15 +1863,124 @@
 ;
 	} else {
 		process_content(
-			out, line.begin(), line.end()
+			out, note.begin(), note.end()
 		);
 		out << '\n';
 	}
 ;
-		continue;
+	}
+	
+	if (
+		status.state == HtmlState::inNotes
+	) {
+		out << "</li></ul>\n";
 	}
 
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
+	}
+;
 	
+	out << "</div>\n";
+	status.state = HtmlState::afterSlide;
+;
+;
+	}
+
+	if (b.state == RS::code) {
+		
+	if (
+		status.state == HtmlState::afterSlides
+	) {
+		out << "<div class=\"slides\">\n";
+	}
+	if (
+		status.state == HtmlState::inSlide
+	) {
+		out << "</div>\n";
+	}
+	out << "<div><div>\n";
+	out << "<code>\n";
+	status.state = HtmlState::inCode;
+;
+		for (const auto &code : b.value) {
+			
+	process_code(
+		out, code.begin(), code.end()
+	);
+	out << "<br/>\n";
+;
+		}
+		
+	out << "</code></div>\n";
+	status.state = HtmlState::inSlide;
+;
+		for (const auto &note : b.notes) {
+			
+	if (note[0] == '*') {
+		
+	auto end = note.end();
+	auto begin = note.begin() + 1;
+	while (
+		begin != end && *begin == ' '
+	) {
+		++begin;
+	}
+
+	if (
+		status.state != HtmlState::inNotes
+	) {
+		
+	if (
+		status.state != HtmlState::inSlide
+	) {
+		out << "<div>\n";
+	}
+	status.state = HtmlState::inNotes;
+	out << "<ul><li>\n";
+;
+	} else {
+		out << "</li><li>\n";
+	}
+	process_content(out, begin, end);
+	out << '\n';
+;
+	} else {
+		process_content(
+			out, note.begin(), note.end()
+		);
+		out << '\n';
+	}
+;
+		}
+		
+	if (
+		status.state == HtmlState::inNotes
+	) {
+		out << "</li></ul>\n";
+	}
+
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
+	}
+;
+		
+	out << "</div>\n";
+	status.state = HtmlState::afterSlide;
+;
+	}
+
+	if (b.state == RS::para) {
+		for (const auto &para : b.value) {
+			
 	if (status.state == HtmlState::afterSlide) {
 		out << "</div>\n";
 	}
@@ -1945,10 +1991,27 @@
 		status.state = HtmlState::inPara;
 	}
 	process_content(
-		out, line.begin(), line.end()
+		out, para.begin(), para.end()
 	);
 	out << '\n';
 ;
+		}
+		
+	if (
+		status.state == HtmlState::inNotes
+	) {
+		out << "</li></ul>\n";
+	}
+
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
+	}
+;
+	}
 ;
 	}
 
@@ -1965,7 +2028,6 @@
 		out << "</body>\n</html>\n";
 	}
 ;
-	in.close();
 ;
 	out.close();
 ;
