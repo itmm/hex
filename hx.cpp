@@ -377,7 +377,8 @@
 
 	Input(const Input &) = delete;
 	Input(Input &&) = default;
-	Input &operator=(const Input &) = delete;
+	Input &operator=(const Input &) =
+		delete;
 	Input &operator=(Input &&) = default;
 
 	const std::string &path() const {

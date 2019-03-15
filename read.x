@@ -130,7 +130,8 @@
 @Add(input elements)
 	Input(const Input &) = delete;
 	Input(Input &&) = default;
-	Input &operator=(const Input &) = delete;
+	Input &operator=(const Input &) =
+		delete;
 	Input &operator=(Input &&) = default;
 @End(input elements)
 ```
