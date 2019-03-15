@@ -366,10 +366,9 @@
 
 	class Input {
 		public:
-			std::string path;
 			
 	Input(const std::string &path):
-		path { path },
+		_path { path },
 		_file { path.c_str() }
 		,
 	_line { 0 }
@@ -380,6 +379,10 @@
 	Input(Input &&) = default;
 	Input &operator=(const Input &) = delete;
 	Input &operator=(Input &&) = default;
+
+	const std::string &path() const {
+		return _path;
+	}
 
 	void read_line(std::string &line) {
 		if (_file.is_open()) {
@@ -403,6 +406,7 @@
 	}
 ;
 		private:
+			std::string _path;
 			std::ifstream _file;
 			
 	int _line;
@@ -416,8 +420,8 @@
 	void read_line(std::string &l);
 
 	auto &cur() {
-		ASSERT (! _pending.empty());
-		return _pending.back();
+		ASSERT (! _open.empty());
+		return _open.back();
 	}
 
 	auto begin() const {
@@ -429,21 +433,21 @@
 	}
 
 	void push(const std::string &path) {
-		_pending.push_back({ path });
+		_open.push_back({ path });
 	}
 
 	bool has(
 		const std::string &name
 	) const {
 		
-	for (const auto &j : _pending) {
-		if (j.path == name) {
+	for (const auto &j : _open) {
+		if (j.path() == name) {
 			return true;
 		}
 	}
 
 	for (const auto &j : _used) {
-		if (j.path == name) {
+		if (j.path() == name) {
 			return true;
 		}
 	}
@@ -452,16 +456,16 @@
 	}
 
 	Frag *find_local(const std::string &name) {
-		if (_pending.empty()) { return nullptr; }
-		Input &i = _pending.back();
+		if (_open.empty()) { return nullptr; }
+		Input &i = _open.back();
 		auto f = i.frags.find(name);
 		if (f == i.frags.end()) { return nullptr; }
 		return &f->second;
 	}
 
 	Frag *add_local(const std::string &name) {
-		if (_pending.empty()) { return nullptr; }
-		Input &i = _pending.back();
+		if (_open.empty()) { return nullptr; }
+		Input &i = _open.back();
 		return &i.frags.insert({ name, name }).first->second;
 	}
 
@@ -474,14 +478,14 @@
 	}
 
 	Frag *find_global(const std::string &name) {
-		if (_pending.size() > 1) {
-			auto i = _pending.end() - 2;
+		if (_open.size() > 1) {
+			auto i = _open.end() - 2;
 			for (;; --i) {
 				auto f = i->frags.find(name);
 				if (f != i->frags.end()) {
 					return &f->second;
 				}
-				if (i == _pending.begin()) { break; }
+				if (i == _open.begin()) { break; }
 			}
 		}
 		auto f = root.find(name);
@@ -504,7 +508,7 @@
 ;
 		private:
 			
-	std::vector<Input> _pending;
+	std::vector<Input> _open;
 	std::vector<Input> _used;
 ;
 	};
@@ -513,14 +517,14 @@
 		std::string &line
 	) {
 		
-	while (! _pending.empty()) {
+	while (! _open.empty()) {
 		try {
-			_pending.back().read_line(line);
+			_open.back().read_line(line);
 			return;
 		} catch (const no_more_lines &) {}
 		
-	_used.push_back(std::move(_pending.back()));
-	_pending.pop_back();
+	_used.push_back(std::move(_open.back()));
+	_open.pop_back();
 ;
 	}
 	throw no_more_lines {};
@@ -547,7 +551,7 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur().path,
+			str, inputs.cur().path(),
 			inputs.cur().line()
 		);
 	}
@@ -558,7 +562,7 @@
 		
 	if (frag) {
 		frag->add(
-			ch, inputs.cur().path,
+			ch, inputs.cur().path(),
 			inputs.cur().line()
 		);
 	}
@@ -577,7 +581,7 @@
 			
 	f->add(
 		std::string { b, x },
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 ;
@@ -585,7 +589,7 @@
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur().path,
+					inputs.cur().path(),
 					inputs.cur().line()
 				);
 				++b;
@@ -594,7 +598,7 @@
 			
 	f->add(
 		std::string { b, e },
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 	b = e;
@@ -1379,7 +1383,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path +
+		h(inputs.cur().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1390,7 +1394,7 @@
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 ;
@@ -1404,7 +1408,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path +
+		h(inputs.cur().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1413,7 +1417,7 @@
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 ;
@@ -1575,7 +1579,7 @@
 	
 	for (auto &cur : inputs) {
 		
-	const std::string &name { cur.path };
+	const std::string &name { cur.path() };
 	std::string outPath {
 		name.substr(0, name.size() - 2) +
 		".html"
@@ -1583,7 +1587,7 @@
 	std::ofstream out { outPath.c_str() };
 	
 	std::ifstream in {
-		cur.path.c_str()
+		cur.path().c_str()
 	};
 	
 	HtmlStatus status;

@@ -100,17 +100,14 @@
 @add(inputs prereqs)
 	class Input {
 		public:
-			std::string path;
 			@Put(input elements);
 		private:
+			std::string _path;
 			std::ifstream _file;
 			@Put(private input elements);
 	};
 @end(inputs prereqs)
 ```
-* The `path` can be public, because it is `const`
-* But the `_file` should only be modified via methods
-* so it is private
 * A bunch of fragments make room for later extensions
 * They are declared global, so they can be modified in different
   `x`-files
@@ -119,7 +116,7 @@
 ```
 @Def(input elements)
 	Input(const std::string &path):
-		path { path },
+		_path { path },
 		_file { path.c_str() }
 		@Put(private input constructor)
 	{}
@@ -137,3 +134,14 @@
 	Input &operator=(Input &&) = default;
 @End(input elements)
 ```
+* `Input` instances can only be moved, not copied
+
+```
+@Add(input elements)
+	const std::string &path() const {
+		return _path;
+	}
+@End(input elements)
+```
+* Simple accessor
+

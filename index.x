@@ -410,7 +410,7 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur().path,
+			str, inputs.cur().path(),
 			inputs.cur().line()
 		);
 	}
@@ -422,7 +422,7 @@
 @def(process char)
 	if (frag) {
 		frag->add(
-			ch, inputs.cur().path,
+			ch, inputs.cur().path(),
 			inputs.cur().line()
 		);
 	}
@@ -519,7 +519,7 @@
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur().path,
+					inputs.cur().path(),
 					inputs.cur().line()
 				);
 				++b;
@@ -536,7 +536,7 @@
 @def(expand inner)
 	f->add(
 		std::string { b, x },
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 @end(expand inner)
@@ -546,7 +546,7 @@
 @def(expand rest)
 	f->add(
 		std::string { b, e },
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 	b = e;
@@ -840,7 +840,7 @@
 @def(process private frag)
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path +
+		h(inputs.cur().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -858,7 +858,7 @@
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 @end(process private frag)
@@ -888,7 +888,7 @@
 @def(process magic frag)
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path +
+		h(inputs.cur().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -902,7 +902,7 @@
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur().path,
+		inputs.cur().path(),
 		inputs.cur().line()
 	);
 @end(process magic frag)

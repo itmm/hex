@@ -67,7 +67,7 @@ Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">private inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_pending</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_open</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
 <span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
@@ -93,8 +93,8 @@ Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur</span>() {<br/>
-<span class="in2"></span><span class="var">ASSERT</span> (! <span class="var">_pending</span>.<span class="fn">empty</span>());<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_pending</span>.<span class="fn">back</span>();<br/>
+<span class="in2"></span><span class="var">ASSERT</span> (! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_open</span>.<span class="fn">back</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -130,7 +130,7 @@ Liefert zuletzt benutzte Datei
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
-<span class="in2"></span><span class="var">_pending</span>.<span class="fn">push_back</span>({ <span class="var">path</span> });<br/>
+<span class="in2"></span><span class="var">_open</span>.<span class="fn">push_back</span>({ <span class="var">path</span> });<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -162,9 +162,9 @@ Erst wenn die letzte Datei fertig gelesen wurde, wird <code><span class="num">fa
 <div><div>
 <code>
 <span class="macro">@Rep(<span class="name">inputs read line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">while</span> (! <span class="var">_pending</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in1"></span><span class="keyword">while</span> (! <span class="var">_open</span>.<span class="fn">empty</span>()) {<br/>
 <span class="in2"></span><span class="keyword">try</span> {<br/>
-<span class="in3"></span><span class="var">_pending</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
+<span class="in3"></span><span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
 <span class="in3"></span><span class="keyword">return</span>;<br/>
 <span class="in2"></span>} <span class="keyword">catch</span> (<span class="type">const</span> <span class="var">no_more_lines</span> &amp;) {}<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">get next input file</span>)</span>;<br/>
@@ -181,8 +181,8 @@ Wandert bei Misserfolg durch andere offenen Dateien
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">get next input file</span>)</span><br/>
-<span class="in1"></span><span class="var">_used</span>.<span class="fn">push_back</span>(<span class="type">std</span>::<span class="fn">move</span>(<span class="var">_pending</span>.<span class="fn">back</span>()));<br/>
-<span class="in1"></span><span class="var">_pending</span>.<span class="fn">pop_back</span>();<br/>
+<span class="in1"></span><span class="var">_used</span>.<span class="fn">push_back</span>(<span class="type">std</span>::<span class="fn">move</span>(<span class="var">_open</span>.<span class="fn">back</span>()));<br/>
+<span class="in1"></span><span class="var">_open</span>.<span class="fn">pop_back</span>();<br/>
 <span class="macro">@end(<span class="name">get next input file</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -217,8 +217,8 @@ Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">has checks</span>)</span><br/>
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">_pending</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span>.<span class="var">path</span> == <span class="var">name</span>) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">_open</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span>.<span class="fn">path</span>() == <span class="var">name</span>) {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
@@ -232,7 +232,7 @@ Noch ausstehende Dateien werden geprüft
 <code>
 <span class="macro">@add(<span class="name">has checks</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">_used</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span>.<span class="var">path</span> == <span class="var">name</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span>.<span class="fn">path</span>() == <span class="var">name</span>) {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
@@ -322,8 +322,8 @@ Zeilennummer wird erhöht
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_local</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_pending</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
-<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_pending</span>.<span class="fn">back</span>();<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
+<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>();<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">end</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
 <span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
@@ -335,8 +335,8 @@ Zeilennummer wird erhöht
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_local</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_pending</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
-<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_pending</span>.<span class="fn">back</span>();<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
+<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>();<br/>
 <span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">i</span>.<span class="var">frags</span>.<span class="fn">insert</span>({ <span class="var">name</span>, <span class="var">name</span> }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
@@ -359,14 +359,14 @@ Zeilennummer wird erhöht
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_global</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_pending</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
-<span class="in3"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">_pending</span>.<span class="fn">end</span>() - <span class="num">2</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
+<span class="in3"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">_open</span>.<span class="fn">end</span>() - <span class="num">2</span>;<br/>
 <span class="in3"></span><span class="keyword">for</span> (;; --<span class="var">i</span>) {<br/>
 <span class="in4"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">i</span>-&gt;<span class="var">frags</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
 <span class="in4"></span><span class="keyword">if</span> (<span class="var">f</span> != <span class="var">i</span>-&gt;<span class="var">frags</span>.<span class="fn">end</span>()) {<br/>
 <span class="in5"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
 <span class="in4"></span>}<br/>
-<span class="in4"></span><span class="keyword">if</span> (<span class="var">i</span> == <span class="var">_pending</span>.<span class="fn">begin</span>()) { <span class="keyword">break</span>; }<br/>
+<span class="in4"></span><span class="keyword">if</span> (<span class="var">i</span> == <span class="var">_open</span>.<span class="fn">begin</span>()) { <span class="keyword">break</span>; }<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">root</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>

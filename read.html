@@ -164,21 +164,15 @@ Defines the <code><span class="type">Input</span></code> class
 <span class="macro">@add(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">path</span>;<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">input elements</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_path</span>;<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="var">_file</span>;<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">private input elements</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">inputs prereqs</span>)</span><br/>
 </code></div>
 <ul><li>
-The <code><span class="var">path</span></code> can be public, because it is <code><span class="type">const</span></code>
-</li><li>
-But the <code><span class="var">_file</span></code> should only be modified via methods
-</li><li>
-so it is private
-</li><li>
 A bunch of fragments make room for later extensions
 </li><li>
 They are declared global, so they can be modified in different
@@ -189,7 +183,7 @@ They are declared global, so they can be modified in different
 <code>
 <span class="macro">@Def(<span class="name">input elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>):<br/>
-<span class="in2"></span><span class="var">path</span> { <span class="var">path</span> },<br/>
+<span class="in2"></span><span class="var">_path</span> { <span class="var">path</span> },<br/>
 <span class="in2"></span><span class="var">_file</span> { <span class="var">path</span>.<span class="fn">c_str</span>() }<br/>
 <span class="in2"></span><span class="macro">@Put(<span class="name">private input constructor</span>)</span><br/>
 <span class="in1"></span>{}<br/>
@@ -212,5 +206,21 @@ Additional elements can be initialized later
 <span class="in1"></span><span class="type">Input</span> &amp;<span class="var">operator</span>=(<span class="type">Input</span> &amp;&amp;) = <span class="keyword">default</span>;<br/>
 <span class="macro">@End(<span class="name">input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+<code><span class="type">Input</span></code> instances can only be moved, not copied
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">path</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_path</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">input elements</span>)</span><br/>
+</code></div>
+<ul><li>
+Simple accessor
+</li></ul>
+</div>
 </body>
 </html>

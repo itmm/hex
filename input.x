@@ -44,7 +44,7 @@
 
 ```
 @Def(private inputs elements)
-	std::vector<Input> _pending;
+	std::vector<Input> _open;
 	std::vector<Input> _used;
 @End(private inputs elements)
 ```
@@ -61,8 +61,8 @@
 ```
 @Add(inputs elements)
 	auto &cur() {
-		ASSERT (! _pending.empty());
-		return _pending.back();
+		ASSERT (! _open.empty());
+		return _open.back();
 	}
 @End(inputs elements)
 ```
@@ -89,7 +89,7 @@
 ```
 @Add(inputs elements)
 	void push(const std::string &path) {
-		_pending.push_back({ path });
+		_open.push_back({ path });
 	}
 @End(inputs elements)
 ```
@@ -107,9 +107,9 @@
 
 ```
 @Rep(inputs read line)
-	while (! _pending.empty()) {
+	while (! _open.empty()) {
 		try {
-			_pending.back().read_line(line);
+			_open.back().read_line(line);
 			return;
 		} catch (const no_more_lines &) {}
 		@put(get next input file);
@@ -122,8 +122,8 @@
 
 ```
 @def(get next input file)
-	_used.push_back(std::move(_pending.back()));
-	_pending.pop_back();
+	_used.push_back(std::move(_open.back()));
+	_open.pop_back();
 @end(get next input file)
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
@@ -148,8 +148,8 @@
 
 ```
 @def(has checks)
-	for (const auto &j : _pending) {
-		if (j.path == name) {
+	for (const auto &j : _open) {
+		if (j.path() == name) {
 			return true;
 		}
 	}
@@ -160,7 +160,7 @@
 ```
 @add(has checks)
 	for (const auto &j : _used) {
-		if (j.path == name) {
+		if (j.path() == name) {
 			return true;
 		}
 	}
@@ -217,8 +217,8 @@
 ```
 @Add(inputs elements)
 	Frag *find_local(const std::string &name) {
-		if (_pending.empty()) { return nullptr; }
-		Input &i = _pending.back();
+		if (_open.empty()) { return nullptr; }
+		Input &i = _open.back();
 		auto f = i.frags.find(name);
 		if (f == i.frags.end()) { return nullptr; }
 		return &f->second;
@@ -229,8 +229,8 @@
 ```
 @Add(inputs elements)
 	Frag *add_local(const std::string &name) {
-		if (_pending.empty()) { return nullptr; }
-		Input &i = _pending.back();
+		if (_open.empty()) { return nullptr; }
+		Input &i = _open.back();
 		return &i.frags.insert({ name, name }).first->second;
 	}
 @End(inputs elements)
@@ -251,14 +251,14 @@
 ```
 @Add(inputs elements)
 	Frag *find_global(const std::string &name) {
-		if (_pending.size() > 1) {
-			auto i = _pending.end() - 2;
+		if (_open.size() > 1) {
+			auto i = _open.end() - 2;
 			for (;; --i) {
 				auto f = i->frags.find(name);
 				if (f != i->frags.end()) {
 					return &f->second;
 				}
-				if (i == _pending.begin()) { break; }
+				if (i == _open.begin()) { break; }
 			}
 		}
 		auto f = root.find(name);
