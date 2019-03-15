@@ -337,9 +337,11 @@
 @def(read source files) {
 	@put(additional read vars);
 	std::string line;
-	while (inputs.getLine(line)) {
+	try { for (;;) {
+		inputs.read_line(line);
 		@put(process line);
-	}
+	} }
+	catch (const no_more_lines &) {}
 } @end(read source files)
 ```
 * `hx` liest die Eingabe-Dateien zeilenweise
@@ -408,8 +410,8 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur()->path,
-			inputs.cur()->line()
+			str, inputs.cur().path,
+			inputs.cur().line()
 		);
 	}
 @end(process chars)
@@ -420,8 +422,8 @@
 @def(process char)
 	if (frag) {
 		frag->add(
-			ch, inputs.cur()->path,
-			inputs.cur()->line()
+			ch, inputs.cur().path,
+			inputs.cur().line()
 		);
 	}
 @end(process char)
@@ -517,8 +519,8 @@
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur()->path,
-					inputs.cur()->line()
+					inputs.cur().path,
+					inputs.cur().line()
 				);
 				++b;
 			}
@@ -534,8 +536,8 @@
 @def(expand inner)
 	f->add(
 		std::string { b, x },
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
 @end(expand inner)
 ```
@@ -544,8 +546,8 @@
 @def(expand rest)
 	f->add(
 		std::string { b, e },
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
 	b = e;
 @end(expand rest)
@@ -565,13 +567,10 @@
 ```
 @def(do macro)
 	if (name == "def") {
-		ASSERT_MSG(! frag, "def(" << arg << ") in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		@mul(check for double def);
-		if (! frag) {
-			frag = &(*fm)[arg];
+		ASSERT_MSG(! frag, @s("@@def(") << arg << ") in frag [" << frag->name << ']');
+		frag = inputs.get_local(arg);
+		if (isPopulatedFrag(frag)) {
+			std::cerr << "frag [" << arg << "] already defined\n";
 		}
 		break;
 	}
@@ -579,21 +578,6 @@
 ```
 * Erzeugt ein neues Fragment
 * Das Fragment darf nicht mehrfach definiert werden
-
-```
-@def(check for double def)
-	frag = fm->find(arg);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			arg <<
-			"] already defined\n";
-	}
-@end(check for double def)
-```
-* Wenn das Fragment bereits existiert, wird es vielleicht nur verwendet
-* Es muss geprüft werden, ob es schon Inhalt hat
-* Das wäre dann eine Fehlermeldung wert
-* Bricht aber die Abarbeitung nicht ab
 
 ```
 @add(do macro)
@@ -625,12 +609,10 @@
 @add(do macro)
 	if (name == "add") {
 		ASSERT_MSG(! frag, "add in frag " << frag->name);
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		FragMap *ins { fm };
-		frag = fm->find(arg);
-		@mul(check for add w/o def);
+		frag = inputs.get_local(arg);
+		if (! isPopulatedFrag(frag)) {
+			std::cerr << "frag [" << arg << "] not defined\n";
+		}
 		break;
 	}
 @end(do macro)
@@ -639,31 +621,17 @@
 * Weitere Bytes können zu diesem Fragment hinzugefügt werden
 
 ```
-@def(check for add w/o def)
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			arg <<
-			"] not defined\n";
-		frag = &fm->get(
-			arg, *ins
-		);
-	}
-@end(check for add w/o def)
-```
-* Das Fragment muss bereits vorhanden und nicht leer sein
-
-```
 @add(do macro)
 	if (name == "put") {
 		ASSERT_MSG(frag,
-			"expand not in frag"
+			"@put not in frag"
 		);
-		Frag &sub = inputs.cur()->frags[
-			arg
-		];
-		@mul(check frag ex. count);
-		sub.addExpand();
-		frag->add(&sub);
+		Frag *sub = inputs.get_local(arg);
+		if (sub) {
+			@mul(check frag ex. count);
+			sub->addExpand();
+			frag->add(sub);
+		}
 		break;
 	}
 @end(do macro)
@@ -673,15 +641,15 @@
 
 ```
 @def(check frag ex. count)
-	if (sub.expands()) {
+	if (sub->expands()) {
 		std::cerr <<
 			"multiple expands of [" <<
-			sub.name << "]\n";
+			sub->name << "]\n";
 	}
-	if (sub.multiples()) {
+	if (sub->multiples()) {
 		std::cerr <<
 			"expand after mult of ["
-			<< sub.name << "]\n";
+			<< sub->name << "]\n";
 	}
 @end(check frag ex. count)
 ```
@@ -694,7 +662,7 @@
 @add(do macro)
 	if (name == "inc") {
 		ASSERT_MSG(! frag,
-			"include in frag"
+			"include in frag [" << frag->name << ']'
 		);
 		if (! inputs.has(arg)) {
 			inputs.push(arg);
@@ -711,14 +679,14 @@
 @add(do macro)
 	if (name == "mul") {
 		ASSERT_MSG(frag,
-			"mul not in frag"
+			"@mul not in frag"
 		);
-		Frag &sub { inputs.cur()->frags[
-			arg
-		] };
-		@mul(check for prev expands);
-		sub.addMultiple();
-		frag->add(&sub);
+		Frag *sub = inputs.get_local(arg);
+		if (sub) {
+			@mul(check for prev expands);
+			sub->addMultiple();
+			frag->add(sub);
+		}
 		break;
 	}
 @end(do macro)
@@ -728,11 +696,11 @@
 
 ```
 @def(check for prev expands)
-	if (sub.expands()) {
+	if (sub->expands()) {
 		std::cerr <<
 			"multiple after " <<
 			"expand of [" <<
-			sub.name << "]\n";
+			sub->name << "]\n";
 	}
 @end(check for prev expands)
 ```
@@ -742,11 +710,10 @@
 ```
 @add(do macro)
 	if (name == "Def") {
-		ASSERT_MSG(! frag, "Def in frag");
-		FragMap *fm { frags };
-		@mul(check for double def);
-		if (! frag) {
-			frag = &root[arg];
+		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
+		frag = inputs.get_global(arg);
+		if (isPopulatedFrag(frag)) {
+			std::cerr << "Frag [" << arg << "] already defined\n";
 		}
 		break;
 	}
@@ -758,11 +725,11 @@
 ```
 @add(do macro)
 	if (name == "Add") {
-		ASSERT_MSG(! frag, "Add in frag");
-		FragMap *fm { frags };
-		FragMap *ins { &root };
-		frag = fm->find(arg);
-		@mul(check for add w/o def);
+		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
+		frag = inputs.get_global(arg);
+		if (! isPopulatedFrag(frag)) {
+			std::cerr << "Frag [" << arg << "] not defined\n";
+		}
 		break;
 	}
 @end(do macro)
@@ -773,11 +740,9 @@
 @add(do macro)
 	if (name == "rep") {
 		ASSERT_MSG(! frag,
-			"rep in frag"
+			"@rep in frag [" << frag->name << ']'
 		);
-		frag = &(inputs.cur()->frags[
-			arg
-		]);
+		frag = inputs.get_local(arg);
 		@mul(clear frag);
 		break;
 	}
@@ -790,10 +755,9 @@
 @add(do macro)
 	if (name == "Rep") {
 		ASSERT_MSG(! frag,
-			"Rep in frag"
+			"@Rep in frag [" << frag->name << ']'
 		);
-		FragMap *fm { frags };
-		frag = fm->find(arg);
+		frag = inputs.get_global(arg);
 		@mul(clear frag);
 		break;
 	}
@@ -804,9 +768,9 @@
 
 ```
 @def(clear frag)
-	ASSERT_MSG(frag, "frag " <<
+	ASSERT_MSG(frag, "frag [" <<
 		name <<
-		" not defined"
+		"] not defined"
 	);
 	frag->clear();
 @end(clear frag)
@@ -815,32 +779,16 @@
 
 ```
 @add(do macro)
-	if (name == "rep") {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &frags->get(
-			arg, root
-		);
-		@mul(clear frag);
-		break;
-	}
-@end(do macro)
-```
-* Ersetzt ein global definiertes Fragment
-
-```
-@add(do macro)
 	if (name == "Put") {
 		ASSERT_MSG(frag,
-			"Put not in frag"
+			"@Put not in frag"
 		);
-		Frag &sub = frags->get(
-			arg, root
-		);
-		@mul(check frag ex. count);
-		sub.addExpand();
-		frag->add(&sub);
+		Frag *sub = inputs.get_global(arg);
+		if (sub) {
+			@mul(check frag ex. count);
+			sub->addExpand();
+			frag->add(sub);
+		}
 		break;
 	}
 @end(do macro)
@@ -852,14 +800,14 @@
 @add(do macro)
 	if (name == "Mul") {
 		ASSERT_MSG(frag,
-			"globmult not in frag"
+			"@Mul not in frag"
 		);
-		Frag &sub { frags->get(
-			arg, root
-		) };
-		@mul(check for prev expands);
-		sub.addMultiple();
-		frag->add(&sub);
+		Frag *sub = inputs.get_global(arg);
+		if (sub) {
+			@mul(check for prev expands);
+			sub->addMultiple();
+			frag->add(sub);
+		}
 		break;
 	}
 @end(do macro)
@@ -872,7 +820,7 @@
 		ASSERT_MSG(frag,
 			"@priv not in frag"
 		);
-		@put(process private frag 2);
+		@put(process private frag);
 		break;
 	}
 @end(do macro)
@@ -889,31 +837,31 @@
 * Enthält Hash-Funktion
 
 ```
-@def(process private frag 2)
+@def(process private frag)
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->path +
+		h(inputs.cur().path +
 			':' + arg) &
 				0x7fffffff
 	};
-@end(process private frag 2)
+@end(process private frag)
 ```
 * Der Hash wird aus dem aktuellen Dateinamen
 * Und dem aktuellen Bezeichner berechnet
 * Zum Schluss wird er auf eine positive Zahl maskiert
 
 ```
-@add(process private frag 2)
+@add(process private frag)
 	std::ostringstream hashed;
 	hashed << "_private_" <<
 		cur << '_' <<
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
-@end(process private frag 2)
+@end(process private frag)
 ```
 * Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
 * Dann kommt der neue Bezeichner
@@ -927,7 +875,7 @@
 		ASSERT_MSG(frag,
 			"@magic not in frag"
 		);
-		@put(process magic frag 2);
+		@put(process magic frag);
 		break;
 	}
 @end(do macro)
@@ -937,27 +885,27 @@
   zusammen setzt
 
 ```
-@def(process magic frag 2)
+@def(process magic frag)
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->path +
+		h(inputs.cur().path +
 			':' + arg) &
 				0x7fffffff
 	};
-@end(process magic frag 2)
+@end(process magic frag)
 ```
 * Berechnet Hash-Wert
 
 ```
-@add(process magic frag 2)
+@add(process magic frag)
 	std::ostringstream value;
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
-@end(process magic frag 2)
+@end(process magic frag)
 ```
 * Gibt den Hash-Wert aus
 * Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
@@ -982,7 +930,7 @@
 ```
 @add(serialize fragments)
 	for (auto &j : inputs) {
-		for (auto &i : j->frags) {
+		for (auto &i : j.frags) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1069,7 +1017,7 @@
 ```
 @add(serialize fragments)
 	for (auto &j : inputs) {
-		for (auto &i : j->frags) {
+		for (auto &i : j.frags) {
 			const Frag *frag {
 				&i.second
 			};

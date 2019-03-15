@@ -17,8 +17,16 @@ Processes the input files line by line
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">inputs prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span>;<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">inputs prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">inputs</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
 </code></div>
 <ul><li>
 Some elements are used by the <code><span class="type">Inputs</span></code> and <code><span class="type">Input</span></code> classes
@@ -47,20 +55,64 @@ All is abstracted away, so that the interface provides lines until
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@def(<span class="name">inputs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Inputs</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">inputs methods</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">inputs elements</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">inputs attributes</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">private inputs elements</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">inputs</span>)</span><br/>
 </code></div>
 <ul><li>
 Enthält alle verarbeiteten Dateien
 </li><li>
 <code><span class="keyword">@Put</span></code> inserts a fragment from the global scope
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;string&gt;</span><br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+<ul><li>
+Defines <code><span class="type">std</span>::<span class="type">string</span></code>
+</li><li>
+<code><span class="keyword">@Add</span></code> extends a globally defined fragment
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">l</span>);<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">inputs</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="type">Inputs</span>::<span class="fn">read_line</span>(<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">inputs read line</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">inputs</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">inputs prereqs</span>)</span><br/>
+<span class="in1"></span><span class="type">struct</span> <span class="var">no_more_lines</span> {};<br/>
+<span class="macro">@end(<span class="name">inputs prereqs</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">inputs read line</span>)</span><br/>
+<span class="in1"></span><span class="var">throw</span> <span class="var">no_more_lines</span> {};<br/>
+<span class="macro">@End(<span class="name">inputs read line</span>)</span><br/>
+</code></div>
 </div>
 </div>
 <h2>What is a file?</h2>
@@ -82,24 +134,12 @@ So a special class <code><span class="type">Input</span></code> will represent a
 </div>
 <div><div>
 <code>
-<span class="macro">@Def(<span class="name">includes</span>)</span><br/>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;fstream&gt;</span><br/>
 <span class="macro">@End(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
 Defines <code><span class="type">std</span>::<span class="type">ifstream</span></code>
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;string&gt;</span><br/>
-<span class="macro">@End(<span class="name">includes</span>)</span><br/>
-</code></div>
-<ul><li>
-Defines <code><span class="type">std</span>::<span class="type">string</span></code>
-</li><li>
-<code><span class="keyword">@Add</span></code> extends a globally defined fragment
 </li></ul>
 </div>
 </div>
@@ -114,7 +154,7 @@ Defines the <code><span class="type">Input</span></code> class
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">inputs prereqs</span>)</span><br/>
+<span class="macro">@add(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">inputs prereqs</span>)</span><br/>
 </code></div>
@@ -124,7 +164,7 @@ Defines the <code><span class="type">Input</span></code> class
 <span class="macro">@add(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">path</span>;<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">path</span>;<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">input elements</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="var">_file</span>;<br/>
@@ -163,5 +203,14 @@ and the file with that path will be opened
 Additional elements can be initialized later
 </li></ul>
 </div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">Input</span> &amp;) = <span class="keyword">delete</span>;<br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">Input</span> &amp;&amp;) = <span class="keyword">default</span>;<br/>
+<span class="in1"></span><span class="type">Input</span> &amp;<span class="var">operator</span>=(<span class="type">const</span> <span class="type">Input</span> &amp;) = <span class="keyword">delete</span>;<br/>
+<span class="in1"></span><span class="type">Input</span> &amp;<span class="var">operator</span>=(<span class="type">Input</span> &amp;&amp;) = <span class="keyword">default</span>;<br/>
+<span class="macro">@End(<span class="name">input elements</span>)</span><br/>
+</code></div>
 </body>
 </html>

@@ -3,21 +3,19 @@
 ```
 @Add(includes)
 	#include <iostream>
-	#include <memory>
 	#include <vector>
 @end(includes)
 ```
-* Aus `memory` wird `unique_ptr` verwendet
 * `vector` ist ein Container für Source-Dateien
 
 
 ```
 @Add(input elements)
-	bool getLine(std::string &line) {
+	void read_line(std::string &line) {
 		if (_file.is_open()) {
 			@put(get line);
 		}
-		return false;
+		throw no_more_lines {};
 	}
 @end(input elements)
 ```
@@ -27,10 +25,9 @@
 @def(get line)
 	if (std::getline(_file, line)) {
 		@put(line read);
-		return true;
-	} else {
-		_file.close();
+		return;
 	}
+	_file.close();
 @end(get line)
 ```
 * Wenn Zeile gelesen wurde, passt die Funktion weitere Parameter an
@@ -39,7 +36,6 @@
 ```
 @Add(input prereqs)
 	FragMap root;
-	FragMap *frags { &root };
 @End(input prereqs)
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
@@ -47,13 +43,10 @@
 
 
 ```
-@Def(inputs attributes)
-	std::unique_ptr<Input> _input;
-	std::vector<std::unique_ptr<Input>>
-		_pending;
-	std::vector<std::unique_ptr<Input>>
-		_used;
-@End(inputs attributes)
+@Def(private inputs elements)
+	std::vector<Input> _pending;
+	std::vector<Input> _used;
+@End(private inputs elements)
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
 * Mitten während des Lesens können andere Dateien eingelesen
@@ -66,62 +59,46 @@
   werden müssen
 
 ```
-@Def(inputs methods)
+@Add(inputs elements)
 	auto &cur() {
-		return _input;
+		ASSERT (! _pending.empty());
+		return _pending.back();
 	}
-@End(inputs methods)
+@End(inputs elements)
 ```
 * Liefert zuletzt geöffnete Datei
 
 ```
-@Add(inputs methods)
+@Add(inputs elements)
 	auto begin() const {
 		return _used.cbegin();
 	}
-@End(inputs methods)
+@End(inputs elements)
 ```
 * Liefert erste benutzte Datei
 
 ```
-@Add(inputs methods)
+@Add(inputs elements)
 	auto end() const {
 		return _used.cend();
 	}
-@End(inputs methods)
+@End(inputs elements)
 ```
 * Liefert zuletzt benutzte Datei
 
 ```
-@Add(inputs methods)
+@Add(inputs elements)
 	void push(const std::string &path) {
-		std::unique_ptr<Input> i {
-			std::make_unique<Input>(path)
-		};
-		@put(init additional fields);
-		@put(push to pending);
-		_input = std::move(i);
+		_pending.push_back({ path });
 	}
-@End(inputs methods)
+@End(inputs elements)
 ```
 * Dateien werden über ihren Pfad identifiziert
 * Dieser wird als Name gespeichert
-* Durch `unique_ptr` ist keine direkte Speicherverwaltung notwendig
 * Das Verschieben der Ownership muss aber explizit erfolgen
 
-```
-@def(push to pending)
-	if (_input) {
-		_pending.push_back(
-			std::move(_input)
-		);
-	}
-@end(push to pending)
-```
-* Falls schon eine Datei offen ist, wird sie nach `pending` verschoben
-
 # Nächste Zeile
-* Die Funktion `@f(getLine)` liest die nächste Zeile aus der aktuellen
+* Die Funktion `@f(read_line)` liest die nächste Zeile aus der aktuellen
   Datei
 * Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
   Stapel der offenen Dateien geholt
@@ -129,30 +106,24 @@
   zurück geliefert
 
 ```
-@Add(inputs methods)
-	bool getLine(std::string &line) {
-		while (_input) {
-			if (_input->getLine(line)) {
-				return true;
-			}
-			@put(get next input file);
-		}
-		return false;
+@Rep(inputs read line)
+	while (! _pending.empty()) {
+		try {
+			_pending.back().read_line(line);
+			return;
+		} catch (const no_more_lines &) {}
+		@put(get next input file);
 	}
-@End(inputs methods)
+	throw no_more_lines {};
+@End(inputs read line)
 ```
 * Probiert aus aktueller Datei eine Zeile zu lesen
 * Wandert bei Misserfolg durch andere offenen Dateien
 
 ```
 @def(get next input file)
-	_used.push_back(std::move(_input));
-	if (! _pending.empty()) {
-		_input =
-			std::move(_pending.back());
-		_pending.pop_back();
-	}
-	frags = frags->setLink(nullptr);
+	_used.push_back(std::move(_pending.back()));
+	_pending.pop_back();
 @end(get next input file)
 ```
 * Die aktuelle Datei wird geschlossen und in die Liste der bereits
@@ -161,14 +132,14 @@
 * Der Vorgänger wird aus dem globalen Namensraum wieder entfernt
 
 ```
-@Add(inputs methods)
+@Add(inputs elements)
 	bool has(
 		const std::string &name
 	) const {
 		@put(has checks);
 		return false;
 	}
-@End(inputs methods)
+@End(inputs elements)
 ```
 * Prüft ob eine Datei bereits verwendet wurde
 * Alle bearbeiteten Dateien werden inspiziert
@@ -177,17 +148,8 @@
 
 ```
 @def(has checks)
-	if (_input && _input->path == name) {
-		return true;
-	}
-@end(has checks)
-```
-* Die aktuelle Datei wird geprüft
-
-```
-@add(has checks)
 	for (const auto &j : _pending) {
-		if (j->path == name) {
+		if (j.path == name) {
 			return true;
 		}
 	}
@@ -198,7 +160,7 @@
 ```
 @add(has checks)
 	for (const auto &j : _used) {
-		if (j->path == name) {
+		if (j.path == name) {
 			return true;
 		}
 	}
@@ -217,17 +179,6 @@
 ```
 * Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
   Definitionen
-
-```
-@def(init additional fields)
-	if (_input) {
-		_input->frags.setLink(frags);
-		frags = &_input->frags;
-	}
-@end(init additional fields)
-```
-* Wenn es bereits eine offene Input-Datei gibt, dann wird deren lokale
-  Fragmente in den globalen Namensraum aufgenommen
 
 # Zeilennummern
 * Jede Datei führt die aktuelle Zeiennummer mit
@@ -263,3 +214,77 @@
 ```
 * Zeilennummer wird erhöht
 
+```
+@Add(inputs elements)
+	Frag *find_local(const std::string &name) {
+		if (_pending.empty()) { return nullptr; }
+		Input &i = _pending.back();
+		auto f = i.frags.find(name);
+		if (f == i.frags.end()) { return nullptr; }
+		return &f->second;
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
+	Frag *add_local(const std::string &name) {
+		if (_pending.empty()) { return nullptr; }
+		Input &i = _pending.back();
+		return &i.frags.insert({ name, name }).first->second;
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
+	Frag *get_local(const std::string &name) {
+		Frag *result = find_local(name);
+		if (! result) {
+			result = add_local(name);
+		}
+		return result;
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
+	Frag *find_global(const std::string &name) {
+		if (_pending.size() > 1) {
+			auto i = _pending.end() - 2;
+			for (;; --i) {
+				auto f = i->frags.find(name);
+				if (f != i->frags.end()) {
+					return &f->second;
+				}
+				if (i == _pending.begin()) { break; }
+			}
+		}
+		auto f = root.find(name);
+		if (f == root.end()) { return nullptr; }
+		return &f->second;
+
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
+	Frag *add_global(const std::string &name) {
+		return &root.insert({ name, name }).first->second;
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
+	Frag *get_global(const std::string &name) {
+		Frag *result = find_global(name);
+		if (! result) {
+			result = add_global(name);
+		}
+		return result;
+	}
+@End(inputs elements)
+```

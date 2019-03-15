@@ -1,9 +1,9 @@
 
 	
 	
-	#include <fstream>
-
 	#include <string>
+
+	#include <fstream>
 
 	#include <iostream>
 	#include <exception>
@@ -15,7 +15,6 @@
 	#include <map>
 
 	#include <iostream>
-	#include <memory>
 	#include <vector>
 
 	#include <algorithm>
@@ -31,6 +30,9 @@
 ;
 
 	
+	
+	struct no_more_lines {};
+
 	
 	
 	#define ASSERT(COND) \
@@ -355,68 +357,16 @@
 		);
 	}
 
-	class FragMap {
-		FragMap *_link;
-		using Map =
-			std::map<std::string, Frag>;
-		Map map;
-	public:
-		
-	FragMap(): _link { nullptr } {}
-
-	FragMap *setLink(FragMap *link) {
-		FragMap *old { _link };
-		_link = link;
-		return old;
-	}
-
-	Frag *find(const std::string &name) {
-		auto found { map.find(name) };
-		if (found != map.end()) {
-			return &found->second;
-		}
-		if (_link) {
-			return _link->find(name);
-		}
-		return nullptr;
-	}
-
-	Frag &get(
-		const std::string &name,
-		FragMap &insert
-	) {
-		Frag *found { find(name) };
-		if (found) { return *found; }
-		auto created { insert.map.insert(
-			Map::value_type { name, name }
-		) };
-		return created.first->second;
-	}
-
-	Frag &operator[](
-		const std::string &name
-	) {
-		return get(name, *this);
-	}
-
-	auto begin() const {
-		return map.cbegin();
-	}
-
-	auto end() const {
-		return map.cend();
-	}
-;
-	};
+	using FragMap =
+		std::map<std::string, Frag>;
 ;
 
 	FragMap root;
-	FragMap *frags { &root };
 ;
 
 	class Input {
 		public:
-			const std::string path;
+			std::string path;
 			
 	Input(const std::string &path):
 		path { path },
@@ -426,20 +376,24 @@
 
 	{}
 
-	bool getLine(std::string &line) {
+	Input(const Input &) = delete;
+	Input(Input &&) = default;
+	Input &operator=(const Input &) = delete;
+	Input &operator=(Input &&) = default;
+
+	void read_line(std::string &line) {
 		if (_file.is_open()) {
 			
 	if (std::getline(_file, line)) {
 		
 	++_line;
 ;
-		return true;
-	} else {
-		_file.close();
+		return;
 	}
+	_file.close();
 ;
 		}
-		return false;
+		throw no_more_lines {};
 	}
 
 	FragMap frags;
@@ -455,12 +409,15 @@
 ;
 	};
 ;
-
+	
 	class Inputs {
 		public:
 			
+	void read_line(std::string &l);
+
 	auto &cur() {
-		return _input;
+		ASSERT (! _pending.empty());
+		return _pending.back();
 	}
 
 	auto begin() const {
@@ -472,75 +429,105 @@
 	}
 
 	void push(const std::string &path) {
-		std::unique_ptr<Input> i {
-			std::make_unique<Input>(path)
-		};
-		
-	if (_input) {
-		_input->frags.setLink(frags);
-		frags = &_input->frags;
-	}
-;
-		
-	if (_input) {
-		_pending.push_back(
-			std::move(_input)
-		);
-	}
-;
-		_input = std::move(i);
-	}
-
-	bool getLine(std::string &line) {
-		while (_input) {
-			if (_input->getLine(line)) {
-				return true;
-			}
-			
-	_used.push_back(std::move(_input));
-	if (! _pending.empty()) {
-		_input =
-			std::move(_pending.back());
-		_pending.pop_back();
-	}
-	frags = frags->setLink(nullptr);
-;
-		}
-		return false;
+		_pending.push_back({ path });
 	}
 
 	bool has(
 		const std::string &name
 	) const {
 		
-	if (_input && _input->path == name) {
-		return true;
-	}
-
 	for (const auto &j : _pending) {
-		if (j->path == name) {
+		if (j.path == name) {
 			return true;
 		}
 	}
 
 	for (const auto &j : _used) {
-		if (j->path == name) {
+		if (j.path == name) {
 			return true;
 		}
 	}
 ;
 		return false;
 	}
+
+	Frag *find_local(const std::string &name) {
+		if (_pending.empty()) { return nullptr; }
+		Input &i = _pending.back();
+		auto f = i.frags.find(name);
+		if (f == i.frags.end()) { return nullptr; }
+		return &f->second;
+	}
+
+	Frag *add_local(const std::string &name) {
+		if (_pending.empty()) { return nullptr; }
+		Input &i = _pending.back();
+		return &i.frags.insert({ name, name }).first->second;
+	}
+
+	Frag *get_local(const std::string &name) {
+		Frag *result = find_local(name);
+		if (! result) {
+			result = add_local(name);
+		}
+		return result;
+	}
+
+	Frag *find_global(const std::string &name) {
+		if (_pending.size() > 1) {
+			auto i = _pending.end() - 2;
+			for (;; --i) {
+				auto f = i->frags.find(name);
+				if (f != i->frags.end()) {
+					return &f->second;
+				}
+				if (i == _pending.begin()) { break; }
+			}
+		}
+		auto f = root.find(name);
+		if (f == root.end()) { return nullptr; }
+		return &f->second;
+
+	}
+
+	Frag *add_global(const std::string &name) {
+		return &root.insert({ name, name }).first->second;
+	}
+
+	Frag *get_global(const std::string &name) {
+		Frag *result = find_global(name);
+		if (! result) {
+			result = add_global(name);
+		}
+		return result;
+	}
 ;
 		private:
 			
-	std::unique_ptr<Input> _input;
-	std::vector<std::unique_ptr<Input>>
-		_pending;
-	std::vector<std::unique_ptr<Input>>
-		_used;
+	std::vector<Input> _pending;
+	std::vector<Input> _used;
 ;
 	};
+
+	void Inputs::read_line(
+		std::string &line
+	) {
+		
+	while (! _pending.empty()) {
+		try {
+			_pending.back().read_line(line);
+			return;
+		} catch (const no_more_lines &) {}
+		
+	_used.push_back(std::move(_pending.back()));
+	_pending.pop_back();
+;
+	}
+	throw no_more_lines {};
+;
+	}
+;
+;
 
 	std::string stylesheet {
 		"slides/slides.css"
@@ -560,8 +547,8 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur()->path,
-			inputs.cur()->line()
+			str, inputs.cur().path,
+			inputs.cur().line()
 		);
 	}
 ;
@@ -571,8 +558,8 @@
 		
 	if (frag) {
 		frag->add(
-			ch, inputs.cur()->path,
-			inputs.cur()->line()
+			ch, inputs.cur().path,
+			inputs.cur().line()
 		);
 	}
 ;
@@ -590,16 +577,16 @@
 			
 	f->add(
 		std::string { b, x },
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
 ;
 			b = x + 1;
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur()->path,
-					inputs.cur()->line()
+					inputs.cur().path,
+					inputs.cur().line()
 				);
 				++b;
 			}
@@ -607,8 +594,8 @@
 			
 	f->add(
 		std::string { b, e },
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
 	b = e;
 ;
@@ -1168,7 +1155,8 @@
 	Frag *frag { nullptr };
 ;
 	std::string line;
-	while (inputs.getLine(line)) {
+	try { for (;;) {
+		inputs.read_line(line);
 		
 	auto end = line.cend();
 	for (
@@ -1206,20 +1194,10 @@
 		if (! frag && ! blockLimit) { break; }
 		
 	if (name == "def") {
-		ASSERT_MSG(! frag, "def(" << arg << ") in frag");
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		
-	frag = fm->find(arg);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			arg <<
-			"] already defined\n";
-	}
-;
-		if (! frag) {
-			frag = &(*fm)[arg];
+		ASSERT_MSG(! frag, "@def(" << arg << ") in frag [" << frag->name << ']');
+		frag = inputs.get_local(arg);
+		if (isPopulatedFrag(frag)) {
+			std::cerr << "frag [" << arg << "] already defined\n";
 		}
 		break;
 	}
@@ -1241,51 +1219,40 @@
 
 	if (name == "add") {
 		ASSERT_MSG(! frag, "add in frag " << frag->name);
-		FragMap *fm {
-			&inputs.cur()->frags
-		};
-		FragMap *ins { fm };
-		frag = fm->find(arg);
-		
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			arg <<
-			"] not defined\n";
-		frag = &fm->get(
-			arg, *ins
-		);
-	}
-;
+		frag = inputs.get_local(arg);
+		if (! isPopulatedFrag(frag)) {
+			std::cerr << "frag [" << arg << "] not defined\n";
+		}
 		break;
 	}
 
 	if (name == "put") {
 		ASSERT_MSG(frag,
-			"expand not in frag"
+			"@put not in frag"
 		);
-		Frag &sub = inputs.cur()->frags[
-			arg
-		];
-		
-	if (sub.expands()) {
+		Frag *sub = inputs.get_local(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
 		std::cerr <<
 			"multiple expands of [" <<
-			sub.name << "]\n";
+			sub->name << "]\n";
 	}
-	if (sub.multiples()) {
+	if (sub->multiples()) {
 		std::cerr <<
 			"expand after mult of ["
-			<< sub.name << "]\n";
+			<< sub->name << "]\n";
 	}
 ;
-		sub.addExpand();
-		frag->add(&sub);
+			sub->addExpand();
+			frag->add(sub);
+		}
 		break;
 	}
 
 	if (name == "inc") {
 		ASSERT_MSG(! frag,
-			"include in frag"
+			"include in frag [" << frag->name << ']'
 		);
 		if (! inputs.has(arg)) {
 			inputs.push(arg);
@@ -1295,70 +1262,51 @@
 
 	if (name == "mul") {
 		ASSERT_MSG(frag,
-			"mul not in frag"
+			"@mul not in frag"
 		);
-		Frag &sub { inputs.cur()->frags[
-			arg
-		] };
-		
-	if (sub.expands()) {
+		Frag *sub = inputs.get_local(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
 		std::cerr <<
 			"multiple after " <<
 			"expand of [" <<
-			sub.name << "]\n";
+			sub->name << "]\n";
 	}
 ;
-		sub.addMultiple();
-		frag->add(&sub);
+			sub->addMultiple();
+			frag->add(sub);
+		}
 		break;
 	}
 
 	if (name == "Def") {
-		ASSERT_MSG(! frag, "Def in frag");
-		FragMap *fm { frags };
-		
-	frag = fm->find(arg);
-	if (isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			arg <<
-			"] already defined\n";
-	}
-;
-		if (! frag) {
-			frag = &root[arg];
+		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
+		frag = inputs.get_global(arg);
+		if (isPopulatedFrag(frag)) {
+			std::cerr << "Frag [" << arg << "] already defined\n";
 		}
 		break;
 	}
 
 	if (name == "Add") {
-		ASSERT_MSG(! frag, "Add in frag");
-		FragMap *fm { frags };
-		FragMap *ins { &root };
-		frag = fm->find(arg);
-		
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			arg <<
-			"] not defined\n";
-		frag = &fm->get(
-			arg, *ins
-		);
-	}
-;
+		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
+		frag = inputs.get_global(arg);
+		if (! isPopulatedFrag(frag)) {
+			std::cerr << "Frag [" << arg << "] not defined\n";
+		}
 		break;
 	}
 
 	if (name == "rep") {
 		ASSERT_MSG(! frag,
-			"rep in frag"
+			"@rep in frag [" << frag->name << ']'
 		);
-		frag = &(inputs.cur()->frags[
-			arg
-		]);
+		frag = inputs.get_local(arg);
 		
-	ASSERT_MSG(frag, "frag " <<
+	ASSERT_MSG(frag, "frag [" <<
 		name <<
-		" not defined"
+		"] not defined"
 	);
 	frag->clear();
 ;
@@ -1367,31 +1315,13 @@
 
 	if (name == "Rep") {
 		ASSERT_MSG(! frag,
-			"Rep in frag"
+			"@Rep in frag [" << frag->name << ']'
 		);
-		FragMap *fm { frags };
-		frag = fm->find(arg);
+		frag = inputs.get_global(arg);
 		
-	ASSERT_MSG(frag, "frag " <<
+	ASSERT_MSG(frag, "frag [" <<
 		name <<
-		" not defined"
-	);
-	frag->clear();
-;
-		break;
-	}
-
-	if (name == "rep") {
-		ASSERT_MSG(! frag,
-			"replace in frag"
-		);
-		frag = &frags->get(
-			arg, root
-		);
-		
-	ASSERT_MSG(frag, "frag " <<
-		name <<
-		" not defined"
+		"] not defined"
 	);
 	frag->clear();
 ;
@@ -1400,45 +1330,45 @@
 
 	if (name == "Put") {
 		ASSERT_MSG(frag,
-			"Put not in frag"
+			"@Put not in frag"
 		);
-		Frag &sub = frags->get(
-			arg, root
-		);
-		
-	if (sub.expands()) {
+		Frag *sub = inputs.get_global(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
 		std::cerr <<
 			"multiple expands of [" <<
-			sub.name << "]\n";
+			sub->name << "]\n";
 	}
-	if (sub.multiples()) {
+	if (sub->multiples()) {
 		std::cerr <<
 			"expand after mult of ["
-			<< sub.name << "]\n";
+			<< sub->name << "]\n";
 	}
 ;
-		sub.addExpand();
-		frag->add(&sub);
+			sub->addExpand();
+			frag->add(sub);
+		}
 		break;
 	}
 
 	if (name == "Mul") {
 		ASSERT_MSG(frag,
-			"globmult not in frag"
+			"@Mul not in frag"
 		);
-		Frag &sub { frags->get(
-			arg, root
-		) };
-		
-	if (sub.expands()) {
+		Frag *sub = inputs.get_global(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
 		std::cerr <<
 			"multiple after " <<
 			"expand of [" <<
-			sub.name << "]\n";
+			sub->name << "]\n";
 	}
 ;
-		sub.addMultiple();
-		frag->add(&sub);
+			sub->addMultiple();
+			frag->add(sub);
+		}
 		break;
 	}
 
@@ -1449,7 +1379,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->path +
+		h(inputs.cur().path +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1460,8 +1390,8 @@
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
 ;
 		break;
@@ -1474,7 +1404,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur()->path +
+		h(inputs.cur().path +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1483,8 +1413,8 @@
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur()->path,
-		inputs.cur()->line()
+		inputs.cur().path,
+		inputs.cur().line()
 	);
 ;
 		break;
@@ -1510,7 +1440,8 @@
 	}
 	process_char(frag, '\n');
 ;
-	}
+	} }
+	catch (const no_more_lines &) {}
 } ;
 
 	
@@ -1553,7 +1484,7 @@
 	}
 
 	for (auto &j : inputs) {
-		for (auto &i : j->frags) {
+		for (auto &i : j.frags) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1616,7 +1547,7 @@
 	}
 
 	for (auto &j : inputs) {
-		for (auto &i : j->frags) {
+		for (auto &i : j.frags) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1644,7 +1575,7 @@
 	
 	for (auto &cur : inputs) {
 		
-	const std::string &name { cur->path };
+	const std::string &name { cur.path };
 	std::string outPath {
 		name.substr(0, name.size() - 2) +
 		".html"
@@ -1652,7 +1583,7 @@
 	std::ofstream out { outPath.c_str() };
 	
 	std::ifstream in {
-		cur->path.c_str()
+		cur.path.c_str()
 	};
 	
 	HtmlStatus status;

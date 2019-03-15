@@ -3,8 +3,15 @@
 
 ```
 @Add(global elements)
-	@put(inputs prereqs);
+	@put(globals);
 @End(global elements)
+```
+
+```
+@def(globals)
+	@put(inputs prereqs);
+	@put(inputs);
+@end(globals)
 ```
 * Some elements are used by the `Inputs` and `Input` classes
 * and must be defined before its definition
@@ -18,17 +25,53 @@
   everything is processed
 
 ```
-@Add(global elements)
+@def(inputs)
 	class Inputs {
 		public:
-			@Put(inputs methods);
+			@Put(inputs elements);
 		private:
-			@Put(inputs attributes);
+			@Put(private inputs elements);
 	};
-@end(global elements)
+@end(inputs)
 ```
 * Enthält alle verarbeiteten Dateien
 * `@k(@Put)` inserts a fragment from the global scope
+
+```
+@Def(includes)
+	#include @s(<string>)
+@End(includes)
+```
+* Defines `std::string`
+* `@k(@Add)` extends a globally defined fragment
+
+```
+@Def(inputs elements)
+	void read_line(std::string &l);
+@End(inputs elements)
+```
+
+```
+@add(inputs)
+	void Inputs::read_line(
+		std::string &line
+	) {
+		@Put(inputs read line);
+	}
+@end(inputs)
+```
+
+```
+@def(inputs prereqs)
+	struct no_more_lines {};
+@end(inputs prereqs)
+```
+
+```
+@Def(inputs read line)
+	throw no_more_lines {};
+@End(inputs read line)
+```
 
 ## What is a file?
 * C++ represent open files as `std::ifstream`
@@ -38,25 +81,17 @@
 * So a special class `Input` will represent a file
 
 ```
-@Def(includes)
+@Add(includes)
 	#include @s(<fstream>)
 @End(includes)
 ```
 * Defines `std::ifstream`
 
-```
-@Add(includes)
-	#include @s(<string>)
-@End(includes)
-```
-* Defines `std::string`
-* `@k(@Add)` extends a globally defined fragment
-
 ## `Input` class
 * Defines the `Input` class
 
 ```
-@def(inputs prereqs)
+@add(inputs prereqs)
 	@Put(input prereqs);
 @end(inputs prereqs)
 ```
@@ -65,7 +100,7 @@
 @add(inputs prereqs)
 	class Input {
 		public:
-			const std::string path;
+			std::string path;
 			@Put(input elements);
 		private:
 			std::ifstream _file;
@@ -94,3 +129,11 @@
 * and the file with that path will be opened
 * Additional elements can be initialized later
 
+```
+@Add(input elements)
+	Input(const Input &) = delete;
+	Input(Input &&) = default;
+	Input &operator=(const Input &) = delete;
+	Input &operator=(Input &&) = default;
+@End(input elements)
+```

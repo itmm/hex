@@ -14,7 +14,7 @@
 
 ```
 @def(write cur HTML file)
-	const std::string &name { cur->path };
+	const std::string &name { cur.path };
 	std::string outPath {
 		name.substr(0, name.size() - 2) +
 		".html"
@@ -29,7 +29,7 @@
 ```
 @def(write cur HTML file to out)
 	std::ifstream in {
-		cur->path.c_str()
+		cur.path.c_str()
 	};
 	@put(write from in to out);
 	in.close();

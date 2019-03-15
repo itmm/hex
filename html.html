@@ -32,7 +32,7 @@ Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file</span>)</span><br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span> { <span class="var">cur</span>-&gt;<span class="var">path</span> };<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span> { <span class="var">cur</span>.<span class="var">path</span> };<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">outPath</span> {<br/>
 <span class="in2"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">name</span>.<span class="fn">size</span>() - <span class="num">2</span>) +<br/>
 <span class="in2"></span><span class="str">".html"</span><br/>
@@ -50,7 +50,7 @@ Die HTML hat den gleichen Pfad mit der Endung <code>.<span class="var">html</spa
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file to out</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="keyword">in</span> {<br/>
-<span class="in2"></span><span class="var">cur</span>-&gt;<span class="var">path</span>.<span class="fn">c_str</span>()<br/>
+<span class="in2"></span><span class="var">cur</span>.<span class="var">path</span>.<span class="fn">c_str</span>()<br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write from in to out</span>)</span>;<br/>
 <span class="in1"></span><span class="keyword">in</span>.<span class="fn">close</span>();<br/>

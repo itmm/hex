@@ -628,101 +628,10 @@
 
 ```
 @add(define frag)
-	class FragMap {
-		FragMap *_link;
-		using Map =
-			std::map<std::string, Frag>;
-		Map map;
-	public:
-		@put(frag map methods);
-	};
+	using FragMap =
+		std::map<std::string, Frag>;
 @end(define frag)
 ```
 * Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
 * Alle Felder müssen mit `nullptr` initialisiert werden
 
-```
-@def(frag map methods)
-	FragMap(): _link { nullptr } {}
-@end(frag map methods)
-```
-* Map wird ohne Verknüpfung und Elementen als leere Struktur angelegt
-
-```
-@add(frag map methods)
-	FragMap *setLink(FragMap *link) {
-		FragMap *old { _link };
-		_link = link;
-		return old;
-	}
-@end(frag map methods)
-```
-* Der Link kann dynamisch geändert werden
-* Der vorher aktive Link wird zurück geliefert
-
-```
-@add(frag map methods)
-	Frag *find(const std::string &name) {
-		auto found { map.find(name) };
-		if (found != map.end()) {
-			return &found->second;
-		}
-		if (_link) {
-			return _link->find(name);
-		}
-		return nullptr;
-	}
-@end(frag map methods)
-```
-* Sucht ein Element in der Map
-* Oder in verlinkten Maps
-* Wenn es nicht gefunden wird, wird `nullptr` zurück geliefert
-
-```
-@add(frag map methods)
-	Frag &get(
-		const std::string &name,
-		FragMap &insert
-	) {
-		Frag *found { find(name) };
-		if (found) { return *found; }
-		auto created { insert.map.insert(
-			Map::value_type { name, name }
-		) };
-		return created.first->second;
-	}
-@end(frag map methods)
-```
-* Sucht ein Element in der Map
-* Oder in verlinkten Map
-* Wenn es nicht gefunden wird, wird es in der Map `insert` angelegt
-* Und zurück geliefert
-
-```
-@add(frag map methods)
-	Frag &operator[](
-		const std::string &name
-	) {
-		return get(name, *this);
-	}
-@end(frag map methods)
-```
-* Kurzform für `get`
-
-```
-@add(frag map methods)
-	auto begin() const {
-		return map.cbegin();
-	}
-@end(frag map methods)
-```
-* Beginn eines konstanten Iterators über Elemente der Map
-
-```
-@add(frag map methods)
-	auto end() const {
-		return map.cend();
-	}
-@end(frag map methods)
-```
-* Ende eines kostanten Iterators über Elemente der Map
