@@ -47,7 +47,7 @@
 
 ```
 @Def(inputs elements)
-	void read_line(std::string &l);
+	void read_line(std::string &line);
 @End(inputs elements)
 ```
 
@@ -63,13 +63,13 @@
 
 ```
 @def(open input prereqs)
-	struct no_more_lines {};
+	struct No_More_Lines {};
 @end(open input prereqs)
 ```
 
 ```
 @def(inputs read line)
-	throw no_more_lines {};
+	throw No_More_Lines {};
 @end(inputs read line)
 ```
 
@@ -92,7 +92,7 @@
 		inputs.read_line(line);
 		@Put(process line);
 	} }
-	catch (const no_more_lines &) {}
+	catch (const No_More_Lines &) {}
 } @End(read source files)
 ```
 * `hx` liest die Eingabe-Dateien zeilenweise
@@ -132,7 +132,7 @@
 ```
 @def(inputs prereqs)
 	@put(open input prereqs);
-	class OpenInput {
+	class Open_Input {
 		public:
 			@Put(open input elements);
 		private:
@@ -157,7 +157,7 @@
 
 ```
 @Def(open input elements)
-	OpenInput(const std::string &path):
+	Open_Input(const std::string &path):
 		_input { path },
 		_file { path.c_str() }
 	{}
@@ -166,22 +166,22 @@
 
 ```
 @Add(open input elements)
-	OpenInput(
-		const OpenInput &
+	Open_Input(
+		const Open_Input &
 	) = delete;
-	OpenInput(
-		OpenInput &&
+	Open_Input(
+		Open_Input &&
 	) = default;
 @End(open input elements)
 ```
 
 ```
 @Add(open input elements)
-	OpenInput &operator=(
-		const OpenInput &
+	Open_Input &operator=(
+		const Open_Input &
 	) = delete;
-	OpenInput &operator=(
-		OpenInput &&
+	Open_Input &operator=(
+		Open_Input &&
 	) = default;
 @End(open input elements)
 ```
@@ -249,7 +249,7 @@
 		if (_file.is_open()) {
 			@put(get line);
 		}
-		throw no_more_lines {};
+		throw No_More_Lines {};
 	}
 @end(open input elements)
 ```
@@ -269,7 +269,7 @@
 
 ```
 @def(private inputs elements)
-	std::vector<OpenInput> _open;
+	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
 @end(private inputs elements)
 ```
@@ -289,15 +289,22 @@
 		try {
 			_open.back().read_line(line);
 			return;
-		} catch (const no_more_lines &) {}
-		_used.push_back(std::move(
-			_open.back().input()
-		));
+		}
+		catch (const No_More_Lines &) {}
+		@put(save open input);
 		_open.pop_back();
 	}
-	throw no_more_lines {};
+	throw No_More_Lines {};
 @end(inputs read line)
 ```
 * Probiert aus aktueller Datei eine Zeile zu lesen
 * Wandert bei Misserfolg durch andere offenen Dateien
+
+```
+@def(save open input)
+	_used.push_back(std::move(
+		_open.back().input()
+	));
+@end(save open input)
+```
 

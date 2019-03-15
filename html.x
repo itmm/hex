@@ -842,7 +842,7 @@
 	"switch", "try", "typeof", "while",
 	"class", "public", "private",
 	"template", "typename", "using",
-	"function"
+	"function", "throw"
 @end(keywords)
 ```
 * Reservierte Schlüsselwörter
@@ -878,8 +878,9 @@
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
 	"union", "unsigned", "void", "double",
-	"string", "std", "ifstream", "istream",
-	"ofstream", "ostream"
+	"string", "std", "ifstream",
+	"istream", "ofstream", "ostream",
+	"vector", "map", "list"
 @end(types)
 ```
 * Reservierte Typen

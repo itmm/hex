@@ -32,7 +32,7 @@
 	
 	
 	
-	struct no_more_lines {};
+	struct No_More_Lines {};
 
 	
 	
@@ -396,26 +396,26 @@
 			std::string _path;
 	};
 ;
-	class OpenInput {
+	class Open_Input {
 		public:
 			
-	OpenInput(const std::string &path):
+	Open_Input(const std::string &path):
 		_input { path },
 		_file { path.c_str() }
 	{}
 
-	OpenInput(
-		const OpenInput &
+	Open_Input(
+		const Open_Input &
 	) = delete;
-	OpenInput(
-		OpenInput &&
+	Open_Input(
+		Open_Input &&
 	) = default;
 
-	OpenInput &operator=(
-		const OpenInput &
+	Open_Input &operator=(
+		const Open_Input &
 	) = delete;
-	OpenInput &operator=(
-		OpenInput &&
+	Open_Input &operator=(
+		Open_Input &&
 	) = default;
 
 	Input &input() { return _input; }
@@ -436,7 +436,7 @@
 	_file.close();
 ;
 		}
-		throw no_more_lines {};
+		throw No_More_Lines {};
 	}
 
 	int line() const {
@@ -456,7 +456,7 @@
 	class Inputs {
 		public:
 			
-	void read_line(std::string &l);
+	void read_line(std::string &line);
 
 	auto &cur() {
 		ASSERT (! _open.empty());
@@ -547,7 +547,7 @@
 ;
 		private:
 			
-	std::vector<OpenInput> _open;
+	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
 ;
 	};
@@ -560,13 +560,16 @@
 		try {
 			_open.back().read_line(line);
 			return;
-		} catch (const no_more_lines &) {}
-		_used.push_back(std::move(
-			_open.back().input()
-		));
+		}
+		catch (const No_More_Lines &) {}
+		
+	_used.push_back(std::move(
+		_open.back().input()
+	));
+;
 		_open.pop_back();
 	}
-	throw no_more_lines {};
+	throw No_More_Lines {};
 ;
 	}
 ;
@@ -738,7 +741,7 @@
 	"switch", "try", "typeof", "while",
 	"class", "public", "private",
 	"template", "typename", "using",
-	"function"
+	"function", "throw"
 
 		};
 		return
@@ -755,8 +758,9 @@
 	"const", "enum", "extern", "int",
 	"let", "long", "signed", "struct",
 	"union", "unsigned", "void", "double",
-	"string", "std", "ifstream", "istream",
-	"ofstream", "ostream"
+	"string", "std", "ifstream",
+	"istream", "ofstream", "ostream",
+	"vector", "map", "list"
 
 	};
 	if (reserved.find(s) !=
@@ -1486,7 +1490,7 @@
 	process_char(frag, '\n');
 ;
 	} }
-	catch (const no_more_lines &) {}
+	catch (const No_More_Lines &) {}
 } ;
 
 	

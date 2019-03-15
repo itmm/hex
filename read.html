@@ -85,7 +85,7 @@ Defines <code><span class="type">std</span>::<span class="type">string</span></c
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">l</span>);<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span>);<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 </div>
@@ -103,14 +103,14 @@ Defines <code><span class="type">std</span>::<span class="type">string</span></c
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">open input prereqs</span>)</span><br/>
-<span class="in1"></span><span class="type">struct</span> <span class="var">no_more_lines</span> {};<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="macro">@end(<span class="name">open input prereqs</span>)</span><br/>
 </code></div>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">inputs read line</span>)</span><br/>
-<span class="in1"></span><span class="var">throw</span> <span class="var">no_more_lines</span> {};<br/>
+<span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="macro">@end(<span class="name">inputs read line</span>)</span><br/>
 </code></div>
 </div>
@@ -143,7 +143,7 @@ Und alle bereits gelesenen Dateien
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
 <span class="in2"></span><span class="macro">@Put(<span class="name">process line</span>)</span>;<br/>
 <span class="in1"></span>} }<br/>
-<span class="in1"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="var">no_more_lines</span> &amp;) {}<br/>
+<span class="in1"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>
 } <span class="macro">@End(<span class="name">read source files</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -209,7 +209,7 @@ They are declared global, so they can be modified in different
 <code>
 <span class="macro">@def(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">open input prereqs</span>)</span>;<br/>
-<span class="in1"></span><span class="keyword">class</span> <span class="type">OpenInput</span> {<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Open_Input</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">open input elements</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
@@ -239,7 +239,7 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">open input elements</span>)</span><br/>
-<span class="in1"></span><span class="fn">OpenInput</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>):<br/>
+<span class="in1"></span><span class="fn">Open_Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>):<br/>
 <span class="in2"></span><span class="var">_input</span> { <span class="var">path</span> },<br/>
 <span class="in2"></span><span class="var">_file</span> { <span class="var">path</span>.<span class="fn">c_str</span>() }<br/>
 <span class="in1"></span>{}<br/>
@@ -249,11 +249,11 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
-<span class="in1"></span><span class="fn">OpenInput</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">OpenInput</span> &amp;<br/>
+<span class="in1"></span><span class="fn">Open_Input</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Open_Input</span> &amp;<br/>
 <span class="in1"></span>) = <span class="keyword">delete</span>;<br/>
-<span class="in1"></span><span class="fn">OpenInput</span>(<br/>
-<span class="in2"></span><span class="type">OpenInput</span> &amp;&amp;<br/>
+<span class="in1"></span><span class="fn">Open_Input</span>(<br/>
+<span class="in2"></span><span class="type">Open_Input</span> &amp;&amp;<br/>
 <span class="in1"></span>) = <span class="keyword">default</span>;<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -261,11 +261,11 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
-<span class="in1"></span><span class="type">OpenInput</span> &amp;<span class="var">operator</span>=(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">OpenInput</span> &amp;<br/>
+<span class="in1"></span><span class="type">Open_Input</span> &amp;<span class="var">operator</span>=(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Open_Input</span> &amp;<br/>
 <span class="in1"></span>) = <span class="keyword">delete</span>;<br/>
-<span class="in1"></span><span class="type">OpenInput</span> &amp;<span class="var">operator</span>=(<br/>
-<span class="in2"></span><span class="type">OpenInput</span> &amp;&amp;<br/>
+<span class="in1"></span><span class="type">Open_Input</span> &amp;<span class="var">operator</span>=(<br/>
+<span class="in2"></span><span class="type">Open_Input</span> &amp;&amp;<br/>
 <span class="in1"></span>) = <span class="keyword">default</span>;<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -348,7 +348,7 @@ Simple accessor
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">is_open</span>()) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">throw</span> <span class="var">no_more_lines</span> {};<br/>
+<span class="in2"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -375,8 +375,8 @@ die erst später definiert werden
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">private inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">OpenInput</span>&gt; <span class="var">_open</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">_open</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
 <span class="macro">@end(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -404,13 +404,12 @@ Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
 <span class="in2"></span><span class="keyword">try</span> {<br/>
 <span class="in3"></span><span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
 <span class="in3"></span><span class="keyword">return</span>;<br/>
-<span class="in2"></span>} <span class="keyword">catch</span> (<span class="type">const</span> <span class="var">no_more_lines</span> &amp;) {}<br/>
-<span class="in2"></span><span class="var">_used</span>.<span class="fn">push_back</span>(<span class="type">std</span>::<span class="fn">move</span>(<br/>
-<span class="in3"></span><span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>()<br/>
-<span class="in2"></span>));<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">save open input</span>)</span>;<br/>
 <span class="in2"></span><span class="var">_open</span>.<span class="fn">pop_back</span>();<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">throw</span> <span class="var">no_more_lines</span> {};<br/>
+<span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="macro">@end(<span class="name">inputs read line</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -418,6 +417,15 @@ Probiert aus aktueller Datei eine Zeile zu lesen
 </li><li>
 Wandert bei Misserfolg durch andere offenen Dateien
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">save open input</span>)</span><br/>
+<span class="in1"></span><span class="var">_used</span>.<span class="fn">push_back</span>(<span class="type">std</span>::<span class="fn">move</span>(<br/>
+<span class="in2"></span><span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>()<br/>
+<span class="in1"></span>));<br/>
+<span class="macro">@end(<span class="name">save open input</span>)</span><br/>
+</code></div>
 </div>
 </body>
 </html>
