@@ -89,8 +89,6 @@
 ```
 @def(write from in to out)
 	HtmlStatus status;
-	std::string ident;
-	std::string line;
 	for (const auto &b : cur.blocks) {
 		@put(process block);
 	}
@@ -135,19 +133,6 @@
 	}
 @end(process block)
 ```
-
-```
-@Add(global elements)
-	bool in_code(
-		HtmlStatus *s
-	) {
-		@put(check html special state);
-		return false;
-	}
-@end(global elements)
-```
-* Die Funktion `@f(in_code)` liefert `true`, wenn sich
-  der Zustands-Automat gerade in einem Fragment befindet
 
 ```
 @def(close slide)
@@ -326,16 +311,6 @@
 @end(html state enums)
 ```
 * Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
-
-```
-@def(check html special state)
-	if (s->state == HtmlState::inCode) {
-		return true;
-	}
-@end(check html special state)
-```
-* Die Code-Ausgabe ist ein besonderer Zustand
-
 
 ```
 @def(open code page)

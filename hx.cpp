@@ -707,17 +707,6 @@
 			HtmlState::nothing
 		}
 	{}
-
-	bool in_code(
-		HtmlStatus *s
-	) {
-		
-	if (s->state == HtmlState::inCode) {
-		return true;
-	}
-;
-		return false;
-	}
  
 	void writeOneEscaped(
 		std::ostream &out, char ch
@@ -1778,8 +1767,6 @@
 	
 	
 	HtmlStatus status;
-	std::string ident;
-	std::string line;
 	for (const auto &b : cur.blocks) {
 		
 	if (b.state == RS::header) {

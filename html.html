@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>html.x</title>
+<title>HTML-Präsentation generieren</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
 <h1>HTML-Präsentation generieren</h1>
@@ -133,8 +133,6 @@ Die Anwendung verwendet <code><span class="type">std</span>::<span class="type">
 <code>
 <span class="macro">@def(<span class="name">write from in to out</span>)</span><br/>
 <span class="in1"></span><span class="type">HtmlStatus</span> <span class="var">status</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">b</span> : <span class="var">cur</span>.<span class="var">blocks</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process block</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -186,22 +184,6 @@ Bis das Datei-Ende erreicht ist
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">in_code</span>(<br/>
-<span class="in2"></span><span class="type">HtmlStatus</span> *<span class="var">s</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check html special state</span>)</span>;<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-</code></div>
-<ul><li>
-Die Funktion <code><span class="fn">in_code</span></code> liefert <code><span class="num">true</span></code>, wenn sich
-  der Zustands-Automat gerade in einem Fragment befindet
-</li></ul>
 </div>
 <div><div>
 <code>
@@ -443,18 +425,6 @@ Code kann auf Seiten oder in den Notizen ausgegeben werden
 </code></div>
 <ul><li>
 Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@def(<span class="name">check html special state</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>-&gt;<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inCode</span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">check html special state</span>)</span><br/>
-</code></div>
-<ul><li>
-Die Code-Ausgabe ist ein besonderer Zustand
 </li></ul>
 </div>
 <div><div>
