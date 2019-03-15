@@ -4,7 +4,7 @@
   Source-Code Dateien
 
 ```
-@Def(input prereqs)
+@Add(input prereqs)
 	@Put(frag prereqs);
 	@put(define frag);
 @end(input prereqs)

@@ -5,6 +5,8 @@
 
 	#include <fstream>
 
+	#include <vector>
+
 	#include <iostream>
 	#include <exception>
 
@@ -35,6 +37,28 @@
 	struct No_More_Lines {};
 
 	
+	
+	enum class Read_State {
+		new_element
+		,
+	header
+,
+	code,
+	after_code
+,
+	notes
+
+	};
+	using RS = Read_State;
+
+	struct Block {
+		Read_State state;
+		std::string value;
+		std::string notes;
+		int level;
+	};
+
+
 	
 	#define ASSERT(COND) \
 		if (! (COND)) { \
@@ -390,6 +414,8 @@
 		return _path;
 	}
 
+	std::vector<Block> blocks;
+
 	FragMap frags;
 ;
 		private:
@@ -438,6 +464,8 @@
 		}
 		throw No_More_Lines {};
 	}
+
+	Read_State state = RS::new_element;
 
 	int line() const {
 		return _line;
@@ -1205,6 +1233,96 @@
 	try { for (;;) {
 		inputs.read_line(line);
 		
+	do {
+		auto &state = inputs.cur().state;
+		
+	auto &blocks =
+		inputs.cur().input().blocks;
+;
+		
+	if (
+		line == "```" &&
+		state == RS::new_element
+	) {
+		state = RS::code;
+		
+	blocks.push_back({
+		RS::code, {}, {}, 0
+	});
+;
+		break;
+	}
+
+	if (state == RS::code) {
+		if (line == "```") {
+			state = RS::after_code;
+		} else {
+			
+	blocks.back().value +=
+		line + "\n";
+;
+		}
+		break;
+	}
+;
+		
+	if (line.empty()) {
+		state = RS::new_element;
+		break;
+	}
+;
+		
+	if (
+		line[0] == '#' &&
+		state == RS::new_element
+	) {
+		state = RS::header;
+		
+	auto b { line.begin() };
+	auto e { line.end() };
+	int l { 0 };
+	for (
+		; b != e && *b == '#'; ++b, ++l
+	) {}
+	for (; b != e && *b == ' '; ++b) {}
+	blocks.push_back({
+		RS::header, { b, e }, {}, l
+	});
+;
+		break;
+	}
+
+	if (line[0] == '*') {
+		if (
+			state == RS::header ||
+			state == RS::after_code ||
+			state == RS::notes
+		) {
+			state = RS::notes;
+			
+	blocks.back().notes +=
+		line + "\n";
+;
+			break;
+		}
+	}
+
+	if (
+		line[0] == ' ' &&
+		state == RS::notes
+	) {
+		
+	blocks.back().notes +=
+		line + "\n";
+;
+		break;
+	}
+;
+		
+	std::cerr << "!! " << line << '\n';
+;
+	} while (false);
+
 	auto end = line.cend();
 	for (
 		auto i = line.cbegin();

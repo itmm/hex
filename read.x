@@ -62,9 +62,9 @@
 ```
 
 ```
-@def(open input prereqs)
+@Def(open input prereqs)
 	struct No_More_Lines {};
-@end(open input prereqs)
+@End(open input prereqs)
 ```
 
 ```
@@ -109,20 +109,20 @@
 * Defines the `Input` class
 
 ```
-@add(open input prereqs)
+@Add(open input prereqs)
 	@Put(input prereqs);
-@end(open input prereqs)
+@End(open input prereqs)
 ```
 
 ```
-@add(open input prereqs)
+@Add(open input prereqs)
 	class Input {
 		public:
 			@Put(input elements);
 		private:
 			std::string _path;
 	};
-@end(open input prereqs)
+@End(open input prereqs)
 ```
 * A bunch of fragments make room for later extensions
 * They are declared global, so they can be modified in different
@@ -131,7 +131,7 @@
 
 ```
 @def(inputs prereqs)
-	@put(open input prereqs);
+	@Put(open input prereqs);
 	class Open_Input {
 		public:
 			@Put(open input elements);

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Separating input into blocks</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Separating input into blocks</h1>
+<div class="slides">
+<div><div>
+<h1>Separating input into blocks</h1>
+</div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">input prereqs</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span><br/>
+<span class="macro">@End(<span class="name">input prereqs</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="type">enum</span> <span class="keyword">class</span> <span class="type">Read_State</span> {<br/>
+<span class="in2"></span><span class="var">new_element</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">read states</span>)</span><br/>
+<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="keyword">using</span> <span class="type">RS</span> = <span class="type">Read_State</span>;<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Read_State</span> <span class="var">state</span> = <span class="type">RS</span>::<span class="var">new_element</span>;<br/>
+<span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">process line</span>)</span><br/>
+<span class="in1"></span><span class="var">do</span> {<br/>
+<span class="in2"></span><span class="type">auto</span> &amp;<span class="var">state</span> = <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="var">state</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">line vars</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">states with newlines</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">handle newlines</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">states without newlines</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">unknown line</span>)</span>;<br/>
+<span class="in1"></span>} <span class="keyword">while</span> (<span class="num">false</span>);<br/>
+<span class="macro">@End(<span class="name">process line</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">handle newlines</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">new_element</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">handle newlines</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">read states</span>)</span>,<br/>
+<span class="in1"></span><span class="var">header</span><br/>
+<span class="macro">@end(<span class="name">read states</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">states without newlines</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">'#'</span> &amp;&amp;<br/>
+<span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">header</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">got header line</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Block</span> {<br/>
+<span class="in2"></span><span class="type">Read_State</span> <span class="var">state</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">value</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">notes</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">level</span>;<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">vector</span>&gt;<br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">vector</span>&lt;<span class="type">Block</span>&gt; <span class="var">blocks</span>;<br/>
+<span class="macro">@End(<span class="name">input elements</span>)</span>;<br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">line vars</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> &amp;<span class="var">blocks</span> =<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="var">blocks</span>;<br/>
+<span class="macro">@end(<span class="name">line vars</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">got header line</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">line</span>.<span class="fn">begin</span>() };<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">e</span> { <span class="var">line</span>.<span class="fn">end</span>() };<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">l</span> { <span class="num">0</span> };<br/>
+<span class="in1"></span><span class="keyword">for</span> (<br/>
+<span class="in2"></span>; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">'#'</span>; ++<span class="var">b</span>, ++<span class="var">l</span><br/>
+<span class="in1"></span>) {}<br/>
+<span class="in1"></span><span class="keyword">for</span> (; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">' '</span>; ++<span class="var">b</span>) {}<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in2"></span><span class="var">RS</span>::<span class="var">header</span>, { <span class="var">b</span>, <span class="var">e</span> }, {}, <span class="var">l</span><br/>
+<span class="in1"></span>});<br/>
+<span class="macro">@end(<span class="name">got header line</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
+<span class="in1"></span><span class="var">code</span>,<br/>
+<span class="in1"></span><span class="var">after_code</span><br/>
+<span class="macro">@end(<span class="name">read states</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">states with newlines</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">line</span> == <span class="str">"```"</span> &amp;&amp;<br/>
+<span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">code</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">enter code block</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">states with newlines</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">states with newlines</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">line</span> == <span class="str">"```"</span>) {<br/>
+<span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">after_code</span>;<br/>
+<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">got code line</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">states with newlines</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">enter code block</span>)</span><br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in2"></span><span class="var">RS</span>::<span class="var">code</span>, {}, {}, <span class="num">0</span><br/>
+<span class="in1"></span>});<br/>
+<span class="macro">@end(<span class="name">enter code block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">got code line</span>)</span><br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span> +=<br/>
+<span class="in2"></span><span class="var">line</span> + <span class="str">"\n"</span>;<br/>
+<span class="macro">@end(<span class="name">got code line</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
+<span class="in1"></span><span class="var">notes</span><br/>
+<span class="macro">@end(<span class="name">read states</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'*'</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ||<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">after_code</span> ||<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span><br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">notes</span>;<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">got note</span>)</span>;<br/>
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">' '</span> &amp;&amp;<br/>
+<span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">got note</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">got note</span>)</span><br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span> +=<br/>
+<span class="in2"></span><span class="var">line</span> + <span class="str">"\n"</span>;<br/>
+<span class="macro">@end(<span class="name">got note</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">unknown line</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"!! "</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="macro">@end(<span class="name">unknown line</span>)</span><br/>
+</code></div>
+</body>
+</html>

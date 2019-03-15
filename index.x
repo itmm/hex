@@ -183,6 +183,10 @@
 * You can click on the argument value in the HTML documentation to
   navigate to the documentation from this file
 
+```
+@inc(blocks.x)
+```
+
 # WORKING HERE
 
 
@@ -354,7 +358,7 @@
 * Fügt ein Zeichen an den Inhalt von `frag` an
 
 ```
-@Def(process line)
+@Add(process line)
 	auto end = line.cend();
 	for (
 		auto i = line.cbegin();
