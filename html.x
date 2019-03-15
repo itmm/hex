@@ -78,7 +78,7 @@
 		state {
 			HtmlState::nothing
 		}
-	{ }
+	{}
 @end(global elements)
 ```
 * Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde

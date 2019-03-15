@@ -452,19 +452,6 @@ Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Inputs</span> <span class="var">inputs</span>;<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-</code></div>
-<ul><li>
-<code><span class="var">inputs</span></code> enthält neben der gerade offenen Datei auch alle Dateien, die
-  noch prozessiert werden müssen
-</li><li>
-Und alle bereits gelesenen Dateien
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@def(<span class="name">process arguments</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> { <span class="num">false</span> };<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> { <span class="num">1</span> }; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
@@ -584,24 +571,6 @@ In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">read source files</span>)</span> {<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">additional read vars</span>)</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
-<span class="in1"></span><span class="keyword">try</span> { <span class="keyword">for</span> (;;) {<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process line</span>)</span>;<br/>
-<span class="in1"></span>} }<br/>
-<span class="in1"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="var">no_more_lines</span> &amp;) {}<br/>
-} <span class="macro">@end(<span class="name">read source files</span>)</span><br/>
-</code></div>
-<ul><li>
-<code><span class="var">hx</span></code> liest die Eingabe-Dateien zeilenweise
-</li><li>
-Inkludierungen werden transparent in <code><span class="var">inputs</span></code> behandelt
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="var">SI</span> =<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span>::<span class="var">const_iterator</span>;<br/>
@@ -641,7 +610,7 @@ Fügt ein Zeichen an den Inhalt von <code><span class="var">frag</span></code> a
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">process line</span>)</span><br/>
+<span class="macro">@Def(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">line</span>.<span class="fn">cend</span>();<br/>
 <span class="in1"></span><span class="keyword">for</span> (<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">line</span>.<span class="fn">cbegin</span>();<br/>
@@ -651,7 +620,7 @@ Fügt ein Zeichen an den Inhalt von <code><span class="var">frag</span></code> a
 <span class="in2"></span><span class="fn">process_chars</span>(<span class="var">frag</span>, <span class="var">i</span>, <span class="var">i</span> + <span class="num">1</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>);<br/>
-<span class="macro">@end(<span class="name">process line</span>)</span><br/>
+<span class="macro">@End(<span class="name">process line</span>)</span><br/>
 </code></div>
 <ul><li>
 Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
@@ -662,9 +631,9 @@ Dabei kann <code><span class="var">hx</span></code> auch mit einer leeren Eingab
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@Def(<span class="name">additional read vars</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> { <span class="num">nullptr</span> };<br/>
-<span class="macro">@end(<span class="name">additional read vars</span>)</span><br/>
+<span class="macro">@End(<span class="name">additional read vars</span>)</span><br/>
 </code></div>
 <ul><li>
 Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
@@ -683,7 +652,7 @@ In einem Code-Block ist <code><span class="var">frag</span></code> nicht <code><
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">str</span> {<span class="var">i</span>, <span class="var">e</span>};<br/>
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
-<span class="in3"></span><span class="var">str</span>, <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in3"></span><span class="var">str</span>, <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
@@ -698,7 +667,7 @@ Fügt mehrere Zeichen an das aktuelle Fragment an
 <span class="macro">@def(<span class="name">process char</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
 <span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
-<span class="in3"></span><span class="var">ch</span>, <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in3"></span><span class="var">ch</span>, <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
@@ -812,7 +781,7 @@ Wenn diese Auswertung nicht greift, wird die Standard-Expandierung
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">e</span>) {<br/>
 <span class="in4"></span><span class="var">f</span>-&gt;<span class="fn">add</span>(<br/>
 <span class="in5"></span>*<span class="var">b</span>,<br/>
-<span class="in5"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in5"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in5"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in4"></span>);<br/>
 <span class="in4"></span>++<span class="var">b</span>;<br/>
@@ -830,7 +799,7 @@ Wenn diese Auswertung nicht greift, wird die Standard-Expandierung
 <span class="macro">@def(<span class="name">expand inner</span>)</span><br/>
 <span class="in1"></span><span class="var">f</span>-&gt;<span class="fn">add</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> { <span class="var">b</span>, <span class="var">x</span> },<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">expand inner</span>)</span><br/>
@@ -841,7 +810,7 @@ Wenn diese Auswertung nicht greift, wird die Standard-Expandierung
 <span class="macro">@def(<span class="name">expand rest</span>)</span><br/>
 <span class="in1"></span><span class="var">f</span>-&gt;<span class="fn">add</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> { <span class="var">b</span>, <span class="var">e</span> },<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in1"></span>);<br/>
 <span class="in1"></span><span class="var">b</span> = <span class="var">e</span>;<br/>
@@ -1064,7 +1033,9 @@ Das Fragment darf nicht mehrfach definiert werden
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"@Add in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span>);<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"{{"</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">"}}\n"</span>;<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"Frag ["</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">"] not defined\n"</span>;<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>() &lt;&lt; <span class="str">':'</span> &lt;&lt; <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>() &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1203,7 +1174,7 @@ Enthält Hash-Funktion
 <span class="macro">@def(<span class="name">process private frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">hash</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">h</span>;<br/>
 <span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
-<span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>() +<br/>
+<span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>() +<br/>
 <span class="in3"></span><span class="str">':'</span> + <span class="var">arg</span>) &amp;<br/>
 <span class="in4"></span><span class="num">0x7fffffff</span><br/>
 <span class="in1"></span>};<br/>
@@ -1226,7 +1197,7 @@ Zum Schluss wird er auf eine positive Zahl maskiert
 <span class="in2"></span><span class="var">name</span>;<br/>
 <span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 <span class="in2"></span><span class="var">hashed</span>.<span class="fn">str</span>(),<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">process private frag</span>)</span><br/>
@@ -1267,7 +1238,7 @@ Der sich aus dem Dateinamen und dem Argument des Befehls
 <span class="macro">@def(<span class="name">process magic frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">hash</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">h</span>;<br/>
 <span class="in1"></span><span class="type">unsigned</span> <span class="var">cur</span> {<br/>
-<span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>() +<br/>
+<span class="in2"></span><span class="fn">h</span>(<span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>() +<br/>
 <span class="in3"></span><span class="str">':'</span> + <span class="var">arg</span>) &amp;<br/>
 <span class="in4"></span><span class="num">0x7fffffff</span><br/>
 <span class="in1"></span>};<br/>
@@ -1284,7 +1255,7 @@ Berechnet Hash-Wert
 <span class="in1"></span><span class="var">value</span> &lt;&lt; <span class="var">cur</span>;<br/>
 <span class="in1"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
 <span class="in2"></span><span class="var">value</span>.<span class="fn">str</span>(),<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">path</span>(),<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">process magic frag</span>)</span><br/>

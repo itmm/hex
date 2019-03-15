@@ -31,6 +31,7 @@
 
 	
 	
+	
 	struct no_more_lines {};
 
 	
@@ -368,21 +369,59 @@
 		public:
 			
 	Input(const std::string &path):
-		_path { path },
-		_file { path.c_str() }
-		,
-	_line { 0 }
-
+		_path { path }
 	{}
 
-	Input(const Input &) = delete;
-	Input(Input &&) = default;
-	Input &operator=(const Input &) =
-		delete;
-	Input &operator=(Input &&) = default;
+	Input(
+		const Input &
+	) = delete;
+	Input(
+		Input &&
+	) = default;
+
+	Input &operator=(
+		const Input &
+	) = delete;
+	Input &operator=(
+		Input &&
+	) = default;
 
 	const std::string &path() const {
 		return _path;
+	}
+
+	FragMap frags;
+;
+		private:
+			std::string _path;
+	};
+;
+	class OpenInput {
+		public:
+			
+	OpenInput(const std::string &path):
+		_input { path },
+		_file { path.c_str() }
+	{}
+
+	OpenInput(
+		const OpenInput &
+	) = delete;
+	OpenInput(
+		OpenInput &&
+	) = default;
+
+	OpenInput &operator=(
+		const OpenInput &
+	) = delete;
+	OpenInput &operator=(
+		OpenInput &&
+	) = default;
+
+	Input &input() { return _input; }
+
+	const Input &input() const {
+		return _input;
 	}
 
 	void read_line(std::string &line) {
@@ -400,17 +439,16 @@
 		throw no_more_lines {};
 	}
 
-	FragMap frags;
-
 	int line() const {
 		return _line;
 	}
 ;
 		private:
-			std::string _path;
-			std::ifstream _file;
 			
-	int _line;
+	Input _input;
+	std::ifstream _file;
+
+	int _line = 0;
 ;
 	};
 ;
@@ -426,11 +464,11 @@
 	}
 
 	auto begin() const {
-		return _used.cbegin();
+		return _used.begin();
 	}
 
 	auto end() const {
-		return _used.cend();
+		return _used.end();
 	}
 
 	void push(const std::string &path) {
@@ -442,11 +480,10 @@
 	) const {
 		
 	for (const auto &j : _open) {
-		if (j.path() == name) {
+		if (j.input().path() == name) {
 			return true;
 		}
 	}
-
 	for (const auto &j : _used) {
 		if (j.path() == name) {
 			return true;
@@ -457,16 +494,16 @@
 	}
 
 	Frag *find_local(const std::string &name) {
-		if (_open.empty()) { return nullptr; }
-		Input &i = _open.back();
+		ASSERT(! _open.empty());
+		Input &i = _open.back().input();
 		auto f = i.frags.find(name);
 		if (f == i.frags.end()) { return nullptr; }
 		return &f->second;
 	}
 
 	Frag *add_local(const std::string &name) {
-		if (_open.empty()) { return nullptr; }
-		Input &i = _open.back();
+		ASSERT(! _open.empty());
+		Input &i = _open.back().input();
 		return &i.frags.insert({ name, name }).first->second;
 	}
 
@@ -482,8 +519,9 @@
 		if (_open.size() > 1) {
 			auto i = _open.end() - 2;
 			for (;; --i) {
-				auto f = i->frags.find(name);
-				if (f != i->frags.end()) {
+				auto &fs = i->input().frags;
+				auto f = fs.find(name);
+				if (f != fs.end()) {
 					return &f->second;
 				}
 				if (i == _open.begin()) { break; }
@@ -509,7 +547,7 @@
 ;
 		private:
 			
-	std::vector<Input> _open;
+	std::vector<OpenInput> _open;
 	std::vector<Input> _used;
 ;
 	};
@@ -523,15 +561,17 @@
 			_open.back().read_line(line);
 			return;
 		} catch (const no_more_lines &) {}
-		
-	_used.push_back(std::move(_open.back()));
-	_open.pop_back();
-;
+		_used.push_back(std::move(
+			_open.back().input()
+		));
+		_open.pop_back();
 	}
 	throw no_more_lines {};
 ;
 	}
 ;
+
+	Inputs inputs;
 ;
 
 	std::string stylesheet {
@@ -539,8 +579,6 @@
 	};
 
 	int blockLimit = -1;
-
-	Inputs inputs;
 
 	using SI =
 		std::string::const_iterator;
@@ -552,7 +590,7 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur().path(),
+			str, inputs.cur().input().path(),
 			inputs.cur().line()
 		);
 	}
@@ -563,7 +601,7 @@
 		
 	if (frag) {
 		frag->add(
-			ch, inputs.cur().path(),
+			ch, inputs.cur().input().path(),
 			inputs.cur().line()
 		);
 	}
@@ -582,7 +620,7 @@
 			
 	f->add(
 		std::string { b, x },
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 ;
@@ -590,7 +628,7 @@
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur().path(),
+					inputs.cur().input().path(),
 					inputs.cur().line()
 				);
 				++b;
@@ -599,7 +637,7 @@
 			
 	f->add(
 		std::string { b, e },
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 	b = e;
@@ -635,7 +673,7 @@
 		state {
 			HtmlState::nothing
 		}
-	{ }
+	{}
 
 	bool in_code(
 		HtmlStatus *s
@@ -1298,7 +1336,9 @@
 		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
 		frag = inputs.get_global(arg);
 		if (! isPopulatedFrag(frag)) {
+			std::cerr << "{{" << line << "}}\n";
 			std::cerr << "Frag [" << arg << "] not defined\n";
+			std::cerr << inputs.cur().input().path() << ':' << inputs.cur().line() << '\n';
 		}
 		break;
 	}
@@ -1384,7 +1424,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path() +
+		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1395,7 +1435,7 @@
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 ;
@@ -1409,7 +1449,7 @@
 		
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path() +
+		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -1418,7 +1458,7 @@
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 ;

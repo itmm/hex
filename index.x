@@ -236,15 +236,6 @@
   diesem Parameter limitiert werden
 
 ```
-@add(global elements)
-	Inputs inputs;
-@end(global elements)
-```
-* `inputs` enthält neben der gerade offenen Datei auch alle Dateien, die
-  noch prozessiert werden müssen
-* Und alle bereits gelesenen Dateien
-
-```
 @def(process arguments)
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
@@ -334,20 +325,6 @@
   einzelnen Folien zu finden
 
 ```
-@def(read source files) {
-	@put(additional read vars);
-	std::string line;
-	try { for (;;) {
-		inputs.read_line(line);
-		@put(process line);
-	} }
-	catch (const no_more_lines &) {}
-} @end(read source files)
-```
-* `hx` liest die Eingabe-Dateien zeilenweise
-* Inkludierungen werden transparent in `inputs` behandelt
-
-```
 @add(global elements)
 	using SI =
 		std::string::const_iterator;
@@ -377,7 +354,7 @@
 * Fügt ein Zeichen an den Inhalt von `frag` an
 
 ```
-@def(process line)
+@Def(process line)
 	auto end = line.cend();
 	for (
 		auto i = line.cbegin();
@@ -387,7 +364,7 @@
 		process_chars(frag, i, i + 1);
 	}
 	process_char(frag, '\n');
-@end(process line)
+@End(process line)
 ```
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
@@ -395,9 +372,9 @@
 
 
 ```
-@def(additional read vars)
+@Def(additional read vars)
 	Frag *frag { nullptr };
-@end(additional read vars)
+@End(additional read vars)
 ```
 * Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
 * In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
@@ -410,7 +387,7 @@
 	if (frag) {
 		std::string str {i, e};
 		frag->add(
-			str, inputs.cur().path(),
+			str, inputs.cur().input().path(),
 			inputs.cur().line()
 		);
 	}
@@ -422,7 +399,7 @@
 @def(process char)
 	if (frag) {
 		frag->add(
-			ch, inputs.cur().path(),
+			ch, inputs.cur().input().path(),
 			inputs.cur().line()
 		);
 	}
@@ -519,7 +496,7 @@
 			if (b != e) {
 				f->add(
 					*b,
-					inputs.cur().path(),
+					inputs.cur().input().path(),
 					inputs.cur().line()
 				);
 				++b;
@@ -536,7 +513,7 @@
 @def(expand inner)
 	f->add(
 		std::string { b, x },
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 @end(expand inner)
@@ -546,7 +523,7 @@
 @def(expand rest)
 	f->add(
 		std::string { b, e },
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 	b = e;
@@ -728,7 +705,9 @@
 		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
 		frag = inputs.get_global(arg);
 		if (! isPopulatedFrag(frag)) {
+			std::cerr << "{{" << line << "}}\n";
 			std::cerr << "Frag [" << arg << "] not defined\n";
+			std::cerr << inputs.cur().input().path() << ':' << inputs.cur().line() << '\n';
 		}
 		break;
 	}
@@ -840,7 +819,7 @@
 @def(process private frag)
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path() +
+		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -858,7 +837,7 @@
 		name;
 	frag->add(
 		hashed.str(),
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 @end(process private frag)
@@ -888,7 +867,7 @@
 @def(process magic frag)
 	std::hash<std::string> h;
 	unsigned cur {
-		h(inputs.cur().path() +
+		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff
 	};
@@ -902,7 +881,7 @@
 	value << cur;
 	frag->add(
 		value.str(),
-		inputs.cur().path(),
+		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
 @end(process magic frag)

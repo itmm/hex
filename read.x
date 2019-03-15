@@ -30,7 +30,7 @@
 		public:
 			@Put(inputs elements);
 		private:
-			@Put(private inputs elements);
+			@put(private inputs elements);
 	};
 @end(inputs)
 ```
@@ -56,22 +56,47 @@
 	void Inputs::read_line(
 		std::string &line
 	) {
-		@Put(inputs read line);
+		@put(inputs read line);
 	}
 @end(inputs)
 ```
 
 ```
-@def(inputs prereqs)
+@def(open input prereqs)
 	struct no_more_lines {};
-@end(inputs prereqs)
+@end(open input prereqs)
 ```
 
 ```
-@Def(inputs read line)
+@def(inputs read line)
 	throw no_more_lines {};
-@End(inputs read line)
+@end(inputs read line)
 ```
+
+## Reading everything
+
+```
+@add(globals)
+	Inputs inputs;
+@end(globals)
+```
+* `inputs` enthält neben der gerade offenen Datei auch alle Dateien, die
+  noch prozessiert werden müssen
+* Und alle bereits gelesenen Dateien
+
+```
+@Def(read source files) {
+	@Put(additional read vars);
+	std::string line;
+	try { for (;;) {
+		inputs.read_line(line);
+		@Put(process line);
+	} }
+	catch (const no_more_lines &) {}
+} @End(read source files)
+```
+* `hx` liest die Eingabe-Dateien zeilenweise
+* Inkludierungen werden transparent in `inputs` behandelt
 
 ## What is a file?
 * C++ represent open files as `std::ifstream`
@@ -80,33 +105,24 @@
 * For example the local fragments
 * So a special class `Input` will represent a file
 
-```
-@Add(includes)
-	#include @s(<fstream>)
-@End(includes)
-```
-* Defines `std::ifstream`
-
 ## `Input` class
 * Defines the `Input` class
 
 ```
-@add(inputs prereqs)
+@add(open input prereqs)
 	@Put(input prereqs);
-@end(inputs prereqs)
+@end(open input prereqs)
 ```
 
 ```
-@add(inputs prereqs)
+@add(open input prereqs)
 	class Input {
 		public:
 			@Put(input elements);
 		private:
 			std::string _path;
-			std::ifstream _file;
-			@Put(private input elements);
 	};
-@end(inputs prereqs)
+@end(open input prereqs)
 ```
 * A bunch of fragments make room for later extensions
 * They are declared global, so they can be modified in different
@@ -114,11 +130,80 @@
 
 
 ```
+@def(inputs prereqs)
+	@put(open input prereqs);
+	class OpenInput {
+		public:
+			@Put(open input elements);
+		private:
+			@Put(private open input els);
+	};
+@end(inputs prereqs)
+```
+
+```
+@Add(includes)
+	#include @s(<fstream>)
+@End(includes)
+```
+* Defines `std::ifstream`
+
+```
+@Def(private open input els)
+	Input _input;
+	std::ifstream _file;
+@End(private open input els)
+```
+
+```
+@Def(open input elements)
+	OpenInput(const std::string &path):
+		_input { path },
+		_file { path.c_str() }
+	{}
+@End(open input elements)
+```
+
+```
+@Add(open input elements)
+	OpenInput(
+		const OpenInput &
+	) = delete;
+	OpenInput(
+		OpenInput &&
+	) = default;
+@End(open input elements)
+```
+
+```
+@Add(open input elements)
+	OpenInput &operator=(
+		const OpenInput &
+	) = delete;
+	OpenInput &operator=(
+		OpenInput &&
+	) = default;
+@End(open input elements)
+```
+
+```
+@Add(open input elements)
+	Input &input() { return _input; }
+@End(open input elements)
+```
+
+```
+@Add(open input elements)
+	const Input &input() const {
+		return _input;
+	}
+@End(open input elements)
+```
+
+```
 @Def(input elements)
 	Input(const std::string &path):
-		_path { path },
-		_file { path.c_str() }
-		@Put(private input constructor)
+		_path { path }
 	{}
 @End(input elements)
 ```
@@ -128,11 +213,23 @@
 
 ```
 @Add(input elements)
-	Input(const Input &) = delete;
-	Input(Input &&) = default;
-	Input &operator=(const Input &) =
-		delete;
-	Input &operator=(Input &&) = default;
+	Input(
+		const Input &
+	) = delete;
+	Input(
+		Input &&
+	) = default;
+@End(input elements)
+```
+
+```
+@Add(input elements)
+	Input &operator=(
+		const Input &
+	) = delete;
+	Input &operator=(
+		Input &&
+	) = default;
 @End(input elements)
 ```
 * `Input` instances can only be moved, not copied
@@ -145,4 +242,62 @@
 @End(input elements)
 ```
 * Simple accessor
+
+```
+@Add(open input elements)
+	void read_line(std::string &line) {
+		if (_file.is_open()) {
+			@put(get line);
+		}
+		throw no_more_lines {};
+	}
+@end(open input elements)
+```
+* Liest Zeile aus der offenen Datei
+
+```
+@def(get line)
+	if (std::getline(_file, line)) {
+		@Put(line read);
+		return;
+	}
+	_file.close();
+@end(get line)
+```
+* Wenn Zeile gelesen wurde, passt die Funktion weitere Parameter an
+* die erst später definiert werden
+
+```
+@def(private inputs elements)
+	std::vector<OpenInput> _open;
+	std::vector<Input> _used;
+@end(private inputs elements)
+```
+* Es gibt immer eine aktuelle Datei, die gerade gelesen wird
+* Mitten während des Lesens können andere Dateien eingelesen
+  (inkludiert) werden
+* Daher gibt es einen Stapel offener Dateien
+* Aus der letzten wird aktuell gelesen
+* Eine Liste aller gelesenen Dateien wird in `used` verwaltet
+* Damit wird verhindert, dass eine Datei mehrfach gelesen wird
+* Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
+  werden müssen
+
+```
+@rep(inputs read line)
+	while (! _open.empty()) {
+		try {
+			_open.back().read_line(line);
+			return;
+		} catch (const no_more_lines &) {}
+		_used.push_back(std::move(
+			_open.back().input()
+		));
+		_open.pop_back();
+	}
+	throw no_more_lines {};
+@end(inputs read line)
+```
+* Probiert aus aktueller Datei eine Zeile zu lesen
+* Wandert bei Misserfolg durch andere offenen Dateien
 
