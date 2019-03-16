@@ -30,7 +30,7 @@
 
 ```
 @Add(inputs elements)
-	auto begin() const {
+	auto begin() {
 		return _used.begin();
 	}
 @End(inputs elements)
@@ -39,7 +39,7 @@
 
 ```
 @Add(inputs elements)
-	auto end() const {
+	auto end() {
 		return _used.end();
 	}
 @End(inputs elements)

@@ -199,8 +199,15 @@
 
 ```
 @def(got note)
+	auto b { line.begin() };
+	auto e { line.end() };
+	for (;
+		b != e &&
+			(*b == '*' || *b == ' ');
+		++b
+	) {}
 	blocks.back().notes.push_back(
-		line
+		{ b, e }
 	);
 @end(got note)
 ```

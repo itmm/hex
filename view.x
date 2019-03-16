@@ -3,8 +3,8 @@
 ```
 @Add(global elements)
 	bool interactive = false;
-	std::vector<Input>::const_iterator curInput;
-	std::vector<Block>::const_iterator curBlock;
+	std::vector<Input>::iterator curInput;
+	std::vector<Block>::iterator curBlock;
 @End(global elements)
 ```
 
@@ -49,7 +49,7 @@
 @Add(interactive)
 	draw_block();
 	for (;;) {
-		@put(run loop);
+		@Put(run loop);
 	}
 @End(interactive)
 ```
@@ -63,24 +63,24 @@
 ```
 
 ```
-@def(run loop)
+@Def(run loop)
 	std::string cmd;
 	draw_position();
 	std::cout << "> ";
 	std::cin >> cmd;
-@end(run loop)
+@End(run loop)
 ```
 
 ```
-@add(run loop)
+@Add(run loop)
 	if (cmd == "q" || cmd == "quit") {
 		break;
 	}
-@end(run loop)
+@End(run loop)
 ```
 
 ```
-@add(run loop)
+@Add(run loop)
 	if (cmd == "n" || cmd == "next") {
 		if (curInput != inputs.end()) {
 			if (curBlock != curInput->blocks.end()) {
@@ -91,11 +91,11 @@
 		}
 		std::cerr << "! end\n";
 	}
-@end(run loop)
+@End(run loop)
 ```
 
 ```
-@add(run loop)
+@Add(run loop)
 	if (cmd == "p" || cmd == "prev") {
 		if (curInput != inputs.end()) {
 			if (curBlock != curInput->blocks.begin()) {
@@ -106,7 +106,7 @@
 		}
 		std::cerr << "! start\n";
 	}
-@end(run loop)
+@End(run loop)
 ```
 
 ```
@@ -165,7 +165,7 @@
 ```
 @add(draw block)
 	for (const auto &l : curBlock->notes) {
-		std::cout << l << '\n';
+		std::cout << "* " << l << '\n';
 	}
 	std::cout << '\n';
 @end(draw block)
@@ -191,34 +191,34 @@
 ```
 
 ```
-@add(run loop)
+@Add(run loop)
 	if (cmd == "f" || cmd == "forward") {
 		if (curInput != inputs.end()) {
 			++curInput;
 			curBlock = curInput != inputs.end() ?
 				curInput->blocks.begin() :
-				std::vector<Block>::const_iterator {};
+				std::vector<Block>::iterator {};
 			draw_block();
 			continue;
 		}
 		std::cerr << "! end\n";
 	}
-@end(run loop)
+@End(run loop)
 ```
 
 ```
-@add(run loop)
+@Add(run loop)
 	if (cmd == "b" || cmd == "backward") {
 		if (curInput != inputs.begin()) {
 			--curInput;
 			curBlock = curInput != inputs.end() ?
 				curInput->blocks.begin() :
-				std::vector<Block>::const_iterator {};
+				std::vector<Block>::iterator {};
 			draw_block();
 			continue;
 		}
 		std::cerr << "! start\n";
 	}
-@end(run loop)
+@End(run loop)
 ```
 

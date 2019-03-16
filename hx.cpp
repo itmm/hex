@@ -493,11 +493,11 @@
 		return _open.back();
 	}
 
-	auto begin() const {
+	auto begin() {
 		return _used.begin();
 	}
 
-	auto end() const {
+	auto end() {
 		return _used.end();
 	}
 
@@ -1126,8 +1126,8 @@
 	}
 
 	bool interactive = false;
-	std::vector<Input>::const_iterator curInput;
-	std::vector<Block>::const_iterator curBlock;
+	std::vector<Input>::iterator curInput;
+	std::vector<Block>::iterator curBlock;
 
 	void draw_block() {
 		
@@ -1165,7 +1165,7 @@
 	}
 
 	for (const auto &l : curBlock->notes) {
-		std::cout << l << '\n';
+		std::cout << "* " << l << '\n';
 	}
 	std::cout << '\n';
 ;
@@ -1184,6 +1184,40 @@
 		std::cout << (curBlock - curInput->blocks.begin() + 1);
 	}
 ;
+	}
+
+	void insert_before(
+		std::vector<std::string> &c,
+		std::vector<std::string>::iterator i
+	) {
+		
+	std::string line;
+	for (;;) {
+		std::getline(std::cin, line);
+		auto b = line.begin();
+		auto e = line.end();
+		while (b != e && *b <= ' ') { ++b; }
+		std::string t { b, e };
+		if (t.empty()) { continue; }
+		if (t == ".") { break; }
+		int d = i - c.begin();
+		c.insert(i, t);
+		i = c.begin() + (d + 1);
+	}
+	draw_block();
+;
+	}
+
+	bool valid_cur() {
+		if (curInput == inputs.end()) {
+			std::cerr << "! no file\n";
+			return false;
+		}
+		if (curBlock == curInput->blocks.end()) {
+			std::cerr << "! end\n";
+			return false;
+		}
+		return true;
 	}
 
 	int main(
@@ -1358,8 +1392,15 @@
 		) {
 			state = RS::notes;
 			
+	auto b { line.begin() };
+	auto e { line.end() };
+	for (;
+		b != e &&
+			(*b == '*' || *b == ' ');
+		++b
+	) {}
 	blocks.back().notes.push_back(
-		line
+		{ b, e }
 	);
 ;
 			break;
@@ -1889,15 +1930,8 @@
 	status.state = HtmlState::inSlide;
 	for (const auto &note : b.notes) {
 		
-	if (note[0] == '*') {
-		
 	auto end = note.end();
-	auto begin = note.begin() + 1;
-	while (
-		begin != end && *begin == ' '
-	) {
-		++begin;
-	}
+	auto begin = note.begin();
 
 	if (
 		status.state != HtmlState::inNotes
@@ -1916,13 +1950,6 @@
 	}
 	process_content(out, begin, end);
 	out << '\n';
-;
-	} else {
-		process_content(
-			out, note.begin(), note.end()
-		);
-		out << '\n';
-	}
 ;
 	}
 	
@@ -1977,15 +2004,8 @@
 ;
 		for (const auto &note : b.notes) {
 			
-	if (note[0] == '*') {
-		
 	auto end = note.end();
-	auto begin = note.begin() + 1;
-	while (
-		begin != end && *begin == ' '
-	) {
-		++begin;
-	}
+	auto begin = note.begin();
 
 	if (
 		status.state != HtmlState::inNotes
@@ -2004,13 +2024,6 @@
 	}
 	process_content(out, begin, end);
 	out << '\n';
-;
-	} else {
-		process_content(
-			out, note.begin(), note.end()
-		);
-		out << '\n';
-	}
 ;
 		}
 		
@@ -2151,7 +2164,7 @@
 			++curInput;
 			curBlock = curInput != inputs.end() ?
 				curInput->blocks.begin() :
-				std::vector<Block>::const_iterator {};
+				std::vector<Block>::iterator {};
 			draw_block();
 			continue;
 		}
@@ -2163,11 +2176,31 @@
 			--curInput;
 			curBlock = curInput != inputs.end() ?
 				curInput->blocks.begin() :
-				std::vector<Block>::const_iterator {};
+				std::vector<Block>::iterator {};
 			draw_block();
 			continue;
 		}
 		std::cerr << "! start\n";
+	}
+
+	if (cmd == "N" || cmd == "Note") {
+		if (valid_cur()) {
+			insert_before(
+				curBlock->notes,
+				curBlock->notes.end()
+			);
+		}
+		continue;
+	}
+
+	if (cmd == "A" || cmd == "Add") {
+		if (valid_cur()) {
+			insert_before(
+				curBlock->value,
+				curBlock->value.end()
+			);
+		}
+		continue;
 	}
 ;
 	}

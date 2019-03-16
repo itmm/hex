@@ -14,7 +14,8 @@
 <ul><li>
 Fragmente bilden einen gerichteten azyklischen Graph
 </li><li>
-Die Infix-Traversierung dieses Graphen bildet die generierten  Source-Code Dateien
+Die Infix-Traversierung dieses Graphen bildet die generierten
+  Source-Code Dateien
 </li></ul>
 </div>
 <div><div>
@@ -45,11 +46,13 @@ Fragmente sind global sichtbare Strukturen
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn  dieses an der aktuellen Stelle expandiert werden soll)
+Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
+  dieses an der aktuellen Stelle expandiert werden soll)
 </li><li>
 Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
 </li><li>
-Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird  zuerst das Fragment ausgegeben
+Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
+  zuerst das Fragment ausgegeben
 </li><li>
 So können die Bytes leicht erweitert werden
 </li></ul>
@@ -97,7 +100,8 @@ Auf die Bytes kann mit <code><span class="fn">str</span>()</code> nur lesend zug
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
 <ul><li>
-Beim Anfügen eines Zeichens werden Dateiname und erste Zeile  aktualisiert
+Beim Anfügen eines Zeichens werden Dateiname und erste Zeile
+  aktualisiert
 </li><li>
 Wenn sie noch nicht gesetzt sind
 </li></ul>
@@ -115,7 +119,8 @@ Wenn sie noch nicht gesetzt sind
 <span class="macro">@end(<span class="name">copy file and line</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn Dateiname oder erste Zeile nicht gesetzt sind, dann setzt die  Methode beide
+Wenn Dateiname oder erste Zeile nicht gesetzt sind, dann setzt die
+  Methode beide
 </li><li>
 Die letzte Zeile wird immer gesetzt
 </li></ul>
@@ -150,7 +155,8 @@ Bytes können direkt hinzugefügt werden
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
 <ul><li>
-Prüft ob Zeichen aus einer bestimmten Datei und Zeile an den Eintrag  angefügt werden können
+Prüft ob Zeichen aus einer bestimmten Datei und Zeile an den Eintrag
+  angefügt werden können
 </li></ul>
 </div>
 <div><div>
@@ -164,7 +170,8 @@ Prüft ob Zeichen aus einer bestimmten Datei und Zeile an den Eintrag  angefügt
 <span class="macro">@end(<span class="name">can add</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn sich die Dateinamen unterscheiden, können die Zeichen nicht  angefügt werden
+Wenn sich die Dateinamen unterscheiden, können die Zeichen nicht
+  angefügt werden
 </li></ul>
 </div>
 <div><div>
@@ -180,7 +187,8 @@ Wenn sich die Dateinamen unterscheiden, können die Zeichen nicht  angefügt wer
 <span class="macro">@end(<span class="name">can add</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn die letzte Zeile nicht zur neuen Zeile passt, können die Zeichen  nicht angefügt werden
+Wenn die letzte Zeile nicht zur neuen Zeile passt, können die Zeichen
+  nicht angefügt werden
 </li></ul>
 </div>
 <div><div>
@@ -219,7 +227,9 @@ Das Fragment legt die Einträge in einem Vektor ab
 <ul><li>
 Die Einträge eines Fragments werden in einem Vektor gesammelt
 </li><li>
-Das Fragment zählt wie häufig es mit <code>@<span class="var">put</span></code>, <code>@<span class="var">globexpand</span></code> und  <code>@<span class="var">multiple</span></code>, <code>@<span class="var">globmult</span></code> aufgerufen wurde, um Struktur-Fehler zu  erkennen
+Das Fragment zählt wie häufig es mit <code>@<span class="var">put</span></code>, <code>@<span class="var">globexpand</span></code> und
+  <code>@<span class="var">multiple</span></code>, <code>@<span class="var">globmult</span></code> aufgerufen wurde, um Struktur-Fehler zu
+  erkennen
 </li></ul>
 </div>
 </div>
@@ -343,7 +353,8 @@ Fragmente haben einen eigenes Unit-Test Fragment
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="var">testFragName</span></code> prüft, ob der Name korrekt in ein Fragment kopiert  wurde
+<code><span class="var">testFragName</span></code> prüft, ob der Name korrekt in ein Fragment kopiert
+  wurde
 </li></ul>
 </div>
 <div><div>
@@ -469,7 +480,8 @@ An diesen wird der Text angefügt
 <ul><li>
 Wenn es noch keine Einträge gibt, legt die Methode einen an
 </li><li>
-Wenn der letzte Eintrag unpassende Dateinamen oder Zeilennummern hat,  dann legt die Methode einen neuen Eintrag an
+Wenn der letzte Eintrag unpassende Dateinamen oder Zeilennummern hat,
+  dann legt die Methode einen neuen Eintrag an
 </li></ul>
 </div>
 <div><div>
@@ -502,7 +514,8 @@ An diesen wird das Zeichen angefügt
 <ul><li>
 Die <code><span class="fn">add</span></code>-Methode muss sicherstellen, dass keine Zykel entstehen
 </li><li>
-Da es die notwendigen Methoden noch nicht gibt, wird die Methode  außerhalb der Klasse definiert
+Da es die notwendigen Methoden noch nicht gibt, wird die Methode
+  außerhalb der Klasse definiert
 </li></ul>
 </div>
 <div><div>
@@ -518,13 +531,15 @@ Da es die notwendigen Methoden noch nicht gibt, wird die Methode  außerhalb der
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,  dass kein Zykel entsteht
+Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
+  dass kein Zykel entsteht
 </li><li>
 Ein Zykel liegt vor, wenn <code><span class="var">frag</span></code> gleich <code><span class="var">child</span></code> ist
 </li><li>
 Oder bereits direkt oder indirekt zu <code><span class="var">child</span></code> hinzugefügt wurde
 </li><li>
-Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag  verwendet
+Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
+  verwendet
 </li></ul>
 </div>
 <div><div>
@@ -672,7 +687,8 @@ Dann werden die Bytes des Eintrags ausgegeben
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der  Erwartung entspricht
+Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
+  Erwartung entspricht
 </li></ul>
 </div>
 <div><div>
@@ -713,7 +729,8 @@ Der Buffer muss die erwarteten Werte enthalten
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Zu Testzwecken kann eine Null-terminierte Zeichenkette hinzugefügt  werden
+Zu Testzwecken kann eine Null-terminierte Zeichenkette hinzugefügt
+  werden
 </li></ul>
 </div>
 <div><div>
@@ -776,7 +793,8 @@ Wenn das Fragment das gesuchte ist, dann wurde ein Zykel gefunden
 </li><li>
 Danach wird über alle Einträge gesucht
 </li><li>
-Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht  enthalten
+Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht
+  enthalten
 </li></ul>
 </div>
 <div><div>
@@ -788,7 +806,8 @@ Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht  enthalten
 <span class="macro">@end(<span class="name">avoid frag cycles</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht  bereits enthält
+Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht
+  bereits enthält
 </li></ul>
 </div>
 <div><div>
@@ -800,7 +819,8 @@ Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht  bereits 
 <span class="macro">@end(<span class="name">check cycle frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn der Container selbst das gesuchte Fragment ist, liefert die  Funktion <code><span class="num">true</span></code> zurück
+Wenn der Container selbst das gesuchte Fragment ist, liefert die
+  Funktion <code><span class="num">true</span></code> zurück
 </li></ul>
 </div>
 <div><div>
@@ -830,7 +850,8 @@ Damit wird der ganze Graph durchsucht
 <h1>Fragment-Kollektion</h1>
 </div>
 <ul><li>
-Kollektion von Fragmenten, die in mehreren Hierarchien organisiert  werden
+Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
+  werden
 </li></ul>
 </div>
 <div><div>

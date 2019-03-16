@@ -12,7 +12,8 @@
 <h1>Logging</h1>
 </div>
 <ul><li>
-Only if the condition is <code><span class="num">false</span></code> (or <code><span class="num">0</span></code>, or <code><span class="num">NULL</span></code>) something will be  logged
+Only if the condition is <code><span class="num">false</span></code> (or <code><span class="num">0</span></code>, or <code><span class="num">NULL</span></code>) something will be
+  logged
 </li><li>
 There are no log levels
 </li><li>
@@ -31,7 +32,8 @@ This normally terminates the running program
 <ul><li>
 <code><span class="type">std</span>::<span class="var">cerr</span></code> from <code><span class="str">&lt;iostream&gt;</span></code> is used to write log messages
 </li><li>
-A standard exception from <code><span class="str">&lt;exception&gt;</span></code> is used to indicate failed  conditions
+A standard exception from <code><span class="str">&lt;exception&gt;</span></code> is used to indicate failed
+  conditions
 </li></ul>
 </div>
 <div><div>
@@ -46,7 +48,8 @@ A standard exception from <code><span class="str">&lt;exception&gt;</span></code
 <span class="macro">@End(<span class="name">frag prereqs</span>)</span><br/>
 </code></div>
 <ul><li>
-The plain <code><span class="fn">ASSERT</span></code> macro does nothing if the condition evaluates  to <code><span class="num">true</span></code>
+The plain <code><span class="fn">ASSERT</span></code> macro does nothing if the condition evaluates
+  to <code><span class="num">true</span></code>
 </li><li>
 Otherwise the position of the line with the assertion will be written
 </li><li>
@@ -70,7 +73,8 @@ Then an exception is raised
 <span class="macro">@End(<span class="name">frag prereqs</span>)</span><br/>
 </code></div>
 <ul><li>
-The macro <code><span class="fn">ASSERT_MSG</span></code> has an additional argument that the macro  writes after the preamble
+The macro <code><span class="fn">ASSERT_MSG</span></code> has an additional argument that the macro
+  writes after the preamble
 </li><li>
 <code><span class="var">MSG</span></code> can be multiple parameters concatenated by <code>&lt;&lt;</code>
 </li></ul>
@@ -108,7 +112,8 @@ A simple newline terminates an error message
 <span class="macro">@end(<span class="name">throw</span>)</span><br/>
 </code></div>
 <ul><li>
-The macros throw a generic <code><span class="type">std</span>::<span class="var">exception</span></code> if the condition was not  met
+The macros throw a generic <code><span class="type">std</span>::<span class="var">exception</span></code> if the condition was not
+  met
 </li></ul>
 </div>
 </body>

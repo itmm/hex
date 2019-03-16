@@ -933,34 +933,14 @@
 
 ```
 @def(process note)
-	if (note[0] == '*') {
-		@put(process note line);
-	} else {
-		process_content(
-			out, note.begin(), note.end()
-		);
-		out << '\n';
-	}
-@end(process note)
-```
-* Notizen die mit `*` beginnen, müssen eine neue Notiz einleiten
-* Folge-Zeilen werden direkt ausgegeben
-
-```
-@def(process note line)
 	auto end = note.end();
-	auto begin = note.begin() + 1;
-	while (
-		begin != end && *begin == ' '
-	) {
-		++begin;
-	}
-@end(process note line)
+	auto begin = note.begin();
+@end(process note)
 ```
 * Die Funktion überspringt den Stern und folgende Leerzeichen
 
 ```
-@add(process note line)
+@add(process note)
 	if (
 		status.state != HtmlState::inNotes
 	) {
@@ -970,7 +950,7 @@
 	}
 	process_content(out, begin, end);
 	out << '\n';
-@end(process note line)
+@end(process note)
 ```
 * Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus
   gewechselt

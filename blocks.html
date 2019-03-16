@@ -233,8 +233,15 @@
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">got note</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">line</span>.<span class="fn">begin</span>() };<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">e</span> { <span class="var">line</span>.<span class="fn">end</span>() };<br/>
+<span class="in1"></span><span class="keyword">for</span> (;<br/>
+<span class="in2"></span><span class="var">b</span> != <span class="var">e</span> &amp;&amp;<br/>
+<span class="in3"></span>(*<span class="var">b</span> == <span class="str">'*'</span> || *<span class="var">b</span> == <span class="str">' '</span>);<br/>
+<span class="in2"></span>++<span class="var">b</span><br/>
+<span class="in1"></span>) {}<br/>
 <span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">push_back</span>(<br/>
-<span class="in2"></span><span class="var">line</span><br/>
+<span class="in2"></span>{ <span class="var">b</span>, <span class="var">e</span> }<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">got note</span>)</span><br/>
 </code></div>

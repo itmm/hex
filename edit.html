@@ -12,5 +12,84 @@
 <h1>Edit slides in place</h1>
 </div>
 </div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">insert_before</span>(<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; &amp;<span class="var">c</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt;::<span class="var">iterator</span> <span class="var">i</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">insert before</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">valid_cur</span>() {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> == <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! no file\n"</span>;<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curBlock</span> == <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! end\n"</span>;<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"N"</span> || <span class="var">cmd</span> == <span class="str">"Note"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">valid_cur</span>()) {<br/>
+<span class="in3"></span><span class="fn">insert_before</span>(<br/>
+<span class="in4"></span><span class="var">curBlock</span>-&gt;<span class="var">notes</span>,<br/>
+<span class="in4"></span><span class="var">curBlock</span>-&gt;<span class="var">notes</span>.<span class="fn">end</span>()<br/>
+<span class="in3"></span>);<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"A"</span> || <span class="var">cmd</span> == <span class="str">"Add"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">valid_cur</span>()) {<br/>
+<span class="in3"></span><span class="fn">insert_before</span>(<br/>
+<span class="in4"></span><span class="var">curBlock</span>-&gt;<span class="var">value</span>,<br/>
+<span class="in4"></span><span class="var">curBlock</span>-&gt;<span class="var">value</span>.<span class="fn">end</span>()<br/>
+<span class="in3"></span>);<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">insert before</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
+<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="fn">getline</span>(<span class="type">std</span>::<span class="var">cin</span>, <span class="var">line</span>);<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">b</span> = <span class="var">line</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">e</span> = <span class="var">line</span>.<span class="fn">end</span>();<br/>
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> &lt;= <span class="str">' '</span>) { ++<span class="var">b</span>; }<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">t</span> { <span class="var">b</span>, <span class="var">e</span> };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">t</span>.<span class="fn">empty</span>()) { <span class="keyword">continue</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">t</span> == <span class="str">"."</span>) { <span class="keyword">break</span>; }<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">d</span> = <span class="var">i</span> - <span class="var">c</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="var">c</span>.<span class="fn">insert</span>(<span class="var">i</span>, <span class="var">t</span>);<br/>
+<span class="in2"></span><span class="var">i</span> = <span class="var">c</span>.<span class="fn">begin</span>() + (<span class="var">d</span> + <span class="num">1</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="fn">draw_block</span>();<br/>
+<span class="macro">@end(<span class="name">insert before</span>)</span><br/>
+</code></div>
+</div>
 </body>
 </html>
