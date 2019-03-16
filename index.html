@@ -477,7 +477,9 @@ Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit
 <span class="macro">@def(<span class="name">process arguments</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">someFile</span> { <span class="num">false</span> };<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> { <span class="num">1</span> }; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">arg</span> { <span class="var">argv</span>[<span class="var">i</span>] };<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process argument</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process file argument</span>)</span>;<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="num">false</span>,<br/>
 <span class="in3"></span><span class="str">"unknown argument ["</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">argv</span>[<span class="var">i</span>] &lt;&lt; <span class="str">']'</span><br/>
@@ -497,7 +499,6 @@ Wenn sie nicht verwendet werden, bricht das Programm ab
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
 <span class="in2"></span><span class="str">"--css="</span><br/>
 <span class="in1"></span>};<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">arg</span> { <span class="var">argv</span>[<span class="var">i</span>] };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<br/>
 <span class="in2"></span><span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()<br/>
 <span class="in1"></span>) == <span class="var">prefix</span>) {<br/>
@@ -518,11 +519,13 @@ Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
 <span class="in2"></span><span class="str">"--limit="</span><br/>
 <span class="in1"></span>};<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">arg</span> { <span class="var">argv</span>[<span class="var">i</span>] };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span>.<span class="fn">substr</span>(<br/>
 <span class="in2"></span><span class="num">0</span>, <span class="var">prefix</span>.<span class="fn">length</span>()<br/>
 <span class="in1"></span>) == <span class="var">prefix</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">extract block limit</span>)</span>;<br/>
+<span class="in2"></span><span class="var">blockLimit</span> = <span class="type">std</span>::<span class="fn">stoi</span>(<br/>
+<span class="in3"></span><span class="var">arg</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">length</span>())<br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">process argument</span>)</span><br/>
 </code></div>
@@ -535,29 +538,13 @@ So können Teilabschnitte validiert werden
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">extract block limit</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">istringstream</span> <span class="var">iss</span> {<br/>
-<span class="in2"></span><span class="var">arg</span>.<span class="fn">substr</span>(<span class="var">prefix</span>.<span class="fn">length</span>())<br/>
-<span class="in1"></span>};<br/>
-<span class="in1"></span><span class="var">iss</span> &gt;&gt; <span class="var">blockLimit</span>;<br/>
-<span class="in1"></span><span class="keyword">continue</span>;<br/>
-<span class="macro">@end(<span class="name">extract block limit</span>)</span><br/>
-</code></div>
-<ul><li>
-Das Programm legt das Argument in einen Input-Stream
-</li><li>
-Und liest aus diesem eine Zahl
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">process argument</span>)</span><br/>
+<span class="macro">@def(<span class="name">process file argument</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
 <span class="in2"></span><span class="var">someFile</span> = <span class="num">true</span>;<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">process argument</span>)</span><br/>
+<span class="macro">@end(<span class="name">process file argument</span>)</span><br/>
 </code></div>
 <ul><li>
 Ansonsten wird das Argument als Pfad der <code>.<span class="var">x</span></code>-Datei interpretiert
@@ -1473,6 +1460,14 @@ Das Fragment wird in die entsprechende Datei geschrieben
 </code></div>
 <ul><li>
 Die Generierung liegt in einer eigenen Datei
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@inc(<span class="name"><a href="view.html">view.x</a></span>)</span><br/>
+</code></div>
+<ul><li>
+Interactive display of slides
 </li></ul>
 </div>
 </body>

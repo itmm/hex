@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Interactive Display of slides</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Interactive Display of slides</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Interactive Display of slides</h1>
+</div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">interactive</span> = <span class="num">false</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Input</span>&gt;::<span class="var">const_iterator</span> <span class="var">curInput</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Block</span>&gt;::<span class="var">const_iterator</span> <span class="var">curBlock</span>;<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">process argument</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">arg</span> == <span class="str">"-i"</span> ||<br/>
+<span class="in2"></span><span class="var">arg</span> == <span class="str">"--interactive"</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">interactive</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">process argument</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">main body</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">interactive</span>) {<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">interactive</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">main body</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">interactive</span>)</span><br/>
+<span class="in1"></span><span class="var">curInput</span> = <span class="var">inputs</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="var">curBlock</span> = <span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>() ?<br/>
+<span class="in2"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() :<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Block</span>&gt;::<span class="var">iterator</span> {};<br/>
+<span class="macro">@End(<span class="name">interactive</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">draw_block</span>() {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">draw block</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">interactive</span>)</span><br/>
+<span class="in1"></span><span class="fn">draw_block</span>();<br/>
+<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">run loop</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">interactive</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">draw_position</span>() {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">draw position</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">cmd</span>;<br/>
+<span class="in1"></span><span class="fn">draw_position</span>();<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"&gt; "</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cin</span> &gt;&gt; <span class="var">cmd</span>;<br/>
+<span class="macro">@end(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"q"</span> || <span class="var">cmd</span> == <span class="str">"quit"</span>) {<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"n"</span> || <span class="var">cmd</span> == <span class="str">"next"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">curBlock</span> != <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">end</span>()) {<br/>
+<span class="in4"></span>++<span class="var">curBlock</span>;<br/>
+<span class="in4"></span><span class="fn">draw_block</span>();<br/>
+<span class="in4"></span><span class="keyword">continue</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! end\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"p"</span> || <span class="var">cmd</span> == <span class="str">"prev"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">curBlock</span> != <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>()) {<br/>
+<span class="in4"></span>--<span class="var">curBlock</span>;<br/>
+<span class="in4"></span><span class="fn">draw_block</span>();<br/>
+<span class="in4"></span><span class="keyword">continue</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! start\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">draw block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curInput</span> == <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! no file\n"</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">draw block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span> == <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! end\n"</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">draw block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">value</span>) {<br/>
+<span class="in3"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="var">curBlock</span>-&gt;<span class="var">level</span>; ++<span class="var">i</span>) {<br/>
+<span class="in4"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">'#'</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">' '</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">draw block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"```\n"</span>;<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">value</span>) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"```\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">draw block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">value</span>) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">draw block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">notes</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">draw position</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curInput</span> == <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"no file:end\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw position</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">draw position</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">curInput</span>-&gt;<span class="fn">path</span>() &lt;&lt; <span class="str">':'</span>;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span> == <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"end"</span>;<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; (<span class="var">curBlock</span> - <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() + <span class="num">1</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">draw position</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"f"</span> || <span class="var">cmd</span> == <span class="str">"forward"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span>++<span class="var">curInput</span>;<br/>
+<span class="in3"></span><span class="var">curBlock</span> = <span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>() ?<br/>
+<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() :<br/>
+<span class="in4"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Block</span>&gt;::<span class="var">const_iterator</span> {};<br/>
+<span class="in3"></span><span class="fn">draw_block</span>();<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! end\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"b"</span> || <span class="var">cmd</span> == <span class="str">"backward"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">begin</span>()) {<br/>
+<span class="in3"></span>--<span class="var">curInput</span>;<br/>
+<span class="in3"></span><span class="var">curBlock</span> = <span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>() ?<br/>
+<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() :<br/>
+<span class="in4"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Block</span>&gt;::<span class="var">const_iterator</span> {};<br/>
+<span class="in3"></span><span class="fn">draw_block</span>();<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! start\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+</body>
+</html>

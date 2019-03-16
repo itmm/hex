@@ -243,7 +243,9 @@
 @def(process arguments)
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
+		std::string arg { argv[i] };
 		@put(process argument);
+		@put(process file argument);
 		ASSERT_MSG(false,
 			"unknown argument [" <<
 			argv[i] << ']'
@@ -259,7 +261,6 @@
 	static const std::string prefix {
 		"--css="
 	};
-	std::string arg { argv[i] };
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
@@ -277,11 +278,13 @@
 	static const std::string prefix {
 		"--limit="
 	};
-	std::string arg { argv[i] };
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
-		@put(extract block limit);
+		blockLimit = std::stoi(
+			arg.substr(prefix.length())
+		);
+		continue;
 	}
 } @end(process argument)
 ```
@@ -290,25 +293,13 @@
 * So können Teilabschnitte validiert werden
 
 ```
-@def(extract block limit)
-	std::istringstream iss {
-		arg.substr(prefix.length())
-	};
-	iss >> blockLimit;
-	continue;
-@end(extract block limit)
-```
-* Das Programm legt das Argument in einen Input-Stream
-* Und liest aus diesem eine Zahl
-
-```
-@add(process argument)
+@def(process file argument)
 	if (! someFile) {
 		inputs.push(argv[1]);
 		someFile = true;
 		continue;
 	}
-@end(process argument)
+@end(process file argument)
 ```
 * Ansonsten wird das Argument als Pfad der `.x`-Datei interpretiert
 * Aus dieser werden HTML-Slides und Source-Code generiert
@@ -1038,4 +1029,9 @@
 @inc(html.x)
 ```
 * Die Generierung liegt in einer eigenen Datei
+
+```
+@inc(view.x)
+```
+* Interactive display of slides
 

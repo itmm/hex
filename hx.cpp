@@ -1125,6 +1125,66 @@
 ;
 	}
 
+	bool interactive = false;
+	std::vector<Input>::const_iterator curInput;
+	std::vector<Block>::const_iterator curBlock;
+
+	void draw_block() {
+		
+	if (curInput == inputs.end()) {
+		std::cerr << "! no file\n";
+		return;
+	}
+
+	if (curBlock == curInput->blocks.end()) {
+		std::cerr << "! end\n";
+		return;
+	}
+
+	if (curBlock->state == RS::header) {
+		for (const auto &l : curBlock->value) {
+			for (int i = 0; i < curBlock->level; ++i) {
+				std::cout << '#';
+			}
+			std::cout << ' ' << l << '\n';
+		}
+	}
+
+	if (curBlock->state == RS::code) {
+		std::cout << "```\n";
+		for (const auto &l : curBlock->value) {
+			std::cout << l << '\n';
+		}
+		std::cout << "```\n";
+	}
+
+	if (curBlock->state == RS::para) {
+		for (const auto &l : curBlock->value) {
+			std::cout << l << '\n';
+		}
+	}
+
+	for (const auto &l : curBlock->notes) {
+		std::cout << l << '\n';
+	}
+;
+	}
+
+	void draw_position() {
+		
+	if (curInput == inputs.end()) {
+		std::cout << "no file:end\n";
+	}
+
+	std::cout << curInput->path() << ':';
+	if (curBlock == curInput->blocks.end()) {
+		std::cout << "end";
+	} else {
+		std::cout << (curBlock - curInput->blocks.begin() + 1);
+	}
+;
+	}
+
 	int main(
 		int argc,
 		const char **argv
@@ -1170,11 +1230,11 @@
 	
 	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
+		std::string arg { argv[i] };
 		 {
 	static const std::string prefix {
 		"--css="
 	};
-	std::string arg { argv[i] };
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
@@ -1186,19 +1246,24 @@
 	static const std::string prefix {
 		"--limit="
 	};
-	std::string arg { argv[i] };
 	if (arg.substr(
 		0, prefix.length()
 	) == prefix) {
-		
-	std::istringstream iss {
-		arg.substr(prefix.length())
-	};
-	iss >> blockLimit;
-	continue;
-;
+		blockLimit = std::stoi(
+			arg.substr(prefix.length())
+		);
+		continue;
 	}
 } 
+	if (
+		arg == "-i" ||
+		arg == "--interactive"
+	) {
+		interactive = true;
+		continue;
+	}
+;
+		
 	if (! someFile) {
 		inputs.push(argv[1]);
 		someFile = true;
@@ -2020,5 +2085,74 @@
 ;
 	}
 ;
+
+	if (interactive) {
+		
+	curInput = inputs.begin();
+	curBlock = curInput != inputs.end() ?
+		curInput->blocks.begin() :
+		std::vector<Block>::iterator {};
+
+	draw_block();
+	for (;;) {
+		
+	std::string cmd;
+	draw_position();
+	std::cout << "> ";
+	std::cin >> cmd;
+
+	if (cmd == "q" || cmd == "quit") {
+		break;
+	}
+
+	if (cmd == "n" || cmd == "next") {
+		if (curInput != inputs.end()) {
+			if (curBlock != curInput->blocks.end()) {
+				++curBlock;
+				draw_block();
+				continue;
+			}
+		}
+		std::cerr << "! end\n";
+	}
+
+	if (cmd == "p" || cmd == "prev") {
+		if (curInput != inputs.end()) {
+			if (curBlock != curInput->blocks.begin()) {
+				--curBlock;
+				draw_block();
+				continue;
+			}
+		}
+		std::cerr << "! start\n";
+	}
+
+	if (cmd == "f" || cmd == "forward") {
+		if (curInput != inputs.end()) {
+			++curInput;
+			curBlock = curInput != inputs.end() ?
+				curInput->blocks.begin() :
+				std::vector<Block>::const_iterator {};
+			draw_block();
+			continue;
+		}
+		std::cerr << "! end\n";
+	}
+
+	if (cmd == "b" || cmd == "backward") {
+		if (curInput != inputs.begin()) {
+			--curInput;
+			curBlock = curInput != inputs.end() ?
+				curInput->blocks.begin() :
+				std::vector<Block>::const_iterator {};
+			draw_block();
+			continue;
+		}
+		std::cerr << "! start\n";
+	}
+;
+	}
+;
+	}
 
 	}
