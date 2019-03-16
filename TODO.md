@@ -16,5 +16,10 @@
 * Aufteilung in Dateien nach Entstehung, nicht nach Themen
 * Links formatieren
 * @inc außerhalb von Code-Blöcken für HTML
-* `hx -i` for interactive viewer (later extended to IDE)
-
+* save in editor
+* line ranges in editor
+* column break on save
+* search in viewer/editor
+* git in editor
+* alternatively ncurses in viewer/editor
+* quiet mode in editor for batch processing
