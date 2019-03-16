@@ -210,7 +210,7 @@
 <span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span><br/>
 <span class="in2"></span>) {<br/>
 <span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">notes</span>;<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">got note</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">got note</span>)</span>;<br/>
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
@@ -224,7 +224,7 @@
 <span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">' '</span> &amp;&amp;<br/>
 <span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">got note</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">add note</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
@@ -237,6 +237,14 @@
 <span class="in2"></span><span class="var">line</span><br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">got note</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">add note</span>)</span><br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">back</span>() +=<br/>
+<span class="in2"></span><span class="var">line</span>;<br/>
+<span class="macro">@end(<span class="name">add note</span>)</span><br/>
 </code></div>
 </div>
 <div><div>
@@ -267,9 +275,12 @@
 <code>
 <span class="macro">@def(<span class="name">create para</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span>) {<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in3"></span><span class="var">RS</span>::<span class="var">para</span>, {}, {}, <span class="num">0</span><br/>
-<span class="in2"></span>});<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() || <span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">para</span>) {<br/>
+<span class="in3"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in4"></span><span class="var">RS</span>::<span class="var">para</span>, {}, {}, <span class="num">0</span><br/>
+<span class="in3"></span>});<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">create para</span>)</span><br/>
 </code></div>
@@ -277,9 +288,10 @@
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">add para</span>)</span><br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<br/>
-<span class="in2"></span><span class="var">line</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">back</span>() +=<br/>
+<span class="in3"></span><span class="str">" "</span> + <span class="var">line</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">add para</span>)</span><br/>
 </code></div>
 </div>

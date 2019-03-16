@@ -1146,7 +1146,7 @@
 			for (int i = 0; i < curBlock->level; ++i) {
 				std::cout << '#';
 			}
-			std::cout << ' ' << l << '\n';
+			std::cout << ' ' << l << "\n\n";
 		}
 	}
 
@@ -1155,18 +1155,19 @@
 		for (const auto &l : curBlock->value) {
 			std::cout << l << '\n';
 		}
-		std::cout << "```\n";
+		std::cout << "```\n\n";
 	}
 
 	if (curBlock->state == RS::para) {
 		for (const auto &l : curBlock->value) {
-			std::cout << l << '\n';
+			std::cout << l << "\n\n";
 		}
 	}
 
 	for (const auto &l : curBlock->notes) {
 		std::cout << l << '\n';
 	}
+	std::cout << '\n';
 ;
 	}
 
@@ -1370,9 +1371,8 @@
 		state == RS::notes
 	) {
 		
-	blocks.back().notes.push_back(
-		line
-	);
+	blocks.back().notes.back() +=
+		line;
 ;
 		break;
 	}
@@ -1384,15 +1384,19 @@
 		) {
 			
 	if (state == RS::new_element) {
-		blocks.push_back({
-			RS::para, {}, {}, 0
-		});
+		if (blocks.empty() || blocks.back().state != RS::para) {
+			blocks.push_back({
+				RS::para, {}, {}, 0
+			});
+		}
+		blocks.back().value.push_back(line);
 	}
 ;
 			
-	blocks.back().value.push_back(
-		line
-	);
+	if (state == RS::para) {
+		blocks.back().value.back() +=
+			" " + line;
+	}
 ;
 			state = RS::para;
 			break;
@@ -2046,6 +2050,21 @@
 		out, para.begin(), para.end()
 	);
 	out << '\n';
+;
+			
+	if (
+		status.state == HtmlState::inNotes
+	) {
+		out << "</li></ul>\n";
+	}
+
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
+	}
 ;
 		}
 		

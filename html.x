@@ -128,6 +128,7 @@
 	if (b.state == RS::para) {
 		for (const auto &para : b.value) {
 			@put(process para);
+			@mul(close specials);
 		}
 		@mul(close specials);
 	}

@@ -134,7 +134,7 @@
 			for (int i = 0; i < curBlock->level; ++i) {
 				std::cout << '#';
 			}
-			std::cout << ' ' << l << '\n';
+			std::cout << ' ' << l << "\n\n";
 		}
 	}
 @end(draw block)
@@ -147,7 +147,7 @@
 		for (const auto &l : curBlock->value) {
 			std::cout << l << '\n';
 		}
-		std::cout << "```\n";
+		std::cout << "```\n\n";
 	}
 @end(draw block)
 ```
@@ -156,7 +156,7 @@
 @add(draw block)
 	if (curBlock->state == RS::para) {
 		for (const auto &l : curBlock->value) {
-			std::cout << l << '\n';
+			std::cout << l << "\n\n";
 		}
 	}
 @end(draw block)
@@ -167,6 +167,7 @@
 	for (const auto &l : curBlock->notes) {
 		std::cout << l << '\n';
 	}
+	std::cout << '\n';
 @end(draw block)
 ```
 

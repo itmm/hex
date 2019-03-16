@@ -160,7 +160,7 @@
 <span class="in3"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="var">curBlock</span>-&gt;<span class="var">level</span>; ++<span class="var">i</span>) {<br/>
 <span class="in4"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">'#'</span>;<br/>
 <span class="in3"></span>}<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">' '</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">' '</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">"\n\n"</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">draw block</span>)</span><br/>
@@ -174,7 +174,7 @@
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">value</span>) {<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"```\n"</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"```\n\n"</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">draw block</span>)</span><br/>
 </code></div>
@@ -184,7 +184,7 @@
 <span class="macro">@add(<span class="name">draw block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">value</span>) {<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">"\n\n"</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">draw block</span>)</span><br/>
@@ -196,6 +196,7 @@
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">l</span> : <span class="var">curBlock</span>-&gt;<span class="var">notes</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">l</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="macro">@end(<span class="name">draw block</span>)</span><br/>
 </code></div>
 </div>

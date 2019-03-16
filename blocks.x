@@ -178,7 +178,7 @@
 			state == RS::notes
 		) {
 			state = RS::notes;
-			@mul(got note);
+			@put(got note);
 			break;
 		}
 	}
@@ -191,7 +191,7 @@
 		line[0] == ' ' &&
 		state == RS::notes
 	) {
-		@mul(got note);
+		@put(add note);
 		break;
 	}
 @end(states without newlines)
@@ -203,6 +203,13 @@
 		line
 	);
 @end(got note)
+```
+
+```
+@def(add note)
+	blocks.back().notes.back() +=
+		line;
+@end(add note)
 ```
 
 ```
@@ -230,17 +237,21 @@
 ```
 @def(create para)
 	if (state == RS::new_element) {
-		blocks.push_back({
-			RS::para, {}, {}, 0
-		});
+		if (blocks.empty() || blocks.back().state != RS::para) {
+			blocks.push_back({
+				RS::para, {}, {}, 0
+			});
+		}
+		blocks.back().value.push_back(line);
 	}
 @end(create para)
 ```
 
 ```
 @def(add para)
-	blocks.back().value.push_back(
-		line
-	);
+	if (state == RS::para) {
+		blocks.back().value.back() +=
+			" " + line;
+	}
 @end(add para)
 ```
