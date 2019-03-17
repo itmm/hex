@@ -330,7 +330,8 @@
 @end(frag methods)
 ```
 * Wenn der Text leer ist, fügt die Methode nichts an
-* Ansonsten stellt die Methode sicher, dass der letzte Eintrag valide ist
+* Ansonsten stellt die Methode sicher, dass der letzte Eintrag valide
+  ist
 * An diesen wird der Text angefügt
 
 ```
@@ -387,8 +388,8 @@
 	}
 @end(define frag)
 ```
-* Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt werden,
-  dass kein Zykel entsteht
+* Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt
+  werden,  dass kein Zykel entsteht
 * Ein Zykel liegt vor, wenn `frag` gleich `child` ist
 * Oder bereits direkt oder indirekt zu `child` hinzugefügt wurde
 * Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
@@ -634,4 +635,3 @@
 ```
 * Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
 * Alle Felder müssen mit `nullptr` initialisiert werden
-

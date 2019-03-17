@@ -7,8 +7,8 @@
 * Have fun!
 
 ## What is `hx`?
-* `hx` is a program that parses a `x`-document and extracts source
-  code or an executable program out of it
+* `hx` is a program that parses a `x`-document and extracts source  code
+  or an executable program out of it
 * Think of it as a very powerful macro processor that combines, extends
   and orders small fragments of code
 * But also it generates a HTML documentation like the one you are
@@ -189,7 +189,6 @@
 
 # WORKING HERE
 
-
 ```
 @inc(log.x)
 ```
@@ -198,8 +197,8 @@
 # Fragmente
 * Fragmenten können während des Parsens erweitert, ersetzt und
   angewendet werden
-* Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren ist
-  die Möglichkeit, Fragmente vor der Definition zu verwenden
+* Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren
+  ist  die Möglichkeit, Fragmente vor der Definition zu verwenden
 * Und Fragment an mehreren Stellen zu erweitern
 
 ```
@@ -236,8 +235,8 @@
 	int blockLimit = -1;
 @end(global elements)
 ```
-* Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit
-  diesem Parameter limitiert werden
+* Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit  diesem
+  Parameter limitiert werden
 
 ```
 @def(process arguments)
@@ -326,7 +325,8 @@
 @end(global elements)
 ```
 * Die Anwendung verwendet den String-Iterator an vielen Stellen
-* Daher definiert sie eine Abkürzung, damit die Folien nicht überlaufen
+* Daher definiert sie eine Abkürzung, damit die Folien nicht
+  überlaufen
 
 ```
 @add(global elements)
@@ -364,7 +364,6 @@
 * Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
 * Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
   schon das erste Zeichen ein `EOF` ist)
-
 
 ```
 @Def(additional read vars)
@@ -467,7 +466,6 @@
 * Besondere Makros werden zuerst ausgewertet
 * Wenn diese Auswertung nicht greift, wird die Standard-Expandierung
   verwendet
-
 
 ```
 @add(global elements)
@@ -609,7 +607,8 @@
 @end(do macro)
 ```
 * Bei einem `@put` wird das Fragment gesucht und eingebunden
-* Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu werden
+* Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu
+  werden
 
 ```
 @def(check frag ex. count)
@@ -767,8 +766,8 @@
 	}
 @end(do macro)
 ```
-* Bei einem `@Put` wird das Fragment in den umschließenden
-  `FragMap`s gesucht
+* Bei einem `@Put` wird das Fragment in den umschließenden  `FragMap`s
+  gesucht
 
 ```
 @add(do macro)
@@ -855,8 +854,8 @@
 @end(do macro)
 ```
 * Der `@magic`-Befehl erzeugt einen Hash-Wert
-* Der sich aus dem Dateinamen und dem Argument des Befehls
-  zusammen setzt
+* Der sich aus dem Dateinamen und dem Argument des Befehls  zusammen
+  setzt
 
 ```
 @def(process magic frag)
@@ -898,8 +897,8 @@
 ```
 * Fragmente, die mit `file:` beginnen, werden in die entsprechenden
   Dateien rausgeschrieben
-* Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft expandiert
-  wurden
+* Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft
+  expandiert  wurden
 
 ```
 @add(serialize fragments)
@@ -1055,4 +1054,3 @@
 ```
 @inc(add.x)
 ```
-

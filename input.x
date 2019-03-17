@@ -8,7 +8,6 @@
 ```
 * `vector` ist ein Container für Source-Dateien
 
-
 ```
 @Add(input prereqs)
 	FragMap root;
@@ -16,7 +15,6 @@
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
   angelegt
-
 
 ```
 @Add(inputs elements)
@@ -59,12 +57,12 @@
 * Das Verschieben der Ownership muss aber explizit erfolgen
 
 # Nächste Zeile
-* Die Funktion `@f(read_line)` liest die nächste Zeile aus der aktuellen
-  Datei
+* Die Funktion `@f(read_line)` liest die nächste Zeile aus der
+  aktuellen  Datei
 * Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
   Stapel der offenen Dateien geholt
-* Erst wenn die letzte Datei fertig gelesen wurde, wird `false`
-  zurück geliefert
+* Erst wenn die letzte Datei fertig gelesen wurde, wird `false`  zurück
+  geliefert
 
 ```
 @Add(inputs elements)
@@ -94,7 +92,8 @@
 
 # Lokale Fragmente
 * Jede Datei hat eine eigene Fragment-Kollektion
-* Die Kollektionen bereits offener Dateien werden hierarchisch integriert
+* Die Kollektionen bereits offener Dateien werden hierarchisch
+  integriert
 
 ```
 @Add(input elements)

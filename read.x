@@ -80,8 +80,8 @@
 	Inputs inputs;
 @end(globals)
 ```
-* `inputs` enthält neben der gerade offenen Datei auch alle Dateien, die
-  noch prozessiert werden müssen
+* `inputs` enthält neben der gerade offenen Datei auch alle Dateien,
+  die  noch prozessiert werden müssen
 * Und alle bereits gelesenen Dateien
 
 ```
@@ -127,7 +127,6 @@
 * A bunch of fragments make room for later extensions
 * They are declared global, so they can be modified in different
   `x`-files
-
 
 ```
 @def(inputs prereqs)
@@ -310,4 +309,3 @@
 	}
 @end(save open input)
 ```
-

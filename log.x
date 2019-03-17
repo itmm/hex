@@ -72,4 +72,3 @@
 ```
 * The macros throw a generic `std::exception` if the condition was not
   met
-

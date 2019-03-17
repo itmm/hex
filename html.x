@@ -364,8 +364,7 @@
 	}
 @end(write from in to out)
 ```
-* Am Ende der Datei schließt die Funktion
-  die HTML-Tags
+* Am Ende der Datei schließt die Funktion  die HTML-Tags
 
 ```
 @def(process code)
@@ -438,8 +437,8 @@
 	}
 @end(process string)
 ```
-* Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie angefangen
-  hat
+* Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie
+  angefangen  hat
 * Wenn dieses nicht durch einen Backslash escaped ist
 
 ```
@@ -466,8 +465,8 @@
 	begin = w;
 @end(process string)
 ```
-* Die Funktion gibt die Zeichenkette als `<span>` mit der Klasse `@s(str)`
-  aus
+* Die Funktion gibt die Zeichenkette als `<span>` mit der Klasse
+  `@s(str)`  aus
 
 ```
 @add(process code ch)
@@ -1104,4 +1103,3 @@
 ```
 * Am Anfang wird ein Absatz geöffnet
 * Danach gibt `hex` die Zeilen aus
-

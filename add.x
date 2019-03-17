@@ -1,4 +1,8 @@
 # Adding blocks in editor
+* Define commands to add a header, code block or paragraph block after
+  the current slide
+* When reading again `hx` will merge continuous paragraphs into one
+  block
 
 ```
 @Add(global elements)
