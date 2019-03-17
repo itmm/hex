@@ -17,6 +17,11 @@
 	std::ofstream out {
 		cur.path().c_str()
 	};
+@end(write cur)
+```
+
+```
+@add(write cur)
 	bool first = true;
 	for (const auto &b : cur.blocks) {
 		if (first) {

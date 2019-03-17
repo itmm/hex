@@ -116,8 +116,8 @@
 
 ```
 @def(duplicate)
-	int i = curInput->blocks.begin() -
-		curBlock;
+	int i = curBlock -
+		curInput->blocks.begin();
 	curInput->blocks.insert(
 		curBlock, *curBlock
 	);

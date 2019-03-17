@@ -33,6 +33,12 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="var">out</span> {<br/>
 <span class="in2"></span><span class="var">cur</span>.<span class="fn">path</span>().<span class="fn">c_str</span>()<br/>
 <span class="in1"></span>};<br/>
+<span class="macro">@end(<span class="name">write cur</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">write cur</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">first</span> = <span class="num">true</span>;<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">b</span> : <span class="var">cur</span>.<span class="var">blocks</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">first</span>) {<br/>

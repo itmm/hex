@@ -2554,6 +2554,7 @@
 	std::ofstream out {
 		cur.path().c_str()
 	};
+
 	bool first = true;
 	for (const auto &b : cur.blocks) {
 		if (first) {
@@ -2634,8 +2635,8 @@
 				curInput->blocks.end()
 			) {
 				
-	int i = curInput->blocks.begin() -
-		curBlock;
+	int i = curBlock -
+		curInput->blocks.begin();
 	curInput->blocks.insert(
 		curBlock, *curBlock
 	);
