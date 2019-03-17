@@ -1393,6 +1393,41 @@
 		return true;
 	}
 
+	std::string split(
+		std::string &s, int width
+	) {
+		auto b { s.begin() };
+		auto e { s.end() };
+		while (b != e && *b == ' ') { ++b; }
+		auto c = b;
+		while (c != e) {
+			auto t = c;
+			while (t != e && *t == ' ') { ++t; }
+			while (t != e && *t != ' ') { ++t; }
+			if (c == b || t - b <= width) {
+				c = t;
+			} else {
+				break;
+			}
+		}
+		std::string res { b, c };
+		s.erase(s.begin(), c);
+		return res;
+	}
+
+	void multi_write(
+		std::ofstream &out,
+		std::string str,
+		std::string first_in,
+		const std::string &other_in
+	) {
+		while (! str.empty()) {
+			std::string p = split(str, 72 - first_in.size());
+			out << first_in << p << '\n';
+			first_in = other_in;
+		}
+	}
+
 	int main(
 		int argc,
 		const char **argv
@@ -2481,6 +2516,71 @@
 				prefix,
 				curBlock->value
 			);
+		}
+		continue;
+	}
+
+	if (cmd == "W" || cmd == "Write") {
+		for (const auto &cur : inputs) {
+			
+	std::ofstream out {
+		cur.path().c_str()
+	};
+	bool first = true;
+	for (const auto &b : cur.blocks) {
+		if (first) {
+			first = false;
+		} else { out << '\n'; }
+		switch (b.state) {
+			
+	case RS::header: {
+		
+	for (const auto &n : b.value) {
+		for (
+			int i = 0; i < b.level; ++i
+		) {
+			out << '#';
+		}
+		out << ' ';
+		out << n << '\n';
+	}
+;
+		break;
+	}
+
+	case RS::code: {
+		
+	out << "```\n";
+	for (const auto &n: b.value) {
+		out << n << '\n';
+	}
+	out << "```\n";
+;
+		break;
+	}
+
+	case RS::para: {
+		
+	bool first = true;
+	for (const auto &n: b.value) {
+		if (first) {
+			first = false;
+		} else { out << '\n'; }
+		multi_write(out, n, {}, {});
+	}
+;
+		break;
+	}
+;
+			default: ;
+		}
+		
+	for (const auto &n: b.notes) {
+		multi_write(out, n, "* ", "  ");
+	}
+;
+	}
+;
 		}
 		continue;
 	}

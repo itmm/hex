@@ -1048,3 +1048,7 @@
 @inc(range.x)
 ```
 
+```
+@inc(write.x)
+```
+
