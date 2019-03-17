@@ -1,4 +1,5 @@
 # Write all `x`-files
+* Replace all read `x`-files with the current content
 
 ```
 @Add(run loop)

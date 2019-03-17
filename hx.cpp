@@ -1431,12 +1431,24 @@
 	void add_block(Read_State state) {
 		
 	if (curInput != inputs.end()) {
-		if (curBlock != curInput->blocks.end()) {
-			++curBlock;
-		}
-		int i = curBlock - curInput->blocks.begin();
-		curInput->blocks.insert(curBlock, { state, { "REPLACE" }, {} });
-		curBlock = curInput->blocks.begin() + i;
+		
+	if (
+		curBlock !=
+			curInput->blocks.end()
+	) {
+		++curBlock;
+	}
+;
+		int i = curBlock -
+			curInput->blocks.begin();
+		
+	curInput->blocks.insert(
+		curBlock,
+		{ state, { "REPLACE" }, {} }
+	);
+;
+		curBlock =
+			curInput->blocks.begin() + i;
 	} else {
 		std::cerr << "! no file\n";
 	}
