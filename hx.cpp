@@ -1207,7 +1207,7 @@
 	) const {
 		int res {};
 		
-	if (empty()) {
+	if (*this) {
 		res = cur;
 	} else {
 		res = _line;
@@ -1219,7 +1219,7 @@
 		return res;
 	}
 
-	bool empty() const {
+	operator bool() const {
 		return _line < 0 && ! _relative;
 	}
 
@@ -1257,16 +1257,86 @@
 	};
 
 	
-	Line line;
+	class Range {
+		public:
+			
+	Line prev() {
+		return _prev ? _last: _prev;
+	}
+
+	Line last() {
+		return _last;
+	}
+
+	Range &operator<<(const Line &l) {
+		_prev = _last;
+		_last = l;
+		return *this;
+	}
+
+	operator bool() {
+		return _last;
+	}
+;
+		private:
+			Line _prev;
+			Line _last;
+	};
+;
+	
+	Range range;
 ;
 
 	int get_number(std::string &s) {
 		int res = 0;
-		while (! s.empty() && isdigit(s[0])) {
+		while (
+			! s.empty() && isdigit(s[0])
+		) {
 			res = res * 10 + s[0] - '0';
 			s.erase(0, 1);
 		}
 		return res;
+	}
+
+	Line get_line(std::string &s) {
+		Line line {};
+		do {
+			
+	if (s[0] == '.') {
+		s.erase(0, 1);
+		line = Line::relative(0);
+		break;
+	}
+
+	if (s[0] == '+') {
+		s.erase(0, 1);
+		int n = get_number(s);
+		line = Line::relative(n);
+		break;
+	}
+
+	if (s[0] == '-') {
+		s.erase(0, 1);
+		int n = -get_number(s);
+		line = Line::relative(n);
+		break;
+	}
+
+	if (s[0] == '$') {
+		line = Line::end();
+		s.erase(0, 1);
+		continue;
+	}
+
+	if (isdigit(s[0])) {
+		int n = get_number(s);
+		line = Line::line(n);
+		continue;
+	}
+;
+		} while (false);
+		trim(s);
+		return line;
 	}
 
 	void insert_before(
@@ -1276,17 +1346,27 @@
 		
 	int next = c.size();
 	
-	if (! line.empty()) {
-		next = line(
-			Line::max,
-			c.size() + 1
+	if (! range) {
+		next = range.last()(
+			Line::max, c.size() + 1
 		) - 1;
 		if (next < 0) { next = 0; }
+		int p = range.prev()(
+			Line::max, c.size() + 1
+		) - 1;
+		if (p < 0) { p = 0; }
+		if (p < next) {
+			c.erase(
+				c.begin() + p,
+				c.begin() + next
+			);
+			next = p;
+		}
 	}
 ;
 	std::string l;
 	for (;;) {
-		std::cout << prefix << ' ' << next << "? ";
+		std::cout << prefix << ' ' << (next + 1) << "? ";
 		std::getline(std::cin, l);
 		auto b = l.begin();
 		auto e = l.end();
@@ -1354,13 +1434,13 @@
 } ;
 
 	
-	ASSERT(Line {}.empty());
-	ASSERT(! Line::begin().empty());
-	ASSERT(! Line::end().empty());
-	ASSERT(! Line::end().empty());
-	ASSERT(! Line::line(0).empty());
-	ASSERT(! Line::relative(0).empty());
-	ASSERT(! Line::relative(-2).empty());
+	ASSERT(Line {});
+	ASSERT(! Line::begin());
+	ASSERT(! Line::end());
+	ASSERT(! Line::end());
+	ASSERT(! Line::line(0));
+	ASSERT(! Line::relative(0));
+	ASSERT(! Line::relative(-2));
 
 	ASSERT(Line {}(5, 10) == 5);
 	ASSERT(Line::begin()(5, 10) == 0);
@@ -1382,7 +1462,22 @@
 	ASSERT(
 		Line::relative(-7)(5, 10) == 0
 	);
-;
+ {
+	std::string f = "+3";
+	ASSERT(
+		get_line(f)(5, 10) == 8
+	);
+}  {
+	std::string f = ".";
+	ASSERT(
+		get_line(f)(5, 10) == 5
+	);
+}  {
+	std::string f = "$";
+	ASSERT(
+		get_line(f)(5, 10) == 10 
+	);
+} ;
 ;
 	#endif
 
@@ -2259,26 +2354,12 @@
 	trim(cmd);
 	if (cmd.empty()) { continue; }
 	
-	line = Line {};
-	if (cmd[0] == '.') {
-		line = Line::relative(0);
+	range = Range {};
+	range << get_line(cmd);
+	if (! cmd.empty() && cmd[0] == ',') {
 		cmd.erase(0, 1);
-	} else if (cmd[0] == '+') {
-		cmd.erase(0, 1);
-		int n = get_number(cmd);
-		line = Line::relative(n);
-	} else if (cmd[0] == '-') {
-		cmd.erase(0, 1);
-		int n = -get_number(cmd);
-		line = Line::relative(n);
-	} else if (cmd[0] == '$') {
-		line = Line::end();
-		cmd.erase(0, 1);
-	} else if (isdigit(cmd[0])) {
-		int n = get_number(cmd);
-		line = Line::line(n);
+		range << get_line(cmd);
 	}
-	trim(cmd);
 ;
 
 	if (cmd == "q" || cmd == "quit") {
@@ -2292,8 +2373,8 @@
 				++next;
 			}
 			
-	if (! line.empty()) {
-		next = line(
+	if (! range) {
+		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
 		) - 1;
@@ -2314,8 +2395,8 @@
 				--next;
 			}
 			
-	if (! line.empty()) {
-		next = line(
+	if (! range) {
+		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
 		) - 1;
@@ -2335,8 +2416,8 @@
 			++next;
 		}
 		
-	if (! line.empty()) {
-		next = line(
+	if (! range) {
+		next = range.last()(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
 		) - 1;
@@ -2357,8 +2438,8 @@
 			--next;
 		}
 		
-	if (! line.empty()) {
-		next = line(
+	if (! range) {
+		next = range.last()(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
 		) - 1;

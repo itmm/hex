@@ -89,7 +89,7 @@
 <span class="in1"></span><span class="macro">@Put(<span class="name">do str range</span>)</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">l</span>;<br/>
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">prefix</span> &lt;&lt; <span class="str">' '</span> &lt;&lt; <span class="var">next</span> &lt;&lt; <span class="str">"? "</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">prefix</span> &lt;&lt; <span class="str">' '</span> &lt;&lt; (<span class="var">next</span> + <span class="num">1</span>) &lt;&lt; <span class="str">"? "</span>;<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="fn">getline</span>(<span class="type">std</span>::<span class="var">cin</span>, <span class="var">l</span>);<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">b</span> = <span class="var">l</span>.<span class="fn">begin</span>();<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">e</span> = <span class="var">l</span>.<span class="fn">end</span>();<br/>

@@ -72,7 +72,7 @@
 	@Put(do str range);
 	std::string l;
 	for (;;) {
-		std::cout << prefix << ' ' << next << "? ";
+		std::cout << prefix << ' ' << (next + 1) << "? ";
 		std::getline(std::cin, l);
 		auto b = l.begin();
 		auto e = l.end();

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Pair of lines</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Pair of lines</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Pair of lines</h1>
+</div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">range prereqs</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Range</span> {<br/>
+<span class="in2"></span><span class="keyword">public</span>:<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">range elements</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">private</span>:<br/>
+<span class="in3"></span><span class="type">Line</span> <span class="var">_prev</span>;<br/>
+<span class="in3"></span><span class="type">Line</span> <span class="var">_last</span>;<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@End(<span class="name">range prereqs</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">range elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Line</span> <span class="fn">prev</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_prev</span> ? <span class="var">_last</span>: <span class="var">_prev</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">range elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">range elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Line</span> <span class="fn">last</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_last</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">range elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">range elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Range</span> &amp;<span class="var">operator</span>&lt;&lt;(<span class="type">const</span> <span class="type">Line</span> &amp;<span class="var">l</span>) {<br/>
+<span class="in2"></span><span class="var">_prev</span> = <span class="var">_last</span>;<br/>
+<span class="in2"></span><span class="var">_last</span> = <span class="var">l</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">range elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">range elements</span>)</span><br/>
+<span class="in1"></span><span class="var">operator</span> <span class="fn">bool</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_last</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">range elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">range vars</span>)</span><br/>
+<span class="in1"></span><span class="type">Range</span> <span class="var">range</span>;<br/>
+<span class="macro">@End(<span class="name">range vars</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Rep(<span class="name">do range</span>)</span><br/>
+<span class="in1"></span><span class="var">range</span> = <span class="type">Range</span> {};<br/>
+<span class="in1"></span><span class="var">range</span> &lt;&lt; <span class="fn">get_line</span>(<span class="var">cmd</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">cmd</span>.<span class="fn">empty</span>() &amp;&amp; <span class="var">cmd</span>[<span class="num">0</span>] == <span class="str">','</span>) {<br/>
+<span class="in2"></span><span class="var">cmd</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
+<span class="in2"></span><span class="var">range</span> &lt;&lt; <span class="fn">get_line</span>(<span class="var">cmd</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do range</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Rep(<span class="name">do block range</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">range</span>) {<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<br/>
+<span class="in3"></span>(<span class="var">curBlock</span> - <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>()) + <span class="num">1</span>,<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do block range</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Rep(<span class="name">do inputs range</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">range</span>) {<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<br/>
+<span class="in3"></span>(<span class="var">curInput</span> - <span class="var">inputs</span>.<span class="fn">begin</span>()) + <span class="num">1</span>,<br/>
+<span class="in3"></span>(<span class="var">inputs</span>.<span class="fn">end</span>() - <span class="var">inputs</span>.<span class="fn">begin</span>()) + <span class="num">1</span><br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do inputs range</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Rep(<span class="name">do str range</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">range</span>) {<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<br/>
+<span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">p</span> = <span class="var">range</span>.<span class="fn">prev</span>()(<br/>
+<span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">p</span> &lt; <span class="num">0</span>) { <span class="var">p</span> = <span class="num">0</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">p</span> &lt; <span class="var">next</span>) {<br/>
+<span class="in3"></span><span class="var">c</span>.<span class="fn">erase</span>(<br/>
+<span class="in4"></span><span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">p</span>,<br/>
+<span class="in4"></span><span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">next</span><br/>
+<span class="in3"></span>);<br/>
+<span class="in3"></span><span class="var">next</span> = <span class="var">p</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do str range</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Rep(<span class="name">range vars</span>)</span><br/>
+<span class="in1"></span><span class="type">Range</span> <span class="var">range</span>;<br/>
+<span class="macro">@End(<span class="name">range vars</span>)</span><br/>
+</code></div>
+</div>
+</body>
+</html>

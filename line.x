@@ -32,7 +32,7 @@
 
 ```
 @add(line elements)
-	bool empty() const {
+	operator bool() const {
 		return _line < 0 && ! _relative;
 	}
 @end(line elements)
@@ -40,7 +40,7 @@
 
 ```
 @def(get line)
-	if (empty()) {
+	if (*this) {
 		res = cur;
 	} else {
 		res = _line;
@@ -109,6 +109,7 @@
 
 ```
 @Add(global elements)
+	@Put(range prereqs);
 	@Put(range vars);
 @End(global elements)
 ```
@@ -123,7 +124,9 @@
 @Add(global elements)
 	int get_number(std::string &s) {
 		int res = 0;
-		while (! s.empty() && isdigit(s[0])) {
+		while (
+			! s.empty() && isdigit(s[0])
+		) {
 			res = res * 10 + s[0] - '0';
 			s.erase(0, 1);
 		}
@@ -133,27 +136,73 @@
 ```
 
 ```
-@Def(do range)
-	line = Line {};
-	if (cmd[0] == '.') {
-		line = Line::relative(0);
-		cmd.erase(0, 1);
-	} else if (cmd[0] == '+') {
-		cmd.erase(0, 1);
-		int n = get_number(cmd);
-		line = Line::relative(n);
-	} else if (cmd[0] == '-') {
-		cmd.erase(0, 1);
-		int n = -get_number(cmd);
-		line = Line::relative(n);
-	} else if (cmd[0] == '$') {
-		line = Line::end();
-		cmd.erase(0, 1);
-	} else if (isdigit(cmd[0])) {
-		int n = get_number(cmd);
-		line = Line::line(n);
+@Add(global elements)
+	Line get_line(std::string &s) {
+		Line line {};
+		do {
+			@put(parse line);
+		} while (false);
+		trim(s);
+		return line;
 	}
-	trim(cmd);
+@End(global elements)
+```
+
+```
+@def(parse line)
+	if (s[0] == '.') {
+		s.erase(0, 1);
+		line = Line::relative(0);
+		break;
+	}
+@end(parse line)
+```
+
+```
+@add(parse line)
+	if (s[0] == '+') {
+		s.erase(0, 1);
+		int n = get_number(s);
+		line = Line::relative(n);
+		break;
+	}
+@end(parse line)
+```
+
+```
+@add(parse line)
+	if (s[0] == '-') {
+		s.erase(0, 1);
+		int n = -get_number(s);
+		line = Line::relative(n);
+		break;
+	}
+@end(parse line)
+```
+
+```
+@add(parse line)
+	if (s[0] == '$') {
+		line = Line::end();
+		s.erase(0, 1);
+		continue;
+	}
+@end(parse line)
+```
+
+```
+@add(parse line)
+	if (isdigit(s[0])) {
+		int n = get_number(s);
+		line = Line::line(n);
+		continue;
+	}
+@end(parse line);
+```
+
+```
+@Def(do range)
+	line = get_line(cmd);
 @End(do range)
 ```
 
@@ -165,13 +214,13 @@
 
 ```
 @def(unit tests)
-	ASSERT(Line {}.empty());
-	ASSERT(! Line::begin().empty());
-	ASSERT(! Line::end().empty());
-	ASSERT(! Line::end().empty());
-	ASSERT(! Line::line(0).empty());
-	ASSERT(! Line::relative(0).empty());
-	ASSERT(! Line::relative(-2).empty());
+	ASSERT(Line {});
+	ASSERT(! Line::begin());
+	ASSERT(! Line::end());
+	ASSERT(! Line::end());
+	ASSERT(! Line::line(0));
+	ASSERT(! Line::relative(0));
+	ASSERT(! Line::relative(-2));
 @end(unit tests)
 ```
 
@@ -209,8 +258,35 @@
 ```
 
 ```
+@add(unit tests) {
+	std::string f = "+3";
+	ASSERT(
+		get_line(f)(5, 10) == 8
+	);
+} @end(unit tests)
+```
+
+```
+@add(unit tests) {
+	std::string f = ".";
+	ASSERT(
+		get_line(f)(5, 10) == 5
+	);
+} @end(unit tests)
+```
+
+```
+@add(unit tests) {
+	std::string f = "$";
+	ASSERT(
+		get_line(f)(5, 10) == 10 
+	);
+} @end(unit tests)
+```
+
+```
 @Def(do block range)
-	if (! line.empty()) {
+	if (! line) {
 		next = line(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
@@ -222,7 +298,7 @@
 
 ```
 @Def(do inputs range)
-	if (! line.empty()) {
+	if (! line) {
 		next = line(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
@@ -234,7 +310,7 @@
 
 ```
 @Def(do str range)
-	if (! line.empty()) {
+	if (! line) {
 		next = line(
 			Line::max,
 			c.size() + 1
