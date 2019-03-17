@@ -302,9 +302,12 @@
 
 ```
 @def(save open input)
-	_used.push_back(std::move(
-		_open.back().input()
-	));
+	for (auto &i : _used) {
+		if (i.path() == _open.back().input().path()) {
+			i = std::move(_open.back().input());
+			break;
+		}
+	}
 @end(save open input)
 ```
 

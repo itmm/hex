@@ -504,6 +504,7 @@
 	}
 
 	void push(const std::string &path) {
+		_used.push_back({ path });
 		_open.push_back({ path });
 	}
 
@@ -511,11 +512,6 @@
 		const std::string &name
 	) const {
 		
-	for (const auto &j : _open) {
-		if (j.input().path() == name) {
-			return true;
-		}
-	}
 	for (const auto &j : _used) {
 		if (j.path() == name) {
 			return true;
@@ -595,9 +591,12 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-	_used.push_back(std::move(
-		_open.back().input()
-	));
+	for (auto &i : _used) {
+		if (i.path() == _open.back().input().path()) {
+			i = std::move(_open.back().input());
+			break;
+		}
+	}
 ;
 		_open.pop_back();
 	}

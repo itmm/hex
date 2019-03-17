@@ -1044,3 +1044,7 @@
 ```
 * Edit slides in place
 
+```
+@inc(range.x)
+```
+

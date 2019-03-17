@@ -49,6 +49,7 @@
 ```
 @Add(inputs elements)
 	void push(const std::string &path) {
+		_used.push_back({ path });
 		_open.push_back({ path });
 	}
 @End(inputs elements)
@@ -82,11 +83,6 @@
 
 ```
 @def(has checks)
-	for (const auto &j : _open) {
-		if (j.input().path() == name) {
-			return true;
-		}
-	}
 	for (const auto &j : _used) {
 		if (j.path() == name) {
 			return true;

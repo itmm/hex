@@ -74,6 +74,7 @@ Liefert zuletzt benutzte Datei
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
+<span class="in2"></span><span class="var">_used</span>.<span class="fn">push_back</span>({ <span class="var">path</span> });<br/>
 <span class="in2"></span><span class="var">_open</span>.<span class="fn">push_back</span>({ <span class="var">path</span> });<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
@@ -123,11 +124,6 @@ Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach  verarbeitet 
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">has checks</span>)</span><br/>
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">_open</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span>.<span class="fn">input</span>().<span class="fn">path</span>() == <span class="var">name</span>) {<br/>
-<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-<span class="in2"></span>}<br/>
-<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">_used</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">j</span>.<span class="fn">path</span>() == <span class="var">name</span>) {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
