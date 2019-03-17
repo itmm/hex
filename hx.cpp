@@ -1428,6 +1428,22 @@
 		}
 	}
 
+	void add_block(Read_State state) {
+		
+	if (curInput != inputs.end()) {
+		if (curBlock != curInput->blocks.end()) {
+			++curBlock;
+		}
+		int i = curBlock - curInput->blocks.begin();
+		curInput->blocks.insert(curBlock, { state, { "REPLACE" }, {} });
+		curBlock = curInput->blocks.begin() + i;
+	} else {
+		std::cerr << "! no file\n";
+	}
+	draw_block();
+;
+	}
+
 	int main(
 		int argc,
 		const char **argv
@@ -2582,6 +2598,21 @@
 	}
 ;
 		}
+		continue;
+	}
+
+	if (cmd == "H" || cmd == "Header") {
+		add_block(RS::header);
+		continue;
+	}
+
+	if (cmd == "C" || cmd == "Code") {
+		add_block(RS::code);
+		continue;
+	}
+
+	if (cmd == "P" || cmd == "Para") {
+		add_block(RS::para);
 		continue;
 	}
 ;
