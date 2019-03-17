@@ -1036,6 +1036,10 @@
 * Interactive display of slides
 
 ```
+@inc(line.x)
+```
+
+```
 @inc(edit.x)
 ```
 * Edit slides in place

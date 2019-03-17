@@ -3,8 +3,8 @@
 ```
 @Add(global elements)
 	void insert_before(
-		std::vector<std::string> &c,
-		std::vector<std::string>::iterator i
+		const std::string &prefix,
+		std::vector<std::string> &c
 	) {
 		@put(insert before);
 	}
@@ -32,8 +32,8 @@
 	if (cmd == "N" || cmd == "Note") {
 		if (valid_cur()) {
 			insert_before(
-				curBlock->notes,
-				curBlock->notes.end()
+				"n",
+				curBlock->notes
 			);
 		}
 		continue;
@@ -44,10 +44,21 @@
 ```
 @Add(run loop)
 	if (cmd == "A" || cmd == "Add") {
+		std::string prefix;
+		switch (curBlock->state) {
+			case RS::header:
+				prefix = "h"; break;
+			case RS::code:
+				prefix = "c"; break;
+			case RS::para:
+				prefix = "p"; break;
+			default:
+				prefix = "?"; break;
+		}
 		if (valid_cur()) {
 			insert_before(
-				curBlock->value,
-				curBlock->value.end()
+				prefix,
+				curBlock->value
 			);
 		}
 		continue;
@@ -57,18 +68,20 @@
 
 ```
 @def(insert before)
-	std::string line;
+	int next = c.size();
+	@Put(do str range);
+	std::string l;
 	for (;;) {
-		std::getline(std::cin, line);
-		auto b = line.begin();
-		auto e = line.end();
+		std::cout << prefix << ' ' << next << "? ";
+		std::getline(std::cin, l);
+		auto b = l.begin();
+		auto e = l.end();
 		while (b != e && *b <= ' ') { ++b; }
 		std::string t { b, e };
 		if (t.empty()) { continue; }
 		if (t == ".") { break; }
-		int d = i - c.begin();
-		c.insert(i, t);
-		i = c.begin() + (d + 1);
+		c.insert(c.begin() + next, t);
+		++next;
 	}
 	draw_block();
 @end(insert before)

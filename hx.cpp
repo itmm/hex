@@ -29,6 +29,8 @@
 	#include <cctype>
 
 	#include <set>
+
+	#include <limits>
 ;
 
 	
@@ -1142,7 +1144,9 @@
 	}
 
 	if (curBlock->state == RS::header) {
+		int i = 0;
 		for (const auto &l : curBlock->value) {
+			std::cout << ++i << ": ";
 			for (int i = 0; i < curBlock->level; ++i) {
 				std::cout << '#';
 			}
@@ -1152,20 +1156,23 @@
 
 	if (curBlock->state == RS::code) {
 		std::cout << "```\n";
+		int i = 0;
 		for (const auto &l : curBlock->value) {
-			std::cout << l << '\n';
+			std::cout << ++i << ": " << l << '\n';
 		}
 		std::cout << "```\n\n";
 	}
 
 	if (curBlock->state == RS::para) {
+		int i = 0;
 		for (const auto &l : curBlock->value) {
-			std::cout << l << "\n\n";
+			std::cout << ++i << ": " << l << "\n\n";
 		}
 	}
 
+	int j = 0;
 	for (const auto &l : curBlock->notes) {
-		std::cout << "* " << l << '\n';
+		std::cout << ++j << ": * " << l << '\n';
 	}
 	std::cout << '\n';
 ;
@@ -1175,6 +1182,7 @@
 		
 	if (curInput == inputs.end()) {
 		std::cout << "no file:end\n";
+		return;
 	}
 
 	std::cout << curInput->path() << ':';
@@ -1186,23 +1194,109 @@
 ;
 	}
 
+	void trim(std::string &s) {
+		while (! s.empty() && (s[0] & 0xff) <= ' ') {
+			s.erase(0, 1);
+		}
+	}
+
+	class Line {
+		public:
+			
+	int operator()(
+		int cur, int end
+	) const {
+		int res {};
+		
+	if (empty()) {
+		res = cur;
+	} else {
+		res = _line;
+		if (_relative) { res += cur; }
+	}
+	if (res < 0) { res = 0; }
+	if (res > end) { res = end; }
+;
+		return res;
+	}
+
+	bool empty() const {
+		return _line < 0 && ! _relative;
+	}
+
+	Line() = default;
+
+	static Line relative(int line) {
+		return Line { line, true };
+	}
+
+	static Line line(int line) {
+		return Line { line, false };
+	}
+
+	static Line begin() {
+		return line(0);
+	}
+
+	static const int max =
+		std::numeric_limits<int>::max();
+		
+	static Line end() {
+		return line(max);
+	}
+;
+		private:
+			
+	int _line = -1;
+	bool _relative = false;
+
+	Line(int line, bool relative):
+		_line { line },
+		_relative { relative }
+	{}
+;
+	};
+
+	
+	Line line;
+;
+
+	int get_number(std::string &s) {
+		int res = 0;
+		while (! s.empty() && isdigit(s[0])) {
+			res = res * 10 + s[0] - '0';
+			s.erase(0, 1);
+		}
+		return res;
+	}
+
 	void insert_before(
-		std::vector<std::string> &c,
-		std::vector<std::string>::iterator i
+		const std::string &prefix,
+		std::vector<std::string> &c
 	) {
 		
-	std::string line;
+	int next = c.size();
+	
+	if (! line.empty()) {
+		next = line(
+			Line::max,
+			c.size() + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+	std::string l;
 	for (;;) {
-		std::getline(std::cin, line);
-		auto b = line.begin();
-		auto e = line.end();
+		std::cout << prefix << ' ' << next << "? ";
+		std::getline(std::cin, l);
+		auto b = l.begin();
+		auto e = l.end();
 		while (b != e && *b <= ' ') { ++b; }
 		std::string t { b, e };
 		if (t.empty()) { continue; }
 		if (t == ".") { break; }
-		int d = i - c.begin();
-		c.insert(i, t);
-		i = c.begin() + (d + 1);
+		c.insert(c.begin() + next, t);
+		++next;
 	}
 	draw_block();
 ;
@@ -1259,6 +1353,37 @@
 	b.add(&a);
 	testFrag(b, "abcdefabc");
 } ;
+
+	
+	ASSERT(Line {}.empty());
+	ASSERT(! Line::begin().empty());
+	ASSERT(! Line::end().empty());
+	ASSERT(! Line::end().empty());
+	ASSERT(! Line::line(0).empty());
+	ASSERT(! Line::relative(0).empty());
+	ASSERT(! Line::relative(-2).empty());
+
+	ASSERT(Line {}(5, 10) == 5);
+	ASSERT(Line::begin()(5, 10) == 0);
+	ASSERT(Line::end()(5, 10) == 10);
+
+	ASSERT(Line::line(0)(5, 10) == 0);
+	ASSERT(Line::line(6)(5, 10) == 6);
+	ASSERT(Line::line(20)(5, 10) == 10);
+
+	ASSERT(
+		Line::relative(2)(5, 10) == 7
+	);
+	ASSERT(
+		Line::relative(7)(5, 10) == 10
+	);
+	ASSERT(
+		Line::relative(-2)(5, 10) == 3
+	);
+	ASSERT(
+		Line::relative(-7)(5, 10) == 0
+	);
+;
 ;
 	#endif
 
@@ -2131,7 +2256,31 @@
 	std::string cmd;
 	draw_position();
 	std::cout << "> ";
-	std::cin >> cmd;
+	std::getline(std::cin, cmd);
+	trim(cmd);
+	if (cmd.empty()) { continue; }
+	
+	line = Line {};
+	if (cmd[0] == '.') {
+		line = Line::relative(0);
+		cmd.erase(0, 1);
+	} else if (cmd[0] == '+') {
+		cmd.erase(0, 1);
+		int n = get_number(cmd);
+		line = Line::relative(n);
+	} else if (cmd[0] == '-') {
+		cmd.erase(0, 1);
+		int n = -get_number(cmd);
+		line = Line::relative(n);
+	} else if (cmd[0] == '$') {
+		line = Line::end();
+		cmd.erase(0, 1);
+	} else if (isdigit(cmd[0])) {
+		int n = get_number(cmd);
+		line = Line::line(n);
+	}
+	trim(cmd);
+;
 
 	if (cmd == "q" || cmd == "quit") {
 		break;
@@ -2139,65 +2288,118 @@
 
 	if (cmd == "n" || cmd == "next") {
 		if (curInput != inputs.end()) {
+			int next = curBlock - curInput->blocks.begin();
 			if (curBlock != curInput->blocks.end()) {
-				++curBlock;
-				draw_block();
-				continue;
+				++next;
 			}
+			
+	if (! line.empty()) {
+		next = line(
+			(curBlock - curInput->blocks.begin()) + 1,
+			curInput->blocks.size() + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+			curBlock = curInput->blocks.begin() + next;
+			draw_block();
+			continue;
 		}
 		std::cerr << "! end\n";
 	}
 
 	if (cmd == "p" || cmd == "prev") {
 		if (curInput != inputs.end()) {
-			if (curBlock != curInput->blocks.begin()) {
-				--curBlock;
-				draw_block();
-				continue;
+			int next = curBlock - curInput->blocks.begin();
+			if (next > 0) {
+				--next;
 			}
+			
+	if (! line.empty()) {
+		next = line(
+			(curBlock - curInput->blocks.begin()) + 1,
+			curInput->blocks.size() + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+			curBlock = curInput->blocks.begin() + next;
+			draw_block();
+			continue;
 		}
 		std::cerr << "! start\n";
 	}
 
 	if (cmd == "f" || cmd == "forward") {
+		int next = curInput - inputs.begin();
 		if (curInput != inputs.end()) {
-			++curInput;
-			curBlock = curInput != inputs.end() ?
-				curInput->blocks.begin() :
-				std::vector<Block>::iterator {};
-			draw_block();
-			continue;
+			++next;
 		}
-		std::cerr << "! end\n";
+		
+	if (! line.empty()) {
+		next = line(
+			(curInput - inputs.begin()) + 1,
+			(inputs.end() - inputs.begin()) + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curInput = inputs.begin() + next;
+		curBlock = curInput != inputs.end() ?
+			curInput->blocks.begin() :
+			std::vector<Block>::iterator {};
+		draw_block();
+		continue;
 	}
 
 	if (cmd == "b" || cmd == "backward") {
-		if (curInput != inputs.begin()) {
-			--curInput;
-			curBlock = curInput != inputs.end() ?
-				curInput->blocks.begin() :
-				std::vector<Block>::iterator {};
-			draw_block();
-			continue;
+		int next = curInput - inputs.begin();
+		if (next) {
+			--next;
 		}
-		std::cerr << "! start\n";
+		
+	if (! line.empty()) {
+		next = line(
+			(curInput - inputs.begin()) + 1,
+			(inputs.end() - inputs.begin()) + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curInput = inputs.begin() + next;
+		curBlock = curInput != inputs.end() ?
+			curInput->blocks.begin() :
+			std::vector<Block>::iterator {};
+		draw_block();
+		continue;
 	}
 
 	if (cmd == "N" || cmd == "Note") {
 		if (valid_cur()) {
 			insert_before(
-				curBlock->notes,
-				curBlock->notes.end()
+				"n",
+				curBlock->notes
 			);
 		}
 		continue;
 	}
 
 	if (cmd == "A" || cmd == "Add") {
+		std::string prefix;
+		switch (curBlock->state) {
+			case RS::header:
+				prefix = "h"; break;
+			case RS::code:
+				prefix = "c"; break;
+			case RS::para:
+				prefix = "p"; break;
+			default:
+				prefix = "?"; break;
+		}
 		if (valid_cur()) {
 			insert_before(
-				curBlock->value,
-				curBlock->value.end()
+				prefix,
+				curBlock->value
 			);
 		}
 		continue;

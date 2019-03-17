@@ -12,8 +12,7 @@
 <h1>HTML-Präsentation generieren</h1>
 </div>
 <ul><li>
-Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-Quelldateien
-  HTML-Präsentationen zu erzeugen
+Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-Quelldateien  HTML-Präsentationen zu erzeugen
 </li></ul>
 </div>
 <div><div>
@@ -70,8 +69,7 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
-In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die
-  gerade generierte HTML-Datei befindet
+In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die  gerade generierte HTML-Datei befindet
 </li><li>
 Vor dem ersten Element muss der HTML-Header geschrieben werden
 </li><li>
@@ -253,8 +251,7 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 <ul><li>
 Schreibt ein Zeichen
 </li><li>
-Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
-  Entitäten
+Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
 </li></ul>
 </div>
 <div><div>
@@ -273,8 +270,7 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
 <ul><li>
 Schreibt mehrere Zeichen
 </li><li>
-Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
-  Entitäten
+Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
 </li></ul>
 </div>
 <div><div>
@@ -364,8 +360,7 @@ Die HTML-Überschrift enthält den eingelesenen Level
 <span class="macro">@end(<span class="name">close previous HTML page</span>)</span><br/>
 </code></div>
 <ul><li>
-Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen
-  werden
+Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen  werden
 </li></ul>
 </div>
 <div><div>
@@ -475,8 +470,7 @@ Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann
-  stimmt etwas nicht
+Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann  stimmt etwas nicht
 </li><li>
 Eine Fehlermeldung wird ausgegeben
 </li></ul>
@@ -492,8 +486,7 @@ Eine Fehlermeldung wird ausgegeben
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
 <ul><li>
-Am Ende der Datei schließt die Funktion
-  die HTML-Tags
+Am Ende der Datei schließt die Funktion  die HTML-Tags
 </li></ul>
 </div>
 <div><div>
@@ -545,8 +538,7 @@ Und gibt ein Tag für die passende Einrückung aus
 <ul><li>
 Danach wird die Zeile Zeichen für Zeichen verarbeitet
 </li><li>
-Wenn keine besondere Verarbeitung geschieht, gibt die Funktion das
-  Zeichen direkt aus
+Wenn keine besondere Verarbeitung geschieht, gibt die Funktion das  Zeichen direkt aus
 </li></ul>
 </div>
 <div><div>
@@ -584,8 +576,7 @@ Wenn ein Zeichen eine Zeichenkette einleitet, wird diese geparst
 <span class="macro">@end(<span class="name">process string</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie angefangen
-  hat
+Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie angefangen  hat
 </li><li>
 Wenn dieses nicht durch einen Backslash escaped ist
 </li></ul>
@@ -606,8 +597,7 @@ Wenn dieses nicht durch einen Backslash escaped ist
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Diese Hilfsfunktion umgibt einen Bezeichner mit einem <code>&lt;<span class="var">span</span>&gt;</code>-Tag
-  einer bestimmten Klasse
+Diese Hilfsfunktion umgibt einen Bezeichner mit einem <code>&lt;<span class="var">span</span>&gt;</code>-Tag  einer bestimmten Klasse
 </li></ul>
 </div>
 <div><div>
@@ -619,8 +609,7 @@ Diese Hilfsfunktion umgibt einen Bezeichner mit einem <code>&lt;<span class="var
 <span class="macro">@end(<span class="name">process string</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&gt;</code> mit der Klasse <code><span class="str">str</span></code>
-  aus
+Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&gt;</code> mit der Klasse <code><span class="str">str</span></code>  aus
 </li></ul>
 </div>
 <div><div>
@@ -734,8 +723,7 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="macro">@end(<span class="name">write include</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Datei-Extension wird beim generierten Link durch <code><span class="str">.html</span></code>
-  ersetzt
+Die Datei-Extension wird beim generierten Link durch <code><span class="str">.html</span></code>  ersetzt
 </li></ul>
 </div>
 <div><div>
@@ -934,13 +922,11 @@ Zusätzlich noch der Unterstrich und das Dollar-Zeichen
 <span class="macro">@end(<span class="name">process identifier</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="var">begin</span></code> wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.
-  korrigiert
+<code><span class="var">begin</span></code> wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.  korrigiert
 </li><li>
 Sonst wird der Identifier normal verarbeitet
 </li><li>
-Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem
-  Identifier folgt
+Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem  Identifier folgt
 </li></ul>
 </div>
 <div><div>
@@ -1016,8 +1002,7 @@ Prüft, ob ein Bezeichner ein Typ ist
 <span class="macro">@end(<span class="name">is type</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion
-  <code><span class="num">true</span></code>
+Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion  <code><span class="num">true</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -1049,8 +1034,7 @@ Reservierte Typen
 <span class="macro">@end(<span class="name">is type</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Bezeichner ist zusätzlich ein Typ, wenn das sei erstes Zeichen
-  groß geschrieben ist
+Ein Bezeichner ist zusätzlich ein Typ, wenn das sei erstes Zeichen  groß geschrieben ist
 </li><li>
 und das zweite Zeichen klein geschrieben ist
 </li></ul>
@@ -1098,11 +1082,9 @@ Oder wenn er einen reservierten Namen hat
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Bezeichner, dem eine öffnende Klammer folgt, wird immer als
-  Funktion dargestellt
+Ein Bezeichner, dem eine öffnende Klammer folgt, wird immer als  Funktion dargestellt
 </li><li>
-Wenn keine andere Regel greift, wird der Bezeichner als Variable
-  formatiert
+Wenn keine andere Regel greift, wird der Bezeichner als Variable  formatiert
 </li></ul>
 </div>
 <div><div>
@@ -1115,8 +1097,7 @@ Wenn keine andere Regel greift, wird der Bezeichner als Variable
 <span class="macro">@end(<span class="name">special ident classes</span>)</span><br/>
 </code></div>
 <ul><li>
-Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
-  identifiziert
+Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen  identifiziert
 </li></ul>
 </div>
 <div><div>
@@ -1216,8 +1197,7 @@ Die Funktion überspringt den Stern und folgende Leerzeichen
 <span class="macro">@end(<span class="name">process note</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus
-  gewechselt
+Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus  gewechselt
 </li><li>
 Andernfalls wird nur eine neue Notiz geöffnet
 </li></ul>
@@ -1286,8 +1266,7 @@ Ein Backtick signalisiert eingeschobene Code-Schnippsel
 <span class="macro">@end(<span class="name">inline code</span>)</span><br/>
 </code></div>
 <ul><li>
-Eingeschobene Code-Schnippsel werden ebenfalls mit <code><span class="fn">process_code</span></code>
-  formatiert
+Eingeschobene Code-Schnippsel werden ebenfalls mit <code><span class="fn">process_code</span></code>  formatiert
 </li></ul>
 </div>
 <div><div>
@@ -1335,8 +1314,7 @@ Funktion sucht zwei weitere Sterne
 <span class="macro">@end(<span class="name">bold block</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett
-  formatiert
+Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett  formatiert
 </li></ul>
 </div>
 <div><div>

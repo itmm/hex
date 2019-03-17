@@ -63,11 +63,24 @@
 ```
 
 ```
+@Add(global elements)
+	void trim(std::string &s) {
+		while (! s.empty() && (s[0] & 0xff) <= ' ') {
+			s.erase(0, 1);
+		}
+	}
+@End(global elements)
+```
+
+```
 @Def(run loop)
 	std::string cmd;
 	draw_position();
 	std::cout << "> ";
-	std::cin >> cmd;
+	std::getline(std::cin, cmd);
+	trim(cmd);
+	if (cmd.empty()) { continue; }
+	@Put(do range);
 @End(run loop)
 ```
 
@@ -83,11 +96,14 @@
 @Add(run loop)
 	if (cmd == "n" || cmd == "next") {
 		if (curInput != inputs.end()) {
+			int next = curBlock - curInput->blocks.begin();
 			if (curBlock != curInput->blocks.end()) {
-				++curBlock;
-				draw_block();
-				continue;
+				++next;
 			}
+			@Mul(do block range);
+			curBlock = curInput->blocks.begin() + next;
+			draw_block();
+			continue;
 		}
 		std::cerr << "! end\n";
 	}
@@ -98,11 +114,14 @@
 @Add(run loop)
 	if (cmd == "p" || cmd == "prev") {
 		if (curInput != inputs.end()) {
-			if (curBlock != curInput->blocks.begin()) {
-				--curBlock;
-				draw_block();
-				continue;
+			int next = curBlock - curInput->blocks.begin();
+			if (next > 0) {
+				--next;
 			}
+			@Mul(do block range);
+			curBlock = curInput->blocks.begin() + next;
+			draw_block();
+			continue;
 		}
 		std::cerr << "! start\n";
 	}
@@ -130,7 +149,9 @@
 ```
 @add(draw block)
 	if (curBlock->state == RS::header) {
+		int i = 0;
 		for (const auto &l : curBlock->value) {
+			std::cout << ++i << ": ";
 			for (int i = 0; i < curBlock->level; ++i) {
 				std::cout << '#';
 			}
@@ -144,8 +165,9 @@
 @add(draw block)
 	if (curBlock->state == RS::code) {
 		std::cout << "```\n";
+		int i = 0;
 		for (const auto &l : curBlock->value) {
-			std::cout << l << '\n';
+			std::cout << ++i << ": " << l << '\n';
 		}
 		std::cout << "```\n\n";
 	}
@@ -155,8 +177,9 @@
 ```
 @add(draw block)
 	if (curBlock->state == RS::para) {
+		int i = 0;
 		for (const auto &l : curBlock->value) {
-			std::cout << l << "\n\n";
+			std::cout << ++i << ": " << l << "\n\n";
 		}
 	}
 @end(draw block)
@@ -164,8 +187,9 @@
 
 ```
 @add(draw block)
+	int j = 0;
 	for (const auto &l : curBlock->notes) {
-		std::cout << "* " << l << '\n';
+		std::cout << ++j << ": * " << l << '\n';
 	}
 	std::cout << '\n';
 @end(draw block)
@@ -175,6 +199,7 @@
 @def(draw position)
 	if (curInput == inputs.end()) {
 		std::cout << "no file:end\n";
+		return;
 	}
 @end(draw position)
 ```
@@ -193,15 +218,17 @@
 ```
 @Add(run loop)
 	if (cmd == "f" || cmd == "forward") {
+		int next = curInput - inputs.begin();
 		if (curInput != inputs.end()) {
-			++curInput;
-			curBlock = curInput != inputs.end() ?
-				curInput->blocks.begin() :
-				std::vector<Block>::iterator {};
-			draw_block();
-			continue;
+			++next;
 		}
-		std::cerr << "! end\n";
+		@Mul(do inputs range);
+		curInput = inputs.begin() + next;
+		curBlock = curInput != inputs.end() ?
+			curInput->blocks.begin() :
+			std::vector<Block>::iterator {};
+		draw_block();
+		continue;
 	}
 @End(run loop)
 ```
@@ -209,15 +236,17 @@
 ```
 @Add(run loop)
 	if (cmd == "b" || cmd == "backward") {
-		if (curInput != inputs.begin()) {
-			--curInput;
-			curBlock = curInput != inputs.end() ?
-				curInput->blocks.begin() :
-				std::vector<Block>::iterator {};
-			draw_block();
-			continue;
+		int next = curInput - inputs.begin();
+		if (next) {
+			--next;
 		}
-		std::cerr << "! start\n";
+		@Mul(do inputs range);
+		curInput = inputs.begin() + next;
+		curBlock = curInput != inputs.end() ?
+			curInput->blocks.begin() :
+			std::vector<Block>::iterator {};
+		draw_block();
+		continue;
 	}
 @End(run loop)
 ```
