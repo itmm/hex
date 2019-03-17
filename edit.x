@@ -80,7 +80,7 @@
 		std::string t { b, e };
 		if (t.empty()) { continue; }
 		if (t == ".") { break; }
-		c.insert(c.begin() + next, t);
+		c.insert(c.begin() + next, l);
 		++next;
 	}
 	draw_block();

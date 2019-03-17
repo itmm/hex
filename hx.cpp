@@ -1374,7 +1374,7 @@
 		std::string t { b, e };
 		if (t.empty()) { continue; }
 		if (t == ".") { break; }
-		c.insert(c.begin() + next, t);
+		c.insert(c.begin() + next, l);
 		++next;
 	}
 	draw_block();
@@ -2625,6 +2625,27 @@
 
 	if (cmd == "P" || cmd == "Para") {
 		add_block(RS::para);
+		continue;
+	}
+
+	if (cmd == "D" || cmd == "Dup") {
+		if (curInput != inputs.end()) {
+			if (curBlock !=
+				curInput->blocks.end()
+			) {
+				
+	int i = curInput->blocks.begin() -
+		curBlock;
+	curInput->blocks.insert(
+		curBlock, *curBlock
+	);
+	curBlock = curInput->blocks.begin() +
+		i + 1;
+;
+			}
+		} else {
+			std::cerr << "! no file\n";
+		}
 		continue;
 	}
 ;

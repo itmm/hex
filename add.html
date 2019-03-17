@@ -130,5 +130,71 @@ and restores it afterwards
 and a default text
 </li></ul>
 </div>
+</div>
+<h2>Duplicating the current block</h2>
+<div class="slides">
+<div>
+<div>
+<h2>Duplicating the current block</h2>
+</div>
+<ul><li>
+Duplicates the current block
+</li><li>
+and sets the current block to the new copy
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"D"</span> || <span class="var">cmd</span> == <span class="str">"Dup"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">curBlock</span> !=<br/>
+<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">end</span>()<br/>
+<span class="in3"></span>) {<br/>
+<span class="in4"></span><span class="macro">@put(<span class="name">duplicate</span>)</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! no file\n"</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+Duplicates the current block
+</li><li>
+if the file is valid
+</li><li>
+and the current block is valid
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">duplicate</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() -<br/>
+<span class="in2"></span><span class="var">curBlock</span>;<br/>
+<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
+<span class="in2"></span><span class="var">curBlock</span>, *<span class="var">curBlock</span><br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() +<br/>
+<span class="in2"></span><span class="var">i</span> + <span class="num">1</span>;<br/>
+<span class="macro">@end(<span class="name">duplicate</span>)</span><br/>
+</code></div>
+<ul><li>
+The insert invalidates the iterator
+</li><li>
+so the offset is saved
+</li><li>
+A copy of the current block is inserted before the current block
+</li><li>
+That is the wrong way around but easier
+</li><li>
+and doesn't matter in the end
+</li><li>
+The new current block is set to the old current block
+</li><li>
+which is now the second of the two duplicates
+</li></ul>
+</div>
 </body>
 </html>

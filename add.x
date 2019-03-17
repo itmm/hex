@@ -89,3 +89,46 @@
 ```
 * `@f(add_block)` creates a new block with the requested `state`
 * and a default text
+
+## Duplicating the current block
+* Duplicates the current block
+* and sets the current block to the new copy
+
+```
+@Add(run loop)
+	if (cmd == "D" || cmd == "Dup") {
+		if (curInput != inputs.end()) {
+			if (curBlock !=
+				curInput->blocks.end()
+			) {
+				@put(duplicate);
+			}
+		} else {
+			std::cerr << "! no file\n";
+		}
+		continue;
+	}
+@End(run loop)
+```
+* Duplicates the current block
+* if the file is valid
+* and the current block is valid
+
+```
+@def(duplicate)
+	int i = curInput->blocks.begin() -
+		curBlock;
+	curInput->blocks.insert(
+		curBlock, *curBlock
+	);
+	curBlock = curInput->blocks.begin() +
+		i + 1;
+@end(duplicate)
+```
+* The insert invalidates the iterator
+* so the offset is saved
+* A copy of the current block is inserted before the current block
+* That is the wrong way around but easier
+* and doesn't matter in the end
+* The new current block is set to the old current block
+* which is now the second of the two duplicates
