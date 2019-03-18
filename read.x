@@ -85,7 +85,23 @@
 * Und alle bereits gelesenen Dateien
 
 ```
-@Def(read source files) {
+@add(globals)
+	@Put(needed by read_sources);
+	void read_sources() {
+		@put(read sources);
+	}
+@end(globals)
+```
+
+```
+@Def(read source files)
+	read_sources();
+@End(read source files)
+```
+
+```
+@def(read sources) {
+	inputs = Inputs {};
 	@Put(additional read vars);
 	std::string line;
 	try { for (;;) {
@@ -93,7 +109,7 @@
 		@Put(process line);
 	} }
 	catch (const No_More_Lines &) {}
-} @End(read source files)
+} @end(read sources)
 ```
 * `hx` liest die Eingabe-Dateien zeilenweise
 * Inkludierungen werden transparent in `inputs` behandelt

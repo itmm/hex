@@ -231,9 +231,9 @@
 * Über die Kommandozeile kann eine alternative Datei angegeben werden
 
 ```
-@add(global elements)
+@Def(needed by read_sources)
 	int blockLimit = -1;
-@end(global elements)
+@End(needed by read_sources)
 ```
 * Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit  diesem
   Parameter limitiert werden
@@ -319,32 +319,32 @@
   einzelnen Folien zu finden
 
 ```
-@add(global elements)
+@Add(needed by read_sources)
 	using SI =
 		std::string::const_iterator;
-@end(global elements)
+@end(needed by read_sources)
 ```
 * Die Anwendung verwendet den String-Iterator an vielen Stellen
 * Daher definiert sie eine Abkürzung, damit die Folien nicht
   überlaufen
 
 ```
-@add(global elements)
+@Add(needed by read_sources)
 	void process_chars(
 		Frag *frag, SI i, SI e
 	) {
 		@put(process chars);
 	}
-@end(global elements)
+@End(needed by read_sources)
 ```
 * Fügt ein Range an den Inhalt von `frag` an
 
 ```
-@add(global elements)
+@Add(needed by read_sources)
 	void process_char(Frag *frag, char ch) {
 		@put(process char);
 	}
-@end(global elements)
+@End(needed by read_sources)
 ```
 * Fügt ein Zeichen an den Inhalt von `frag` an
 
@@ -468,7 +468,7 @@
   verwendet
 
 ```
-@add(global elements)
+@Add(needed by read_sources)
 	void expand_macro_arg(
 		Frag *f, const std::string &arg
 	) {
@@ -476,7 +476,7 @@
 		auto e = arg.end();
 		@put(expand loop);
 	}
-@end(global elements)
+@End(needed by read_sources)
 ```
 
 ```

@@ -606,12 +606,8 @@
 ;
 
 	Inputs inputs;
-;
 
-	std::string stylesheet {
-		"slides/slides.css"
-	};
-
+	
 	int blockLimit = -1;
 
 	using SI =
@@ -681,6 +677,435 @@
 	}
 ;
 	}
+;
+	void read_sources() {
+		 {
+	inputs = Inputs {};
+	
+	Frag *frag { nullptr };
+;
+	std::string line;
+	try { for (;;) {
+		inputs.read_line(line);
+		
+	do {
+		auto &state = inputs.cur().state;
+		
+	auto &blocks =
+		inputs.cur().input().blocks;
+;
+		
+	if (
+		line == "```" &&
+		state == RS::new_element
+	) {
+		state = RS::code;
+		
+	blocks.push_back({
+		RS::code, {}, {}, 0
+	});
+;
+		break;
+	}
+
+	if (state == RS::code) {
+		if (line == "```") {
+			state = RS::after_code;
+		} else {
+			
+	blocks.back().value.push_back(
+		line
+	);
+;
+		}
+		break;
+	}
+;
+		
+	if (line.empty()) {
+		state = RS::new_element;
+		break;
+	}
+;
+		
+	if (
+		line[0] == '#' &&
+		state == RS::new_element
+	) {
+		state = RS::header;
+		
+	auto b { line.begin() };
+	auto e { line.end() };
+	int l { 0 };
+	for (
+		; b != e && *b == '#'; ++b, ++l
+	) {}
+	for (; b != e && *b == ' '; ++b) {}
+	blocks.push_back({
+		RS::header, {{ b, e }}, {}, l
+	});
+;
+		break;
+	}
+
+	if (line[0] == '*') {
+		if (
+			state == RS::header ||
+			state == RS::after_code ||
+			state == RS::notes
+		) {
+			state = RS::notes;
+			
+	auto b { line.begin() };
+	auto e { line.end() };
+	for (;
+		b != e &&
+			(*b == '*' || *b == ' ');
+		++b
+	) {}
+	blocks.back().notes.push_back(
+		{ b, e }
+	);
+;
+			break;
+		}
+	}
+
+	if (
+		line[0] == ' ' &&
+		state == RS::notes
+	) {
+		
+	blocks.back().notes.back() +=
+		line;
+;
+		break;
+	}
+
+	if (line[0] != ' ') {
+		if (
+			state == RS::new_element ||
+			state == RS::para
+		) {
+			
+	if (state == RS::new_element) {
+		if (blocks.empty() || blocks.back().state != RS::para) {
+			blocks.push_back({
+				RS::para, {}, {}, 0
+			});
+		}
+		blocks.back().value.push_back(line);
+	}
+;
+			
+	if (state == RS::para) {
+		blocks.back().value.back() +=
+			" " + line;
+	}
+;
+			state = RS::para;
+			break;
+		}
+	}
+;
+		
+	std::cerr << "!! " << line << '\n';
+;
+	} while (false);
+
+	auto end = line.cend();
+	for (
+		auto i = line.cbegin();
+		i != end; ++i
+	) {
+		
+	if (*i == '@') {
+		auto nb = i + 1;
+		auto ne = nb;
+		while (ne != end && *ne != '(') {
+			if (! isalpha(*ne)) {
+				ne = end;
+				break;
+			}
+			++ne;
+		}
+		if (ne != end && ne != nb) {
+			std::string name {nb, ne};
+			
+	auto ab = ne + 1;
+	auto ae = ab;
+	while (ae != end && *ae != ')') {
+		if (*ae == '@') {
+			if (++ae == end) { break; }
+		}
+		++ae;
+	}
+	if (ae != end) {
+		std::string arg {ab, ae};
+		
+	i = ae;
+	bool outside = !frag;
+	do {
+		if (! frag && ! blockLimit) { break; }
+		
+	if (name == "def") {
+		ASSERT_MSG(! frag, "@def(" << arg << ") in frag [" << frag->name << ']');
+		frag = inputs.get_local(arg);
+		if (isPopulatedFrag(frag)) {
+			std::cerr << "frag [" << arg << "] already defined\n";
+		}
+		break;
+	}
+
+	if (name == "end" || name == "End") {
+		ASSERT_MSG(frag,
+			'@' << name << "(" << arg <<
+			") not in frag"
+		);
+		
+	ASSERT_MSG(frag->name == arg,
+		"closing [" << arg <<
+		"] != [" << frag->name << ']'
+	);
+;
+		frag = nullptr;
+		break;
+	}
+
+	if (name == "add") {
+		ASSERT_MSG(! frag, "add in frag " << frag->name);
+		frag = inputs.get_local(arg);
+		if (! isPopulatedFrag(frag)) {
+			std::cerr << "frag [" << arg << "] not defined\n";
+		}
+		break;
+	}
+
+	if (name == "put") {
+		ASSERT_MSG(frag,
+			"@put not in frag"
+		);
+		Frag *sub = inputs.get_local(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub->name << "]\n";
+	}
+	if (sub->multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub->name << "]\n";
+	}
+;
+			sub->addExpand();
+			frag->add(sub);
+		}
+		break;
+	}
+
+	if (name == "inc") {
+		ASSERT_MSG(! frag,
+			"include in frag [" << frag->name << ']'
+		);
+		if (! inputs.has(arg)) {
+			inputs.push(arg);
+		}
+		break;
+	}
+
+	if (name == "mul") {
+		ASSERT_MSG(frag,
+			"@mul not in frag"
+		);
+		Frag *sub = inputs.get_local(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub->name << "]\n";
+	}
+;
+			sub->addMultiple();
+			frag->add(sub);
+		}
+		break;
+	}
+
+	if (name == "Def") {
+		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
+		frag = inputs.get_global(arg);
+		if (isPopulatedFrag(frag)) {
+			std::cerr << "Frag [" << arg << "] already defined\n";
+		}
+		break;
+	}
+
+	if (name == "Add") {
+		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
+		frag = inputs.get_global(arg);
+		if (! isPopulatedFrag(frag)) {
+			std::cerr << "{{" << line << "}}\n";
+			std::cerr << "Frag [" << arg << "] not defined\n";
+			std::cerr << inputs.cur().input().path() << ':' << inputs.cur().line() << '\n';
+		}
+		break;
+	}
+
+	if (name == "rep") {
+		ASSERT_MSG(! frag,
+			"@rep in frag [" << frag->name << ']'
+		);
+		frag = inputs.get_local(arg);
+		
+	ASSERT_MSG(frag, "frag [" <<
+		name <<
+		"] not defined"
+	);
+	frag->clear();
+;
+		break;
+	}
+
+	if (name == "Rep") {
+		ASSERT_MSG(! frag,
+			"@Rep in frag [" << frag->name << ']'
+		);
+		frag = inputs.get_global(arg);
+		
+	ASSERT_MSG(frag, "frag [" <<
+		name <<
+		"] not defined"
+	);
+	frag->clear();
+;
+		break;
+	}
+
+	if (name == "Put") {
+		ASSERT_MSG(frag,
+			"@Put not in frag"
+		);
+		Frag *sub = inputs.get_global(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
+		std::cerr <<
+			"multiple expands of [" <<
+			sub->name << "]\n";
+	}
+	if (sub->multiples()) {
+		std::cerr <<
+			"expand after mult of ["
+			<< sub->name << "]\n";
+	}
+;
+			sub->addExpand();
+			frag->add(sub);
+		}
+		break;
+	}
+
+	if (name == "Mul") {
+		ASSERT_MSG(frag,
+			"@Mul not in frag"
+		);
+		Frag *sub = inputs.get_global(arg);
+		if (sub) {
+			
+	if (sub->expands()) {
+		std::cerr <<
+			"multiple after " <<
+			"expand of [" <<
+			sub->name << "]\n";
+	}
+;
+			sub->addMultiple();
+			frag->add(sub);
+		}
+		break;
+	}
+
+	if (name == "priv") {
+		ASSERT_MSG(frag,
+			"@priv not in frag"
+		);
+		
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur().input().path() +
+			':' + arg) &
+				0x7fffffff
+	};
+
+	std::ostringstream hashed;
+	hashed << "_private_" <<
+		cur << '_' <<
+		name;
+	frag->add(
+		hashed.str(),
+		inputs.cur().input().path(),
+		inputs.cur().line()
+	);
+;
+		break;
+	}
+
+	if (name == "magic") {
+		ASSERT_MSG(frag,
+			"@magic not in frag"
+		);
+		
+	std::hash<std::string> h;
+	unsigned cur {
+		h(inputs.cur().input().path() +
+			':' + arg) &
+				0x7fffffff
+	};
+
+	std::ostringstream value;
+	value << cur;
+	frag->add(
+		value.str(),
+		inputs.cur().input().path(),
+		inputs.cur().line()
+	);
+;
+		break;
+	}
+;
+		
+	if (frag) {
+		expand_macro_arg(frag, arg);
+	}
+;
+	} while (false);
+	if (blockLimit && outside && frag) {
+		--blockLimit;
+	}
+;
+		continue;
+	}
+;
+		}
+	}
+;
+		process_chars(frag, i, i + 1);
+	}
+	process_char(frag, '\n');
+;
+	} }
+	catch (const No_More_Lines &) {}
+} ;
+	}
+;
+
+	std::string stylesheet {
+		"slides/slides.css"
+	};
 
 	enum class HtmlState {
 		nothing,
@@ -1598,426 +2023,9 @@
 	}
 ;
 
-	 {
 	
-	Frag *frag { nullptr };
+	read_sources();
 ;
-	std::string line;
-	try { for (;;) {
-		inputs.read_line(line);
-		
-	do {
-		auto &state = inputs.cur().state;
-		
-	auto &blocks =
-		inputs.cur().input().blocks;
-;
-		
-	if (
-		line == "```" &&
-		state == RS::new_element
-	) {
-		state = RS::code;
-		
-	blocks.push_back({
-		RS::code, {}, {}, 0
-	});
-;
-		break;
-	}
-
-	if (state == RS::code) {
-		if (line == "```") {
-			state = RS::after_code;
-		} else {
-			
-	blocks.back().value.push_back(
-		line
-	);
-;
-		}
-		break;
-	}
-;
-		
-	if (line.empty()) {
-		state = RS::new_element;
-		break;
-	}
-;
-		
-	if (
-		line[0] == '#' &&
-		state == RS::new_element
-	) {
-		state = RS::header;
-		
-	auto b { line.begin() };
-	auto e { line.end() };
-	int l { 0 };
-	for (
-		; b != e && *b == '#'; ++b, ++l
-	) {}
-	for (; b != e && *b == ' '; ++b) {}
-	blocks.push_back({
-		RS::header, {{ b, e }}, {}, l
-	});
-;
-		break;
-	}
-
-	if (line[0] == '*') {
-		if (
-			state == RS::header ||
-			state == RS::after_code ||
-			state == RS::notes
-		) {
-			state = RS::notes;
-			
-	auto b { line.begin() };
-	auto e { line.end() };
-	for (;
-		b != e &&
-			(*b == '*' || *b == ' ');
-		++b
-	) {}
-	blocks.back().notes.push_back(
-		{ b, e }
-	);
-;
-			break;
-		}
-	}
-
-	if (
-		line[0] == ' ' &&
-		state == RS::notes
-	) {
-		
-	blocks.back().notes.back() +=
-		line;
-;
-		break;
-	}
-
-	if (line[0] != ' ') {
-		if (
-			state == RS::new_element ||
-			state == RS::para
-		) {
-			
-	if (state == RS::new_element) {
-		if (blocks.empty() || blocks.back().state != RS::para) {
-			blocks.push_back({
-				RS::para, {}, {}, 0
-			});
-		}
-		blocks.back().value.push_back(line);
-	}
-;
-			
-	if (state == RS::para) {
-		blocks.back().value.back() +=
-			" " + line;
-	}
-;
-			state = RS::para;
-			break;
-		}
-	}
-;
-		
-	std::cerr << "!! " << line << '\n';
-;
-	} while (false);
-
-	auto end = line.cend();
-	for (
-		auto i = line.cbegin();
-		i != end; ++i
-	) {
-		
-	if (*i == '@') {
-		auto nb = i + 1;
-		auto ne = nb;
-		while (ne != end && *ne != '(') {
-			if (! isalpha(*ne)) {
-				ne = end;
-				break;
-			}
-			++ne;
-		}
-		if (ne != end && ne != nb) {
-			std::string name {nb, ne};
-			
-	auto ab = ne + 1;
-	auto ae = ab;
-	while (ae != end && *ae != ')') {
-		if (*ae == '@') {
-			if (++ae == end) { break; }
-		}
-		++ae;
-	}
-	if (ae != end) {
-		std::string arg {ab, ae};
-		
-	i = ae;
-	bool outside = !frag;
-	do {
-		if (! frag && ! blockLimit) { break; }
-		
-	if (name == "def") {
-		ASSERT_MSG(! frag, "@def(" << arg << ") in frag [" << frag->name << ']');
-		frag = inputs.get_local(arg);
-		if (isPopulatedFrag(frag)) {
-			std::cerr << "frag [" << arg << "] already defined\n";
-		}
-		break;
-	}
-
-	if (name == "end" || name == "End") {
-		ASSERT_MSG(frag,
-			'@' << name << "(" << arg <<
-			") not in frag"
-		);
-		
-	ASSERT_MSG(frag->name == arg,
-		"closing [" << arg <<
-		"] != [" << frag->name << ']'
-	);
-;
-		frag = nullptr;
-		break;
-	}
-
-	if (name == "add") {
-		ASSERT_MSG(! frag, "add in frag " << frag->name);
-		frag = inputs.get_local(arg);
-		if (! isPopulatedFrag(frag)) {
-			std::cerr << "frag [" << arg << "] not defined\n";
-		}
-		break;
-	}
-
-	if (name == "put") {
-		ASSERT_MSG(frag,
-			"@put not in frag"
-		);
-		Frag *sub = inputs.get_local(arg);
-		if (sub) {
-			
-	if (sub->expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub->name << "]\n";
-	}
-	if (sub->multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub->name << "]\n";
-	}
-;
-			sub->addExpand();
-			frag->add(sub);
-		}
-		break;
-	}
-
-	if (name == "inc") {
-		ASSERT_MSG(! frag,
-			"include in frag [" << frag->name << ']'
-		);
-		if (! inputs.has(arg)) {
-			inputs.push(arg);
-		}
-		break;
-	}
-
-	if (name == "mul") {
-		ASSERT_MSG(frag,
-			"@mul not in frag"
-		);
-		Frag *sub = inputs.get_local(arg);
-		if (sub) {
-			
-	if (sub->expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub->name << "]\n";
-	}
-;
-			sub->addMultiple();
-			frag->add(sub);
-		}
-		break;
-	}
-
-	if (name == "Def") {
-		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
-		frag = inputs.get_global(arg);
-		if (isPopulatedFrag(frag)) {
-			std::cerr << "Frag [" << arg << "] already defined\n";
-		}
-		break;
-	}
-
-	if (name == "Add") {
-		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
-		frag = inputs.get_global(arg);
-		if (! isPopulatedFrag(frag)) {
-			std::cerr << "{{" << line << "}}\n";
-			std::cerr << "Frag [" << arg << "] not defined\n";
-			std::cerr << inputs.cur().input().path() << ':' << inputs.cur().line() << '\n';
-		}
-		break;
-	}
-
-	if (name == "rep") {
-		ASSERT_MSG(! frag,
-			"@rep in frag [" << frag->name << ']'
-		);
-		frag = inputs.get_local(arg);
-		
-	ASSERT_MSG(frag, "frag [" <<
-		name <<
-		"] not defined"
-	);
-	frag->clear();
-;
-		break;
-	}
-
-	if (name == "Rep") {
-		ASSERT_MSG(! frag,
-			"@Rep in frag [" << frag->name << ']'
-		);
-		frag = inputs.get_global(arg);
-		
-	ASSERT_MSG(frag, "frag [" <<
-		name <<
-		"] not defined"
-	);
-	frag->clear();
-;
-		break;
-	}
-
-	if (name == "Put") {
-		ASSERT_MSG(frag,
-			"@Put not in frag"
-		);
-		Frag *sub = inputs.get_global(arg);
-		if (sub) {
-			
-	if (sub->expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub->name << "]\n";
-	}
-	if (sub->multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub->name << "]\n";
-	}
-;
-			sub->addExpand();
-			frag->add(sub);
-		}
-		break;
-	}
-
-	if (name == "Mul") {
-		ASSERT_MSG(frag,
-			"@Mul not in frag"
-		);
-		Frag *sub = inputs.get_global(arg);
-		if (sub) {
-			
-	if (sub->expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub->name << "]\n";
-	}
-;
-			sub->addMultiple();
-			frag->add(sub);
-		}
-		break;
-	}
-
-	if (name == "priv") {
-		ASSERT_MSG(frag,
-			"@priv not in frag"
-		);
-		
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur().input().path() +
-			':' + arg) &
-				0x7fffffff
-	};
-
-	std::ostringstream hashed;
-	hashed << "_private_" <<
-		cur << '_' <<
-		name;
-	frag->add(
-		hashed.str(),
-		inputs.cur().input().path(),
-		inputs.cur().line()
-	);
-;
-		break;
-	}
-
-	if (name == "magic") {
-		ASSERT_MSG(frag,
-			"@magic not in frag"
-		);
-		
-	std::hash<std::string> h;
-	unsigned cur {
-		h(inputs.cur().input().path() +
-			':' + arg) &
-				0x7fffffff
-	};
-
-	std::ostringstream value;
-	value << cur;
-	frag->add(
-		value.str(),
-		inputs.cur().input().path(),
-		inputs.cur().line()
-	);
-;
-		break;
-	}
-;
-		
-	if (frag) {
-		expand_macro_arg(frag, arg);
-	}
-;
-	} while (false);
-	if (blockLimit && outside && frag) {
-		--blockLimit;
-	}
-;
-		continue;
-	}
-;
-		}
-	}
-;
-		process_chars(frag, i, i + 1);
-	}
-	process_char(frag, '\n');
-;
-	} }
-	catch (const No_More_Lines &) {}
-} ;
 
 	
 	for (auto &i : root) {

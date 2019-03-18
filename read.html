@@ -137,7 +137,25 @@ Und alle bereits gelesenen Dateien
 </div>
 <div><div>
 <code>
-<span class="macro">@Def(<span class="name">read source files</span>)</span> {<br/>
+<span class="macro">@add(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">needed by read_sources</span>)</span>;<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">read_sources</span>() {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">read sources</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">read source files</span>)</span><br/>
+<span class="in1"></span><span class="fn">read_sources</span>();<br/>
+<span class="macro">@End(<span class="name">read source files</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">read sources</span>)</span> {<br/>
+<span class="in1"></span><span class="var">inputs</span> = <span class="type">Inputs</span> {};<br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">additional read vars</span>)</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
 <span class="in1"></span><span class="keyword">try</span> { <span class="keyword">for</span> (;;) {<br/>
@@ -145,7 +163,7 @@ Und alle bereits gelesenen Dateien
 <span class="in2"></span><span class="macro">@Put(<span class="name">process line</span>)</span>;<br/>
 <span class="in1"></span>} }<br/>
 <span class="in1"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>
-} <span class="macro">@End(<span class="name">read source files</span>)</span><br/>
+} <span class="macro">@end(<span class="name">read sources</span>)</span><br/>
 </code></div>
 <ul><li>
 <code><span class="var">hx</span></code> liest die Eingabe-Dateien zeilenweise

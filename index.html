@@ -431,9 +431,9 @@ Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Def(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">blockLimit</span> = -<span class="num">1</span>;<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">needed by read_sources</span>)</span><br/>
 </code></div>
 <ul><li>
 Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit  diesem  Parameter limitiert werden
@@ -544,10 +544,10 @@ In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die  Fragmente aufzub
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="var">SI</span> =<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span>::<span class="var">const_iterator</span>;<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by read_sources</span>)</span><br/>
 </code></div>
 <ul><li>
 Die Anwendung verwendet den String-Iterator an vielen Stellen
@@ -557,13 +557,13 @@ Daher definiert sie eine Abkürzung, damit die Folien nicht  überlaufen
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_chars</span>(<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>, <span class="var">SI</span> <span class="var">i</span>, <span class="var">SI</span> <span class="var">e</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process chars</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">needed by read_sources</span>)</span><br/>
 </code></div>
 <ul><li>
 Fügt ein Range an den Inhalt von <code><span class="var">frag</span></code> an
@@ -571,11 +571,11 @@ Fügt ein Range an den Inhalt von <code><span class="var">frag</span></code> an
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">char</span> <span class="var">ch</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process char</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">needed by read_sources</span>)</span><br/>
 </code></div>
 <ul><li>
 Fügt ein Zeichen an den Inhalt von <code><span class="var">frag</span></code> an
@@ -729,7 +729,7 @@ Wenn diese Auswertung nicht greift, wird die Standard-Expandierung  verwendet
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">expand_macro_arg</span>(<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">arg</span><br/>
 <span class="in1"></span>) {<br/>
@@ -737,7 +737,7 @@ Wenn diese Auswertung nicht greift, wird die Standard-Expandierung  verwendet
 <span class="in2"></span><span class="type">auto</span> <span class="var">e</span> = <span class="var">arg</span>.<span class="fn">end</span>();<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">expand loop</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">needed by read_sources</span>)</span><br/>
 </code></div>
 </div>
 <div><div>
