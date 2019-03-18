@@ -49,7 +49,7 @@
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="var">operator</span> <span class="fn">bool</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span> &lt; <span class="num">0</span> &amp;&amp; ! <span class="var">_relative</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span> &gt;= <span class="num">0</span> ||  <span class="var">_relative</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">line elements</span>)</span><br/>
 </code></div>
@@ -57,7 +57,7 @@
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">get line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (*<span class="var">this</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (! *<span class="var">this</span>) {<br/>
 <span class="in2"></span><span class="var">res</span> = <span class="var">cur</span>;<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="var">res</span> = <span class="var">_line</span>;<br/>
@@ -250,13 +250,13 @@
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">unit tests</span>)</span><br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span> {});<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span>::<span class="fn">begin</span>());<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span>::<span class="fn">end</span>());<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span>::<span class="fn">end</span>());<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span>::<span class="fn">line</span>(<span class="num">0</span>));<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">0</span>));<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">2</span>));<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span> {});<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">begin</span>());<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">end</span>());<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">end</span>());<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">0</span>));<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">0</span>));<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">2</span>));<br/>
 <span class="macro">@end(<span class="name">unit tests</span>)</span><br/>
 </code></div>
 </div>
@@ -329,7 +329,7 @@
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">do block range</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">line</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
 <span class="in3"></span>(<span class="var">curBlock</span> - <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>()) + <span class="num">1</span>,<br/>
 <span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
@@ -342,7 +342,7 @@
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">do inputs range</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">line</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
 <span class="in3"></span>(<span class="var">curInput</span> - <span class="var">inputs</span>.<span class="fn">begin</span>()) + <span class="num">1</span>,<br/>
 <span class="in3"></span>(<span class="var">inputs</span>.<span class="fn">end</span>() - <span class="var">inputs</span>.<span class="fn">begin</span>()) + <span class="num">1</span><br/>
@@ -355,7 +355,7 @@
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">do str range</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (! <span class="var">line</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
 <span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>,<br/>
 <span class="in3"></span><span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>

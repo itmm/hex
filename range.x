@@ -15,7 +15,7 @@
 ```
 @def(range elements)
 	Line prev() {
-		return _prev ? _last: _prev;
+		return _prev ?: _last;
 	}
 @end(range elements)
 ```
@@ -65,7 +65,7 @@
 
 ```
 @Rep(do block range)
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
@@ -77,7 +77,7 @@
 
 ```
 @Rep(do inputs range)
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
@@ -89,7 +89,7 @@
 
 ```
 @Rep(do str range)
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			Line::max, c.size() + 1
 		) - 1;

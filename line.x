@@ -33,14 +33,14 @@
 ```
 @add(line elements)
 	operator bool() const {
-		return _line < 0 && ! _relative;
+		return _line >= 0 ||  _relative;
 	}
 @end(line elements)
 ```
 
 ```
 @def(get line)
-	if (*this) {
+	if (! *this) {
 		res = cur;
 	} else {
 		res = _line;
@@ -214,13 +214,13 @@
 
 ```
 @def(unit tests)
-	ASSERT(Line {});
-	ASSERT(! Line::begin());
-	ASSERT(! Line::end());
-	ASSERT(! Line::end());
-	ASSERT(! Line::line(0));
-	ASSERT(! Line::relative(0));
-	ASSERT(! Line::relative(-2));
+	ASSERT(! Line {});
+	ASSERT(Line::begin());
+	ASSERT(Line::end());
+	ASSERT(Line::end());
+	ASSERT(Line::line(0));
+	ASSERT(Line::relative(0));
+	ASSERT(Line::relative(-2));
 @end(unit tests)
 ```
 
@@ -286,7 +286,7 @@
 
 ```
 @Def(do block range)
-	if (! line) {
+	if (line) {
 		next = line(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
@@ -298,7 +298,7 @@
 
 ```
 @Def(do inputs range)
-	if (! line) {
+	if (line) {
 		next = line(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
@@ -310,7 +310,7 @@
 
 ```
 @Def(do str range)
-	if (! line) {
+	if (line) {
 		next = line(
 			Line::max,
 			c.size() + 1

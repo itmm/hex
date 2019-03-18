@@ -1207,7 +1207,7 @@
 	) const {
 		int res {};
 		
-	if (*this) {
+	if (! *this) {
 		res = cur;
 	} else {
 		res = _line;
@@ -1220,7 +1220,7 @@
 	}
 
 	operator bool() const {
-		return _line < 0 && ! _relative;
+		return _line >= 0 ||  _relative;
 	}
 
 	Line() = default;
@@ -1261,7 +1261,7 @@
 		public:
 			
 	Line prev() {
-		return _prev ? _last: _prev;
+		return _prev ?: _last;
 	}
 
 	Line last() {
@@ -1346,7 +1346,7 @@
 		
 	int next = c.size();
 	
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			Line::max, c.size() + 1
 		) - 1;
@@ -1497,13 +1497,13 @@
 } ;
 
 	
-	ASSERT(Line {});
-	ASSERT(! Line::begin());
-	ASSERT(! Line::end());
-	ASSERT(! Line::end());
-	ASSERT(! Line::line(0));
-	ASSERT(! Line::relative(0));
-	ASSERT(! Line::relative(-2));
+	ASSERT(! Line {});
+	ASSERT(Line::begin());
+	ASSERT(Line::end());
+	ASSERT(Line::end());
+	ASSERT(Line::line(0));
+	ASSERT(Line::relative(0));
+	ASSERT(Line::relative(-2));
 
 	ASSERT(Line {}(5, 10) == 5);
 	ASSERT(Line::begin()(5, 10) == 0);
@@ -2436,7 +2436,7 @@
 				++next;
 			}
 			
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
@@ -2458,7 +2458,7 @@
 				--next;
 			}
 			
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
 			curInput->blocks.size() + 1
@@ -2479,7 +2479,7 @@
 			++next;
 		}
 		
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
@@ -2501,7 +2501,7 @@
 			--next;
 		}
 		
-	if (! range) {
+	if (range) {
 		next = range.last()(
 			(curInput - inputs.begin()) + 1,
 			(inputs.end() - inputs.begin()) + 1
