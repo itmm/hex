@@ -283,5 +283,15 @@ Zeilennummer wird erhöht
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 </div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">clear inputs</span>)</span><br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">path</span> { <span class="var">_used</span>.<span class="fn">empty</span>() ? <span class="str">"index.x"</span> : <span class="var">_used</span>.<span class="fn">front</span>().<span class="fn">path</span>() };<br/>
+<span class="in1"></span><span class="var">_used</span>.<span class="fn">clear</span>();<br/>
+<span class="in1"></span><span class="var">_open</span>.<span class="fn">clear</span>();<br/>
+<span class="in1"></span><span class="fn">push</span>(<span class="var">path</span>);<br/>
+<span class="macro">@End(<span class="name">clear inputs</span>)</span><br/>
+</code></div>
+</div>
 </body>
 </html>

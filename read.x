@@ -100,8 +100,16 @@
 ```
 
 ```
+@Add(inputs elements)
+	void clear() {
+		@Put(clear inputs);
+	}
+@End(inputs elements)
+```
+
+```
 @def(read sources) {
-	inputs = Inputs {};
+	inputs.clear();
 	@Put(additional read vars);
 	std::string line;
 	try { for (;;) {

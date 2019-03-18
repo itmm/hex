@@ -154,8 +154,17 @@ Und alle bereits gelesenen Dateien
 </div>
 <div><div>
 <code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">clear inputs</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">read sources</span>)</span> {<br/>
-<span class="in1"></span><span class="var">inputs</span> = <span class="type">Inputs</span> {};<br/>
+<span class="in1"></span><span class="var">inputs</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">additional read vars</span>)</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
 <span class="in1"></span><span class="keyword">try</span> { <span class="keyword">for</span> (;;) {<br/>

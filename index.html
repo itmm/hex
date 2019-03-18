@@ -996,9 +996,7 @@ Das Fragment darf nicht mehrfach definiert werden
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"@Add in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span>);<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"{{"</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">"}}\n"</span>;<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"Frag ["</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">"] not defined\n"</span>;<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>() &lt;&lt; <span class="str">':'</span> &lt;&lt; <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>() &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>

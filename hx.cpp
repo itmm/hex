@@ -490,6 +490,15 @@
 			
 	void read_line(std::string &line);
 
+	void clear() {
+		
+	const std::string path { _used.empty() ? "index.x" : _used.front().path() };
+	_used.clear();
+	_open.clear();
+	push(path);
+;
+	}
+
 	auto &cur() {
 		ASSERT (! _open.empty());
 		return _open.back();
@@ -680,7 +689,7 @@
 ;
 	void read_sources() {
 		 {
-	inputs = Inputs {};
+	inputs.clear();
 	
 	Frag *frag { nullptr };
 ;
@@ -948,9 +957,7 @@
 		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
 		frag = inputs.get_global(arg);
 		if (! isPopulatedFrag(frag)) {
-			std::cerr << "{{" << line << "}}\n";
 			std::cerr << "Frag [" << arg << "] not defined\n";
-			std::cerr << inputs.cur().input().path() << ':' << inputs.cur().line() << '\n';
 		}
 		break;
 	}

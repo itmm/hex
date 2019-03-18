@@ -204,3 +204,13 @@
 	}
 @End(inputs elements)
 ```
+
+```
+@Def(clear inputs)
+	const std::string path { _used.empty() ? "index.x" : _used.front().path() };
+	_used.clear();
+	_open.clear();
+	push(path);
+@End(clear inputs)
+```
+

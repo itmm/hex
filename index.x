@@ -699,9 +699,7 @@
 		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
 		frag = inputs.get_global(arg);
 		if (! isPopulatedFrag(frag)) {
-			std::cerr << "{{" << line << "}}\n";
 			std::cerr << "Frag [" << arg << "] not defined\n";
-			std::cerr << inputs.cur().input().path() << ':' << inputs.cur().line() << '\n';
 		}
 		break;
 	}
