@@ -1562,6 +1562,12 @@
 	std::vector<Input>::iterator curInput;
 	std::vector<Block>::iterator curBlock;
 
+	bool write_files = true;
+
+	bool process_files = true;
+
+	bool html_files = true;
+
 	void draw_block() {
 		
 	if (curInput == inputs.end()) {
@@ -2009,6 +2015,9 @@
 		arg == "--interactive"
 	) {
 		interactive = true;
+		write_files = false;
+		process_files = false;
+		html_files = false;
 		continue;
 	}
 ;
@@ -2035,46 +2044,8 @@
 ;
 
 	
-	for (auto &i : root) {
-		const Frag *frag { &i.second };
-		 {
-	if (frag->isFile()) {
-		
-	std::ofstream out(
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(*frag, out, false);
-	out.close();
-;
-	}
-}  {
-	int sum {
-		frag->expands()
-			+ frag->multiples()
-	};
-	if (sum <= 0) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not called\n";
-	}
-} 
-	if (frag->multiples() == 1) {
-		std::cerr <<
-			"multiple frag [" <<
-			frag->name <<
-			"] only used once\n";
-	}
-
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not populated\n";
-	}
-;
-	}
-
-	for (auto &j : inputs) {
-		for (auto &i : j.frags) {
+	if (write_files) {
+		for (auto &i : root) {
 			const Frag *frag {
 				&i.second
 			};
@@ -2115,29 +2086,52 @@
 		}
 	}
 
-	for (auto &i : root) {
-		const Frag *frag { &i.second };
-		 {
-	const std::string cmd { frag->cmd() };
-	if (cmd.size()) {
+	if (write_files) {
+		for (auto &j : inputs) {
+			for (auto &i : j.frags) {
+				const Frag *frag {
+					&i.second
+				};
+				 {
+	if (frag->isFile()) {
 		
-	std::ostringstream out {};
+	std::ofstream out(
+		frag->name.substr(6).c_str()
+	);
 	serializeFrag(*frag, out, false);
-	std::string o { out.str() };
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
-	if (f) {
-		std::fwrite(o.c_str(), o.size(), 1, f);
-		pclose(f);
-	}
+	out.close();
 ;
 	}
-} ;
+}  {
+	int sum {
+		frag->expands()
+			+ frag->multiples()
+	};
+	if (sum <= 0) {
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not called\n";
+	}
+} 
+	if (frag->multiples() == 1) {
+		std::cerr <<
+			"multiple frag [" <<
+			frag->name <<
+			"] only used once\n";
 	}
 
-	for (auto &j : inputs) {
-		for (auto &i : j.frags) {
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not populated\n";
+	}
+;
+			}
+		}
+	}
+
+	if (process_files) {
+		for (auto &i : root) {
 			const Frag *frag {
 				&i.second
 			};
@@ -2158,13 +2152,41 @@
 ;
 	}
 } ;
+		}
+	}
+
+	if (process_files) {
+		for (auto &j : inputs) {
+			for (auto &i : j.frags) {
+				const Frag *frag {
+					&i.second
+				};
+				 {
+	const std::string cmd { frag->cmd() };
+	if (cmd.size()) {
+		
+	std::ostringstream out {};
+	serializeFrag(*frag, out, false);
+	std::string o { out.str() };
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(o.c_str(), o.size(), 1, f);
+		pclose(f);
+	}
+;
+	}
+} ;
+			}
 		}
 	}
 ;
 
 	
-	for (auto &cur : inputs) {
-		
+	if (html_files) {
+		for (auto &cur : inputs) {
+			
 	const std::string &name { cur.path() };
 	std::string outPath {
 		name.substr(0, name.size() - 2) +
@@ -2412,6 +2434,7 @@
 ;
 	out.close();
 ;
+		}
 	}
 ;
 

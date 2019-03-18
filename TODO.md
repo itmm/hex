@@ -25,5 +25,4 @@
 * rerun file generation
 * rerun html generation
 * rerun piped programs
-* do not run file and html in interactive mode
 

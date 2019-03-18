@@ -9,12 +9,33 @@
 ```
 
 ```
+@Add(global elements)
+	bool write_files = true;
+@End(global elements)
+```
+
+```
+@Add(global elements)
+	bool process_files = true;
+@End(global elements)
+```
+
+```
+@Add(global elements)
+	bool html_files = true;
+@End(global elements)
+```
+
+```
 @Add(process argument)
 	if (
 		arg == "-i" ||
 		arg == "--interactive"
 	) {
 		interactive = true;
+		write_files = false;
+		process_files = false;
+		html_files = false;
 		continue;
 	}
 @End(process argument)

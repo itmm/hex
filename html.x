@@ -4,8 +4,10 @@
 
 ```
 @Def(write HTML file)
-	for (auto &cur : inputs) {
-		@put(write cur HTML file);
+	if (html_files) {
+		for (auto &cur : inputs) {
+			@put(write cur HTML file);
+		}
 	}
 @end(write HTML file)
 ```

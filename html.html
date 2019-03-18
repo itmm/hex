@@ -18,8 +18,10 @@ Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">write HTML file</span>)</span><br/>
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">write cur HTML file</span>)</span>;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">html_files</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">write cur HTML file</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write HTML file</span>)</span><br/>
 </code></div>

@@ -887,9 +887,13 @@
 
 ```
 @def(serialize fragments)
-	for (auto &i : root) {
-		const Frag *frag { &i.second };
-		@mul(serialize frag);
+	if (write_files) {
+		for (auto &i : root) {
+			const Frag *frag {
+				&i.second
+			};
+			@mul(serialize frag);
+		}
 	}
 @end(serialize fragments)
 ```
@@ -900,12 +904,14 @@
 
 ```
 @add(serialize fragments)
-	for (auto &j : inputs) {
-		for (auto &i : j.frags) {
-			const Frag *frag {
-				&i.second
-			};
-			@mul(serialize frag);
+	if (write_files) {
+		for (auto &j : inputs) {
+			for (auto &i : j.frags) {
+				const Frag *frag {
+					&i.second
+				};
+				@mul(serialize frag);
+			}
 		}
 	}
 @end(serialize fragments)
@@ -978,21 +984,27 @@
 
 ```
 @add(serialize fragments)
-	for (auto &i : root) {
-		const Frag *frag { &i.second };
-		@mul(serialize cmd);
+	if (process_files) {
+		for (auto &i : root) {
+			const Frag *frag {
+				&i.second
+			};
+			@mul(serialize cmd);
+		}
 	}
 @end(serialize fragments)
 ```
 
 ```
 @add(serialize fragments)
-	for (auto &j : inputs) {
-		for (auto &i : j.frags) {
-			const Frag *frag {
-				&i.second
-			};
-			@mul(serialize cmd);
+	if (process_files) {
+		for (auto &j : inputs) {
+			for (auto &i : j.frags) {
+				const Frag *frag {
+					&i.second
+				};
+				@mul(serialize cmd);
+			}
 		}
 	}
 @end(serialize fragments)
