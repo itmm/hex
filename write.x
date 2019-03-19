@@ -211,3 +211,72 @@
 	}
 @End(run loop)
 ```
+
+```
+@Add(run loop)
+	if (cmd == "M" || cmd == "Make") {
+		write_x();
+		system("make");
+		continue;
+	}
+@End(run loop)
+```
+
+```
+@Add(global elements)
+	bool is_prefix(
+		const std::string &s,
+		const std::string &p
+	) {
+		return s.size() >= p.size() &&
+			std::equal(
+				p.begin(), p.end(),
+				s.begin()
+			);
+	}
+@End(global elements)
+```
+
+```
+@Add(run loop) {
+	static const std::string p { "M " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("make " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+} @End(run loop)
+```
+
+```
+@Add(run loop) {
+	static const std::string p { "Make " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("make " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+} @End(run loop)
+```
+
+```
+@Add(run loop) {
+	static const std::string p { "G " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("git " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+} @End(run loop)
+```
+
+```
+@Add(run loop) {
+	static const std::string p { "Git " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("git " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+} @End(run loop)
+```

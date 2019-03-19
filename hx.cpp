@@ -2329,6 +2329,17 @@
 		}
 	}
 
+	bool is_prefix(
+		const std::string &s,
+		const std::string &p
+	) {
+		return s.size() >= p.size() &&
+			std::equal(
+				p.begin(), p.end(),
+				s.begin()
+			);
+	}
+
 	void add_block(Read_State state) {
 		
 	if (curInput != inputs.end()) {
@@ -2691,6 +2702,40 @@
 		continue;
 	}
 
+	if (cmd == "M" || cmd == "Make") {
+		write_x();
+		system("make");
+		continue;
+	}
+ {
+	static const std::string p { "M " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("make " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+}  {
+	static const std::string p { "Make " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("make " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+}  {
+	static const std::string p { "G " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("git " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+}  {
+	static const std::string p { "Git " };
+	if (is_prefix(cmd, p)) {
+		write_x();
+		system(("git " + cmd.substr(p.size())).c_str());
+		continue;
+	}
+} 
 	if (cmd == "H" || cmd == "Header") {
 		add_block(RS::header);
 		continue;
