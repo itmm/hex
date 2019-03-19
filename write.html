@@ -295,6 +295,17 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 </div>
 <div><div>
 <code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"G"</span> || <span class="var">cmd</span> == <span class="str">"Git"</span>) {<br/>
+<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">system</span>(<span class="str">"git status"</span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"G "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>

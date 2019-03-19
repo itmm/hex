@@ -260,6 +260,16 @@
 ```
 
 ```
+@Add(run loop)
+	if (cmd == "G" || cmd == "Git") {
+		write_x();
+		system("git status");
+		continue;
+	}
+@End(run loop)
+```
+
+```
 @Add(run loop) {
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {

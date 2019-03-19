@@ -2721,7 +2721,13 @@
 		system(("make " + cmd.substr(p.size())).c_str());
 		continue;
 	}
-}  {
+} 
+	if (cmd == "G" || cmd == "Git") {
+		write_x();
+		system("git status");
+		continue;
+	}
+ {
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
 		write_x();
