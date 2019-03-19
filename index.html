@@ -1222,16 +1222,32 @@ Fragmente, die Dateien spezifizieren werden in diese Dateien  rausgeschrieben
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">files_write</span>() {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">files write</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">serialize fragments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">write_files</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>) {<br/>
-<span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
-<span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
-<span class="in3"></span>};<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="fn">files_write</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">files write</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">inputs</span>.<span class="fn">root</span>()) {<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
+<span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
+<span class="in2"></span>};<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">files write</span>)</span><br/>
 </code></div>
 <ul><li>
 Fragmente, die mit <code><span class="var">file</span>:</code> beginnen, werden in die entsprechenden  Dateien rausgeschrieben
@@ -1241,18 +1257,16 @@ Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft  expandiert  wurde
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">serialize fragments</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">write_files</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
-<span class="in3"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>.<span class="var">frags</span>) {<br/>
-<span class="in4"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
-<span class="in5"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
-<span class="in4"></span>};<br/>
-<span class="in4"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
-<span class="in3"></span>}<br/>
+<span class="macro">@add(<span class="name">files write</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>.<span class="var">frags</span>) {<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
+<span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
+<span class="in3"></span>};<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
+<span class="macro">@end(<span class="name">files write</span>)</span><br/>
 </code></div>
 <ul><li>
 Auch alle lokalen Fragmente bearbeiten
@@ -1339,32 +1353,46 @@ Das Fragment wird in die entsprechende Datei geschrieben
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">serialize fragments</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">process_files</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">root</span>) {<br/>
-<span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
-<span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
-<span class="in3"></span>};<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">files_process</span>() {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">files process</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 </div>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">serialize fragments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">process_files</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
-<span class="in3"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>.<span class="var">frags</span>) {<br/>
-<span class="in4"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
-<span class="in5"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
-<span class="in4"></span>};<br/>
-<span class="in4"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
-<span class="in3"></span>}<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="fn">files_process</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">files process</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">inputs</span>.<span class="fn">root</span>()) {<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
+<span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
+<span class="in2"></span>};<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">files process</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">files process</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>.<span class="var">frags</span>) {<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
+<span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
+<span class="in3"></span>};<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">files process</span>)</span><br/>
 </code></div>
 </div>
 <div><div>

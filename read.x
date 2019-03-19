@@ -30,7 +30,7 @@
 		public:
 			@Put(inputs elements);
 		private:
-			@put(private inputs elements);
+			@Put(private inputs elements);
 	};
 @end(inputs)
 ```
@@ -291,10 +291,10 @@
 * die erst später definiert werden
 
 ```
-@def(private inputs elements)
+@Def(private inputs elements)
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
-@end(private inputs elements)
+@End(private inputs elements)
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
 * Mitten während des Lesens können andere Dateien eingelesen
@@ -307,11 +307,11 @@
   werden müssen
 
 ```
-@add(private inputs elements)
+@Add(private inputs elements)
 	std::vector<std::string> _paths;
 	std::vector<std::string>::
 		const_iterator _current_path;
-@end(private inputs elements)
+@End(private inputs elements)
 ```
 
 ```

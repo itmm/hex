@@ -2,11 +2,20 @@
 * Replace all read `x`-files with the current content
 
 ```
-@Add(run loop)
-	if (cmd == "W" || cmd == "Write") {
+@Add(global elements)
+	@put(needed by write_x)
+	void write_x() {
 		for (const auto &cur : inputs) {
 			@put(write cur);
 		}
+	}
+@End(global elements)
+```
+
+```
+@Add(run loop)
+	if (cmd == "W" || cmd == "Write") {
+		write_x();
 		continue;
 	}
 @End(run loop)
@@ -88,7 +97,7 @@
 ```
 
 ```
-@Add(global elements)
+@def(needed by write_x)
 	std::string split(
 		std::string &s, int width
 	) {
@@ -110,11 +119,11 @@
 		s.erase(s.begin(), c);
 		return res;
 	}
-@End(global elements)
+@end(needed by write_x)
 ```
 
 ```
-@Add(global elements)
+@add(needed by write_x)
 	void multi_write(
 		std::ofstream &out,
 		std::string str,
@@ -127,7 +136,7 @@
 			first_in = other_in;
 		}
 	}
-@End(global elements)
+@end(needed by write_x)
 ```
 
 ```
@@ -148,4 +157,57 @@
 		multi_write(out, n, "* ", "  ");
 	}
 @end(write notes)
+```
+
+```
+@Add(run loop)
+	if (cmd == "H" || cmd == "Html") {
+		write_x();
+		write_html();
+		continue;
+	}
+@End(run loop)
+```
+
+```
+@Add(run loop)
+	if (cmd == "F" || cmd == "Files") {
+		write_x();
+		write_html();
+		Inputs old { std::move(inputs) };
+		try {
+			read_sources();
+			files_write();
+		} catch (...) {
+			std::cerr << "!! aborted\n";
+			inputs = std::move(old);
+		}
+		curInput = inputs.begin();
+		curBlock =
+			curInput->blocks.begin();
+		continue;
+	}
+@End(run loop)
+```
+
+```
+@Add(run loop)
+	if (cmd == "P" || cmd == "Process") {
+		write_x();
+		write_html();
+		Inputs old { std::move(inputs) };
+		try {
+			read_sources();
+			files_write();
+			files_process();
+		} catch (...) {
+			std::cerr << "!! aborted\n";
+			inputs = std::move(old);
+		}
+		curInput = inputs.begin();
+		curBlock =
+			curInput->blocks.begin();
+		continue;
+	}
+@End(run loop)
 ```

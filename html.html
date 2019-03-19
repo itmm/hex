@@ -17,11 +17,21 @@ Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-
 </div>
 <div><div>
 <code>
-<span class="macro">@Def(<span class="name">write HTML file</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">html_files</span>) {<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">needed by write_html</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">write_html</span>() {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">write cur HTML file</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">write HTML file</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">html_files</span>) {<br/>
+<span class="in2"></span><span class="fn">write_html</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write HTML file</span>)</span><br/>
 </code></div>
@@ -60,7 +70,7 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Def(<span class="name">needed by write_html</span>)</span><br/>
 <span class="in1"></span><span class="type">enum</span> <span class="keyword">class</span> <span class="type">HtmlState</span> {<br/>
 <span class="in2"></span><span class="var">nothing</span>,<br/>
 <span class="in2"></span><span class="var">inSlide</span>,<br/>
@@ -68,7 +78,7 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 <span class="in2"></span><span class="var">afterSlides</span><br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">html state enums</span>)</span><br/>
 <span class="in1"></span>};<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
 In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die  gerade generierte HTML-Datei befindet
@@ -82,11 +92,11 @@ Oder ob gerade keine Folie offen ist
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by write_html</span>)</span><br/>
 <span class="in1"></span><span class="type">struct</span> <span class="type">HtmlStatus</span> {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">html state elements</span>)</span><br/>
 <span class="in1"></span>};<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
 Der aktuelle Status wird in <code><span class="type">HtmlStatus</span></code> abgelegt
@@ -95,28 +105,13 @@ Der aktuelle Status wird in <code><span class="type">HtmlStatus</span></code> ab
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">html state elements</span>)</span><br/>
-<span class="in1"></span><span class="fn">HtmlStatus</span>();<br/>
-<span class="in1"></span><span class="type">HtmlState</span> <span class="var">state</span>;<br/>
+<span class="in1"></span><span class="type">HtmlState</span> <span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">nothing</span>;<br/>
 <span class="macro">@end(<span class="name">html state elements</span>)</span><br/>
 </code></div>
 <ul><li>
 Status hat einen Konstruktor
 </li><li>
 Der aktuelle Zustand wird im Status abgelegt
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="var">inline</span> <span class="type">HtmlStatus</span>::<span class="fn">HtmlStatus</span>():<br/>
-<span class="in2"></span><span class="var">state</span> {<br/>
-<span class="in3"></span><span class="type">HtmlState</span>::<span class="var">nothing</span><br/>
-<span class="in2"></span>}<br/>
-<span class="in1"></span>{}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
-</code></div>
-<ul><li>
-Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 </li></ul>
 </div>
 <div><div>
@@ -238,7 +233,7 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span> <br/>
+<span class="macro">@Add(<span class="name">needed by write_html</span>)</span> <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeOneEscaped</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>, <span class="type">char</span> <span class="var">ch</span><br/>
 <span class="in1"></span>) {<br/>
@@ -248,7 +243,7 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 <span class="in4"></span><span class="var">out</span> &lt;&lt; <span class="var">ch</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
 Schreibt ein Zeichen
@@ -258,7 +253,7 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by write_html</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">writeEscaped</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">str</span><br/>
@@ -267,7 +262,7 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
 <span class="in3"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="var">ch</span>);<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
 Schreibt mehrere Zeichen
@@ -295,7 +290,7 @@ Die Zeichen <code>&lt;</code>, <code>&gt;</code> und <code>&amp;</code> werden e
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by write_html</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
@@ -303,7 +298,7 @@ Die Zeichen <code>&lt;</code>, <code>&gt;</code> und <code>&amp;</code> werden e
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">do code</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
 Verarbeitet ein Code-Fragment
@@ -315,14 +310,14 @@ Und wenn in Notizen Code-Fragmente eingebettet sind
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">needed by write_html</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_content</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process content line</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
 Diese Funktion formatiert beliebigen Markdown-Text als HTML

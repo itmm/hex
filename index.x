@@ -873,16 +873,30 @@
   rausgeschrieben
 
 ```
+@add(global elements)
+	void files_write() {
+		@put(files write);
+	}
+@end(global elements)
+```
+
+```
 @def(serialize fragments)
 	if (write_files) {
-		for (auto &i : root) {
-			const Frag *frag {
-				&i.second
-			};
-			@mul(serialize frag);
-		}
+		files_write();
 	}
 @end(serialize fragments)
+```
+
+```
+@def(files write)
+	for (auto &i : inputs.root()) {
+		const Frag *frag {
+			&i.second
+		};
+		@mul(serialize frag);
+	}
+@end(files write)
 ```
 * Fragmente, die mit `file:` beginnen, werden in die entsprechenden
   Dateien rausgeschrieben
@@ -890,18 +904,16 @@
   expandiert  wurden
 
 ```
-@add(serialize fragments)
-	if (write_files) {
-		for (auto &j : inputs) {
-			for (auto &i : j.frags) {
-				const Frag *frag {
-					&i.second
-				};
-				@mul(serialize frag);
-			}
+@add(files write)
+	for (auto &j : inputs) {
+		for (auto &i : j.frags) {
+			const Frag *frag {
+				&i.second
+			};
+			@mul(serialize frag);
 		}
 	}
-@end(serialize fragments)
+@end(files write)
 ```
 * Auch alle lokalen Fragmente bearbeiten
 
@@ -970,31 +982,43 @@
 * Das Fragment wird in die entsprechende Datei geschrieben
 
 ```
+@add(global elements)
+	void files_process() {
+		@put(files process);
+	}
+@end(global elements)
+```
+
+```
 @add(serialize fragments)
 	if (process_files) {
-		for (auto &i : root) {
+		files_process();
+	}
+@end(serialize fragments)
+```
+
+```
+@def(files process)
+	for (auto &i : inputs.root()) {
+		const Frag *frag {
+			&i.second
+		};
+		@mul(serialize cmd);
+	}
+@end(files process)
+```
+
+```
+@add(files process)
+	for (auto &j : inputs) {
+		for (auto &i : j.frags) {
 			const Frag *frag {
 				&i.second
 			};
 			@mul(serialize cmd);
 		}
 	}
-@end(serialize fragments)
-```
-
-```
-@add(serialize fragments)
-	if (process_files) {
-		for (auto &j : inputs) {
-			for (auto &i : j.frags) {
-				const Frag *frag {
-					&i.second
-				};
-				@mul(serialize cmd);
-			}
-		}
-	}
-@end(serialize fragments)
+@end(files process)
 ```
 
 ```

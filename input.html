@@ -25,9 +25,9 @@
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
-<span class="in1"></span><span class="type">FragMap</span> <span class="var">root</span>;<br/>
-<span class="macro">@End(<span class="name">input prereqs</span>)</span><br/>
+<span class="macro">@Add(<span class="name">private inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">FragMap</span> <span class="var">_root</span>;<br/>
+<span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
 Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar  angelegt
@@ -272,8 +272,8 @@ Zeilennummer wird erhöht
 <span class="in4"></span><span class="keyword">if</span> (<span class="var">i</span> == <span class="var">_open</span>.<span class="fn">begin</span>()) { <span class="keyword">break</span>; }<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">root</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">root</span>.<span class="fn">end</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">_root</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">_root</span>.<span class="fn">end</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
 <span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
 <br/>
 <span class="in1"></span>}<br/>
@@ -284,7 +284,16 @@ Zeilennummer wird erhöht
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_global</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">root</span>.<span class="fn">insert</span>({ <span class="var">name</span>, <span class="var">name</span> }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">_root</span>.<span class="fn">insert</span>({ <span class="var">name</span>, <span class="var">name</span> }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">FragMap</span> &amp;<span class="fn">root</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_root</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>

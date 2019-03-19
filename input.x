@@ -9,9 +9,9 @@
 * `vector` ist ein Container für Source-Dateien
 
 ```
-@Add(input prereqs)
-	FragMap root;
-@End(input prereqs)
+@Add(private inputs elements)
+	FragMap _root;
+@End(private inputs elements)
 ```
 * Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
   angelegt
@@ -194,8 +194,8 @@
 				if (i == _open.begin()) { break; }
 			}
 		}
-		auto f = root.find(name);
-		if (f == root.end()) { return nullptr; }
+		auto f = _root.find(name);
+		if (f == _root.end()) { return nullptr; }
 		return &f->second;
 
 	}
@@ -205,7 +205,15 @@
 ```
 @Add(inputs elements)
 	Frag *add_global(const std::string &name) {
-		return &root.insert({ name, name }).first->second;
+		return &_root.insert({ name, name }).first->second;
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
+	const FragMap &root() const {
+		return _root;
 	}
 @End(inputs elements)
 ```
@@ -232,4 +240,3 @@
 	_current_path = _paths.begin();
 @End(clear inputs)
 ```
-

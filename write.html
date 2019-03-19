@@ -17,11 +17,21 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"W"</span> || <span class="var">cmd</span> == <span class="str">"Write"</span>) {<br/>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">needed by write_x</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">write_x</span>() {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">write cur</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"W"</span> || <span class="var">cmd</span> == <span class="str">"Write"</span>) {<br/>
+<span class="in2"></span><span class="fn">write_x</span>();<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -111,7 +121,7 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@def(<span class="name">needed by write_x</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">split</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>, <span class="type">int</span> <span class="var">width</span><br/>
 <span class="in1"></span>) {<br/>
@@ -133,12 +143,12 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in2"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="var">s</span>.<span class="fn">begin</span>(), <span class="var">c</span>);<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_x</span>)</span><br/>
 </code></div>
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@add(<span class="name">needed by write_x</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">multi_write</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ofstream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">str</span>,<br/>
@@ -151,7 +161,7 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in3"></span><span class="var">first_in</span> = <span class="var">other_in</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_x</span>)</span><br/>
 </code></div>
 </div>
 <div><div>
@@ -174,6 +184,62 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in2"></span><span class="fn">multi_write</span>(<span class="var">out</span>, <span class="var">n</span>, <span class="str">"* "</span>, <span class="str">"  "</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write notes</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"H"</span> || <span class="var">cmd</span> == <span class="str">"Html"</span>) {<br/>
+<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_html</span>();<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"F"</span> || <span class="var">cmd</span> == <span class="str">"Files"</span>) {<br/>
+<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_html</span>();<br/>
+<span class="in2"></span><span class="type">Inputs</span> <span class="var">old</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="var">inputs</span>) };<br/>
+<span class="in2"></span><span class="keyword">try</span> {<br/>
+<span class="in3"></span><span class="fn">read_sources</span>();<br/>
+<span class="in3"></span><span class="fn">files_write</span>();<br/>
+<span class="in2"></span>} <span class="keyword">catch</span> (...) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"!! aborted\n"</span>;<br/>
+<span class="in3"></span><span class="var">inputs</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">old</span>);<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">curInput</span> = <span class="var">inputs</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="var">curBlock</span> =<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"P"</span> || <span class="var">cmd</span> == <span class="str">"Process"</span>) {<br/>
+<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_html</span>();<br/>
+<span class="in2"></span><span class="type">Inputs</span> <span class="var">old</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="var">inputs</span>) };<br/>
+<span class="in2"></span><span class="keyword">try</span> {<br/>
+<span class="in3"></span><span class="fn">read_sources</span>();<br/>
+<span class="in3"></span><span class="fn">files_write</span>();<br/>
+<span class="in3"></span><span class="fn">files_process</span>();<br/>
+<span class="in2"></span>} <span class="keyword">catch</span> (...) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"!! aborted\n"</span>;<br/>
+<span class="in3"></span><span class="var">inputs</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">old</span>);<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">curInput</span> = <span class="var">inputs</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="var">curBlock</span> =<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
 </div>
 </body>

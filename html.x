@@ -3,11 +3,20 @@
   HTML-Präsentationen zu erzeugen
 
 ```
-@Def(write HTML file)
-	if (html_files) {
+@Add(global elements)
+	@Put(needed by write_html)
+	void write_html() {
 		for (auto &cur : inputs) {
 			@put(write cur HTML file);
 		}
+	}
+@End(global elements)
+```
+
+```
+@Def(write HTML file)
+	if (html_files) {
+		write_html();
 	}
 @end(write HTML file)
 ```
@@ -36,7 +45,7 @@
 * Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 
 ```
-@Add(global elements)
+@Def(needed by write_html)
 	enum class HtmlState {
 		nothing,
 		inSlide,
@@ -44,7 +53,7 @@
 		afterSlides
 		@put(html state enums)
 	};
-@end(global elements)
+@end(needed by write_html)
 ```
 * In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die
   gerade generierte HTML-Datei befindet
@@ -53,33 +62,21 @@
 * Oder ob gerade keine Folie offen ist
 
 ```
-@Add(global elements)
+@Add(needed by write_html)
 	struct HtmlStatus {
 		@put(html state elements)
 	};
-@end(global elements)
+@end(needed by write_html)
 ```
 * Der aktuelle Status wird in `HtmlStatus` abgelegt
 
 ```
 @def(html state elements)
-	HtmlStatus();
-	HtmlState state;
+	HtmlState state = HtmlState::nothing;
 @end(html state elements)
 ```
 * Status hat einen Konstruktor
 * Der aktuelle Zustand wird im Status abgelegt
-
-```
-@Add(global elements)
-	inline HtmlStatus::HtmlStatus():
-		state {
-			HtmlState::nothing
-		}
-	{}
-@end(global elements)
-```
-* Der initiale Zustand signalisiert, dass noch nichts geschrieben wurde
 
 ```
 @Add(includes)
@@ -171,7 +168,7 @@
 * Und eine Folie mit einer HTML-Überschrift wird erzeugt
 
 ```
-@Add(global elements) 
+@Add(needed by write_html) 
 	void writeOneEscaped(
 		std::ostream &out, char ch
 	) {
@@ -181,14 +178,14 @@
 				out << ch;
 		}
 	}
-@end(global elements)
+@end(needed by write_html)
 ```
 * Schreibt ein Zeichen
 * Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
   Entitäten
 
 ```
-@Add(global elements)
+@Add(needed by write_html)
 	void writeEscaped(
 		std::ostream &out,
 		const std::string &str
@@ -197,7 +194,7 @@
 			writeOneEscaped(out, ch);
 		}
 	}
-@end(global elements)
+@End(needed by write_html)
 ```
 * Schreibt mehrere Zeichen
 * Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
@@ -219,7 +216,7 @@
 * Die Zeichen `<`, `>` und `&` werden ersetzt
 
 ```
-@Add(global elements)
+@Add(needed by write_html)
 	@put(process code helper);
 	void process_code(
 		std::ostream &out,
@@ -227,21 +224,21 @@
 	) {
 		@put(do code);
 	}
-@end(global elements)
+@end(needed by write_html)
 ```
 * Verarbeitet ein Code-Fragment
 * Dies Funktion wird im Code Modus verwendet
 * Und wenn in Notizen Code-Fragmente eingebettet sind
 
 ```
-@Add(global elements)
+@Add(needed by write_html)
 	void process_content(
 		std::ostream &out,
 		SI begin, SI end
 	) {
 		@put(process content line);
 	}
-@end(global elements)
+@end(needed by write_html)
 ```
 * Diese Funktion formatiert beliebigen Markdown-Text als HTML
 * Code-Schnippsel werden ebenfalls formatiert

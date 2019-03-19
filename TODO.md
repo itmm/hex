@@ -21,7 +21,4 @@
 * alternatively ncurses in viewer/editor
 * quiet mode in editor for batch processing
 * delete slides
-* rerun file generation
-* rerun html generation
-* rerun piped programs
 

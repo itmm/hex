@@ -61,7 +61,7 @@ All is abstracted away, so that the interface provides lines until  everything i
 <span class="in2"></span><span class="keyword">public</span>:<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">inputs elements</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">private inputs elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">private inputs elements</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">inputs</span>)</span><br/>
 </code></div>
@@ -403,10 +403,10 @@ die erst später definiert werden
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">private inputs elements</span>)</span><br/>
+<span class="macro">@Def(<span class="name">private inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">_open</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
-<span class="macro">@end(<span class="name">private inputs elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
 Es gibt immer eine aktuelle Datei, die gerade gelesen wird
@@ -426,11 +426,11 @@ Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert  werden müssen
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">private inputs elements</span>)</span><br/>
+<span class="macro">@Add(<span class="name">private inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">_paths</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt;::<br/>
 <span class="in2"></span><span class="var">const_iterator</span> <span class="var">_current_path</span>;<br/>
-<span class="macro">@end(<span class="name">private inputs elements</span>)</span><br/>
+<span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 </div>
 <div><div>

@@ -389,8 +389,6 @@
 	using FragMap =
 		std::map<std::string, Frag>;
 ;
-
-	FragMap root;
 ;
 
 	class Input {
@@ -578,14 +576,18 @@
 				if (i == _open.begin()) { break; }
 			}
 		}
-		auto f = root.find(name);
-		if (f == root.end()) { return nullptr; }
+		auto f = _root.find(name);
+		if (f == _root.end()) { return nullptr; }
 		return &f->second;
 
 	}
 
 	Frag *add_global(const std::string &name) {
-		return &root.insert({ name, name }).first->second;
+		return &_root.insert({ name, name }).first->second;
+	}
+
+	const FragMap &root() const {
+		return _root;
 	}
 
 	Frag *get_global(const std::string &name) {
@@ -604,6 +606,8 @@
 	std::vector<std::string> _paths;
 	std::vector<std::string>::
 		const_iterator _current_path;
+
+	FragMap _root;
 ;
 	};
 
@@ -1145,6 +1149,145 @@
 		"slides/slides.css"
 	};
 
+	void files_write() {
+		
+	for (auto &i : inputs.root()) {
+		const Frag *frag {
+			&i.second
+		};
+		 {
+	if (frag->isFile()) {
+		
+	std::ofstream out(
+		frag->name.substr(6).c_str()
+	);
+	serializeFrag(*frag, out, false);
+	out.close();
+;
+	}
+}  {
+	int sum {
+		frag->expands()
+			+ frag->multiples()
+	};
+	if (sum <= 0) {
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not called\n";
+	}
+} 
+	if (frag->multiples() == 1) {
+		std::cerr <<
+			"multiple frag [" <<
+			frag->name <<
+			"] only used once\n";
+	}
+
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not populated\n";
+	}
+;
+	}
+
+	for (auto &j : inputs) {
+		for (auto &i : j.frags) {
+			const Frag *frag {
+				&i.second
+			};
+			 {
+	if (frag->isFile()) {
+		
+	std::ofstream out(
+		frag->name.substr(6).c_str()
+	);
+	serializeFrag(*frag, out, false);
+	out.close();
+;
+	}
+}  {
+	int sum {
+		frag->expands()
+			+ frag->multiples()
+	};
+	if (sum <= 0) {
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not called\n";
+	}
+} 
+	if (frag->multiples() == 1) {
+		std::cerr <<
+			"multiple frag [" <<
+			frag->name <<
+			"] only used once\n";
+	}
+
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "frag [" <<
+			frag->name <<
+			"] not populated\n";
+	}
+;
+		}
+	}
+;
+	}
+
+	void files_process() {
+		
+	for (auto &i : inputs.root()) {
+		const Frag *frag {
+			&i.second
+		};
+		 {
+	const std::string cmd { frag->cmd() };
+	if (cmd.size()) {
+		
+	std::ostringstream out {};
+	serializeFrag(*frag, out, false);
+	std::string o { out.str() };
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(o.c_str(), o.size(), 1, f);
+		pclose(f);
+	}
+;
+	}
+} ;
+	}
+
+	for (auto &j : inputs) {
+		for (auto &i : j.frags) {
+			const Frag *frag {
+				&i.second
+			};
+			 {
+	const std::string cmd { frag->cmd() };
+	if (cmd.size()) {
+		
+	std::ostringstream out {};
+	serializeFrag(*frag, out, false);
+	std::string o { out.str() };
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(o.c_str(), o.size(), 1, f);
+		pclose(f);
+	}
+;
+	}
+} ;
+		}
+	}
+;
+	}
+
+	
 	enum class HtmlState {
 		nothing,
 		inSlide,
@@ -1161,16 +1304,9 @@
 
 	struct HtmlStatus {
 		
-	HtmlStatus();
-	HtmlState state;
+	HtmlState state = HtmlState::nothing;
 
 	};
-
-	inline HtmlStatus::HtmlStatus():
-		state {
-			HtmlState::nothing
-		}
-	{}
  
 	void writeOneEscaped(
 		std::ostream &out, char ch
@@ -1589,602 +1725,7 @@
 ;
 	}
 
-	bool interactive = false;
-	std::vector<Input>::iterator curInput;
-	std::vector<Block>::iterator curBlock;
-
-	bool write_files = true;
-
-	bool process_files = true;
-
-	bool html_files = true;
-
-	void draw_block() {
-		
-	if (curBlock->state == RS::header) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": ";
-			for (int i = 0; i < curBlock->level; ++i) {
-				std::cout << '#';
-			}
-			std::cout << ' ' << l << "\n\n";
-		}
-	}
-
-	if (curBlock->state == RS::code) {
-		std::cout << "```\n";
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": " << l << '\n';
-		}
-		std::cout << "```\n\n";
-	}
-
-	if (curBlock->state == RS::para) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": " << l << "\n\n";
-		}
-	}
-
-	int j = 0;
-	for (const auto &l : curBlock->notes) {
-		std::cout << ++j << ": * " << l << '\n';
-	}
-	std::cout << '\n';
-;
-	}
-
-	void draw_position() {
-		
-	auto &bs { curInput->blocks };
-	std::cout << curInput->path() << ':';
-	int idx =
-		(curBlock - bs.begin()) + 1;
-	std::cout << idx;
-	if (
-		idx == static_cast<int>(bs.size())
-	) {
-		std::cout << " = $";
-	}
-;
-	}
-
-	void trim(std::string &s) {
-		while (! s.empty() && (s[0] & 0xff) <= ' ') {
-			s.erase(0, 1);
-		}
-	}
-
-	class Line {
-		public:
-			
-	int operator()(
-		int cur, int end
-	) const {
-		int res {};
-		
-	if (! *this) {
-		res = cur;
-	} else {
-		res = _line;
-		if (_relative) { res += cur; }
-	}
-	if (res < 0) { res = 0; }
-	if (res > end) { res = end; }
-;
-		return res;
-	}
-
-	operator bool() const {
-		return _line >= 0 ||  _relative;
-	}
-
-	Line() = default;
-
-	static Line relative(int line) {
-		return Line { line, true };
-	}
-
-	static Line line(int line) {
-		return Line { line, false };
-	}
-
-	static Line begin() {
-		return line(0);
-	}
-
-	static const int max =
-		std::numeric_limits<int>::max();
-		
-	static Line end() {
-		return line(max);
-	}
-;
-		private:
-			
-	int _line = -1;
-	bool _relative = false;
-
-	Line(int line, bool relative):
-		_line { line },
-		_relative { relative }
-	{}
-;
-	};
-
-	
-	class Range {
-		public:
-			
-	Line prev() {
-		return _prev ?: _last;
-	}
-
-	Line last() {
-		return _last;
-	}
-
-	Range &operator<<(const Line &l) {
-		_prev = _last;
-		_last = l;
-		return *this;
-	}
-
-	operator bool() {
-		return _last;
-	}
-;
-		private:
-			Line _prev;
-			Line _last;
-	};
-;
-	
-	Range range;
-;
-
-	int get_number(std::string &s) {
-		int res = 0;
-		while (
-			! s.empty() && isdigit(s[0])
-		) {
-			res = res * 10 + s[0] - '0';
-			s.erase(0, 1);
-		}
-		return res;
-	}
-
-	Line get_line(std::string &s) {
-		Line line {};
-		do {
-			
-	if (s[0] == '.') {
-		s.erase(0, 1);
-		line = Line::relative(0);
-		break;
-	}
-
-	if (s[0] == '+') {
-		s.erase(0, 1);
-		int n = get_number(s);
-		line = Line::relative(n);
-		break;
-	}
-
-	if (s[0] == '-') {
-		s.erase(0, 1);
-		int n = -get_number(s);
-		line = Line::relative(n);
-		break;
-	}
-
-	if (s[0] == '$') {
-		line = Line::end();
-		s.erase(0, 1);
-		continue;
-	}
-
-	if (isdigit(s[0])) {
-		int n = get_number(s);
-		line = Line::line(n);
-		continue;
-	}
-;
-		} while (false);
-		trim(s);
-		return line;
-	}
-
-	void insert_before(
-		const std::string &prefix,
-		std::vector<std::string> &c
-	) {
-		
-	int next = c.size();
-	
-	if (range) {
-		next = range.last()(
-			Line::max, c.size() + 1
-		) - 1;
-		if (next < 0) { next = 0; }
-		int p = range.prev()(
-			Line::max, c.size() + 1
-		) - 1;
-		if (p < 0) { p = 0; }
-		if (p < next) {
-			c.erase(
-				c.begin() + p,
-				c.begin() + next
-			);
-			next = p;
-		}
-	}
-;
-	std::string l;
-	for (;;) {
-		std::cout << prefix << ' ' << (next + 1) << "? ";
-		std::getline(std::cin, l);
-		auto b = l.begin();
-		auto e = l.end();
-		while (b != e && *b <= ' ') { ++b; }
-		std::string t { b, e };
-		if (t.empty()) { continue; }
-		if (t == ".") { break; }
-		c.insert(c.begin() + next, l);
-		++next;
-	}
-	draw_block();
-;
-	}
-
-	std::string split(
-		std::string &s, int width
-	) {
-		auto b { s.begin() };
-		auto e { s.end() };
-		while (b != e && *b == ' ') { ++b; }
-		auto c = b;
-		while (c != e) {
-			auto t = c;
-			while (t != e && *t == ' ') { ++t; }
-			while (t != e && *t != ' ') { ++t; }
-			if (c == b || t - b <= width) {
-				c = t;
-			} else {
-				break;
-			}
-		}
-		std::string res { b, c };
-		s.erase(s.begin(), c);
-		return res;
-	}
-
-	void multi_write(
-		std::ofstream &out,
-		std::string str,
-		std::string first_in,
-		const std::string &other_in
-	) {
-		while (! str.empty()) {
-			std::string p = split(str, 72 - first_in.size());
-			out << first_in << p << '\n';
-			first_in = other_in;
-		}
-	}
-
-	void add_block(Read_State state) {
-		
-	if (curInput != inputs.end()) {
-		
-	if (
-		curBlock !=
-			curInput->blocks.end()
-	) {
-		++curBlock;
-	}
-;
-		int i = curBlock -
-			curInput->blocks.begin();
-		
-	curInput->blocks.insert(
-		curBlock,
-		{ state, { "REPLACE" }, {} }
-	);
-;
-		curBlock =
-			curInput->blocks.begin() + i;
-	} else {
-		std::cerr << "! no file\n";
-	}
-	draw_block();
-;
-	}
-
-	int main(
-		int argc,
-		const char **argv
-	) {
-		
-	#if ! NDEBUG
-		
-	
-	testFragName("abc");
-	testFragName("");
-	testFragName("A c");
-	{
-		Frag f { "ab" };
-		ASSERT(f.empty());
-	}
-
-	{
-		FragEntry entry;
-		ASSERT(! entry.frag);
-	}
-
-	{
-		FragEntry entry;
-		ASSERT(entry.str().empty());
-	}
- {
-	Frag frag { "" };
-	addStringToFrag(&frag, "abc");
-	addStringToFrag(&frag, "def");
-	testFrag(frag, "abcdef");
-}  {
-	Frag a { "" };
-	Frag b { "" };
-	addStringToFrag(&a, "abc");
-	b.add(&a);
-	addStringToFrag(&b, "def");
-	b.add(&a);
-	testFrag(b, "abcdefabc");
-} ;
-
-	
-	ASSERT(! Line {});
-	ASSERT(Line::begin());
-	ASSERT(Line::end());
-	ASSERT(Line::end());
-	ASSERT(Line::line(0));
-	ASSERT(Line::relative(0));
-	ASSERT(Line::relative(-2));
-
-	ASSERT(Line {}(5, 10) == 5);
-	ASSERT(Line::begin()(5, 10) == 0);
-	ASSERT(Line::end()(5, 10) == 10);
-
-	ASSERT(Line::line(0)(5, 10) == 0);
-	ASSERT(Line::line(6)(5, 10) == 6);
-	ASSERT(Line::line(20)(5, 10) == 10);
-
-	ASSERT(
-		Line::relative(2)(5, 10) == 7
-	);
-	ASSERT(
-		Line::relative(7)(5, 10) == 10
-	);
-	ASSERT(
-		Line::relative(-2)(5, 10) == 3
-	);
-	ASSERT(
-		Line::relative(-7)(5, 10) == 0
-	);
- {
-	std::string f = "+3";
-	ASSERT(
-		get_line(f)(5, 10) == 8
-	);
-}  {
-	std::string f = ".";
-	ASSERT(
-		get_line(f)(5, 10) == 5
-	);
-}  {
-	std::string f = "$";
-	ASSERT(
-		get_line(f)(5, 10) == 10 
-	);
-} ;
-;
-	#endif
-
-	
-	for (int i { 1 }; i < argc; ++i) {
-		std::string arg { argv[i] };
-		 {
-	static const std::string prefix {
-		"--css="
-	};
-	if (arg.substr(
-		0, prefix.length()
-	) == prefix) {
-		stylesheet =
-			arg.substr(prefix.length());
-		continue;
-	}
-}  {
-	static const std::string prefix {
-		"--limit="
-	};
-	if (arg.substr(
-		0, prefix.length()
-	) == prefix) {
-		blockLimit = std::stoi(
-			arg.substr(prefix.length())
-		);
-		continue;
-	}
-} 
-	if (
-		arg == "-i" ||
-		arg == "--interactive"
-	) {
-		interactive = true;
-		write_files = false;
-		process_files = false;
-		html_files = false;
-		continue;
-	}
-;
-		
-	inputs.add(argv[1]);
-	continue;
-;
-		ASSERT_MSG(false,
-			"unknown argument [" <<
-			argv[i] << ']'
-		);
-	}
-;
-
-	
-	read_sources();
-;
-
-	
-	if (write_files) {
-		for (auto &i : root) {
-			const Frag *frag {
-				&i.second
-			};
-			 {
-	if (frag->isFile()) {
-		
-	std::ofstream out(
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(*frag, out, false);
-	out.close();
-;
-	}
-}  {
-	int sum {
-		frag->expands()
-			+ frag->multiples()
-	};
-	if (sum <= 0) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not called\n";
-	}
-} 
-	if (frag->multiples() == 1) {
-		std::cerr <<
-			"multiple frag [" <<
-			frag->name <<
-			"] only used once\n";
-	}
-
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not populated\n";
-	}
-;
-		}
-	}
-
-	if (write_files) {
-		for (auto &j : inputs) {
-			for (auto &i : j.frags) {
-				const Frag *frag {
-					&i.second
-				};
-				 {
-	if (frag->isFile()) {
-		
-	std::ofstream out(
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(*frag, out, false);
-	out.close();
-;
-	}
-}  {
-	int sum {
-		frag->expands()
-			+ frag->multiples()
-	};
-	if (sum <= 0) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not called\n";
-	}
-} 
-	if (frag->multiples() == 1) {
-		std::cerr <<
-			"multiple frag [" <<
-			frag->name <<
-			"] only used once\n";
-	}
-
-	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not populated\n";
-	}
-;
-			}
-		}
-	}
-
-	if (process_files) {
-		for (auto &i : root) {
-			const Frag *frag {
-				&i.second
-			};
-			 {
-	const std::string cmd { frag->cmd() };
-	if (cmd.size()) {
-		
-	std::ostringstream out {};
-	serializeFrag(*frag, out, false);
-	std::string o { out.str() };
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
-	if (f) {
-		std::fwrite(o.c_str(), o.size(), 1, f);
-		pclose(f);
-	}
-;
-	}
-} ;
-		}
-	}
-
-	if (process_files) {
-		for (auto &j : inputs) {
-			for (auto &i : j.frags) {
-				const Frag *frag {
-					&i.second
-				};
-				 {
-	const std::string cmd { frag->cmd() };
-	if (cmd.size()) {
-		
-	std::ostringstream out {};
-	serializeFrag(*frag, out, false);
-	std::string o { out.str() };
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
-	if (f) {
-		std::fwrite(o.c_str(), o.size(), 1, f);
-		pclose(f);
-	}
-;
-	}
-} ;
-			}
-		}
-	}
-;
-
-	
-	if (html_files) {
+	void write_html() {
 		for (auto &cur : inputs) {
 			
 	const std::string &name { cur.path() };
@@ -2436,6 +1977,541 @@
 ;
 		}
 	}
+
+	bool interactive = false;
+	std::vector<Input>::iterator curInput;
+	std::vector<Block>::iterator curBlock;
+
+	bool write_files = true;
+
+	bool process_files = true;
+
+	bool html_files = true;
+
+	void draw_block() {
+		
+	if (curBlock->state == RS::header) {
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			std::cout << ++i << ": ";
+			for (int i = 0; i < curBlock->level; ++i) {
+				std::cout << '#';
+			}
+			std::cout << ' ' << l << "\n\n";
+		}
+	}
+
+	if (curBlock->state == RS::code) {
+		std::cout << "```\n";
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			std::cout << ++i << ": " << l << '\n';
+		}
+		std::cout << "```\n\n";
+	}
+
+	if (curBlock->state == RS::para) {
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			std::cout << ++i << ": " << l << "\n\n";
+		}
+	}
+
+	int j = 0;
+	for (const auto &l : curBlock->notes) {
+		std::cout << ++j << ": * " << l << '\n';
+	}
+	std::cout << '\n';
+;
+	}
+
+	void draw_position() {
+		
+	auto &bs { curInput->blocks };
+	std::cout << curInput->path() << ':';
+	int idx =
+		(curBlock - bs.begin()) + 1;
+	std::cout << idx;
+	if (
+		idx == static_cast<int>(bs.size())
+	) {
+		std::cout << " = $";
+	}
+;
+	}
+
+	void trim(std::string &s) {
+		while (! s.empty() && (s[0] & 0xff) <= ' ') {
+			s.erase(0, 1);
+		}
+	}
+
+	class Line {
+		public:
+			
+	int operator()(
+		int cur, int end
+	) const {
+		int res {};
+		
+	if (! *this) {
+		res = cur;
+	} else {
+		res = _line;
+		if (_relative) { res += cur; }
+	}
+	if (res < 0) { res = 0; }
+	if (res > end) { res = end; }
+;
+		return res;
+	}
+
+	operator bool() const {
+		return _line >= 0 ||  _relative;
+	}
+
+	Line() = default;
+
+	static Line relative(int line) {
+		return Line { line, true };
+	}
+
+	static Line line(int line) {
+		return Line { line, false };
+	}
+
+	static Line begin() {
+		return line(0);
+	}
+
+	static const int max =
+		std::numeric_limits<int>::max();
+		
+	static Line end() {
+		return line(max);
+	}
+;
+		private:
+			
+	int _line = -1;
+	bool _relative = false;
+
+	Line(int line, bool relative):
+		_line { line },
+		_relative { relative }
+	{}
+;
+	};
+
+	
+	class Range {
+		public:
+			
+	Line prev() {
+		return _prev ?: _last;
+	}
+
+	Line last() {
+		return _last;
+	}
+
+	Range &operator<<(const Line &l) {
+		_prev = _last;
+		_last = l;
+		return *this;
+	}
+
+	operator bool() {
+		return _last;
+	}
+;
+		private:
+			Line _prev;
+			Line _last;
+	};
+;
+	
+	Range range;
+;
+
+	int get_number(std::string &s) {
+		int res = 0;
+		while (
+			! s.empty() && isdigit(s[0])
+		) {
+			res = res * 10 + s[0] - '0';
+			s.erase(0, 1);
+		}
+		return res;
+	}
+
+	Line get_line(std::string &s) {
+		Line line {};
+		do {
+			
+	if (s[0] == '.') {
+		s.erase(0, 1);
+		line = Line::relative(0);
+		break;
+	}
+
+	if (s[0] == '+') {
+		s.erase(0, 1);
+		int n = get_number(s);
+		line = Line::relative(n);
+		break;
+	}
+
+	if (s[0] == '-') {
+		s.erase(0, 1);
+		int n = -get_number(s);
+		line = Line::relative(n);
+		break;
+	}
+
+	if (s[0] == '$') {
+		line = Line::end();
+		s.erase(0, 1);
+		continue;
+	}
+
+	if (isdigit(s[0])) {
+		int n = get_number(s);
+		line = Line::line(n);
+		continue;
+	}
+;
+		} while (false);
+		trim(s);
+		return line;
+	}
+
+	void insert_before(
+		const std::string &prefix,
+		std::vector<std::string> &c
+	) {
+		
+	int next = c.size();
+	
+	if (range) {
+		next = range.last()(
+			Line::max, c.size() + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+		int p = range.prev()(
+			Line::max, c.size() + 1
+		) - 1;
+		if (p < 0) { p = 0; }
+		if (p < next) {
+			c.erase(
+				c.begin() + p,
+				c.begin() + next
+			);
+			next = p;
+		}
+	}
+;
+	std::string l;
+	for (;;) {
+		std::cout << prefix << ' ' << (next + 1) << "? ";
+		std::getline(std::cin, l);
+		auto b = l.begin();
+		auto e = l.end();
+		while (b != e && *b <= ' ') { ++b; }
+		std::string t { b, e };
+		if (t.empty()) { continue; }
+		if (t == ".") { break; }
+		c.insert(c.begin() + next, l);
+		++next;
+	}
+	draw_block();
+;
+	}
+
+	
+	std::string split(
+		std::string &s, int width
+	) {
+		auto b { s.begin() };
+		auto e { s.end() };
+		while (b != e && *b == ' ') { ++b; }
+		auto c = b;
+		while (c != e) {
+			auto t = c;
+			while (t != e && *t == ' ') { ++t; }
+			while (t != e && *t != ' ') { ++t; }
+			if (c == b || t - b <= width) {
+				c = t;
+			} else {
+				break;
+			}
+		}
+		std::string res { b, c };
+		s.erase(s.begin(), c);
+		return res;
+	}
+
+	void multi_write(
+		std::ofstream &out,
+		std::string str,
+		std::string first_in,
+		const std::string &other_in
+	) {
+		while (! str.empty()) {
+			std::string p = split(str, 72 - first_in.size());
+			out << first_in << p << '\n';
+			first_in = other_in;
+		}
+	}
+
+	void write_x() {
+		for (const auto &cur : inputs) {
+			
+	std::ofstream out {
+		cur.path().c_str()
+	};
+
+	bool first = true;
+	for (const auto &b : cur.blocks) {
+		if (first) {
+			first = false;
+		} else { out << '\n'; }
+		switch (b.state) {
+			
+	case RS::header: {
+		
+	for (const auto &n : b.value) {
+		for (
+			int i = 0; i < b.level; ++i
+		) {
+			out << '#';
+		}
+		out << ' ';
+		out << n << '\n';
+	}
+;
+		break;
+	}
+
+	case RS::code: {
+		
+	out << "```\n";
+	for (const auto &n: b.value) {
+		out << n << '\n';
+	}
+	out << "```\n";
+;
+		break;
+	}
+
+	case RS::para: {
+		
+	bool first = true;
+	for (const auto &n: b.value) {
+		if (first) {
+			first = false;
+		} else { out << '\n'; }
+		multi_write(out, n, {}, {});
+	}
+;
+		break;
+	}
+;
+			default: ;
+		}
+		
+	for (const auto &n: b.notes) {
+		multi_write(out, n, "* ", "  ");
+	}
+;
+	}
+;
+		}
+	}
+
+	void add_block(Read_State state) {
+		
+	if (curInput != inputs.end()) {
+		
+	if (
+		curBlock !=
+			curInput->blocks.end()
+	) {
+		++curBlock;
+	}
+;
+		int i = curBlock -
+			curInput->blocks.begin();
+		
+	curInput->blocks.insert(
+		curBlock,
+		{ state, { "REPLACE" }, {} }
+	);
+;
+		curBlock =
+			curInput->blocks.begin() + i;
+	} else {
+		std::cerr << "! no file\n";
+	}
+	draw_block();
+;
+	}
+
+	int main(
+		int argc,
+		const char **argv
+	) {
+		
+	#if ! NDEBUG
+		
+	
+	testFragName("abc");
+	testFragName("");
+	testFragName("A c");
+	{
+		Frag f { "ab" };
+		ASSERT(f.empty());
+	}
+
+	{
+		FragEntry entry;
+		ASSERT(! entry.frag);
+	}
+
+	{
+		FragEntry entry;
+		ASSERT(entry.str().empty());
+	}
+ {
+	Frag frag { "" };
+	addStringToFrag(&frag, "abc");
+	addStringToFrag(&frag, "def");
+	testFrag(frag, "abcdef");
+}  {
+	Frag a { "" };
+	Frag b { "" };
+	addStringToFrag(&a, "abc");
+	b.add(&a);
+	addStringToFrag(&b, "def");
+	b.add(&a);
+	testFrag(b, "abcdefabc");
+} ;
+
+	
+	ASSERT(! Line {});
+	ASSERT(Line::begin());
+	ASSERT(Line::end());
+	ASSERT(Line::end());
+	ASSERT(Line::line(0));
+	ASSERT(Line::relative(0));
+	ASSERT(Line::relative(-2));
+
+	ASSERT(Line {}(5, 10) == 5);
+	ASSERT(Line::begin()(5, 10) == 0);
+	ASSERT(Line::end()(5, 10) == 10);
+
+	ASSERT(Line::line(0)(5, 10) == 0);
+	ASSERT(Line::line(6)(5, 10) == 6);
+	ASSERT(Line::line(20)(5, 10) == 10);
+
+	ASSERT(
+		Line::relative(2)(5, 10) == 7
+	);
+	ASSERT(
+		Line::relative(7)(5, 10) == 10
+	);
+	ASSERT(
+		Line::relative(-2)(5, 10) == 3
+	);
+	ASSERT(
+		Line::relative(-7)(5, 10) == 0
+	);
+ {
+	std::string f = "+3";
+	ASSERT(
+		get_line(f)(5, 10) == 8
+	);
+}  {
+	std::string f = ".";
+	ASSERT(
+		get_line(f)(5, 10) == 5
+	);
+}  {
+	std::string f = "$";
+	ASSERT(
+		get_line(f)(5, 10) == 10 
+	);
+} ;
+;
+	#endif
+
+	
+	for (int i { 1 }; i < argc; ++i) {
+		std::string arg { argv[i] };
+		 {
+	static const std::string prefix {
+		"--css="
+	};
+	if (arg.substr(
+		0, prefix.length()
+	) == prefix) {
+		stylesheet =
+			arg.substr(prefix.length());
+		continue;
+	}
+}  {
+	static const std::string prefix {
+		"--limit="
+	};
+	if (arg.substr(
+		0, prefix.length()
+	) == prefix) {
+		blockLimit = std::stoi(
+			arg.substr(prefix.length())
+		);
+		continue;
+	}
+} 
+	if (
+		arg == "-i" ||
+		arg == "--interactive"
+	) {
+		interactive = true;
+		write_files = false;
+		process_files = false;
+		html_files = false;
+		continue;
+	}
+;
+		
+	inputs.add(argv[1]);
+	continue;
+;
+		ASSERT_MSG(false,
+			"unknown argument [" <<
+			argv[i] << ']'
+		);
+	}
+;
+
+	
+	read_sources();
+;
+
+	
+	if (write_files) {
+		files_write();
+	}
+
+	if (process_files) {
+		files_process();
+	}
+;
+
+	
+	if (html_files) {
+		write_html();
+	}
 ;
 
 	if (interactive) {
@@ -2570,68 +2646,48 @@
 	}
 
 	if (cmd == "W" || cmd == "Write") {
-		for (const auto &cur : inputs) {
-			
-	std::ofstream out {
-		cur.path().c_str()
-	};
-
-	bool first = true;
-	for (const auto &b : cur.blocks) {
-		if (first) {
-			first = false;
-		} else { out << '\n'; }
-		switch (b.state) {
-			
-	case RS::header: {
-		
-	for (const auto &n : b.value) {
-		for (
-			int i = 0; i < b.level; ++i
-		) {
-			out << '#';
-		}
-		out << ' ';
-		out << n << '\n';
-	}
-;
-		break;
+		write_x();
+		continue;
 	}
 
-	case RS::code: {
-		
-	out << "```\n";
-	for (const auto &n: b.value) {
-		out << n << '\n';
-	}
-	out << "```\n";
-;
-		break;
+	if (cmd == "H" || cmd == "Html") {
+		write_x();
+		write_html();
+		continue;
 	}
 
-	case RS::para: {
-		
-	bool first = true;
-	for (const auto &n: b.value) {
-		if (first) {
-			first = false;
-		} else { out << '\n'; }
-		multi_write(out, n, {}, {});
-	}
-;
-		break;
-	}
-;
-			default: ;
+	if (cmd == "F" || cmd == "Files") {
+		write_x();
+		write_html();
+		Inputs old { std::move(inputs) };
+		try {
+			read_sources();
+			files_write();
+		} catch (...) {
+			std::cerr << "!! aborted\n";
+			inputs = std::move(old);
 		}
-		
-	for (const auto &n: b.notes) {
-		multi_write(out, n, "* ", "  ");
+		curInput = inputs.begin();
+		curBlock =
+			curInput->blocks.begin();
+		continue;
 	}
-;
-	}
-;
+
+	if (cmd == "P" || cmd == "Process") {
+		write_x();
+		write_html();
+		Inputs old { std::move(inputs) };
+		try {
+			read_sources();
+			files_write();
+			files_process();
+		} catch (...) {
+			std::cerr << "!! aborted\n";
+			inputs = std::move(old);
 		}
+		curInput = inputs.begin();
+		curBlock =
+			curInput->blocks.begin();
 		continue;
 	}
 
