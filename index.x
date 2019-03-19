@@ -240,7 +240,6 @@
 
 ```
 @def(process arguments)
-	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
 		std::string arg { argv[i] };
 		@put(process argument);
@@ -293,25 +292,13 @@
 
 ```
 @def(process file argument)
-	if (! someFile) {
-		inputs.add(argv[1]);
-		someFile = true;
-		continue;
-	}
+	inputs.add(argv[1]);
+	continue;
 @end(process file argument)
 ```
 * Ansonsten wird das Argument als Pfad der `.x`-Datei interpretiert
 * Aus dieser werden HTML-Slides und Source-Code generiert
 * Es kann nur eine Datei angegeben werden
-
-```
-@add(process arguments)
-	if (! someFile) {
-		inputs.add("index.x");
-	}
-@end(process arguments)
-```
-* Wenn kein Pfad angegeben wurde, wird `index.x` als Vorgabe verwendet
 
 # Eingabe-Dateien lesen
 * In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
@@ -319,10 +306,10 @@
   einzelnen Folien zu finden
 
 ```
-@Add(needed by read_sources)
+@Add(inputs prereqs)
 	using SI =
 		std::string::const_iterator;
-@end(needed by read_sources)
+@End(inputs prereqs)
 ```
 * Die Anwendung verwendet den String-Iterator an vielen Stellen
 * Daher definiert sie eine Abkürzung, damit die Folien nicht

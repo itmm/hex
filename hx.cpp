@@ -483,6 +483,9 @@
 	int _line = 0;
 ;
 	};
+
+	using SI =
+		std::string::const_iterator;
 ;
 	
 	class Inputs {
@@ -494,9 +497,10 @@
 		
 	_used.clear();
 	_open.clear();
-	for (const auto &p : _paths) {
-		push(p);
+	if (_paths.empty()) {
+		_paths.push_back("index.x");
 	}
+	_current_path = _paths.begin();
 ;
 	}
 
@@ -594,6 +598,8 @@
 	std::vector<Input> _used;
 
 	std::vector<std::string> _paths;
+	std::vector<std::string>::
+		const_iterator _current_path;
 ;
 	};
 
@@ -601,7 +607,14 @@
 		std::string &line
 	) {
 		
-	while (! _open.empty()) {
+	for (;;) {
+		if (_open.empty()) {
+			if (_current_path != _paths.end()) {
+				push(*_current_path++);
+			} else {
+				break;
+			}
+		}
 		try {
 			_open.back().read_line(line);
 			return;
@@ -626,9 +639,6 @@
 
 	
 	int blockLimit = -1;
-
-	using SI =
-		std::string::const_iterator;
 
 	void process_chars(
 		Frag *frag, SI i, SI e
@@ -1991,7 +2001,6 @@
 	#endif
 
 	
-	bool someFile { false };
 	for (int i { 1 }; i < argc; ++i) {
 		std::string arg { argv[i] };
 		 {
@@ -2030,20 +2039,13 @@
 	}
 ;
 		
-	if (! someFile) {
-		inputs.add(argv[1]);
-		someFile = true;
-		continue;
-	}
+	inputs.add(argv[1]);
+	continue;
 ;
 		ASSERT_MSG(false,
 			"unknown argument [" <<
 			argv[i] << ']'
 		);
-	}
-
-	if (! someFile) {
-		inputs.add("index.x");
 	}
 ;
 

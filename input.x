@@ -57,12 +57,6 @@
 * Das Verschieben der Ownership muss aber explizit erfolgen
 
 ```
-@Add(private inputs elements)
-	std::vector<std::string> _paths;
-@End(private inputs elements)
-```
-
-```
 @Add(inputs elements)
 	void add(const std::string &path) {
 		_paths.push_back(path);
@@ -224,9 +218,10 @@
 @Def(clear inputs)
 	_used.clear();
 	_open.clear();
-	for (const auto &p : _paths) {
-		push(p);
+	if (_paths.empty()) {
+		_paths.push_back("index.x");
 	}
+	_current_path = _paths.begin();
 @End(clear inputs)
 ```
 

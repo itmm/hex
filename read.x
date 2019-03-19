@@ -9,7 +9,7 @@
 
 ```
 @def(globals)
-	@put(inputs prereqs);
+	@Put(inputs prereqs);
 	@put(inputs);
 @end(globals)
 ```
@@ -30,7 +30,7 @@
 		public:
 			@Put(inputs elements);
 		private:
-			@Put(private inputs elements);
+			@put(private inputs elements);
 	};
 @end(inputs)
 ```
@@ -153,7 +153,7 @@
   `x`-files
 
 ```
-@def(inputs prereqs)
+@Def(inputs prereqs)
 	@Put(open input prereqs);
 	class Open_Input {
 		public:
@@ -161,7 +161,7 @@
 		private:
 			@Put(private open input els);
 	};
-@end(inputs prereqs)
+@End(inputs prereqs)
 ```
 
 ```
@@ -291,10 +291,10 @@
 * die erst später definiert werden
 
 ```
-@Def(private inputs elements)
+@def(private inputs elements)
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
-@End(private inputs elements)
+@end(private inputs elements)
 ```
 * Es gibt immer eine aktuelle Datei, die gerade gelesen wird
 * Mitten während des Lesens können andere Dateien eingelesen
@@ -307,8 +307,23 @@
   werden müssen
 
 ```
+@add(private inputs elements)
+	std::vector<std::string> _paths;
+	std::vector<std::string>::
+		const_iterator _current_path;
+@end(private inputs elements)
+```
+
+```
 @rep(inputs read line)
-	while (! _open.empty()) {
+	for (;;) {
+		if (_open.empty()) {
+			if (_current_path != _paths.end()) {
+				push(*_current_path++);
+			} else {
+				break;
+			}
+		}
 		try {
 			_open.back().read_line(line);
 			return;
@@ -333,3 +348,4 @@
 	}
 @end(save open input)
 ```
+
