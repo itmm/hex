@@ -289,7 +289,7 @@
 	if (line) {
 		next = line(
 			(curBlock - curInput->blocks.begin()) + 1,
-			curInput->blocks.size() + 1
+			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}

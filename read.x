@@ -340,12 +340,24 @@
 
 ```
 @def(save open input)
+	auto &f { _open.back().input() };
+	@put(assure not empty);
 	for (auto &i : _used) {
-		if (i.path() == _open.back().input().path()) {
-			i = std::move(_open.back().input());
+		if (i.path() == f.path()) {
+			i = std::move(f);
 			break;
 		}
 	}
 @end(save open input)
 ```
 
+```
+@def(assure not empty)
+	if (f.blocks.empty()) {
+		f.blocks.push_back({
+			RS::header,
+			{ "EMPTY FILE" }, {}
+		});
+	}
+@end(assure not empty)
+```

@@ -625,9 +625,18 @@
 		}
 		catch (const No_More_Lines &) {}
 		
+	auto &f { _open.back().input() };
+	
+	if (f.blocks.empty()) {
+		f.blocks.push_back({
+			RS::header,
+			{ "EMPTY FILE" }, {}
+		});
+	}
+;
 	for (auto &i : _used) {
-		if (i.path() == _open.back().input().path()) {
-			i = std::move(_open.back().input());
+		if (i.path() == f.path()) {
+			i = std::move(f);
 			break;
 		}
 	}
@@ -1592,11 +1601,6 @@
 
 	void draw_block() {
 		
-	if (curBlock == curInput->blocks.end()) {
-		std::cerr << "! end\n";
-		return;
-	}
-
 	if (curBlock->state == RS::header) {
 		int i = 0;
 		for (const auto &l : curBlock->value) {
@@ -1634,11 +1638,15 @@
 
 	void draw_position() {
 		
+	auto &bs { curInput->blocks };
 	std::cout << curInput->path() << ':';
-	if (curBlock == curInput->blocks.end()) {
-		std::cout << "end";
-	} else {
-		std::cout << (curBlock - curInput->blocks.begin() + 1);
+	int idx =
+		(curBlock - bs.begin()) + 1;
+	std::cout << idx;
+	if (
+		idx == static_cast<int>(bs.size())
+	) {
+		std::cout << " = $";
 	}
 ;
 	}
@@ -1829,18 +1837,6 @@
 	}
 	draw_block();
 ;
-	}
-
-	bool valid_cur() {
-		if (curInput == inputs.end()) {
-			std::cerr << "! no file\n";
-			return false;
-		}
-		if (curBlock == curInput->blocks.end()) {
-			std::cerr << "! end\n";
-			return false;
-		}
-		return true;
 	}
 
 	std::string split(
@@ -2470,15 +2466,15 @@
 	}
 
 	if (cmd == "n" || cmd == "next") {
-		int next = curBlock - curInput->blocks.begin();
-		if (curBlock != curInput->blocks.end()) {
-			++next;
+		int next = (curBlock - curInput->blocks.begin()) + 1;
+		while (next >= static_cast<int>(curInput->blocks.size())) {
+			--next;
 		}
 		
 	if (range) {
 		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
-			curInput->blocks.size() + 1
+			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -2497,7 +2493,7 @@
 	if (range) {
 		next = range.last()(
 			(curBlock - curInput->blocks.begin()) + 1,
-			curInput->blocks.size() + 1
+			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -2515,8 +2511,8 @@
 		
 	if (range) {
 		next = range.last()(
-			(curInput - inputs.begin()),
-			(inputs.end() - inputs.begin())
+			(curInput - inputs.begin()) + 1,
+			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -2535,8 +2531,8 @@
 		
 	if (range) {
 		next = range.last()(
-			(curInput - inputs.begin()),
-			(inputs.end() - inputs.begin())
+			(curInput - inputs.begin()) + 1,
+			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -2548,12 +2544,9 @@
 	}
 
 	if (cmd == "N" || cmd == "Note") {
-		if (valid_cur()) {
-			insert_before(
-				"n",
-				curBlock->notes
-			);
-		}
+		insert_before(
+			"n", curBlock->notes
+		);
 		continue;
 	}
 
@@ -2569,12 +2562,10 @@
 			default:
 				prefix = "?"; break;
 		}
-		if (valid_cur()) {
-			insert_before(
-				prefix,
-				curBlock->value
-			);
-		}
+		insert_before(
+			prefix,
+			curBlock->value
+		);
 		continue;
 	}
 

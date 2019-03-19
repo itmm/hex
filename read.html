@@ -464,13 +464,27 @@ Wandert bei Misserfolg durch andere offenen Dateien
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">save open input</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> &amp;<span class="var">f</span> { <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>() };<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">assure not empty</span>)</span>;<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">_used</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">i</span>.<span class="fn">path</span>() == <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>().<span class="fn">path</span>()) {<br/>
-<span class="in3"></span><span class="var">i</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>());<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">i</span>.<span class="fn">path</span>() == <span class="var">f</span>.<span class="fn">path</span>()) {<br/>
+<span class="in3"></span><span class="var">i</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">f</span>);<br/>
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">save open input</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">assure not empty</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>.<span class="var">blocks</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in2"></span><span class="var">f</span>.<span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in3"></span><span class="var">RS</span>::<span class="var">header</span>,<br/>
+<span class="in3"></span>{ <span class="str">"EMPTY FILE"</span> }, {}<br/>
+<span class="in2"></span>});<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">assure not empty</span>)</span><br/>
 </code></div>
 </div>
 </body>

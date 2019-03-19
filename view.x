@@ -114,9 +114,9 @@
 ```
 @Add(run loop)
 	if (cmd == "n" || cmd == "next") {
-		int next = curBlock - curInput->blocks.begin();
-		if (curBlock != curInput->blocks.end()) {
-			++next;
+		int next = (curBlock - curInput->blocks.begin()) + 1;
+		while (next >= static_cast<int>(curInput->blocks.size())) {
+			--next;
 		}
 		@Mul(do block range);
 		curBlock = curInput->blocks.begin() + next;
@@ -143,15 +143,6 @@
 
 ```
 @def(draw block)
-	if (curBlock == curInput->blocks.end()) {
-		std::cerr << "! end\n";
-		return;
-	}
-@end(draw block)
-```
-
-```
-@add(draw block)
 	if (curBlock->state == RS::header) {
 		int i = 0;
 		for (const auto &l : curBlock->value) {
@@ -201,11 +192,15 @@
 
 ```
 @def(draw position)
+	auto &bs { curInput->blocks };
 	std::cout << curInput->path() << ':';
-	if (curBlock == curInput->blocks.end()) {
-		std::cout << "end";
-	} else {
-		std::cout << (curBlock - curInput->blocks.begin() + 1);
+	int idx =
+		(curBlock - bs.begin()) + 1;
+	std::cout << idx;
+	if (
+		idx == static_cast<int>(bs.size())
+	) {
+		std::cout << " = $";
 	}
 @end(draw position)
 ```

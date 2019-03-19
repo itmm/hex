@@ -12,30 +12,11 @@
 ```
 
 ```
-@Add(global elements)
-	bool valid_cur() {
-		if (curInput == inputs.end()) {
-			std::cerr << "! no file\n";
-			return false;
-		}
-		if (curBlock == curInput->blocks.end()) {
-			std::cerr << "! end\n";
-			return false;
-		}
-		return true;
-	}
-@End(global elements)
-```
-
-```
 @Add(run loop)
 	if (cmd == "N" || cmd == "Note") {
-		if (valid_cur()) {
-			insert_before(
-				"n",
-				curBlock->notes
-			);
-		}
+		insert_before(
+			"n", curBlock->notes
+		);
 		continue;
 	}
 @End(run loop)
@@ -55,12 +36,10 @@
 			default:
 				prefix = "?"; break;
 		}
-		if (valid_cur()) {
-			insert_before(
-				prefix,
-				curBlock->value
-			);
-		}
+		insert_before(
+			prefix,
+			curBlock->value
+		);
 		continue;
 	}
 @End(run loop)
