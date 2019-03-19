@@ -73,6 +73,15 @@ Liefert zuletzt benutzte Datei
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">size</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">size</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
 <span class="in2"></span><span class="var">_used</span>.<span class="fn">push_back</span>({ <span class="var">path</span> });<br/>
 <span class="in2"></span><span class="var">_open</span>.<span class="fn">push_back</span>({ <span class="var">path</span> });<br/>

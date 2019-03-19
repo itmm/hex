@@ -301,7 +301,7 @@
 	if (line) {
 		next = line(
 			(curInput - inputs.begin()) + 1,
-			(inputs.end() - inputs.begin()) + 1
+			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}

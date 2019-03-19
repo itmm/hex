@@ -52,9 +52,7 @@
 ```
 @Def(interactive)
 	curInput = inputs.begin();
-	curBlock = curInput != inputs.end() ?
-		curInput->blocks.begin() :
-		std::vector<Block>::iterator {};
+	curBlock = curInput->blocks.begin();
 @End(interactive)
 ```
 
@@ -116,17 +114,14 @@
 ```
 @Add(run loop)
 	if (cmd == "n" || cmd == "next") {
-		if (curInput != inputs.end()) {
-			int next = curBlock - curInput->blocks.begin();
-			if (curBlock != curInput->blocks.end()) {
-				++next;
-			}
-			@Mul(do block range);
-			curBlock = curInput->blocks.begin() + next;
-			draw_block();
-			continue;
+		int next = curBlock - curInput->blocks.begin();
+		if (curBlock != curInput->blocks.end()) {
+			++next;
 		}
-		std::cerr << "! end\n";
+		@Mul(do block range);
+		curBlock = curInput->blocks.begin() + next;
+		draw_block();
+		continue;
 	}
 @End(run loop)
 ```
@@ -134,32 +129,20 @@
 ```
 @Add(run loop)
 	if (cmd == "p" || cmd == "prev") {
-		if (curInput != inputs.end()) {
-			int next = curBlock - curInput->blocks.begin();
-			if (next > 0) {
-				--next;
-			}
-			@Mul(do block range);
-			curBlock = curInput->blocks.begin() + next;
-			draw_block();
-			continue;
+		int next = curBlock - curInput->blocks.begin();
+		if (next > 0) {
+			--next;
 		}
-		std::cerr << "! start\n";
+		@Mul(do block range);
+		curBlock = curInput->blocks.begin() + next;
+		draw_block();
+		continue;
 	}
 @End(run loop)
 ```
 
 ```
 @def(draw block)
-	if (curInput == inputs.end()) {
-		std::cerr << "! no file\n";
-		return;
-	}
-@end(draw block)
-```
-
-```
-@add(draw block)
 	if (curBlock == curInput->blocks.end()) {
 		std::cerr << "! end\n";
 		return;
@@ -218,15 +201,6 @@
 
 ```
 @def(draw position)
-	if (curInput == inputs.end()) {
-		std::cout << "no file:end\n";
-		return;
-	}
-@end(draw position)
-```
-
-```
-@add(draw position)
 	std::cout << curInput->path() << ':';
 	if (curBlock == curInput->blocks.end()) {
 		std::cout << "end";
@@ -239,15 +213,13 @@
 ```
 @Add(run loop)
 	if (cmd == "f" || cmd == "forward") {
-		int next = curInput - inputs.begin();
-		if (curInput != inputs.end()) {
-			++next;
+		int next =(curInput - inputs.begin()) + 1;
+		while (next >= static_cast<int>(inputs.size())) {
+			--next;
 		}
 		@Mul(do inputs range);
 		curInput = inputs.begin() + next;
-		curBlock = curInput != inputs.end() ?
-			curInput->blocks.begin() :
-			std::vector<Block>::iterator {};
+		curBlock = curInput->blocks.begin();
 		draw_block();
 		continue;
 	}
@@ -263,9 +235,7 @@
 		}
 		@Mul(do inputs range);
 		curInput = inputs.begin() + next;
-		curBlock = curInput != inputs.end() ?
-			curInput->blocks.begin() :
-			std::vector<Block>::iterator {};
+		curBlock = curInput->blocks.begin();
 		draw_block();
 		continue;
 	}

@@ -79,8 +79,8 @@
 @Rep(do inputs range)
 	if (range) {
 		next = range.last()(
-			(curInput - inputs.begin()) + 1,
-			(inputs.end() - inputs.begin()) + 1
+			(curInput - inputs.begin()),
+			(inputs.end() - inputs.begin())
 		) - 1;
 		if (next < 0) { next = 0; }
 	}

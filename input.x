@@ -46,6 +46,14 @@
 
 ```
 @Add(inputs elements)
+	auto size() const {
+		return _used.size();
+	}
+@End(inputs elements)
+```
+
+```
+@Add(inputs elements)
 	void push(const std::string &path) {
 		_used.push_back({ path });
 		_open.push_back({ path });

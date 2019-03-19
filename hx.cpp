@@ -517,6 +517,10 @@
 		return _used.end();
 	}
 
+	auto size() const {
+		return _used.size();
+	}
+
 	void push(const std::string &path) {
 		_used.push_back({ path });
 		_open.push_back({ path });
@@ -1588,11 +1592,6 @@
 
 	void draw_block() {
 		
-	if (curInput == inputs.end()) {
-		std::cerr << "! no file\n";
-		return;
-	}
-
 	if (curBlock == curInput->blocks.end()) {
 		std::cerr << "! end\n";
 		return;
@@ -1635,11 +1634,6 @@
 
 	void draw_position() {
 		
-	if (curInput == inputs.end()) {
-		std::cout << "no file:end\n";
-		return;
-	}
-
 	std::cout << curInput->path() << ':';
 	if (curBlock == curInput->blocks.end()) {
 		std::cout << "end";
@@ -2451,9 +2445,7 @@
 	if (interactive) {
 		
 	curInput = inputs.begin();
-	curBlock = curInput != inputs.end() ?
-		curInput->blocks.begin() :
-		std::vector<Block>::iterator {};
+	curBlock = curInput->blocks.begin();
 
 	draw_block();
 	for (;;) {
@@ -2478,67 +2470,59 @@
 	}
 
 	if (cmd == "n" || cmd == "next") {
-		if (curInput != inputs.end()) {
-			int next = curBlock - curInput->blocks.begin();
-			if (curBlock != curInput->blocks.end()) {
-				++next;
-			}
-			
-	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
-			curInput->blocks.size() + 1
-		) - 1;
-		if (next < 0) { next = 0; }
-	}
-;
-			curBlock = curInput->blocks.begin() + next;
-			draw_block();
-			continue;
-		}
-		std::cerr << "! end\n";
-	}
-
-	if (cmd == "p" || cmd == "prev") {
-		if (curInput != inputs.end()) {
-			int next = curBlock - curInput->blocks.begin();
-			if (next > 0) {
-				--next;
-			}
-			
-	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
-			curInput->blocks.size() + 1
-		) - 1;
-		if (next < 0) { next = 0; }
-	}
-;
-			curBlock = curInput->blocks.begin() + next;
-			draw_block();
-			continue;
-		}
-		std::cerr << "! start\n";
-	}
-
-	if (cmd == "f" || cmd == "forward") {
-		int next = curInput - inputs.begin();
-		if (curInput != inputs.end()) {
+		int next = curBlock - curInput->blocks.begin();
+		if (curBlock != curInput->blocks.end()) {
 			++next;
 		}
 		
 	if (range) {
 		next = range.last()(
-			(curInput - inputs.begin()) + 1,
-			(inputs.end() - inputs.begin()) + 1
+			(curBlock - curInput->blocks.begin()) + 1,
+			curInput->blocks.size() + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curBlock = curInput->blocks.begin() + next;
+		draw_block();
+		continue;
+	}
+
+	if (cmd == "p" || cmd == "prev") {
+		int next = curBlock - curInput->blocks.begin();
+		if (next > 0) {
+			--next;
+		}
+		
+	if (range) {
+		next = range.last()(
+			(curBlock - curInput->blocks.begin()) + 1,
+			curInput->blocks.size() + 1
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curBlock = curInput->blocks.begin() + next;
+		draw_block();
+		continue;
+	}
+
+	if (cmd == "f" || cmd == "forward") {
+		int next =(curInput - inputs.begin()) + 1;
+		while (next >= static_cast<int>(inputs.size())) {
+			--next;
+		}
+		
+	if (range) {
+		next = range.last()(
+			(curInput - inputs.begin()),
+			(inputs.end() - inputs.begin())
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 ;
 		curInput = inputs.begin() + next;
-		curBlock = curInput != inputs.end() ?
-			curInput->blocks.begin() :
-			std::vector<Block>::iterator {};
+		curBlock = curInput->blocks.begin();
 		draw_block();
 		continue;
 	}
@@ -2551,16 +2535,14 @@
 		
 	if (range) {
 		next = range.last()(
-			(curInput - inputs.begin()) + 1,
-			(inputs.end() - inputs.begin()) + 1
+			(curInput - inputs.begin()),
+			(inputs.end() - inputs.begin())
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 ;
 		curInput = inputs.begin() + next;
-		curBlock = curInput != inputs.end() ?
-			curInput->blocks.begin() :
-			std::vector<Block>::iterator {};
+		curBlock = curInput->blocks.begin();
 		draw_block();
 		continue;
 	}
