@@ -1,3 +1,4 @@
+# Open Issues
 * Überschriften ohne Notizen generieren keine Folien
 * Jedes Fragment ist in ein Knoten in einer bestimmten Sprache
 * Man-Pages
@@ -19,4 +20,3 @@
 * alternatively ncurses in viewer/editor
 * quiet mode in editor for batch processing
 * delete slides
-
