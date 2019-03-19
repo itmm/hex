@@ -294,7 +294,7 @@
 ```
 @def(process file argument)
 	if (! someFile) {
-		inputs.push(argv[1]);
+		inputs.add(argv[1]);
 		someFile = true;
 		continue;
 	}
@@ -307,7 +307,7 @@
 ```
 @add(process arguments)
 	if (! someFile) {
-		inputs.push("index.x");
+		inputs.add("index.x");
 	}
 @end(process arguments)
 ```

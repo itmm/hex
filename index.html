@@ -505,7 +505,7 @@ So können Teilabschnitte validiert werden
 <code>
 <span class="macro">@def(<span class="name">process file argument</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">add</span>(<span class="var">argv</span>[<span class="num">1</span>]);<br/>
 <span class="in2"></span><span class="var">someFile</span> = <span class="num">true</span>;<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -523,7 +523,7 @@ Es kann nur eine Datei angegeben werden
 <code>
 <span class="macro">@add(<span class="name">process arguments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="var">someFile</span>) {<br/>
-<span class="in2"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in2"></span><span class="var">inputs</span>.<span class="fn">add</span>(<span class="str">"index.x"</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process arguments</span>)</span><br/>
 </code></div>

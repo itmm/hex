@@ -492,10 +492,11 @@
 
 	void clear() {
 		
-	const std::string path { _used.empty() ? "index.x" : _used.front().path() };
 	_used.clear();
 	_open.clear();
-	push(path);
+	for (const auto &p : _paths) {
+		push(p);
+	}
 ;
 	}
 
@@ -515,6 +516,11 @@
 	void push(const std::string &path) {
 		_used.push_back({ path });
 		_open.push_back({ path });
+	}
+
+	void add(const std::string &path) {
+		_paths.push_back(path);
+		push(path);
 	}
 
 	bool has(
@@ -586,6 +592,8 @@
 			
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
+
+	std::vector<std::string> _paths;
 ;
 	};
 
@@ -2023,7 +2031,7 @@
 ;
 		
 	if (! someFile) {
-		inputs.push(argv[1]);
+		inputs.add(argv[1]);
 		someFile = true;
 		continue;
 	}
@@ -2035,7 +2043,7 @@
 	}
 
 	if (! someFile) {
-		inputs.push("index.x");
+		inputs.add("index.x");
 	}
 ;
 

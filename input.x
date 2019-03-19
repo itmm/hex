@@ -56,6 +56,21 @@
 * Dieser wird als Name gespeichert
 * Das Verschieben der Ownership muss aber explizit erfolgen
 
+```
+@Add(private inputs elements)
+	std::vector<std::string> _paths;
+@End(private inputs elements)
+```
+
+```
+@Add(inputs elements)
+	void add(const std::string &path) {
+		_paths.push_back(path);
+		push(path);
+	}
+@End(inputs elements)
+```
+
 # Nächste Zeile
 * Die Funktion `@f(read_line)` liest die nächste Zeile aus der
   aktuellen  Datei
@@ -207,10 +222,11 @@
 
 ```
 @Def(clear inputs)
-	const std::string path { _used.empty() ? "index.x" : _used.front().path() };
 	_used.clear();
 	_open.clear();
-	push(path);
+	for (const auto &p : _paths) {
+		push(p);
+	}
 @End(clear inputs)
 ```
 
