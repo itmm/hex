@@ -27,9 +27,9 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"N"</span> || <span class="var">cmd</span> == <span class="str">"Note"</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"l"</span> || <span class="var">cmd</span> == <span class="str">"list"</span>) {<br/>
 <span class="in2"></span><span class="fn">insert_before</span>(<br/>
-<span class="in3"></span><span class="str">"n"</span>, <span class="var">curBlock</span>-&gt;<span class="var">notes</span><br/>
+<span class="in3"></span><span class="str">"l"</span>, <span class="var">curBlock</span>-&gt;<span class="var">notes</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -39,7 +39,7 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"A"</span> || <span class="var">cmd</span> == <span class="str">"Add"</span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"a"</span> || <span class="var">cmd</span> == <span class="str">"add"</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span>;<br/>
 <span class="in2"></span><span class="keyword">switch</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span>) {<br/>
 <span class="in3"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">header</span>:<br/>
@@ -80,6 +80,32 @@
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="fn">draw_block</span>();<br/>
 <span class="macro">@end(<span class="name">insert before</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"&gt;&gt;"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>) {<br/>
+<span class="in3"></span>++<span class="var">curBlock</span>-&gt;<span class="var">level</span>;<br/>
+<span class="in3"></span><span class="fn">draw_block</span>();<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"&lt;&lt;"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">level</span> &gt; <span class="num">1</span>) {<br/>
+<span class="in3"></span>--<span class="var">curBlock</span>-&gt;<span class="var">level</span>;<br/>
+<span class="in3"></span><span class="fn">draw_block</span>();<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
 </div>
 </body>

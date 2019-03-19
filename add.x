@@ -17,7 +17,7 @@
 
 ```
 @Add(run loop)
-	if (cmd == "H" || cmd == "Header") {
+	if (cmd == "h" || cmd == "header") {
 		add_block(RS::header);
 		continue;
 	}
@@ -27,7 +27,7 @@
 
 ```
 @Add(run loop)
-	if (cmd == "C" || cmd == "Code") {
+	if (cmd == "c" || cmd == "code") {
 		add_block(RS::code);
 		continue;
 	}
@@ -37,7 +37,7 @@
 
 ```
 @Add(run loop)
-	if (cmd == "P" || cmd == "Para") {
+	if (cmd == "o" || cmd == "other") {
 		add_block(RS::para);
 		continue;
 	}
@@ -83,7 +83,7 @@
 @def(insert block)
 	curInput->blocks.insert(
 		curBlock,
-		{ state, { "REPLACE" }, {} }
+		{ state, { "REPLACE" }, {}, state == RS::header ? 1 : 0 }
 	);
 @end(insert block)
 ```
@@ -96,7 +96,7 @@
 
 ```
 @Add(run loop)
-	if (cmd == "D" || cmd == "Dup") {
+	if (cmd == "d" || cmd == "dup") {
 		if (curInput != inputs.end()) {
 			if (curBlock !=
 				curInput->blocks.end()

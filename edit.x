@@ -13,9 +13,9 @@
 
 ```
 @Add(run loop)
-	if (cmd == "N" || cmd == "Note") {
+	if (cmd == "l" || cmd == "list") {
 		insert_before(
-			"n", curBlock->notes
+			"l", curBlock->notes
 		);
 		continue;
 	}
@@ -24,7 +24,7 @@
 
 ```
 @Add(run loop)
-	if (cmd == "A" || cmd == "Add") {
+	if (cmd == "a" || cmd == "add") {
 		std::string prefix;
 		switch (curBlock->state) {
 			case RS::header:
@@ -64,4 +64,28 @@
 	}
 	draw_block();
 @end(insert before)
+```
+
+```
+@Add(run loop)
+	if (cmd == ">>") {
+		if (curBlock->state == RS::header) {
+			++curBlock->level;
+			draw_block();
+			continue;
+		}
+	}
+@End(run loop)
+```
+
+```
+@Add(run loop)
+	if (cmd == "<<") {
+		if (curBlock->level > 1) {
+			--curBlock->level;
+			draw_block();
+			continue;
+		}
+	}
+@End(run loop)
 ```

@@ -2356,7 +2356,7 @@
 		
 	curInput->blocks.insert(
 		curBlock,
-		{ state, { "REPLACE" }, {} }
+		{ state, { "REPLACE" }, {}, state == RS::header ? 1 : 0 }
 	);
 ;
 		curBlock =
@@ -2630,14 +2630,14 @@
 		continue;
 	}
 
-	if (cmd == "N" || cmd == "Note") {
+	if (cmd == "l" || cmd == "list") {
 		insert_before(
-			"n", curBlock->notes
+			"l", curBlock->notes
 		);
 		continue;
 	}
 
-	if (cmd == "A" || cmd == "Add") {
+	if (cmd == "a" || cmd == "add") {
 		std::string prefix;
 		switch (curBlock->state) {
 			case RS::header:
@@ -2654,6 +2654,22 @@
 			curBlock->value
 		);
 		continue;
+	}
+
+	if (cmd == ">>") {
+		if (curBlock->state == RS::header) {
+			++curBlock->level;
+			draw_block();
+			continue;
+		}
+	}
+
+	if (cmd == "<<") {
+		if (curBlock->level > 1) {
+			--curBlock->level;
+			draw_block();
+			continue;
+		}
 	}
 
 	if (cmd == "W" || cmd == "Write") {
@@ -2742,22 +2758,22 @@
 		continue;
 	}
 } 
-	if (cmd == "H" || cmd == "Header") {
+	if (cmd == "h" || cmd == "header") {
 		add_block(RS::header);
 		continue;
 	}
 
-	if (cmd == "C" || cmd == "Code") {
+	if (cmd == "c" || cmd == "code") {
 		add_block(RS::code);
 		continue;
 	}
 
-	if (cmd == "P" || cmd == "Para") {
+	if (cmd == "o" || cmd == "other") {
 		add_block(RS::para);
 		continue;
 	}
 
-	if (cmd == "D" || cmd == "Dup") {
+	if (cmd == "d" || cmd == "dup") {
 		if (curInput != inputs.end()) {
 			if (curBlock !=
 				curInput->blocks.end()
