@@ -292,7 +292,7 @@
 
 ```
 @def(process file argument)
-	inputs.add(argv[1]);
+	inputs.add(arg);
 	continue;
 @end(process file argument)
 ```

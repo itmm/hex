@@ -2495,7 +2495,7 @@
 	}
 ;
 		
-	inputs.add(argv[1]);
+	inputs.add(arg);
 	continue;
 ;
 		ASSERT_MSG(false,
