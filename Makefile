@@ -1,6 +1,13 @@
 CXXFLAGS += -Wall -std=c++14 -g
 
-.PHONY: all install clean test
+.PHONY: all install clean test itest ctest
+
+NCURSES := $(WITH_NCURSES)
+ifeq "$(NCURSES)" "1"
+	CXXFLAGS += -DWITH_NCURSES -lncurses
+else
+	$(warning "building without ncurses support")
+endif
 
 Xs := $(wildcard *.x)
 SRCs := $(shell hx-files.sh $(Xs))
@@ -24,6 +31,14 @@ install: $(EXEs)
 test: $(EXEs)
 	@echo "  ./HX"
 	@./hx
+
+itest: $(EXEs)
+	@echo "  ./HX -i"
+	@./hx -i
+
+ctest: $(EXEs)
+	@echo "  ./HX -c"
+	@./hx -c
 
 clean:
 	@echo "  RM generated files"

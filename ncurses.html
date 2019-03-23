@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>NCurses Support</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>NCurses Support</h1>
+<div class="slides">
+<div>
+<div>
+<h1>NCurses Support</h1>
+</div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in2"></span><span class="keyword">#include</span> &lt;<span class="var">ncurses</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#endif</span><br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">ncurses globals</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#endif</span><br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">ncurses globals</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span><br/>
+<span class="macro">@End(<span class="name">ncurses globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">with_ncurses</span> = <span class="num">false</span>;<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">process argument</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in2"></span><span class="keyword">if</span> (<br/>
+<span class="in3"></span><span class="var">arg</span> == <span class="str">"-c"</span> ||<br/>
+<span class="in3"></span><span class="var">arg</span> == <span class="str">"--curses"</span><br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="var">with_ncurses</span> = <span class="num">true</span>;<br/>
+<span class="in3"></span><span class="var">interactive</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span><span class="var">write_files</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span><span class="var">process_files</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span><span class="var">html_files</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span><span class="keyword">#endif</span><br/>
+<span class="macro">@End(<span class="name">process argument</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">main body</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">with_ncurses</span>) {<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">curses interact</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span><span class="keyword">#endif</span><br/>
+<span class="macro">@End(<span class="name">main body</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Ncurses_Handler</span> {<br/>
+<span class="in2"></span><span class="keyword">public</span>:<br/>
+<span class="in3"></span><span class="fn">Ncurses_Handler</span>() {<br/>
+<span class="in4"></span><span class="macro">@put(<span class="name">setup curses</span>)</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span>~<span class="fn">Ncurses_Handler</span>() {<br/>
+<span class="in4"></span><span class="macro">@put(<span class="name">teardown curses</span>)</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">setup curses</span>)</span><br/>
+<span class="in1"></span><span class="fn">initscr</span>();<br/>
+<span class="in1"></span><span class="fn">raw</span>();<br/>
+<span class="in1"></span><span class="fn">keypad</span>(<span class="var">stdscr</span>, <span class="var">TRUE</span>);<br/>
+<span class="in1"></span><span class="fn">noecho</span>();<br/>
+<span class="macro">@end(<span class="name">setup curses</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">teardown curses</span>)</span><br/>
+<span class="in1"></span><span class="fn">endwin</span>();<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"done\n"</span>;<br/>
+<span class="macro">@end(<span class="name">teardown curses</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">End_Of_Curses</span> {};<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">draw_page</span>() {<br/>
+<span class="in2"></span><span class="fn">printw</span>(<span class="str">"IN CURSES !!"</span>);<br/>
+<span class="in2"></span><span class="fn">refresh</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">curses interact</span>)</span><br/>
+<span class="in1"></span><span class="type">Ncurses_Handler</span> <span class="var">handler</span>;<br/>
+<span class="in1"></span><span class="fn">draw_page</span>();<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">ch</span>;<br/>
+<span class="in1"></span><span class="keyword">try</span> {<br/>
+<span class="in2"></span><span class="keyword">for</span> (;;) {<br/>
+<span class="in3"></span><span class="keyword">switch</span> (<span class="var">ch</span> = <span class="fn">getch</span>()) {<br/>
+<span class="in4"></span><span class="macro">@put(<span class="name">curses cases</span>)</span><br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span><span class="fn">draw_page</span>();<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>} <span class="keyword">catch</span> (<span class="type">const</span> <span class="type">End_Of_Curses</span> &amp;) {}<br/>
+<span class="macro">@End(<span class="name">curses interact</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">curses cases</span>)</span><br/>
+<span class="in1"></span><span class="keyword">case</span> <span class="str">'q'</span>: <span class="keyword">throw</span> <span class="type">End_Of_Curses</span> {};<br/>
+<span class="macro">@end(<span class="name">curses cases</span>)</span>;<br/>
+</code></div>
+</div>
+</body>
+</html>

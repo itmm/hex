@@ -31,6 +31,10 @@
 	#include <set>
 
 	#include <limits>
+
+	#if WITH_NCURSES
+		#include <ncurses.h>
+	#endif
 ;
 
 	
@@ -2368,6 +2372,39 @@
 ;
 	}
 
+	#if WITH_NCURSES
+		
+	
+	bool with_ncurses = false;
+
+	class Ncurses_Handler {
+		public:
+			Ncurses_Handler() {
+				
+	initscr();
+	raw();
+	keypad(stdscr, TRUE);
+	noecho();
+;
+			}
+			~Ncurses_Handler() {
+				
+	endwin();
+	std::cerr << "done\n";
+;
+			}
+	};
+
+	struct End_Of_Curses {};
+
+	void draw_page() {
+		printw("IN CURSES !!");
+		refresh();
+	}
+
+
+	#endif
+
 	int main(
 		int argc,
 		const char **argv
@@ -2493,6 +2530,20 @@
 		html_files = false;
 		continue;
 	}
+
+	#if WITH_NCURSES
+		if (
+			arg == "-c" ||
+			arg == "--curses"
+		) {
+			with_ncurses = true;
+			interactive = false;
+			write_files = false;
+			process_files = false;
+			html_files = false;
+			continue;
+		}
+	#endif
 ;
 		
 	inputs.add(arg);
@@ -2797,5 +2848,25 @@
 	}
 ;
 	}
+
+	#if WITH_NCURSES
+		if (with_ncurses) {
+			
+	Ncurses_Handler handler;
+	draw_page();
+	int ch;
+	try {
+		for (;;) {
+			switch (ch = getch()) {
+				
+	case 'q': throw End_Of_Curses {};
+
+			}
+			draw_page();
+		}
+	} catch (const End_Of_Curses &) {}
+;
+		}
+	#endif
 
 	}
