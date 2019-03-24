@@ -82,7 +82,6 @@
 ```
 @def(teardown curses)
 	endwin();
-	std::cerr << "done\n";
 @end(teardown curses)
 ```
 
@@ -94,8 +93,11 @@
 
 ```
 @add(globals)
+	@put(needed by draw page)
 	void draw_page() {
-		printw("IN CURSES !!");
+		clear();
+		move(0, 0);
+		@put(draw page);
 		refresh();
 	}
 @end(globals)
@@ -104,6 +106,8 @@
 ```
 @Def(curses interact)
 	Ncurses_Handler handler;
+	curInput = inputs.begin();
+	curBlock = curInput->blocks.begin();
 	draw_page();
 	int ch;
 	try {
@@ -121,4 +125,164 @@
 @def(curses cases)
 	case 'q': throw End_Of_Curses {};
 @end(curses cases);
+```
+
+```
+@def(needed by draw page)
+	void draw_number(int l) {
+		int r = l / 10;
+		if (r) { draw_number(r); }
+		addch((l % 10) + '0');
+	}
+
+	void draw_line(int l) {
+		if (l <= 9) {
+			addch(' ');
+		}
+		draw_number(l);
+		addstr(": ");
+	}
+@end(needed by draw page)
+```
+
+```
+@def(draw page)
+	if (curBlock->state == RS::header) {
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			draw_line(++i);
+			for (int i = 0; i < curBlock->level; ++i) {
+				addch('#');
+			}
+			addch(' ');
+			addstr(l.c_str());
+			addstr("\n\n");
+		}
+	}
+@end(draw page)
+```
+
+```
+@add(draw page)
+	if (curBlock->state == RS::code) {
+		addstr("    ```\n");
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			draw_line(++i);
+			addstr(l.c_str());
+			addch('\n');
+		}
+		addstr("    ```\n\n");
+	}
+@end(draw page)
+```
+
+```
+@add(draw page)
+	if (curBlock->state == RS::para) {
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			draw_line(++i);
+			addstr(l.c_str());
+			addstr("\n\n");
+		}
+	}
+@end(draw page)
+```
+
+```
+@add(draw page)
+	int j = 0;
+	for (const auto &l : curBlock->notes) {
+		draw_line(++j);
+		addstr("* ");
+		addstr(l.c_str());
+		addch('\n');
+	}
+	addch('\n');
+@end(draw page)
+```
+
+```
+@add(draw page)
+	int idx = (curInput - inputs.begin()) + 1;
+	draw_number(idx);
+	if (idx == static_cast<int>(inputs.size())) {
+		addstr(" = $");
+	}
+	addch(' ');
+	addstr(curInput->path().c_str());
+	addch(':');
+	auto &bs { curInput->blocks };
+	idx = (curBlock - bs.begin()) + 1;
+	draw_number(idx);
+	if (
+		idx == static_cast<int>(bs.size())
+	) {
+		addstr(" = $");
+	}
+@end(draw page)
+```
+
+
+```
+@add(curses cases)
+	case 'n': {
+		int next = (curBlock - curInput->blocks.begin()) + 1;
+		while (next >= static_cast<int>(curInput->blocks.size())) {
+			--next;
+		}
+		@Mul(do block range);
+		curBlock = curInput->blocks.begin() + next;
+		draw_page();
+		break;
+	}
+@end(curses cases)
+```
+
+```
+@add(curses cases)
+	case 'p' : {
+		int next = curBlock - curInput->blocks.begin();
+		if (next > 0) {
+			--next;
+		}
+		@Mul(do block range);
+		curBlock = curInput->blocks.begin() + next;
+		draw_page();
+		break;
+	}
+@end(curses cases)
+```
+
+```
+@add(curses cases)
+	case 'f': {
+		int next =(curInput - inputs.begin()) + 1;
+		while (next >= static_cast<int>(inputs.size())) {
+			--next;
+		}
+		@Mul(do inputs range);
+		curInput = inputs.begin() + next;
+		curBlock = curInput->blocks.begin();
+		draw_page();
+		continue;
+	}
+@end(curses cases)
+```
+
+```
+@add(curses cases)
+	case 'b': {
+		int next = curInput - inputs.begin();
+		if (next) {
+			--next;
+		}
+		@Mul(do inputs range);
+		curInput = inputs.begin() + next;
+		curBlock = curInput->blocks.begin();
+		draw_page();
+		continue;
+	}
+@end(curses cases)
 ```

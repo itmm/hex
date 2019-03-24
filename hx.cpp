@@ -2390,15 +2390,90 @@
 			~Ncurses_Handler() {
 				
 	endwin();
-	std::cerr << "done\n";
 ;
 			}
 	};
 
 	struct End_Of_Curses {};
 
+	
+	void draw_number(int l) {
+		int r = l / 10;
+		if (r) { draw_number(r); }
+		addch((l % 10) + '0');
+	}
+
+	void draw_line(int l) {
+		if (l <= 9) {
+			addch(' ');
+		}
+		draw_number(l);
+		addstr(": ");
+	}
+
 	void draw_page() {
-		printw("IN CURSES !!");
+		clear();
+		move(0, 0);
+		
+	if (curBlock->state == RS::header) {
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			draw_line(++i);
+			for (int i = 0; i < curBlock->level; ++i) {
+				addch('#');
+			}
+			addch(' ');
+			addstr(l.c_str());
+			addstr("\n\n");
+		}
+	}
+
+	if (curBlock->state == RS::code) {
+		addstr("    ```\n");
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			draw_line(++i);
+			addstr(l.c_str());
+			addch('\n');
+		}
+		addstr("    ```\n\n");
+	}
+
+	if (curBlock->state == RS::para) {
+		int i = 0;
+		for (const auto &l : curBlock->value) {
+			draw_line(++i);
+			addstr(l.c_str());
+			addstr("\n\n");
+		}
+	}
+
+	int j = 0;
+	for (const auto &l : curBlock->notes) {
+		draw_line(++j);
+		addstr("* ");
+		addstr(l.c_str());
+		addch('\n');
+	}
+	addch('\n');
+
+	int idx = (curInput - inputs.begin()) + 1;
+	draw_number(idx);
+	if (idx == static_cast<int>(inputs.size())) {
+		addstr(" = $");
+	}
+	addch(' ');
+	addstr(curInput->path().c_str());
+	addch(':');
+	auto &bs { curInput->blocks };
+	idx = (curBlock - bs.begin()) + 1;
+	draw_number(idx);
+	if (
+		idx == static_cast<int>(bs.size())
+	) {
+		addstr(" = $");
+	}
+;
 		refresh();
 	}
 
@@ -2853,6 +2928,8 @@
 		if (with_ncurses) {
 			
 	Ncurses_Handler handler;
+	curInput = inputs.begin();
+	curBlock = curInput->blocks.begin();
 	draw_page();
 	int ch;
 	try {
@@ -2860,6 +2937,84 @@
 			switch (ch = getch()) {
 				
 	case 'q': throw End_Of_Curses {};
+
+	case 'n': {
+		int next = (curBlock - curInput->blocks.begin()) + 1;
+		while (next >= static_cast<int>(curInput->blocks.size())) {
+			--next;
+		}
+		
+	if (range) {
+		next = range.last()(
+			(curBlock - curInput->blocks.begin()) + 1,
+			curInput->blocks.size()
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curBlock = curInput->blocks.begin() + next;
+		draw_page();
+		break;
+	}
+
+	case 'p' : {
+		int next = curBlock - curInput->blocks.begin();
+		if (next > 0) {
+			--next;
+		}
+		
+	if (range) {
+		next = range.last()(
+			(curBlock - curInput->blocks.begin()) + 1,
+			curInput->blocks.size()
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curBlock = curInput->blocks.begin() + next;
+		draw_page();
+		break;
+	}
+
+	case 'f': {
+		int next =(curInput - inputs.begin()) + 1;
+		while (next >= static_cast<int>(inputs.size())) {
+			--next;
+		}
+		
+	if (range) {
+		next = range.last()(
+			(curInput - inputs.begin()) + 1,
+			inputs.size()
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curInput = inputs.begin() + next;
+		curBlock = curInput->blocks.begin();
+		draw_page();
+		continue;
+	}
+
+	case 'b': {
+		int next = curInput - inputs.begin();
+		if (next) {
+			--next;
+		}
+		
+	if (range) {
+		next = range.last()(
+			(curInput - inputs.begin()) + 1,
+			inputs.size()
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+;
+		curInput = inputs.begin() + next;
+		curBlock = curInput->blocks.begin();
+		draw_page();
+		continue;
+	}
 
 			}
 			draw_page();
