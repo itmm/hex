@@ -4,9 +4,9 @@ CXXFLAGS += -Wall -std=c++14 -g
 
 NCURSES := $(WITH_NCURSES)
 ifeq "$(NCURSES)" "1"
-	CXXFLAGS += -DWITH_NCURSES -lncurses
+CXXFLAGS += -DWITH_NCURSES -lncurses
 else
-	$(warning "building without ncurses support")
+$(warning "building without ncurses support")
 endif
 
 Xs := $(wildcard *.x)
