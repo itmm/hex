@@ -1223,6 +1223,7 @@ Fragmente, die Dateien spezifizieren werden in diese Dateien  rausgeschrieben
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">needed by files write</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">files_write</span>() {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">files write</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1339,12 +1340,40 @@ Für jedes Fragment, das nicht befüllt wurde wird eine Meldung  ausgegeben
 </div>
 <div><div>
 <code>
+<span class="macro">@def(<span class="name">needed by files write</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">file_name</span>(<span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">f</span>.<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">needed by files write</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">needed by files write</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">file_changed</span>(<span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="keyword">in</span>(<br/>
+<span class="in3"></span><span class="fn">file_name</span>(<span class="var">f</span>).<span class="fn">c_str</span>()<br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">check_frag</span>(<span class="var">f</span>, <span class="keyword">in</span>, <span class="num">false</span>)) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="keyword">in</span>.<span class="fn">get</span>() != <span class="num">EOF</span>) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">needed by files write</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">write in file</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="fn">out</span>(<br/>
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span>.<span class="fn">substr</span>(<span class="num">6</span>).<span class="fn">c_str</span>()<br/>
-<span class="in1"></span>);<br/>
-<span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
-<span class="in1"></span><span class="var">out</span>.<span class="fn">close</span>();<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">file_changed</span>(*<span class="var">frag</span>)) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="fn">out</span>(<br/>
+<span class="in3"></span><span class="fn">file_name</span>(*<span class="var">frag</span>).<span class="fn">c_str</span>()<br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
+<span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write in file</span>)</span><br/>
 </code></div>
 <ul><li>

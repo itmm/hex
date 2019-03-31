@@ -370,6 +370,31 @@
 ;
 	}
 
+	bool check_frag(
+		const Frag &f,
+		std::istream &in,
+		bool write_line_macros
+	) {
+		
+	for (const auto &entry : f) {
+		if (entry.frag) {
+			if (!check_frag(
+				*entry.frag, in,
+				write_line_macros
+			)) {
+				return false;
+			}
+		}
+		for (const auto &i : entry.str()) {
+			if (in.get() != i) {
+				return false;
+			}
+		}
+	}
+;
+		return true;
+	}
+
 	void testFrag(
 		const Frag &frag,
 		const std::string &expected
@@ -1153,6 +1178,24 @@
 		"slides/slides.css"
 	};
 
+	
+	std::string file_name(const Frag &f) {
+		return f.name.substr(6);
+	}
+
+	bool file_changed(const Frag &f) {
+		std::ifstream in(
+			file_name(f).c_str()
+		);
+		if (! check_frag(f, in, false)) {
+			return true;
+		}
+		if (in.get() != EOF) {
+			return true;
+		}
+		return false;
+	}
+
 	void files_write() {
 		
 	for (auto &i : inputs.root()) {
@@ -1162,11 +1205,12 @@
 		 {
 	if (frag->isFile()) {
 		
-	std::ofstream out(
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(*frag, out, false);
-	out.close();
+	if (file_changed(*frag)) {
+		std::ofstream out(
+			file_name(*frag).c_str()
+		);
+		serializeFrag(*frag, out, false);
+	}
 ;
 	}
 }  {
@@ -1203,11 +1247,12 @@
 			 {
 	if (frag->isFile()) {
 		
-	std::ofstream out(
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(*frag, out, false);
-	out.close();
+	if (file_changed(*frag)) {
+		std::ofstream out(
+			file_name(*frag).c_str()
+		);
+		serializeFrag(*frag, out, false);
+	}
 ;
 	}
 }  {

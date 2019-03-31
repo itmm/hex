@@ -493,6 +493,39 @@
 
 ```
 @add(define frag)
+	bool check_frag(
+		const Frag &f,
+		std::istream &in,
+		bool write_line_macros
+	) {
+		@put(check entries);
+		return true;
+	}
+@end(define frag)
+```
+
+```
+@def(check entries)
+	for (const auto &entry : f) {
+		if (entry.frag) {
+			if (!check_frag(
+				*entry.frag, in,
+				write_line_macros
+			)) {
+				return false;
+			}
+		}
+		for (const auto &i : entry.str()) {
+			if (in.get() != i) {
+				return false;
+			}
+		}
+	}
+@end(check entries)
+```
+
+```
+@add(define frag)
 	void testFrag(
 		const Frag &frag,
 		const std::string &expected

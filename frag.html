@@ -663,6 +663,41 @@ Dann werden die Bytes des Eintrags ausgegeben
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">check_frag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">istream</span> &amp;<span class="keyword">in</span>,<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">write_line_macros</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check entries</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">define frag</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">check entries</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">entry</span> : <span class="var">f</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (!<span class="fn">check_frag</span>(<br/>
+<span class="in4"></span>*<span class="var">entry</span>.<span class="var">frag</span>, <span class="keyword">in</span>,<br/>
+<span class="in4"></span><span class="var">write_line_macros</span><br/>
+<span class="in3"></span>)) {<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">entry</span>.<span class="fn">str</span>()) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="keyword">in</span>.<span class="fn">get</span>() != <span class="var">i</span>) {<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">check entries</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">expected</span><br/>

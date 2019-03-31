@@ -874,6 +874,7 @@
 
 ```
 @add(global elements)
+	@put(needed by files write)
 	void files_write() {
 		@put(files write);
 	}
@@ -971,12 +972,38 @@
   ausgegeben
 
 ```
+@def(needed by files write)
+	std::string file_name(const Frag &f) {
+		return f.name.substr(6);
+	}
+@end(needed by files write)
+```
+
+```
+@add(needed by files write)
+	bool file_changed(const Frag &f) {
+		std::ifstream in(
+			file_name(f).c_str()
+		);
+		if (! check_frag(f, in, false)) {
+			return true;
+		}
+		if (in.get() != EOF) {
+			return true;
+		}
+		return false;
+	}
+@end(needed by files write)
+```
+
+```
 @def(write in file)
-	std::ofstream out(
-		frag->name.substr(6).c_str()
-	);
-	serializeFrag(*frag, out, false);
-	out.close();
+	if (file_changed(*frag)) {
+		std::ofstream out(
+			file_name(*frag).c_str()
+		);
+		serializeFrag(*frag, out, false);
+	}
 @end(write in file)
 ```
 * Das Fragment wird in die entsprechende Datei geschrieben
@@ -1083,3 +1110,4 @@
 ```
 @inc(todos.x)
 ```
+
