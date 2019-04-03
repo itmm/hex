@@ -3,15 +3,9 @@ CXXFLAGS += -Wall -std=c++14 -g
 .PHONY: all install clean test itest ctest
 
 ifeq (,$(wildcard /usr/include/ncurses.h))
-NCURSES := $(WITH_NCURSES)
-else
-NCURSES := 1
-endif
-
-ifeq "$(NCURSES)" "1"
-CXXFLAGS += -DWITH_NCURSES -lncurses
-else
 $(warning "building without ncurses support")
+else
+CXXFLAGS += -DWITH_NCURSES -lncurses
 endif
 
 Xs := $(wildcard *.x)
