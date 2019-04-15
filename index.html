@@ -1383,6 +1383,7 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">needed by files process</span>)</span>;<br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">files_process</span>() {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">files process</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1426,6 +1427,13 @@ Das Fragment wird in die entsprechende Datei geschrieben
 </div>
 <div><div>
 <code>
+<span class="macro">@def(<span class="name">needed by files process</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">no_cmds</span> = <span class="num">false</span>;<br/>
+<span class="macro">@end(<span class="name">needed by files process</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">serialize cmd</span>)</span> {<br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cmd</span> { <span class="var">frag</span>-&gt;<span class="fn">cmd</span>() };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span>.<span class="fn">size</span>()) {<br/>
@@ -1440,14 +1448,31 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">out</span> {};<br/>
 <span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">o</span> { <span class="var">out</span>.<span class="fn">str</span>() };<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">FILE</span> *<span class="var">f</span> {<br/>
-<span class="in2"></span><span class="fn">popen</span>(<span class="var">cmd</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>)<br/>
-<span class="in1"></span>};<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="fn">fwrite</span>(<span class="var">o</span>.<span class="fn">c_str</span>(), <span class="var">o</span>.<span class="fn">size</span>(), <span class="num">1</span>, <span class="var">f</span>);<br/>
-<span class="in2"></span><span class="fn">pclose</span>(<span class="var">f</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">no_cmds</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">o</span>;<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">FILE</span> *<span class="var">f</span> {<br/>
+<span class="in3"></span><span class="fn">popen</span>(<span class="var">cmd</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>)<br/>
+<span class="in2"></span>};<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="fn">fwrite</span>(<span class="var">o</span>.<span class="fn">c_str</span>(), <span class="var">o</span>.<span class="fn">size</span>(), <span class="num">1</span>, <span class="var">f</span>);<br/>
+<span class="in3"></span><span class="fn">pclose</span>(<span class="var">f</span>);<br/>
+<span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write cmd in file</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">process argument</span>)</span> {<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
+<span class="in2"></span><span class="str">"--no-cmds"</span><br/>
+<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">arg</span> == <span class="var">prefix</span>) {<br/>
+<span class="in2"></span><span class="var">no_cmds</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+} <span class="macro">@end(<span class="name">process argument</span>)</span><br/>
 </code></div>
 </div>
 <div><div>

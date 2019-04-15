@@ -1010,6 +1010,7 @@
 
 ```
 @add(global elements)
+	@put(needed by files process);
 	void files_process() {
 		@put(files process);
 	}
@@ -1049,6 +1050,12 @@
 ```
 
 ```
+@def(needed by files process)
+	bool no_cmds = false;
+@end(needed by files process)
+```
+
+```
 @def(serialize cmd) {
 	const std::string cmd { frag->cmd() };
 	if (cmd.size()) {
@@ -1062,14 +1069,30 @@
 	std::ostringstream out {};
 	serializeFrag(*frag, out, false);
 	std::string o { out.str() };
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
-	if (f) {
-		std::fwrite(o.c_str(), o.size(), 1, f);
-		pclose(f);
+	if (no_cmds) {
+		std::cout << o;
+	} else {
+		std::FILE *f {
+			popen(cmd.c_str(), "w")
+		};
+		if (f) {
+			std::fwrite(o.c_str(), o.size(), 1, f);
+			pclose(f);
+		}
 	}
 @end(write cmd in file)
+```
+
+```
+@add(process argument) {
+	static const std::string prefix {
+		"--no-cmds"
+	};
+	if (arg == prefix) {
+		no_cmds = true;
+		continue;
+	}
+} @end(process argument)
 ```
 
 ```

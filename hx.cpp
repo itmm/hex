@@ -1284,6 +1284,9 @@
 ;
 	}
 
+	
+	bool no_cmds = false;
+;
 	void files_process() {
 		
 	for (auto &i : inputs.root()) {
@@ -1297,12 +1300,16 @@
 	std::ostringstream out {};
 	serializeFrag(*frag, out, false);
 	std::string o { out.str() };
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
-	if (f) {
-		std::fwrite(o.c_str(), o.size(), 1, f);
-		pclose(f);
+	if (no_cmds) {
+		std::cout << o;
+	} else {
+		std::FILE *f {
+			popen(cmd.c_str(), "w")
+		};
+		if (f) {
+			std::fwrite(o.c_str(), o.size(), 1, f);
+			pclose(f);
+		}
 	}
 ;
 	}
@@ -1321,12 +1328,16 @@
 	std::ostringstream out {};
 	serializeFrag(*frag, out, false);
 	std::string o { out.str() };
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
-	if (f) {
-		std::fwrite(o.c_str(), o.size(), 1, f);
-		pclose(f);
+	if (no_cmds) {
+		std::cout << o;
+	} else {
+		std::FILE *f {
+			popen(cmd.c_str(), "w")
+		};
+		if (f) {
+			std::fwrite(o.c_str(), o.size(), 1, f);
+			pclose(f);
+		}
 	}
 ;
 	}
@@ -2637,6 +2648,14 @@
 		blockLimit = std::stoi(
 			arg.substr(prefix.length())
 		);
+		continue;
+	}
+}  {
+	static const std::string prefix {
+		"--no-cmds"
+	};
+	if (arg == prefix) {
+		no_cmds = true;
 		continue;
 	}
 } 
