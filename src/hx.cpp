@@ -32,8 +32,19 @@
 
 	#include <limits>
 
-	#if WITH_NCURSES
+	#if defined HAVE_CONFIG_H
+		#include "config.h"
+	#endif
+	#if defined HAVE_NCURSESW_CURSES_H
+		#include <ncursesw/curses.h>
+	#elif defined HAVE_NCURSESW_H
+		#include <ncursesw.h>
+	#elif defined HAVE_NCURSES_CURSES_H
+		#include <ncurses/curses.h>
+	#elif defined HAVE_NCURSES_H
 		#include <ncurses.h>
+	#elif defined HAVE_CURSES_H
+		#include <curses.h>
 	#endif
 ;
 
@@ -2428,7 +2439,7 @@
 ;
 	}
 
-	#if WITH_NCURSES
+	#if HAVE_CURSES
 		
 	
 	bool with_ncurses = false;
@@ -2670,7 +2681,7 @@
 		continue;
 	}
 
-	#if WITH_NCURSES
+	#if HAVE_CURSES
 		if (
 			arg == "-c" ||
 			arg == "--curses"
@@ -2988,7 +2999,7 @@
 ;
 	}
 
-	#if WITH_NCURSES
+	#if HAVE_CURSES
 		if (with_ncurses) {
 			
 	Ncurses_Handler handler;

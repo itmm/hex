@@ -15,8 +15,19 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">defined</span> <span class="var">HAVE_CONFIG_H</span><br/>
+<span class="in2"></span><span class="keyword">#include</span> <span class="str">"config.h"</span><br/>
+<span class="in1"></span><span class="keyword">#endif</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">defined</span> <span class="var">HAVE_NCURSESW_CURSES_H</span><br/>
+<span class="in2"></span><span class="keyword">#include</span> &lt;<span class="var">ncursesw</span>/<span class="var">curses</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#elif</span> <span class="var">defined</span> <span class="var">HAVE_NCURSESW_H</span><br/>
+<span class="in2"></span><span class="keyword">#include</span> &lt;<span class="var">ncursesw</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#elif</span> <span class="var">defined</span> <span class="var">HAVE_NCURSES_CURSES_H</span><br/>
+<span class="in2"></span><span class="keyword">#include</span> &lt;<span class="var">ncurses</span>/<span class="var">curses</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#elif</span> <span class="var">defined</span> <span class="var">HAVE_NCURSES_H</span><br/>
 <span class="in2"></span><span class="keyword">#include</span> &lt;<span class="var">ncurses</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#elif</span> <span class="var">defined</span> <span class="var">HAVE_CURSES_H</span><br/>
+<span class="in2"></span><span class="keyword">#include</span> &lt;<span class="var">curses</span>.<span class="var">h</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">#endif</span><br/>
 <span class="macro">@End(<span class="name">includes</span>)</span><br/>
 </code></div>
@@ -24,7 +35,7 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
 <span class="in2"></span><span class="macro">@Put(<span class="name">ncurses globals</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#endif</span><br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
@@ -47,7 +58,7 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">process argument</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
 <span class="in2"></span><span class="keyword">if</span> (<br/>
 <span class="in3"></span><span class="var">arg</span> == <span class="str">"-c"</span> ||<br/>
 <span class="in3"></span><span class="var">arg</span> == <span class="str">"--curses"</span><br/>
@@ -66,7 +77,7 @@
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">main body</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#if</span> <span class="var">WITH_NCURSES</span><br/>
+<span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">with_ncurses</span>) {<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">curses interact</span>)</span>;<br/>
 <span class="in2"></span>}<br/>

@@ -7,4 +7,5 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 ])
+AX_WITH_CURSES
 AC_OUTPUT

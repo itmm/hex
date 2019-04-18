@@ -20,6 +20,903 @@ You have another version of autoconf.  It may work, but is not guaranteed to.
 If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically 'autoreconf'.])])
 
+# ===========================================================================
+#    http://www.gnu.org/software/autoconf-archive/ax_require_defined.html
+# ===========================================================================
+#
+# SYNOPSIS
+#
+#   AX_REQUIRE_DEFINED(MACRO)
+#
+# DESCRIPTION
+#
+#   AX_REQUIRE_DEFINED is a simple helper for making sure other macros have
+#   been defined and thus are available for use.  This avoids random issues
+#   where a macro isn't expanded.  Instead the configure script emits a
+#   non-fatal:
+#
+#     ./configure: line 1673: AX_CFLAGS_WARN_ALL: command not found
+#
+#   It's like AC_REQUIRE except it doesn't expand the required macro.
+#
+#   Here's an example:
+#
+#     AX_REQUIRE_DEFINED([AX_CHECK_LINK_FLAG])
+#
+# LICENSE
+#
+#   Copyright (c) 2014 Mike Frysinger <vapier@gentoo.org>
+#
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved. This file is offered as-is, without any
+#   warranty.
+
+#serial 1
+
+AC_DEFUN([AX_REQUIRE_DEFINED], [dnl
+  m4_ifndef([$1], [m4_fatal([macro ]$1[ is not defined; is a m4 file missing?])])
+])dnl AX_REQUIRE_DEFINED
+
+# ===========================================================================
+#      http://www.gnu.org/software/autoconf-archive/ax_with_curses.html
+# ===========================================================================
+#
+# SYNOPSIS
+#
+#   AX_WITH_CURSES
+#
+# DESCRIPTION
+#
+#   This macro checks whether a SysV or X/Open-compatible Curses library is
+#   present, along with the associated header file.  The NcursesW
+#   (wide-character) library is searched for first, followed by Ncurses,
+#   then the system-default plain Curses.  The first library found is the
+#   one returned. Finding libraries will first be attempted by using
+#   pkg-config, and should the pkg-config files not be available, will
+#   fallback to combinations of known flags itself.
+#
+#   The following options are understood: --with-ncursesw, --with-ncurses,
+#   --without-ncursesw, --without-ncurses.  The "--with" options force the
+#   macro to use that particular library, terminating with an error if not
+#   found.  The "--without" options simply skip the check for that library.
+#   The effect on the search pattern is:
+#
+#     (no options)                           - NcursesW, Ncurses, Curses
+#     --with-ncurses     --with-ncursesw     - NcursesW only [*]
+#     --without-ncurses  --with-ncursesw     - NcursesW only [*]
+#                        --with-ncursesw     - NcursesW only [*]
+#     --with-ncurses     --without-ncursesw  - Ncurses only [*]
+#     --with-ncurses                         - NcursesW, Ncurses [**]
+#     --without-ncurses  --without-ncursesw  - Curses only
+#                        --without-ncursesw  - Ncurses, Curses
+#     --without-ncurses                      - NcursesW, Curses
+#
+#   [*]  If the library is not found, abort the configure script.
+#
+#   [**] If the second library (Ncurses) is not found, abort configure.
+#
+#   The following preprocessor symbols may be defined by this macro if the
+#   appropriate conditions are met:
+#
+#     HAVE_CURSES             - if any SysV or X/Open Curses library found
+#     HAVE_CURSES_ENHANCED    - if library supports X/Open Enhanced functions
+#     HAVE_CURSES_COLOR       - if library supports color (enhanced functions)
+#     HAVE_CURSES_OBSOLETE    - if library supports certain obsolete features
+#     HAVE_NCURSESW           - if NcursesW (wide char) library is to be used
+#     HAVE_NCURSES            - if the Ncurses library is to be used
+#
+#     HAVE_CURSES_H           - if <curses.h> is present and should be used
+#     HAVE_NCURSESW_H         - if <ncursesw.h> should be used
+#     HAVE_NCURSES_H          - if <ncurses.h> should be used
+#     HAVE_NCURSESW_CURSES_H  - if <ncursesw/curses.h> should be used
+#     HAVE_NCURSES_CURSES_H   - if <ncurses/curses.h> should be used
+#
+#   (These preprocessor symbols are discussed later in this document.)
+#
+#   The following output variables are defined by this macro; they are
+#   precious and may be overridden on the ./configure command line:
+#
+#     CURSES_LIBS  - library to add to xxx_LDADD
+#     CURSES_CFLAGS  - include paths to add to xxx_CPPFLAGS
+#
+#   In previous versions of this macro, the flags CURSES_LIB and
+#   CURSES_CPPFLAGS were defined. These have been renamed, in keeping with
+#   AX_WITH_CURSES's close bigger brother, PKG_CHECK_MODULES, which should
+#   eventually supersede the use of AX_WITH_CURSES. Neither the library
+#   listed in CURSES_LIBS, nor the flags in CURSES_CFLAGS are added to LIBS,
+#   respectively CPPFLAGS, by default. You need to add both to the
+#   appropriate xxx_LDADD/xxx_CPPFLAGS line in your Makefile.am. For
+#   example:
+#
+#     prog_LDADD = @CURSES_LIBS@
+#     prog_CPPFLAGS = @CURSES_CFLAGS@
+#
+#   If CURSES_LIBS is set on the configure command line (such as by running
+#   "./configure CURSES_LIBS=-lmycurses"), then the only header searched for
+#   is <curses.h>. If the user needs to specify an alternative path for a
+#   library (such as for a non-standard NcurseW), the user should use the
+#   LDFLAGS variable.
+#
+#   The following shell variables may be defined by this macro:
+#
+#     ax_cv_curses           - set to "yes" if any Curses library found
+#     ax_cv_curses_enhanced  - set to "yes" if Enhanced functions present
+#     ax_cv_curses_color     - set to "yes" if color functions present
+#     ax_cv_curses_obsolete  - set to "yes" if obsolete features present
+#
+#     ax_cv_ncursesw      - set to "yes" if NcursesW library found
+#     ax_cv_ncurses       - set to "yes" if Ncurses library found
+#     ax_cv_plaincurses   - set to "yes" if plain Curses library found
+#     ax_cv_curses_which  - set to "ncursesw", "ncurses", "plaincurses" or "no"
+#
+#   These variables can be used in your configure.ac to determine the level
+#   of support you need from the Curses library.  For example, if you must
+#   have either Ncurses or NcursesW, you could include:
+#
+#     AX_WITH_CURSES
+#     if test "x$ax_cv_ncursesw" != xyes && test "x$ax_cv_ncurses" != xyes; then
+#         AC_MSG_ERROR([requires either NcursesW or Ncurses library])
+#     fi
+#
+#   If any Curses library will do (but one must be present and must support
+#   color), you could use:
+#
+#     AX_WITH_CURSES
+#     if test "x$ax_cv_curses" != xyes || test "x$ax_cv_curses_color" != xyes; then
+#         AC_MSG_ERROR([requires an X/Open-compatible Curses library with color])
+#     fi
+#
+#   Certain preprocessor symbols and shell variables defined by this macro
+#   can be used to determine various features of the Curses library.  In
+#   particular, HAVE_CURSES and ax_cv_curses are defined if the Curses
+#   library found conforms to the traditional SysV and/or X/Open Base Curses
+#   definition.  Any working Curses library conforms to this level.
+#
+#   HAVE_CURSES_ENHANCED and ax_cv_curses_enhanced are defined if the
+#   library supports the X/Open Enhanced Curses definition.  In particular,
+#   the wide-character types attr_t, cchar_t and wint_t, the functions
+#   wattr_set() and wget_wch() and the macros WA_NORMAL and _XOPEN_CURSES
+#   are checked.  The Ncurses library does NOT conform to this definition,
+#   although NcursesW does.
+#
+#   HAVE_CURSES_COLOR and ax_cv_curses_color are defined if the library
+#   supports color functions and macros such as COLOR_PAIR, A_COLOR,
+#   COLOR_WHITE, COLOR_RED and init_pair().  These are NOT part of the
+#   X/Open Base Curses definition, but are part of the Enhanced set of
+#   functions.  The Ncurses library DOES support these functions, as does
+#   NcursesW.
+#
+#   HAVE_CURSES_OBSOLETE and ax_cv_curses_obsolete are defined if the
+#   library supports certain features present in SysV and BSD Curses but not
+#   defined in the X/Open definition.  In particular, the functions
+#   getattrs(), getcurx() and getmaxx() are checked.
+#
+#   To use the HAVE_xxx_H preprocessor symbols, insert the following into
+#   your system.h (or equivalent) header file:
+#
+#     #if defined HAVE_NCURSESW_CURSES_H
+#     #  include <ncursesw/curses.h>
+#     #elif defined HAVE_NCURSESW_H
+#     #  include <ncursesw.h>
+#     #elif defined HAVE_NCURSES_CURSES_H
+#     #  include <ncurses/curses.h>
+#     #elif defined HAVE_NCURSES_H
+#     #  include <ncurses.h>
+#     #elif defined HAVE_CURSES_H
+#     #  include <curses.h>
+#     #else
+#     #  error "SysV or X/Open-compatible Curses header file required"
+#     #endif
+#
+#   For previous users of this macro: you should not need to change anything
+#   in your configure.ac or Makefile.am, as the previous (serial 10)
+#   semantics are still valid.  However, you should update your system.h (or
+#   equivalent) header file to the fragment shown above. You are encouraged
+#   also to make use of the extended functionality provided by this version
+#   of AX_WITH_CURSES, as well as in the additional macros
+#   AX_WITH_CURSES_PANEL, AX_WITH_CURSES_MENU and AX_WITH_CURSES_FORM.
+#
+# LICENSE
+#
+#   Copyright (c) 2009 Mark Pulford <mark@kyne.com.au>
+#   Copyright (c) 2009 Damian Pietras <daper@daper.net>
+#   Copyright (c) 2012 Reuben Thomas <rrt@sc3d.org>
+#   Copyright (c) 2011 John Zaitseff <J.Zaitseff@zap.org.au>
+#
+#   This program is free software: you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the
+#   Free Software Foundation, either version 3 of the License, or (at your
+#   option) any later version.
+#
+#   This program is distributed in the hope that it will be useful, but
+#   WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#   Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+#   As a special exception, the respective Autoconf Macro's copyright owner
+#   gives unlimited permission to copy, distribute and modify the configure
+#   scripts that are the output of Autoconf when processing the Macro. You
+#   need not follow the terms of the GNU General Public License when using
+#   or distributing such scripts, even though portions of the text of the
+#   Macro appear in them. The GNU General Public License (GPL) does govern
+#   all other use of the material that constitutes the Autoconf Macro.
+#
+#   This special exception to the GPL applies to versions of the Autoconf
+#   Macro released by the Autoconf Archive. When you make and distribute a
+#   modified version of the Autoconf Macro, you may extend this special
+#   exception to the GPL to apply to your modified version as well.
+
+#serial 17
+
+# internal function to factorize common code that is used by both ncurses
+# and ncursesw
+AC_DEFUN([_FIND_CURSES_FLAGS], [
+    AC_MSG_CHECKING([for $1 via pkg-config])
+
+    AX_REQUIRE_DEFINED([PKG_CHECK_EXISTS])
+    _PKG_CONFIG([_ax_cv_$1_libs], [libs], [$1])
+    _PKG_CONFIG([_ax_cv_$1_cppflags], [cflags], [$1])
+
+    AS_IF([test "x$pkg_failed" = "xyes" || test "x$pkg_failed" = "xuntried"],[
+        AC_MSG_RESULT([no])
+        # No suitable .pc file found, have to find flags via fallback
+        AC_CACHE_CHECK([for $1 via fallback], [ax_cv_$1], [
+            AS_ECHO()
+            pkg_cv__ax_cv_$1_libs="-l$1"
+            pkg_cv__ax_cv_$1_cppflags="-D_GNU_SOURCE $CURSES_CFLAGS"
+            LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_$1_libs"
+            CPPFLAGS="$ax_saved_CPPFLAGS $pkg_cv__ax_cv_$1_cppflags"
+
+            AC_MSG_CHECKING([for initscr() with $pkg_cv__ax_cv_$1_libs])
+            AC_LINK_IFELSE([AC_LANG_CALL([], [initscr])],
+                [
+                    AC_MSG_RESULT([yes])
+                    AC_MSG_CHECKING([for nodelay() with $pkg_cv__ax_cv_$1_libs])
+                    AC_LINK_IFELSE([AC_LANG_CALL([], [nodelay])],[
+                        ax_cv_$1=yes
+                        ],[
+                        AC_MSG_RESULT([no])
+                        m4_if(
+                            [$1],[ncursesw],[pkg_cv__ax_cv_$1_libs="$pkg_cv__ax_cv_$1_libs -ltinfow"],
+                            [$1],[ncurses],[pkg_cv__ax_cv_$1_libs="$pkg_cv__ax_cv_$1_libs -ltinfo"]
+                        )
+                        LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_$1_libs"
+
+                        AC_MSG_CHECKING([for nodelay() with $pkg_cv__ax_cv_$1_libs])
+                        AC_LINK_IFELSE([AC_LANG_CALL([], [nodelay])],[
+                            ax_cv_$1=yes
+                            ],[
+                            ax_cv_$1=no
+                        ])
+                    ])
+                ],[
+                    ax_cv_$1=no
+            ])
+        ])
+        ],[
+        AC_MSG_RESULT([yes])
+        # Found .pc file, using its information
+        LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_$1_libs"
+        CPPFLAGS="$ax_saved_CPPFLAGS $pkg_cv__ax_cv_$1_cppflags"
+        ax_cv_$1=yes
+    ])
+])
+
+AU_ALIAS([MP_WITH_CURSES], [AX_WITH_CURSES])
+AC_DEFUN([AX_WITH_CURSES], [
+    AC_ARG_VAR([CURSES_LIBS], [linker library for Curses, e.g. -lcurses])
+    AC_ARG_VAR([CURSES_CFLAGS], [preprocessor flags for Curses, e.g. -I/usr/include/ncursesw])
+    AC_ARG_WITH([ncurses], [AS_HELP_STRING([--with-ncurses],
+        [force the use of Ncurses or NcursesW])],
+        [], [with_ncurses=check])
+    AC_ARG_WITH([ncursesw], [AS_HELP_STRING([--without-ncursesw],
+        [do not use NcursesW (wide character support)])],
+        [], [with_ncursesw=check])
+
+    ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
+    AS_IF([test "x$with_ncurses" = xyes || test "x$with_ncursesw" = xyes],
+        [ax_with_plaincurses=no], [ax_with_plaincurses=check])
+
+    ax_cv_curses_which=no
+
+    # Test for NcursesW
+    AS_IF([test "x$CURSES_LIBS" = x && test "x$with_ncursesw" != xno], [
+        _FIND_CURSES_FLAGS([ncursesw])
+
+        AS_IF([test "x$ax_cv_ncursesw" = xno && test "x$with_ncursesw" = xyes], [
+            AC_MSG_ERROR([--with-ncursesw specified but could not find NcursesW library])
+        ])
+
+        AS_IF([test "x$ax_cv_ncursesw" = xyes], [
+            ax_cv_curses=yes
+            ax_cv_curses_which=ncursesw
+            CURSES_LIBS="$pkg_cv__ax_cv_ncursesw_libs"
+            CURSES_CFLAGS="$pkg_cv__ax_cv_ncursesw_cppflags"
+            AC_DEFINE([HAVE_NCURSESW], [1], [Define to 1 if the NcursesW library is present])
+            AC_DEFINE([HAVE_CURSES],   [1], [Define to 1 if a SysV or X/Open compatible Curses library is present])
+
+            AC_CACHE_CHECK([for working ncursesw/curses.h], [ax_cv_header_ncursesw_curses_h], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@define _XOPEN_SOURCE_EXTENDED 1
+                        @%:@include <ncursesw/curses.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        chtype c = COLOR_PAIR(1) & A_COLOR;
+                        attr_t d = WA_NORMAL;
+                        cchar_t e;
+                        wint_t f;
+                        int g = getattrs(stdscr);
+                        int h = getcurx(stdscr) + getmaxx(stdscr);
+                        initscr();
+                        init_pair(1, COLOR_WHITE, COLOR_RED);
+                        wattr_set(stdscr, d, 0, NULL);
+                        wget_wch(stdscr, &f);
+                    ]])],
+                    [ax_cv_header_ncursesw_curses_h=yes],
+                    [ax_cv_header_ncursesw_curses_h=no])
+            ])
+            AS_IF([test "x$ax_cv_header_ncursesw_curses_h" = xyes], [
+                ax_cv_curses_enhanced=yes
+                ax_cv_curses_color=yes
+                ax_cv_curses_obsolete=yes
+                AC_DEFINE([HAVE_CURSES_ENHANCED],   [1], [Define to 1 if library supports X/Open Enhanced functions])
+                AC_DEFINE([HAVE_CURSES_COLOR],      [1], [Define to 1 if library supports color (enhanced functions)])
+                AC_DEFINE([HAVE_CURSES_OBSOLETE],   [1], [Define to 1 if library supports certain obsolete features])
+                AC_DEFINE([HAVE_NCURSESW_CURSES_H], [1], [Define to 1 if <ncursesw/curses.h> is present])
+            ])
+
+            AC_CACHE_CHECK([for working ncursesw.h], [ax_cv_header_ncursesw_h], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@define _XOPEN_SOURCE_EXTENDED 1
+                        @%:@include <ncursesw.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        chtype c = COLOR_PAIR(1) & A_COLOR;
+                        attr_t d = WA_NORMAL;
+                        cchar_t e;
+                        wint_t f;
+                        int g = getattrs(stdscr);
+                        int h = getcurx(stdscr) + getmaxx(stdscr);
+                        initscr();
+                        init_pair(1, COLOR_WHITE, COLOR_RED);
+                        wattr_set(stdscr, d, 0, NULL);
+                        wget_wch(stdscr, &f);
+                    ]])],
+                    [ax_cv_header_ncursesw_h=yes],
+                    [ax_cv_header_ncursesw_h=no])
+            ])
+            AS_IF([test "x$ax_cv_header_ncursesw_h" = xyes], [
+                ax_cv_curses_enhanced=yes
+                ax_cv_curses_color=yes
+                ax_cv_curses_obsolete=yes
+                AC_DEFINE([HAVE_CURSES_ENHANCED], [1], [Define to 1 if library supports X/Open Enhanced functions])
+                AC_DEFINE([HAVE_CURSES_COLOR],    [1], [Define to 1 if library supports color (enhanced functions)])
+                AC_DEFINE([HAVE_CURSES_OBSOLETE], [1], [Define to 1 if library supports certain obsolete features])
+                AC_DEFINE([HAVE_NCURSESW_H],      [1], [Define to 1 if <ncursesw.h> is present])
+            ])
+
+            AC_CACHE_CHECK([for working ncurses.h], [ax_cv_header_ncurses_h_with_ncursesw], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@define _XOPEN_SOURCE_EXTENDED 1
+                        @%:@include <ncurses.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        chtype c = COLOR_PAIR(1) & A_COLOR;
+                        attr_t d = WA_NORMAL;
+                        cchar_t e;
+                        wint_t f;
+                        int g = getattrs(stdscr);
+                        int h = getcurx(stdscr) + getmaxx(stdscr);
+                        initscr();
+                        init_pair(1, COLOR_WHITE, COLOR_RED);
+                        wattr_set(stdscr, d, 0, NULL);
+                        wget_wch(stdscr, &f);
+                    ]])],
+                    [ax_cv_header_ncurses_h_with_ncursesw=yes],
+                    [ax_cv_header_ncurses_h_with_ncursesw=no])
+            ])
+            AS_IF([test "x$ax_cv_header_ncurses_h_with_ncursesw" = xyes], [
+                ax_cv_curses_enhanced=yes
+                ax_cv_curses_color=yes
+                ax_cv_curses_obsolete=yes
+                AC_DEFINE([HAVE_CURSES_ENHANCED], [1], [Define to 1 if library supports X/Open Enhanced functions])
+                AC_DEFINE([HAVE_CURSES_COLOR],    [1], [Define to 1 if library supports color (enhanced functions)])
+                AC_DEFINE([HAVE_CURSES_OBSOLETE], [1], [Define to 1 if library supports certain obsolete features])
+                AC_DEFINE([HAVE_NCURSES_H],       [1], [Define to 1 if <ncurses.h> is present])
+            ])
+
+            AS_IF([test "x$ax_cv_header_ncursesw_curses_h" = xno && test "x$ax_cv_header_ncursesw_h" = xno && test "x$ax_cv_header_ncurses_h_with_ncursesw" = xno], [
+                AC_MSG_WARN([could not find a working ncursesw/curses.h, ncursesw.h or ncurses.h])
+            ])
+        ])
+    ])
+    unset pkg_cv__ax_cv_ncursesw_libs
+    unset pkg_cv__ax_cv_ncursesw_cppflags
+
+    # Test for Ncurses
+    AS_IF([test "x$CURSES_LIBS" = x && test "x$with_ncurses" != xno && test "x$ax_cv_curses_which" = xno], [
+        _FIND_CURSES_FLAGS([ncurses])
+
+        AS_IF([test "x$ax_cv_ncurses" = xno && test "x$with_ncurses" = xyes], [
+            AC_MSG_ERROR([--with-ncurses specified but could not find Ncurses library])
+        ])
+
+        AS_IF([test "x$ax_cv_ncurses" = xyes], [
+            ax_cv_curses=yes
+            ax_cv_curses_which=ncurses
+            CURSES_LIBS="$pkg_cv__ax_cv_ncurses_libs"
+            CURSES_CFLAGS="$pkg_cv__ax_cv_ncurses_cppflags"
+            AC_DEFINE([HAVE_NCURSES], [1], [Define to 1 if the Ncurses library is present])
+            AC_DEFINE([HAVE_CURSES],  [1], [Define to 1 if a SysV or X/Open compatible Curses library is present])
+
+            AC_CACHE_CHECK([for working ncurses/curses.h], [ax_cv_header_ncurses_curses_h], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@include <ncurses/curses.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        chtype c = COLOR_PAIR(1) & A_COLOR;
+                        int g = getattrs(stdscr);
+                        int h = getcurx(stdscr) + getmaxx(stdscr);
+                        initscr();
+                        init_pair(1, COLOR_WHITE, COLOR_RED);
+                    ]])],
+                    [ax_cv_header_ncurses_curses_h=yes],
+                    [ax_cv_header_ncurses_curses_h=no])
+            ])
+            AS_IF([test "x$ax_cv_header_ncurses_curses_h" = xyes], [
+                ax_cv_curses_color=yes
+                ax_cv_curses_obsolete=yes
+                AC_DEFINE([HAVE_CURSES_COLOR],     [1], [Define to 1 if library supports color (enhanced functions)])
+                AC_DEFINE([HAVE_CURSES_OBSOLETE],  [1], [Define to 1 if library supports certain obsolete features])
+                AC_DEFINE([HAVE_NCURSES_CURSES_H], [1], [Define to 1 if <ncurses/curses.h> is present])
+            ])
+
+            AC_CACHE_CHECK([for working ncurses.h], [ax_cv_header_ncurses_h], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@include <ncurses.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        chtype c = COLOR_PAIR(1) & A_COLOR;
+                        int g = getattrs(stdscr);
+                        int h = getcurx(stdscr) + getmaxx(stdscr);
+                        initscr();
+                        init_pair(1, COLOR_WHITE, COLOR_RED);
+                    ]])],
+                    [ax_cv_header_ncurses_h=yes],
+                    [ax_cv_header_ncurses_h=no])
+            ])
+            AS_IF([test "x$ax_cv_header_ncurses_h" = xyes], [
+                ax_cv_curses_color=yes
+                ax_cv_curses_obsolete=yes
+                AC_DEFINE([HAVE_CURSES_COLOR],    [1], [Define to 1 if library supports color (enhanced functions)])
+                AC_DEFINE([HAVE_CURSES_OBSOLETE], [1], [Define to 1 if library supports certain obsolete features])
+                AC_DEFINE([HAVE_NCURSES_H],       [1], [Define to 1 if <ncurses.h> is present])
+            ])
+
+            AS_IF([test "x$ax_cv_header_ncurses_curses_h" = xno && test "x$ax_cv_header_ncurses_h" = xno], [
+                AC_MSG_WARN([could not find a working ncurses/curses.h or ncurses.h])
+            ])
+        ])
+    ])
+    unset pkg_cv__ax_cv_ncurses_libs
+    unset pkg_cv__ax_cv_ncurses_cppflags
+
+    # Test for plain Curses (or if CURSES_LIBS was set by user)
+    AS_IF([test "x$with_plaincurses" != xno && test "x$ax_cv_curses_which" = xno], [
+        AS_IF([test "x$CURSES_LIBS" != x], [
+            LIBS="$ax_saved_LIBS $CURSES_LIBS"
+        ], [
+            LIBS="$ax_saved_LIBS -lcurses"
+        ])
+
+        AC_CACHE_CHECK([for Curses library], [ax_cv_plaincurses], [
+            AC_LINK_IFELSE([AC_LANG_CALL([], [initscr])],
+                [ax_cv_plaincurses=yes], [ax_cv_plaincurses=no])
+        ])
+
+        AS_IF([test "x$ax_cv_plaincurses" = xyes], [
+            ax_cv_curses=yes
+            ax_cv_curses_which=plaincurses
+            AS_IF([test "x$CURSES_LIBS" = x], [
+                CURSES_LIBS="-lcurses"
+            ])
+            AC_DEFINE([HAVE_CURSES], [1], [Define to 1 if a SysV or X/Open compatible Curses library is present])
+
+            # Check for base conformance (and header file)
+
+            AC_CACHE_CHECK([for working curses.h], [ax_cv_header_curses_h], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@include <curses.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        initscr();
+                    ]])],
+                    [ax_cv_header_curses_h=yes],
+                    [ax_cv_header_curses_h=no])
+            ])
+            AS_IF([test "x$ax_cv_header_curses_h" = xyes], [
+                AC_DEFINE([HAVE_CURSES_H], [1], [Define to 1 if <curses.h> is present])
+
+                # Check for X/Open Enhanced conformance
+
+                AC_CACHE_CHECK([for X/Open Enhanced Curses conformance], [ax_cv_plaincurses_enhanced], [
+                    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                            @%:@define _XOPEN_SOURCE_EXTENDED 1
+                            @%:@include <curses.h>
+                            @%:@ifndef _XOPEN_CURSES
+                            @%:@error "this Curses library is not enhanced"
+                            "this Curses library is not enhanced"
+                            @%:@endif
+                        ]], [[
+                            chtype a = A_BOLD;
+                            int b = KEY_LEFT;
+                            chtype c = COLOR_PAIR(1) & A_COLOR;
+                            attr_t d = WA_NORMAL;
+                            cchar_t e;
+                            wint_t f;
+                            initscr();
+                            init_pair(1, COLOR_WHITE, COLOR_RED);
+                            wattr_set(stdscr, d, 0, NULL);
+                            wget_wch(stdscr, &f);
+                        ]])],
+                        [ax_cv_plaincurses_enhanced=yes],
+                        [ax_cv_plaincurses_enhanced=no])
+                ])
+                AS_IF([test "x$ax_cv_plaincurses_enhanced" = xyes], [
+                    ax_cv_curses_enhanced=yes
+                    ax_cv_curses_color=yes
+                    AC_DEFINE([HAVE_CURSES_ENHANCED], [1], [Define to 1 if library supports X/Open Enhanced functions])
+                    AC_DEFINE([HAVE_CURSES_COLOR],    [1], [Define to 1 if library supports color (enhanced functions)])
+                ])
+
+                # Check for color functions
+
+                AC_CACHE_CHECK([for Curses color functions], [ax_cv_plaincurses_color], [
+                    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@define _XOPEN_SOURCE_EXTENDED 1
+                        @%:@include <curses.h>
+                        ]], [[
+                            chtype a = A_BOLD;
+                            int b = KEY_LEFT;
+                            chtype c = COLOR_PAIR(1) & A_COLOR;
+                            initscr();
+                            init_pair(1, COLOR_WHITE, COLOR_RED);
+                        ]])],
+                        [ax_cv_plaincurses_color=yes],
+                        [ax_cv_plaincurses_color=no])
+                ])
+                AS_IF([test "x$ax_cv_plaincurses_color" = xyes], [
+                    ax_cv_curses_color=yes
+                    AC_DEFINE([HAVE_CURSES_COLOR], [1], [Define to 1 if library supports color (enhanced functions)])
+                ])
+
+                # Check for obsolete functions
+
+                AC_CACHE_CHECK([for obsolete Curses functions], [ax_cv_plaincurses_obsolete], [
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+                        @%:@include <curses.h>
+                    ]], [[
+                        chtype a = A_BOLD;
+                        int b = KEY_LEFT;
+                        int g = getattrs(stdscr);
+                        int h = getcurx(stdscr) + getmaxx(stdscr);
+                        initscr();
+                    ]])],
+                    [ax_cv_plaincurses_obsolete=yes],
+                    [ax_cv_plaincurses_obsolete=no])
+                ])
+                AS_IF([test "x$ax_cv_plaincurses_obsolete" = xyes], [
+                    ax_cv_curses_obsolete=yes
+                    AC_DEFINE([HAVE_CURSES_OBSOLETE], [1], [Define to 1 if library supports certain obsolete features])
+                ])
+            ])
+
+            AS_IF([test "x$ax_cv_header_curses_h" = xno], [
+                AC_MSG_WARN([could not find a working curses.h])
+            ])
+        ])
+    ])
+
+    AS_IF([test "x$ax_cv_curses"          != xyes], [ax_cv_curses=no])
+    AS_IF([test "x$ax_cv_curses_enhanced" != xyes], [ax_cv_curses_enhanced=no])
+    AS_IF([test "x$ax_cv_curses_color"    != xyes], [ax_cv_curses_color=no])
+    AS_IF([test "x$ax_cv_curses_obsolete" != xyes], [ax_cv_curses_obsolete=no])
+
+    LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
+])dnl
+
+dnl pkg.m4 - Macros to locate and utilise pkg-config.   -*- Autoconf -*-
+dnl serial 11 (pkg-config-0.29)
+dnl
+dnl Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
+dnl Copyright © 2012-2015 Dan Nicholson <dbn.lists@gmail.com>
+dnl
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+dnl General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+dnl 02111-1307, USA.
+dnl
+dnl As a special exception to the GNU General Public License, if you
+dnl distribute this file as part of a program that contains a
+dnl configuration script generated by Autoconf, you may include it under
+dnl the same distribution terms that you use for the rest of that
+dnl program.
+
+dnl PKG_PREREQ(MIN-VERSION)
+dnl -----------------------
+dnl Since: 0.29
+dnl
+dnl Verify that the version of the pkg-config macros are at least
+dnl MIN-VERSION. Unlike PKG_PROG_PKG_CONFIG, which checks the user's
+dnl installed version of pkg-config, this checks the developer's version
+dnl of pkg.m4 when generating configure.
+dnl
+dnl To ensure that this macro is defined, also add:
+dnl m4_ifndef([PKG_PREREQ],
+dnl     [m4_fatal([must install pkg-config 0.29 or later before running autoconf/autogen])])
+dnl
+dnl See the "Since" comment for each macro you use to see what version
+dnl of the macros you require.
+m4_defun([PKG_PREREQ],
+[m4_define([PKG_MACROS_VERSION], [0.29])
+m4_if(m4_version_compare(PKG_MACROS_VERSION, [$1]), -1,
+    [m4_fatal([pkg.m4 version $1 or higher is required but ]PKG_MACROS_VERSION[ found])])
+])dnl PKG_PREREQ
+
+dnl PKG_PROG_PKG_CONFIG([MIN-VERSION])
+dnl ----------------------------------
+dnl Since: 0.16
+dnl
+dnl Search for the pkg-config tool and set the PKG_CONFIG variable to
+dnl first found in the path. Checks that the version of pkg-config found
+dnl is at least MIN-VERSION. If MIN-VERSION is not specified, 0.9.0 is
+dnl used since that's the first version where most current features of
+dnl pkg-config existed.
+AC_DEFUN([PKG_PROG_PKG_CONFIG],
+[m4_pattern_forbid([^_?PKG_[A-Z_]+$])
+m4_pattern_allow([^PKG_CONFIG(_(PATH|LIBDIR|SYSROOT_DIR|ALLOW_SYSTEM_(CFLAGS|LIBS)))?$])
+m4_pattern_allow([^PKG_CONFIG_(DISABLE_UNINSTALLED|TOP_BUILD_DIR|DEBUG_SPEW)$])
+AC_ARG_VAR([PKG_CONFIG], [path to pkg-config utility])
+AC_ARG_VAR([PKG_CONFIG_PATH], [directories to add to pkg-config's search path])
+AC_ARG_VAR([PKG_CONFIG_LIBDIR], [path overriding pkg-config's built-in search path])
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	AC_PATH_TOOL([PKG_CONFIG], [pkg-config])
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=m4_default([$1], [0.9.0])
+	AC_MSG_CHECKING([pkg-config is at least version $_pkg_min_version])
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+		PKG_CONFIG=""
+	fi
+fi[]dnl
+])dnl PKG_PROG_PKG_CONFIG
+
+dnl PKG_CHECK_EXISTS(MODULES, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl -------------------------------------------------------------------
+dnl Since: 0.18
+dnl
+dnl Check to see whether a particular set of modules exists. Similar to
+dnl PKG_CHECK_MODULES(), but does not set variables or print errors.
+dnl
+dnl Please remember that m4 expands AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+dnl only at the first occurence in configure.ac, so if the first place
+dnl it's called might be skipped (such as if it is within an "if", you
+dnl have to call PKG_CHECK_EXISTS manually
+AC_DEFUN([PKG_CHECK_EXISTS],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+if test -n "$PKG_CONFIG" && \
+    AC_RUN_LOG([$PKG_CONFIG --exists --print-errors "$1"]); then
+  m4_default([$2], [:])
+m4_ifvaln([$3], [else
+  $3])dnl
+fi])
+
+dnl _PKG_CONFIG([VARIABLE], [COMMAND], [MODULES])
+dnl ---------------------------------------------
+dnl Internal wrapper calling pkg-config via PKG_CONFIG and setting
+dnl pkg_failed based on the result.
+m4_define([_PKG_CONFIG],
+[if test -n "$$1"; then
+    pkg_cv_[]$1="$$1"
+ elif test -n "$PKG_CONFIG"; then
+    PKG_CHECK_EXISTS([$3],
+                     [pkg_cv_[]$1=`$PKG_CONFIG --[]$2 "$3" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes ],
+		     [pkg_failed=yes])
+ else
+    pkg_failed=untried
+fi[]dnl
+])dnl _PKG_CONFIG
+
+dnl _PKG_SHORT_ERRORS_SUPPORTED
+dnl ---------------------------
+dnl Internal check to see if pkg-config supports short errors.
+AC_DEFUN([_PKG_SHORT_ERRORS_SUPPORTED],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi[]dnl
+])dnl _PKG_SHORT_ERRORS_SUPPORTED
+
+
+dnl PKG_CHECK_MODULES(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
+dnl   [ACTION-IF-NOT-FOUND])
+dnl --------------------------------------------------------------
+dnl Since: 0.4.0
+dnl
+dnl Note that if there is a possibility the first call to
+dnl PKG_CHECK_MODULES might not happen, you should be sure to include an
+dnl explicit call to PKG_PROG_PKG_CONFIG in your configure.ac
+AC_DEFUN([PKG_CHECK_MODULES],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1][_CFLAGS], [C compiler flags for $1, overriding pkg-config])dnl
+AC_ARG_VAR([$1][_LIBS], [linker flags for $1, overriding pkg-config])dnl
+
+pkg_failed=no
+AC_MSG_CHECKING([for $1])
+
+_PKG_CONFIG([$1][_CFLAGS], [cflags], [$2])
+_PKG_CONFIG([$1][_LIBS], [libs], [$2])
+
+m4_define([_PKG_TEXT], [Alternatively, you may set the environment variables $1[]_CFLAGS
+and $1[]_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.])
+
+if test $pkg_failed = yes; then
+   	AC_MSG_RESULT([no])
+        _PKG_SHORT_ERRORS_SUPPORTED
+        if test $_pkg_short_errors_supported = yes; then
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$2" 2>&1`
+        else 
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$2" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$$1[]_PKG_ERRORS" >&AS_MESSAGE_LOG_FD
+
+	m4_default([$4], [AC_MSG_ERROR(
+[Package requirements ($2) were not met:
+
+$$1_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+_PKG_TEXT])[]dnl
+        ])
+elif test $pkg_failed = untried; then
+     	AC_MSG_RESULT([no])
+	m4_default([$4], [AC_MSG_FAILURE(
+[The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+_PKG_TEXT
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.])[]dnl
+        ])
+else
+	$1[]_CFLAGS=$pkg_cv_[]$1[]_CFLAGS
+	$1[]_LIBS=$pkg_cv_[]$1[]_LIBS
+        AC_MSG_RESULT([yes])
+	$3
+fi[]dnl
+])dnl PKG_CHECK_MODULES
+
+
+dnl PKG_CHECK_MODULES_STATIC(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
+dnl   [ACTION-IF-NOT-FOUND])
+dnl ---------------------------------------------------------------------
+dnl Since: 0.29
+dnl
+dnl Checks for existence of MODULES and gathers its build flags with
+dnl static libraries enabled. Sets VARIABLE-PREFIX_CFLAGS from --cflags
+dnl and VARIABLE-PREFIX_LIBS from --libs.
+dnl
+dnl Note that if there is a possibility the first call to
+dnl PKG_CHECK_MODULES_STATIC might not happen, you should be sure to
+dnl include an explicit call to PKG_PROG_PKG_CONFIG in your
+dnl configure.ac.
+AC_DEFUN([PKG_CHECK_MODULES_STATIC],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+_save_PKG_CONFIG=$PKG_CONFIG
+PKG_CONFIG="$PKG_CONFIG --static"
+PKG_CHECK_MODULES($@)
+PKG_CONFIG=$_save_PKG_CONFIG[]dnl
+])dnl PKG_CHECK_MODULES_STATIC
+
+
+dnl PKG_INSTALLDIR([DIRECTORY])
+dnl -------------------------
+dnl Since: 0.27
+dnl
+dnl Substitutes the variable pkgconfigdir as the location where a module
+dnl should install pkg-config .pc files. By default the directory is
+dnl $libdir/pkgconfig, but the default can be changed by passing
+dnl DIRECTORY. The user can override through the --with-pkgconfigdir
+dnl parameter.
+AC_DEFUN([PKG_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${libdir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([pkgconfigdir],
+    [AS_HELP_STRING([--with-pkgconfigdir], pkg_description)],,
+    [with_pkgconfigdir=]pkg_default)
+AC_SUBST([pkgconfigdir], [$with_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+])dnl PKG_INSTALLDIR
+
+
+dnl PKG_NOARCH_INSTALLDIR([DIRECTORY])
+dnl --------------------------------
+dnl Since: 0.27
+dnl
+dnl Substitutes the variable noarch_pkgconfigdir as the location where a
+dnl module should install arch-independent pkg-config .pc files. By
+dnl default the directory is $datadir/pkgconfig, but the default can be
+dnl changed by passing DIRECTORY. The user can override through the
+dnl --with-noarch-pkgconfigdir parameter.
+AC_DEFUN([PKG_NOARCH_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${datadir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config arch-independent installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([noarch-pkgconfigdir],
+    [AS_HELP_STRING([--with-noarch-pkgconfigdir], pkg_description)],,
+    [with_noarch_pkgconfigdir=]pkg_default)
+AC_SUBST([noarch_pkgconfigdir], [$with_noarch_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+])dnl PKG_NOARCH_INSTALLDIR
+
+
+dnl PKG_CHECK_VAR(VARIABLE, MODULE, CONFIG-VARIABLE,
+dnl [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl -------------------------------------------
+dnl Since: 0.28
+dnl
+dnl Retrieves the value of the pkg-config variable for the given module.
+AC_DEFUN([PKG_CHECK_VAR],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1], [value of $3 for $2, overriding pkg-config])dnl
+
+_PKG_CONFIG([$1], [variable="][$3]["], [$2])
+AS_VAR_COPY([$1], [pkg_cv_][$1])
+
+AS_VAR_IF([$1], [""], [$5], [$4])dnl
+])dnl PKG_CHECK_VAR
+
 # Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation

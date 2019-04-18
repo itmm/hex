@@ -2,15 +2,26 @@
 
 ```
 @Add(includes)
-	#if WITH_NCURSES
+	#if defined HAVE_CONFIG_H
+		#include "config.h"
+	#endif
+	#if defined HAVE_NCURSESW_CURSES_H
+		#include <ncursesw/curses.h>
+	#elif defined HAVE_NCURSESW_H
+		#include <ncursesw.h>
+	#elif defined HAVE_NCURSES_CURSES_H
+		#include <ncurses/curses.h>
+	#elif defined HAVE_NCURSES_H
 		#include <ncurses.h>
+	#elif defined HAVE_CURSES_H
+		#include <curses.h>
 	#endif
 @End(includes)
 ```
 
 ```
 @Add(global elements)
-	#if WITH_NCURSES
+	#if HAVE_CURSES
 		@Put(ncurses globals)
 	#endif
 @End(global elements)
@@ -30,7 +41,7 @@
 
 ```
 @Add(process argument)
-	#if WITH_NCURSES
+	#if HAVE_CURSES
 		if (
 			arg == "-c" ||
 			arg == "--curses"
@@ -48,7 +59,7 @@
 
 ```
 @Add(main body)
-	#if WITH_NCURSES
+	#if HAVE_CURSES
 		if (with_ncurses) {
 			@Put(curses interact);
 		}
