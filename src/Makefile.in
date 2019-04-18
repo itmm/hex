@@ -86,7 +86,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = hx$(EXEEXT)
+bin_PROGRAMS = hx$(EXEEXT) hx-files.sh$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -102,6 +102,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_hx_OBJECTS = hx.$(OBJEXT)
 hx_OBJECTS = $(am_hx_OBJECTS)
 hx_LDADD = $(LDADD)
+am_hx_files_sh_OBJECTS =
+hx_files_sh_OBJECTS = $(am_hx_files_sh_OBJECTS)
+hx_files_sh_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -131,8 +134,20 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(hx_SOURCES)
-DIST_SOURCES = $(hx_SOURCES)
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_@AM_V@)
+am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+am__v_CC_0 = @echo "  CC      " $@;
+am__v_CC_1 = 
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+am__v_CCLD_0 = @echo "  CCLD    " $@;
+am__v_CCLD_1 = 
+SOURCES = $(hx_SOURCES) $(hx_files_sh_SOURCES)
+DIST_SOURCES = $(hx_SOURCES) $(hx_files_sh_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -248,6 +263,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+hx_files_sh_SOURCES = hx-files.sh
 hx_SOURCES = hx.cpp
 all: all-am
 
@@ -328,6 +344,10 @@ clean-binPROGRAMS:
 hx$(EXEEXT): $(hx_OBJECTS) $(hx_DEPENDENCIES) $(EXTRA_hx_DEPENDENCIES) 
 	@rm -f hx$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(hx_OBJECTS) $(hx_LDADD) $(LIBS)
+
+hx-files.sh$(EXEEXT): $(hx_files_sh_OBJECTS) $(hx_files_sh_DEPENDENCIES) $(EXTRA_hx_files_sh_DEPENDENCIES) 
+	@rm -f hx-files.sh$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(hx_files_sh_OBJECTS) $(hx_files_sh_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
