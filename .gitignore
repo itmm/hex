@@ -1,2 +1,12 @@
 hx
 hx.exe
+Makefile
+config.h
+config.log
+config.status
+src/.deps
+src/.hx_run
+src/Makefile
+*.o
+stamp-*
+
