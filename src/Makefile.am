@@ -2,11 +2,10 @@ bin_PROGRAMS = hx
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@
 hx_CPPFLAGS = @CURSES_CFLAGS@
-CLEANFILES = .hx_run
 
-hx.cpp: .hx_run
+hx.cpp: hx_run
 
-.hx_run: \
+hx_run: \
   ../docs/index.x \
   ../docs/add.x \
   ../docs/blocks.x \
@@ -24,6 +23,6 @@ hx.cpp: .hx_run
   ../docs/write.x
 	@echo "  HX"
 	@cd ../docs && hx
-	@touch .hx_run
+	@touch hx_run
 
 dist_bin_SCRIPTS = hx-files.sh

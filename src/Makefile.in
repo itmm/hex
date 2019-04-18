@@ -290,7 +290,6 @@ top_srcdir = @top_srcdir@
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@
 hx_CPPFLAGS = @CURSES_CFLAGS@
-CLEANFILES = .hx_run
 dist_bin_SCRIPTS = hx-files.sh
 all: all-am
 
@@ -554,7 +553,6 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -651,9 +649,9 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS
 .PRECIOUS: Makefile
 
 
-hx.cpp: .hx_run
+hx.cpp: hx_run
 
-.hx_run: \
+hx_run: \
   ../docs/index.x \
   ../docs/add.x \
   ../docs/blocks.x \
@@ -671,7 +669,7 @@ hx.cpp: .hx_run
   ../docs/write.x
 	@echo "  HX"
 	@cd ../docs && hx
-	@touch .hx_run
+	@touch hx_run
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
