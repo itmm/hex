@@ -35,7 +35,7 @@
   how `hx` works
 
 ```
-@Def(file: hx.cpp)
+@Def(file: ../src/hx.cpp)
 	@put(global elements)
 	int main(
 		int argc,
@@ -43,7 +43,7 @@
 	) {
 		@put(main body)
 	}
-@End(file: hx.cpp)
+@End(file: ../src/hx.cpp)
 ```
 * `hx` is written in C++ and consists of one source file `@s(hx.cpp)`
 * Global elements like types, macros and functions are defined before
