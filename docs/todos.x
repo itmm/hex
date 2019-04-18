@@ -2,7 +2,6 @@
 * Überschriften ohne Notizen generieren keine Folien
 * Jedes Fragment ist in ein Knoten in einer bestimmten Sprache
 * Man-Pages
-* Autobuild
 * Navigierbare Verweise
 * Slides ohne Kommentare loggen
 * SVG-Grafiken in Slides
