@@ -8,4 +8,4 @@ src/.deps
 src/Makefile
 *.o
 stamp-*
-
+autom4te.cache/
