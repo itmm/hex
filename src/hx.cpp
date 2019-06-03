@@ -1126,7 +1126,7 @@
 	std::ostringstream hashed;
 	hashed << "_private_" <<
 		cur << '_' <<
-		name;
+		arg;
 	frag->add(
 		hashed.str(),
 		inputs.cur().input().path(),
