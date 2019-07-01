@@ -1,4 +1,5 @@
-# HEX - the HTML & executable extractor
+HEX - the HTML & executable extractor
+=====================================
 
 A documentation of how to use `hex` is available at
 
@@ -7,20 +8,6 @@ https://itmm.github.io/using-hex/
 `hex` transforms documents that contain source code and documentation
 into a HTML slide show and extracts the source code. And of course it
 is written with `hex`.
-23
-Die wichtigste offene Frage ist: Wie viel Code sollte maximal auf eine
-24
-Folie kommen.
-25
-Ist es zu viel, so wird die Folie unübersichtlich.
-26
-Ist es zu wenig, verteilt sich Funktionalität auf zu viele Folien.
-27
-Und es wird auch wieder unübersichtlich.
-28
-​
-29
-
 
 You can view the slide show that generates `hex` at
 
