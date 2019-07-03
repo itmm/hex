@@ -186,57 +186,36 @@
 ```
 @inc(blocks.x)
 ```
-
-# WORKING HERE
+* The input is split into blocks.
+* A block has a type, a value and optional notes.
+* Blocks are separated by newlines.
 
 ```
 @inc(log.x)
 ```
 * Defines logging mechanism
 
-# Fragmente
-* Fragmenten können während des Parsens erweitert, ersetzt und
-  angewendet werden
-* Ein Haupt-Vorteil von `hx` gegenüber anderen Makro-Präprozessoren
-  ist  die Möglichkeit, Fragmente vor der Definition zu verwenden
-* Und Fragment an mehreren Stellen zu erweitern
-
 ```
 @inc(frag.x)
 ```
-* Fragment-Behandlung wird in einer eigenen Datei definiert
-
-# Input
-* Eine Klasse für Eingabe-Dateien enthält neben der offenen Datei noch
-  die aktuelle Zeilennummer oder verweise auf offene inkludierte Dateien
-* Die Definition der Klasse mit allen Methoden ist in einer eigenen
-  Datei ausgelagert
+* Fragments are flexible macro definitions.
+* They can be extended or replaced in later parts of the `.x`-file.
+* Fragments can be used before they are defined.
+* If they are not defined in the end, they will be expanded to nothing.
+* So even a partial program can be generated.
 
 ```
 @inc(input.x)
 ```
-* Bindet Datei-Klasse ein
+* The input class contains all the blocks and fragments that the input
+  file consists of.
+* The fragments are used to generate the code.
+* The blocks are used to generate the documentation.
+* The blocks are mostly needed for the interactive editor that is
+  block-based.
 
-# Kommandozeile
-* Die Kommandozeile wird Element für Element abgearbeitet
-
-```
-@add(global elements)
-	std::string stylesheet {
-		"slides/slides.css"
-	};
-@end(global elements)
-```
-* Für die HTML-Ausgabe wird eine Stylesheet-Datei benötigt
-* Über die Kommandozeile kann eine alternative Datei angegeben werden
-
-```
-@Def(needed by read_sources)
-	int blockLimit = -1;
-@End(needed by read_sources)
-```
-* Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit  diesem
-  Parameter limitiert werden
+## Parsing command line arguments
+* Parses the command line arguments element by element.
 
 ```
 @def(process arguments)
@@ -251,8 +230,23 @@
 	}
 @end(process arguments)
 ```
-* Die Argumente werden einzeln durchgegangen
-* Wenn sie nicht verwendet werden, bricht das Programm ab
+* The arguments are processed one by one.
+* If an argument is processed successfully, the program short-cuts the
+  loop
+* So the end of the loop is an indicator that an unknown argument
+  occurred.
+* If it is not a known argument it may be a file name.
+
+```
+@add(global elements)
+	std::string stylesheet {
+		"slides/slides.css"
+	};
+@end(global elements)
+```
+* For the HTML-output a CSS-stylesheet is used.
+* An argument can specify the used file.
+* But a default is presented here.
 
 ```
 @def(process argument) {
@@ -268,8 +262,15 @@
 	}
 } @end(process argument)
 ```
-* Der Pfad zur Stylesheet-Datei kann über die Kommandozeile gesetzt
-  werden
+* Sets a new stylesheet path.
+
+```
+@Def(needed by read_sources)
+	int blockLimit = -1;
+@End(needed by read_sources)
+```
+* Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit  diesem
+  Parameter limitiert werden
 
 ```
 @add(process argument) {

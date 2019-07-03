@@ -68,6 +68,7 @@
 	para
 
 	};
+
 	using RS = Read_State;
 
 	struct Block {

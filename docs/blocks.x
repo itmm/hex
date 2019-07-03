@@ -1,10 +1,14 @@
 # Separating input into blocks
+* The input is treated as a sequence of blocks.
+* Each block has a type, a value and optional notes.
+* Blocks are separated by empty lines.
 
 ```
 @Def(input prereqs)
 	@put(globals)
 @End(input prereqs)
 ```
+* This file uses a local shortcut for the global fragment
 
 ```
 @def(globals)
@@ -12,15 +16,26 @@
 		new_element
 		@put(read states)
 	};
+@end(globals)
+```
+* The `Read_State` identifies the mode that the block parser is
+  currently in.
+* The default `new_element` signals that a new block is starting.
+
+```
+@add(globals)
 	using @t(RS) = Read_State;
 @end(globals)
 ```
+* `RS` is a shortcut for the `Read_State`.
 
 ```
 @Add(open input elements)
 	Read_State state = @t(RS)::new_element;
 @End(open input elements)
 ```
+* Each input element has a `Read_State`.
+* The initial value is `new_element`.
 
 ```
 @Def(process line)
@@ -34,6 +49,9 @@
 	} while (false);
 @End(process line)
 ```
+* The `do`-loop is only a grouping construct.
+* The loop will not iterate.
+* But intermediate steps are allowed to `break` out of the loop.
 
 ```
 @def(handle newlines)
@@ -70,6 +88,12 @@
 ```
 
 ```
+@Add(includes)
+	#include <vector>
+@End(includes)
+```
+
+```
 @add(globals)
 	struct Block {
 		Read_State state;
@@ -78,12 +102,6 @@
 		int level;
 	};
 @end(globals)
-```
-
-```
-@Add(includes)
-	#include <vector>
-@End(includes)
 ```
 
 ```
