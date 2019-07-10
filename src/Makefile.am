@@ -6,12 +6,12 @@ hx_CPPFLAGS = @CURSES_CFLAGS@
 hx.cpp: hx_run
 
 hx_run: \
-  ../docs/index.x \
   ../docs/add.x \
   ../docs/blocks.x \
   ../docs/edit.x \
   ../docs/frag.x \
   ../docs/html.x \
+  ../docs/index.x \
   ../docs/input.x \
   ../docs/line.x \
   ../docs/log.x \
