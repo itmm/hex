@@ -986,7 +986,7 @@
 		std::ifstream in(
 			file_name(f).c_str()
 		);
-		if (! check_frag(f, in, false)) {
+		if (! check_frag(f, in)) {
 			return true;
 		}
 		if (in.get() != EOF) {
@@ -1003,7 +1003,7 @@
 		std::ofstream out(
 			file_name(*frag).c_str()
 		);
-		serializeFrag(*frag, out, false);
+		serializeFrag(*frag, out);
 	}
 @end(write in file)
 ```
@@ -1068,7 +1068,7 @@
 ```
 @def(write cmd in file)
 	std::ostringstream out {};
-	serializeFrag(*frag, out, false);
+	serializeFrag(*frag, out);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;

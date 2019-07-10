@@ -6,7 +6,6 @@
 * Slides ohne Kommentare loggen
 * SVG-Grafiken in Slides
 * Directories richtig behandeln
-* #line Makros in .c, .cpp und .h Dateien
 * Überschriften automatisch numerieren
 * Link auf Definition/Weiterführung
 * Links auf Usages

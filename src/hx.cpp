@@ -1,36 +1,53 @@
+#line 38 "index.x"
 
-	
-	
+	#line 165 "index.x"
+
+	#line 41 "read.x"
+
 	#include <string>
+#line 168 "read.x"
 
 	#include <fstream>
+#line 91 "blocks.x"
 
 	#include <vector>
+#line 9 "log.x"
 
 	#include <iostream>
 	#include <exception>
+#line 195 "frag.x"
 
 	#include <vector>
+#line 643 "frag.x"
 
 	#include <sstream>
+#line 759 "frag.x"
 
 	#include <map>
+#line 4 "input.x"
 
 	#include <iostream>
 	#include <vector>
+#line 393 "index.x"
 
 	#include <algorithm>
+#line 791 "index.x"
 
 	#include <functional>
 	#include <sstream>
+#line 82 "html.x"
 
 	#include <string>
+#line 691 "html.x"
 
 	#include <cctype>
+#line 741 "html.x"
 
 	#include <set>
+#line 94 "line.x"
 
 	#include <limits>
+#line 4 "ncurses.x"
 
 	#if defined HAVE_CONFIG_H
 		#include "config.h"
@@ -46,30 +63,45 @@
 	#elif defined HAVE_CURSES_H
 		#include <curses.h>
 	#endif
+#line 166 "index.x"
 ;
+#line 5 "read.x"
 
-	
-	
-	
+	#line 11 "read.x"
+
+	#line 156 "read.x"
+
+	#line 65 "read.x"
+
 	struct No_More_Lines {};
+#line 136 "read.x"
 
-	
-	
+	#line 7 "blocks.x"
+
+	#line 14 "blocks.x"
+
 	enum class Read_State {
 		new_element
-		,
+		#line 66 "blocks.x"
+,
 	header
+#line 136 "blocks.x"
 ,
 	code,
 	after_code
+#line 185 "blocks.x"
 ,
 	notes
+#line 241 "blocks.x"
 ,
 	para
+#line 17 "blocks.x"
 
 	};
+#line 26 "blocks.x"
 
 	using RS = Read_State;
+#line 97 "blocks.x"
 
 	struct Block {
 		Read_State state;
@@ -77,9 +109,23 @@
 		std::vector<std::string> notes;
 		int level;
 	};
+#line 8 "blocks.x"
 
+#line 7 "frag.x"
 
-	
+	class Frag;
+
+	struct Write_State {
+		std::string source_name = {};
+		bool in_macro = false;
+		bool c_style;
+
+		Write_State(const Frag &f);
+	};
+#line 21 "frag.x"
+
+	#line 19 "log.x"
+
 	#define ASSERT(COND) \
 		if (! (COND)) { \
 			 \
@@ -112,8 +158,6 @@
 		}
 ;
 	
-	class Frag;
-
 	class FragEntry {
 		std::string _str;
 		std::string _file;
@@ -125,11 +169,44 @@
 	FragEntry(
 		Frag *frag = nullptr
 	):
-		frag { frag }
+		frag { frag },
+		_first_line { -1 }
 	{}
 
-	const std::string &str() const {
-		return _str;
+	void update_state(Write_State &state) const {
+
+		auto c { _str.end() };
+		auto b { _str.begin() };
+		bool some_nl { false };
+		while (b != c) {
+			--c;
+			if (*c == '\n' || *c == '\r') {
+				some_nl = true;
+				continue;
+			}
+			if (*c <= ' ') { continue; }
+			if (*c == '\\') {
+				if (some_nl) {
+					state.in_macro = true;
+					return;
+				}
+			}
+		}
+		if (b != c && *c > ' ') {
+			state.in_macro = false;
+		}
+	}
+
+	std::string str(Write_State &state) const {
+		bool old { state.in_macro };
+		update_state(state);
+		if (old) { return _str; }
+		if (_first_line < 1) { return _str; }
+		if (_str.empty()) { return _str; };
+		std::ostringstream oss;
+		oss << "#line " <<
+			_first_line << " \"" << _file << "\"\n" << _str;
+		return oss.str();
 	}
 
 	void add(
@@ -308,8 +385,27 @@
 	void addMultiple() {
 		++_multiples;
 	}
+
+	bool is_c_style() const {
+		static const std::string extensions[] = {
+			".c", ".h", ".cpp"
+		};
+		const std::string *end = extensions + sizeof(extensions)/sizeof(*extensions);
+		for (auto i = extensions; i != end; ++i) {
+			if (name.length() > i->length()) {
+				if (name.substr(name.length() - i->length()) == *i) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 ;
 	};
+
+	Write_State::Write_State(const Frag &f):
+		c_style { f.is_c_style() }
+	{ }
 
 	void testFragName(
 		const std::string &name
@@ -367,37 +463,47 @@
 	void serializeFrag(
 		const Frag &frag,
 		std::ostream &out,
-		bool writeLineMacros
+		Write_State &state
 	) {
 		
 	for (const auto &entry : frag) {
 		if (entry.frag) {
 			serializeFrag(
 				*entry.frag, out,
-				writeLineMacros
+				state
 			);
 		}
-		out << entry.str();
+		out << entry.str(state);
 	}
 ;
+	}
+
+	void serializeFrag(
+		const Frag &f,
+		std::ostream &out
+	) {
+		Write_State state { f };
+		return serializeFrag(
+			f, out, state
+		);
 	}
 
 	bool check_frag(
 		const Frag &f,
 		std::istream &in,
-		bool write_line_macros
+		Write_State &state
 	) {
 		
 	for (const auto &entry : f) {
 		if (entry.frag) {
 			if (!check_frag(
 				*entry.frag, in,
-				write_line_macros
+				state
 			)) {
 				return false;
 			}
 		}
-		for (const auto &i : entry.str()) {
+		for (const auto &i : entry.str(state)) {
 			if (in.get() != i) {
 				return false;
 			}
@@ -407,13 +513,23 @@
 		return true;
 	}
 
+	bool check_frag(
+		const Frag &f,
+		std::istream &in
+	) {
+		Write_State state { f };
+		return check_frag(
+			f, in, state
+		);
+	}
+
 	void testFrag(
 		const Frag &frag,
 		const std::string &expected
 	) {
 		
 	std::ostringstream buffer;
-	serializeFrag(frag, buffer, false);
+	serializeFrag(frag, buffer);
 	ASSERT(buffer.str() == expected);
 ;
 	}
@@ -518,6 +634,7 @@
 			
 	Input _input;
 	std::ifstream _file;
+	char _last;
 
 	int _line = 0;
 ;
@@ -1199,7 +1316,7 @@
 		std::ifstream in(
 			file_name(f).c_str()
 		);
-		if (! check_frag(f, in, false)) {
+		if (! check_frag(f, in)) {
 			return true;
 		}
 		if (in.get() != EOF) {
@@ -1221,7 +1338,7 @@
 		std::ofstream out(
 			file_name(*frag).c_str()
 		);
-		serializeFrag(*frag, out, false);
+		serializeFrag(*frag, out);
 	}
 ;
 	}
@@ -1263,7 +1380,7 @@
 		std::ofstream out(
 			file_name(*frag).c_str()
 		);
-		serializeFrag(*frag, out, false);
+		serializeFrag(*frag, out);
 	}
 ;
 	}
@@ -1310,7 +1427,7 @@
 	if (cmd.size()) {
 		
 	std::ostringstream out {};
-	serializeFrag(*frag, out, false);
+	serializeFrag(*frag, out);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;
@@ -1338,7 +1455,7 @@
 	if (cmd.size()) {
 		
 	std::ostringstream out {};
-	serializeFrag(*frag, out, false);
+	serializeFrag(*frag, out);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;
@@ -2570,8 +2687,10 @@
 	}
 
 	{
+		Frag f { "" };
+		Write_State s { f };
 		FragEntry entry;
-		ASSERT(entry.str().empty());
+		ASSERT(entry.str(s).empty());
 	}
  {
 	Frag frag { "" };

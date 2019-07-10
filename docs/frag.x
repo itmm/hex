@@ -5,6 +5,20 @@
 
 ```
 @Add(input prereqs)
+	class Frag;
+
+	struct Write_State {
+		std::string source_name = {};
+		bool in_macro = false;
+		bool c_style;
+
+		Write_State(const Frag &f);
+	};
+@End(input prereqs)
+```
+
+```
+@Add(input prereqs)
 	@Put(frag prereqs);
 	@put(define frag);
 @end(input prereqs)
@@ -13,8 +27,6 @@
 
 ```
 @def(define frag)
-	class Frag;
-
 	class FragEntry {
 		std::string _str;
 		std::string _file;
@@ -38,7 +50,8 @@
 	FragEntry(
 		Frag *frag = nullptr
 	):
-		frag { frag }
+		frag { frag },
+		_first_line { -1 }
 	{}
 @end(entry methods)
 ```
@@ -48,8 +61,40 @@
 
 ```
 @add(entry methods)
-	const std::string &str() const {
-		return _str;
+	void update_state(Write_State &state) const {
+
+		auto c { _str.end() };
+		auto b { _str.begin() };
+		bool some_nl { false };
+		while (b != c) {
+			--c;
+			if (*c == '\n' || *c == '\r') {
+				some_nl = true;
+				continue;
+			}
+			if (*c <= ' ') { continue; }
+			if (*c == '\\') {
+				if (some_nl) {
+					state.in_macro = true;
+					return;
+				}
+			}
+		}
+		if (b != c && *c > ' ') {
+			state.in_macro = false;
+		}
+	}
+
+	std::string str(Write_State &state) const {
+		bool old { state.in_macro };
+		update_state(state);
+		if (old) { return _str; }
+		if (_first_line < 1) { return _str; }
+		if (_str.empty()) { return _str; };
+		std::ostringstream oss;
+		oss << "#line " <<
+			_first_line << " \"" << _file << "\"\n" << _str;
+		return oss.str();
 	}
 @end(entry methods)
 ```
@@ -240,6 +285,14 @@
 ```
 * Ein Fragment ist leer, wenn es keine Einträge enthält
 
+```
+@add(define frag)
+	Write_State::Write_State(const Frag &f):
+		c_style { f.is_c_style() }
+	{ }
+@end(define frag)
+```
+
 # Unit Tests
 
 ```
@@ -304,8 +357,10 @@
 ```
 @add(unit tests)
 	{
+		Frag f { "" };
+		Write_State s { f };
 		FragEntry entry;
-		ASSERT(entry.str().empty());
+		ASSERT(entry.str(s).empty());
 	}
 @end(unit tests)
 ```
@@ -458,6 +513,25 @@
 ```
 * Fügt `@multiple` oder `@globmult` hinzu
 
+```
+@add(frag methods)
+	bool is_c_style() const {
+		static const std::string extensions[] = {
+			".c", ".h", ".cpp"
+		};
+		const std::string *end = extensions + sizeof(extensions)/sizeof(*extensions);
+		for (auto i = extensions; i != end; ++i) {
+			if (name.length() > i->length()) {
+				if (name.substr(name.length() - i->length()) == *i) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+@end(frag methods)
+```
+
 # Fragmente serialisieren
 * Serialisiert Fragmente in einen `std::ostream`
 
@@ -466,7 +540,7 @@
 	void serializeFrag(
 		const Frag &frag,
 		std::ostream &out,
-		bool writeLineMacros
+		Write_State &state
 	) {
 		@put(iterate entries);
 	}
@@ -476,15 +550,29 @@
 * Fragmente in Einträgen werden rekursiv ausgegeben
 
 ```
+@add(define frag)
+	void serializeFrag(
+		const Frag &f,
+		std::ostream &out
+	) {
+		Write_State state { f };
+		return serializeFrag(
+			f, out, state
+		);
+	}
+@end(define frag)
+```
+
+```
 @def(iterate entries)
 	for (const auto &entry : frag) {
 		if (entry.frag) {
 			serializeFrag(
 				*entry.frag, out,
-				writeLineMacros
+				state
 			);
 		}
-		out << entry.str();
+		out << entry.str(state);
 	}
 @end(iterate entries)
 ```
@@ -496,10 +584,24 @@
 	bool check_frag(
 		const Frag &f,
 		std::istream &in,
-		bool write_line_macros
+		Write_State &state
 	) {
 		@put(check entries);
 		return true;
+	}
+@end(define frag)
+```
+
+```
+@add(define frag)
+	bool check_frag(
+		const Frag &f,
+		std::istream &in
+	) {
+		Write_State state { f };
+		return check_frag(
+			f, in, state
+		);
 	}
 @end(define frag)
 ```
@@ -510,12 +612,12 @@
 		if (entry.frag) {
 			if (!check_frag(
 				*entry.frag, in,
-				write_line_macros
+				state
 			)) {
 				return false;
 			}
 		}
-		for (const auto &i : entry.str()) {
+		for (const auto &i : entry.str(state)) {
 			if (in.get() != i) {
 				return false;
 			}
@@ -547,7 +649,7 @@
 ```
 @def(serialize test frag)
 	std::ostringstream buffer;
-	serializeFrag(frag, buffer, false);
+	serializeFrag(frag, buffer);
 	ASSERT(buffer.str() == expected);
 @end(serialize test frag)
 ```

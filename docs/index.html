@@ -1345,7 +1345,7 @@ Für jedes Fragment, das nicht befüllt wurde wird eine Meldung  ausgegeben
 <span class="in2"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="keyword">in</span>(<br/>
 <span class="in3"></span><span class="fn">file_name</span>(<span class="var">f</span>).<span class="fn">c_str</span>()<br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">check_frag</span>(<span class="var">f</span>, <span class="keyword">in</span>, <span class="num">false</span>)) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">check_frag</span>(<span class="var">f</span>, <span class="keyword">in</span>)) {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="keyword">in</span>.<span class="fn">get</span>() != <span class="num">EOF</span>) {<br/>
@@ -1363,7 +1363,7 @@ Für jedes Fragment, das nicht befüllt wurde wird eine Meldung  ausgegeben
 <span class="in2"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="fn">out</span>(<br/>
 <span class="in3"></span><span class="fn">file_name</span>(*<span class="var">frag</span>).<span class="fn">c_str</span>()<br/>
 <span class="in2"></span>);<br/>
-<span class="in2"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
+<span class="in2"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write in file</span>)</span><br/>
 </code></div>
@@ -1437,7 +1437,7 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <code>
 <span class="macro">@def(<span class="name">write cmd in file</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">out</span> {};<br/>
-<span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>, <span class="num">false</span>);<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(*<span class="var">frag</span>, <span class="var">out</span>);<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">o</span> { <span class="var">out</span>.<span class="fn">str</span>() };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">no_cmds</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">o</span>;<br/>

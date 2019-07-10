@@ -20,6 +20,21 @@ Die Infix-Traversierung dieses Graphen bildet die generierten  Source-Code Datei
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
+<br/>
+<span class="in1"></span><span class="type">struct</span> <span class="type">Write_State</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">source_name</span> = {};<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">in_macro</span> = <span class="num">false</span>;<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">c_style</span>;<br/>
+<br/>
+<span class="in2"></span><span class="fn">Write_State</span>(<span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>);<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@End(<span class="name">input prereqs</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">frag prereqs</span>)</span>;<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define frag</span>)</span>;<br/>
 <span class="macro">@end(<span class="name">input prereqs</span>)</span><br/>
@@ -31,8 +46,6 @@ Fragmente sind global sichtbare Strukturen
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
-<br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">FragEntry</span> {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_str</span>;<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_file</span>;<br/>
@@ -60,7 +73,8 @@ So können die Bytes leicht erweitert werden
 <span class="in1"></span><span class="fn">FragEntry</span>(<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span><br/>
 <span class="in1"></span>):<br/>
-<span class="in2"></span><span class="var">frag</span> { <span class="var">frag</span> }<br/>
+<span class="in2"></span><span class="var">frag</span> { <span class="var">frag</span> },<br/>
+<span class="in2"></span><span class="var">_first_line</span> { -<span class="num">1</span> }<br/>
 <span class="in1"></span>{}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -75,8 +89,40 @@ Die Zeichenkette ist immer leer
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">str</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_str</span>;<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">update_state</span>(<span class="type">Write_State</span> &amp;<span class="var">state</span>) <span class="type">const</span> {<br/>
+<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">c</span> { <span class="var">_str</span>.<span class="fn">end</span>() };<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">_str</span>.<span class="fn">begin</span>() };<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">some_nl</span> { <span class="num">false</span> };<br/>
+<span class="in2"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">c</span>) {<br/>
+<span class="in3"></span>--<span class="var">c</span>;<br/>
+<span class="in3"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\n'</span> || *<span class="var">c</span> == <span class="str">'\r'</span>) {<br/>
+<span class="in4"></span><span class="var">some_nl</span> = <span class="num">true</span>;<br/>
+<span class="in4"></span><span class="keyword">continue</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span><span class="keyword">if</span> (*<span class="var">c</span> &lt;= <span class="str">' '</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="in3"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\\'</span>) {<br/>
+<span class="in4"></span><span class="keyword">if</span> (<span class="var">some_nl</span>) {<br/>
+<span class="in5"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">true</span>;<br/>
+<span class="in5"></span><span class="keyword">return</span>;<br/>
+<span class="in4"></span>}<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">c</span> &amp;&amp; *<span class="var">c</span> &gt; <span class="str">' '</span>) {<br/>
+<span class="in3"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">str</span>(<span class="type">Write_State</span> &amp;<span class="var">state</span>) <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">old</span> { <span class="var">state</span>.<span class="var">in_macro</span> };<br/>
+<span class="in2"></span><span class="fn">update_state</span>(<span class="var">state</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">old</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_first_line</span> &lt; <span class="num">1</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_str</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="var">_str</span>; };<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">oss</span>;<br/>
+<span class="in2"></span><span class="var">oss</span> &lt;&lt; <span class="str">"#line "</span> &lt;&lt;<br/>
+<span class="in3"></span><span class="var">_first_line</span> &lt;&lt; <span class="str">" \""</span> &lt;&lt; <span class="var">_file</span> &lt;&lt; <span class="str">"\"\n"</span> &lt;&lt; <span class="var">_str</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">oss</span>.<span class="fn">str</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -313,6 +359,15 @@ wird von <code>@<span class="var">replace</span></code>, <code>@<span class="var
 Ein Fragment ist leer, wenn es keine Einträge enthält
 </li></ul>
 </div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">define frag</span>)</span><br/>
+<span class="in1"></span><span class="type">Write_State</span>::<span class="fn">Write_State</span>(<span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>):<br/>
+<span class="in2"></span><span class="var">c_style</span> { <span class="var">f</span>.<span class="fn">is_c_style</span>() }<br/>
+<span class="in1"></span>{ }<br/>
+<span class="macro">@end(<span class="name">define frag</span>)</span><br/>
+</code></div>
+</div>
 </div>
 <h1>Unit Tests</h1>
 <div class="slides">
@@ -408,8 +463,10 @@ Und kein Fragment
 <code>
 <span class="macro">@add(<span class="name">unit tests</span>)</span><br/>
 <span class="in1"></span>{<br/>
+<span class="in2"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">""</span> };<br/>
+<span class="in2"></span><span class="type">Write_State</span> <span class="var">s</span> { <span class="var">f</span> };<br/>
 <span class="in2"></span><span class="type">FragEntry</span> <span class="var">entry</span>;<br/>
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="fn">str</span>().<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="fn">str</span>(<span class="var">s</span>).<span class="fn">empty</span>());<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">unit tests</span>)</span><br/>
 </code></div>
@@ -611,6 +668,26 @@ Anzahl der <code>@<span class="var">multiple</span></code> und <code>@<span clas
 Fügt <code>@<span class="var">multiple</span></code> oder <code>@<span class="var">globmult</span></code> hinzu
 </li></ul>
 </div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">is_c_style</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">extensions</span>[] = {<br/>
+<span class="in3"></span><span class="str">".c"</span>, <span class="str">".h"</span>, <span class="str">".cpp"</span><br/>
+<span class="in2"></span>};<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> *<span class="var">end</span> = <span class="var">extensions</span> + <span class="fn">sizeof</span>(<span class="var">extensions</span>)/<span class="fn">sizeof</span>(*<span class="var">extensions</span>);<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> <span class="var">i</span> = <span class="var">extensions</span>; <span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">length</span>() &gt; <span class="var">i</span>-&gt;<span class="fn">length</span>()) {<br/>
+<span class="in4"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">substr</span>(<span class="var">name</span>.<span class="fn">length</span>() - <span class="var">i</span>-&gt;<span class="fn">length</span>()) == *<span class="var">i</span>) {<br/>
+<span class="in5"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in4"></span>}<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
+</code></div>
+</div>
 </div>
 <h1>Fragmente serialisieren</h1>
 <div class="slides">
@@ -628,7 +705,7 @@ Serialisiert Fragmente in einen <code><span class="type">std</span>::<span class
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="type">bool</span> <span class="var">writeLineMacros</span><br/>
+<span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">iterate entries</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -642,15 +719,30 @@ Fragmente in Einträgen werden rekursiv ausgegeben
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">define frag</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="type">Write_State</span> <span class="var">state</span> { <span class="var">f</span> };<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">serializeFrag</span>(<br/>
+<span class="in3"></span><span class="var">f</span>, <span class="var">out</span>, <span class="var">state</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">define frag</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">iterate entries</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">entry</span> : <span class="var">frag</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="fn">serializeFrag</span>(<br/>
 <span class="in4"></span>*<span class="var">entry</span>.<span class="var">frag</span>, <span class="var">out</span>,<br/>
-<span class="in4"></span><span class="var">writeLineMacros</span><br/>
+<span class="in4"></span><span class="var">state</span><br/>
 <span class="in3"></span>);<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="var">entry</span>.<span class="fn">str</span>();<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="var">entry</span>.<span class="fn">str</span>(<span class="var">state</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">iterate entries</span>)</span><br/>
 </code></div>
@@ -666,10 +758,25 @@ Dann werden die Bytes des Eintrags ausgegeben
 <span class="in1"></span><span class="type">bool</span> <span class="fn">check_frag</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>,<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">istream</span> &amp;<span class="keyword">in</span>,<br/>
-<span class="in2"></span><span class="type">bool</span> <span class="var">write_line_macros</span><br/>
+<span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">check entries</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">define frag</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">define frag</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">check_frag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">istream</span> &amp;<span class="keyword">in</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="type">Write_State</span> <span class="var">state</span> { <span class="var">f</span> };<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">check_frag</span>(<br/>
+<span class="in3"></span><span class="var">f</span>, <span class="keyword">in</span>, <span class="var">state</span><br/>
+<span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -681,12 +788,12 @@ Dann werden die Bytes des Eintrags ausgegeben
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="keyword">if</span> (!<span class="fn">check_frag</span>(<br/>
 <span class="in4"></span>*<span class="var">entry</span>.<span class="var">frag</span>, <span class="keyword">in</span>,<br/>
-<span class="in4"></span><span class="var">write_line_macros</span><br/>
+<span class="in4"></span><span class="var">state</span><br/>
 <span class="in3"></span>)) {<br/>
 <span class="in4"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">entry</span>.<span class="fn">str</span>()) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">entry</span>.<span class="fn">str</span>(<span class="var">state</span>)) {<br/>
 <span class="in3"></span><span class="keyword">if</span> (<span class="keyword">in</span>.<span class="fn">get</span>() != <span class="var">i</span>) {<br/>
 <span class="in4"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in3"></span>}<br/>
@@ -724,7 +831,7 @@ Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der  Erwartung 
 <code>
 <span class="macro">@def(<span class="name">serialize test frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
-<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">buffer</span>, <span class="num">false</span>);<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">buffer</span>);<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="fn">str</span>() == <span class="var">expected</span>);<br/>
 <span class="macro">@end(<span class="name">serialize test frag</span>)</span><br/>
 </code></div>
