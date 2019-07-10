@@ -107,6 +107,7 @@ Die Zeichenkette ist immer leer
 <span class="in5"></span><span class="keyword">return</span>;<br/>
 <span class="in4"></span>}<br/>
 <span class="in3"></span>}<br/>
+<span class="in3"></span><span class="keyword">break</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">c</span> &amp;&amp; *<span class="var">c</span> &gt; <span class="str">' '</span>) {<br/>
 <span class="in3"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">false</span>;<br/>
@@ -120,7 +121,7 @@ Die Zeichenkette ist immer leer
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_first_line</span> &lt; <span class="num">1</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_str</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="var">_str</span>; };<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">oss</span>;<br/>
-<span class="in2"></span><span class="var">oss</span> &lt;&lt; <span class="str">"#line "</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">oss</span> &lt;&lt; <span class="str">"\n#line "</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">_first_line</span> &lt;&lt; <span class="str">" \""</span> &lt;&lt; <span class="var">_file</span> &lt;&lt; <span class="str">"\"\n"</span> &lt;&lt; <span class="var">_str</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">oss</span>.<span class="fn">str</span>();<br/>
 <span class="in1"></span>}<br/>

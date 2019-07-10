@@ -79,6 +79,7 @@
 					return;
 				}
 			}
+			break;
 		}
 		if (b != c && *c > ' ') {
 			state.in_macro = false;
@@ -92,7 +93,7 @@
 		if (_first_line < 1) { return _str; }
 		if (_str.empty()) { return _str; };
 		std::ostringstream oss;
-		oss << "#line " <<
+		oss << "\n#line " <<
 			_first_line << " \"" << _file << "\"\n" << _str;
 		return oss.str();
 	}
