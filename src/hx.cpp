@@ -39,11 +39,11 @@
 	#include <iostream>
 	#include <vector>
 
-#line 393 "index.x"
+#line 461 "index.x"
 
 	#include <algorithm>
 
-#line 791 "index.x"
+#line 816 "index.x"
 
 	#include <functional>
 	#include <sstream>
@@ -195,11 +195,16 @@
 ; \
 		}
 
-#line 22 "frag.x"
+#line 51 "log.x"
+
+	#define WARN_MSG(MSG) \
+		std::cerr << __FILE__ << ':' << __LINE__ << ' '; \
+		std::cerr << MSG; \
+		 \
+	std::cerr << '\n'; \
+;
 ;
 	
-#line 29 "frag.x"
-
 	class FragEntry {
 		std::string _str;
 		std::string _file;
@@ -861,7 +866,7 @@
 ;
 	};
 
-#line 310 "index.x"
+#line 307 "index.x"
 
 	using SI =
 		std::string::const_iterator;
@@ -1114,31 +1119,13 @@
 
 	int blockLimit = -1;
 
-#line 320 "index.x"
+#line 316 "index.x"
 
-	void process_chars(
-		Frag *frag, SI i, SI e
+	void process_char(
+		Frag *frag, char ch
 	) {
 		
-#line 368 "index.x"
-
-	if (frag) {
-		std::string str {i, e};
-		frag->add(
-			str, inputs.cur().input().path(),
-			inputs.cur().line()
-		);
-	}
-
-#line 324 "index.x"
-;
-	}
-
-#line 331 "index.x"
-
-	void process_char(Frag *frag, char ch) {
-		
-#line 381 "index.x"
+#line 355 "index.x"
 
 	if (frag) {
 		frag->add(
@@ -1147,25 +1134,24 @@
 		);
 	}
 
-#line 333 "index.x"
+#line 320 "index.x"
 ;
 	}
 
-#line 459 "index.x"
+#line 438 "index.x"
 
-	void expand_macro_arg(
+	inline void expand_cmd_arg(
 		Frag *f, const std::string &arg
 	) {
 		auto b = arg.begin();
 		auto e = arg.end();
 		
-#line 471 "index.x"
+#line 468 "index.x"
 
 	while (b != e) {
 		auto x = std::find(b, e, '@');
-		if (x != e) {
-			
-#line 494 "index.x"
+		
+#line 486 "index.x"
 
 	f->add(
 		std::string { b, x },
@@ -1173,37 +1159,68 @@
 		inputs.cur().line()
 	);
 
-#line 475 "index.x"
+#line 471 "index.x"
 ;
+		if (x != e) {
 			b = x + 1;
-			if (b != e) {
-				f->add(
-					*b,
-					inputs.cur().input().path(),
-					inputs.cur().line()
-				);
-				++b;
-			}
-		} else {
 			
-#line 504 "index.x"
+#line 497 "index.x"
 
-	f->add(
-		std::string { b, e },
-		inputs.cur().input().path(),
-		inputs.cur().line()
-	);
-	b = e;
+	if (b != e) {
+		f->add(
+			*b,
+			inputs.cur().input().path(),
+			inputs.cur().line()
+		);
+		++b;
+	}
 
-#line 486 "index.x"
+#line 474 "index.x"
 ;
+		} else {
 			b = e;
 		}
 	}
 
-#line 465 "index.x"
+#line 444 "index.x"
 ;
 	}
+
+#line 511 "index.x"
+
+	#define ASSERT_NOT_FRAG() \
+		ASSERT_MSG(! frag, '@' << \
+			name << "(" << arg << \
+			") in frag [" << \
+			frag->name << ']' \
+		)
+
+#line 523 "index.x"
+
+	#define CHECK_NOT_DEFINED() \
+		if (isPopulatedFrag(frag)) { \
+			WARN_MSG("frag [" << arg << \
+				"] already defined" \
+			); \
+		}
+
+#line 548 "index.x"
+
+	#define ASSERT_FRAG() \
+		ASSERT_MSG(frag, '@' << \
+			name << "(" << arg << \
+			") in frag [" << \
+			frag->name << ']' \
+		)
+
+#line 582 "index.x"
+
+	#define CHECK_DEFINED() \
+		if (! isPopulatedFrag(frag)) { \
+			WARN_MSG("frag [" << arg << \
+				"] not defined" \
+			); \
+		}
 
 #line 89 "read.x"
 ;
@@ -1213,7 +1230,7 @@
  {
 	inputs.clear();
 	
-#line 357 "index.x"
+#line 345 "index.x"
 
 	Frag *frag { nullptr };
 
@@ -1406,7 +1423,7 @@
 ;
 	} while (false);
 
-#line 340 "index.x"
+#line 327 "index.x"
 
 	auto end = line.cend();
 	for (
@@ -1414,7 +1431,7 @@
 		i != end; ++i
 	) {
 		
-#line 400 "index.x"
+#line 370 "index.x"
 
 	if (*i == '@') {
 		auto nb = i + 1;
@@ -1427,9 +1444,9 @@
 			++ne;
 		}
 		if (ne != end && ne != nb) {
-			std::string name {nb, ne};
+			std::string name { nb, ne };
 			
-#line 422 "index.x"
+#line 394 "index.x"
 
 	auto ab = ne + 1;
 	auto ae = ab;
@@ -1442,57 +1459,52 @@
 	if (ae != end) {
 		std::string arg {ab, ae};
 		
-#line 441 "index.x"
+#line 415 "index.x"
 
 	i = ae;
-	bool outside = !frag;
+	bool outside = ! frag;
 	do {
-		if (! frag && ! blockLimit) { break; }
+		if (outside && ! blockLimit) {
+			break;
+		}
 		
-#line 526 "index.x"
+#line 535 "index.x"
 
 	if (name == "def") {
-		ASSERT_MSG(! frag, "@def(" << arg << ") in frag [" << frag->name << ']');
+		ASSERT_NOT_FRAG();
 		frag = inputs.get_local(arg);
-		if (isPopulatedFrag(frag)) {
-			std::cerr << "frag [" << arg << "] already defined\n";
-		}
+		CHECK_NOT_DEFINED();
 		break;
 	}
 
-#line 541 "index.x"
+#line 560 "index.x"
 
 	if (name == "end" || name == "End") {
-		ASSERT_MSG(frag,
-			'@' << name << "(" << arg <<
-			") not in frag"
-		);
+		ASSERT_FRAG();
 		
-#line 556 "index.x"
+#line 572 "index.x"
 
 	ASSERT_MSG(frag->name == arg,
 		"closing [" << arg <<
 		"] != [" << frag->name << ']'
 	);
 
-#line 547 "index.x"
+#line 563 "index.x"
 ;
 		frag = nullptr;
 		break;
 	}
 
-#line 567 "index.x"
+#line 594 "index.x"
 
 	if (name == "add") {
-		ASSERT_MSG(! frag, "add in frag " << frag->name);
+		ASSERT_NOT_FRAG();
 		frag = inputs.get_local(arg);
-		if (! isPopulatedFrag(frag)) {
-			std::cerr << "frag [" << arg << "] not defined\n";
-		}
+		CHECK_DEFINED();
 		break;
 	}
 
-#line 582 "index.x"
+#line 607 "index.x"
 
 	if (name == "put") {
 		ASSERT_MSG(frag,
@@ -1501,7 +1513,7 @@
 		Frag *sub = inputs.get_local(arg);
 		if (sub) {
 			
-#line 602 "index.x"
+#line 627 "index.x"
 
 	if (sub->expands()) {
 		std::cerr <<
@@ -1514,7 +1526,7 @@
 			<< sub->name << "]\n";
 	}
 
-#line 589 "index.x"
+#line 614 "index.x"
 ;
 			sub->addExpand();
 			frag->add(sub);
@@ -1522,7 +1534,7 @@
 		break;
 	}
 
-#line 621 "index.x"
+#line 646 "index.x"
 
 	if (name == "inc") {
 		ASSERT_MSG(! frag,
@@ -1534,7 +1546,7 @@
 		break;
 	}
 
-#line 638 "index.x"
+#line 663 "index.x"
 
 	if (name == "mul") {
 		ASSERT_MSG(frag,
@@ -1543,7 +1555,7 @@
 		Frag *sub = inputs.get_local(arg);
 		if (sub) {
 			
-#line 657 "index.x"
+#line 682 "index.x"
 
 	if (sub->expands()) {
 		std::cerr <<
@@ -1552,7 +1564,7 @@
 			sub->name << "]\n";
 	}
 
-#line 645 "index.x"
+#line 670 "index.x"
 ;
 			sub->addMultiple();
 			frag->add(sub);
@@ -1560,7 +1572,7 @@
 		break;
 	}
 
-#line 670 "index.x"
+#line 695 "index.x"
 
 	if (name == "Def") {
 		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
@@ -1571,7 +1583,7 @@
 		break;
 	}
 
-#line 685 "index.x"
+#line 710 "index.x"
 
 	if (name == "Add") {
 		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
@@ -1582,7 +1594,7 @@
 		break;
 	}
 
-#line 699 "index.x"
+#line 724 "index.x"
 
 	if (name == "rep") {
 		ASSERT_MSG(! frag,
@@ -1590,7 +1602,7 @@
 		);
 		frag = inputs.get_local(arg);
 		
-#line 729 "index.x"
+#line 754 "index.x"
 
 	ASSERT_MSG(frag, "frag [" <<
 		name <<
@@ -1598,12 +1610,12 @@
 	);
 	frag->clear();
 
-#line 705 "index.x"
+#line 730 "index.x"
 ;
 		break;
 	}
 
-#line 714 "index.x"
+#line 739 "index.x"
 
 	if (name == "Rep") {
 		ASSERT_MSG(! frag,
@@ -1611,7 +1623,7 @@
 		);
 		frag = inputs.get_global(arg);
 		
-#line 729 "index.x"
+#line 754 "index.x"
 
 	ASSERT_MSG(frag, "frag [" <<
 		name <<
@@ -1619,12 +1631,12 @@
 	);
 	frag->clear();
 
-#line 720 "index.x"
+#line 745 "index.x"
 ;
 		break;
 	}
 
-#line 740 "index.x"
+#line 765 "index.x"
 
 	if (name == "Put") {
 		ASSERT_MSG(frag,
@@ -1633,7 +1645,7 @@
 		Frag *sub = inputs.get_global(arg);
 		if (sub) {
 			
-#line 602 "index.x"
+#line 627 "index.x"
 
 	if (sub->expands()) {
 		std::cerr <<
@@ -1646,7 +1658,7 @@
 			<< sub->name << "]\n";
 	}
 
-#line 747 "index.x"
+#line 772 "index.x"
 ;
 			sub->addExpand();
 			frag->add(sub);
@@ -1654,7 +1666,7 @@
 		break;
 	}
 
-#line 759 "index.x"
+#line 784 "index.x"
 
 	if (name == "Mul") {
 		ASSERT_MSG(frag,
@@ -1663,7 +1675,7 @@
 		Frag *sub = inputs.get_global(arg);
 		if (sub) {
 			
-#line 657 "index.x"
+#line 682 "index.x"
 
 	if (sub->expands()) {
 		std::cerr <<
@@ -1672,7 +1684,7 @@
 			sub->name << "]\n";
 	}
 
-#line 766 "index.x"
+#line 791 "index.x"
 ;
 			sub->addMultiple();
 			frag->add(sub);
@@ -1680,14 +1692,14 @@
 		break;
 	}
 
-#line 777 "index.x"
+#line 802 "index.x"
 
 	if (name == "priv") {
 		ASSERT_MSG(frag,
 			"@priv not in frag"
 		);
 		
-#line 799 "index.x"
+#line 824 "index.x"
 
 	std::hash<std::string> h;
 	unsigned cur {
@@ -1696,7 +1708,7 @@
 				0x7fffffff
 	};
 
-#line 813 "index.x"
+#line 838 "index.x"
 
 	std::ostringstream hashed;
 	hashed << "_private_" <<
@@ -1708,19 +1720,19 @@
 		inputs.cur().line()
 	);
 
-#line 782 "index.x"
+#line 807 "index.x"
 ;
 		break;
 	}
 
-#line 832 "index.x"
+#line 857 "index.x"
 
 	if (name == "magic") {
 		ASSERT_MSG(frag,
 			"@magic not in frag"
 		);
 		
-#line 847 "index.x"
+#line 872 "index.x"
 
 	std::hash<std::string> h;
 	unsigned cur {
@@ -1729,7 +1741,7 @@
 				0x7fffffff
 	};
 
-#line 859 "index.x"
+#line 884 "index.x"
 
 	std::ostringstream value;
 	value << cur;
@@ -1739,40 +1751,40 @@
 		inputs.cur().line()
 	);
 
-#line 837 "index.x"
+#line 862 "index.x"
 ;
 		break;
 	}
 
-#line 446 "index.x"
+#line 422 "index.x"
 ;
 		
-#line 515 "index.x"
+#line 451 "index.x"
 
 	if (frag) {
-		expand_macro_arg(frag, arg);
+		expand_cmd_arg(frag, arg);
 	}
 
-#line 447 "index.x"
+#line 423 "index.x"
 ;
 	} while (false);
 	if (blockLimit && outside && frag) {
 		--blockLimit;
 	}
 
-#line 433 "index.x"
+#line 405 "index.x"
 ;
 		continue;
 	}
 
-#line 413 "index.x"
+#line 383 "index.x"
 ;
 		}
 	}
 
-#line 346 "index.x"
+#line 333 "index.x"
 ;
-		process_chars(frag, i, i + 1);
+		process_char(frag, *i);
 	}
 	process_char(frag, '\n');
 
@@ -1794,16 +1806,16 @@
 		"slides/slides.css"
 	};
 
-#line 877 "index.x"
+#line 902 "index.x"
 
 	
-#line 976 "index.x"
+#line 1001 "index.x"
 
 	std::string file_name(const Frag &f) {
 		return f.name.substr(6);
 	}
 
-#line 984 "index.x"
+#line 1009 "index.x"
 
 	bool file_changed(const Frag &f) {
 		std::ifstream in(
@@ -1818,22 +1830,22 @@
 		return false;
 	}
 
-#line 878 "index.x"
+#line 903 "index.x"
 
 	void files_write() {
 		
-#line 894 "index.x"
+#line 919 "index.x"
 
 	for (auto &i : inputs.root()) {
 		const Frag *frag {
 			&i.second
 		};
 		
-#line 923 "index.x"
+#line 948 "index.x"
  {
 	if (frag->isFile()) {
 		
-#line 1001 "index.x"
+#line 1026 "index.x"
 
 	if (file_changed(*frag)) {
 		std::ofstream out(
@@ -1842,11 +1854,11 @@
 		serializeFrag(*frag, out);
 	}
 
-#line 925 "index.x"
+#line 950 "index.x"
 ;
 	}
 } 
-#line 934 "index.x"
+#line 959 "index.x"
  {
 	int sum {
 		frag->expands()
@@ -1858,7 +1870,7 @@
 			"] not called\n";
 	}
 } 
-#line 950 "index.x"
+#line 975 "index.x"
 
 	if (frag->multiples() == 1) {
 		std::cerr <<
@@ -1867,7 +1879,7 @@
 			"] only used once\n";
 	}
 
-#line 964 "index.x"
+#line 989 "index.x"
 
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
@@ -1875,11 +1887,11 @@
 			"] not populated\n";
 	}
 
-#line 899 "index.x"
+#line 924 "index.x"
 ;
 	}
 
-#line 909 "index.x"
+#line 934 "index.x"
 
 	for (auto &j : inputs) {
 		for (auto &i : j.frags) {
@@ -1887,11 +1899,11 @@
 				&i.second
 			};
 			
-#line 923 "index.x"
+#line 948 "index.x"
  {
 	if (frag->isFile()) {
 		
-#line 1001 "index.x"
+#line 1026 "index.x"
 
 	if (file_changed(*frag)) {
 		std::ofstream out(
@@ -1900,11 +1912,11 @@
 		serializeFrag(*frag, out);
 	}
 
-#line 925 "index.x"
+#line 950 "index.x"
 ;
 	}
 } 
-#line 934 "index.x"
+#line 959 "index.x"
  {
 	int sum {
 		frag->expands()
@@ -1916,7 +1928,7 @@
 			"] not called\n";
 	}
 } 
-#line 950 "index.x"
+#line 975 "index.x"
 
 	if (frag->multiples() == 1) {
 		std::cerr <<
@@ -1925,7 +1937,7 @@
 			"] only used once\n";
 	}
 
-#line 964 "index.x"
+#line 989 "index.x"
 
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
@@ -1933,39 +1945,39 @@
 			"] not populated\n";
 	}
 
-#line 915 "index.x"
+#line 940 "index.x"
 ;
 		}
 	}
 
-#line 880 "index.x"
+#line 905 "index.x"
 ;
 	}
 
-#line 1013 "index.x"
+#line 1038 "index.x"
 
 	
-#line 1054 "index.x"
+#line 1079 "index.x"
 
 	bool no_cmds = false;
 
-#line 1014 "index.x"
+#line 1039 "index.x"
 ;
 	void files_process() {
 		
-#line 1030 "index.x"
+#line 1055 "index.x"
 
 	for (auto &i : inputs.root()) {
 		const Frag *frag {
 			&i.second
 		};
 		
-#line 1060 "index.x"
+#line 1085 "index.x"
  {
 	const std::string cmd { frag->cmd() };
 	if (cmd.size()) {
 		
-#line 1069 "index.x"
+#line 1094 "index.x"
 
 	std::ostringstream out {};
 	serializeFrag(*frag, out);
@@ -1982,15 +1994,15 @@
 		}
 	}
 
-#line 1063 "index.x"
+#line 1088 "index.x"
 ;
 	}
 } 
-#line 1035 "index.x"
+#line 1060 "index.x"
 ;
 	}
 
-#line 1041 "index.x"
+#line 1066 "index.x"
 
 	for (auto &j : inputs) {
 		for (auto &i : j.frags) {
@@ -1998,12 +2010,12 @@
 				&i.second
 			};
 			
-#line 1060 "index.x"
+#line 1085 "index.x"
  {
 	const std::string cmd { frag->cmd() };
 	if (cmd.size()) {
 		
-#line 1069 "index.x"
+#line 1094 "index.x"
 
 	std::ostringstream out {};
 	serializeFrag(*frag, out);
@@ -2020,16 +2032,16 @@
 		}
 	}
 
-#line 1063 "index.x"
+#line 1088 "index.x"
 ;
 	}
 } 
-#line 1047 "index.x"
+#line 1072 "index.x"
 ;
 		}
 	}
 
-#line 1016 "index.x"
+#line 1041 "index.x"
 ;
 	}
 
@@ -3841,7 +3853,7 @@
 		continue;
 	}
 } 
-#line 276 "index.x"
+#line 275 "index.x"
  {
 	static const std::string prefix {
 		"--limit="
@@ -3855,7 +3867,7 @@
 		continue;
 	}
 } 
-#line 1088 "index.x"
+#line 1113 "index.x"
  {
 	static const std::string prefix {
 		"--no-cmds"
@@ -3897,7 +3909,7 @@
 #line 224 "index.x"
 ;
 		
-#line 295 "index.x"
+#line 293 "index.x"
 
 	inputs.add(arg);
 	continue;
@@ -3926,13 +3938,13 @@
 #line 150 "index.x"
 
 	
-#line 886 "index.x"
+#line 911 "index.x"
 
 	if (write_files) {
 		files_write();
 	}
 
-#line 1022 "index.x"
+#line 1047 "index.x"
 
 	if (process_files) {
 		files_process();

@@ -1,37 +1,37 @@
 # HTML Extractor
-* This presentation is the program **HTML Extractor** (`hx`)
-* It contains all source code that is needed to build the executable
-* But the code is spread over multiple slides
-* To form an extreme form of Literate Programming
-* that I call **Slideware-Programming** (SWP)
+* this presentation is the program **HTML Extractor** (`hx`)
+* it contains all source code that is needed to build the executable
+* but the code is spread over multiple slides
+* to form an extreme form of Literate Programming
+* that may be called **Slideware-Programming** (SWP)
 * Have fun!
 
 ## What is `hx`?
 * `hx` is a program that parses a `x`-document and extracts source  code
   or an executable program out of it
-* Think of it as a very powerful macro processor that combines, extends
+* think of it as a very powerful macro processor that combines, extends
   and orders small fragments of code
-* But also it generates a HTML documentation like the one you are
+* but also it generates a HTML documentation like the one you are
   currently reading
 
 ## What is a `x`-document?
 * `x`-documents are text documents with a markdown-like syntax
-* It contains sections at different levels, paragraphs and code snippets
-* The sections and code snippets are automatically formatted as slides
+* it contains sections at different levels, paragraphs and code snippets
+* the sections and code snippets are automatically formatted as slides
   of a very big slide show
-* These slides can be decorated with notes
+* these slides can be decorated with notes
 
 ## SWP ≠ Literate Programming
 * SWP should not document a finished program
 * but it should document the process of creating a program instead
-* After every slide you can generate the code from all the slides that
+* after every slide you can generate the code from all the slides that
   you have read
 * and without peeking in the future a runnable program must result
-* So it does not contain features that are described the later slides
+* so it does not contain features that are described the later slides
 
 ## A very top-down view of `hx`
-* In the first code slide contains the highest view of the `hx` program
-* While not very interesting, it contains a lot of commands that show
+* in the first code slide contains the highest view of the `hx` program
+* while not very interesting, it contains a lot of commands that show
   how `hx` works
 
 ```
@@ -46,54 +46,54 @@
 @End(file: ../src/hx.cpp)
 ```
 * `hx` is written in C++ and consists of one source file `@s(hx.cpp)`
-* Global elements like types, macros and functions are defined before
+* global elements like types, macros and functions are defined before
   the central `@f(main)` function is defined
-* These elements and the body of the `@f(main)` function will be defined
+* these elements and the body of the `@f(main)` function will be defined
   and refined in later slides
 
 ### Commands
-* The first code slide has three `hx` commands: `@k(@Def)`, `@k(@put)`,
+* the first code slide has three `hx` commands: `@k(@Def)`, `@k(@put)`,
   and `@k(@End)`
-* Each command starts with an ampersand (`@`), some letters and an
+* each command starts with an ampersand (`@`), some letters and an
   argument block
-* The argument block consists of an opening parenthesis, the argument
+* the argument block consists of an opening parenthesis, the argument
   value, and a closing parenthesis
-* For now assume, that no closing parenthesis or ampersand is part of
+* for now assume, that no closing parenthesis or ampersand is part of
   the argument value
 
 ### Fragments
 * `hx` processes code fragments
-* A fragment starts with an opening command like `@k(@Def)`
+* a fragment starts with an opening command like `@k(@Def)`
 * and ends with a matching `@k(@End)` or `@k(@end)` closing command
-* The **name** of the fragment is the argument value of the opening
+* the **name** of the fragment is the argument value of the opening
   command
 * and must be the same as the argument value of the closing command
 
 ### Defined Fragments
-* Three fragments are defined on the first code page
-* They have the names `@s(file: hx.cpp)`, `@s(global elements)`, and
+* three fragments are defined on the first code page
+* they have the names `@s(file: hx.cpp)`, `@s(global elements)`, and
   `@s(main body)`
-* Not all `hx` commands use their argument value as fragment name
+* not all `hx` commands use their argument value as fragment name
 * but the three presented so far all do
 
 ### Including fragments
-* A fragment can be included into another fragment with the `@k(@put)`
+* a fragment can be included into another fragment with the `@k(@put)`
   command
-* Of course you must not include a fragment that directly or indirectly
+* of course you must not include a fragment that directly or indirectly
   includes the current fragment
-* The inclusion will happen after all slides are processed
-* So it is possible to include a fragment that is not defined yet
+* the inclusion will happen after all slides are processed
+* so it is possible to include a fragment that is not defined yet
 
 ### Naming files
-* Fragments whose name start with `@s(file: )` are special
+* fragments whose name start with `@s(file: )` are special
 * `hx` writes them into files
 * the file name is the rest of the argument value after the `@s(file: )`
   prefix
-* The first code slide creates one fragment that is written into the
+* the first code slide creates one fragment that is written into the
   file named `@s(hx.cpp)`
 
 ### Generating the first source code
-* If we stop here and run `hx`, the following code will be generated
+* if we stop here and run `hx`, the following code will be generated
 
 ```
 	int main(
@@ -102,12 +102,12 @@
 	) {
 	}
 ```
-* The unknown fragments are noted in the output of `hx`
-* But the file compiles without errors
-* So it does not do much
+* the unknown fragments are noted in the output of `hx`
+* but the file compiles without errors
+* so it does not do much
 
 ### Steps in `@f(main)`
-* The next code slides identify multiple steps to perform in the
+* the next code slides identify multiple steps to perform in the
   `@f(main)` function
 
 ```
@@ -117,9 +117,9 @@
 	#endif
 @end(main body)
 ```
-* The unit-tests are performed at every start of the program
+* the unit-tests are performed at every start of the program
 * unless a release version is build
-* The use of `@k(@def)` instead of `@k(@Def)` is no mistake
+* the use of `@k(@def)` instead of `@k(@Def)` is no mistake
 * `@k(@Def)` defines a global fragment that is visible in all `x`-files
 * `@k(@def)` defines a local fragment that is only visible in the
   current `x`-file and in all included `x`-files
@@ -129,12 +129,12 @@
 	@put(process arguments);
 @end(main body)
 ```
-* After the unit-tests `@f(main)` parses the arguments passed to it from
+* after the unit-tests `@f(main)` parses the arguments passed to it from
   the command line
 * `@k(@add)` extends an existing local fragment
-* The ability of macros to grow with time is borrowed from Literate
+* the ability of macros to grow with time is borrowed from Literate
   Programming
-* But is is far more important in SWP, as a slide provides only limited
+* but is is far more important in SWP, as a slide provides only limited
   space
 
 ```
@@ -142,8 +142,8 @@
 	@put(read source files);
 @end(main body)
 ```
-* Next the source files are read into a fragment tree
-* Here a lot of interesting things are happening but right now it will
+* next the source files are read into a fragment tree
+* here a lot of interesting things are happening but right now it will
   expand to nothing as nothing is described yet
 
 ```
@@ -151,7 +151,7 @@
 	@put(serialize fragments);
 @end(main body)
 ```
-* In the next step `hx` writes the content of every file fragment in its
+* in the next step `hx` writes the content of every file fragment in its
   designated file
 
 ```
@@ -159,7 +159,7 @@
 	@put(write HTML file);
 @end(main body)
 ```
-* And lastly the HTML documentation is generated
+* and lastly the HTML documentation is generated
 
 ```
 @def(global elements)
@@ -169,53 +169,53 @@
 * `hx` defines a global fragment for included files
 
 ## Next steps
-* The following slides refer to documents that document the next steps
+* the following slides refer to documents that document the next steps
   of `hx`
-* Follow them in order so that you do not miss important concepts
+* follow them in order so that you do not miss important concepts
 
 ```
 @inc(read.x)
 ```
-* Defines the mechanisms of reading files line by line
-* The `@k(@inc)` command includes a different `x`-file at the current
+* defines the mechanisms of reading files line by line
+* the `@k(@inc)` command includes a different `x`-file at the current
   position
-* The file is read only once, no matter how often it is included
-* You can click on the argument value in the HTML documentation to
+* the file is read only once, no matter how often it is included
+* you can click on the argument value in the HTML documentation to
   navigate to the documentation from this file
 
 ```
 @inc(blocks.x)
 ```
-* The input is split into blocks.
-* A block has a type, a value and optional notes.
-* Blocks are separated by newlines.
+* the input is split into blocks
+* a block has a type, a value and optional notes
+* blocks are separated by newlines
 
 ```
 @inc(log.x)
 ```
-* Defines logging mechanism
+* defines logging mechanism
 
 ```
 @inc(frag.x)
 ```
-* Fragments are flexible macro definitions.
-* They can be extended or replaced in later parts of the `.x`-file.
-* Fragments can be used before they are defined.
-* If they are not defined in the end, they will be expanded to nothing.
-* So even a partial program can be generated.
+* fragments are flexible macro definitions
+* they can be extended or replaced in later parts of the `.x`-file
+* fragments can be used before they are defined
+* if they are not defined in the end, they will be expanded to nothing
+* so even a partial program can be generated
 
 ```
 @inc(input.x)
 ```
-* The input class contains all the blocks and fragments that the input
-  file consists of.
-* The fragments are used to generate the code.
-* The blocks are used to generate the documentation.
-* The blocks are mostly needed for the interactive editor that is
-  block-based.
+* the input class contains all the blocks and fragments that the input
+  file consists of
+* the fragments are used to generate the code
+* the blocks are used to generate the documentation
+* the blocks are mostly needed for the interactive editor that is
+  block-based
 
 ## Parsing command line arguments
-* Parses the command line arguments element by element.
+* parses the command line arguments element by element
 
 ```
 @def(process arguments)
@@ -230,12 +230,12 @@
 	}
 @end(process arguments)
 ```
-* The arguments are processed one by one.
-* If an argument is processed successfully, the program short-cuts the
+* the arguments are processed one by one
+* if an argument is processed successfully, the program short-cuts the
   loop
-* So the end of the loop is an indicator that an unknown argument
+* so the end of the loop is an indicator that an unknown argument
   occurred.
-* If it is not a known argument it may be a file name.
+* if it is not a known argument it may be a file name.
 
 ```
 @add(global elements)
@@ -244,9 +244,9 @@
 	};
 @end(global elements)
 ```
-* For the HTML-output a CSS-stylesheet is used.
-* An argument can specify the used file.
-* But a default is presented here.
+* for the HTML-output a CSS-stylesheet is used
+* an argument can specify the used file
+* but a default is presented here
 
 ```
 @def(process argument) {
@@ -262,15 +262,14 @@
 	}
 } @end(process argument)
 ```
-* Sets a new stylesheet path.
+* sets a new stylesheet path
 
 ```
 @Def(needed by read_sources)
 	int blockLimit = -1;
 @End(needed by read_sources)
 ```
-* Die Anzahl der Blocks, die ausgegeben werden sollen, kann mit  diesem
-  Parameter limitiert werden
+* limits the number of blocks that will be processed
 
 ```
 @add(process argument) {
@@ -287,9 +286,8 @@
 	}
 } @end(process argument)
 ```
-* Der Benutzer kann die Anzahl der Folien beschränken, aus denen der
-  Code generiert wird
-* So können Teilabschnitte validiert werden
+* the user can limit the number of blocks that will be processed
+* so the user can verify that subsets are working properly
 
 ```
 @def(process file argument)
@@ -297,14 +295,13 @@
 	continue;
 @end(process file argument)
 ```
-* Ansonsten wird das Argument als Pfad der `.x`-Datei interpretiert
-* Aus dieser werden HTML-Slides und Source-Code generiert
-* Es kann nur eine Datei angegeben werden
+* if no other argument pattern matches the argument is treated as input
+  file
+* from these files slides and source code are generated
 
-# Eingabe-Dateien lesen
-* In diesem Abschnitt werden die Eingabe-Dateien gelesen, um die
-  Fragmente aufzubauen und alle notwendigen Beziehungen zwischen den
-  einzelnen Folien zu finden
+# Read input files
+* the code of this section reads input files, extracts the fragments
+  and blocks and establishes their interdependencies
 
 ```
 @Add(inputs prereqs)
@@ -312,29 +309,19 @@
 		std::string::const_iterator;
 @End(inputs prereqs)
 ```
-* Die Anwendung verwendet den String-Iterator an vielen Stellen
-* Daher definiert sie eine Abkürzung, damit die Folien nicht
-  überlaufen
+* the code uses string iterators at a lot of places
+* so it defines a shorthand to reduce clutter on the slides
 
 ```
 @Add(needed by read_sources)
-	void process_chars(
-		Frag *frag, SI i, SI e
+	void process_char(
+		Frag *frag, char ch
 	) {
-		@put(process chars);
-	}
-@End(needed by read_sources)
-```
-* Fügt ein Range an den Inhalt von `frag` an
-
-```
-@Add(needed by read_sources)
-	void process_char(Frag *frag, char ch) {
 		@put(process char);
 	}
 @End(needed by read_sources)
 ```
-* Fügt ein Zeichen an den Inhalt von `frag` an
+* adds a single character to the content of a fragment
 
 ```
 @Add(process line)
@@ -343,39 +330,26 @@
 		auto i = line.cbegin();
 		i != end; ++i
 	) {
-		@put(process special lines);
-		process_chars(frag, i, i + 1);
+		@put(process special chars);
+		process_char(frag, *i);
 	}
 	process_char(frag, '\n');
 @End(process line)
 ```
-* Neben dem aktuellen Zeichen wird auch das letzte Zeichen aufgehoben
-* Dabei kann `hx` auch mit einer leeren Eingabe-Datei umgehen (wenn
-  schon das erste Zeichen ein `EOF` ist)
+* reads each character in the current line
+* special characters are processed first
+* if the character was not special, it will be added to the current
+  active fragment
 
 ```
 @Def(additional read vars)
 	Frag *frag { nullptr };
 @End(additional read vars)
 ```
-* Wir unterscheiden, ob wir in einem Code-Block sind, oder außerhalb
-* In einem Code sind wir sogar in einem Fragment, dessen Inhalt gerade
-  gelesen wird
-* Am Anfang sind wir außerhalb eines Code-Blocks
-* In einem Code-Block ist `frag` nicht `nullptr`
-
-```
-@def(process chars)
-	if (frag) {
-		std::string str {i, e};
-		frag->add(
-			str, inputs.cur().input().path(),
-			inputs.cur().line()
-		);
-	}
-@end(process chars)
-```
-* Fügt mehrere Zeichen an das aktuelle Fragment an
+* the `frag` pointer signals if the current line is inside a fragment in
+  a code sequence (not `nullptr`)
+* at the beginning there is no active fragment
+* so the pointer is `nullptr`
 
 ```
 @def(process char)
@@ -387,17 +361,13 @@
 	}
 @end(process char)
 ```
-* Fügt einzelnes Zeichen an das aktuelle Fragment an
+* if there is an active fragment, the character will be added to its
+  contents
+* based on the current input file and line number the fragment may open
+  a new block
 
 ```
-@add(includes)
-	#include <algorithm>
-@end(includes)
-```
-* Wird für find benötigt
-
-```
-@def(process special lines)
+@def(process special chars)
 	if (*i == '@') {
 		auto nb = i + 1;
 		auto ne = nb;
@@ -409,17 +379,19 @@
 			++ne;
 		}
 		if (ne != end && ne != nb) {
-			std::string name {nb, ne};
-			@put(macro argument);
+			std::string name { nb, ne };
+			@put(cmd argument);
 		}
 	}
-@end(process special lines)
+@end(process special chars)
 ```
-* Makros können mit dem Ampersand eingeleitet werden
-* Danach kommt der Name des Makros
+* special sequences start with `@`
+* it follows a name and an argument in parenthesis
+* if the input is not matching it is not treated as a syntax error
+* but as normal characters that are not treated special
 
 ```
-@def(macro argument)
+@def(cmd argument)
 	auto ab = ne + 1;
 	auto ae = ab;
 	while (ae != end && *ae != ')') {
@@ -430,34 +402,41 @@
 	}
 	if (ae != end) {
 		std::string arg {ab, ae};
-		@put(macro found);
+		@put(cmd found);
 		continue;
 	}
-@end(macro argument)
+@end(cmd argument)
 ```
-* Argument des Makros wird von Klammern umschlossen
+* arguments are read until the closing parenthesis
+* characters in the argument can be escaped by prefixing them with `@`
+* that is needed to allow for the closing parenthesis in the argument
 
 ```
-@def(macro found)
+@def(cmd found)
 	i = ae;
-	bool outside = !frag;
+	bool outside = ! frag;
 	do {
-		if (! frag && ! blockLimit) { break; }
-		@put(do macro);
-		@put(default expansion);
+		if (outside && ! blockLimit) {
+			break;
+		}
+		@put(do special cmd);
+		@put(do default cmd);
 	} while (false);
 	if (blockLimit && outside && frag) {
 		--blockLimit;
 	}
-@end(macro found)
+@end(cmd found)
 ```
-* Besondere Makros werden zuerst ausgewertet
-* Wenn diese Auswertung nicht greift, wird die Standard-Expandierung
-  verwendet
+* if the block limit is reached, nothing will be processed
+* if the command was not a functional command, it will be replaced by its
+  argument in source code
+* for example formatting hints are only used for syntax highlighting
+* and can be ignored in generated source code
+* after processing a block the code adjusts the limit
 
 ```
 @Add(needed by read_sources)
-	void expand_macro_arg(
+	inline void expand_cmd_arg(
 		Frag *f, const std::string &arg
 	) {
 		auto b = arg.begin();
@@ -466,91 +445,128 @@
 	}
 @End(needed by read_sources)
 ```
+* performs the default expansion of an unknown command
+
+```
+@def(do default cmd)
+	if (frag) {
+		expand_cmd_arg(frag, arg);
+	}
+@end(do default cmd)
+```
+* if the command was not a functional command, it will be replaced by its
+  argument in source code
+
+```
+@add(includes)
+	#include <algorithm>
+@end(includes)
+```
+* `std::find` is used on the next slide
 
 ```
 @def(expand loop)
 	while (b != e) {
 		auto x = std::find(b, e, '@');
+		@put(expand before);
 		if (x != e) {
-			@put(expand inner);
 			b = x + 1;
-			if (b != e) {
-				f->add(
-					*b,
-					inputs.cur().input().path(),
-					inputs.cur().line()
-				);
-				++b;
-			}
+			@put(expand escaped);
 		} else {
-			@put(expand rest);
 			b = e;
 		}
 	}
 @end(expand loop)
 ```
+* the code can not copy the argument directly
+* the argument may contain escaped sequences starting with `@`
+* the code will unescape them
 
 ```
-@def(expand inner)
+@def(expand before)
 	f->add(
 		std::string { b, x },
 		inputs.cur().input().path(),
 		inputs.cur().line()
 	);
-@end(expand inner)
+@end(expand before)
 ```
+* copy everything that is before the current iterator
 
 ```
-@def(expand rest)
-	f->add(
-		std::string { b, e },
-		inputs.cur().input().path(),
-		inputs.cur().line()
-	);
-	b = e;
-@end(expand rest)
-```
-
-```
-@def(default expansion)
-	if (frag) {
-		expand_macro_arg(frag, arg);
+@def(expand escaped)
+	if (b != e) {
+		f->add(
+			*b,
+			inputs.cur().input().path(),
+			inputs.cur().line()
+		);
+		++b;
 	}
-@end(default expansion)
+@end(expand escaped)
 ```
-* Wenn das Makro nicht behandelt wurde, dann muss es sich um eine
-  Formatierung handeln, die nur in Fragmenten vorkommen darf
-* Es wird einfach nur das Argument ausgegeben
+* add escaped char, if there is one
 
 ```
-@def(do macro)
-	if (name == "def") {
-		ASSERT_MSG(! frag, @s("@@def(") << arg << ") in frag [" << frag->name << ']');
-		frag = inputs.get_local(arg);
-		if (isPopulatedFrag(frag)) {
-			std::cerr << "frag [" << arg << "] already defined\n";
+@Add(needed by read_sources)
+	#define ASSERT_NOT_FRAG() \
+		ASSERT_MSG(! frag, '@' << \
+			name << "(" << arg << \
+			") in frag [" << \
+			frag->name << ']' \
+		)
+@End(needed by read_sources)
+```
+* raise error, if command is in an active fragment
+
+```
+@Add(needed by read_sources)
+	#define CHECK_NOT_DEFINED() \
+		if (isPopulatedFrag(frag)) { \
+			WARN_MSG("frag [" << arg << \
+				"] already defined" \
+			); \
 		}
+@End(needed by read_sources)
+```
+* warn, if fragment is already filled with some content
+
+```
+@def(do special cmd)
+	if (name == "def") {
+		ASSERT_NOT_FRAG();
+		frag = inputs.get_local(arg);
+		CHECK_NOT_DEFINED();
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
-* Erzeugt ein neues Fragment
-* Das Fragment darf nicht mehrfach definiert werden
+* creates a new fragment
+* fragment must not be created multiple times
 
 ```
-@add(do macro)
+@Add(needed by read_sources)
+	#define ASSERT_FRAG() \
+		ASSERT_MSG(frag, '@' << \
+			name << "(" << arg << \
+			") in frag [" << \
+			frag->name << ']' \
+		)
+@End(needed by read_sources)
+```
+* raise error, if command is not in an active fragment
+
+```
+@add(do special cmd)
 	if (name == "end" || name == "End") {
-		ASSERT_MSG(frag,
-			'@' << name << "(" << arg <<
-			") not in frag"
-		);
+		ASSERT_FRAG();
 		@put(frag names must match);
 		frag = nullptr;
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
-* Bei einem schließenden Befehl wird das aktuelle Fragment unterbrochen
+* interrupts the active fragment
 
 ```
 @def(frag names must match)
@@ -560,26 +576,35 @@
 	);
 @end(frag names must match)
 ```
-* Wenn der öffnende und schließende Name nicht passt, wird die
-  Abarbeitung abgebrochen
+* the name of the fragment must match the command argument
 
 ```
-@add(do macro)
-	if (name == "add") {
-		ASSERT_MSG(! frag, "add in frag " << frag->name);
-		frag = inputs.get_local(arg);
-		if (! isPopulatedFrag(frag)) {
-			std::cerr << "frag [" << arg << "] not defined\n";
+@Add(needed by read_sources)
+	#define CHECK_DEFINED() \
+		if (! isPopulatedFrag(frag)) { \
+			WARN_MSG("frag [" << arg << \
+				"] not defined" \
+			); \
 		}
+@End(needed by read_sources)
+```
+* warn, if fragment is not filled with some content
+
+```
+@add(do special cmd)
+	if (name == "add") {
+		ASSERT_NOT_FRAG();
+		frag = inputs.get_local(arg);
+		CHECK_DEFINED();
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
-* Bei einem öffnenden Befehl wird das passende Fragment gesucht
-* Weitere Bytes können zu diesem Fragment hinzugefügt werden
+* reopens an existing fragment
+* more content can be added to it
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "put") {
 		ASSERT_MSG(frag,
 			"@put not in frag"
@@ -592,7 +617,7 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Bei einem `@put` wird das Fragment gesucht und eingebunden
 * Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu
@@ -618,7 +643,7 @@
   ebenfalls eine Meldung ausgegeben
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "inc") {
 		ASSERT_MSG(! frag,
 			"include in frag [" << frag->name << ']'
@@ -628,14 +653,14 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
   auf den Stapel der offenen Dateien gelegt
 * Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "mul") {
 		ASSERT_MSG(frag,
 			"@mul not in frag"
@@ -648,7 +673,7 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Mit einem `@mul` Befehl kann ein Fragment an mehreren Stellen
   expandiert werden
@@ -667,7 +692,7 @@
   wurde
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "Def") {
 		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
 		frag = inputs.get_global(arg);
@@ -676,13 +701,13 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Erzeugt ein neues Fragment im globalen Namensraum
 * Das Fragment darf nicht mehrfach definiert werden
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "Add") {
 		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
 		frag = inputs.get_global(arg);
@@ -691,12 +716,12 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Erweitert ein global definiertes Fragment
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "rep") {
 		ASSERT_MSG(! frag,
 			"@rep in frag [" << frag->name << ']'
@@ -705,13 +730,13 @@
 		@mul(clear frag);
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Bei einem `@rep` wird der Inhalt eines Fragments zurückgesetzt
 * Das Fragment muss bereits vorhanden sein
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "Rep") {
 		ASSERT_MSG(! frag,
 			"@Rep in frag [" << frag->name << ']'
@@ -720,7 +745,7 @@
 		@mul(clear frag);
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Bei einem `@rep` wird der Inhalt eines Fragments zurückgesetzt
 * Das Fragment muss bereits vorhanden sein
@@ -737,7 +762,7 @@
 * Löscht das aktuelle Fragment
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "Put") {
 		ASSERT_MSG(frag,
 			"@Put not in frag"
@@ -750,13 +775,13 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Bei einem `@Put` wird das Fragment in den umschließenden  `FragMap`s
   gesucht
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "Mul") {
 		ASSERT_MSG(frag,
 			"@Mul not in frag"
@@ -769,12 +794,12 @@
 		}
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * `@Mul` expandiert ein globales Fragment an mehreren Stellen
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "priv") {
 		ASSERT_MSG(frag,
 			"@priv not in frag"
@@ -782,7 +807,7 @@
 		@put(process private frag);
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Private Bezeichner werden durch einen Hash erweitert
 * Um sie global unique zu machen
@@ -829,7 +854,7 @@
 * Und dem alten Bezeichner
 
 ```
-@add(do macro)
+@add(do special cmd)
 	if (name == "magic") {
 		ASSERT_MSG(frag,
 			"@magic not in frag"
@@ -837,7 +862,7 @@
 		@put(process magic frag);
 		break;
 	}
-@end(do macro)
+@end(do special cmd)
 ```
 * Der `@magic`-Befehl erzeugt einen Hash-Wert
 * Der sich aus dem Dateinamen und dem Argument des Befehls  zusammen

@@ -48,6 +48,15 @@
 * `MSG` can be multiple parameters concatenated by `<<`
 
 ```
+@Add(frag prereqs)
+	#define WARN_MSG(MSG) \
+		std::cerr << __FILE__ << ':' << __LINE__ << ' '; \
+		std::cerr << MSG; \
+		@mul(log newline);
+@end(frag prereqs)
+```
+
+```
 @def(log preamble) \
 	std::cerr << \
 		__FILE__ << ':' << __LINE__ << \

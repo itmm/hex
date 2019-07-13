@@ -2,3 +2,5 @@
 
 all:
 	cd .. && make
+	../src/hx
+
