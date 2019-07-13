@@ -6,6 +6,8 @@
 	@put(globals);
 @End(global elements)
 ```
+* shorthand for global fragment
+* groups all code from this `x`-file together
 
 ```
 @def(globals)
@@ -13,15 +15,15 @@
 	@put(inputs);
 @end(globals)
 ```
-* Some elements are used by the `Inputs` and `Input` classes
+* some elements are used by the `Inputs` and `Input` classes
 * and must be defined before its definition
-* These can be grouped in the fragment `@s(inputs prereqs)`
+* these can be grouped in the fragment `@s(inputs prereqs)`
 
-## `Inputs` class
-* This class manages multiple files
-* Some are open, because of include hierarchies
-* Some are waiting to be processed
-* All is abstracted away, so that the interface provides lines until
+## The `Inputs` class
+* this class manages multiple files
+* some are open, because of include hierarchies
+* some are waiting to be processed
+* all is abstracted away, so that the interface provides lines until
   everything is processed
 
 ```
@@ -34,7 +36,7 @@
 	};
 @end(inputs)
 ```
-* Enthält alle verarbeiteten Dateien
+* contains all files that are processed
 * `@k(@Put)` inserts a fragment from the global scope
 
 ```
@@ -42,7 +44,7 @@
 	#include @s(<string>)
 @End(includes)
 ```
-* Defines `std::string`
+* defines `std::string`
 * `@k(@Add)` extends a globally defined fragment
 
 ```
@@ -50,6 +52,7 @@
 	void read_line(std::string &line);
 @End(inputs elements)
 ```
+* defines method to read a line
 
 ```
 @add(inputs)
@@ -60,18 +63,22 @@
 	}
 @end(inputs)
 ```
+* method is not defined inline in the class because it is used multiple
+  times
 
 ```
 @Def(open input prereqs)
 	struct No_More_Lines {};
 @End(open input prereqs)
 ```
+* the code throws this exception, when no more lines are available
 
 ```
 @def(inputs read line)
 	throw No_More_Lines {};
 @end(inputs read line)
 ```
+* a trivial first implementation always throws the exception
 
 ## Reading everything
 
