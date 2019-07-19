@@ -90,6 +90,7 @@
 		bool old { state.in_macro };
 		update_state(state);
 		if (old) { return _str; }
+		if (! state.c_style) { return _str; }
 		if (_first_line < 1) { return _str; }
 		if (_str.empty()) { return _str; };
 		std::ostringstream oss;

@@ -22,15 +22,15 @@
 	#include <iostream>
 	#include <exception>
 
-#line 196 "frag.x"
+#line 197 "frag.x"
 
 	#include <vector>
 
-#line 644 "frag.x"
+#line 645 "frag.x"
 
 	#include <sstream>
 
-#line 760 "frag.x"
+#line 761 "frag.x"
 
 	#include <map>
 
@@ -253,6 +253,7 @@
 		bool old { state.in_macro };
 		update_state(state);
 		if (old) { return _str; }
+		if (! state.c_style) { return _str; }
 		if (_first_line < 1) { return _str; }
 		if (_str.empty()) { return _str; };
 		std::ostringstream oss;
@@ -261,14 +262,14 @@
 		return oss.str();
 	}
 
-#line 105 "frag.x"
+#line 106 "frag.x"
 
 	void add(
 		char ch, const std::string &file,
 		int line
 	) {
 		
-#line 120 "frag.x"
+#line 121 "frag.x"
 
 	if (
 		_file.empty() || _first_line <= 0
@@ -278,12 +279,12 @@
 	}
 	_last_line = line;
 
-#line 110 "frag.x"
+#line 111 "frag.x"
 ;
 		_str += ch;
 	}
 
-#line 135 "frag.x"
+#line 136 "frag.x"
 
 	void add(
 		const std::string &value,
@@ -291,7 +292,7 @@
 		int line
 	) {
 		
-#line 120 "frag.x"
+#line 121 "frag.x"
 
 	if (
 		_file.empty() || _first_line <= 0
@@ -301,19 +302,19 @@
 	}
 	_last_line = line;
 
-#line 141 "frag.x"
+#line 142 "frag.x"
 ;
 		_str += value;
 	}
 
-#line 149 "frag.x"
+#line 150 "frag.x"
 
 	bool canAdd(
 		const std::string &file,
 		int line
 	) {
 		
-#line 163 "frag.x"
+#line 164 "frag.x"
 
 	if (
 		! _file.empty() && file != _file
@@ -321,7 +322,7 @@
 		return false;
 	}
 
-#line 175 "frag.x"
+#line 176 "frag.x"
 
 	if (
 		_last_line > 0 &&
@@ -331,11 +332,11 @@
 		return false;
 	}
 
-#line 189 "frag.x"
+#line 190 "frag.x"
 
 	return true;
 
-#line 154 "frag.x"
+#line 155 "frag.x"
 ;
 		return false;
 	}
@@ -344,7 +345,7 @@
 ;
 	};
 
-#line 203 "frag.x"
+#line 204 "frag.x"
 
 	class Frag {
 		std::vector<FragEntry> _entries;
@@ -353,7 +354,7 @@
 	public:
 		const std::string name;
 		
-#line 222 "frag.x"
+#line 223 "frag.x"
 
 	bool isFile() const {
 		static const std::string prefix {
@@ -365,7 +366,7 @@
 		return p == prefix;
 	}
 
-#line 238 "frag.x"
+#line 239 "frag.x"
 
 	std::string cmd() const {
 		static const std::string prefix {
@@ -379,7 +380,7 @@
 			std::string {};
 	}
 
-#line 254 "frag.x"
+#line 255 "frag.x"
 
 	Frag(
 		const std::string &name
@@ -393,19 +394,19 @@
 		if (cmd().size()) { ++_expands; }
 	}
 
-#line 271 "frag.x"
+#line 272 "frag.x"
 
 	void clear() {
 		_entries.clear();
 	}
 
-#line 281 "frag.x"
+#line 282 "frag.x"
 
 	bool empty() const {
 		return _entries.empty();
 	}
 
-#line 374 "frag.x"
+#line 375 "frag.x"
 
 	void add(
 		const std::string &value,
@@ -414,7 +415,7 @@
 	) {
 		if (value.empty()) { return; }
 		
-#line 394 "frag.x"
+#line 395 "frag.x"
 
 	if (_entries.empty()) {
 		_entries.push_back(FragEntry {});
@@ -426,14 +427,14 @@
 		_entries.push_back(FragEntry {});
 	}
 
-#line 381 "frag.x"
+#line 382 "frag.x"
 ;
 		_entries.back().add(
 			value, file, line
 		);
 	}
 
-#line 411 "frag.x"
+#line 412 "frag.x"
 
 	void add(
 		char ch,
@@ -441,7 +442,7 @@
 		int line
 	) {
 		
-#line 394 "frag.x"
+#line 395 "frag.x"
 
 	if (_entries.empty()) {
 		_entries.push_back(FragEntry {});
@@ -453,54 +454,54 @@
 		_entries.push_back(FragEntry {});
 	}
 
-#line 417 "frag.x"
+#line 418 "frag.x"
 ;
 		_entries.back().add(
 			ch, file, line
 		);
 	}
 
-#line 428 "frag.x"
+#line 429 "frag.x"
 
 	Frag &add(Frag *child);
 
-#line 464 "frag.x"
+#line 465 "frag.x"
 
 	auto begin() const {
 		return _entries.cbegin();
 	}
 
-#line 473 "frag.x"
+#line 474 "frag.x"
 
 	auto end() const {
 		return _entries.cend();
 	}
 
-#line 482 "frag.x"
+#line 483 "frag.x"
 
 	int expands() const {
 		return _expands;
 	}
 
-#line 491 "frag.x"
+#line 492 "frag.x"
 
 	void addExpand() {
 		++_expands;
 	}
 
-#line 500 "frag.x"
+#line 501 "frag.x"
 
 	int multiples() const {
 		return _multiples;
 	}
 
-#line 509 "frag.x"
+#line 510 "frag.x"
 
 	void addMultiple() {
 		++_multiples;
 	}
 
-#line 518 "frag.x"
+#line 519 "frag.x"
 
 	bool is_c_style() const {
 		static const std::string extensions[] = {
@@ -517,17 +518,17 @@
 		return false;
 	}
 
-#line 210 "frag.x"
+#line 211 "frag.x"
 ;
 	};
 
-#line 290 "frag.x"
+#line 291 "frag.x"
 
 	Write_State::Write_State(const Frag &f):
 		c_style { f.is_c_style() }
 	{ }
 
-#line 307 "frag.x"
+#line 308 "frag.x"
 
 	void testFragName(
 		const std::string &name
@@ -536,7 +537,7 @@
 		ASSERT(f.name == name);
 	}
 
-#line 334 "frag.x"
+#line 335 "frag.x"
 
 	bool isPopulatedFrag(
 		const Frag *f
@@ -544,10 +545,10 @@
 		return f && ! f->empty();
 	}
 
-#line 437 "frag.x"
+#line 438 "frag.x"
 
 	
-#line 702 "frag.x"
+#line 703 "frag.x"
 
 	bool isFragInFrag(
 		const Frag *needle,
@@ -556,16 +557,16 @@
 		ASSERT(needle);
 		ASSERT(haystack);
 		
-#line 731 "frag.x"
+#line 732 "frag.x"
 
 	if (needle == haystack) {
 		return true;
 	}
 
-#line 709 "frag.x"
+#line 710 "frag.x"
 ;
 		
-#line 741 "frag.x"
+#line 742 "frag.x"
 
 	for (const auto &i : *haystack)  {
 		if (! i.frag) { continue; }
@@ -576,37 +577,37 @@
 		}
 	}
 
-#line 710 "frag.x"
+#line 711 "frag.x"
 ;
 		return false;
 	}
 
-#line 438 "frag.x"
+#line 439 "frag.x"
 
 	Frag &Frag::add(Frag *child) {
 		ASSERT(child);
 		
-#line 721 "frag.x"
+#line 722 "frag.x"
 
 	ASSERT(! isFragInFrag(
 		this, child
 	));
 
-#line 441 "frag.x"
+#line 442 "frag.x"
 ;
 		
-#line 455 "frag.x"
+#line 456 "frag.x"
 
 	_entries.push_back(
 		FragEntry { child }
 	);
 
-#line 442 "frag.x"
+#line 443 "frag.x"
 ;
 		return *this;
 	}
 
-#line 540 "frag.x"
+#line 541 "frag.x"
 
 	void serializeFrag(
 		const Frag &frag,
@@ -614,7 +615,7 @@
 		Write_State &state
 	) {
 		
-#line 568 "frag.x"
+#line 569 "frag.x"
 
 	for (const auto &entry : frag) {
 		if (entry.frag) {
@@ -626,11 +627,11 @@
 		out << entry.str(state);
 	}
 
-#line 546 "frag.x"
+#line 547 "frag.x"
 ;
 	}
 
-#line 554 "frag.x"
+#line 555 "frag.x"
 
 	void serializeFrag(
 		const Frag &f,
@@ -642,7 +643,7 @@
 		);
 	}
 
-#line 584 "frag.x"
+#line 585 "frag.x"
 
 	bool check_frag(
 		const Frag &f,
@@ -650,7 +651,7 @@
 		Write_State &state
 	) {
 		
-#line 611 "frag.x"
+#line 612 "frag.x"
 
 	for (const auto &entry : f) {
 		if (entry.frag) {
@@ -668,12 +669,12 @@
 		}
 	}
 
-#line 590 "frag.x"
+#line 591 "frag.x"
 ;
 		return true;
 	}
 
-#line 597 "frag.x"
+#line 598 "frag.x"
 
 	bool check_frag(
 		const Frag &f,
@@ -685,24 +686,24 @@
 		);
 	}
 
-#line 631 "frag.x"
+#line 632 "frag.x"
 
 	void testFrag(
 		const Frag &frag,
 		const std::string &expected
 	) {
 		
-#line 651 "frag.x"
+#line 652 "frag.x"
 
 	std::ostringstream buffer;
 	serializeFrag(frag, buffer);
 	ASSERT(buffer.str() == expected);
 
-#line 636 "frag.x"
+#line 637 "frag.x"
 ;
 	}
 
-#line 661 "frag.x"
+#line 662 "frag.x"
 
 	void addStringToFrag(
 		Frag *frag,
@@ -713,7 +714,7 @@
 		);
 	}
 
-#line 767 "frag.x"
+#line 768 "frag.x"
 
 	using FragMap =
 		std::map<std::string, Frag>;
@@ -3715,10 +3716,10 @@
 
 	#if ! NDEBUG
 		
-#line 300 "frag.x"
+#line 301 "frag.x"
 
 	
-#line 320 "frag.x"
+#line 321 "frag.x"
 
 	testFragName("abc");
 	testFragName("");
@@ -3728,14 +3729,14 @@
 		ASSERT(f.empty());
 	}
 
-#line 348 "frag.x"
+#line 349 "frag.x"
 
 	{
 		FragEntry entry;
 		ASSERT(! entry.frag);
 	}
 
-#line 359 "frag.x"
+#line 360 "frag.x"
 
 	{
 		Frag f { "" };
@@ -3744,14 +3745,14 @@
 		ASSERT(entry.str(s).empty());
 	}
 
-#line 676 "frag.x"
+#line 677 "frag.x"
  {
 	Frag frag { "" };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
 } 
-#line 686 "frag.x"
+#line 687 "frag.x"
  {
 	Frag a { "" };
 	Frag b { "" };
@@ -3761,7 +3762,7 @@
 	b.add(&a);
 	testFrag(b, "abcdefabc");
 } 
-#line 301 "frag.x"
+#line 302 "frag.x"
 ;
 
 #line 210 "line.x"

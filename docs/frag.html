@@ -118,6 +118,7 @@ Die Zeichenkette ist immer leer
 <span class="in2"></span><span class="type">bool</span> <span class="var">old</span> { <span class="var">state</span>.<span class="var">in_macro</span> };<br/>
 <span class="in2"></span><span class="fn">update_state</span>(<span class="var">state</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">old</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">state</span>.<span class="var">c_style</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_first_line</span> &lt; <span class="num">1</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_str</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="var">_str</span>; };<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">oss</span>;<br/>
