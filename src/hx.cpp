@@ -1509,7 +1509,7 @@
 
 	if (name == "put") {
 		ASSERT_MSG(frag,
-			"@put not in frag"
+			"@put" << "(" << arg << ") not in frag"
 		);
 		Frag *sub = inputs.get_local(arg);
 		if (sub) {

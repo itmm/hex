@@ -899,7 +899,7 @@ more content can be added to it
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"put"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@put not in frag"</span><br/>
+<span class="in3"></span><span class="str">"@put"</span> &lt;&lt; <span class="str">"("</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">") not in frag"</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_local</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
