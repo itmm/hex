@@ -291,7 +291,7 @@ top_srcdir = @top_srcdir@
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@
 hx_CPPFLAGS = @CURSES_CFLAGS@
-dist_bin_SCRIPTS = hx-files.sh
+dist_bin_SCRIPTS = hx-files.sh hx-incs.sh
 all: all-am
 
 .SUFFIXES:

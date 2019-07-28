@@ -18,5 +18,4 @@
 * alternatively ncurses in viewer/editor
 * quiet mode in editor for batch processing
 * delete slides
-* list all files
 * jump directly to specific file
