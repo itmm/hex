@@ -20,6 +20,12 @@
 ```
 
 ```
+@Add(includes)
+	#include <locale.h>
+@End(includes)
+```
+
+```
 @Add(global elements)
 	#if HAVE_CURSES
 		@Put(ncurses globals)
@@ -83,6 +89,7 @@
 
 ```
 @def(setup curses)
+	setlocale(LC_CTYPE, "");
 	initscr();
 	raw();
 	keypad(stdscr, TRUE);

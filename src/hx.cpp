@@ -81,6 +81,10 @@
 		#include <curses.h>
 	#endif
 
+#line 23 "ncurses.x"
+
+	#include <locale.h>
+
 #line 166 "index.x"
 ;
 
@@ -3557,52 +3561,53 @@
 ;
 	}
 
-#line 23 "ncurses.x"
+#line 29 "ncurses.x"
 
 	#if HAVE_CURSES
 		
-#line 31 "ncurses.x"
+#line 37 "ncurses.x"
 
 	
-#line 37 "ncurses.x"
+#line 43 "ncurses.x"
 
 	bool with_ncurses = false;
 
-#line 71 "ncurses.x"
+#line 77 "ncurses.x"
 
 	class Ncurses_Handler {
 		public:
 			Ncurses_Handler() {
 				
-#line 85 "ncurses.x"
+#line 91 "ncurses.x"
 
+	setlocale(LC_CTYPE, "");
 	initscr();
 	raw();
 	keypad(stdscr, TRUE);
 	noecho();
 
-#line 75 "ncurses.x"
+#line 81 "ncurses.x"
 ;
 			}
 			~Ncurses_Handler() {
 				
-#line 94 "ncurses.x"
+#line 101 "ncurses.x"
 
 	endwin();
 
-#line 78 "ncurses.x"
+#line 84 "ncurses.x"
 ;
 			}
 	};
 
-#line 100 "ncurses.x"
+#line 107 "ncurses.x"
 
 	struct End_Of_Curses {};
 
-#line 106 "ncurses.x"
+#line 113 "ncurses.x"
 
 	
-#line 142 "ncurses.x"
+#line 149 "ncurses.x"
 
 	void draw_number(int l) {
 		int r = l / 10;
@@ -3618,13 +3623,13 @@
 		addstr(": ");
 	}
 
-#line 107 "ncurses.x"
+#line 114 "ncurses.x"
 
 	void draw_page() {
 		clear();
 		move(0, 0);
 		
-#line 160 "ncurses.x"
+#line 167 "ncurses.x"
 
 	if (curBlock->state == RS::header) {
 		int i = 0;
@@ -3639,7 +3644,7 @@
 		}
 	}
 
-#line 177 "ncurses.x"
+#line 184 "ncurses.x"
 
 	if (curBlock->state == RS::code) {
 		addstr("    ```\n");
@@ -3652,7 +3657,7 @@
 		addstr("    ```\n\n");
 	}
 
-#line 192 "ncurses.x"
+#line 199 "ncurses.x"
 
 	if (curBlock->state == RS::para) {
 		int i = 0;
@@ -3663,7 +3668,7 @@
 		}
 	}
 
-#line 205 "ncurses.x"
+#line 212 "ncurses.x"
 
 	int j = 0;
 	for (const auto &l : curBlock->notes) {
@@ -3674,7 +3679,7 @@
 	}
 	addch('\n');
 
-#line 218 "ncurses.x"
+#line 225 "ncurses.x"
 
 	int idx = (curInput - inputs.begin()) + 1;
 	draw_number(idx);
@@ -3693,15 +3698,15 @@
 		addstr(" = $");
 	}
 
-#line 111 "ncurses.x"
+#line 118 "ncurses.x"
 ;
 		refresh();
 	}
 
-#line 32 "ncurses.x"
+#line 38 "ncurses.x"
 
 
-#line 25 "ncurses.x"
+#line 31 "ncurses.x"
 
 	#endif
 
@@ -3891,7 +3896,7 @@
 		continue;
 	}
 
-#line 43 "ncurses.x"
+#line 49 "ncurses.x"
 
 	#if HAVE_CURSES
 		if (
@@ -4321,12 +4326,12 @@
 ;
 	}
 
-#line 61 "ncurses.x"
+#line 67 "ncurses.x"
 
 	#if HAVE_CURSES
 		if (with_ncurses) {
 			
-#line 118 "ncurses.x"
+#line 125 "ncurses.x"
 
 	Ncurses_Handler handler;
 	curInput = inputs.begin();
@@ -4337,11 +4342,11 @@
 		for (;;) {
 			switch (ch = getch()) {
 				
-#line 136 "ncurses.x"
+#line 143 "ncurses.x"
 
 	case 'q': throw End_Of_Curses {};
 
-#line 240 "ncurses.x"
+#line 247 "ncurses.x"
 
 	case 'n': {
 		int next = (curBlock - curInput->blocks.begin()) + 1;
@@ -4359,14 +4364,14 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 246 "ncurses.x"
+#line 253 "ncurses.x"
 ;
 		curBlock = curInput->blocks.begin() + next;
 		draw_page();
 		break;
 	}
 
-#line 255 "ncurses.x"
+#line 262 "ncurses.x"
 
 	case 'p' : {
 		int next = curBlock - curInput->blocks.begin();
@@ -4384,14 +4389,14 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 261 "ncurses.x"
+#line 268 "ncurses.x"
 ;
 		curBlock = curInput->blocks.begin() + next;
 		draw_page();
 		break;
 	}
 
-#line 270 "ncurses.x"
+#line 277 "ncurses.x"
 
 	case 'f': {
 		int next =(curInput - inputs.begin()) + 1;
@@ -4409,7 +4414,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 276 "ncurses.x"
+#line 283 "ncurses.x"
 ;
 		curInput = inputs.begin() + next;
 		curBlock = curInput->blocks.begin();
@@ -4417,7 +4422,7 @@
 		continue;
 	}
 
-#line 286 "ncurses.x"
+#line 293 "ncurses.x"
 
 	case 'b': {
 		int next = curInput - inputs.begin();
@@ -4435,7 +4440,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 292 "ncurses.x"
+#line 299 "ncurses.x"
 ;
 		curInput = inputs.begin() + next;
 		curBlock = curInput->blocks.begin();
@@ -4443,14 +4448,14 @@
 		continue;
 	}
 
-#line 127 "ncurses.x"
+#line 134 "ncurses.x"
 
 			}
 			draw_page();
 		}
 	} catch (const End_Of_Curses &) {}
 
-#line 64 "ncurses.x"
+#line 70 "ncurses.x"
 ;
 		}
 	#endif

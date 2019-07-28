@@ -34,6 +34,13 @@
 </div>
 <div><div>
 <code>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">locale</span>.<span class="var">h</span>&gt;<br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
 <span class="in2"></span><span class="macro">@Put(<span class="name">ncurses globals</span>)</span><br/>
@@ -103,6 +110,7 @@
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">setup curses</span>)</span><br/>
+<span class="in1"></span><span class="fn">setlocale</span>(<span class="var">LC_CTYPE</span>, <span class="str">""</span>);<br/>
 <span class="in1"></span><span class="fn">initscr</span>();<br/>
 <span class="in1"></span><span class="fn">raw</span>();<br/>
 <span class="in1"></span><span class="fn">keypad</span>(<span class="var">stdscr</span>, <span class="var">TRUE</span>);<br/>
