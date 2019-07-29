@@ -96,11 +96,11 @@
 * if we stop here and run `hx`, the following code will be generated
 
 ```
-	int main(
-		int argc,
-		const char **argv
-	) {
-	}
+int main(
+	int argc,
+	const char **argv
+) {
+}
 ```
 * the unknown fragments are noted in the output of `hx`
 * but the file compiles without errors

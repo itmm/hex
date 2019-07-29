@@ -5,11 +5,11 @@
 #line 165 "index.x"
 
 	
-#line 43 "read.x"
+#line 36 "read.x"
 
 	#include <string>
 
-#line 175 "read.x"
+#line 176 "read.x"
 
 	#include <fstream>
 
@@ -91,17 +91,17 @@
 #line 5 "read.x"
 
 	
-#line 13 "read.x"
+#line 20 "read.x"
 
 	
-#line 163 "read.x"
-
-	
-#line 70 "read.x"
+#line 64 "read.x"
 
 	struct No_More_Lines {};
 
-#line 143 "read.x"
+#line 146 "read.x"
+
+	
+#line 160 "read.x"
 
 	
 #line 7 "blocks.x"
@@ -222,8 +222,8 @@
 	FragEntry(
 		Frag *frag = nullptr
 	):
-		frag { frag },
-		_first_line { -1 }
+		_first_line { -1 },
+		frag { frag }
 	{}
 
 #line 63 "frag.x"
@@ -726,21 +726,18 @@
 #line 23 "frag.x"
 ;
 
-#line 144 "read.x"
+#line 161 "read.x"
 ;
-
-#line 149 "read.x"
-
 	class Input {
 		public:
 			
-#line 235 "read.x"
+#line 236 "read.x"
 
 	Input(const std::string &path):
 		_path { path }
 	{}
 
-#line 246 "read.x"
+#line 247 "read.x"
 
 	Input(
 		const Input &
@@ -749,7 +746,7 @@
 		Input &&
 	) = default;
 
-#line 257 "read.x"
+#line 258 "read.x"
 
 	Input &operator=(
 		const Input &
@@ -758,7 +755,7 @@
 		Input &&
 	) = default;
 
-#line 269 "read.x"
+#line 270 "read.x"
 
 	const std::string &path() const {
 		return _path;
@@ -772,25 +769,25 @@
 
 	FragMap frags;
 
-#line 152 "read.x"
+#line 164 "read.x"
 ;
 		private:
 			std::string _path;
 	};
 
-#line 164 "read.x"
+#line 147 "read.x"
 ;
 	class Open_Input {
 		public:
 			
-#line 190 "read.x"
+#line 191 "read.x"
 
 	Open_Input(const std::string &path):
 		_input { path },
 		_file { path.c_str() }
 	{}
 
-#line 199 "read.x"
+#line 200 "read.x"
 
 	Open_Input(
 		const Open_Input &
@@ -799,7 +796,7 @@
 		Open_Input &&
 	) = default;
 
-#line 210 "read.x"
+#line 211 "read.x"
 
 	Open_Input &operator=(
 		const Open_Input &
@@ -808,22 +805,22 @@
 		Open_Input &&
 	) = default;
 
-#line 221 "read.x"
+#line 222 "read.x"
 
 	Input &input() { return _input; }
 
-#line 227 "read.x"
+#line 228 "read.x"
 
 	const Input &input() const {
 		return _input;
 	}
 
-#line 278 "read.x"
+#line 279 "read.x"
 
 	void read_line(std::string &line) {
 		if (_file.is_open()) {
 			
-#line 290 "read.x"
+#line 291 "read.x"
 
 	if (std::getline(_file, line)) {
 		
@@ -831,13 +828,13 @@
 
 	++_line;
 
-#line 292 "read.x"
+#line 293 "read.x"
 ;
 		return;
 	}
 	_file.close();
 
-#line 281 "read.x"
+#line 282 "read.x"
 ;
 		}
 		throw No_More_Lines {};
@@ -853,11 +850,11 @@
 		return _line;
 	}
 
-#line 167 "read.x"
+#line 150 "read.x"
 ;
 		private:
 			
-#line 182 "read.x"
+#line 183 "read.x"
 
 	Input _input;
 	std::ifstream _file;
@@ -867,7 +864,7 @@
 
 	int _line = 0;
 
-#line 169 "read.x"
+#line 152 "read.x"
 ;
 	};
 
@@ -876,19 +873,16 @@
 	using SI =
 		std::string::const_iterator;
 
-#line 14 "read.x"
+#line 21 "read.x"
 ;
-	
-#line 30 "read.x"
-
 	class Inputs {
 		public:
 			
-#line 51 "read.x"
+#line 43 "read.x"
 
 	void read_line(std::string &line);
 
-#line 110 "read.x"
+#line 109 "read.x"
 
 	void clear() {
 		
@@ -901,7 +895,7 @@
 	}
 	_current_path = _paths.begin();
 
-#line 112 "read.x"
+#line 111 "read.x"
 ;
 	}
 
@@ -1033,36 +1027,36 @@
 		return result;
 	}
 
-#line 33 "read.x"
+#line 24 "read.x"
 ;
 		private:
 			
-#line 302 "read.x"
-
-	std::vector<Open_Input> _open;
-	std::vector<Input> _used;
-
-#line 318 "read.x"
+#line 303 "read.x"
 
 	std::vector<std::string> _paths;
 	std::vector<std::string>::
 		const_iterator _current_path;
 
+#line 311 "read.x"
+
+	std::vector<Open_Input> _open;
+	std::vector<Input> _used;
+
 #line 12 "input.x"
 
 	FragMap _root;
 
-#line 35 "read.x"
+#line 26 "read.x"
 ;
 	};
 
-#line 58 "read.x"
+#line 51 "read.x"
 
 	void Inputs::read_line(
 		std::string &line
 	) {
 		
-#line 326 "read.x"
+#line 327 "read.x"
 
 	for (;;) {
 		if (_open.empty()) {
@@ -1078,11 +1072,11 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 350 "read.x"
+#line 351 "read.x"
 
 	auto &f { _open.back().input() };
 	
-#line 363 "read.x"
+#line 364 "read.x"
 
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
@@ -1091,7 +1085,7 @@
 		});
 	}
 
-#line 352 "read.x"
+#line 353 "read.x"
 ;
 	for (auto &i : _used) {
 		if (i.path() == f.path()) {
@@ -1100,24 +1094,21 @@
 		}
 	}
 
-#line 340 "read.x"
+#line 341 "read.x"
 ;
 		_open.pop_back();
 	}
 	throw No_More_Lines {};
 
-#line 62 "read.x"
+#line 55 "read.x"
 ;
 	}
 
-#line 15 "read.x"
-;
-
-#line 86 "read.x"
+#line 80 "read.x"
 
 	Inputs inputs;
 
-#line 95 "read.x"
+#line 91 "read.x"
 
 	
 #line 268 "index.x"
@@ -1227,11 +1218,11 @@
 			); \
 		}
 
-#line 96 "read.x"
+#line 92 "read.x"
 ;
 	void read_sources() {
 		
-#line 118 "read.x"
+#line 119 "read.x"
  {
 	inputs.clear();
 	
@@ -1239,7 +1230,7 @@
 
 	Frag *frag { nullptr };
 
-#line 120 "read.x"
+#line 121 "read.x"
 ;
 	std::string line;
 	try { for (;;) {
@@ -1793,12 +1784,12 @@
 	}
 	process_char(frag, '\n');
 
-#line 124 "read.x"
+#line 125 "read.x"
 ;
 	} }
 	catch (const No_More_Lines &) {}
 } 
-#line 98 "read.x"
+#line 94 "read.x"
 ;
 	}
 
@@ -3934,7 +3925,7 @@
 #line 141 "index.x"
 
 	
-#line 104 "read.x"
+#line 101 "read.x"
 
 	read_sources();
 

@@ -288,6 +288,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CXXFLAGS = -Wall
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@
 hx_CPPFLAGS = @CURSES_CFLAGS@

@@ -1,3 +1,4 @@
+AM_CXXFLAGS = -Wall
 bin_PROGRAMS = hx
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@

@@ -9,16 +9,6 @@
 * shorthand for global fragment
 * groups all code from this `x`-file together
 
-```
-@def(globals)
-	@Put(inputs prereqs);
-	@put(inputs);
-@end(globals)
-```
-* some elements are used by the `Inputs` and `Input` classes
-* and must be defined before its definition
-* these can be grouped in the fragment `@s(inputs prereqs)`
-
 ## The `Inputs` class
 * this class manages multiple files
 * some are open, because of include hierarchies
@@ -27,16 +17,19 @@
   everything is processed
 
 ```
-@def(inputs)
+@def(globals)
+	@Put(inputs prereqs);
 	class Inputs {
 		public:
 			@Put(inputs elements);
 		private:
 			@Put(private inputs elements);
 	};
-@end(inputs)
+@end(globals)
 ```
-* contains all files that are processed
+* some elements are used by the `Inputs` and `Input` classes
+* and must be defined before its definition
+* these can be grouped in the fragment `@s(inputs prereqs)`
 * `@k(@Put)` inserts a fragment from the global scope
 
 ```
@@ -44,8 +37,7 @@
 	#include @s(<string>)
 @End(includes)
 ```
-* defines `std::string`
-* `@k(@Add)` extends a globally defined fragment
+* needs `std::string`
 
 ```
 @Def(inputs elements)
@@ -53,23 +45,25 @@
 @End(inputs elements)
 ```
 * defines method to read a line
+* to avoid creating too much objects the storage is passed as argument
 
 ```
-@add(inputs)
+@add(globals)
 	void Inputs::read_line(
 		std::string &line
 	) {
 		@put(inputs read line);
 	}
-@end(inputs)
+@end(globals)
 ```
 * method is not defined inline in the class because it is used multiple
   times
+* and it is somewhat big
 
 ```
-@Def(open input prereqs)
+@Def(inputs prereqs)
 	struct No_More_Lines {};
-@End(open input prereqs)
+@End(inputs prereqs)
 ```
 * the code throws this exception, when no more lines are available
 
@@ -87,9 +81,11 @@
 	Inputs inputs;
 @end(globals)
 ```
-* `inputs` enthält neben der gerade offenen Datei auch alle Dateien,
-  die  noch prozessiert werden müssen
-* Und alle bereits gelesenen Dateien
+* `inputs` is a central point for managing a stack of open files
+* if one file includes another file the old file is kept open
+* to continue the processing after the processing of the included file
+  finishes
+* also all read files are kept
 
 ```
 @add(globals)
@@ -99,12 +95,15 @@
 	}
 @end(globals)
 ```
+* read all sources that are registered in the global `inputs` variable
 
 ```
 @Def(read source files)
 	read_sources();
 @End(read source files)
 ```
+* the `@f(main)` calls this function to read the sources
+* in the interactive environment this function may also be called
 
 ```
 @Add(inputs elements)
@@ -113,6 +112,8 @@
 	}
 @End(inputs elements)
 ```
+* remove all state from the `inputs` variable
+* all that is kept is the list of initial source files
 
 ```
 @def(read sources) {
@@ -126,41 +127,23 @@
 	catch (const No_More_Lines &) {}
 } @end(read sources)
 ```
-* `hx` liest die Eingabe-Dateien zeilenweise
-* Inkludierungen werden transparent in `inputs` behandelt
+* first this function resets `inputs` to a clean state
+* then it processes each input file and all included files line by line
+* all lines are processed in the order they occur
+* end of input is signaled with an exception
 
 ## What is a file?
 * C++ represent open files as `std::ifstream`
-* Also a file is represented by its path
+* also a file is represented by its path
 * `hx` also store more information on a file by file basis
-* For example the local fragments
-* So a special class `Input` will represent a file
+* for example the local fragments
+* so a special class `Input` will represent a file
 
 ## `Input` class
-* Defines the `Input` class
+* defines the `Input` class
 
 ```
-@Add(open input prereqs)
-	@Put(input prereqs);
-@End(open input prereqs)
-```
-
-```
-@Add(open input prereqs)
-	class Input {
-		public:
-			@Put(input elements);
-		private:
-			std::string _path;
-	};
-@End(open input prereqs)
-```
-* A bunch of fragments make room for later extensions
-* They are declared global, so they can be modified in different
-  `x`-files
-
-```
-@Def(inputs prereqs)
+@Add(inputs prereqs)
 	@Put(open input prereqs);
 	class Open_Input {
 		public:
@@ -170,6 +153,24 @@
 	};
 @End(inputs prereqs)
 ```
+* the `Open_Input` class represents an `Input` file that is also
+  currently open for reading
+
+```
+@Def(open input prereqs)
+	@Put(input prereqs);
+	class Input {
+		public:
+			@Put(input elements);
+		private:
+			std::string _path;
+	};
+@End(open input prereqs)
+```
+* an input file has the list of all blocks associated with it that were
+  defined in them
+* but these are defined later
+* for just now the path of the file is stored
 
 ```
 @Add(includes)
@@ -300,6 +301,14 @@
 
 ```
 @Def(private inputs elements)
+	std::vector<std::string> _paths;
+	std::vector<std::string>::
+		const_iterator _current_path;
+@End(private inputs elements)
+```
+
+```
+@Add(private inputs elements)
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
 @End(private inputs elements)
@@ -313,14 +322,6 @@
 * Damit wird verhindert, dass eine Datei mehrfach gelesen wird
 * Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
   werden müssen
-
-```
-@Add(private inputs elements)
-	std::vector<std::string> _paths;
-	std::vector<std::string>::
-		const_iterator _current_path;
-@End(private inputs elements)
-```
 
 ```
 @rep(inputs read line)

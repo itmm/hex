@@ -50,8 +50,8 @@
 	FragEntry(
 		Frag *frag = nullptr
 	):
-		frag { frag },
-		_first_line { -1 }
+		_first_line { -1 },
+		frag { frag }
 	{}
 @end(entry methods)
 ```
