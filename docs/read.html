@@ -283,7 +283,7 @@ for just now the path of the file is stored
 <span class="macro">@End(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Defines <code><span class="type">std</span>::<span class="type">ifstream</span></code>
+needs <code><span class="type">std</span>::<span class="type">ifstream</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -294,6 +294,13 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="in1"></span><span class="type">char</span> <span class="var">_last</span>;<br/>
 <span class="macro">@End(<span class="name">private open input els</span>)</span><br/>
 </code></div>
+<ul><li>
+open file contains a file
+</li><li>
+and an input stream
+</li><li>
+and the last char read
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -304,6 +311,9 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="in1"></span>{}<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+open file on construction
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -316,6 +326,11 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="in1"></span>) = <span class="keyword">default</span>;<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+no copy construction
+</li><li>
+no move construction
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -328,6 +343,11 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="in1"></span>) = <span class="keyword">default</span>;<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+no copy assignment
+</li><li>
+no move assignment
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -335,6 +355,9 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="in1"></span><span class="type">Input</span> &amp;<span class="fn">input</span>() { <span class="keyword">return</span> <span class="var">_input</span>; }<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+return input element
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -344,6 +367,9 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+return read-only input element
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -354,24 +380,23 @@ Defines <code><span class="type">std</span>::<span class="type">ifstream</span><
 <span class="macro">@End(<span class="name">input elements</span>)</span><br/>
 </code></div>
 <ul><li>
-In the constructor the <code><span class="var">name</span></code> will be saved
+in the constructor the <code><span class="var">name</span></code> will be saved
 </li><li>
-and the file with that path will be opened
-</li><li>
-Additional elements can be initialized later
+additional elements can be initialized later
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
-<span class="in1"></span><span class="fn">Input</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">Input</span> &amp;<br/>
-<span class="in1"></span>) = <span class="keyword">delete</span>;<br/>
-<span class="in1"></span><span class="fn">Input</span>(<br/>
-<span class="in2"></span><span class="type">Input</span> &amp;&amp;<br/>
-<span class="in1"></span>) = <span class="keyword">default</span>;<br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">Input</span> &amp;) = <span class="keyword">delete</span>;<br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">Input</span> &amp;&amp;) = <span class="keyword">default</span>;<br/>
 <span class="macro">@End(<span class="name">input elements</span>)</span><br/>
 </code></div>
+<ul><li>
+no copy constructor
+</li><li>
+no move constructor
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -385,7 +410,9 @@ Additional elements can be initialized later
 <span class="macro">@End(<span class="name">input elements</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="type">Input</span></code> instances can only be moved, not copied
+no copy assignment
+</li><li>
+no move assignment
 </li></ul>
 </div>
 <div><div>
@@ -397,7 +424,7 @@ Additional elements can be initialized later
 <span class="macro">@End(<span class="name">input elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Simple accessor
+return path name
 </li></ul>
 </div>
 <div><div>
@@ -412,7 +439,9 @@ Simple accessor
 <span class="macro">@end(<span class="name">open input elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Liest Zeile aus der offenen Datei
+if file is open, return next line from this file
+</li><li>
+if that fails or file was closed, then throw an exception
 </li></ul>
 </div>
 <div><div>
@@ -426,9 +455,11 @@ Liest Zeile aus der offenen Datei
 <span class="macro">@end(<span class="name">get line</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn Zeile gelesen wurde, passt die Funktion weitere Parameter an
+if could read line, return
 </li><li>
-die erst später definiert werden
+otherwise close file
+</li><li>
+and fall through to the exception throwing code
 </li></ul>
 </div>
 <div><div>
@@ -439,6 +470,11 @@ die erst später definiert werden
 <span class="in2"></span><span class="var">const_iterator</span> <span class="var">_current_path</span>;<br/>
 <span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+has a list of input files
+</li><li>
+and an iterator for the current path
+</li></ul>
 </div>
 <div><div>
 <code>

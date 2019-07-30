@@ -731,22 +731,18 @@
 	class Input {
 		public:
 			
-#line 236 "read.x"
+#line 246 "read.x"
 
 	Input(const std::string &path):
 		_path { path }
 	{}
 
-#line 247 "read.x"
+#line 256 "read.x"
 
-	Input(
-		const Input &
-	) = delete;
-	Input(
-		Input &&
-	) = default;
+	Input(const Input &) = delete;
+	Input(Input &&) = default;
 
-#line 258 "read.x"
+#line 265 "read.x"
 
 	Input &operator=(
 		const Input &
@@ -755,7 +751,7 @@
 		Input &&
 	) = default;
 
-#line 270 "read.x"
+#line 278 "read.x"
 
 	const std::string &path() const {
 		return _path;
@@ -780,14 +776,14 @@
 	class Open_Input {
 		public:
 			
-#line 191 "read.x"
+#line 194 "read.x"
 
 	Open_Input(const std::string &path):
 		_input { path },
 		_file { path.c_str() }
 	{}
 
-#line 200 "read.x"
+#line 204 "read.x"
 
 	Open_Input(
 		const Open_Input &
@@ -796,7 +792,7 @@
 		Open_Input &&
 	) = default;
 
-#line 211 "read.x"
+#line 217 "read.x"
 
 	Open_Input &operator=(
 		const Open_Input &
@@ -805,22 +801,22 @@
 		Open_Input &&
 	) = default;
 
-#line 222 "read.x"
+#line 230 "read.x"
 
 	Input &input() { return _input; }
 
-#line 228 "read.x"
+#line 237 "read.x"
 
 	const Input &input() const {
 		return _input;
 	}
 
-#line 279 "read.x"
+#line 287 "read.x"
 
 	void read_line(std::string &line) {
 		if (_file.is_open()) {
 			
-#line 291 "read.x"
+#line 300 "read.x"
 
 	if (std::getline(_file, line)) {
 		
@@ -828,13 +824,13 @@
 
 	++_line;
 
-#line 293 "read.x"
+#line 302 "read.x"
 ;
 		return;
 	}
 	_file.close();
 
-#line 282 "read.x"
+#line 290 "read.x"
 ;
 		}
 		throw No_More_Lines {};
@@ -1031,13 +1027,13 @@
 ;
 		private:
 			
-#line 303 "read.x"
+#line 313 "read.x"
 
 	std::vector<std::string> _paths;
 	std::vector<std::string>::
 		const_iterator _current_path;
 
-#line 311 "read.x"
+#line 323 "read.x"
 
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
@@ -1056,7 +1052,7 @@
 		std::string &line
 	) {
 		
-#line 327 "read.x"
+#line 339 "read.x"
 
 	for (;;) {
 		if (_open.empty()) {
@@ -1072,11 +1068,11 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 351 "read.x"
+#line 363 "read.x"
 
 	auto &f { _open.back().input() };
 	
-#line 364 "read.x"
+#line 376 "read.x"
 
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
@@ -1085,7 +1081,7 @@
 		});
 	}
 
-#line 353 "read.x"
+#line 365 "read.x"
 ;
 	for (auto &i : _used) {
 		if (i.path() == f.path()) {
@@ -1094,7 +1090,7 @@
 		}
 	}
 
-#line 341 "read.x"
+#line 353 "read.x"
 ;
 		_open.pop_back();
 	}

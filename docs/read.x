@@ -177,7 +177,7 @@
 	#include @s(<fstream>)
 @End(includes)
 ```
-* Defines `std::ifstream`
+* needs `std::ifstream`
 
 ```
 @Def(private open input els)
@@ -186,6 +186,9 @@
 	char _last;
 @End(private open input els)
 ```
+* open file contains a file
+* and an input stream
+* and the last char read
 
 ```
 @Def(open input elements)
@@ -195,6 +198,7 @@
 	{}
 @End(open input elements)
 ```
+* open file on construction
 
 ```
 @Add(open input elements)
@@ -206,6 +210,8 @@
 	) = default;
 @End(open input elements)
 ```
+* no copy construction
+* no move construction
 
 ```
 @Add(open input elements)
@@ -217,12 +223,15 @@
 	) = default;
 @End(open input elements)
 ```
+* no copy assignment
+* no move assignment
 
 ```
 @Add(open input elements)
 	Input &input() { return _input; }
 @End(open input elements)
 ```
+* return input element
 
 ```
 @Add(open input elements)
@@ -231,6 +240,7 @@
 	}
 @End(open input elements)
 ```
+* return read-only input element
 
 ```
 @Def(input elements)
@@ -239,20 +249,17 @@
 	{}
 @End(input elements)
 ```
-* In the constructor the `name` will be saved
-* and the file with that path will be opened
-* Additional elements can be initialized later
+* in the constructor the `name` will be saved
+* additional elements can be initialized later
 
 ```
 @Add(input elements)
-	Input(
-		const Input &
-	) = delete;
-	Input(
-		Input &&
-	) = default;
+	Input(const Input &) = delete;
+	Input(Input &&) = default;
 @End(input elements)
 ```
+* no copy constructor
+* no move constructor
 
 ```
 @Add(input elements)
@@ -264,7 +271,8 @@
 	) = default;
 @End(input elements)
 ```
-* `Input` instances can only be moved, not copied
+* no copy assignment
+* no move assignment
 
 ```
 @Add(input elements)
@@ -273,7 +281,7 @@
 	}
 @End(input elements)
 ```
-* Simple accessor
+* return path name
 
 ```
 @Add(open input elements)
@@ -285,7 +293,8 @@
 	}
 @end(open input elements)
 ```
-* Liest Zeile aus der offenen Datei
+* if file is open, return next line from this file
+* if that fails or file was closed, then throw an exception
 
 ```
 @def(get line)
@@ -296,8 +305,9 @@
 	_file.close();
 @end(get line)
 ```
-* Wenn Zeile gelesen wurde, passt die Funktion weitere Parameter an
-* die erst später definiert werden
+* if could read line, return
+* otherwise close file
+* and fall through to the exception throwing code
 
 ```
 @Def(private inputs elements)
@@ -306,6 +316,8 @@
 		const_iterator _current_path;
 @End(private inputs elements)
 ```
+* has a list of input files
+* and an iterator for the current path
 
 ```
 @Add(private inputs elements)
