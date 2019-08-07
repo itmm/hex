@@ -1,6 +1,7 @@
 #!/bin/bash
 
-grep '[dD]ef[(]file: ' $* </dev/null | \
+FILEs=${*:-index.x}
+grep '[dD]ef[(]file: ' $FILEs </dev/null | \
 	cut '-d(' -f2 | \
 	cut '-d)' -f1 | \
 	cut '-d ' -f2 | \

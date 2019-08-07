@@ -1,7 +1,6 @@
 #!/bin/bash
 
 FILES="${*:-index.x} "
-NR=1
 USED=""
 
 while [[ "x$FILES" != "x" ]]; do
@@ -10,9 +9,8 @@ while [[ "x$FILES" != "x" ]]; do
 	FILES=${FILES#$f}
 	j=`expr match "${USED}" '(.* )*$f '`
 	if [[ "$j" = "0" ]]; then
-		echo "$NR $f"
+		echo $f
 		USED="$f $USED"
-		NR=$((NR + 1))
 		NEW=`grep '@inc(' $f | cut '-d(' -f2 | cut '-d)' -f1`
 		TOADD=''
 		for n in $NEW; do
@@ -21,4 +19,3 @@ while [[ "x$FILES" != "x" ]]; do
 		FILES="$TOADD$FILES"
 	fi
 done
-

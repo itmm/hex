@@ -26,4 +26,8 @@ hx_run: \
 	@cd ../docs && hx
 	@touch hx_run
 
-dist_bin_SCRIPTS = hx-files.sh hx-incs.sh
+dist_bin_SCRIPTS = \
+	hx-files.sh \
+	hx-incs.sh \
+	hx-undoc.sh
+
