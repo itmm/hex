@@ -906,6 +906,7 @@ int main(
 	}
 @end(global elements)
 ```
+* write all files generated from fragments
 
 ```
 @def(serialize fragments)
@@ -914,6 +915,7 @@ int main(
 	}
 @end(serialize fragments)
 ```
+* write files, if requested
 
 ```
 @def(files write)
@@ -1004,6 +1006,7 @@ int main(
 	}
 @end(needed by files write)
 ```
+* command argument without `"file:"` prefix is the file name
 
 ```
 @add(needed by files write)
@@ -1021,6 +1024,10 @@ int main(
 	}
 @end(needed by files write)
 ```
+* check if the file will be changed
+* if the fragments serialize to the content of the file, it must not be
+  rewritten
+* and the modification date can stay the same
 
 ```
 @def(write in file)
@@ -1042,6 +1049,8 @@ int main(
 	}
 @end(global elements)
 ```
+* serialize all files that are processed by external programs
+* instead of directly written out
 
 ```
 @add(serialize fragments)
@@ -1050,6 +1059,7 @@ int main(
 	}
 @end(serialize fragments)
 ```
+* only process files if requested
 
 ```
 @def(files process)
@@ -1061,6 +1071,7 @@ int main(
 	}
 @end(files process)
 ```
+* process commands that are key at root level
 
 ```
 @add(files process)
@@ -1074,12 +1085,15 @@ int main(
 	}
 @end(files process)
 ```
+* process commands that are defined at the top of source files
+* this behavior is deprecated
 
 ```
 @def(needed by files process)
 	bool no_cmds = false;
 @end(needed by files process)
 ```
+* there is an option to disable command processing
 
 ```
 @def(serialize cmd) {
@@ -1089,6 +1103,7 @@ int main(
 	}
 } @end(serialize cmd)
 ```
+* a fragment is only processed, if its name matches a command invocation
 
 ```
 @def(write cmd in file)
@@ -1108,6 +1123,7 @@ int main(
 	}
 @end(write cmd in file)
 ```
+* pipe serialized fragment directly to the command
 
 ```
 @add(process argument) {
@@ -1120,6 +1136,8 @@ int main(
 	}
 } @end(process argument)
 ```
+* disable command execution with a command switch
+* the file will be serialized to `std::cout` instead
 
 ```
 @inc(html.x)
@@ -1134,29 +1152,35 @@ int main(
 ```
 @inc(line.x)
 ```
+* parsing lines with commands entered by the user
 
 ```
 @inc(edit.x)
 ```
-* Edit slides in place
+* edit slides in place
 
 ```
 @inc(range.x)
 ```
+* handle range requests in the editor
 
 ```
 @inc(write.x)
 ```
+* handle write commands in the editor
 
 ```
 @inc(add.x)
 ```
+* handle adding of new elements in the editor
 
 ```
 @inc(ncurses.x)
 ```
+* `ncurses` interface for the editior
 
 ```
 @inc(todos.x)
 ```
+* list of open issues
 

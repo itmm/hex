@@ -1269,6 +1269,9 @@ Fragmente, die Dateien spezifizieren werden in diese Dateien  rausgeschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
+<ul><li>
+write all files generated from fragments
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1278,6 +1281,9 @@ Fragmente, die Dateien spezifizieren werden in diese Dateien  rausgeschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
 </code></div>
+<ul><li>
+write files, if requested
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1386,6 +1392,9 @@ Für jedes Fragment, das nicht befüllt wurde wird eine Meldung  ausgegeben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">needed by files write</span>)</span><br/>
 </code></div>
+<ul><li>
+command argument without <code><span class="str">"file:"</span></code> prefix is the file name
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1404,6 +1413,13 @@ Für jedes Fragment, das nicht befüllt wurde wird eine Meldung  ausgegeben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">needed by files write</span>)</span><br/>
 </code></div>
+<ul><li>
+check if the file will be changed
+</li><li>
+if the fragments serialize to the content of the file, it must not be  rewritten
+</li><li>
+and the modification date can stay the same
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1429,6 +1445,11 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
+<ul><li>
+serialize all files that are processed by external programs
+</li><li>
+instead of directly written out
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1438,6 +1459,9 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">serialize fragments</span>)</span><br/>
 </code></div>
+<ul><li>
+only process files if requested
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1450,6 +1474,9 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">files process</span>)</span><br/>
 </code></div>
+<ul><li>
+process commands that are key at root level
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1464,6 +1491,11 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">files process</span>)</span><br/>
 </code></div>
+<ul><li>
+process commands that are defined at the top of source files
+</li><li>
+this behavior is deprecated
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1471,6 +1503,9 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span><span class="type">bool</span> <span class="var">no_cmds</span> = <span class="num">false</span>;<br/>
 <span class="macro">@end(<span class="name">needed by files process</span>)</span><br/>
 </code></div>
+<ul><li>
+there is an option to disable command processing
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1481,6 +1516,9 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">serialize cmd</span>)</span><br/>
 </code></div>
+<ul><li>
+a fragment is only processed, if its name matches a command invocation
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1501,6 +1539,9 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write cmd in file</span>)</span><br/>
 </code></div>
+<ul><li>
+pipe serialized fragment directly to the command
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1514,6 +1555,11 @@ Das Fragment wird in die entsprechende Datei geschrieben
 <span class="in1"></span>}<br/>
 } <span class="macro">@end(<span class="name">process argument</span>)</span><br/>
 </code></div>
+<ul><li>
+disable command execution with a command switch
+</li><li>
+the file will be serialized to <code><span class="type">std</span>::<span class="var">cout</span></code> instead
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -1535,39 +1581,57 @@ Interactive display of slides
 <code>
 <span class="macro">@inc(<span class="name"><a href="line.html">line.x</a></span>)</span><br/>
 </code></div>
+<ul><li>
+parsing lines with commands entered by the user
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="edit.html">edit.x</a></span>)</span><br/>
 </code></div>
 <ul><li>
-Edit slides in place
+edit slides in place
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="range.html">range.x</a></span>)</span><br/>
 </code></div>
+<ul><li>
+handle range requests in the editor
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="write.html">write.x</a></span>)</span><br/>
 </code></div>
+<ul><li>
+handle write commands in the editor
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="add.html">add.x</a></span>)</span><br/>
 </code></div>
+<ul><li>
+handle adding of new elements in the editor
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="ncurses.html">ncurses.x</a></span>)</span><br/>
 </code></div>
+<ul><li>
+<code><span class="var">ncurses</span></code> interface for the editior
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@inc(<span class="name"><a href="todos.html">todos.x</a></span>)</span><br/>
 </code></div>
+<ul><li>
+list of open issues
+</li></ul>
 </div>
 </body>
 </html>

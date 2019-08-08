@@ -1801,13 +1801,13 @@
 #line 902 "index.x"
 
 	
-#line 1001 "index.x"
+#line 1003 "index.x"
 
 	std::string file_name(const Frag &f) {
 		return f.name.substr(6);
 	}
 
-#line 1009 "index.x"
+#line 1012 "index.x"
 
 	bool file_changed(const Frag &f) {
 		std::ifstream in(
@@ -1826,18 +1826,18 @@
 
 	void files_write() {
 		
-#line 919 "index.x"
+#line 921 "index.x"
 
 	for (auto &i : inputs.root()) {
 		const Frag *frag {
 			&i.second
 		};
 		
-#line 948 "index.x"
+#line 950 "index.x"
  {
 	if (frag->isFile()) {
 		
-#line 1026 "index.x"
+#line 1033 "index.x"
 
 	if (file_changed(*frag)) {
 		std::ofstream out(
@@ -1846,11 +1846,11 @@
 		serializeFrag(*frag, out);
 	}
 
-#line 950 "index.x"
+#line 952 "index.x"
 ;
 	}
 } 
-#line 959 "index.x"
+#line 961 "index.x"
  {
 	int sum {
 		frag->expands()
@@ -1862,7 +1862,7 @@
 			"] not called\n";
 	}
 } 
-#line 975 "index.x"
+#line 977 "index.x"
 
 	if (frag->multiples() == 1) {
 		std::cerr <<
@@ -1871,7 +1871,7 @@
 			"] only used once\n";
 	}
 
-#line 989 "index.x"
+#line 991 "index.x"
 
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
@@ -1879,11 +1879,11 @@
 			"] not populated\n";
 	}
 
-#line 924 "index.x"
+#line 926 "index.x"
 ;
 	}
 
-#line 934 "index.x"
+#line 936 "index.x"
 
 	for (auto &j : inputs) {
 		for (auto &i : j.frags) {
@@ -1891,11 +1891,11 @@
 				&i.second
 			};
 			
-#line 948 "index.x"
+#line 950 "index.x"
  {
 	if (frag->isFile()) {
 		
-#line 1026 "index.x"
+#line 1033 "index.x"
 
 	if (file_changed(*frag)) {
 		std::ofstream out(
@@ -1904,11 +1904,11 @@
 		serializeFrag(*frag, out);
 	}
 
-#line 950 "index.x"
+#line 952 "index.x"
 ;
 	}
 } 
-#line 959 "index.x"
+#line 961 "index.x"
  {
 	int sum {
 		frag->expands()
@@ -1920,7 +1920,7 @@
 			"] not called\n";
 	}
 } 
-#line 975 "index.x"
+#line 977 "index.x"
 
 	if (frag->multiples() == 1) {
 		std::cerr <<
@@ -1929,7 +1929,7 @@
 			"] only used once\n";
 	}
 
-#line 989 "index.x"
+#line 991 "index.x"
 
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
@@ -1937,7 +1937,7 @@
 			"] not populated\n";
 	}
 
-#line 940 "index.x"
+#line 942 "index.x"
 ;
 		}
 	}
@@ -1946,30 +1946,30 @@
 ;
 	}
 
-#line 1038 "index.x"
+#line 1045 "index.x"
 
 	
-#line 1079 "index.x"
+#line 1092 "index.x"
 
 	bool no_cmds = false;
 
-#line 1039 "index.x"
+#line 1046 "index.x"
 ;
 	void files_process() {
 		
-#line 1055 "index.x"
+#line 1065 "index.x"
 
 	for (auto &i : inputs.root()) {
 		const Frag *frag {
 			&i.second
 		};
 		
-#line 1085 "index.x"
+#line 1099 "index.x"
  {
 	const std::string cmd { frag->cmd() };
 	if (cmd.size()) {
 		
-#line 1094 "index.x"
+#line 1109 "index.x"
 
 	std::ostringstream out {};
 	serializeFrag(*frag, out);
@@ -1986,15 +1986,15 @@
 		}
 	}
 
-#line 1088 "index.x"
+#line 1102 "index.x"
 ;
 	}
 } 
-#line 1060 "index.x"
+#line 1070 "index.x"
 ;
 	}
 
-#line 1066 "index.x"
+#line 1077 "index.x"
 
 	for (auto &j : inputs) {
 		for (auto &i : j.frags) {
@@ -2002,12 +2002,12 @@
 				&i.second
 			};
 			
-#line 1085 "index.x"
+#line 1099 "index.x"
  {
 	const std::string cmd { frag->cmd() };
 	if (cmd.size()) {
 		
-#line 1094 "index.x"
+#line 1109 "index.x"
 
 	std::ostringstream out {};
 	serializeFrag(*frag, out);
@@ -2024,16 +2024,16 @@
 		}
 	}
 
-#line 1088 "index.x"
+#line 1102 "index.x"
 ;
 	}
 } 
-#line 1072 "index.x"
+#line 1083 "index.x"
 ;
 		}
 	}
 
-#line 1041 "index.x"
+#line 1048 "index.x"
 ;
 	}
 
@@ -3860,7 +3860,7 @@
 		continue;
 	}
 } 
-#line 1113 "index.x"
+#line 1129 "index.x"
  {
 	static const std::string prefix {
 		"--no-cmds"
@@ -3931,13 +3931,13 @@
 #line 150 "index.x"
 
 	
-#line 911 "index.x"
+#line 912 "index.x"
 
 	if (write_files) {
 		files_write();
 	}
 
-#line 1047 "index.x"
+#line 1056 "index.x"
 
 	if (process_files) {
 		files_process();
