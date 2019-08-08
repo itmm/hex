@@ -24,7 +24,7 @@ hx_run: \
   ../docs/write.x
 	@echo "  HX"
 	@cd ../docs && hx
-	@touch hx_run
+	@date > hx_run
 
 dist_bin_SCRIPTS = \
 	hx-files.sh \

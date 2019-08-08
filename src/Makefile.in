@@ -684,7 +684,7 @@ hx_run: \
   ../docs/write.x
 	@echo "  HX"
 	@cd ../docs && hx
-	@touch hx_run
+	@date > hx_run
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
