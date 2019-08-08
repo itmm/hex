@@ -823,7 +823,7 @@ int main(
 ```
 @def(process private frag)
 	std::hash<std::string> h;
-	unsigned cur {
+	auto cur {
 		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff
@@ -871,7 +871,7 @@ int main(
 ```
 @def(process magic frag)
 	std::hash<std::string> h;
-	unsigned cur {
+	auto cur {
 		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff

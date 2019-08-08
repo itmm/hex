@@ -854,7 +854,7 @@
 
 	Input _input;
 	std::ifstream _file;
-	char _last;
+	// char _last;
 
 #line 127 "input.x"
 
@@ -1694,7 +1694,7 @@
 #line 824 "index.x"
 
 	std::hash<std::string> h;
-	unsigned cur {
+	auto cur {
 		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff
@@ -1727,7 +1727,7 @@
 #line 872 "index.x"
 
 	std::hash<std::string> h;
-	unsigned cur {
+	auto cur {
 		h(inputs.cur().input().path() +
 			':' + arg) &
 				0x7fffffff

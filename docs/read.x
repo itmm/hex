@@ -183,7 +183,7 @@
 @Def(private open input els)
 	Input _input;
 	std::ifstream _file;
-	char _last;
+	// char _last;
 @End(private open input els)
 ```
 * open file contains a file
