@@ -29,5 +29,6 @@ hx_run: \
 dist_bin_SCRIPTS = \
 	hx-files.sh \
 	hx-incs.sh \
+	hx-srcs.sh \
 	hx-undoc.sh
 

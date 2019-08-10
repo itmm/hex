@@ -295,6 +295,7 @@ hx_CPPFLAGS = @CURSES_CFLAGS@
 dist_bin_SCRIPTS = \
 	hx-files.sh \
 	hx-incs.sh \
+	hx-srcs.sh \
 	hx-undoc.sh
 
 all: all-am
