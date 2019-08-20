@@ -769,7 +769,8 @@
 	"switch", "try", "typeof", "while",
 	"class", "public", "private",
 	"template", "typename", "using",
-	"function", "throw"
+	"function", "throw", "namespace",
+	"once", "constexpr", "volatile"
 @end(keywords)
 ```
 * Reservierte Schlüsselwörter
