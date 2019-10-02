@@ -38,6 +38,7 @@
 
 	#include <iostream>
 	#include <vector>
+	#include <filesystem>
 
 #line 461 "index.md"
 
@@ -761,7 +762,7 @@
 
 	std::vector<Block> blocks;
 
-#line 116 "input.md"
+#line 117 "input.md"
 
 	FragMap frags;
 
@@ -820,7 +821,7 @@
 
 	if (std::getline(_file, line)) {
 		
-#line 143 "input.md"
+#line 144 "input.md"
 
 	++_line;
 
@@ -840,7 +841,7 @@
 
 	Read_State state = RS::new_element;
 
-#line 134 "input.md"
+#line 135 "input.md"
 
 	int line() const {
 		return _line;
@@ -856,7 +857,7 @@
 	std::ifstream _file;
 	// char _last;
 
-#line 127 "input.md"
+#line 128 "input.md"
 
 	int _line = 0;
 
@@ -882,12 +883,16 @@
 
 	void clear() {
 		
-#line 234 "input.md"
+#line 235 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
-		_paths.push_back("index.x");
+		if (std::filesystem::exists("index.md")) {
+			_paths.push_back("index.md");
+		} else if (std::filesystem::exists("index.x")) {
+			_paths.push_back("index.x");
+		}
 	}
 	_current_path = _paths.begin();
 
@@ -895,52 +900,52 @@
 ;
 	}
 
-#line 20 "input.md"
+#line 21 "input.md"
 
 	auto &cur() {
 		ASSERT (! _open.empty());
 		return _open.back();
 	}
 
-#line 30 "input.md"
+#line 31 "input.md"
 
 	auto begin() {
 		return _used.begin();
 	}
 
-#line 39 "input.md"
+#line 40 "input.md"
 
 	auto end() {
 		return _used.end();
 	}
 
-#line 48 "input.md"
+#line 49 "input.md"
 
 	auto size() const {
 		return _used.size();
 	}
 
-#line 56 "input.md"
+#line 57 "input.md"
 
 	void push(const std::string &path) {
 		_used.push_back({ path });
 		_open.push_back({ path });
 	}
 
-#line 68 "input.md"
+#line 69 "input.md"
 
 	void add(const std::string &path) {
 		_paths.push_back(path);
 		push(path);
 	}
 
-#line 85 "input.md"
+#line 86 "input.md"
 
 	bool has(
 		const std::string &name
 	) const {
 		
-#line 100 "input.md"
+#line 101 "input.md"
 
 	for (const auto &j : _used) {
 		if (j.path() == name) {
@@ -948,12 +953,12 @@
 		}
 	}
 
-#line 89 "input.md"
+#line 90 "input.md"
 ;
 		return false;
 	}
 
-#line 150 "input.md"
+#line 151 "input.md"
 
 	Frag *find_local(const std::string &name) {
 		ASSERT(! _open.empty());
@@ -963,7 +968,7 @@
 		return &f->second;
 	}
 
-#line 162 "input.md"
+#line 163 "input.md"
 
 	Frag *add_local(const std::string &name) {
 		ASSERT(! _open.empty());
@@ -971,7 +976,7 @@
 		return &i.frags.insert({ name, name }).first->second;
 	}
 
-#line 172 "input.md"
+#line 173 "input.md"
 
 	Frag *get_local(const std::string &name) {
 		Frag *result = find_local(name);
@@ -981,7 +986,7 @@
 		return result;
 	}
 
-#line 184 "input.md"
+#line 185 "input.md"
 
 	Frag *find_global(const std::string &name) {
 		if (_open.size() > 1) {
@@ -1001,19 +1006,19 @@
 
 	}
 
-#line 206 "input.md"
+#line 207 "input.md"
 
 	Frag *add_global(const std::string &name) {
 		return &_root.insert({ name, name }).first->second;
 	}
 
-#line 214 "input.md"
+#line 215 "input.md"
 
 	const FragMap &root() const {
 		return _root;
 	}
 
-#line 222 "input.md"
+#line 223 "input.md"
 
 	Frag *get_global(const std::string &name) {
 		Frag *result = find_global(name);
@@ -1038,7 +1043,7 @@
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
 
-#line 12 "input.md"
+#line 13 "input.md"
 
 	FragMap _root;
 

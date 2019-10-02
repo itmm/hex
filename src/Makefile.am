@@ -1,7 +1,7 @@
 AM_CXXFLAGS = -Wall
 bin_PROGRAMS = hx
 hx_SOURCES = hx.cpp
-hx_LDADD = @CURSES_LIBS@
+hx_LDADD = @CURSES_LIBS@ -lstdc++fs
 hx_CPPFLAGS = @CURSES_CFLAGS@
 
 hx.cpp: hx_run
@@ -23,7 +23,7 @@ hx_run: \
   ../docs/view.md \
   ../docs/write.md
 	@echo "  HX"
-	@cd ../docs && hx index.md
+	@cd ../docs && hx
 	@date > hx_run
 
 dist_bin_SCRIPTS = \

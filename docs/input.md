@@ -4,6 +4,7 @@
 @Add(includes)
 	#include <iostream>
 	#include <vector>
+	#include <filesystem>
 @end(includes)
 ```
 * `vector` ist ein Container für Source-Dateien
@@ -235,7 +236,11 @@
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
-		_paths.push_back("index.x");
+		if (std::filesystem::exists("index.md")) {
+			_paths.push_back("index.md");
+		} else if (std::filesystem::exists("index.x")) {
+			_paths.push_back("index.x");
+		}
 	}
 	_current_path = _paths.begin();
 @End(clear inputs)

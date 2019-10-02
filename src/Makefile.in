@@ -290,7 +290,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CXXFLAGS = -Wall
 hx_SOURCES = hx.cpp
-hx_LDADD = @CURSES_LIBS@
+hx_LDADD = @CURSES_LIBS@ -lstdc++fs
 hx_CPPFLAGS = @CURSES_CFLAGS@
 dist_bin_SCRIPTS = \
 	hx-files.sh \
@@ -684,7 +684,7 @@ hx_run: \
   ../docs/view.md \
   ../docs/write.md
 	@echo "  HX"
-	@cd ../docs && hx index.md
+	@cd ../docs && hx
 	@date > hx_run
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
