@@ -26,8 +26,12 @@
 ```
 @def(write cur HTML file)
 	const std::string &name { cur.path() };
+	auto ext { name.rfind('.') };
+	if (ext == std::string::npos) {
+		ext = name.size();
+	}
 	std::string outPath {
-		name.substr(0, name.size() - 2) +
+		name.substr(0, ext) +
 		".html"
 	};
 	std::ofstream out { outPath.c_str() };

@@ -7,23 +7,23 @@ hx_CPPFLAGS = @CURSES_CFLAGS@
 hx.cpp: hx_run
 
 hx_run: \
-  ../docs/add.x \
-  ../docs/blocks.x \
-  ../docs/edit.x \
-  ../docs/frag.x \
-  ../docs/html.x \
-  ../docs/index.x \
-  ../docs/input.x \
-  ../docs/line.x \
-  ../docs/log.x \
-  ../docs/ncurses.x \
-  ../docs/range.x \
-  ../docs/read.x \
-  ../docs/todos.x \
-  ../docs/view.x \
-  ../docs/write.x
+  ../docs/add.md \
+  ../docs/blocks.md \
+  ../docs/edit.md \
+  ../docs/frag.md \
+  ../docs/html.md \
+  ../docs/index.md \
+  ../docs/input.md \
+  ../docs/line.md \
+  ../docs/log.md \
+  ../docs/ncurses.md \
+  ../docs/range.md \
+  ../docs/read.md \
+  ../docs/todos.md \
+  ../docs/view.md \
+  ../docs/write.md
 	@echo "  HX"
-	@cd ../docs && hx
+	@cd ../docs && hx index.md
 	@date > hx_run
 
 dist_bin_SCRIPTS = \

@@ -174,7 +174,7 @@ int main(
 * follow them in order so that you do not miss important concepts
 
 ```
-@inc(read.x)
+@inc(read.md)
 ```
 * defines the mechanisms of reading files line by line
 * the `@k(@inc)` command includes a different `x`-file at the current
@@ -184,19 +184,19 @@ int main(
   navigate to the documentation from this file
 
 ```
-@inc(blocks.x)
+@inc(blocks.md)
 ```
 * the input is split into blocks
 * a block has a type, a value and optional notes
 * blocks are separated by newlines
 
 ```
-@inc(log.x)
+@inc(log.md)
 ```
 * defines logging mechanism
 
 ```
-@inc(frag.x)
+@inc(frag.md)
 ```
 * fragments are flexible macro definitions
 * they can be extended or replaced in later parts of the `.x`-file
@@ -205,7 +205,7 @@ int main(
 * so even a partial program can be generated
 
 ```
-@inc(input.x)
+@inc(input.md)
 ```
 * the input class contains all the blocks and fragments that the input
   file consists of
@@ -1140,47 +1140,47 @@ int main(
 * the file will be serialized to `std::cout` instead
 
 ```
-@inc(html.x)
+@inc(html.md)
 ```
 * Die Generierung liegt in einer eigenen Datei
 
 ```
-@inc(view.x)
+@inc(view.md)
 ```
 * Interactive display of slides
 
 ```
-@inc(line.x)
+@inc(line.md)
 ```
 * parsing lines with commands entered by the user
 
 ```
-@inc(edit.x)
+@inc(edit.md)
 ```
 * edit slides in place
 
 ```
-@inc(range.x)
+@inc(range.md)
 ```
 * handle range requests in the editor
 
 ```
-@inc(write.x)
+@inc(write.md)
 ```
 * handle write commands in the editor
 
 ```
-@inc(add.x)
+@inc(add.md)
 ```
 * handle adding of new elements in the editor
 
 ```
-@inc(ncurses.x)
+@inc(ncurses.md)
 ```
 * `ncurses` interface for the editior
 
 ```
-@inc(todos.x)
+@inc(todos.md)
 ```
 * list of open issues
 

@@ -45,8 +45,12 @@ Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file</span>)</span><br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span> { <span class="var">cur</span>.<span class="fn">path</span>() };<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">ext</span> { <span class="var">name</span>.<span class="fn">rfind</span>(<span class="str">'.'</span>) };<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">ext</span> == <span class="type">std</span>::<span class="type">string</span>::<span class="var">npos</span>) {<br/>
+<span class="in2"></span><span class="var">ext</span> = <span class="var">name</span>.<span class="fn">size</span>();<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">outPath</span> {<br/>
-<span class="in2"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">name</span>.<span class="fn">size</span>() - <span class="num">2</span>) +<br/>
+<span class="in2"></span><span class="var">name</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">ext</span>) +<br/>
 <span class="in2"></span><span class="str">".html"</span><br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="var">out</span> { <span class="var">outPath</span>.<span class="fn">c_str</span>() };<br/>

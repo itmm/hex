@@ -4,5 +4,5 @@ CXXFLAGS += -Wall
 
 all:
 	cd .. && make
-	../src/hx
+	../src/hx index.md
 
