@@ -3,26 +3,26 @@
 * it contains all source code that is needed to build the executable
 * but the code is spread over multiple slides
 * to form an extreme form of Literate Programming
-* that may be called **Slideware-Programming** (SWP)
+* that may be called **Slideware-Programming** (`SWP`)
 * Have fun!
 
 ## What is `hx`?
-* `hx` is a program that parses a `x`-document and extracts source  code
-  or an executable program out of it
+* `hx` is a program that parses a Markdown document and extracts source
+  code or an executable program out of it
 * think of it as a very powerful macro processor that combines, extends
   and orders small fragments of code
 * but also it generates a HTML documentation like the one you are
   currently reading
 
-## What is a `x`-document?
-* `x`-documents are text documents with a markdown-like syntax
+## Why use Markdown document?
+* Markdown documents are structured text documents
 * it contains sections at different levels, paragraphs and code snippets
-* the sections and code snippets are automatically formatted as slides
-  of a very big slide show
-* these slides can be decorated with notes
+* `hx` formats the sections and code snippets as slides of a very big
+  slide show
+* these slides should be decorated with notes
 
-## SWP ≠ Literate Programming
-* SWP should not document a finished program
+## `SWP` ≠ Literate Programming
+* `SWP` should not document a finished program
 * but it should document the process of creating a program instead
 * after every slide you can generate the code from all the slides that
   you have read
@@ -79,8 +79,9 @@
 ### Including fragments
 * a fragment can be included into another fragment with the `@k(@put)`
   command
-* of course you must not include a fragment that directly or indirectly
-  includes the current fragment
+* you must not include a fragment that directly or indirectly
+  includes the current fragment, because that will result in a cycle
+* `hx` prevents cyclic includes
 * the inclusion will happen after all slides are processed
 * so it is possible to include a fragment that is not defined yet
 
@@ -120,9 +121,12 @@ int main(
 * the unit-tests are performed at every start of the program
 * unless a release version is build
 * the use of `@k(@def)` instead of `@k(@Def)` is no mistake
-* `@k(@Def)` defines a global fragment that is visible in all `x`-files
+* `@k(@Def)` defines a global fragment that is visible in all input
+  files
 * `@k(@def)` defines a local fragment that is only visible in the
-  current `x`-file and in all included `x`-files
+  current input file
+* and in all input files that are included directly or indirectly by
+  this input file for the first time
 
 ```
 @add(main body)
@@ -134,7 +138,7 @@ int main(
 * `@k(@add)` extends an existing local fragment
 * the ability of macros to grow with time is borrowed from Literate
   Programming
-* but is is far more important in SWP, as a slide provides only limited
+* but is is far more important in `SWP`, as a slide provides only limited
   space
 
 ```
@@ -177,7 +181,7 @@ int main(
 @inc(read.md)
 ```
 * defines the mechanisms of reading files line by line
-* the `@k(@inc)` command includes a different `x`-file at the current
+* the `@k(@inc)` command includes a different input file at the current
   position
 * the file is read only once, no matter how often it is included
 * you can click on the argument value in the HTML documentation to
@@ -199,7 +203,7 @@ int main(
 @inc(frag.md)
 ```
 * fragments are flexible macro definitions
-* they can be extended or replaced in later parts of the `.x`-file
+* they can be extended or replaced in later parts of the input file
 * fragments can be used before they are defined
 * if they are not defined in the end, they will be expanded to nothing
 * so even a partial program can be generated
@@ -607,7 +611,8 @@ int main(
 @add(do special cmd)
 	if (name == "put") {
 		ASSERT_MSG(frag,
-			"@put" << "(" << arg << ") not in frag"
+			"@put" << "(" << arg <<
+				") not in frag"
 		);
 		Frag *sub = inputs.get_local(arg);
 		if (sub) {
@@ -619,9 +624,9 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Bei einem `@put` wird das Fragment gesucht und eingebunden
-* Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu
-  werden
+* searches the fragment and integrates it
+* if the fragment is not found, a new one is created to be populated
+  later
 
 ```
 @def(check frag ex. count)
@@ -637,10 +642,8 @@ int main(
 	}
 @end(check frag ex. count)
 ```
-* Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung
-  ausgegeben
-* Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird
-  ebenfalls eine Meldung ausgegeben
+* if the fragment was already expanded, an error message is generated
+* also if the fragment was expanded in multiple mode
 
 ```
 @add(do special cmd)
@@ -655,9 +658,9 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und
-  auf den Stapel der offenen Dateien gelegt
-* Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
+* includes another input file
+* opens the file and pushes it on the stack of open file
+* files that were are already included are ignored
 
 ```
 @add(do special cmd)
@@ -675,8 +678,7 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Mit einem `@mul` Befehl kann ein Fragment an mehreren Stellen
-  expandiert werden
+* expands a fragment multiple times
 
 ```
 @def(check for prev expands)
@@ -688,8 +690,8 @@ int main(
 	}
 @end(check for prev expands)
 ```
-* Es ist ein Fehler, wenn das Fragment bereits mit `@put` eingebunden
-  wurde
+* when a multiple expanded fragment was already expanded with a normal
+  `@put` an error message is printed
 
 ```
 @add(do special cmd)
@@ -703,8 +705,8 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Erzeugt ein neues Fragment im globalen Namensraum
-* Das Fragment darf nicht mehrfach definiert werden
+* creates a new fragment in global namespace
+* if the fragment already exists, an error message is printed
 
 ```
 @add(do special cmd)
@@ -718,7 +720,10 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Erweitert ein global definiertes Fragment
+* extends a global fragment
+* a global fragment is any fragment that is defined in the global
+  namespace or in an input file that includes the current input file
+* if the fragment is not defined, an error message is printed
 
 ```
 @add(do special cmd)
@@ -732,8 +737,7 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Bei einem `@rep` wird der Inhalt eines Fragments zurückgesetzt
-* Das Fragment muss bereits vorhanden sein
+* replaces the content of a local fragment
 
 ```
 @add(do special cmd)
@@ -747,8 +751,7 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Bei einem `@rep` wird der Inhalt eines Fragments zurückgesetzt
-* Das Fragment muss bereits vorhanden sein
+* replace the content of a global fragment
 
 ```
 @def(clear frag)
@@ -759,7 +762,8 @@ int main(
 	frag->clear();
 @end(clear frag)
 ```
-* Löscht das aktuelle Fragment
+* clears the content of a fragment
+* if the fragment is not defined, an error message is printed
 
 ```
 @add(do special cmd)
@@ -777,8 +781,7 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Bei einem `@Put` wird das Fragment in den umschließenden  `FragMap`s
-  gesucht
+* inserts a global fragment in the current fragment
 
 ```
 @add(do special cmd)
@@ -796,7 +799,7 @@ int main(
 	}
 @end(do special cmd)
 ```
-* `@Mul` expandiert ein globales Fragment an mehreren Stellen
+* inserts a global fragment multiple times
 
 ```
 @add(do special cmd)
@@ -809,8 +812,9 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Private Bezeichner werden durch einen Hash erweitert
-* Um sie global unique zu machen
+* creates a private identifier
+* the identifier is based on the argument, but extended with a
+  hash-code based on the name and current input file name
 
 ```
 @add(includes)
@@ -818,7 +822,7 @@ int main(
 	#include <sstream>
 @end(includes)
 ```
-* Enthält Hash-Funktion
+* needed for hashing 
 
 ```
 @def(process private frag)
@@ -830,9 +834,8 @@ int main(
 	};
 @end(process private frag)
 ```
-* Der Hash wird aus dem aktuellen Dateinamen
-* Und dem aktuellen Bezeichner berechnet
-* Zum Schluss wird er auf eine positive Zahl maskiert
+* hash the current path and argument
+* mask the hash to a positive integer
 
 ```
 @add(process private frag)
@@ -847,11 +850,9 @@ int main(
 	);
 @end(process private frag)
 ```
-* Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
-* Dann kommt der neue Bezeichner
-* Dieser besteht aus einem konstanten Präfix
-* Dem Hash-Wert
-* Und dem alten Bezeichner
+* new identifier has a common prefix,
+* the hash,
+* and the original argument
 
 ```
 @add(do special cmd)
@@ -864,9 +865,7 @@ int main(
 	}
 @end(do special cmd)
 ```
-* Der `@magic`-Befehl erzeugt einen Hash-Wert
-* Der sich aus dem Dateinamen und dem Argument des Befehls  zusammen
-  setzt
+* create a hash value based on the argument and the current path
 
 ```
 @def(process magic frag)
@@ -878,7 +877,7 @@ int main(
 	};
 @end(process magic frag)
 ```
-* Berechnet Hash-Wert
+* calculate hash value
 
 ```
 @add(process magic frag)
@@ -891,12 +890,12 @@ int main(
 	);
 @end(process magic frag)
 ```
-* Gibt den Hash-Wert aus
-* Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
+* add the hash value to the fragment
 
-# Fragmente serialisieren
-* Fragmente, die Dateien spezifizieren werden in diese Dateien
-  rausgeschrieben
+# Serialize Fragments
+* generate source code by traversing the tree of all fragments that
+  specify files
+* and write the contents into the files
 
 ```
 @add(global elements)
@@ -927,10 +926,8 @@ int main(
 	}
 @end(files write)
 ```
-* Fragmente, die mit `file:` beginnen, werden in die entsprechenden
-  Dateien rausgeschrieben
-* Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft
-  expandiert  wurden
+* fragments that start with `file:` represent files
+* additional the code checks if fragments were expanded not often enough
 
 ```
 @add(files write)
@@ -944,7 +941,9 @@ int main(
 	}
 @end(files write)
 ```
-* Auch alle lokalen Fragmente bearbeiten
+* also look for `file:` fragments in the local fragments
+* so you should define file fragments as global to avoid overwriting of
+  files
 
 ```
 @def(serialize frag) {
@@ -953,9 +952,8 @@ int main(
 	}
 } @end(serialize frag)
 ```
-* Wenn der Name eines Fragments mit `file: ` beginnt, dann wird es in
-  die passende Datei geschrieben
-* Zusätzlich zählt das als eine Expansion
+* fragments that start with `file:` represent files
+* additional the code checks if fragments were expanded not often enough
 
 ```
 @add(serialize frag) {
@@ -970,8 +968,7 @@ int main(
 	}
 } @end(serialize frag)
 ```
-* Ein Fragment wurde nicht aufgerufen
-* Dies wird mit einer Meldung protokolliert
+* if a fragment was not expanded, an error message is be written
 
 ```
 @add(serialize frag)
@@ -983,9 +980,8 @@ int main(
 	}
 @end(serialize frag)
 ```
-* Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur
-  einmal verwendet
-* Dies wird mit einer Meldung protokolliert
+* if a multiple fragment is only expanded once, an error message is
+  written
 
 ```
 @add(serialize frag)
@@ -996,8 +992,8 @@ int main(
 	}
 @end(serialize frag)
 ```
-* Für jedes Fragment, das nicht befüllt wurde wird eine Meldung
-  ausgegeben
+* if a fragment was expanded, but not defined, an error message is
+  written
 
 ```
 @def(needed by files write)
@@ -1039,7 +1035,7 @@ int main(
 	}
 @end(write in file)
 ```
-* Das Fragment wird in die entsprechende Datei geschrieben
+* write fragment to the specified file
 
 ```
 @add(global elements)
@@ -1142,7 +1138,7 @@ int main(
 ```
 @inc(html.md)
 ```
-* Die Generierung liegt in einer eigenen Datei
+* generate HTML slide show
 
 ```
 @inc(view.md)
@@ -1177,7 +1173,7 @@ int main(
 ```
 @inc(ncurses.md)
 ```
-* `ncurses` interface for the editior
+* `ncurses` interface for the editor
 
 ```
 @inc(todos.md)
