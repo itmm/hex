@@ -1,14 +1,14 @@
 # Separating input into blocks
-* The input is treated as a sequence of blocks.
-* Each block has a type, a value and optional notes.
-* Blocks are separated by empty lines.
+* the input is treated as a sequence of blocks.
+* each block has a type, a value and optional notes.
+* blocks are separated by empty lines.
 
 ```
 @Def(input prereqs)
 	@put(globals)
 @End(input prereqs)
 ```
-* This file uses a local shortcut for the global fragment
+* this file uses a local shortcut for the global fragment
 
 ```
 @def(globals)
@@ -18,9 +18,9 @@
 	};
 @end(globals)
 ```
-* The `Read_State` identifies the mode that the block parser is
-  currently in.
-* The default `new_element` signals that a new block is starting.
+* the `Read_State` identifies the mode that the block parser is
+  currently in
+* the default `new_element` signals that a new block is starting
 
 ```
 @add(globals)
@@ -34,8 +34,8 @@
 	Read_State state = @t(RS)::new_element;
 @End(open input elements)
 ```
-* Each input element has a `Read_State`.
-* The initial value is `new_element`.
+* each input element has a `Read_State`.
+* the initial value is `new_element`.
 
 ```
 @Def(process line)
@@ -49,9 +49,9 @@
 	} while (false);
 @End(process line)
 ```
-* The `do`-loop is only a grouping construct.
-* The loop will not iterate.
-* But intermediate steps are allowed to `break` out of the loop.
+* the `do`-loop is only a grouping construct
+* the loop will not iterate
+* but intermediate steps are allowed to `break` out of the loop
 
 ```
 @def(handle newlines)
@@ -61,12 +61,14 @@
 	}
 @end(handle newlines)
 ```
+* if the line is empty, start a new element
 
 ```
 @def(read states),
 	header
 @end(read states)
 ```
+* new state for parsing headers
 
 ```
 @def(states without newlines)
@@ -80,18 +82,22 @@
 	}
 @end(states without newlines)
 ```
+* headers start if the previous line is empty
+* and the current line starts with `#`
 
 ```
 @def(unknown line)
 	std::cerr << "!! " << line << '\n';
 @end(unknown line)
 ```
+* write error message for unrecognized line
 
 ```
 @Add(includes)
 	#include <vector>
 @End(includes)
 ```
+* `Block` has `std::vector` of strings
 
 ```
 @add(globals)
@@ -103,12 +109,14 @@
 	};
 @end(globals)
 ```
+* `Block` contains values and notes
 
 ```
 @Add(input elements)
 	std::vector<Block> blocks;
 @End(input elements);
 ```
+* `Input` contains container of `Block`s
 
 ```
 @def(line vars)
@@ -116,6 +124,7 @@
 		inputs.cur().input().blocks;
 @end(line vars)
 ```
+* get reference to `Block`s
 
 ```
 @def(got header line)
@@ -131,6 +140,9 @@
 	});
 @end(got header line)
 ```
+* count `#`s
+* skip spaces
+* rest is header title
 
 ```
 @add(read states),
@@ -138,6 +150,7 @@
 	after_code
 @end(read states)
 ```
+* new states for parsing code blocks
 
 ```
 @def(states with newlines)

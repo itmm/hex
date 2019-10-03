@@ -1,7 +1,7 @@
 # Adding blocks in editor
-* Define commands to add a header, code block or paragraph block after
+* define commands to add a header, code block or paragraph block after
   the current slide
-* When reading again `hx` will merge continuous paragraphs into one
+* when reading again `hx` will merge continuous paragraphs into one
   block
 
 ```
@@ -11,9 +11,9 @@
 	}
 @End(global elements);
 ```
-* The `@f(add_block)` function adds a new block after the current block
-* It sets its value to a default text
-* And makes the new block the current block
+* the `@f(add_block)` function adds a new block after the current block
+* it sets its value to a default text
+* and makes the new block the current block
 
 ```
 @Add(run loop)
@@ -23,7 +23,7 @@
 	}
 @End(run loop)
 ```
-* Generates a new header block
+* generates a new header block
 
 ```
 @Add(run loop)
@@ -33,7 +33,7 @@
 	}
 @End(run loop)
 ```
-* Generates a new code block
+* generates a new code block
 
 ```
 @Add(run loop)
@@ -43,8 +43,8 @@
 	}
 @End(run loop)
 ```
-* Generates a new paragraph blocks
-* Multilpe paragraph blocks will be merged into one paragraph block on
+* generates a new paragraph blocks
+* multiple paragraph blocks will be merged into one paragraph block on
   read
 
 ```
@@ -64,7 +64,7 @@
 ```
 * `@f(add_block)` increases the current block if possible
 * so it can insert the new block before the iterator
-* As the insert can invalidate the iterators, it saves the distance
+* as the insert can invalidate the iterators, it saves the distance
 * and restores it afterwards
 
 ```
@@ -91,7 +91,7 @@
 * and a default text
 
 ## Duplicating the current block
-* Duplicates the current block
+* duplicates the current block
 * and sets the current block to the new copy
 
 ```
@@ -110,7 +110,7 @@
 	}
 @End(run loop)
 ```
-* Duplicates the current block
+* duplicates the current block
 * if the file is valid
 * and the current block is valid
 
@@ -125,10 +125,10 @@
 		i + 1;
 @end(duplicate)
 ```
-* The insert invalidates the iterator
+* the insert invalidates the iterator
 * so the offset is saved
-* A copy of the current block is inserted before the current block
-* That is the wrong way around but easier
+* a copy of the current block is inserted before the current block
+* that is the wrong way around but easier
 * and doesn't matter in the end
-* The new current block is set to the old current block
+* the new current block is set to the old current block
 * which is now the second of the two duplicates
