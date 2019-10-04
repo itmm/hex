@@ -20,7 +20,7 @@ but the code is spread over multiple slides
 </li><li>
 to form an extreme form of Literate Programming
 </li><li>
-that may be called <b>Slideware-Programming</b> (SWP)
+that may be called <b>Slideware-Programming</b> (<code><span class="var">SWP</span></code>)
 </li><li>
 Have fun!
 </li></ul>
@@ -33,7 +33,7 @@ Have fun!
 <h2>What is <code><span class="var">hx</span></code>?</h2>
 </div>
 <ul><li>
-<code><span class="var">hx</span></code> is a program that parses a <code><span class="var">x</span></code>-document and extracts source  code  or an executable program out of it
+<code><span class="var">hx</span></code> is a program that parses a Markdown document and extracts source  code or an executable program out of it
 </li><li>
 think of it as a very powerful macro processor that combines, extends  and orders small fragments of code
 </li><li>
@@ -41,31 +41,31 @@ but also it generates a HTML documentation like the one you are  currently readi
 </li></ul>
 </div>
 </div>
-<h2>What is a <code><span class="var">x</span></code>-document?</h2>
+<h2>Why use Markdown document?</h2>
 <div class="slides">
 <div>
 <div>
-<h2>What is a <code><span class="var">x</span></code>-document?</h2>
+<h2>Why use Markdown document?</h2>
 </div>
 <ul><li>
-<code><span class="var">x</span></code>-documents are text documents with a markdown-like syntax
+Markdown documents are structured text documents
 </li><li>
 it contains sections at different levels, paragraphs and code snippets
 </li><li>
-the sections and code snippets are automatically formatted as slides  of a very big slide show
+<code><span class="var">hx</span></code> formats the sections and code snippets as slides of a very big  slide show
 </li><li>
-these slides can be decorated with notes
+these slides should be decorated with notes
 </li></ul>
 </div>
 </div>
-<h2>SWP ≠ Literate Programming</h2>
+<h2><code><span class="var">SWP</span></code> ≠ Literate Programming</h2>
 <div class="slides">
 <div>
 <div>
-<h2>SWP ≠ Literate Programming</h2>
+<h2><code><span class="var">SWP</span></code> ≠ Literate Programming</h2>
 </div>
 <ul><li>
-SWP should not document a finished program
+<code><span class="var">SWP</span></code> should not document a finished program
 </li><li>
 but it should document the process of creating a program instead
 </li><li>
@@ -172,7 +172,9 @@ but the three presented so far all do
 <ul><li>
 a fragment can be included into another fragment with the <code><span class="keyword">@put</span></code>  command
 </li><li>
-of course you must not include a fragment that directly or indirectly  includes the current fragment
+you must not include a fragment that directly or indirectly  includes the current fragment, because that will result in a cycle
+</li><li>
+<code><span class="var">hx</span></code> prevents cyclic includes
 </li><li>
 the inclusion will happen after all slides are processed
 </li><li>
@@ -249,9 +251,11 @@ unless a release version is build
 </li><li>
 the use of <code><span class="keyword">@def</span></code> instead of <code><span class="keyword">@Def</span></code> is no mistake
 </li><li>
-<code><span class="keyword">@Def</span></code> defines a global fragment that is visible in all <code><span class="var">x</span></code>-files
+<code><span class="keyword">@Def</span></code> defines a global fragment that is visible in all input  files
 </li><li>
-<code><span class="keyword">@def</span></code> defines a local fragment that is only visible in the  current <code><span class="var">x</span></code>-file and in all included <code><span class="var">x</span></code>-files
+<code><span class="keyword">@def</span></code> defines a local fragment that is only visible in the  current input file
+</li><li>
+and in all input files that are included directly or indirectly by  this input file for the first time
 </li></ul>
 </div>
 <div><div>
@@ -267,7 +271,7 @@ after the unit-tests <code><span class="fn">main</span></code> parses the argume
 </li><li>
 the ability of macros to grow with time is borrowed from Literate  Programming
 </li><li>
-but is is far more important in SWP, as a slide provides only limited  space
+but is is far more important in <code><span class="var">SWP</span></code>, as a slide provides only limited  space
 </li></ul>
 </div>
 <div><div>
@@ -332,7 +336,7 @@ follow them in order so that you do not miss important concepts
 <ul><li>
 defines the mechanisms of reading files line by line
 </li><li>
-the <code><span class="keyword">@inc</span></code> command includes a different <code><span class="var">x</span></code>-file at the current  position
+the <code><span class="keyword">@inc</span></code> command includes a different input file at the current  position
 </li><li>
 the file is read only once, no matter how often it is included
 </li><li>
@@ -366,7 +370,7 @@ defines logging mechanism
 <ul><li>
 fragments are flexible macro definitions
 </li><li>
-they can be extended or replaced in later parts of the <code>.<span class="var">x</span></code>-file
+they can be extended or replaced in later parts of the input file
 </li><li>
 fragments can be used before they are defined
 </li><li>
@@ -899,7 +903,8 @@ more content can be added to it
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"put"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@put"</span> &lt;&lt; <span class="str">"("</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">") not in frag"</span><br/>
+<span class="in3"></span><span class="str">"@put"</span> &lt;&lt; <span class="str">"("</span> &lt;&lt; <span class="var">arg</span> &lt;&lt;<br/>
+<span class="in4"></span><span class="str">") not in frag"</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_local</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
@@ -912,9 +917,9 @@ more content can be added to it
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einem <code>@<span class="var">put</span></code> wird das Fragment gesucht und eingebunden
+searches the fragment and integrates it
 </li><li>
-Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu  werden
+if the fragment is not found, a new one is created to be populated  later
 </li></ul>
 </div>
 <div><div>
@@ -933,9 +938,9 @@ Ggf. wird das Fragment dabei auch erzeugt, um später befüllt zu  werden
 <span class="macro">@end(<span class="name">check frag ex. count</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn das Fragment bereits expandiert wurde, dann wird eine Meldung  ausgegeben
+if the fragment was already expanded, an error message is generated
 </li><li>
-Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird  ebenfalls eine Meldung ausgegeben
+also if the fragment was expanded in multiple mode
 </li></ul>
 </div>
 <div><div>
@@ -953,9 +958,11 @@ Wenn das Fragment bereits im Mehrfach-Modus ausgegeben wurde, wird  ebenfalls ei
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn eine Datei eingebunden werden soll, dann wird sie geöffnet und  auf den Stapel der offenen Dateien gelegt
+includes another input file
 </li><li>
-Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
+opens the file and pushes it on the stack of open file
+</li><li>
+files that were are already included are ignored
 </li></ul>
 </div>
 <div><div>
@@ -976,7 +983,7 @@ Wenn die Datei bereits geöffnet wurde, dann wird sie ignoriert
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Mit einem <code>@<span class="var">mul</span></code> Befehl kann ein Fragment an mehreren Stellen  expandiert werden
+expands a fragment multiple times
 </li></ul>
 </div>
 <div><div>
@@ -991,7 +998,7 @@ Mit einem <code>@<span class="var">mul</span></code> Befehl kann ein Fragment an
 <span class="macro">@end(<span class="name">check for prev expands</span>)</span><br/>
 </code></div>
 <ul><li>
-Es ist ein Fehler, wenn das Fragment bereits mit <code>@<span class="var">put</span></code> eingebunden  wurde
+when a multiple expanded fragment was already expanded with a normal  <code>@<span class="var">put</span></code> an error message is printed
 </li></ul>
 </div>
 <div><div>
@@ -1008,9 +1015,9 @@ Es ist ein Fehler, wenn das Fragment bereits mit <code>@<span class="var">put</s
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Erzeugt ein neues Fragment im globalen Namensraum
+creates a new fragment in global namespace
 </li><li>
-Das Fragment darf nicht mehrfach definiert werden
+if the fragment already exists, an error message is printed
 </li></ul>
 </div>
 <div><div>
@@ -1027,7 +1034,11 @@ Das Fragment darf nicht mehrfach definiert werden
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Erweitert ein global definiertes Fragment
+extends a global fragment
+</li><li>
+a global fragment is any fragment that is defined in the global  namespace or in an input file that includes the current input file
+</li><li>
+if the fragment is not defined, an error message is printed
 </li></ul>
 </div>
 <div><div>
@@ -1044,9 +1055,7 @@ Erweitert ein global definiertes Fragment
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einem <code>@<span class="var">rep</span></code> wird der Inhalt eines Fragments zurückgesetzt
-</li><li>
-Das Fragment muss bereits vorhanden sein
+replaces the content of a local fragment
 </li></ul>
 </div>
 <div><div>
@@ -1063,9 +1072,7 @@ Das Fragment muss bereits vorhanden sein
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einem <code>@<span class="var">rep</span></code> wird der Inhalt eines Fragments zurückgesetzt
-</li><li>
-Das Fragment muss bereits vorhanden sein
+replace the content of a global fragment
 </li></ul>
 </div>
 <div><div>
@@ -1079,7 +1086,9 @@ Das Fragment muss bereits vorhanden sein
 <span class="macro">@end(<span class="name">clear frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Löscht das aktuelle Fragment
+clears the content of a fragment
+</li><li>
+if the fragment is not defined, an error message is printed
 </li></ul>
 </div>
 <div><div>
@@ -1100,7 +1109,7 @@ Löscht das aktuelle Fragment
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einem <code>@<span class="type">Put</span></code> wird das Fragment in den umschließenden  <code><span class="type">FragMap</span></code>s  gesucht
+inserts a global fragment in the current fragment
 </li></ul>
 </div>
 <div><div>
@@ -1121,7 +1130,7 @@ Bei einem <code>@<span class="type">Put</span></code> wird das Fragment in den u
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-<code>@<span class="type">Mul</span></code> expandiert ein globales Fragment an mehreren Stellen
+inserts a global fragment multiple times
 </li></ul>
 </div>
 <div><div>
@@ -1137,9 +1146,9 @@ Bei einem <code>@<span class="type">Put</span></code> wird das Fragment in den u
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Private Bezeichner werden durch einen Hash erweitert
+creates a private identifier
 </li><li>
-Um sie global unique zu machen
+the identifier is based on the argument, but extended with a  hash-code based on the name and current input file name
 </li></ul>
 </div>
 <div><div>
@@ -1150,7 +1159,7 @@ Um sie global unique zu machen
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Enthält Hash-Funktion
+needed for hashing 
 </li></ul>
 </div>
 <div><div>
@@ -1165,11 +1174,9 @@ Enthält Hash-Funktion
 <span class="macro">@end(<span class="name">process private frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Hash wird aus dem aktuellen Dateinamen
+hash the current path and argument
 </li><li>
-Und dem aktuellen Bezeichner berechnet
-</li><li>
-Zum Schluss wird er auf eine positive Zahl maskiert
+mask the hash to a positive integer
 </li></ul>
 </div>
 <div><div>
@@ -1187,15 +1194,11 @@ Zum Schluss wird er auf eine positive Zahl maskiert
 <span class="macro">@end(<span class="name">process private frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Zuerst werden eventuell zwischengespeicherte Zeichen ausgegeben
+new identifier has a common prefix,
 </li><li>
-Dann kommt der neue Bezeichner
+the hash,
 </li><li>
-Dieser besteht aus einem konstanten Präfix
-</li><li>
-Dem Hash-Wert
-</li><li>
-Und dem alten Bezeichner
+and the original argument
 </li></ul>
 </div>
 <div><div>
@@ -1211,9 +1214,7 @@ Und dem alten Bezeichner
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
-Der <code>@<span class="var">magic</span></code>-Befehl erzeugt einen Hash-Wert
-</li><li>
-Der sich aus dem Dateinamen und dem Argument des Befehls  zusammen  setzt
+create a hash value based on the argument and the current path
 </li></ul>
 </div>
 <div><div>
@@ -1228,7 +1229,7 @@ Der sich aus dem Dateinamen und dem Argument des Befehls  zusammen  setzt
 <span class="macro">@end(<span class="name">process magic frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Berechnet Hash-Wert
+calculate hash value
 </li></ul>
 </div>
 <div><div>
@@ -1244,20 +1245,20 @@ Berechnet Hash-Wert
 <span class="macro">@end(<span class="name">process magic frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Gibt den Hash-Wert aus
-</li><li>
-Vorher wird noch eventuell gespeicherte Zeichen ausgegeben
+add the hash value to the fragment
 </li></ul>
 </div>
 </div>
-<h1>Fragmente serialisieren</h1>
+<h1>Serialize Fragments</h1>
 <div class="slides">
 <div>
 <div>
-<h1>Fragmente serialisieren</h1>
+<h1>Serialize Fragments</h1>
 </div>
 <ul><li>
-Fragmente, die Dateien spezifizieren werden in diese Dateien  rausgeschrieben
+generate source code by traversing the tree of all fragments that  specify files
+</li><li>
+and write the contents into the files
 </li></ul>
 </div>
 <div><div>
@@ -1297,9 +1298,9 @@ write files, if requested
 <span class="macro">@end(<span class="name">files write</span>)</span><br/>
 </code></div>
 <ul><li>
-Fragmente, die mit <code><span class="var">file</span>:</code> beginnen, werden in die entsprechenden  Dateien rausgeschrieben
+fragments that start with <code><span class="var">file</span>:</code> represent files
 </li><li>
-Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft  expandiert  wurden
+additional the code checks if fragments were expanded not often enough
 </li></ul>
 </div>
 <div><div>
@@ -1316,7 +1317,9 @@ Zusätzlich wird geprüft, ob Fragmente zu selten oder zu oft  expandiert  wurde
 <span class="macro">@end(<span class="name">files write</span>)</span><br/>
 </code></div>
 <ul><li>
-Auch alle lokalen Fragmente bearbeiten
+also look for <code><span class="var">file</span>:</code> fragments in the local fragments
+</li><li>
+so you should define file fragments as global to avoid overwriting of  files
 </li></ul>
 </div>
 <div><div>
@@ -1328,9 +1331,9 @@ Auch alle lokalen Fragmente bearbeiten
 } <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn der Name eines Fragments mit <code><span class="var">file</span>: </code> beginnt, dann wird es in  die passende Datei geschrieben
+fragments that start with <code><span class="var">file</span>:</code> represent files
 </li><li>
-Zusätzlich zählt das als eine Expansion
+additional the code checks if fragments were expanded not often enough
 </li></ul>
 </div>
 <div><div>
@@ -1348,9 +1351,7 @@ Zusätzlich zählt das als eine Expansion
 } <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Fragment wurde nicht aufgerufen
-</li><li>
-Dies wird mit einer Meldung protokolliert
+if a fragment was not expanded, an error message is be written
 </li></ul>
 </div>
 <div><div>
@@ -1365,9 +1366,7 @@ Dies wird mit einer Meldung protokolliert
 <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Fragment das zur mehrfachen Verwendung deklariert wurde, wird nur  einmal verwendet
-</li><li>
-Dies wird mit einer Meldung protokolliert
+if a multiple fragment is only expanded once, an error message is  written
 </li></ul>
 </div>
 <div><div>
@@ -1381,7 +1380,7 @@ Dies wird mit einer Meldung protokolliert
 <span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
 </code></div>
 <ul><li>
-Für jedes Fragment, das nicht befüllt wurde wird eine Meldung  ausgegeben
+if a fragment was expanded, but not defined, an error message is  written
 </li></ul>
 </div>
 <div><div>
@@ -1433,7 +1432,7 @@ and the modification date can stay the same
 <span class="macro">@end(<span class="name">write in file</span>)</span><br/>
 </code></div>
 <ul><li>
-Das Fragment wird in die entsprechende Datei geschrieben
+write fragment to the specified file
 </li></ul>
 </div>
 <div><div>
@@ -1566,7 +1565,7 @@ the file will be serialized to <code><span class="type">std</span>::<span class=
 <span class="macro">@inc(<span class="name"><a href="html.html">html.md</a></span>)</span><br/>
 </code></div>
 <ul><li>
-Die Generierung liegt in einer eigenen Datei
+generate HTML slide show
 </li></ul>
 </div>
 <div><div>
@@ -1622,7 +1621,7 @@ handle adding of new elements in the editor
 <span class="macro">@inc(<span class="name"><a href="ncurses.html">ncurses.md</a></span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="var">ncurses</span></code> interface for the editior
+<code><span class="var">ncurses</span></code> interface for the editor
 </li></ul>
 </div>
 <div><div>

@@ -12,9 +12,9 @@
 <h1>Adding blocks in editor</h1>
 </div>
 <ul><li>
-Define commands to add a header, code block or paragraph block after  the current slide
+define commands to add a header, code block or paragraph block after  the current slide
 </li><li>
-When reading again <code><span class="var">hx</span></code> will merge continuous paragraphs into one  block
+when reading again <code><span class="var">hx</span></code> will merge continuous paragraphs into one  block
 </li></ul>
 </div>
 <div><div>
@@ -26,11 +26,11 @@ When reading again <code><span class="var">hx</span></code> will merge continuou
 <span class="macro">@End(<span class="name">global elements</span>)</span>;<br/>
 </code></div>
 <ul><li>
-The <code><span class="fn">add_block</span></code> function adds a new block after the current block
+the <code><span class="fn">add_block</span></code> function adds a new block after the current block
 </li><li>
-It sets its value to a default text
+it sets its value to a default text
 </li><li>
-And makes the new block the current block
+and makes the new block the current block
 </li></ul>
 </div>
 <div><div>
@@ -43,7 +43,7 @@ And makes the new block the current block
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
 <ul><li>
-Generates a new header block
+generates a new header block
 </li></ul>
 </div>
 <div><div>
@@ -56,7 +56,7 @@ Generates a new header block
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
 <ul><li>
-Generates a new code block
+generates a new code block
 </li></ul>
 </div>
 <div><div>
@@ -69,9 +69,9 @@ Generates a new code block
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
 <ul><li>
-Generates a new paragraph blocks
+generates a new paragraph blocks
 </li><li>
-Multilpe paragraph blocks will be merged into one paragraph block on  read
+multiple paragraph blocks will be merged into one paragraph block on  read
 </li></ul>
 </div>
 <div><div>
@@ -95,7 +95,7 @@ Multilpe paragraph blocks will be merged into one paragraph block on  read
 </li><li>
 so it can insert the new block before the iterator
 </li><li>
-As the insert can invalidate the iterators, it saves the distance
+as the insert can invalidate the iterators, it saves the distance
 </li><li>
 and restores it afterwards
 </li></ul>
@@ -138,7 +138,7 @@ and a default text
 <h2>Duplicating the current block</h2>
 </div>
 <ul><li>
-Duplicates the current block
+duplicates the current block
 </li><li>
 and sets the current block to the new copy
 </li></ul>
@@ -161,7 +161,7 @@ and sets the current block to the new copy
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
 <ul><li>
-Duplicates the current block
+duplicates the current block
 </li><li>
 if the file is valid
 </li><li>
@@ -181,17 +181,17 @@ and the current block is valid
 <span class="macro">@end(<span class="name">duplicate</span>)</span><br/>
 </code></div>
 <ul><li>
-The insert invalidates the iterator
+the insert invalidates the iterator
 </li><li>
 so the offset is saved
 </li><li>
-A copy of the current block is inserted before the current block
+a copy of the current block is inserted before the current block
 </li><li>
-That is the wrong way around but easier
+that is the wrong way around but easier
 </li><li>
 and doesn't matter in the end
 </li><li>
-The new current block is set to the old current block
+the new current block is set to the old current block
 </li><li>
 which is now the second of the two duplicates
 </li></ul>
