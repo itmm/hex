@@ -1,6 +1,12 @@
 #!/bin/bash
 
-FILES="${*:-index.x} "
+if [ -f index.x ]; then
+	FILES="${*:-index.x} "
+elif [ -f index.md ]; then
+	FILES="${*:-index.md} "
+else
+	FILES="$* "
+fi
 USED=""
 
 while [[ "x$FILES" != "x" ]]; do
