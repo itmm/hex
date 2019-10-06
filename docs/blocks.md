@@ -164,6 +164,7 @@
 	}
 @end(states with newlines)
 ```
+* recognize start of code block
 
 ```
 @add(states with newlines)
@@ -177,6 +178,8 @@
 	}
 @end(states with newlines)
 ```
+* when in code block, distinguish between ending of code block
+* and the processing of a code line
 
 ```
 @def(enter code block)
@@ -185,6 +188,7 @@
 	});
 @end(enter code block)
 ```
+* add a new code block
 
 ```
 @def(got code line)
@@ -193,12 +197,14 @@
 	);
 @end(got code line)
 ```
+* add the code line
 
 ```
 @add(read states),
 	notes
 @end(read states)
 ```
+* special state for handling states
 
 ```
 @add(states without newlines)
@@ -215,6 +221,9 @@
 	}
 @end(states without newlines)
 ```
+* a note starts with a line that has a `*` as its first character
+* the line must directly follow a header, a code section or be part of a
+  note section
 
 ```
 @add(states without newlines)
@@ -227,6 +236,8 @@
 	}
 @end(states without newlines)
 ```
+* longer notes can be continued over multiple lines
+* the additional lines need to start with a space
 
 ```
 @def(got note)
@@ -237,11 +248,14 @@
 			(*b == '*' || *b == ' ');
 		++b
 	) {}
-	blocks.back().notes.push_back(
-		{ b, e }
+	blocks.back().notes.emplace_back(
+		b, e
 	);
 @end(got note)
 ```
+* to process a note all `*`s and spaces at the beginning of the line are
+  ignored
+* the rest is added as a note
 
 ```
 @def(add note)
@@ -249,12 +263,16 @@
 		line;
 @end(add note)
 ```
+* if a note is continued over multiple lines, the additional lines are
+  added to the last note
 
 ```
 @add(read states),
 	para
 @end(read states)
 ```
+* special state for non-slide paragraphs
+* these can be used to describe functionality outside of simple slides
 
 ```
 @add(states without newlines)
@@ -271,6 +289,7 @@
 	}
 @end(states without newlines)
 ```
+* paragraphs are any other line that does not start with a space
 
 ```
 @def(create para)
@@ -284,6 +303,8 @@
 	}
 @end(create para)
 ```
+* needs to add a new block, if the last block is no paragraph block
+* then add the line to the last block
 
 ```
 @def(add para)
@@ -293,3 +314,6 @@
 	}
 @end(add para)
 ```
+* if the current paragraph is extended, the line will be added to the
+  last paragraph of the last block
+

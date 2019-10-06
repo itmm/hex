@@ -1,4 +1,5 @@
-# Edit slides in place
+# Edit blocks in place
+* using a terminal editor to edit blocks
 
 ```
 @Add(global elements)
@@ -10,6 +11,8 @@
 	}
 @End(global elements)
 ```
+* function to interactively insert lines at the end of the container
+* the `prefix` is the prompt that is printed
 
 ```
 @Add(run loop)
@@ -21,6 +24,7 @@
 	}
 @End(run loop)
 ```
+* the `list` or `l` command adds notes
 
 ```
 @Add(run loop)
@@ -44,6 +48,7 @@
 	}
 @End(run loop)
 ```
+* the `add` or `a` command adds value lines
 
 ```
 @def(insert before)
@@ -65,6 +70,9 @@
 	draw_block();
 @end(insert before)
 ```
+* insert strings at the end of the container
+* read lines until a single `.` is read
+* spaces at the beginning of the line are stripped
 
 ```
 @Add(run loop)
@@ -77,6 +85,7 @@
 	}
 @End(run loop)
 ```
+* `>>` increases the level of a header
 
 ```
 @Add(run loop)
@@ -89,3 +98,4 @@
 	}
 @End(run loop)
 ```
+* `<<` decreases the level of a header

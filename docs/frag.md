@@ -1,7 +1,6 @@
-# Fragmente
-* Fragmente bilden einen gerichteten azyklischen Graph
-* Die Infix-Traversierung dieses Graphen bildet die generierten
-  Source-Code Dateien
+# Description of the `Frag` `class`
+* `Frag`s form a directed acyclic graph (`DAG`)
+* the infix traversal of this `DAG` generates the source code files
 
 ```
 @Add(input prereqs)
@@ -16,6 +15,11 @@
 	};
 @End(input prereqs)
 ```
+* the `Write_State` `class` is important for writing line macros in
+  C-like files
+* the lines must only be written in C-like files
+* and only if the current output is not in a C-like macro definition
+* the state is initialized later from a `Frag`
 
 ```
 @Add(input prereqs)
@@ -23,11 +27,11 @@
 	@put(define frag);
 @end(input prereqs)
 ```
-* Fragmente sind global sichtbare Strukturen
+* `Frag`s are global elements
 
 ```
 @def(define frag)
-	class FragEntry {
+	class Frag_Entry {
 		std::string _str;
 		std::string _file;
 		int _first_line;
@@ -38,16 +42,18 @@
 	};
 @end(define frag)
 ```
-* Ein Eintrag kann entweder auf ein anderes Fragment verweisen (wenn
-  dieses an der aktuellen Stelle expandiert werden soll)
-* Oder er enthält Bytes, die beim Expandieren direkt expandiert werden
-* Wenn ein Eintrag sowohl Daten als auch ein Fragment enthält, so wird
-  zuerst das Fragment ausgegeben
-* So können die Bytes leicht erweitert werden
+* a `Frag` contains a collection of entries
+* each entry describes a range in the input file marked by `_file`,
+  `_first_line` and `_last_line`
+* each entry contains a string value or a reference to another `Frag`
+* if both are available the `Frag` expands the referenced `frag` before
+  the `_str`
+* so a `_frag` can easily concatenate bytes to the `_str` of its last
+  entry
 
 ```
 @def(entry methods)
-	FragEntry(
+	Frag_Entry(
 		Frag *frag = nullptr
 	):
 		_first_line { -1 },
@@ -55,14 +61,13 @@
 	{}
 @end(entry methods)
 ```
-* Ein Eintrag kann direkt mit einem Fragment initialisiert werden
-* Dies kann auch leer sein
-* Die Zeichenkette ist immer leer
+* an entry can be initialized with a sub `Frag`
+* no range is provided in this case
+* the range information of the sub `Frag` will be used
 
 ```
 @add(entry methods)
 	void update_state(Write_State &state) const {
-
 		auto c { _str.end() };
 		auto b { _str.begin() };
 		bool some_nl { false };
@@ -85,7 +90,14 @@
 			state.in_macro = false;
 		}
 	}
+@end(entry methods)
+```
+* this method checks, if the input is in a multi-line macro definition
+* that is the case, if the line ends with a backslash followed by
+  newline characters
 
+```
+@add(entry methods)
 	std::string str(Write_State &state) const {
 		bool old { state.in_macro };
 		update_state(state);
@@ -100,7 +112,12 @@
 	}
 @end(entry methods)
 ```
-* Auf die Bytes kann mit `str()` nur lesend zugegriffen werden
+* generates an output line
+* if the current source file is C-like, a `#line` macro is written before
+  the content
+* so that a C compiler refers warnings and errors to the position in the
+  input file
+* not in the generated source file
 
 ```
 @add(entry methods)
@@ -113,9 +130,8 @@
 	}
 @end(entry methods)
 ```
-* Beim Anfügen eines Zeichens werden Dateiname und erste Zeile
-  aktualisiert
-* Wenn sie noch nicht gesetzt sind
+* adds a character to an entry
+* also the range of the entry is updated
 
 ```
 @def(copy file and line)
@@ -128,9 +144,8 @@
 	_last_line = line;
 @end(copy file and line)
 ```
-* Wenn Dateiname oder erste Zeile nicht gesetzt sind, dann setzt die
-  Methode beide
-* Die letzte Zeile wird immer gesetzt
+* if the entry is empty, the beginning of the range is updated
+* also the end of the range is updated
 
 ```
 @add(entry methods)
@@ -144,7 +159,7 @@
 	}
 @end(entry methods)
 ```
-* Bytes können direkt hinzugefügt werden
+* adds a whole `std::string` to an entry
 
 ```
 @add(entry methods)
@@ -157,8 +172,8 @@
 	}
 @end(entry methods)
 ```
-* Prüft ob Zeichen aus einer bestimmten Datei und Zeile an den Eintrag
-  angefügt werden können
+* checks if a character at the specified position can be added to the
+  fragment
 
 ```
 @def(can add)
@@ -169,8 +184,8 @@
 	}
 @end(can add)
 ```
-* Wenn sich die Dateinamen unterscheiden, können die Zeichen nicht
-  angefügt werden
+* if the entry has a different file name, the character can not be added
+  to this fragment
 
 ```
 @add(can add)
@@ -183,27 +198,27 @@
 	}
 @end(can add)
 ```
-* Wenn die letzte Zeile nicht zur neuen Zeile passt, können die Zeichen
-  nicht angefügt werden
+* if the last line does not match to the position, the character can not
+  be added
 
 ```
 @add(can add)
 	return true;
 @end(can add)
 ```
-* Ansonsten können die Zeichen angefügt werden
+* otherwise the character can be added
 
 ```
 @Add(includes)
 	#include <vector>
 @end(includes)
 ```
-* Das Fragment legt die Einträge in einem Vektor ab
+* needs `std::vector`
 
 ```
 @add(define frag)
 	class Frag {
-		std::vector<FragEntry> _entries;
+		std::vector<Frag_Entry> _entries;
 		int _expands;
 		int _multiples;
 	public:
@@ -212,12 +227,11 @@
 	};
 @end(define frag)
 ```
-* Die Einträge eines Fragments werden in einem Vektor gesammelt
-* Das Fragment zählt wie häufig es mit `@put`, `@globexpand` und
-  `@multiple`, `@globmult` aufgerufen wurde, um Struktur-Fehler zu
-  erkennen
+* a `Frag` contains a collection of `Frag_Entry`s
+* also a count is kept, how often the `Frag` was expanded in single and
+  multiple style
 
-# Neues Fragment anlegen
+## add a `Frag`
 
 ```
 @def(frag methods)
@@ -232,8 +246,7 @@
 	}
 @end(frag methods)
 ```
-* Beschreibt das Fragment eine Datei?
-* Nur wenn sein Name mit der Zeichenkette `@s(file: )` beginnt
+* a `Frag` describes a file if its name has the prefix `@s(file: )`
 
 ```
 @add(frag methods)
@@ -250,6 +263,7 @@
 	}
 @end(frag methods)
 ```
+* a `Frag` describes a command if its name has the prefix `@s(| )`
 
 ```
 @add(frag methods)
@@ -266,7 +280,8 @@
 	}
 @end(frag methods)
 ```
-* Dateien gelten als einmal expandiert
+* initializes as `Frag`
+* if the `Frag` is a name or command, it is counted as a single expand
 
 ```
 @add(frag methods)
@@ -275,8 +290,8 @@
 	}
 @end(frag methods)
 ```
-* Löscht alle Einträge
-* wird von `@replace`, `@globrep` verwendet
+* deletes all entries
+* will be used by `@rep` and `@Rep`
 
 ```
 @add(frag methods)
@@ -285,7 +300,7 @@
 	}
 @end(frag methods)
 ```
-* Ein Fragment ist leer, wenn es keine Einträge enthält
+* a fragment is empty, if it does not have any entries
 
 ```
 @add(define frag)
@@ -294,19 +309,18 @@
 	{ }
 @end(define frag)
 ```
-
-# Unit Tests
+* the C-like property is copied from the fragment
 
 ```
 @Def(perform unit-tests)
-	@put(unit tests);
+	@put(unit-tests);
 @end(perform unit-tests)
 ```
-* Fragmente haben einen eigenes Unit-Test Fragment
+* fragments have their own unit-test fragment
 
 ```
 @add(define frag)
-	void testFragName(
+	void test_frag_name(
 		const std::string &name
 	) {
 		Frag f(name);
@@ -314,22 +328,24 @@
 	}
 @end(define frag)
 ```
-* `testFragName` prüft, ob der Name korrekt in ein Fragment kopiert
-  wurde
+* checks, if the fragment name is copied correctly
 
 ```
-@def(unit tests)
-	testFragName("abc");
-	testFragName("");
-	testFragName("A c");
-	{
-		Frag f { "ab" };
-		ASSERT(f.empty());
-	}
-@end(unit tests)
+@def(unit-tests)
+	test_frag_name("abc");
+	test_frag_name("");
+	test_frag_name("A c");
+@end(unit-tests)
 ```
-* Zum einen wird getestet, ob die Namen korrekt kopiert werden
-* Zum anderen wird sichergestellt, dass die Verweise `nullptr` sind
+* verify that names are copied
+
+```
+@add(unit-tests) {
+	Frag f { "ab" };
+	ASSERT(f.empty());
+} @end(unit-tests)
+```
+* check that a new `Frag` has no entries
 
 ```
 @add(define frag)
@@ -340,36 +356,28 @@
 	}
 @end(define frag)
 ```
-* Prüft, ob ein Fragment nicht leer ist
-
-# Unit Tests
-* Testet Fragmente
+* check that a fragment is not empty
 
 ```
-@add(unit tests)
-	{
-		FragEntry entry;
-		ASSERT(! entry.frag);
-	}
-@end(unit tests)
+@add(unit-tests) {
+	Frag_Entry entry;
+	ASSERT(! entry.frag);
+} @end(unit-tests)
 ```
-* Ein leerer Eintrag hat keinen Nachfolger
-* Und kein Fragment
+* verify that an empty fragment has no sub `Frag`
 
 ```
-@add(unit tests)
-	{
-		Frag f { "" };
-		Write_State s { f };
-		FragEntry entry;
-		ASSERT(entry.str(s).empty());
-	}
-@end(unit tests)
+@add(unit-tests) {
+	Frag f { "" };
+	Write_State s { f };
+	Frag_Entry entry;
+	ASSERT(entry.str(s).empty());
+} @end(unit-tests)
 ```
-* Ein leerer Eintrag hat keine Bytes
+* an empty entry will not return any bytes
 
-# Einträge zu Fragmenten hinzufügen
-* fügt Text oder Fragmente an ein Fragment an
+## Add entries to `Frag`s
+* add sub `Frag`s or text to a `Frag`
 
 ```
 @add(frag methods)
@@ -386,27 +394,26 @@
 	}
 @end(frag methods)
 ```
-* Wenn der Text leer ist, fügt die Methode nichts an
-* Ansonsten stellt die Methode sicher, dass der letzte Eintrag valide
-  ist
-* An diesen wird der Text angefügt
+* add some text
+* if the text is empty, nothing is added
+* otherwise the method assures that there is an entry
+* and adds text to this entry
 
 ```
 @def(assure frag entry)
 	if (_entries.empty()) {
-		_entries.push_back(FragEntry {});
+		_entries.emplace_back(Frag_Entry {});
 	} else if (
 		! _entries.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.push_back(FragEntry {});
+		_entries.push_back(Frag_Entry {});
 	}
 @end(assure frag entry)
 ```
-* Wenn es noch keine Einträge gibt, legt die Methode einen an
-* Wenn der letzte Eintrag unpassende Dateinamen oder Zeilennummern hat,
-  dann legt die Methode einen neuen Eintrag an
+* if there are no entries, a new one is added
+* otherwise if the text is at the wrong position, a new one is also added
 
 ```
 @add(frag methods)
@@ -422,17 +429,15 @@
 	}
 @end(frag methods)
 ```
-* Die Methode stellt sicher, dass der letzte Eintrag valide ist
-* An diesen wird das Zeichen angefügt
+* adds a single character to the `Frag`
 
 ```
 @add(frag methods)
 	Frag &add(Frag *child);
 @end(frag methods)
 ```
-* Die `@f(add)`-Methode muss sicherstellen, dass keine Zykel entstehen
-* Da es die notwendigen Methoden noch nicht gibt, wird die Methode
-  außerhalb der Klasse definiert
+* adds a sub `Frag` to a `Frag`
+* assures that no cycle will result
 
 ```
 @add(define frag)
@@ -445,21 +450,16 @@
 	}
 @end(define frag)
 ```
-* Bevor ein Fragment hinzugefügt werden kann, muss sichergestellt
-  werden,  dass kein Zykel entsteht
-* Ein Zykel liegt vor, wenn `frag` gleich `child` ist
-* Oder bereits direkt oder indirekt zu `child` hinzugefügt wurde
-* Falls der letzte Eintrag noch kein Fragment hat, wird dieser Eintrag
-  verwendet
+* checks, that the sub `Frag` is valid and that no cycles will result
 
 ```
 @def(add frag entry)
 	_entries.push_back(
-		FragEntry { child }
+		Frag_Entry { child }
 	);
 @end(add frag entry)
 ```
-* Für das Kind wird ein neuer Eintrag an das Fragment angefügt
+* creates a new entry for the sub `Frag`
 
 ```
 @add(frag methods)
@@ -468,7 +468,7 @@
 	}
 @end(frag methods)
 ```
-* Beginn eines konstanten Iterators auf den Einträgen
+* getter for the begin entries iterator
 
 ```
 @add(frag methods)
@@ -477,7 +477,7 @@
 	}
 @end(frag methods)
 ```
-* Ende eines konstanten Iterators auf den Einträgen
+* getter for the end entries iterator
 
 ```
 @add(frag methods)
@@ -486,7 +486,7 @@
 	}
 @end(frag methods)
 ```
-* Anzahl der `@put` und `@globexpand` Aufrufe
+* how often was the `Frag` `@put` or `@Put`
 
 ```
 @add(frag methods)
@@ -495,7 +495,7 @@
 	}
 @end(frag methods)
 ```
-* Fügt `@put` oder `@globexpand` hinzu
+* increases the `@put` or `@Put` count
 
 ```
 @add(frag methods)
@@ -504,7 +504,7 @@
 	}
 @end(frag methods)
 ```
-* Anzahl der `@multiple` und `@globmult` Aufrufe
+* how often was the `Frag` `@mul` or `@Mul`
 
 ```
 @add(frag methods)
@@ -513,7 +513,7 @@
 	}
 @end(frag methods)
 ```
-* Fügt `@multiple` oder `@globmult` hinzu
+* increases the `@mul` or `@Mul` count
 
 ```
 @add(frag methods)
@@ -533,9 +533,11 @@
 	}
 @end(frag methods)
 ```
+* a fragment is of C style, if its name ends in one of the C/C++ file
+  extensions
 
-# Fragmente serialisieren
-* Serialisiert Fragmente in einen `std::ostream`
+## Serialize `Frag`s
+* write `Frag` traversal to a `std::ostream`
 
 ```
 @add(define frag)
@@ -548,8 +550,7 @@
 	}
 @end(define frag)
 ```
-* Jeder Eintrag wird nacheinander bearbeitet
-* Fragmente in Einträgen werden rekursiv ausgegeben
+* iterate over the entries
 
 ```
 @add(define frag)
@@ -564,6 +565,7 @@
 	}
 @end(define frag)
 ```
+* estimate a `Write_State` first
 
 ```
 @def(iterate entries)
@@ -578,8 +580,8 @@
 	}
 @end(iterate entries)
 ```
-* Rekursiv wird das Fragment ausgegeben, falls vorhanden
-* Dann werden die Bytes des Eintrags ausgegeben
+* recursively visit sub `Frag`s
+* then write the string value
 
 ```
 @add(define frag)
@@ -593,6 +595,7 @@
 	}
 @end(define frag)
 ```
+* checks if the traversal results in the same value as a `std::istream`
 
 ```
 @add(define frag)
@@ -607,6 +610,7 @@
 	}
 @end(define frag)
 ```
+* estimate a `Write_State` first
 
 ```
 @def(check entries)
@@ -627,6 +631,8 @@
 	}
 @end(check entries)
 ```
+* recursively visit sub `Frag`s
+* then compare the string value
 
 ```
 @add(define frag)
@@ -638,15 +644,14 @@
 	}
 @end(define frag)
 ```
-* Diese Hilfsfunktion prüft ob die Serialisierung eines Fragments der
-  Erwartung entspricht
+* verifies that a `Frag` serializes as expected
 
 ```
 @Add(includes)
 	#include <sstream>
 @end(includes)
 ```
-* `@f(testFrag)` benötigt `std::ostringstream`
+* needs `std::ostringstream`
 
 ```
 @def(serialize test frag)
@@ -655,8 +660,8 @@
 	ASSERT(buffer.str() == expected);
 @end(serialize test frag)
 ```
-* Serialisiert das Fragment
-* Der Buffer muss die erwarteten Werte enthalten
+* serializes the `Frag`
+* and compares resulting value
 
 ```
 @add(define frag)
@@ -670,21 +675,20 @@
 	}
 @end(define frag)
 ```
-* Zu Testzwecken kann eine Null-terminierte Zeichenkette hinzugefügt
-  werden
+* adds a zero-terminated string to a `Frag`
 
 ```
-@add(unit tests) {
+@add(unit-tests) {
 	Frag frag { "" };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
-} @end(unit tests)
+} @end(unit-tests)
 ```
-* Prüft, ob zwei Strings richtig serialisiert werden
+* checks that two strings are correctly serialized
 
 ```
-@add(unit tests) {
+@add(unit-tests) {
 	Frag a { "" };
 	Frag b { "" };
 	addStringToFrag(&a, "abc");
@@ -692,12 +696,12 @@
 	addStringToFrag(&b, "def");
 	b.add(&a);
 	testFrag(b, "abcdefabc");
-} @end(unit tests)
+} @end(unit-tests)
 ```
-* Prüft, ob Fragmente expandiert werden
+* checks that sub `Frag`s are serialized correctly
 
-# Zykel im Fragment-Graph finden
-* Prüft ob das Hinzufügen eines Fragments zu einem Zykel führt
+## Cycle detection
+* checks if the addition of a sub `Frag` would result in a cycle
 
 ```
 @def(define cycle check)
@@ -713,10 +717,8 @@
 	}
 @end(define cycle check)
 ```
-* Wenn das Fragment das gesuchte ist, dann wurde ein Zykel gefunden
-* Danach wird über alle Einträge gesucht
-* Wenn das Fragment dort nicht gefunden wurde, dann ist es nicht
-  enthalten
+* checks, if the parent `Frag` `needle` is already present in the `DAG`
+  starting at the sub `Frag` `haystack`
 
 ```
 @def(avoid frag cycles)
@@ -725,8 +727,7 @@
 	));
 @end(avoid frag cycles)
 ```
-* Ein Fragment darf nur hinzugefügt werden, wenn es den Container nicht
-  bereits enthält
+* a sub `Frag` can not be added, if a cycle would result
 
 ```
 @def(check cycle frag)
@@ -735,8 +736,7 @@
 	}
 @end(check cycle frag)
 ```
-* Wenn der Container selbst das gesuchte Fragment ist, liefert die
-  Funktion `true` zurück
+* if the container is itself the searched `Frag`, a cycle would result
 
 ```
 @def(check cycle entries)
@@ -750,19 +750,18 @@
 	}
 @end(check cycle entries)
 ```
-* Alle Fragment in den Einträgen werden rekursiv untersucht
-* Damit wird der ganze Graph durchsucht
+* otherwise all sub `Frag`s will be searched
+* as soon as a cycle is found, the search can be aborted
 
-# Fragment-Kollektion
-* Kollektion von Fragmenten, die in mehreren Hierarchien organisiert
-  werden
+## `Frag` Collections
+* Collections of `Frag`s that are organized in hierarchies
 
 ```
 @Add(includes)
 	#include <map>
 @end(includes)
 ```
-* `FragMap` enthält eine `std::map`
+* needs `std::map`
 
 ```
 @add(define frag)
@@ -770,5 +769,5 @@
 		std::map<std::string, Frag>;
 @end(define frag)
 ```
-* Eine Kollektion von Fragmenten ist ein Array von Fragment-Ketten
-* Alle Felder müssen mit `nullptr` initialisiert werden
+* A collection is a `std::map` of names to `Frag`s
+

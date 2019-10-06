@@ -22,15 +22,15 @@
 	#include <iostream>
 	#include <exception>
 
-#line 197 "frag.md"
+#line 212 "frag.md"
 
 	#include <vector>
 
-#line 645 "frag.md"
+#line 650 "frag.md"
 
 	#include <sstream>
 
-#line 761 "frag.md"
+#line 760 "frag.md"
 
 	#include <map>
 
@@ -122,11 +122,11 @@
 	code,
 	after_code
 
-#line 198 "blocks.md"
+#line 203 "blocks.md"
 ,
 	notes
 
-#line 254 "blocks.md"
+#line 270 "blocks.md"
 ,
 	para
 
@@ -150,7 +150,7 @@
 #line 8 "blocks.md"
 
 
-#line 7 "frag.md"
+#line 6 "frag.md"
 
 	class Frag;
 
@@ -162,7 +162,7 @@
 		Write_State(const Frag &f);
 	};
 
-#line 21 "frag.md"
+#line 25 "frag.md"
 
 	
 #line 19 "log.md"
@@ -210,7 +210,7 @@
 ;
 ;
 	
-	class FragEntry {
+	class Frag_Entry {
 		std::string _str;
 		std::string _file;
 		int _first_line;
@@ -218,19 +218,18 @@
 	public:
 		const Frag *frag;
 		
-#line 49 "frag.md"
+#line 55 "frag.md"
 
-	FragEntry(
+	Frag_Entry(
 		Frag *frag = nullptr
 	):
 		_first_line { -1 },
 		frag { frag }
 	{}
 
-#line 63 "frag.md"
+#line 69 "frag.md"
 
 	void update_state(Write_State &state) const {
-
 		auto c { _str.end() };
 		auto b { _str.begin() };
 		bool some_nl { false };
@@ -254,6 +253,8 @@
 		}
 	}
 
+#line 100 "frag.md"
+
 	std::string str(Write_State &state) const {
 		bool old { state.in_macro };
 		update_state(state);
@@ -267,14 +268,14 @@
 		return oss.str();
 	}
 
-#line 106 "frag.md"
+#line 123 "frag.md"
 
 	void add(
 		char ch, const std::string &file,
 		int line
 	) {
 		
-#line 121 "frag.md"
+#line 137 "frag.md"
 
 	if (
 		_file.empty() || _first_line <= 0
@@ -284,12 +285,12 @@
 	}
 	_last_line = line;
 
-#line 111 "frag.md"
+#line 128 "frag.md"
 ;
 		_str += ch;
 	}
 
-#line 136 "frag.md"
+#line 151 "frag.md"
 
 	void add(
 		const std::string &value,
@@ -297,7 +298,7 @@
 		int line
 	) {
 		
-#line 121 "frag.md"
+#line 137 "frag.md"
 
 	if (
 		_file.empty() || _first_line <= 0
@@ -307,19 +308,19 @@
 	}
 	_last_line = line;
 
-#line 142 "frag.md"
+#line 157 "frag.md"
 ;
 		_str += value;
 	}
 
-#line 150 "frag.md"
+#line 165 "frag.md"
 
 	bool canAdd(
 		const std::string &file,
 		int line
 	) {
 		
-#line 164 "frag.md"
+#line 179 "frag.md"
 
 	if (
 		! _file.empty() && file != _file
@@ -327,7 +328,7 @@
 		return false;
 	}
 
-#line 176 "frag.md"
+#line 191 "frag.md"
 
 	if (
 		_last_line > 0 &&
@@ -337,29 +338,29 @@
 		return false;
 	}
 
-#line 190 "frag.md"
+#line 205 "frag.md"
 
 	return true;
 
-#line 155 "frag.md"
+#line 170 "frag.md"
 ;
 		return false;
 	}
 
-#line 37 "frag.md"
+#line 41 "frag.md"
 ;
 	};
 
-#line 204 "frag.md"
+#line 219 "frag.md"
 
 	class Frag {
-		std::vector<FragEntry> _entries;
+		std::vector<Frag_Entry> _entries;
 		int _expands;
 		int _multiples;
 	public:
 		const std::string name;
 		
-#line 223 "frag.md"
+#line 237 "frag.md"
 
 	bool isFile() const {
 		static const std::string prefix {
@@ -371,7 +372,7 @@
 		return p == prefix;
 	}
 
-#line 239 "frag.md"
+#line 252 "frag.md"
 
 	std::string cmd() const {
 		static const std::string prefix {
@@ -385,7 +386,7 @@
 			std::string {};
 	}
 
-#line 255 "frag.md"
+#line 269 "frag.md"
 
 	Frag(
 		const std::string &name
@@ -399,19 +400,19 @@
 		if (cmd().size()) { ++_expands; }
 	}
 
-#line 272 "frag.md"
+#line 287 "frag.md"
 
 	void clear() {
 		_entries.clear();
 	}
 
-#line 282 "frag.md"
+#line 297 "frag.md"
 
 	bool empty() const {
 		return _entries.empty();
 	}
 
-#line 375 "frag.md"
+#line 383 "frag.md"
 
 	void add(
 		const std::string &value,
@@ -420,26 +421,26 @@
 	) {
 		if (value.empty()) { return; }
 		
-#line 395 "frag.md"
+#line 403 "frag.md"
 
 	if (_entries.empty()) {
-		_entries.push_back(FragEntry {});
+		_entries.emplace_back(Frag_Entry {});
 	} else if (
 		! _entries.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.push_back(FragEntry {});
+		_entries.push_back(Frag_Entry {});
 	}
 
-#line 382 "frag.md"
+#line 390 "frag.md"
 ;
 		_entries.back().add(
 			value, file, line
 		);
 	}
 
-#line 412 "frag.md"
+#line 419 "frag.md"
 
 	void add(
 		char ch,
@@ -447,26 +448,26 @@
 		int line
 	) {
 		
-#line 395 "frag.md"
+#line 403 "frag.md"
 
 	if (_entries.empty()) {
-		_entries.push_back(FragEntry {});
+		_entries.emplace_back(Frag_Entry {});
 	} else if (
 		! _entries.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.push_back(FragEntry {});
+		_entries.push_back(Frag_Entry {});
 	}
 
-#line 418 "frag.md"
+#line 425 "frag.md"
 ;
 		_entries.back().add(
 			ch, file, line
 		);
 	}
 
-#line 429 "frag.md"
+#line 435 "frag.md"
 
 	Frag &add(Frag *child);
 
@@ -523,26 +524,26 @@
 		return false;
 	}
 
-#line 211 "frag.md"
+#line 226 "frag.md"
 ;
 	};
 
-#line 291 "frag.md"
+#line 306 "frag.md"
 
 	Write_State::Write_State(const Frag &f):
 		c_style { f.is_c_style() }
 	{ }
 
-#line 308 "frag.md"
+#line 322 "frag.md"
 
-	void testFragName(
+	void test_frag_name(
 		const std::string &name
 	) {
 		Frag f(name);
 		ASSERT(f.name == name);
 	}
 
-#line 335 "frag.md"
+#line 351 "frag.md"
 
 	bool isPopulatedFrag(
 		const Frag *f
@@ -550,10 +551,10 @@
 		return f && ! f->empty();
 	}
 
-#line 438 "frag.md"
+#line 443 "frag.md"
 
 	
-#line 703 "frag.md"
+#line 707 "frag.md"
 
 	bool isFragInFrag(
 		const Frag *needle,
@@ -562,13 +563,13 @@
 		ASSERT(needle);
 		ASSERT(haystack);
 		
-#line 732 "frag.md"
+#line 733 "frag.md"
 
 	if (needle == haystack) {
 		return true;
 	}
 
-#line 710 "frag.md"
+#line 714 "frag.md"
 ;
 		
 #line 742 "frag.md"
@@ -582,37 +583,37 @@
 		}
 	}
 
-#line 711 "frag.md"
+#line 715 "frag.md"
 ;
 		return false;
 	}
 
-#line 439 "frag.md"
+#line 444 "frag.md"
 
 	Frag &Frag::add(Frag *child) {
 		ASSERT(child);
 		
-#line 722 "frag.md"
+#line 724 "frag.md"
 
 	ASSERT(! isFragInFrag(
 		this, child
 	));
 
-#line 442 "frag.md"
+#line 447 "frag.md"
 ;
 		
 #line 456 "frag.md"
 
 	_entries.push_back(
-		FragEntry { child }
+		Frag_Entry { child }
 	);
 
-#line 443 "frag.md"
+#line 448 "frag.md"
 ;
 		return *this;
 	}
 
-#line 541 "frag.md"
+#line 543 "frag.md"
 
 	void serializeFrag(
 		const Frag &frag,
@@ -620,7 +621,7 @@
 		Write_State &state
 	) {
 		
-#line 569 "frag.md"
+#line 571 "frag.md"
 
 	for (const auto &entry : frag) {
 		if (entry.frag) {
@@ -632,11 +633,11 @@
 		out << entry.str(state);
 	}
 
-#line 547 "frag.md"
+#line 549 "frag.md"
 ;
 	}
 
-#line 555 "frag.md"
+#line 556 "frag.md"
 
 	void serializeFrag(
 		const Frag &f,
@@ -648,7 +649,7 @@
 		);
 	}
 
-#line 585 "frag.md"
+#line 587 "frag.md"
 
 	bool check_frag(
 		const Frag &f,
@@ -656,7 +657,7 @@
 		Write_State &state
 	) {
 		
-#line 612 "frag.md"
+#line 616 "frag.md"
 
 	for (const auto &entry : f) {
 		if (entry.frag) {
@@ -674,12 +675,12 @@
 		}
 	}
 
-#line 591 "frag.md"
+#line 593 "frag.md"
 ;
 		return true;
 	}
 
-#line 598 "frag.md"
+#line 601 "frag.md"
 
 	bool check_frag(
 		const Frag &f,
@@ -691,24 +692,24 @@
 		);
 	}
 
-#line 632 "frag.md"
+#line 638 "frag.md"
 
 	void testFrag(
 		const Frag &frag,
 		const std::string &expected
 	) {
 		
-#line 652 "frag.md"
+#line 657 "frag.md"
 
 	std::ostringstream buffer;
 	serializeFrag(frag, buffer);
 	ASSERT(buffer.str() == expected);
 
-#line 637 "frag.md"
+#line 643 "frag.md"
 ;
 	}
 
-#line 662 "frag.md"
+#line 667 "frag.md"
 
 	void addStringToFrag(
 		Frag *frag,
@@ -719,12 +720,12 @@
 		);
 	}
 
-#line 768 "frag.md"
+#line 767 "frag.md"
 
 	using FragMap =
 		std::map<std::string, Frag>;
 
-#line 23 "frag.md"
+#line 27 "frag.md"
 ;
 
 #line 161 "read.md"
@@ -1258,7 +1259,7 @@
 	) {
 		state = RS::code;
 		
-#line 182 "blocks.md"
+#line 185 "blocks.md"
 
 	blocks.push_back({
 		RS::code, {}, {}, 0
@@ -1269,20 +1270,20 @@
 		break;
 	}
 
-#line 169 "blocks.md"
+#line 170 "blocks.md"
 
 	if (state == RS::code) {
 		if (line == "```") {
 			state = RS::after_code;
 		} else {
 			
-#line 190 "blocks.md"
+#line 194 "blocks.md"
 
 	blocks.back().value.push_back(
 		line
 	);
 
-#line 174 "blocks.md"
+#line 175 "blocks.md"
 ;
 		}
 		break;
@@ -1327,7 +1328,7 @@
 		break;
 	}
 
-#line 204 "blocks.md"
+#line 210 "blocks.md"
 
 	if (line[0] == '*') {
 		if (
@@ -1337,7 +1338,7 @@
 		) {
 			state = RS::notes;
 			
-#line 232 "blocks.md"
+#line 243 "blocks.md"
 
 	auto b { line.begin() };
 	auto e { line.end() };
@@ -1346,34 +1347,34 @@
 			(*b == '*' || *b == ' ');
 		++b
 	) {}
-	blocks.back().notes.push_back(
-		{ b, e }
+	blocks.back().notes.emplace_back(
+		b, e
 	);
 
-#line 212 "blocks.md"
+#line 218 "blocks.md"
 ;
 			break;
 		}
 	}
 
-#line 220 "blocks.md"
+#line 229 "blocks.md"
 
 	if (
 		line[0] == ' ' &&
 		state == RS::notes
 	) {
 		
-#line 247 "blocks.md"
+#line 261 "blocks.md"
 
 	blocks.back().notes.back() +=
 		line;
 
-#line 225 "blocks.md"
+#line 234 "blocks.md"
 ;
 		break;
 	}
 
-#line 260 "blocks.md"
+#line 278 "blocks.md"
 
 	if (line[0] != ' ') {
 		if (
@@ -1381,7 +1382,7 @@
 			state == RS::para
 		) {
 			
-#line 276 "blocks.md"
+#line 295 "blocks.md"
 
 	if (state == RS::new_element) {
 		if (blocks.empty() || blocks.back().state != RS::para) {
@@ -1392,17 +1393,17 @@
 		blocks.back().value.push_back(line);
 	}
 
-#line 266 "blocks.md"
+#line 284 "blocks.md"
 ;
 			
-#line 289 "blocks.md"
+#line 310 "blocks.md"
 
 	if (state == RS::para) {
 		blocks.back().value.back() +=
 			" " + line;
 	}
 
-#line 267 "blocks.md"
+#line 285 "blocks.md"
 ;
 			state = RS::para;
 			break;
@@ -3313,14 +3314,14 @@
 		return line;
 	}
 
-#line 4 "edit.md"
+#line 5 "edit.md"
 
 	void insert_before(
 		const std::string &prefix,
 		std::vector<std::string> &c
 	) {
 		
-#line 49 "edit.md"
+#line 54 "edit.md"
 
 	int next = c.size();
 	
@@ -3344,7 +3345,7 @@
 		}
 	}
 
-#line 51 "edit.md"
+#line 56 "edit.md"
 ;
 	std::string l;
 	for (;;) {
@@ -3361,7 +3362,7 @@
 	}
 	draw_block();
 
-#line 9 "edit.md"
+#line 10 "edit.md"
 ;
 	}
 
@@ -3719,43 +3720,40 @@
 
 	#if ! NDEBUG
 		
-#line 301 "frag.md"
+#line 315 "frag.md"
 
 	
-#line 321 "frag.md"
+#line 334 "frag.md"
 
-	testFragName("abc");
-	testFragName("");
-	testFragName("A c");
-	{
-		Frag f { "ab" };
-		ASSERT(f.empty());
-	}
+	test_frag_name("abc");
+	test_frag_name("");
+	test_frag_name("A c");
 
-#line 349 "frag.md"
-
-	{
-		FragEntry entry;
-		ASSERT(! entry.frag);
-	}
-
-#line 360 "frag.md"
-
-	{
-		Frag f { "" };
-		Write_State s { f };
-		FragEntry entry;
-		ASSERT(entry.str(s).empty());
-	}
-
-#line 677 "frag.md"
+#line 343 "frag.md"
+ {
+	Frag f { "ab" };
+	ASSERT(f.empty());
+} 
+#line 362 "frag.md"
+ {
+	Frag_Entry entry;
+	ASSERT(! entry.frag);
+} 
+#line 370 "frag.md"
+ {
+	Frag f { "" };
+	Write_State s { f };
+	Frag_Entry entry;
+	ASSERT(entry.str(s).empty());
+} 
+#line 681 "frag.md"
  {
 	Frag frag { "" };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
 } 
-#line 687 "frag.md"
+#line 691 "frag.md"
  {
 	Frag a { "" };
 	Frag b { "" };
@@ -3765,7 +3763,7 @@
 	b.add(&a);
 	testFrag(b, "abcdefabc");
 } 
-#line 302 "frag.md"
+#line 316 "frag.md"
 ;
 
 #line 210 "line.md"
@@ -4112,7 +4110,7 @@
 		continue;
 	}
 
-#line 15 "edit.md"
+#line 18 "edit.md"
 
 	if (cmd == "l" || cmd == "list") {
 		insert_before(
@@ -4121,7 +4119,7 @@
 		continue;
 	}
 
-#line 26 "edit.md"
+#line 30 "edit.md"
 
 	if (cmd == "a" || cmd == "add") {
 		std::string prefix;
@@ -4142,7 +4140,7 @@
 		continue;
 	}
 
-#line 70 "edit.md"
+#line 78 "edit.md"
 
 	if (cmd == ">>") {
 		if (curBlock->state == RS::header) {
@@ -4152,7 +4150,7 @@
 		}
 	}
 
-#line 82 "edit.md"
+#line 91 "edit.md"
 
 	if (cmd == "<<") {
 		if (curBlock->level > 1) {

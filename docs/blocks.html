@@ -232,6 +232,9 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">states with newlines</span>)</span><br/>
 </code></div>
+<ul><li>
+recognize start of code block
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -246,6 +249,11 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">states with newlines</span>)</span><br/>
 </code></div>
+<ul><li>
+when in code block, distinguish between ending of code block
+</li><li>
+and the processing of a code line
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -255,6 +263,9 @@ new states for parsing code blocks
 <span class="in1"></span>});<br/>
 <span class="macro">@end(<span class="name">enter code block</span>)</span><br/>
 </code></div>
+<ul><li>
+add a new code block
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -264,6 +275,9 @@ new states for parsing code blocks
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">got code line</span>)</span><br/>
 </code></div>
+<ul><li>
+add the code line
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -271,6 +285,9 @@ new states for parsing code blocks
 <span class="in1"></span><span class="var">notes</span><br/>
 <span class="macro">@end(<span class="name">read states</span>)</span><br/>
 </code></div>
+<ul><li>
+special state for handling states
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -288,6 +305,11 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
 </code></div>
+<ul><li>
+a note starts with a line that has a <code>*</code> as its first character
+</li><li>
+the line must directly follow a header, a code section or be part of a  note section
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -301,6 +323,11 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
 </code></div>
+<ul><li>
+longer notes can be continued over multiple lines
+</li><li>
+the additional lines need to start with a space
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -312,11 +339,16 @@ new states for parsing code blocks
 <span class="in3"></span>(*<span class="var">b</span> == <span class="str">'*'</span> || *<span class="var">b</span> == <span class="str">' '</span>);<br/>
 <span class="in2"></span>++<span class="var">b</span><br/>
 <span class="in1"></span>) {}<br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">push_back</span>(<br/>
-<span class="in2"></span>{ <span class="var">b</span>, <span class="var">e</span> }<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">emplace_back</span>(<br/>
+<span class="in2"></span><span class="var">b</span>, <span class="var">e</span><br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">got note</span>)</span><br/>
 </code></div>
+<ul><li>
+to process a note all <code>*</code>s and spaces at the beginning of the line are  ignored
+</li><li>
+the rest is added as a note
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -325,6 +357,9 @@ new states for parsing code blocks
 <span class="in2"></span><span class="var">line</span>;<br/>
 <span class="macro">@end(<span class="name">add note</span>)</span><br/>
 </code></div>
+<ul><li>
+if a note is continued over multiple lines, the additional lines are  added to the last note
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -332,6 +367,11 @@ new states for parsing code blocks
 <span class="in1"></span><span class="var">para</span><br/>
 <span class="macro">@end(<span class="name">read states</span>)</span><br/>
 </code></div>
+<ul><li>
+special state for non-slide paragraphs
+</li><li>
+these can be used to describe functionality outside of simple slides
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -349,6 +389,9 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">states without newlines</span>)</span><br/>
 </code></div>
+<ul><li>
+paragraphs are any other line that does not start with a space
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -363,6 +406,11 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">create para</span>)</span><br/>
 </code></div>
+<ul><li>
+needs to add a new block, if the last block is no paragraph block
+</li><li>
+then add the line to the last block
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -373,6 +421,9 @@ new states for parsing code blocks
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">add para</span>)</span><br/>
 </code></div>
+<ul><li>
+if the current paragraph is extended, the line will be added to the  last paragraph of the last block
+</li></ul>
 </div>
 </body>
 </html>
