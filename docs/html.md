@@ -1,6 +1,5 @@
-# HTML-Präsentation generieren
-* Diese Datei beschreibt Code, um aus den `x`-Quelldateien
-  HTML-Präsentationen zu erzeugen
+# Generate HTML slides
+* code to generate HTML slides from the input files
 
 ```
 @Add(global elements)
@@ -12,6 +11,7 @@
 	}
 @End(global elements)
 ```
+* generate HTML slides
 
 ```
 @Def(write HTML file)
@@ -20,8 +20,7 @@
 	}
 @end(write HTML file)
 ```
-* Alle bisher prozessierten Dateien werden erneut durchgegangen
-* Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
+* generate HTML slides, if they should be generated
 
 ```
 @def(write cur HTML file)
@@ -39,14 +38,15 @@
 	out.close();
 @end(write cur HTML file)
 ```
-* Die HTML hat den gleichen Pfad mit der Endung `.html` anstatt `.x`
+* the name of the HTML slides results from replacing the extension of the
+  input file by `.html`
 
 ```
 @def(write cur HTML file to out)
 	@put(write from in to out);
 @end(write cur HTML file to out)
 ```
-* Zuerst wird die Eingabe-Datei zum Lesen geöffnet
+* write HTML to the just opened `std::ofstream` `out`
 
 ```
 @Def(needed by write_html)
@@ -59,11 +59,10 @@
 	};
 @end(needed by write_html)
 ```
-* In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die
-  gerade generierte HTML-Datei befindet
-* Vor dem ersten Element muss der HTML-Header geschrieben werden
-* Ansonsten wird unterschieden, ob eine Folie bereits geöffnet wurde
-* Oder ob gerade keine Folie offen ist
+* the `HtmlState` keeps track which part of a block is currently
+  written
+* each input file must start with a header so that the HTML header can
+  be written
 
 ```
 @Add(needed by write_html)
@@ -72,22 +71,21 @@
 	};
 @end(needed by write_html)
 ```
-* Der aktuelle Status wird in `HtmlStatus` abgelegt
+* the current status needs more information besides the state
 
 ```
 @def(html state elements)
 	HtmlState state = HtmlState::nothing;
 @end(html state elements)
 ```
-* Status hat einen Konstruktor
-* Der aktuelle Zustand wird im Status abgelegt
+* the state is part of the status
 
 ```
 @Add(includes)
 	#include <string>
 @end(includes)
 ```
-* Die Anwendung verwendet `std::string` überall
+* needs `std::string`
 
 ```
 @def(write from in to out)
@@ -97,9 +95,7 @@
 	}
 @end(write from in to out)
 ```
-* Beim Schreiben einer Datei wird zuerst der Status initialisiert
-* Die Eingabe wird Zeile für Zeile abgearbeitet
-* Bis das Datei-Ende erreicht ist
+* process each block
 
 ```
 @def(process block)
@@ -108,6 +104,7 @@
 	}
 @end(process block)
 ```
+* write header
 
 ```
 @add(process block)
@@ -125,6 +122,7 @@
 	}
 @end(process block)
 ```
+* write code and notes
 
 ```
 @add(process block)
@@ -137,6 +135,7 @@
 	}
 @end(process block)
 ```
+* write paragraphs
 
 ```
 @def(close slide)
@@ -144,11 +143,11 @@
 	status.state = HtmlState::afterSlide;
 @end(close slide)
 ```
-* Die Funktion schreibt das schließende `</div>`
-* Und setzt den Zustand passend
+* writes a `</div>` that closes a slide
+* and adjusts the state
 
-# Überschriften
-* Überschriften beginnen mit Rauten `#`
+## Headings
+* writes heading entry
 
 ```
 @def(process header)
@@ -167,9 +166,10 @@
 	@mul(close slide);
 @end(process header)
 ```
-* Falls schon eine Seite offen ist, dann wird diese geschlossen
-* Dann wird eine HTML-Überschrift ausgegeben
-* Und eine Folie mit einer HTML-Überschrift wird erzeugt
+* headers start a new slide group
+* before the slide group a HTML heading is written
+* the slide group starts with a slide that contains the heading
+* notes are also written
 
 ```
 @Add(needed by write_html) 
@@ -184,9 +184,8 @@
 	}
 @end(needed by write_html)
 ```
-* Schreibt ein Zeichen
-* Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
-  Entitäten
+* writes a character in the HTML output
+* special characters are escaped
 
 ```
 @Add(needed by write_html)
@@ -200,9 +199,8 @@
 	}
 @End(needed by write_html)
 ```
-* Schreibt mehrere Zeichen
-* Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch
-  Entitäten
+* writes multiple characters in the HTML outputs
+* by calling the single character version
 
 ```
 @def(escape special)
@@ -217,7 +215,7 @@
 		break;
 @end(escape special)
 ```
-* Die Zeichen `<`, `>` und `&` werden ersetzt
+* the characters `<`, `>`, and `&` are replaced by their entities
 
 ```
 @Add(needed by write_html)
@@ -230,9 +228,10 @@
 	}
 @end(needed by write_html)
 ```
-* Verarbeitet ein Code-Fragment
-* Dies Funktion wird im Code Modus verwendet
-* Und wenn in Notizen Code-Fragmente eingebettet sind
+* writes a line of source code
+* this is used in code blocks
+* and in normal text that contains embedded code (e.g. in the notes or
+  headings)
 
 ```
 @Add(needed by write_html)
@@ -244,8 +243,8 @@
 	}
 @end(needed by write_html)
 ```
-* Diese Funktion formatiert beliebigen Markdown-Text als HTML
-* Code-Schnippsel werden ebenfalls formatiert
+* writes normal Markdown content to HTML
+* embedded code is pretty printed
 
 ```
 @def(write header tag) {
@@ -255,7 +254,7 @@
 	out << "</h" << b.level << ">\n";
 } @end(write header tag)
 ```
-* Die HTML-Überschrift enthält den eingelesenen Level
+* writes a HTML header tag of the right level
 
 ```
 @def(close previous HTML page)
@@ -274,22 +273,21 @@
 	}
 @end(close previous HTML page)
 ```
-* Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen
-  werden
+* closes the current slide
+* and the current slide group
+* at the beginning of the document the HTML header is written
 
 ```
 @def(write HTML header)
 	out << "<!doctype html>\n";
-	out << "<html lang=\"de\">\n";
+	out << "<html lang=\"en\">\n";
 	out << "<head>\n";
 	@put(write HTML header entries);
 	out << "</head>\n";
 	out << "<body>\n";
 @end(write HTML header)
 ```
-* Dies wird am Anfang der HTML-Datei ausgegeben
-* Dafür muss jede `.x`-Datei mit einer Überschrift beginnen
-* Diese Überschrift ist dann auch der Titel der HTML-Datei
+* write HTML header and opens the `<body>` tag
 
 ```
 @def(write HTML header entries)
@@ -302,19 +300,20 @@
 		<< stylesheet << "\">";
 @end(write HTML header entries)
 ```
-* Im Header wird das Zeichenformat auf UTF-8 gesetzt
-* Und der Titel ausgegeben
-* Und die Stylesheet-Datei eingebunden
+* the document is encoded in `UTF-8`
+* the first header of the input file is also the `<title>` of the
+  HTML document
+* also include a stylesheet
 
-# Code formatieren
-* Code kann auf Seiten oder in den Notizen ausgegeben werden
+## Format Code
+* Code is pretty printed
 
 ```
 @def(html state enums)
 	, inCode
 @end(html state enums)
 ```
-* Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
+* special state to format code
 
 ```
 @def(open code page)
@@ -333,8 +332,8 @@
 	status.state = HtmlState::inCode;
 @end(open code page)
 ```
-* Beim Betreten wird eine Seite mit einem `<code>`-Tag geöffnet
-* Und der Zustand passend gesetzt
+* a code slide contains one big `<code>` tag
+* and sets the current state
 
 ```
 @def(close code page)
@@ -342,7 +341,7 @@
 	status.state = HtmlState::inSlide;
 @end(close code page)
 ```
-* Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
+* closes `<code>` tag when the slide is closed
 
 ```
 @add(write from in to out)
@@ -354,9 +353,7 @@
 	}
 @end(write from in to out)
 ```
-* Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann
-  stimmt etwas nicht
-* Eine Fehlermeldung wird ausgegeben
+* it is an error, if the code block was not closed at the end of a file
 
 ```
 @add(write from in to out)
@@ -367,7 +364,8 @@
 	}
 @end(write from in to out)
 ```
-* Am Ende der Datei schließt die Funktion  die HTML-Tags
+* closes the `<body>` tag at the end of the input file
+* if some output was written
 
 ```
 @def(process code)
@@ -377,8 +375,8 @@
 	out << "<br/>\n";
 @end(process code)
 ```
-* Im Code Modus wird die Funktion aufgerufen
-* Und danach ein Zeilenumbruch ausgegeben
+* processes code in a code slide
+* write the code and adds a new line
 
 ```
 @def(do code)
@@ -395,8 +393,8 @@
 	}
 @end(do code)
 ```
-* Die Funktion zählt Tabulatoren am Anfang der Zeile
-* Und gibt ein Tag für die passende Einrückung aus
+* counts the tab stops at the beginning of the line
+* an `<span>` for the indentation is written
 
 ```
 @add(do code)
@@ -406,9 +404,8 @@
 	}
 @end(do code)
 ```
-* Danach wird die Zeile Zeichen für Zeichen verarbeitet
-* Wenn keine besondere Verarbeitung geschieht, gibt die Funktion das
-  Zeichen direkt aus
+* process each character
+* if their is no special treatment, copy it to HTML
 
 ```
 @def(process code ch)
@@ -422,7 +419,7 @@
 	}
 @end(process code ch)
 ```
-* Wenn ein Zeichen eine Zeichenkette einleitet, wird diese geparst
+* treat the next characters as a string
 
 ```
 @def(process string)
@@ -440,9 +437,10 @@
 	}
 @end(process string)
 ```
-* Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie
-  angefangen  hat
-* Wenn dieses nicht durch einen Backslash escaped ist
+* search for the end of the string
+* watch out for escape characters on the way
+* if no end is found, then treat the first character as an ordinary
+  character
 
 ```
 @def(process code helper)
@@ -458,8 +456,7 @@
 	}
 @end(process code helper)
 ```
-* Diese Hilfsfunktion umgibt einen Bezeichner mit einem `<span>`-Tag
-  einer bestimmten Klasse
+* writes a `<span>` with the given class around a string
 
 ```
 @add(process string)
@@ -468,8 +465,7 @@
 	begin = w;
 @end(process string)
 ```
-* Die Funktion gibt die Zeichenkette als `<span>` mit der Klasse
-  `@s(str)`  aus
+* write formatted string
 
 ```
 @add(process code ch)
@@ -492,6 +488,7 @@
 	}
 @end(process code ch)
 ```
+* if a command is found, parse its argument
 
 ```
 @def(macro loop)
@@ -509,6 +506,7 @@
 	}
 @end(macro loop)
 ```
+* if a command argument is parsed, the command is parsed
 
 ```
 @def(got macro)
@@ -519,6 +517,9 @@
 	begin = ae;
 @end(got macro)
 ```
+* special commands can change the formatting and are processed first
+* if the command is not special, it will be copied to HTML with some
+  warning
 
 ```
 @def(macro default)
@@ -531,6 +532,8 @@
 	writeOneEscaped(out, ')');
 @end(macro default)
 ```
+* write error message
+* and copy command to HTML
 
 ```
 @def(special macro)
@@ -549,6 +552,7 @@
 	}
 @end(special macro)
 ```
+* fragment commands are copied with pretty printing to HTML
 
 ```
 @add(special macro)
@@ -558,14 +562,14 @@
 	}
 @end(special macro)
 ```
+* include commands are treated special
 
 ```
 @def(write include)
 	auto ext = arg.find_last_of('.');
-	ASSERT_MSG(
-		ext != std::string::npos,
-		"no period"
-	);
+	if (ext == std::string::npos) {
+		ext = arg.size();
+	}
 	writeMacroHeader(out, name);
 	out << "<a href=\"" <<
 		arg.substr(0, ext) <<
@@ -574,8 +578,7 @@
 		"</a></span>)</span>";
 @end(write include)
 ```
-* Die Datei-Extension wird beim generierten Link durch `@s(.html)`
-  ersetzt
+* includes also contain a link to the referenced file
 
 ```
 @add(special macro)
@@ -593,6 +596,7 @@
 	}
 @end(special macro)
 ```
+* format the argument as string
 
 ```
 @add(special macro)
@@ -604,7 +608,7 @@
 	}
 @end(special macro)
 ```
-* Der Bezeichner `@s(f)` steht für eine Funktion-Formatierung
+* format the argument as a function
 
 ```
 @add(special macro)
@@ -616,7 +620,7 @@
 	}
 @end(special macro)
 ```
-* Der Bezeichner `@s(v)` steht für eine Variablen-Formatierung
+* format the argument as a variable
 
 ```
 @add(special macro)
@@ -628,7 +632,7 @@
 	}
 @end(special macro)
 ```
-* Der Bezeichner `@s(k)` steht für eine Schlüsselwort-Formatierung
+* format the argument as a keyword
 
 ```
 @add(special macro)
@@ -640,7 +644,7 @@
 	}
 @end(special macro)
 ```
-* Der Bezeichner `@s(n)` steht für eine Wert-Formatierung
+* format the argument as a numeric value
 
 ```
 @add(special macro)
@@ -652,7 +656,7 @@
 	}
 @end(special macro)
 ```
-* Der Bezeichner `@s(t)` steht für eine Typ-Formatierung
+* format the argument as a type
 
 ```
 @add(special macro)
@@ -663,7 +667,8 @@
 	}
 @end(special macro)
 ```
-* Der Bezeichner `@s(b)` wird als Zeilenumbruch dargestellt
+* create a line break in the HTML output
+* the generated source code does not contain this line break
 
 ```
 @add(special macro)
@@ -676,7 +681,7 @@
 	}
 @end(special macro)
 ```
-* `@priv`-Makro ist ein Bezeichner
+* `@priv` commands are formatted specially in the HTML output
 
 ```
 @add(special macro)
@@ -689,14 +694,14 @@
 	}
 @end(special macro)
 ```
-* `@magic`-Makro ist ein Wert
+* `@magic` commands are formatted specially in the HTML output
 
 ```
 @Add(includes)
 	#include <cctype>
 @end(includes)
 ```
-* Die Funktion verwendet `std::isalnum`
+* needs `std::isalnum`
 
 ```
 @add(process code ch)
@@ -708,8 +713,7 @@
 	}
 @end(process code ch)
 ```
-* An der aktuellen Position wird ein Identifier gesucht
-* Wenn dieser gefunden wird, dann wird er abgearbeitet
+* checks if at the current position is an identifier
 
 ```
 @def(find identifier end)
@@ -722,8 +726,8 @@
 	}
 @end(find identifier end)
 ```
-* Zeichen und Ziffern können einen Identifier bilden
-* Zusätzlich noch der Unterstrich und das Dollar-Zeichen
+* alphanumeric characters can form an identifier
+* also `_`, `$` and `#` are valid parts of an identifier
 
 ```
 @def(process identifier)
@@ -735,18 +739,15 @@
 	);
 @end(process identifier)
 ```
-* `begin` wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.
-  korrigiert
-* Sonst wird der Identifier normal verarbeitet
-* Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem
-  Identifier folgt
+* the new input is one before the end of the identifier
+* because the loop will increment it
 
 ```
 @Add(includes)
 	#include <set>
 @end(includes)
 ```
-* Besondere Bezeichner werden in `std::set` abgelegt
+* needs `std::set`
 
 ```
 @add(process code helper)
@@ -763,7 +764,7 @@
 	}
 @end(process code helper)
 ```
-* Prüft ob ein Bezeichner ein reserviertes Schlüsselwort ist
+* checks if identifier is a known keyword
 
 ```
 @def(keywords)
@@ -777,7 +778,7 @@
 	"once", "constexpr", "volatile"
 @end(keywords)
 ```
-* Reservierte Schlüsselwörter
+* known keywords
 
 ```
 @add(process code helper)
@@ -787,7 +788,7 @@
 	}
 @end(process code helper)
 ```
-* Prüft, ob ein Bezeichner ein Typ ist
+* checks if identifier is a type
 
 ```
 @def(is type)
@@ -801,8 +802,7 @@
 	}
 @end(is type)
 ```
-* Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion
-  `true`
+* an identifier is a type, if it is one of the known types
 
 ```
 @def(types)
@@ -815,7 +815,7 @@
 	"vector", "map", "list"
 @end(types)
 ```
-* Reservierte Typen
+* known types
 
 ```
 @add(is type)
@@ -828,9 +828,8 @@
 	}
 @end(is type)
 ```
-* Ein Bezeichner ist zusätzlich ein Typ, wenn das sei erstes Zeichen
-  groß geschrieben ist
-* und das zweite Zeichen klein geschrieben ist
+* an identifier is a type if it contains both an upper case and lower
+  case letter
 
 ```
 @add(process code helper)
@@ -848,8 +847,8 @@
 	}
 @end(process code helper)
 ```
-* Ein Bezeichner ist eine Zahl, wenn er mit einer Ziffer beginnt
-* Oder wenn er einen reservierten Namen hat
+* an identifier is a numeric value if it starts with a digit
+* or is one of the known numeric values
 
 ```
 @add(process code helper)
@@ -869,10 +868,9 @@
 	}
 @end(process code helper)
 ```
-* Ein Bezeichner, dem eine öffnende Klammer folgt, wird immer als
-  Funktion dargestellt
-* Wenn keine andere Regel greift, wird der Bezeichner als Variable
-  formatiert
+* keywords are directly recognized
+* an identifier is a function, if it is followed by `(`
+* the default type for an identifier is a variable
 
 ```
 @def(special ident classes)
@@ -882,8 +880,8 @@
 		span_str(out, "num", ident);
 @end(special ident classes)
 ```
-* Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen
-  identifiziert
+* types and numeric values are formatted, if the identifier is neither
+  keyword nor function
 
 ```
 @add(process code helper)
@@ -896,7 +894,7 @@
 	}
 @end(process code helper)
 ```
-* Öffnet ein `<span>`-Tag mit einer bestimmten Klasse
+* opens `<span>` tag with a given class for a command
 
 ```
 @add(process code helper)
@@ -909,19 +907,17 @@
 	}
 @end(process code helper)
 ```
-* Öffnet ein Makro mit einem bestimmetn Namen
+* writes name of command
 
-# Notizen
-* Zu den Folien können Notizen mit `*` markiert werden
-* Notizen sind Teil einer Seite, aber nicht Teil einer Folie
+## Notes
+* notes are part of a page, but not part of a slide
 
 ```
 @add(html state enums)
 	, inNotes
 @end(html state enums)
 ```
-* Notizen sind ein eigener Zustand
-* Da sie mehrzeilig sein können
+* special state for states
 
 ```
 @def(close specials)
@@ -932,7 +928,7 @@
 	}
 @end(close specials)
 ```
-* Bei einer Leerzeile werden Notizen beendet
+* if output was in notes state, the list is closed
 
 ```
 @def(process note)
@@ -940,7 +936,7 @@
 	auto begin = note.begin();
 @end(process note)
 ```
-* Die Funktion überspringt den Stern und folgende Leerzeichen
+* quick access for limits
 
 ```
 @add(process note)
@@ -955,9 +951,9 @@
 	out << '\n';
 @end(process note)
 ```
-* Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus
-  gewechselt
-* Andernfalls wird nur eine neue Notiz geöffnet
+* switch into note state, if it is not the current state
+* otherwise open a new list entry
+* and write note
 
 ```
 @def(switch into note mode)
@@ -970,9 +966,8 @@
 	out << "<ul><li>\n";
 @end(switch into note mode)
 ```
-* Notizen können nur auf einer Seite erscheinen
-* Wenn noch keine Seite offen ist, dann öffnet die Funktion eine Seite
-* Die Funktion schreibt passende HTML-Tags
+* create a new page, if no page is open
+* open list
 
 ```
 @def(process content line)
@@ -982,8 +977,9 @@
 	}
 @end(process content line)
 ```
-* Die Zeile wird Zeichen für Zeichen abgearbeitet
-* Wenn keine Sonderbehandlung erfolgt, wird das Zeichen ausgegeben
+* go through the line character by character
+* if no special treatment happens, the character is copied to the
+  HTML output
 
 ```
 @def(special content line)
@@ -992,7 +988,7 @@
 	}
 @end(special content line)
 ```
-* Ein Backtick signalisiert eingeschobene Code-Schnippsel
+* handle embedded code
 
 ```
 @def(inline code)
@@ -1009,8 +1005,7 @@
 	}
 @end(inline code)
 ```
-* Eingeschobene Code-Schnippsel werden ebenfalls mit `@f(process_code)`
-  formatiert
+* if a closing tick is found, format the code with `@f(process_code)`
 
 ```
 @add(special content line)
@@ -1023,7 +1018,7 @@
 	}
 @end(special content line)
 ```
-* Zwei Sterne markieren den Start eines fetten Textes
+* `**` encloses bold text
 
 ```
 @def(bold block)
@@ -1036,7 +1031,7 @@
 	}
 @end(bold block)
 ```
-* Funktion sucht zwei weitere Sterne
+* search for the closing mark
 
 ```
 @add(bold block)
@@ -1049,8 +1044,7 @@
 	}
 @end(bold block)
 ```
-* Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett
-  formatiert
+* if end mark is found, format bold
 
 ```
 @def(do bold)
@@ -1062,18 +1056,17 @@
 	begin = w + 1;
 @end(do bold)
 ```
-* Formatiert Text fett
+* format bold
 
-# Absätze
-* Zwischen Folien verarbeitet `hex` Absätze mit normalen Text
+## Paragraphs
+* format paragraphs between slide groups
 
 ```
 @add(html state enums)
 	, inPara
 @end(html state enums)
 ```
-* Absätze sind ein eigener Zustand
-* Da sie mehrzeilig sein können
+* special state for paragraphs
 
 ```
 @add(close specials)
@@ -1086,7 +1079,7 @@
 	}
 @end(close specials)
 ```
-* Bei einer Leerzeile werden Absätze beendet beendet
+* close paragraph if necessary
 
 ```
 @def(process para)
@@ -1105,5 +1098,6 @@
 	out << '\n';
 @end(process para)
 ```
-* Am Anfang wird ein Absatz geöffnet
-* Danach gibt `hex` die Zeilen aus
+* close slide group
+* open paragraph
+* process content with embedded code

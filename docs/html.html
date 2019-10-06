@@ -2,17 +2,17 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>HTML-Präsentation generieren</title>
+<title>Generate HTML slides</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
-<h1>HTML-Präsentation generieren</h1>
+<h1>Generate HTML slides</h1>
 <div class="slides">
 <div>
 <div>
-<h1>HTML-Präsentation generieren</h1>
+<h1>Generate HTML slides</h1>
 </div>
 <ul><li>
-Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-Quelldateien  HTML-Präsentationen zu erzeugen
+code to generate HTML slides from the input files
 </li></ul>
 </div>
 <div><div>
@@ -26,6 +26,9 @@ Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
 </code></div>
+<ul><li>
+generate HTML slides
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -36,9 +39,7 @@ Diese Datei beschreibt Code, um aus den <code><span class="var">x</span></code>-
 <span class="macro">@end(<span class="name">write HTML file</span>)</span><br/>
 </code></div>
 <ul><li>
-Alle bisher prozessierten Dateien werden erneut durchgegangen
-</li><li>
-Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
+generate HTML slides, if they should be generated
 </li></ul>
 </div>
 <div><div>
@@ -59,7 +60,7 @@ Nach der Abarbeitung einer Datei wird deren Speicher freigegeben
 <span class="macro">@end(<span class="name">write cur HTML file</span>)</span><br/>
 </code></div>
 <ul><li>
-Die HTML hat den gleichen Pfad mit der Endung <code>.<span class="var">html</span></code> anstatt <code>.<span class="var">x</span></code>
+the name of the HTML slides results from replacing the extension of the  input file by <code>.<span class="var">html</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -69,7 +70,7 @@ Die HTML hat den gleichen Pfad mit der Endung <code>.<span class="var">html</spa
 <span class="macro">@end(<span class="name">write cur HTML file to out</span>)</span><br/>
 </code></div>
 <ul><li>
-Zuerst wird die Eingabe-Datei zum Lesen geöffnet
+write HTML to the just opened <code><span class="type">std</span>::<span class="type">ofstream</span></code> <code><span class="var">out</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -85,13 +86,9 @@ Zuerst wird die Eingabe-Datei zum Lesen geöffnet
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
-In einem Zustands-Automaten wird abgelegt, in welchem Modus sich die  gerade generierte HTML-Datei befindet
+the <code><span class="type">HtmlState</span></code> keeps track which part of a block is currently  written
 </li><li>
-Vor dem ersten Element muss der HTML-Header geschrieben werden
-</li><li>
-Ansonsten wird unterschieden, ob eine Folie bereits geöffnet wurde
-</li><li>
-Oder ob gerade keine Folie offen ist
+each input file must start with a header so that the HTML header can  be written
 </li></ul>
 </div>
 <div><div>
@@ -103,7 +100,7 @@ Oder ob gerade keine Folie offen ist
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
-Der aktuelle Status wird in <code><span class="type">HtmlStatus</span></code> abgelegt
+the current status needs more information besides the state
 </li></ul>
 </div>
 <div><div>
@@ -113,9 +110,7 @@ Der aktuelle Status wird in <code><span class="type">HtmlStatus</span></code> ab
 <span class="macro">@end(<span class="name">html state elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Status hat einen Konstruktor
-</li><li>
-Der aktuelle Zustand wird im Status abgelegt
+the state is part of the status
 </li></ul>
 </div>
 <div><div>
@@ -125,7 +120,7 @@ Der aktuelle Zustand wird im Status abgelegt
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Anwendung verwendet <code><span class="type">std</span>::<span class="type">string</span></code> überall
+needs <code><span class="type">std</span>::<span class="type">string</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -138,11 +133,7 @@ Die Anwendung verwendet <code><span class="type">std</span>::<span class="type">
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
 <ul><li>
-Beim Schreiben einer Datei wird zuerst der Status initialisiert
-</li><li>
-Die Eingabe wird Zeile für Zeile abgearbeitet
-</li><li>
-Bis das Datei-Ende erreicht ist
+process each block
 </li></ul>
 </div>
 <div><div>
@@ -153,6 +144,9 @@ Bis das Datei-Ende erreicht ist
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
+<ul><li>
+write header
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -171,6 +165,9 @@ Bis das Datei-Ende erreicht ist
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
+<ul><li>
+write code and notes
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -184,6 +181,9 @@ Bis das Datei-Ende erreicht ist
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
+<ul><li>
+write paragraphs
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -193,20 +193,20 @@ Bis das Datei-Ende erreicht ist
 <span class="macro">@end(<span class="name">close slide</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion schreibt das schließende <code>&lt;/<span class="var">div</span>&gt;</code>
+writes a <code>&lt;/<span class="var">div</span>&gt;</code> that closes a slide
 </li><li>
-Und setzt den Zustand passend
+and adjusts the state
 </li></ul>
 </div>
 </div>
-<h1>Überschriften</h1>
+<h2>Headings</h2>
 <div class="slides">
 <div>
 <div>
-<h1>Überschriften</h1>
+<h2>Headings</h2>
 </div>
 <ul><li>
-Überschriften beginnen mit Rauten <code><span class="keyword">#</span></code>
+writes heading entry
 </li></ul>
 </div>
 <div><div>
@@ -228,11 +228,13 @@ Und setzt den Zustand passend
 <span class="macro">@end(<span class="name">process header</span>)</span><br/>
 </code></div>
 <ul><li>
-Falls schon eine Seite offen ist, dann wird diese geschlossen
+headers start a new slide group
 </li><li>
-Dann wird eine HTML-Überschrift ausgegeben
+before the slide group a HTML heading is written
 </li><li>
-Und eine Folie mit einer HTML-Überschrift wird erzeugt
+the slide group starts with a slide that contains the heading
+</li><li>
+notes are also written
 </li></ul>
 </div>
 <div><div>
@@ -250,9 +252,9 @@ Und eine Folie mit einer HTML-Überschrift wird erzeugt
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
-Schreibt ein Zeichen
+writes a character in the HTML output
 </li><li>
-Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
+special characters are escaped
 </li></ul>
 </div>
 <div><div>
@@ -269,9 +271,9 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
 <span class="macro">@End(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
-Schreibt mehrere Zeichen
+writes multiple characters in the HTML outputs
 </li><li>
-Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
+by calling the single character version
 </li></ul>
 </div>
 <div><div>
@@ -289,7 +291,7 @@ Zeichen mit besonderer Bedeutung in HTML ersetzt die Funktion durch  Entitäten
 <span class="macro">@end(<span class="name">escape special</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Zeichen <code>&lt;</code>, <code>&gt;</code> und <code>&amp;</code> werden ersetzt
+the characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code> are replaced by their entities
 </li></ul>
 </div>
 <div><div>
@@ -305,11 +307,11 @@ Die Zeichen <code>&lt;</code>, <code>&gt;</code> und <code>&amp;</code> werden e
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
-Verarbeitet ein Code-Fragment
+writes a line of source code
 </li><li>
-Dies Funktion wird im Code Modus verwendet
+this is used in code blocks
 </li><li>
-Und wenn in Notizen Code-Fragmente eingebettet sind
+and in normal text that contains embedded code (e.g. in the notes or  headings)
 </li></ul>
 </div>
 <div><div>
@@ -324,9 +326,9 @@ Und wenn in Notizen Code-Fragmente eingebettet sind
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
 <ul><li>
-Diese Funktion formatiert beliebigen Markdown-Text als HTML
+writes normal Markdown content to HTML
 </li><li>
-Code-Schnippsel werden ebenfalls formatiert
+embedded code is pretty printed
 </li></ul>
 </div>
 <div><div>
@@ -339,7 +341,7 @@ Code-Schnippsel werden ebenfalls formatiert
 } <span class="macro">@end(<span class="name">write header tag</span>)</span><br/>
 </code></div>
 <ul><li>
-Die HTML-Überschrift enthält den eingelesenen Level
+writes a HTML header tag of the right level
 </li></ul>
 </div>
 <div><div>
@@ -361,14 +363,18 @@ Die HTML-Überschrift enthält den eingelesenen Level
 <span class="macro">@end(<span class="name">close previous HTML page</span>)</span><br/>
 </code></div>
 <ul><li>
-Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen  werden
+closes the current slide
+</li><li>
+and the current slide group
+</li><li>
+at the beginning of the document the HTML header is written
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write HTML header</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;!doctype html&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;html lang=\"de\"&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;html lang=\"en\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;head&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write HTML header entries</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/head&gt;\n"</span>;<br/>
@@ -376,11 +382,7 @@ Je nach Zustand müssen unterschiedlich viele HTML-Tags geschlossen  werden
 <span class="macro">@end(<span class="name">write HTML header</span>)</span><br/>
 </code></div>
 <ul><li>
-Dies wird am Anfang der HTML-Datei ausgegeben
-</li><li>
-Dafür muss jede <code>.<span class="var">x</span></code>-Datei mit einer Überschrift beginnen
-</li><li>
-Diese Überschrift ist dann auch der Titel der HTML-Datei
+write HTML header and opens the <code>&lt;<span class="var">body</span>&gt;</code> tag
 </li></ul>
 </div>
 <div><div>
@@ -396,22 +398,22 @@ Diese Überschrift ist dann auch der Titel der HTML-Datei
 <span class="macro">@end(<span class="name">write HTML header entries</span>)</span><br/>
 </code></div>
 <ul><li>
-Im Header wird das Zeichenformat auf UTF-8 gesetzt
+the document is encoded in <code><span class="var">UTF</span>-<span class="num">8</span></code>
 </li><li>
-Und der Titel ausgegeben
+the first header of the input file is also the <code>&lt;<span class="var">title</span>&gt;</code> of the  HTML document
 </li><li>
-Und die Stylesheet-Datei eingebunden
+also include a stylesheet
 </li></ul>
 </div>
 </div>
-<h1>Code formatieren</h1>
+<h2>Format Code</h2>
 <div class="slides">
 <div>
 <div>
-<h1>Code formatieren</h1>
+<h2>Format Code</h2>
 </div>
 <ul><li>
-Code kann auf Seiten oder in den Notizen ausgegeben werden
+Code is pretty printed
 </li></ul>
 </div>
 <div><div>
@@ -421,7 +423,7 @@ Code kann auf Seiten oder in den Notizen ausgegeben werden
 <span class="macro">@end(<span class="name">html state enums</span>)</span><br/>
 </code></div>
 <ul><li>
-Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
+special state to format code
 </li></ul>
 </div>
 <div><div>
@@ -443,9 +445,9 @@ Es gibt einen eigenen Zustand, wenn Code ausgegeben wird
 <span class="macro">@end(<span class="name">open code page</span>)</span><br/>
 </code></div>
 <ul><li>
-Beim Betreten wird eine Seite mit einem <code>&lt;<span class="var">code</span>&gt;</code>-Tag geöffnet
+a code slide contains one big <code>&lt;<span class="var">code</span>&gt;</code> tag
 </li><li>
-Und der Zustand passend gesetzt
+and sets the current state
 </li></ul>
 </div>
 <div><div>
@@ -456,7 +458,7 @@ Und der Zustand passend gesetzt
 <span class="macro">@end(<span class="name">close code page</span>)</span><br/>
 </code></div>
 <ul><li>
-Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
+closes <code>&lt;<span class="var">code</span>&gt;</code> tag when the slide is closed
 </li></ul>
 </div>
 <div><div>
@@ -471,9 +473,7 @@ Beim Verlassen wird die Folie (aber nicht die Seite) geschlossen
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn wir beim Beenden des Parsens noch im Code-Modus sind, dann  stimmt etwas nicht
-</li><li>
-Eine Fehlermeldung wird ausgegeben
+it is an error, if the code block was not closed at the end of a file
 </li></ul>
 </div>
 <div><div>
@@ -487,7 +487,9 @@ Eine Fehlermeldung wird ausgegeben
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
 <ul><li>
-Am Ende der Datei schließt die Funktion  die HTML-Tags
+closes the <code>&lt;<span class="var">body</span>&gt;</code> tag at the end of the input file
+</li><li>
+if some output was written
 </li></ul>
 </div>
 <div><div>
@@ -500,9 +502,9 @@ Am Ende der Datei schließt die Funktion  die HTML-Tags
 <span class="macro">@end(<span class="name">process code</span>)</span><br/>
 </code></div>
 <ul><li>
-Im Code Modus wird die Funktion aufgerufen
+processes code in a code slide
 </li><li>
-Und danach ein Zeilenumbruch ausgegeben
+write the code and adds a new line
 </li></ul>
 </div>
 <div><div>
@@ -522,9 +524,9 @@ Und danach ein Zeilenumbruch ausgegeben
 <span class="macro">@end(<span class="name">do code</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion zählt Tabulatoren am Anfang der Zeile
+counts the tab stops at the beginning of the line
 </li><li>
-Und gibt ein Tag für die passende Einrückung aus
+an <code>&lt;<span class="var">span</span>&gt;</code> for the indentation is written
 </li></ul>
 </div>
 <div><div>
@@ -537,9 +539,9 @@ Und gibt ein Tag für die passende Einrückung aus
 <span class="macro">@end(<span class="name">do code</span>)</span><br/>
 </code></div>
 <ul><li>
-Danach wird die Zeile Zeichen für Zeichen verarbeitet
+process each character
 </li><li>
-Wenn keine besondere Verarbeitung geschieht, gibt die Funktion das  Zeichen direkt aus
+if their is no special treatment, copy it to HTML
 </li></ul>
 </div>
 <div><div>
@@ -556,7 +558,7 @@ Wenn keine besondere Verarbeitung geschieht, gibt die Funktion das  Zeichen dire
 <span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn ein Zeichen eine Zeichenkette einleitet, wird diese geparst
+treat the next characters as a string
 </li></ul>
 </div>
 <div><div>
@@ -577,9 +579,11 @@ Wenn ein Zeichen eine Zeichenkette einleitet, wird diese geparst
 <span class="macro">@end(<span class="name">process string</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Zeichenkette endet mit dem gleichen Zeichen, mit dem sie  angefangen  hat
+search for the end of the string
 </li><li>
-Wenn dieses nicht durch einen Backslash escaped ist
+watch out for escape characters on the way
+</li><li>
+if no end is found, then treat the first character as an ordinary  character
 </li></ul>
 </div>
 <div><div>
@@ -598,7 +602,7 @@ Wenn dieses nicht durch einen Backslash escaped ist
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Diese Hilfsfunktion umgibt einen Bezeichner mit einem <code>&lt;<span class="var">span</span>&gt;</code>-Tag  einer bestimmten Klasse
+writes a <code>&lt;<span class="var">span</span>&gt;</code> with the given class around a string
 </li></ul>
 </div>
 <div><div>
@@ -610,7 +614,7 @@ Diese Hilfsfunktion umgibt einen Bezeichner mit einem <code>&lt;<span class="var
 <span class="macro">@end(<span class="name">process string</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&gt;</code> mit der Klasse  <code><span class="str">str</span></code>  aus
+write formatted string
 </li></ul>
 </div>
 <div><div>
@@ -635,6 +639,9 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
 </code></div>
+<ul><li>
+if a command is found, parse its argument
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -653,6 +660,9 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">macro loop</span>)</span><br/>
 </code></div>
+<ul><li>
+if a command argument is parsed, the command is parsed
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -664,6 +674,11 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in1"></span><span class="var">begin</span> = <span class="var">ae</span>;<br/>
 <span class="macro">@end(<span class="name">got macro</span>)</span><br/>
 </code></div>
+<ul><li>
+special commands can change the formatting and are processed first
+</li><li>
+if the command is not special, it will be copied to HTML with some  warning
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -677,6 +692,11 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in1"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, <span class="str">')'</span>);<br/>
 <span class="macro">@end(<span class="name">macro default</span>)</span><br/>
 </code></div>
+<ul><li>
+write error message
+</li><li>
+and copy command to HTML
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -696,6 +716,9 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
+<ul><li>
+fragment commands are copied with pretty printing to HTML
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -706,15 +729,17 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
+<ul><li>
+include commands are treated special
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">write include</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">ext</span> = <span class="var">arg</span>.<span class="fn">find_last_of</span>(<span class="str">'.'</span>);<br/>
-<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<br/>
-<span class="in2"></span><span class="var">ext</span> != <span class="type">std</span>::<span class="type">string</span>::<span class="var">npos</span>,<br/>
-<span class="in2"></span><span class="str">"no period"</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">ext</span> == <span class="type">std</span>::<span class="type">string</span>::<span class="var">npos</span>) {<br/>
+<span class="in2"></span><span class="var">ext</span> = <span class="var">arg</span>.<span class="fn">size</span>();<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="fn">writeMacroHeader</span>(<span class="var">out</span>, <span class="var">name</span>);<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;a href=\""</span> &lt;&lt;<br/>
 <span class="in2"></span><span class="var">arg</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="var">ext</span>) &lt;&lt;<br/>
@@ -724,7 +749,7 @@ Die Funktion gibt die Zeichenkette als <code>&lt;<span class="var">span</span>&g
 <span class="macro">@end(<span class="name">write include</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Datei-Extension wird beim generierten Link durch <code><span class="str">.html</span></code>  ersetzt
+includes also contain a link to the referenced file
 </li></ul>
 </div>
 <div><div>
@@ -744,6 +769,9 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
+<ul><li>
+format the argument as string
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -757,7 +785,7 @@ Die Datei-Extension wird beim generierten Link durch <code><span class="str">.ht
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Bezeichner <code><span class="str">f</span></code> steht für eine Funktion-Formatierung
+format the argument as a function
 </li></ul>
 </div>
 <div><div>
@@ -772,7 +800,7 @@ Der Bezeichner <code><span class="str">f</span></code> steht für eine Funktion-
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Bezeichner <code><span class="str">v</span></code> steht für eine Variablen-Formatierung
+format the argument as a variable
 </li></ul>
 </div>
 <div><div>
@@ -787,7 +815,7 @@ Der Bezeichner <code><span class="str">v</span></code> steht für eine Variablen
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Bezeichner <code><span class="str">k</span></code> steht für eine Schlüsselwort-Formatierung
+format the argument as a keyword
 </li></ul>
 </div>
 <div><div>
@@ -802,7 +830,7 @@ Der Bezeichner <code><span class="str">k</span></code> steht für eine Schlüsse
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Bezeichner <code><span class="str">n</span></code> steht für eine Wert-Formatierung
+format the argument as a numeric value
 </li></ul>
 </div>
 <div><div>
@@ -817,7 +845,7 @@ Der Bezeichner <code><span class="str">n</span></code> steht für eine Wert-Form
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Bezeichner <code><span class="str">t</span></code> steht für eine Typ-Formatierung
+format the argument as a type
 </li></ul>
 </div>
 <div><div>
@@ -831,7 +859,9 @@ Der Bezeichner <code><span class="str">t</span></code> steht für eine Typ-Forma
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch dargestellt
+create a line break in the HTML output
+</li><li>
+the generated source code does not contain this line break
 </li></ul>
 </div>
 <div><div>
@@ -847,7 +877,7 @@ Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch da
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-<code>@<span class="var">priv</span></code>-Makro ist ein Bezeichner
+<code>@<span class="var">priv</span></code> commands are formatted specially in the HTML output
 </li></ul>
 </div>
 <div><div>
@@ -863,7 +893,7 @@ Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch da
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
 </code></div>
 <ul><li>
-<code>@<span class="var">magic</span></code>-Makro ist ein Wert
+<code>@<span class="var">magic</span></code> commands are formatted specially in the HTML output
 </li></ul>
 </div>
 <div><div>
@@ -873,7 +903,7 @@ Der Bezeichner <code><span class="str">b</span></code> wird als Zeilenumbruch da
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion verwendet <code><span class="type">std</span>::<span class="var">isalnum</span></code>
+needs <code><span class="type">std</span>::<span class="var">isalnum</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -888,9 +918,7 @@ Die Funktion verwendet <code><span class="type">std</span>::<span class="var">is
 <span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
 </code></div>
 <ul><li>
-An der aktuellen Position wird ein Identifier gesucht
-</li><li>
-Wenn dieser gefunden wird, dann wird er abgearbeitet
+checks if at the current position is an identifier
 </li></ul>
 </div>
 <div><div>
@@ -906,9 +934,9 @@ Wenn dieser gefunden wird, dann wird er abgearbeitet
 <span class="macro">@end(<span class="name">find identifier end</span>)</span><br/>
 </code></div>
 <ul><li>
-Zeichen und Ziffern können einen Identifier bilden
+alphanumeric characters can form an identifier
 </li><li>
-Zusätzlich noch der Unterstrich und das Dollar-Zeichen
+also <code><span class="var">_</span></code>, <code><span class="var">$</span></code> and <code><span class="keyword">#</span></code> are valid parts of an identifier
 </li></ul>
 </div>
 <div><div>
@@ -923,11 +951,9 @@ Zusätzlich noch der Unterstrich und das Dollar-Zeichen
 <span class="macro">@end(<span class="name">process identifier</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="var">begin</span></code> wird am Anfang gesetzt, da die Makro-Verarbeitung dieses ggf.  korrigiert
+the new input is one before the end of the identifier
 </li><li>
-Sonst wird der Identifier normal verarbeitet
-</li><li>
-Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem  Identifier folgt
+because the loop will increment it
 </li></ul>
 </div>
 <div><div>
@@ -937,7 +963,7 @@ Bei der normalen Verarbeitung ist wichtig, welches Zeichen dem  Identifier folgt
 <span class="macro">@end(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-Besondere Bezeichner werden in <code><span class="type">std</span>::<span class="var">set</span></code> abgelegt
+needs <code><span class="type">std</span>::<span class="var">set</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -957,7 +983,7 @@ Besondere Bezeichner werden in <code><span class="type">std</span>::<span class=
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Prüft ob ein Bezeichner ein reserviertes Schlüsselwort ist
+checks if identifier is a known keyword
 </li></ul>
 </div>
 <div><div>
@@ -974,7 +1000,7 @@ Prüft ob ein Bezeichner ein reserviertes Schlüsselwort ist
 <span class="macro">@end(<span class="name">keywords</span>)</span><br/>
 </code></div>
 <ul><li>
-Reservierte Schlüsselwörter
+known keywords
 </li></ul>
 </div>
 <div><div>
@@ -987,7 +1013,7 @@ Reservierte Schlüsselwörter
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Prüft, ob ein Bezeichner ein Typ ist
+checks if identifier is a type
 </li></ul>
 </div>
 <div><div>
@@ -1004,7 +1030,7 @@ Prüft, ob ein Bezeichner ein Typ ist
 <span class="macro">@end(<span class="name">is type</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion  <code><span class="num">true</span></code>
+an identifier is a type, if it is one of the known types
 </li></ul>
 </div>
 <div><div>
@@ -1020,7 +1046,7 @@ Wenn der Bezeichner ein reservierter Typ ist, liefert die Funktion  <code><span 
 <span class="macro">@end(<span class="name">types</span>)</span><br/>
 </code></div>
 <ul><li>
-Reservierte Typen
+known types
 </li></ul>
 </div>
 <div><div>
@@ -1036,9 +1062,7 @@ Reservierte Typen
 <span class="macro">@end(<span class="name">is type</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Bezeichner ist zusätzlich ein Typ, wenn das sei erstes Zeichen  groß geschrieben ist
-</li><li>
-und das zweite Zeichen klein geschrieben ist
+an identifier is a type if it contains both an upper case and lower  case letter
 </li></ul>
 </div>
 <div><div>
@@ -1059,9 +1083,9 @@ und das zweite Zeichen klein geschrieben ist
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Bezeichner ist eine Zahl, wenn er mit einer Ziffer beginnt
+an identifier is a numeric value if it starts with a digit
 </li><li>
-Oder wenn er einen reservierten Namen hat
+or is one of the known numeric values
 </li></ul>
 </div>
 <div><div>
@@ -1084,9 +1108,11 @@ Oder wenn er einen reservierten Namen hat
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Bezeichner, dem eine öffnende Klammer folgt, wird immer als  Funktion dargestellt
+keywords are directly recognized
 </li><li>
-Wenn keine andere Regel greift, wird der Bezeichner als Variable  formatiert
+an identifier is a function, if it is followed by <code>(</code>
+</li><li>
+the default type for an identifier is a variable
 </li></ul>
 </div>
 <div><div>
@@ -1099,7 +1125,7 @@ Wenn keine andere Regel greift, wird der Bezeichner als Variable  formatiert
 <span class="macro">@end(<span class="name">special ident classes</span>)</span><br/>
 </code></div>
 <ul><li>
-Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen  identifiziert
+types and numeric values are formatted, if the identifier is neither  keyword nor function
 </li></ul>
 </div>
 <div><div>
@@ -1115,7 +1141,7 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen  identifizi
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Öffnet ein <code>&lt;<span class="var">span</span>&gt;</code>-Tag mit einer bestimmten Klasse
+opens <code>&lt;<span class="var">span</span>&gt;</code> tag with a given class for a command
 </li></ul>
 </div>
 <div><div>
@@ -1131,20 +1157,18 @@ Schlüsselwörter, Typen und Zahlen werden durch die Hilfsfunktionen  identifizi
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
 <ul><li>
-Öffnet ein Makro mit einem bestimmetn Namen
+writes name of command
 </li></ul>
 </div>
 </div>
-<h1>Notizen</h1>
+<h2>Notes</h2>
 <div class="slides">
 <div>
 <div>
-<h1>Notizen</h1>
+<h2>Notes</h2>
 </div>
 <ul><li>
-Zu den Folien können Notizen mit <code>*</code> markiert werden
-</li><li>
-Notizen sind Teil einer Seite, aber nicht Teil einer Folie
+notes are part of a page, but not part of a slide
 </li></ul>
 </div>
 <div><div>
@@ -1154,9 +1178,7 @@ Notizen sind Teil einer Seite, aber nicht Teil einer Folie
 <span class="macro">@end(<span class="name">html state enums</span>)</span><br/>
 </code></div>
 <ul><li>
-Notizen sind ein eigener Zustand
-</li><li>
-Da sie mehrzeilig sein können
+special state for states
 </li></ul>
 </div>
 <div><div>
@@ -1170,7 +1192,7 @@ Da sie mehrzeilig sein können
 <span class="macro">@end(<span class="name">close specials</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einer Leerzeile werden Notizen beendet
+if output was in notes state, the list is closed
 </li></ul>
 </div>
 <div><div>
@@ -1181,7 +1203,7 @@ Bei einer Leerzeile werden Notizen beendet
 <span class="macro">@end(<span class="name">process note</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Funktion überspringt den Stern und folgende Leerzeichen
+quick access for limits
 </li></ul>
 </div>
 <div><div>
@@ -1199,9 +1221,11 @@ Die Funktion überspringt den Stern und folgende Leerzeichen
 <span class="macro">@end(<span class="name">process note</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn noch keine Notizen geschrieben wurden, wird in den Notizen Modus  gewechselt
+switch into note state, if it is not the current state
 </li><li>
-Andernfalls wird nur eine neue Notiz geöffnet
+otherwise open a new list entry
+</li><li>
+and write note
 </li></ul>
 </div>
 <div><div>
@@ -1217,11 +1241,9 @@ Andernfalls wird nur eine neue Notiz geöffnet
 <span class="macro">@end(<span class="name">switch into note mode</span>)</span><br/>
 </code></div>
 <ul><li>
-Notizen können nur auf einer Seite erscheinen
+create a new page, if no page is open
 </li><li>
-Wenn noch keine Seite offen ist, dann öffnet die Funktion eine Seite
-</li><li>
-Die Funktion schreibt passende HTML-Tags
+open list
 </li></ul>
 </div>
 <div><div>
@@ -1234,9 +1256,9 @@ Die Funktion schreibt passende HTML-Tags
 <span class="macro">@end(<span class="name">process content line</span>)</span><br/>
 </code></div>
 <ul><li>
-Die Zeile wird Zeichen für Zeichen abgearbeitet
+go through the line character by character
 </li><li>
-Wenn keine Sonderbehandlung erfolgt, wird das Zeichen ausgegeben
+if no special treatment happens, the character is copied to the  HTML output
 </li></ul>
 </div>
 <div><div>
@@ -1248,7 +1270,7 @@ Wenn keine Sonderbehandlung erfolgt, wird das Zeichen ausgegeben
 <span class="macro">@end(<span class="name">special content line</span>)</span><br/>
 </code></div>
 <ul><li>
-Ein Backtick signalisiert eingeschobene Code-Schnippsel
+handle embedded code
 </li></ul>
 </div>
 <div><div>
@@ -1268,7 +1290,7 @@ Ein Backtick signalisiert eingeschobene Code-Schnippsel
 <span class="macro">@end(<span class="name">inline code</span>)</span><br/>
 </code></div>
 <ul><li>
-Eingeschobene Code-Schnippsel werden ebenfalls mit <code><span class="fn">process_code</span></code>  formatiert
+if a closing tick is found, format the code with <code><span class="fn">process_code</span></code>
 </li></ul>
 </div>
 <div><div>
@@ -1284,7 +1306,7 @@ Eingeschobene Code-Schnippsel werden ebenfalls mit <code><span class="fn">proces
 <span class="macro">@end(<span class="name">special content line</span>)</span><br/>
 </code></div>
 <ul><li>
-Zwei Sterne markieren den Start eines fetten Textes
+<code>**</code> encloses bold text
 </li></ul>
 </div>
 <div><div>
@@ -1300,7 +1322,7 @@ Zwei Sterne markieren den Start eines fetten Textes
 <span class="macro">@end(<span class="name">bold block</span>)</span><br/>
 </code></div>
 <ul><li>
-Funktion sucht zwei weitere Sterne
+search for the closing mark
 </li></ul>
 </div>
 <div><div>
@@ -1316,7 +1338,7 @@ Funktion sucht zwei weitere Sterne
 <span class="macro">@end(<span class="name">bold block</span>)</span><br/>
 </code></div>
 <ul><li>
-Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett  formatiert
+if end mark is found, format bold
 </li></ul>
 </div>
 <div><div>
@@ -1331,18 +1353,18 @@ Wenn Ende-Markierung gefunden wurde, wird der Text dazwischen fett  formatiert
 <span class="macro">@end(<span class="name">do bold</span>)</span><br/>
 </code></div>
 <ul><li>
-Formatiert Text fett
+format bold
 </li></ul>
 </div>
 </div>
-<h1>Absätze</h1>
+<h2>Paragraphs</h2>
 <div class="slides">
 <div>
 <div>
-<h1>Absätze</h1>
+<h2>Paragraphs</h2>
 </div>
 <ul><li>
-Zwischen Folien verarbeitet <code><span class="var">hex</span></code> Absätze mit normalen Text
+format paragraphs between slide groups
 </li></ul>
 </div>
 <div><div>
@@ -1352,9 +1374,7 @@ Zwischen Folien verarbeitet <code><span class="var">hex</span></code> Absätze m
 <span class="macro">@end(<span class="name">html state enums</span>)</span><br/>
 </code></div>
 <ul><li>
-Absätze sind ein eigener Zustand
-</li><li>
-Da sie mehrzeilig sein können
+special state for paragraphs
 </li></ul>
 </div>
 <div><div>
@@ -1370,7 +1390,7 @@ Da sie mehrzeilig sein können
 <span class="macro">@end(<span class="name">close specials</span>)</span><br/>
 </code></div>
 <ul><li>
-Bei einer Leerzeile werden Absätze beendet beendet
+close paragraph if necessary
 </li></ul>
 </div>
 <div><div>
@@ -1392,9 +1412,11 @@ Bei einer Leerzeile werden Absätze beendet beendet
 <span class="macro">@end(<span class="name">process para</span>)</span><br/>
 </code></div>
 <ul><li>
-Am Anfang wird ein Absatz geöffnet
+close slide group
 </li><li>
-Danach gibt <code><span class="var">hex</span></code> die Zeilen aus
+open paragraph
+</li><li>
+process content with embedded code
 </li></ul>
 </div>
 </body>

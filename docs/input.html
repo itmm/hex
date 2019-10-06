@@ -2,15 +2,18 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Eingabe-Dateien</title>
+<title>Input Files</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
-<h1>Eingabe-Dateien</h1>
+<h1>Input Files</h1>
 <div class="slides">
 <div>
 <div>
-<h1>Eingabe-Dateien</h1>
+<h1>Input Files</h1>
 </div>
+<ul><li>
+structure for handling input files
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -18,10 +21,10 @@
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">iostream</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">vector</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">filesystem</span>&gt;<br/>
-<span class="macro">@end(<span class="name">includes</span>)</span><br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
 </code></div>
 <ul><li>
-<code><span class="type">vector</span></code> ist ein Container für Source-Dateien
+needed includes
 </li></ul>
 </div>
 <div><div>
@@ -31,7 +34,7 @@
 <span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar  angelegt
+root fragments for each <code><span class="type">Inputs</span></code> collection
 </li></ul>
 </div>
 <div><div>
@@ -44,7 +47,7 @@ Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar  angelegt
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Liefert zuletzt geöffnete Datei
+last opened open input file
 </li></ul>
 </div>
 <div><div>
@@ -56,7 +59,7 @@ Liefert zuletzt geöffnete Datei
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Liefert erste benutzte Datei
+begin iterator for used input files
 </li></ul>
 </div>
 <div><div>
@@ -68,7 +71,7 @@ Liefert erste benutzte Datei
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Liefert zuletzt benutzte Datei
+end iterator for used input files
 </li></ul>
 </div>
 <div><div>
@@ -79,6 +82,9 @@ Liefert zuletzt benutzte Datei
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+number of used input files
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -90,11 +96,9 @@ Liefert zuletzt benutzte Datei
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Dateien werden über ihren Pfad identifiziert
+open new input file
 </li><li>
-Dieser wird als Name gespeichert
-</li><li>
-Das Verschieben der Ownership muss aber explizit erfolgen
+is recorded as used input file
 </li></ul>
 </div>
 <div><div>
@@ -106,20 +110,23 @@ Das Verschieben der Ownership muss aber explizit erfolgen
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+add a file to be processed
+</li></ul>
 </div>
 </div>
-<h1>Nächste Zeile</h1>
+<h1>Get next line</h1>
 <div class="slides">
 <div>
 <div>
-<h1>Nächste Zeile</h1>
+<h1>Get next line</h1>
 </div>
 <ul><li>
-Die Funktion <code><span class="fn">read_line</span></code> liest die nächste Zeile aus der  aktuellen  Datei
+reads next line from the current input file
 </li><li>
-Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem  Stapel der offenen Dateien geholt
+if the end is reached, the current input file in popped
 </li><li>
-Erst wenn die letzte Datei fertig gelesen wurde, wird <code><span class="num">false</span></code>  zurück  geliefert
+and the line is read from the previous input file
 </li></ul>
 </div>
 <div><div>
@@ -134,11 +141,7 @@ Erst wenn die letzte Datei fertig gelesen wurde, wird <code><span class="num">fa
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Prüft ob eine Datei bereits verwendet wurde
-</li><li>
-Alle bearbeiteten Dateien werden inspiziert
-</li><li>
-Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach  verarbeitet wird
+checks if the file is already used
 </li></ul>
 </div>
 <div><div>
@@ -152,20 +155,18 @@ Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach  verarbeitet 
 <span class="macro">@end(<span class="name">has checks</span>)</span><br/>
 </code></div>
 <ul><li>
-Bereits verarbeitete Dateien werden geprüft
+iterate over <code><span class="var">_used</span></code> collection
 </li></ul>
 </div>
 </div>
-<h1>Lokale Fragmente</h1>
+<h2>Local <code><span class="type">Frags</span></code></h2>
 <div class="slides">
 <div>
 <div>
-<h1>Lokale Fragmente</h1>
+<h2>Local <code><span class="type">Frags</span></code></h2>
 </div>
 <ul><li>
-Jede Datei hat eine eigene Fragment-Kollektion
-</li><li>
-Die Kollektionen bereits offener Dateien werden hierarchisch  integriert
+each input file has a <code><span class="type">Frag</span></code> collection
 </li></ul>
 </div>
 <div><div>
@@ -175,18 +176,18 @@ Die Kollektionen bereits offener Dateien werden hierarchisch  integriert
 <span class="macro">@end(<span class="name">input elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Jede Source-Datei hat eine eigene Fragment-Map mit lokalen  Definitionen
+<code><span class="type">Frag</span></code> collection of current file
 </li></ul>
 </div>
 </div>
-<h1>Zeilennummern</h1>
+<h2>Line Numbers</h2>
 <div class="slides">
 <div>
 <div>
-<h1>Zeilennummern</h1>
+<h2>Line Numbers</h2>
 </div>
 <ul><li>
-Jede Datei führt die aktuelle Zeiennummer mit
+for each open input file the current line number is recorded
 </li></ul>
 </div>
 <div><div>
@@ -196,7 +197,7 @@ Jede Datei führt die aktuelle Zeiennummer mit
 <span class="macro">@end(<span class="name">private open input els</span>)</span><br/>
 </code></div>
 <ul><li>
-Pro Datei wird die aktuelle Zeile festgehalten
+current line number
 </li></ul>
 </div>
 <div><div>
@@ -208,7 +209,7 @@ Pro Datei wird die aktuelle Zeile festgehalten
 <span class="macro">@end(<span class="name">open input elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Liefert Zeilennummer
+getter for current line number
 </li></ul>
 </div>
 <div><div>
@@ -218,7 +219,7 @@ Liefert Zeilennummer
 <span class="macro">@End(<span class="name">line read</span>)</span><br/>
 </code></div>
 <ul><li>
-Zeilennummer wird erhöht
+increase line number for each line
 </li></ul>
 </div>
 <div><div>
@@ -233,6 +234,9 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+find a fragment in the current open input file
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -244,6 +248,9 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+create a fragment in the current open input file
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -257,6 +264,11 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+return a fragment in the current open input file
+</li><li>
+if it is not present, it is created
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -280,6 +292,9 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+find a fragment in all but the current open input files or the <code><span class="var">_root</span></code>  collection
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -289,6 +304,9 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+add a fragment in the <code><span class="var">_root</span></code> collection
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -298,6 +316,9 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+getter for the <code><span class="var">_root</span></code> collection
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -311,6 +332,11 @@ Zeilennummer wird erhöht
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
+<ul><li>
+returns a global fragment
+</li><li>
+if it is not found, the function creates a fragment in the <code><span class="var">_root</span></code>  collection
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -322,11 +348,20 @@ Zeilennummer wird erhöht
 <span class="in3"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
 <span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<span class="str">"index.x"</span>)) {<br/>
 <span class="in3"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"no input paths\n"</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">_current_path</span> = <span class="var">_paths</span>.<span class="fn">begin</span>();<br/>
 <span class="macro">@End(<span class="name">clear inputs</span>)</span><br/>
 </code></div>
+<ul><li>
+resets all open and used files
+</li><li>
+if the <code><span class="var">_path</span></code>s are empty the default input file names will be used
+</li><li>
+if these exist
+</li></ul>
 </div>
 </body>
 </html>

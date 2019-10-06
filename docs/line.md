@@ -1,4 +1,5 @@
 # Entering Lines in Viewer and Editor
+* the `Line` class can refer to specific entry in a vector
 
 ```
 @Add(global elements)
@@ -10,6 +11,7 @@
 	};
 @End(global elements)
 ```
+* a line has private and public elements
 
 ```
 @def(line elements)
@@ -22,21 +24,27 @@
 	}
 @end(line elements)
 ```
+* to calculate the absolute line number, the method must know the
+  current line and the last line
 
 ```
 @def(line privates)
-	int _line = -1;
-	bool _relative = false;
+	int _line { -1 };
+	bool _relative { false };
 @end(line privates)
 ```
+* integer for the line
+* and a flag, if the line is relative
 
 ```
 @add(line elements)
 	operator bool() const {
-		return _line >= 0 ||  _relative;
+		return _line >= 0 || _relative;
 	}
 @end(line elements)
 ```
+* a line is valid, if the number is non-negative
+* or the line is relative
 
 ```
 @def(get line)
@@ -50,6 +58,10 @@
 	if (res > end) { res = end; }
 @end(get line)
 ```
+* if the line is not valid, the current line is returned
+* otherwise the line is assigned
+* if the line is relative, the value is added to the current line
+* the result is clamped to the valid interval
 
 ```
 @add(line privates)
@@ -59,12 +71,14 @@
 	{}
 @end(line privates)
 ```
+* constructor copies arguments
 
 ```
 @add(line elements)
 	Line() = default;
 @end(line elements)
 ```
+* empty constructor is possible
 
 ```
 @add(line elements)
@@ -73,6 +87,7 @@
 	}
 @end(line elements)
 ```
+* create relative line
 
 ```
 @add(line elements)
@@ -81,6 +96,7 @@
 	}
 @end(line elements)
 ```
+* create absolute line
 
 ```
 @add(line elements)
@@ -89,12 +105,14 @@
 	}
 @end(line elements)
 ```
+* create reference to first line
 
 ```
 @Add(includes)
 	#include <limits>
 @End(includes)
 ```
+* needs `std::numeric_limits`
 
 ```
 @add(line elements)
@@ -106,6 +124,7 @@
 	}
 @end(line elements)
 ```
+* end refers to a very big line number
 
 ```
 @Add(global elements)
@@ -113,12 +132,15 @@
 	@Put(range vars);
 @End(global elements)
 ```
+* needed global elements
 
 ```
 @Def(range vars)
 	Line line;
 @End(range vars)
 ```
+* variable holds current line specification
+* if any
 
 ```
 @Add(global elements)
@@ -134,6 +156,7 @@
 	}
 @End(global elements)
 ```
+* parse a decimal non-negative integer
 
 ```
 @Add(global elements)
@@ -147,6 +170,8 @@
 	}
 @End(global elements)
 ```
+* parses the head of a string, if it contains a line specification
+* the line parts are removed from the input string
 
 ```
 @def(parse line)
@@ -157,6 +182,7 @@
 	}
 @end(parse line)
 ```
+* a `.` is treated as the current line
 
 ```
 @add(parse line)
@@ -168,6 +194,7 @@
 	}
 @end(parse line)
 ```
+* a `+` signals a positive relative offset from the current line
 
 ```
 @add(parse line)
@@ -179,6 +206,7 @@
 	}
 @end(parse line)
 ```
+* a `-` signals a negative relative offset from the current line
 
 ```
 @add(parse line)
@@ -189,6 +217,7 @@
 	}
 @end(parse line)
 ```
+* a `$` signals the last line
 
 ```
 @add(parse line)
@@ -199,90 +228,142 @@
 	}
 @end(parse line);
 ```
+* a number without `+` or `-` signals an absolute line position
 
 ```
 @Def(do range)
 	line = get_line(cmd);
 @End(do range)
 ```
+* initialize the line from the command
 
 ```
 @Add(perform unit-tests)
-	@put(unit tests);
+	@put(unit-tests);
 @end(perform unit-tests)
 ```
+* own fragment for unit-tests
 
 ```
-@def(unit tests)
+@def(unit-tests)
 	ASSERT(! Line {});
+@end(unit-tests)
+```
+* empty `Line` is not valid
+
+```
+@add(unit-tests)
 	ASSERT(Line::begin());
 	ASSERT(Line::end());
-	ASSERT(Line::end());
+@end(unit-tests)
+```
+* begin and end are valid
+
+```
+@add(unit-tests)
 	ASSERT(Line::line(0));
+@end(unit-tests)
+```
+* absolute line is valid
+
+```
+@add(unit-tests)
 	ASSERT(Line::relative(0));
 	ASSERT(Line::relative(-2));
-@end(unit tests)
+@end(unit-tests)
 ```
+* relative lines are valid
 
 ```
-@add(unit tests)
+@add(unit-tests)
 	ASSERT(Line {}(5, 10) == 5);
+@end(unit-tests)
+```
+* empty line returns current line
+
+```
+@add(unit-tests)
 	ASSERT(Line::begin()(5, 10) == 0);
 	ASSERT(Line::end()(5, 10) == 10);
-@end(unit tests)
+@end(unit-tests)
 ```
+* begin and end return the correct values
 
 ```
-@add(unit tests)
+@add(unit-tests)
 	ASSERT(Line::line(0)(5, 10) == 0);
 	ASSERT(Line::line(6)(5, 10) == 6);
 	ASSERT(Line::line(20)(5, 10) == 10);
-@end(unit tests)
+@end(unit-tests)
 ```
+* absolute lines are returned
+* but may be clamped
 
 ```
-@add(unit tests)
+@add(unit-tests)
 	ASSERT(
 		Line::relative(2)(5, 10) == 7
 	);
+@end(unit-tests)
+```
+* simple positive relative line
+
+```
+@add(unit-tests)
 	ASSERT(
 		Line::relative(7)(5, 10) == 10
 	);
+@end(unit-tests)
+```
+* too big movement is clamped
+
+```
+@add(unit-tests)
 	ASSERT(
 		Line::relative(-2)(5, 10) == 3
 	);
+@end(unit-tests)
+```
+* simple negative relative line
+
+```
+@add(unit-tests)
 	ASSERT(
 		Line::relative(-7)(5, 10) == 0
 	);
-@end(unit tests)
+@end(unit-tests)
 ```
+* too big negative movement is clamped
 
 ```
-@add(unit tests) {
+@add(unit-tests) {
 	std::string f = "+3";
 	ASSERT(
 		get_line(f)(5, 10) == 8
 	);
-} @end(unit tests)
+} @end(unit-tests)
 ```
+* parse positive relative
 
 ```
-@add(unit tests) {
+@add(unit-tests) {
 	std::string f = ".";
 	ASSERT(
 		get_line(f)(5, 10) == 5
 	);
-} @end(unit tests)
+} @end(unit-tests)
 ```
+* parse current line
 
 ```
-@add(unit tests) {
+@add(unit-tests) {
 	std::string f = "$";
 	ASSERT(
 		get_line(f)(5, 10) == 10 
 	);
-} @end(unit tests)
+} @end(unit-tests)
 ```
+* parse last line
 
 ```
 @Def(do block range)
@@ -295,6 +376,7 @@
 	}
 @End(do block range)
 ```
+* parse range over blocks collection
 
 ```
 @Def(do inputs range)
@@ -307,6 +389,7 @@
 	}
 @End(do inputs range)
 ```
+* parse range over input files
 
 ```
 @Def(do str range)
@@ -319,3 +402,5 @@
 	}
 @End(do str range)
 ```
+* string ranges do not support relative movement
+

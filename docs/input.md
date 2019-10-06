@@ -1,21 +1,21 @@
-# Eingabe-Dateien
+# Input Files
+* structure for handling input files
 
 ```
 @Add(includes)
 	#include <iostream>
 	#include <vector>
 	#include <filesystem>
-@end(includes)
+@End(includes)
 ```
-* `vector` ist ein Container für Source-Dateien
+* needed includes
 
 ```
 @Add(private inputs elements)
 	FragMap _root;
 @End(private inputs elements)
 ```
-* Kollektion mit allen Fragmenten wird für folgende Schritte sichtbar
-  angelegt
+* root fragments for each `Inputs` collection
 
 ```
 @Add(inputs elements)
@@ -25,7 +25,7 @@
 	}
 @End(inputs elements)
 ```
-* Liefert zuletzt geöffnete Datei
+* last opened open input file
 
 ```
 @Add(inputs elements)
@@ -34,7 +34,7 @@
 	}
 @End(inputs elements)
 ```
-* Liefert erste benutzte Datei
+* begin iterator for used input files
 
 ```
 @Add(inputs elements)
@@ -43,7 +43,7 @@
 	}
 @End(inputs elements)
 ```
-* Liefert zuletzt benutzte Datei
+* end iterator for used input files
 
 ```
 @Add(inputs elements)
@@ -52,6 +52,7 @@
 	}
 @End(inputs elements)
 ```
+* number of used input files
 
 ```
 @Add(inputs elements)
@@ -61,9 +62,8 @@
 	}
 @End(inputs elements)
 ```
-* Dateien werden über ihren Pfad identifiziert
-* Dieser wird als Name gespeichert
-* Das Verschieben der Ownership muss aber explizit erfolgen
+* open new input file
+* is recorded as used input file
 
 ```
 @Add(inputs elements)
@@ -73,14 +73,12 @@
 	}
 @End(inputs elements)
 ```
+* add a file to be processed
 
-# Nächste Zeile
-* Die Funktion `@f(read_line)` liest die nächste Zeile aus der
-  aktuellen  Datei
-* Wenn das Dateiende erreicht ist, wird die nächste Datei aus dem
-  Stapel der offenen Dateien geholt
-* Erst wenn die letzte Datei fertig gelesen wurde, wird `false`  zurück
-  geliefert
+# Get next line
+* reads next line from the current input file
+* if the end is reached, the current input file in popped
+* and the line is read from the previous input file
 
 ```
 @Add(inputs elements)
@@ -92,10 +90,7 @@
 	}
 @End(inputs elements)
 ```
-* Prüft ob eine Datei bereits verwendet wurde
-* Alle bearbeiteten Dateien werden inspiziert
-* Dadurch wird bei Einbettungen verhindert, dass eine Datei mehrfach
-  verarbeitet wird
+* checks if the file is already used
 
 ```
 @def(has checks)
@@ -106,30 +101,27 @@
 	}
 @end(has checks)
 ```
-* Bereits verarbeitete Dateien werden geprüft
+* iterate over `_used` collection
 
-# Lokale Fragmente
-* Jede Datei hat eine eigene Fragment-Kollektion
-* Die Kollektionen bereits offener Dateien werden hierarchisch
-  integriert
+## Local `Frags`
+* each input file has a `Frag` collection
 
 ```
 @Add(input elements)
 	FragMap frags;
 @end(input elements)
 ```
-* Jede Source-Datei hat eine eigene Fragment-Map mit lokalen
-  Definitionen
+* `Frag` collection of current file
 
-# Zeilennummern
-* Jede Datei führt die aktuelle Zeiennummer mit
+## Line Numbers
+* for each open input file the current line number is recorded
 
 ```
 @Add(private open input els)
 	int _line = 0;
 @end(private open input els)
 ```
-* Pro Datei wird die aktuelle Zeile festgehalten
+* current line number
 
 ```
 @Add(open input elements)
@@ -138,14 +130,14 @@
 	}
 @end(open input elements)
 ```
-* Liefert Zeilennummer
+* getter for current line number
 
 ```
 @Def(line read)
 	++_line;
 @End(line read)
 ```
-* Zeilennummer wird erhöht
+* increase line number for each line
 
 ```
 @Add(inputs elements)
@@ -158,6 +150,7 @@
 	}
 @End(inputs elements)
 ```
+* find a fragment in the current open input file
 
 ```
 @Add(inputs elements)
@@ -168,6 +161,7 @@
 	}
 @End(inputs elements)
 ```
+* create a fragment in the current open input file
 
 ```
 @Add(inputs elements)
@@ -180,6 +174,8 @@
 	}
 @End(inputs elements)
 ```
+* return a fragment in the current open input file
+* if it is not present, it is created
 
 ```
 @Add(inputs elements)
@@ -202,6 +198,8 @@
 	}
 @End(inputs elements)
 ```
+* find a fragment in all but the current open input files or the `_root`
+  collection
 
 ```
 @Add(inputs elements)
@@ -210,6 +208,7 @@
 	}
 @End(inputs elements)
 ```
+* add a fragment in the `_root` collection
 
 ```
 @Add(inputs elements)
@@ -218,6 +217,7 @@
 	}
 @End(inputs elements)
 ```
+* getter for the `_root` collection
 
 ```
 @Add(inputs elements)
@@ -230,6 +230,9 @@
 	}
 @End(inputs elements)
 ```
+* returns a global fragment
+* if it is not found, the function creates a fragment in the `_root`
+  collection
 
 ```
 @Def(clear inputs)
@@ -240,8 +243,14 @@
 			_paths.push_back("index.md");
 		} else if (std::filesystem::exists("index.x")) {
 			_paths.push_back("index.x");
+		} else {
+			std::cerr << "no input paths\n";
 		}
 	}
 	_current_path = _paths.begin();
 @End(clear inputs)
 ```
+* resets all open and used files
+* if the `_path`s are empty the default input file names will be used
+* if these exist
+
