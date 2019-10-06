@@ -1,25 +1,27 @@
-# Write all `x`-files
-* Replace all read `x`-files with the current content
+# Write all input files
+* Replace all read input files with the current content
 
 ```
 @Add(global elements)
-	@put(needed by write_x)
-	void write_x() {
+	@put(needed by write_input)
+	void write_input() {
 		for (const auto &cur : inputs) {
 			@put(write cur);
 		}
 	}
 @End(global elements)
 ```
+* write all input files
 
 ```
 @Add(run loop)
 	if (cmd == "W" || cmd == "Write") {
-		write_x();
+		write_input();
 		continue;
 	}
 @End(run loop)
 ```
+* write all input files
 
 ```
 @def(write cur)
@@ -28,6 +30,7 @@
 	};
 @end(write cur)
 ```
+* open output file
 
 ```
 @add(write cur)
@@ -44,6 +47,7 @@
 	}
 @end(write cur)
 ```
+* write each block
 
 ```
 @def(write block)
@@ -53,6 +57,7 @@
 	}
 @end(write block)
 ```
+* write header
 
 ```
 @def(write header)
@@ -67,6 +72,7 @@
 	}
 @end(write header)
 ```
+* write header Markdown
 
 ```
 @add(write block)
@@ -76,6 +82,7 @@
 	}
 @end(write block)
 ```
+* write code
 
 ```
 @def(write code)
@@ -86,6 +93,7 @@
 	out << "```\n";
 @end(write code)
 ```
+* write code Markdown
 
 ```
 @add(write block)
@@ -95,9 +103,10 @@
 	}
 @end(write block)
 ```
+* write paragraph
 
 ```
-@def(needed by write_x)
+@def(needed by write_input)
 	std::string split(
 		std::string &s, int width
 	) {
@@ -119,11 +128,12 @@
 		s.erase(s.begin(), c);
 		return res;
 	}
-@end(needed by write_x)
+@end(needed by write_input)
 ```
+* split strings to a specified width
 
 ```
-@add(needed by write_x)
+@add(needed by write_input)
 	void multi_write(
 		std::ofstream &out,
 		std::string str,
@@ -136,8 +146,9 @@
 			first_in = other_in;
 		}
 	}
-@end(needed by write_x)
+@end(needed by write_input)
 ```
+* writes a long string with different prefixes
 
 ```
 @def(write para)
@@ -150,6 +161,7 @@
 	}
 @end(write para)
 ```
+* paragraphs are split without any prefixes
 
 ```
 @def(write notes)
@@ -158,21 +170,24 @@
 	}
 @end(write notes)
 ```
+* notes are split
 
 ```
 @Add(run loop)
 	if (cmd == "H" || cmd == "Html") {
-		write_x();
+		write_input();
 		write_html();
 		continue;
 	}
 @End(run loop)
 ```
+* write input files
+* and generate HTML files
 
 ```
 @Add(run loop)
 	if (cmd == "F" || cmd == "Files") {
-		write_x();
+		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
 		try {
@@ -189,11 +204,14 @@
 	}
 @End(run loop)
 ```
+* write input files
+* and generate HTML files
+* and generate source files
 
 ```
 @Add(run loop)
 	if (cmd == "P" || cmd == "Process") {
-		write_x();
+		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
 		try {
@@ -211,16 +229,22 @@
 	}
 @End(run loop)
 ```
+* write input files
+* and generate HTML files
+* and generate source files
+* and process files
 
 ```
 @Add(run loop)
 	if (cmd == "M" || cmd == "Make") {
-		write_x();
+		write_input();
 		system("make");
 		continue;
 	}
 @End(run loop)
 ```
+* write input files
+* and invoke `make`
 
 ```
 @Add(global elements)
@@ -236,57 +260,69 @@
 	}
 @End(global elements)
 ```
+* check is one string is a prefix of another string
 
 ```
 @Add(run loop) {
 	static const std::string p { "M " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("make " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } @End(run loop)
 ```
+* write input files
+* and run make with a specific target
 
 ```
 @Add(run loop) {
 	static const std::string p { "Make " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("make " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } @End(run loop)
 ```
+* write input files
+* and run make with a specific target
 
 ```
 @Add(run loop)
 	if (cmd == "G" || cmd == "Git") {
-		write_x();
+		write_input();
 		system("git status");
 		continue;
 	}
 @End(run loop)
 ```
+* write input files
+* and run `git status`
 
 ```
 @Add(run loop) {
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("git " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } @End(run loop)
 ```
+* write input files
+* and run `git` with arguments
 
 ```
 @Add(run loop) {
 	static const std::string p { "Git " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("git " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } @End(run loop)
 ```
+* write input files
+* and run `git` with arguments
+

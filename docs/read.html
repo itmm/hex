@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Read the input files</title>
@@ -12,7 +12,7 @@
 <h1>Read the input files</h1>
 </div>
 <ul><li>
-Processes the input files line by line
+processes the input files line by line
 </li></ul>
 </div>
 <div><div>
@@ -24,7 +24,7 @@ Processes the input files line by line
 <ul><li>
 shorthand for global fragment
 </li><li>
-groups all code from this <code><span class="var">x</span></code>-file together
+groups all code from this input file together
 </li></ul>
 </div>
 </div>
@@ -291,15 +291,12 @@ needs <code><span class="type">std</span>::<span class="type">ifstream</span></c
 <span class="macro">@Def(<span class="name">private open input els</span>)</span><br/>
 <span class="in1"></span><span class="type">Input</span> <span class="var">_input</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="var">_file</span>;<br/>
-<span class="in1"></span>// <span class="type">char</span> <span class="var">_last</span>;<br/>
 <span class="macro">@End(<span class="name">private open input els</span>)</span><br/>
 </code></div>
 <ul><li>
 open file contains a file
 </li><li>
 and an input stream
-</li><li>
-and the last char read
 </li></ul>
 </div>
 <div><div>
@@ -484,19 +481,15 @@ and an iterator for the current path
 <span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
-Es gibt immer eine aktuelle Datei, die gerade gelesen wird
+<code><span class="var">_open</span></code> contains all files open for reading
 </li><li>
-Mitten während des Lesens können andere Dateien eingelesen  (inkludiert) werden
+the last file in this collection is the current input file
 </li><li>
-Daher gibt es einen Stapel offener Dateien
+more files are pushed on it with include commands
 </li><li>
-Aus der letzten wird aktuell gelesen
+<code><span class="var">_used</span></code> contains all the files that were opened
 </li><li>
-Eine Liste aller gelesenen Dateien wird in <code><span class="var">used</span></code> verwaltet
-</li><li>
-Damit wird verhindert, dass eine Datei mehrfach gelesen wird
-</li><li>
-Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert  werden müssen
+this is used to avoid including files multiple times
 </li></ul>
 </div>
 <div><div>
@@ -522,9 +515,9 @@ Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert  werden müssen
 <span class="macro">@end(<span class="name">inputs read line</span>)</span><br/>
 </code></div>
 <ul><li>
-Probiert aus aktueller Datei eine Zeile zu lesen
+reads a line from the current file
 </li><li>
-Wandert bei Misserfolg durch andere offenen Dateien
+when the end is reached, the file is popped and the line is read from  the previous file
 </li></ul>
 </div>
 <div><div>
@@ -540,6 +533,9 @@ Wandert bei Misserfolg durch andere offenen Dateien
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">save open input</span>)</span><br/>
 </code></div>
+<ul><li>
+overwrite the <code><span class="var">_used</span></code> file with the current opened file
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -552,6 +548,9 @@ Wandert bei Misserfolg durch andere offenen Dateien
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">assure not empty</span>)</span><br/>
 </code></div>
+<ul><li>
+if the file was empty, one dummy block is added
+</li></ul>
 </div>
 </body>
 </html>

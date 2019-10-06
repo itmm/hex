@@ -1,41 +1,47 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Write all `x`-files</title>
+<title>Write all input files</title>
 <link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
 <body>
-<h1>Write all <code><span class="var">x</span></code>-files</h1>
+<h1>Write all input files</h1>
 <div class="slides">
 <div>
 <div>
-<h1>Write all <code><span class="var">x</span></code>-files</h1>
+<h1>Write all input files</h1>
 </div>
 <ul><li>
-Replace all read <code><span class="var">x</span></code>-files with the current content
+Replace all read input files with the current content
 </li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">needed by write_x</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">write_x</span>() {<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">needed by write_input</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">write_input</span>() {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">write cur</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
 </code></div>
+<ul><li>
+write all input files
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"W"</span> || <span class="var">cmd</span> == <span class="str">"Write"</span>) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write all input files
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -45,6 +51,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">write cur</span>)</span><br/>
 </code></div>
+<ul><li>
+open output file
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -62,6 +71,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write cur</span>)</span><br/>
 </code></div>
+<ul><li>
+write each block
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -72,6 +84,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write block</span>)</span><br/>
 </code></div>
+<ul><li>
+write header
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -87,6 +102,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write header</span>)</span><br/>
 </code></div>
+<ul><li>
+write header Markdown
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -97,6 +115,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write block</span>)</span><br/>
 </code></div>
+<ul><li>
+write code
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -108,6 +129,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"```\n"</span>;<br/>
 <span class="macro">@end(<span class="name">write code</span>)</span><br/>
 </code></div>
+<ul><li>
+write code Markdown
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -118,10 +142,13 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write block</span>)</span><br/>
 </code></div>
+<ul><li>
+write paragraph
+</li></ul>
 </div>
 <div><div>
 <code>
-<span class="macro">@def(<span class="name">needed by write_x</span>)</span><br/>
+<span class="macro">@def(<span class="name">needed by write_input</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">split</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>, <span class="type">int</span> <span class="var">width</span><br/>
 <span class="in1"></span>) {<br/>
@@ -143,12 +170,15 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in2"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="var">s</span>.<span class="fn">begin</span>(), <span class="var">c</span>);<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">needed by write_x</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_input</span>)</span><br/>
 </code></div>
+<ul><li>
+split strings to a specified width
+</li></ul>
 </div>
 <div><div>
 <code>
-<span class="macro">@add(<span class="name">needed by write_x</span>)</span><br/>
+<span class="macro">@add(<span class="name">needed by write_input</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">multi_write</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ofstream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">str</span>,<br/>
@@ -161,8 +191,11 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in3"></span><span class="var">first_in</span> = <span class="var">other_in</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">needed by write_x</span>)</span><br/>
+<span class="macro">@end(<span class="name">needed by write_input</span>)</span><br/>
 </code></div>
+<ul><li>
+writes a long string with different prefixes
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -176,6 +209,9 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write para</span>)</span><br/>
 </code></div>
+<ul><li>
+paragraphs are split without any prefixes
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -185,23 +221,31 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write notes</span>)</span><br/>
 </code></div>
+<ul><li>
+notes are split
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"H"</span> || <span class="var">cmd</span> == <span class="str">"Html"</span>) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">write_html</span>();<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and generate HTML files
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"F"</span> || <span class="var">cmd</span> == <span class="str">"Files"</span>) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">write_html</span>();<br/>
 <span class="in2"></span><span class="type">Inputs</span> <span class="var">old</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="var">inputs</span>) };<br/>
 <span class="in2"></span><span class="keyword">try</span> {<br/>
@@ -218,12 +262,19 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and generate HTML files
+</li><li>
+and generate source files
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"P"</span> || <span class="var">cmd</span> == <span class="str">"Process"</span>) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">write_html</span>();<br/>
 <span class="in2"></span><span class="type">Inputs</span> <span class="var">old</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="var">inputs</span>) };<br/>
 <span class="in2"></span><span class="keyword">try</span> {<br/>
@@ -241,17 +292,31 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and generate HTML files
+</li><li>
+and generate source files
+</li><li>
+and process files
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"M"</span> || <span class="var">cmd</span> == <span class="str">"Make"</span>) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">system</span>(<span class="str">"make"</span>);<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and invoke <code><span class="var">make</span></code>
+</li></ul>
 </div>
 <div><div>
 <code>
@@ -268,65 +333,93 @@ Replace all read <code><span class="var">x</span></code>-files with the current 
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
 </code></div>
+<ul><li>
+check is one string is a prefix of another string
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"M "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">system</span>((<span class="str">"make "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>());<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and run make with a specific target
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"Make "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">system</span>((<span class="str">"make "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>());<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and run make with a specific target
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"G"</span> || <span class="var">cmd</span> == <span class="str">"Git"</span>) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">system</span>(<span class="str">"git status"</span>);<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and run <code><span class="var">git</span> <span class="var">status</span></code>
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"G "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">system</span>((<span class="str">"git "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>());<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and run <code><span class="var">git</span></code> with arguments
+</li></ul>
 </div>
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"Git "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
-<span class="in2"></span><span class="fn">write_x</span>();<br/>
+<span class="in2"></span><span class="fn">write_input</span>();<br/>
 <span class="in2"></span><span class="fn">system</span>((<span class="str">"git "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>());<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
 </code></div>
+<ul><li>
+write input files
+</li><li>
+and run <code><span class="var">git</span></code> with arguments
+</li></ul>
 </div>
 </body>
 </html>

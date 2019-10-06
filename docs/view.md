@@ -1,30 +1,42 @@
 # Interactive Display of slides
+* display slides in a terminal editor
 
 ```
 @Add(global elements)
 	bool interactive = false;
+@End(global elements)
+```
+* is `hx` running in interactive mode
+
+```
+@Add(global elements)
 	std::vector<Input>::iterator curInput;
 	std::vector<Block>::iterator curBlock;
 @End(global elements)
 ```
+* iterator to the current block
 
 ```
 @Add(global elements)
 	bool write_files = true;
 @End(global elements)
 ```
+* should source files be automatically written
 
 ```
 @Add(global elements)
 	bool process_files = true;
 @End(global elements)
 ```
+* should files be automatically processed
+
 
 ```
 @Add(global elements)
 	bool html_files = true;
 @End(global elements)
 ```
+* should HTML slides be generated
 
 ```
 @Add(process argument)
@@ -40,6 +52,7 @@
 	}
 @End(process argument)
 ```
+* interactive mode turns off automatic generation
 
 ```
 @Add(main body)
@@ -48,6 +61,7 @@
 	}
 @End(main body)
 ```
+* run interactive editor
 
 ```
 @Def(interactive)
@@ -55,6 +69,7 @@
 	curBlock = curInput->blocks.begin();
 @End(interactive)
 ```
+* initialize on first block in first input file
 
 ```
 @Add(global elements)
@@ -63,6 +78,7 @@
 	}
 @End(global elements)
 ```
+* draw current block
 
 ```
 @Add(interactive)
@@ -72,6 +88,7 @@
 	}
 @End(interactive)
 ```
+* run interactive loop
 
 ```
 @Add(global elements)
@@ -80,6 +97,7 @@
 	}
 @End(global elements)
 ```
+* draw current position
 
 ```
 @Add(global elements)
@@ -90,6 +108,7 @@
 	}
 @End(global elements)
 ```
+* remove non-printable characters at the beginning of a string
 
 ```
 @Def(run loop)
@@ -102,6 +121,9 @@
 	@Put(do range);
 @End(run loop)
 ```
+* draw prompt
+* read command
+* process command
 
 ```
 @Add(run loop)
@@ -110,6 +132,7 @@
 	}
 @End(run loop)
 ```
+* quit interactive mode
 
 ```
 @Add(run loop)
@@ -125,6 +148,7 @@
 	}
 @End(run loop)
 ```
+* go to next block
 
 ```
 @Add(run loop)
@@ -140,6 +164,7 @@
 	}
 @End(run loop)
 ```
+* go to previous block
 
 ```
 @def(draw block)
@@ -155,6 +180,7 @@
 	}
 @end(draw block)
 ```
+* draw header block
 
 ```
 @add(draw block)
@@ -168,6 +194,7 @@
 	}
 @end(draw block)
 ```
+* draw code block
 
 ```
 @add(draw block)
@@ -179,6 +206,7 @@
 	}
 @end(draw block)
 ```
+* draw paragraph block
 
 ```
 @add(draw block)
@@ -189,6 +217,7 @@
 	std::cout << '\n';
 @end(draw block)
 ```
+* draw notes
 
 ```
 @def(draw position)
@@ -204,6 +233,9 @@
 	}
 @end(draw position)
 ```
+* draw current input file number
+* draw current input file name
+* draw current block number
 
 ```
 @Add(run loop)
@@ -220,6 +252,7 @@
 	}
 @End(run loop)
 ```
+* go to next input file
 
 ```
 @Add(run loop)
@@ -236,3 +269,5 @@
 	}
 @End(run loop)
 ```
+* go to previous input file
+

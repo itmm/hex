@@ -1,5 +1,5 @@
 # Read the input files
-* Processes the input files line by line
+* processes the input files line by line
 
 ```
 @Add(global elements)
@@ -7,7 +7,7 @@
 @End(global elements)
 ```
 * shorthand for global fragment
-* groups all code from this `x`-file together
+* groups all code from this input file together
 
 ## The `Inputs` class
 * this class manages multiple files
@@ -183,12 +183,10 @@
 @Def(private open input els)
 	Input _input;
 	std::ifstream _file;
-	// char _last;
 @End(private open input els)
 ```
 * open file contains a file
 * and an input stream
-* and the last char read
 
 ```
 @Def(open input elements)
@@ -325,15 +323,11 @@
 	std::vector<Input> _used;
 @End(private inputs elements)
 ```
-* Es gibt immer eine aktuelle Datei, die gerade gelesen wird
-* Mitten während des Lesens können andere Dateien eingelesen
-  (inkludiert) werden
-* Daher gibt es einen Stapel offener Dateien
-* Aus der letzten wird aktuell gelesen
-* Eine Liste aller gelesenen Dateien wird in `used` verwaltet
-* Damit wird verhindert, dass eine Datei mehrfach gelesen wird
-* Auch signalisiert es der HTML-Ausgabe, welche Dateien generiert
-  werden müssen
+* `_open` contains all files open for reading
+* the last file in this collection is the current input file
+* more files are pushed on it with include commands
+* `_used` contains all the files that were opened
+* this is used to avoid including files multiple times
 
 ```
 @rep(inputs read line)
@@ -356,8 +350,9 @@
 	throw No_More_Lines {};
 @end(inputs read line)
 ```
-* Probiert aus aktueller Datei eine Zeile zu lesen
-* Wandert bei Misserfolg durch andere offenen Dateien
+* reads a line from the current file
+* when the end is reached, the file is popped and the line is read from
+  the previous file
 
 ```
 @def(save open input)
@@ -371,6 +366,7 @@
 	}
 @end(save open input)
 ```
+* overwrite the `_used` file with the current opened file
 
 ```
 @def(assure not empty)
@@ -382,3 +378,5 @@
 	}
 @end(assure not empty)
 ```
+* if the file was empty, one dummy block is added
+

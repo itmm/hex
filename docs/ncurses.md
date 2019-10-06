@@ -1,4 +1,5 @@
 # NCurses Support
+* use NCurses interface for a full screen viewer/editor
 
 ```
 @Add(includes)
@@ -18,12 +19,14 @@
 	#endif
 @End(includes)
 ```
+* use autoconf to include the right headers
 
 ```
 @Add(includes)
 	#include <locale.h>
 @End(includes)
 ```
+* needed for switching to `UTF-8`
 
 ```
 @Add(global elements)
@@ -32,18 +35,21 @@
 	#endif
 @End(global elements)
 ```
+* only define if available
 
 ```
 @Def(ncurses globals)
 	@put(globals)
 @End(ncurses globals)
 ```
+* local fragment to reduce typing overhead
 
 ```
 @def(globals)
 	bool with_ncurses = false;
 @end(globals)
 ```
+* should NCurses be used
 
 ```
 @Add(process argument)
@@ -62,6 +68,9 @@
 	#endif
 @End(process argument)
 ```
+* command line argument can signal that NCurses should be used
+* this will disable automatic file generation
+* and the command line mode
 
 ```
 @Add(main body)
@@ -72,6 +81,7 @@
 	#endif
 @End(main body)
 ```
+* add NCurses interaction to the `@f(main)` function
 
 ```
 @add(globals)
@@ -86,6 +96,7 @@
 	};
 @end(globals)
 ```
+* special handler to automatically setup and tear down NCurses
 
 ```
 @def(setup curses)
@@ -96,18 +107,21 @@
 	noecho();
 @end(setup curses)
 ```
+* initialize NCurses
 
 ```
 @def(teardown curses)
 	endwin();
 @end(teardown curses)
 ```
+* close NCurses window
 
 ```
 @add(globals)
 	struct End_Of_Curses {};
 @end(globals)
 ```
+* special NCurses exception that terminates the NCurses interaction
 
 ```
 @add(globals)
@@ -120,6 +134,7 @@
 	}
 @end(globals)
 ```
+* draw page with NCurses
 
 ```
 @Def(curses interact)
@@ -138,12 +153,14 @@
 	} catch (const End_Of_Curses &) {}
 @End(curses interact)
 ```
+* loop until NCurses should be terminated
 
 ```
 @def(curses cases)
 	case 'q': throw End_Of_Curses {};
 @end(curses cases);
 ```
+* terminates NCurses
 
 ```
 @def(needed by draw page)
@@ -152,7 +169,12 @@
 		if (r) { draw_number(r); }
 		addch((l % 10) + '0');
 	}
+@end(needed by draw page)
+```
+* draw a number recursively
 
+```
+@add(needed by draw page)
 	void draw_line(int l) {
 		if (l <= 9) {
 			addch(' ');
@@ -162,6 +184,8 @@
 	}
 @end(needed by draw page)
 ```
+* draw a line number prefix
+* line numbers smaller than `10` are padded with a space
 
 ```
 @def(draw page)
@@ -179,6 +203,7 @@
 	}
 @end(draw page)
 ```
+* headers are written with the level number of `#`s
 
 ```
 @add(draw page)
@@ -194,6 +219,7 @@
 	}
 @end(draw page)
 ```
+* code blocks are prefixed with the code tag from Markdown
 
 ```
 @add(draw page)
@@ -207,6 +233,7 @@
 	}
 @end(draw page)
 ```
+* paragraphs are separated by empty lines
 
 ```
 @add(draw page)
@@ -220,6 +247,7 @@
 	addch('\n');
 @end(draw page)
 ```
+* notes are prefixed with `*`
 
 ```
 @add(draw page)
@@ -241,6 +269,9 @@
 	}
 @end(draw page)
 ```
+* draw the current input file number
+* then draw the input file name
+* draw the current block number
 
 
 ```
@@ -257,6 +288,7 @@
 	}
 @end(curses cases)
 ```
+* got to the next block
 
 ```
 @add(curses cases)
@@ -272,6 +304,7 @@
 	}
 @end(curses cases)
 ```
+* go to the previous block
 
 ```
 @add(curses cases)
@@ -288,6 +321,7 @@
 	}
 @end(curses cases)
 ```
+* go to the next input file
 
 ```
 @add(curses cases)
@@ -304,3 +338,5 @@
 	}
 @end(curses cases)
 ```
+* go to the previous input file
+

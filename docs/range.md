@@ -1,4 +1,5 @@
-# Pair of lines
+# Pair of `Line`s
+* one or two `Line`s form a range expression
 
 ```
 @Def(range prereqs)
@@ -11,6 +12,7 @@
 	};
 @End(range prereqs)
 ```
+* range has two `Line`s
 
 ```
 @def(range elements)
@@ -19,6 +21,9 @@
 	}
 @end(range elements)
 ```
+* first `Line`
+* if `_prev` is available, it is returned
+* otherwise `_last` is returned
 
 ```
 @add(range elements)
@@ -27,6 +32,7 @@
 	}
 @end(range elements)
 ```
+* getter for last read `Line`
 
 ```
 @add(range elements)
@@ -37,6 +43,7 @@
 	}
 @end(range elements)
 ```
+* push `Line` into `Range`
 
 ```
 @add(range elements)
@@ -45,12 +52,14 @@
 	}
 @end(range elements)
 ```
+* is `_last` a valid `Line`
 
 ```
 @Add(range vars)
 	Range range;
 @End(range vars)
 ```
+* global `Range` element
 
 ```
 @Rep(do range)
@@ -62,6 +71,8 @@
 	}
 @End(do range)
 ```
+* read one or two `Line` elements
+* two `Line` elements are separated with `,`
 
 ```
 @Rep(do block range)
@@ -74,6 +85,7 @@
 	}
 @End(do block range)
 ```
+* blocks use only one element from range
 
 ```
 @Rep(do inputs range)
@@ -86,6 +98,7 @@
 	}
 @End(do inputs range)
 ```
+* input files use only one element from range
 
 ```
 @Rep(do str range)
@@ -108,9 +121,13 @@
 	}
 @End(do str range)
 ```
+* strings can replace a full range with the new elements
 
 ```
 @Rep(range vars)
 	Range range;
 @End(range vars)
 ```
+* the fragment is replaced
+* other local variables are no longer needed
+

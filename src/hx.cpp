@@ -65,7 +65,7 @@
 
 	#include <limits>
 
-#line 4 "ncurses.md"
+#line 5 "ncurses.md"
 
 	#if defined HAVE_CONFIG_H
 		#include "config.h"
@@ -82,7 +82,7 @@
 		#include <curses.h>
 	#endif
 
-#line 23 "ncurses.md"
+#line 25 "ncurses.md"
 
 	#include <locale.h>
 
@@ -733,18 +733,18 @@
 	class Input {
 		public:
 			
-#line 246 "read.md"
+#line 244 "read.md"
 
 	Input(const std::string &path):
 		_path { path }
 	{}
 
-#line 256 "read.md"
+#line 254 "read.md"
 
 	Input(const Input &) = delete;
 	Input(Input &&) = default;
 
-#line 265 "read.md"
+#line 263 "read.md"
 
 	Input &operator=(
 		const Input &
@@ -753,7 +753,7 @@
 		Input &&
 	) = default;
 
-#line 278 "read.md"
+#line 276 "read.md"
 
 	const std::string &path() const {
 		return _path;
@@ -778,14 +778,14 @@
 	class Open_Input {
 		public:
 			
-#line 194 "read.md"
+#line 192 "read.md"
 
 	Open_Input(const std::string &path):
 		_input { path },
 		_file { path.c_str() }
 	{}
 
-#line 204 "read.md"
+#line 202 "read.md"
 
 	Open_Input(
 		const Open_Input &
@@ -794,7 +794,7 @@
 		Open_Input &&
 	) = default;
 
-#line 217 "read.md"
+#line 215 "read.md"
 
 	Open_Input &operator=(
 		const Open_Input &
@@ -803,22 +803,22 @@
 		Open_Input &&
 	) = default;
 
-#line 230 "read.md"
+#line 228 "read.md"
 
 	Input &input() { return _input; }
 
-#line 237 "read.md"
+#line 235 "read.md"
 
 	const Input &input() const {
 		return _input;
 	}
 
-#line 287 "read.md"
+#line 285 "read.md"
 
 	void read_line(std::string &line) {
 		if (_file.is_open()) {
 			
-#line 300 "read.md"
+#line 298 "read.md"
 
 	if (std::getline(_file, line)) {
 		
@@ -826,13 +826,13 @@
 
 	++_line;
 
-#line 302 "read.md"
+#line 300 "read.md"
 ;
 		return;
 	}
 	_file.close();
 
-#line 290 "read.md"
+#line 288 "read.md"
 ;
 		}
 		throw No_More_Lines {};
@@ -856,7 +856,6 @@
 
 	Input _input;
 	std::ifstream _file;
-	// char _last;
 
 #line 120 "input.md"
 
@@ -1035,13 +1034,13 @@
 ;
 		private:
 			
-#line 313 "read.md"
+#line 311 "read.md"
 
 	std::vector<std::string> _paths;
 	std::vector<std::string>::
 		const_iterator _current_path;
 
-#line 323 "read.md"
+#line 321 "read.md"
 
 	std::vector<Open_Input> _open;
 	std::vector<Input> _used;
@@ -1060,7 +1059,7 @@
 		std::string &line
 	) {
 		
-#line 339 "read.md"
+#line 333 "read.md"
 
 	for (;;) {
 		if (_open.empty()) {
@@ -1076,11 +1075,11 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 363 "read.md"
+#line 358 "read.md"
 
 	auto &f { _open.back().input() };
 	
-#line 376 "read.md"
+#line 372 "read.md"
 
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
@@ -1089,7 +1088,7 @@
 		});
 	}
 
-#line 365 "read.md"
+#line 360 "read.md"
 ;
 	for (auto &i : _used) {
 		if (i.path() == f.path()) {
@@ -1098,7 +1097,7 @@
 		}
 	}
 
-#line 353 "read.md"
+#line 347 "read.md"
 ;
 		_open.pop_back();
 	}
@@ -3015,29 +3014,32 @@
 		}
 	}
 
-#line 4 "view.md"
+#line 5 "view.md"
 
 	bool interactive = false;
-	std::vector<Input>::iterator curInput;
-	std::vector<Block>::iterator curBlock;
 
 #line 12 "view.md"
 
+	std::vector<Input>::iterator curInput;
+	std::vector<Block>::iterator curBlock;
+
+#line 20 "view.md"
+
 	bool write_files = true;
 
-#line 18 "view.md"
+#line 27 "view.md"
 
 	bool process_files = true;
 
-#line 24 "view.md"
+#line 35 "view.md"
 
 	bool html_files = true;
 
-#line 60 "view.md"
+#line 75 "view.md"
 
 	void draw_block() {
 		
-#line 145 "view.md"
+#line 170 "view.md"
 
 	if (curBlock->state == RS::header) {
 		int i = 0;
@@ -3050,7 +3052,7 @@
 		}
 	}
 
-#line 160 "view.md"
+#line 186 "view.md"
 
 	if (curBlock->state == RS::code) {
 		std::cout << "```\n";
@@ -3061,7 +3063,7 @@
 		std::cout << "```\n\n";
 	}
 
-#line 173 "view.md"
+#line 200 "view.md"
 
 	if (curBlock->state == RS::para) {
 		int i = 0;
@@ -3070,7 +3072,7 @@
 		}
 	}
 
-#line 184 "view.md"
+#line 212 "view.md"
 
 	int j = 0;
 	for (const auto &l : curBlock->notes) {
@@ -3078,15 +3080,15 @@
 	}
 	std::cout << '\n';
 
-#line 62 "view.md"
+#line 77 "view.md"
 ;
 	}
 
-#line 77 "view.md"
+#line 94 "view.md"
 
 	void draw_position() {
 		
-#line 194 "view.md"
+#line 223 "view.md"
 
 	auto &bs { curInput->blocks };
 	std::cout << curInput->path() << ':';
@@ -3099,11 +3101,11 @@
 		std::cout << " = $";
 	}
 
-#line 79 "view.md"
+#line 96 "view.md"
 ;
 	}
 
-#line 85 "view.md"
+#line 103 "view.md"
 
 	void trim(std::string &s) {
 		while (! s.empty() && (s[0] & 0xff) <= ' ') {
@@ -3199,24 +3201,24 @@
 #line 130 "line.md"
 
 	
-#line 4 "range.md"
+#line 5 "range.md"
 
 	class Range {
 		public:
 			
-#line 16 "range.md"
+#line 18 "range.md"
 
 	Line prev() {
 		return _prev ?: _last;
 	}
 
-#line 24 "range.md"
+#line 29 "range.md"
 
 	Line last() {
 		return _last;
 	}
 
-#line 32 "range.md"
+#line 38 "range.md"
 
 	Range &operator<<(const Line &l) {
 		_prev = _last;
@@ -3224,13 +3226,13 @@
 		return *this;
 	}
 
-#line 42 "range.md"
+#line 49 "range.md"
 
 	operator bool() {
 		return _last;
 	}
 
-#line 7 "range.md"
+#line 8 "range.md"
 ;
 		private:
 			Line _prev;
@@ -3240,7 +3242,7 @@
 #line 131 "line.md"
 ;
 	
-#line 113 "range.md"
+#line 127 "range.md"
 
 	Range range;
 
@@ -3326,7 +3328,7 @@
 
 	int next = c.size();
 	
-#line 91 "range.md"
+#line 104 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -3370,7 +3372,7 @@
 #line 5 "write.md"
 
 	
-#line 100 "write.md"
+#line 109 "write.md"
 
 	std::string split(
 		std::string &s, int width
@@ -3394,7 +3396,7 @@
 		return res;
 	}
 
-#line 126 "write.md"
+#line 136 "write.md"
 
 	void multi_write(
 		std::ofstream &out,
@@ -3411,16 +3413,16 @@
 
 #line 6 "write.md"
 
-	void write_x() {
+	void write_input() {
 		for (const auto &cur : inputs) {
 			
-#line 25 "write.md"
+#line 27 "write.md"
 
 	std::ofstream out {
 		cur.path().c_str()
 	};
 
-#line 33 "write.md"
+#line 36 "write.md"
 
 	bool first = true;
 	for (const auto &b : cur.blocks) {
@@ -3429,11 +3431,11 @@
 		} else { out << '\n'; }
 		switch (b.state) {
 			
-#line 49 "write.md"
+#line 53 "write.md"
 
 	case RS::header: {
 		
-#line 58 "write.md"
+#line 63 "write.md"
 
 	for (const auto &n : b.value) {
 		for (
@@ -3445,16 +3447,16 @@
 		out << n << '\n';
 	}
 
-#line 51 "write.md"
+#line 55 "write.md"
 ;
 		break;
 	}
 
-#line 72 "write.md"
+#line 78 "write.md"
 
 	case RS::code: {
 		
-#line 81 "write.md"
+#line 88 "write.md"
 
 	out << "```\n";
 	for (const auto &n: b.value) {
@@ -3462,16 +3464,16 @@
 	}
 	out << "```\n";
 
-#line 74 "write.md"
+#line 80 "write.md"
 ;
 		break;
 	}
 
-#line 91 "write.md"
+#line 99 "write.md"
 
 	case RS::para: {
 		
-#line 143 "write.md"
+#line 154 "write.md"
 
 	bool first = true;
 	for (const auto &n: b.value) {
@@ -3481,23 +3483,23 @@
 		multi_write(out, n, {}, {});
 	}
 
-#line 93 "write.md"
+#line 101 "write.md"
 ;
 		break;
 	}
 
-#line 40 "write.md"
+#line 43 "write.md"
 ;
 			default: ;
 		}
 		
-#line 155 "write.md"
+#line 167 "write.md"
 
 	for (const auto &n: b.notes) {
 		multi_write(out, n, "* ", "  ");
 	}
 
-#line 43 "write.md"
+#line 46 "write.md"
 ;
 	}
 
@@ -3506,7 +3508,7 @@
 		}
 	}
 
-#line 226 "write.md"
+#line 250 "write.md"
 
 	bool is_prefix(
 		const std::string &s,
@@ -3561,24 +3563,24 @@
 ;
 	}
 
-#line 29 "ncurses.md"
+#line 32 "ncurses.md"
 
 	#if HAVE_CURSES
 		
-#line 37 "ncurses.md"
+#line 41 "ncurses.md"
 
 	
-#line 43 "ncurses.md"
+#line 48 "ncurses.md"
 
 	bool with_ncurses = false;
 
-#line 77 "ncurses.md"
+#line 87 "ncurses.md"
 
 	class Ncurses_Handler {
 		public:
 			Ncurses_Handler() {
 				
-#line 91 "ncurses.md"
+#line 102 "ncurses.md"
 
 	setlocale(LC_CTYPE, "");
 	initscr();
@@ -3586,34 +3588,36 @@
 	keypad(stdscr, TRUE);
 	noecho();
 
-#line 81 "ncurses.md"
+#line 91 "ncurses.md"
 ;
 			}
 			~Ncurses_Handler() {
 				
-#line 101 "ncurses.md"
+#line 113 "ncurses.md"
 
 	endwin();
 
-#line 84 "ncurses.md"
+#line 94 "ncurses.md"
 ;
 			}
 	};
 
-#line 107 "ncurses.md"
+#line 120 "ncurses.md"
 
 	struct End_Of_Curses {};
 
-#line 113 "ncurses.md"
+#line 127 "ncurses.md"
 
 	
-#line 149 "ncurses.md"
+#line 166 "ncurses.md"
 
 	void draw_number(int l) {
 		int r = l / 10;
 		if (r) { draw_number(r); }
 		addch((l % 10) + '0');
 	}
+
+#line 177 "ncurses.md"
 
 	void draw_line(int l) {
 		if (l <= 9) {
@@ -3623,13 +3627,13 @@
 		addstr(": ");
 	}
 
-#line 114 "ncurses.md"
+#line 128 "ncurses.md"
 
 	void draw_page() {
 		clear();
 		move(0, 0);
 		
-#line 167 "ncurses.md"
+#line 191 "ncurses.md"
 
 	if (curBlock->state == RS::header) {
 		int i = 0;
@@ -3644,7 +3648,7 @@
 		}
 	}
 
-#line 184 "ncurses.md"
+#line 209 "ncurses.md"
 
 	if (curBlock->state == RS::code) {
 		addstr("    ```\n");
@@ -3657,7 +3661,7 @@
 		addstr("    ```\n\n");
 	}
 
-#line 199 "ncurses.md"
+#line 225 "ncurses.md"
 
 	if (curBlock->state == RS::para) {
 		int i = 0;
@@ -3668,7 +3672,7 @@
 		}
 	}
 
-#line 212 "ncurses.md"
+#line 239 "ncurses.md"
 
 	int j = 0;
 	for (const auto &l : curBlock->notes) {
@@ -3679,7 +3683,7 @@
 	}
 	addch('\n');
 
-#line 225 "ncurses.md"
+#line 253 "ncurses.md"
 
 	int idx = (curInput - inputs.begin()) + 1;
 	draw_number(idx);
@@ -3698,15 +3702,15 @@
 		addstr(" = $");
 	}
 
-#line 118 "ncurses.md"
+#line 132 "ncurses.md"
 ;
 		refresh();
 	}
 
-#line 38 "ncurses.md"
+#line 42 "ncurses.md"
 
 
-#line 31 "ncurses.md"
+#line 34 "ncurses.md"
 
 	#endif
 
@@ -3900,7 +3904,7 @@
 		continue;
 	}
 } 
-#line 30 "view.md"
+#line 42 "view.md"
 
 	if (
 		arg == "-i" ||
@@ -3913,7 +3917,7 @@
 		continue;
 	}
 
-#line 49 "ncurses.md"
+#line 55 "ncurses.md"
 
 	#if HAVE_CURSES
 		if (
@@ -3988,21 +3992,21 @@
 #line 163 "index.md"
 ;
 
-#line 45 "view.md"
+#line 58 "view.md"
 
 	if (interactive) {
 		
-#line 53 "view.md"
+#line 67 "view.md"
 
 	curInput = inputs.begin();
 	curBlock = curInput->blocks.begin();
 
-#line 68 "view.md"
+#line 84 "view.md"
 
 	draw_block();
 	for (;;) {
 		
-#line 95 "view.md"
+#line 114 "view.md"
 
 	std::string cmd;
 	draw_position();
@@ -4011,7 +4015,7 @@
 	trim(cmd);
 	if (cmd.empty()) { continue; }
 	
-#line 56 "range.md"
+#line 65 "range.md"
 
 	range = Range {};
 	range << get_line(cmd);
@@ -4020,16 +4024,16 @@
 		range << get_line(cmd);
 	}
 
-#line 102 "view.md"
+#line 121 "view.md"
 ;
 
-#line 107 "view.md"
+#line 129 "view.md"
 
 	if (cmd == "q" || cmd == "quit") {
 		break;
 	}
 
-#line 115 "view.md"
+#line 138 "view.md"
 
 	if (cmd == "n" || cmd == "next") {
 		int next = (curBlock - curInput->blocks.begin()) + 1;
@@ -4037,7 +4041,7 @@
 			--next;
 		}
 		
-#line 67 "range.md"
+#line 78 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4047,14 +4051,14 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 121 "view.md"
+#line 144 "view.md"
 ;
 		curBlock = curInput->blocks.begin() + next;
 		draw_block();
 		continue;
 	}
 
-#line 130 "view.md"
+#line 154 "view.md"
 
 	if (cmd == "p" || cmd == "prev") {
 		int next = curBlock - curInput->blocks.begin();
@@ -4062,7 +4066,7 @@
 			--next;
 		}
 		
-#line 67 "range.md"
+#line 78 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4072,14 +4076,14 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 136 "view.md"
+#line 160 "view.md"
 ;
 		curBlock = curInput->blocks.begin() + next;
 		draw_block();
 		continue;
 	}
 
-#line 209 "view.md"
+#line 241 "view.md"
 
 	if (cmd == "f" || cmd == "forward") {
 		int next =(curInput - inputs.begin()) + 1;
@@ -4087,7 +4091,7 @@
 			--next;
 		}
 		
-#line 79 "range.md"
+#line 91 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4097,7 +4101,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 215 "view.md"
+#line 247 "view.md"
 ;
 		curInput = inputs.begin() + next;
 		curBlock = curInput->blocks.begin();
@@ -4105,7 +4109,7 @@
 		continue;
 	}
 
-#line 225 "view.md"
+#line 258 "view.md"
 
 	if (cmd == "b" || cmd == "backward") {
 		int next = curInput - inputs.begin();
@@ -4113,7 +4117,7 @@
 			--next;
 		}
 		
-#line 79 "range.md"
+#line 91 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4123,7 +4127,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 231 "view.md"
+#line 264 "view.md"
 ;
 		curInput = inputs.begin() + next;
 		curBlock = curInput->blocks.begin();
@@ -4181,25 +4185,25 @@
 		}
 	}
 
-#line 16 "write.md"
+#line 17 "write.md"
 
 	if (cmd == "W" || cmd == "Write") {
-		write_x();
+		write_input();
 		continue;
 	}
 
-#line 163 "write.md"
+#line 176 "write.md"
 
 	if (cmd == "H" || cmd == "Html") {
-		write_x();
+		write_input();
 		write_html();
 		continue;
 	}
 
-#line 173 "write.md"
+#line 188 "write.md"
 
 	if (cmd == "F" || cmd == "Files") {
-		write_x();
+		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
 		try {
@@ -4215,10 +4219,10 @@
 		continue;
 	}
 
-#line 194 "write.md"
+#line 212 "write.md"
 
 	if (cmd == "P" || cmd == "Process") {
-		write_x();
+		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
 		try {
@@ -4235,54 +4239,54 @@
 		continue;
 	}
 
-#line 216 "write.md"
+#line 238 "write.md"
 
 	if (cmd == "M" || cmd == "Make") {
-		write_x();
+		write_input();
 		system("make");
 		continue;
 	}
 
-#line 241 "write.md"
+#line 266 "write.md"
  {
 	static const std::string p { "M " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("make " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } 
-#line 252 "write.md"
+#line 279 "write.md"
  {
 	static const std::string p { "Make " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("make " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } 
-#line 263 "write.md"
+#line 292 "write.md"
 
 	if (cmd == "G" || cmd == "Git") {
-		write_x();
+		write_input();
 		system("git status");
 		continue;
 	}
 
-#line 273 "write.md"
+#line 304 "write.md"
  {
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("git " + cmd.substr(p.size())).c_str());
 		continue;
 	}
 } 
-#line 284 "write.md"
+#line 317 "write.md"
  {
 	static const std::string p { "Git " };
 	if (is_prefix(cmd, p)) {
-		write_x();
+		write_input();
 		system(("git " + cmd.substr(p.size())).c_str());
 		continue;
 	}
@@ -4335,20 +4339,20 @@
 		continue;
 	}
 
-#line 71 "view.md"
+#line 87 "view.md"
 ;
 	}
 
-#line 47 "view.md"
+#line 60 "view.md"
 ;
 	}
 
-#line 67 "ncurses.md"
+#line 76 "ncurses.md"
 
 	#if HAVE_CURSES
 		if (with_ncurses) {
 			
-#line 125 "ncurses.md"
+#line 140 "ncurses.md"
 
 	Ncurses_Handler handler;
 	curInput = inputs.begin();
@@ -4359,11 +4363,11 @@
 		for (;;) {
 			switch (ch = getch()) {
 				
-#line 143 "ncurses.md"
+#line 159 "ncurses.md"
 
 	case 'q': throw End_Of_Curses {};
 
-#line 247 "ncurses.md"
+#line 278 "ncurses.md"
 
 	case 'n': {
 		int next = (curBlock - curInput->blocks.begin()) + 1;
@@ -4371,7 +4375,7 @@
 			--next;
 		}
 		
-#line 67 "range.md"
+#line 78 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4381,14 +4385,14 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 253 "ncurses.md"
+#line 284 "ncurses.md"
 ;
 		curBlock = curInput->blocks.begin() + next;
 		draw_page();
 		break;
 	}
 
-#line 262 "ncurses.md"
+#line 294 "ncurses.md"
 
 	case 'p' : {
 		int next = curBlock - curInput->blocks.begin();
@@ -4396,7 +4400,7 @@
 			--next;
 		}
 		
-#line 67 "range.md"
+#line 78 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4406,14 +4410,14 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 268 "ncurses.md"
+#line 300 "ncurses.md"
 ;
 		curBlock = curInput->blocks.begin() + next;
 		draw_page();
 		break;
 	}
 
-#line 277 "ncurses.md"
+#line 310 "ncurses.md"
 
 	case 'f': {
 		int next =(curInput - inputs.begin()) + 1;
@@ -4421,7 +4425,7 @@
 			--next;
 		}
 		
-#line 79 "range.md"
+#line 91 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4431,7 +4435,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 283 "ncurses.md"
+#line 316 "ncurses.md"
 ;
 		curInput = inputs.begin() + next;
 		curBlock = curInput->blocks.begin();
@@ -4439,7 +4443,7 @@
 		continue;
 	}
 
-#line 293 "ncurses.md"
+#line 327 "ncurses.md"
 
 	case 'b': {
 		int next = curInput - inputs.begin();
@@ -4447,7 +4451,7 @@
 			--next;
 		}
 		
-#line 79 "range.md"
+#line 91 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -4457,7 +4461,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 299 "ncurses.md"
+#line 333 "ncurses.md"
 ;
 		curInput = inputs.begin() + next;
 		curBlock = curInput->blocks.begin();
@@ -4465,14 +4469,14 @@
 		continue;
 	}
 
-#line 134 "ncurses.md"
+#line 149 "ncurses.md"
 
 			}
 			draw_page();
 		}
 	} catch (const End_Of_Curses &) {}
 
-#line 70 "ncurses.md"
+#line 79 "ncurses.md"
 ;
 		}
 	#endif
