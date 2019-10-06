@@ -67,28 +67,10 @@
 
 ```
 @add(entry methods)
-	void update_state(Write_State &state) const {
-		auto c { _str.end() };
-		auto b { _str.begin() };
-		bool some_nl { false };
-		while (b != c) {
-			--c;
-			if (*c == '\n' || *c == '\r') {
-				some_nl = true;
-				continue;
-			}
-			if (*c <= ' ') { continue; }
-			if (*c == '\\') {
-				if (some_nl) {
-					state.in_macro = true;
-					return;
-				}
-			}
-			break;
-		}
-		if (b != c && *c > ' ') {
-			state.in_macro = false;
-		}
+	void update_state(
+		Write_State &state
+	) const {
+		@put(update state);
 	}
 @end(entry methods)
 ```
@@ -97,17 +79,52 @@
   newline characters
 
 ```
+@def(update state)
+	auto c { _str.end() };
+	auto b { _str.begin() };
+	bool some_nl { false };
+	while (b != c) {
+		--c;
+		@put(update state checks);
+		break;
+	}
+	if (b != c && *c > ' ') {
+		state.in_macro = false;
+	}
+@end(update state)
+```
+* if some characters are found in the line, it is not in a macro, if
+  it was not recognized in the loop
+
+```
+@def(update state checks)
+	if (*c == '\n' || *c == '\r') {
+		some_nl = true;
+		continue;
+	}
+	if (*c <= ' ') { continue; }
+	if (*c == '\\') {
+		if (some_nl) {
+			state.in_macro = true;
+			return;
+		}
+	}
+@end(update state checks)
+```
+* this method checks, if the input is in a multi-line macro definition
+* that is the case, if the line ends with a backslash followed by
+  newline characters
+
+```
 @add(entry methods)
-	std::string str(Write_State &state) const {
-		bool old { state.in_macro };
-		update_state(state);
-		if (old) { return _str; }
-		if (! state.c_style) { return _str; }
-		if (_first_line < 1) { return _str; }
-		if (_str.empty()) { return _str; };
+	std::string str(
+		Write_State &state
+	) const {
+		@put(check c-like);
 		std::ostringstream oss;
 		oss << "\n#line " <<
-			_first_line << " \"" << _file << "\"\n" << _str;
+			_first_line << " \"" <<
+			_file << "\"\n" << _str;
 		return oss.str();
 	}
 @end(entry methods)
@@ -118,6 +135,22 @@
 * so that a C compiler refers warnings and errors to the position in the
   input file
 * not in the generated source file
+
+```
+@def(check c-like)
+	bool old { state.in_macro };
+	update_state(state);
+	if (old) { return _str; }
+	if (! state.c_style) { return _str; }
+	if (_first_line < 1) { return _str; }
+	if (_str.empty()) { return _str; };
+@end(check c-like)
+```
+* C-like macros are not added, if the current line is part of a
+  multi-line macro
+* or if the file does not support line-macros
+* or the line is not set
+* or the string is empty
 
 ```
 @add(entry methods)
@@ -304,7 +337,9 @@
 
 ```
 @add(define frag)
-	Write_State::Write_State(const Frag &f):
+	Write_State::Write_State(
+		const Frag &f
+	):
 		c_style { f.is_c_style() }
 	{ }
 @end(define frag)
@@ -402,13 +437,13 @@
 ```
 @def(assure frag entry)
 	if (_entries.empty()) {
-		_entries.emplace_back(Frag_Entry {});
+		_entries.emplace_back();
 	} else if (
 		! _entries.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.push_back(Frag_Entry {});
+		_entries.emplace_back();
 	}
 @end(assure frag entry)
 ```
@@ -518,20 +553,37 @@
 ```
 @add(frag methods)
 	bool is_c_style() const {
-		static const std::string extensions[] = {
-			".c", ".h", ".cpp"
-		};
-		const std::string *end = extensions + sizeof(extensions)/sizeof(*extensions);
-		for (auto i = extensions; i != end; ++i) {
-			if (name.length() > i->length()) {
-				if (name.substr(name.length() - i->length()) == *i) {
-					return true;
-				}
-			}
-		}
+		@put(is c-style);
 		return false;
 	}
 @end(frag methods)
+```
+* check if a fragment supports C-like line number macros
+
+```
+@def(is c-style)
+	static const std::string exts[] = {
+		".c", ".h", ".cpp"
+	};
+	const std::string *end =
+		exts + sizeof(exts)/sizeof(*exts);
+@end(is c-style)
+```
+* array of valid extensions
+
+```
+@add(is c-style)
+	for (auto i = exts; i != end; ++i) {
+		if (name.length() > i->length()) {
+			if (name.substr(
+				name.length() -
+					i->length()) == *i
+			) {
+				return true;
+			}
+		}
+	}
+@end(is c-style)
 ```
 * a fragment is of C style, if its name ends in one of the C/C++ file
   extensions
@@ -623,16 +675,25 @@
 				return false;
 			}
 		}
-		for (const auto &i : entry.str(state)) {
-			if (in.get() != i) {
-				return false;
-			}
-		}
+		@put(check entry str);
 	}
 @end(check entries)
 ```
 * recursively visit sub `Frag`s
 * then compare the string value
+
+```
+@def(check entry str)
+	for (
+		const auto &i : entry.str(state)
+	) {
+		if (in.get() != i) {
+			return false;
+		}
+	}
+@end(check entry str)
+```
+* compare string value character by character
 
 ```
 @add(define frag)

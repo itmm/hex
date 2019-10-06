@@ -586,8 +586,8 @@ so the pointer is <code><span class="num">nullptr</span></code>
 <code>
 <span class="macro">@def(<span class="name">process char</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<br/>
-<span class="in3"></span><span class="var">ch</span>, <span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">ch</span>,<br/>
+<span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">input</span>().<span class="fn">path</span>(),<br/>
 <span class="in3"></span><span class="var">inputs</span>.<span class="fn">cur</span>().<span class="fn">line</span>()<br/>
 <span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
@@ -605,13 +605,7 @@ based on the current input file and line number the fragment may open  a new blo
 <span class="in1"></span><span class="keyword">if</span> (*<span class="var">i</span> == <span class="str">'@'</span>) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">nb</span> = <span class="var">i</span> + <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">ne</span> = <span class="var">nb</span>;<br/>
-<span class="in2"></span><span class="keyword">while</span> (<span class="var">ne</span> != <span class="var">end</span> &amp;&amp; *<span class="var">ne</span> != <span class="str">'('</span>) {<br/>
-<span class="in3"></span><span class="keyword">if</span> (! <span class="fn">isalpha</span>(*<span class="var">ne</span>)) {<br/>
-<span class="in4"></span><span class="var">ne</span> = <span class="var">end</span>;<br/>
-<span class="in4"></span><span class="keyword">break</span>;<br/>
-<span class="in3"></span>}<br/>
-<span class="in3"></span>++<span class="var">ne</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">cmd prefix</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">ne</span> != <span class="var">end</span> &amp;&amp; <span class="var">ne</span> != <span class="var">nb</span>) {<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">name</span> { <span class="var">nb</span>, <span class="var">ne</span> };<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">cmd argument</span>)</span>;<br/>
@@ -631,9 +625,26 @@ but as normal characters that are not treated special
 </div>
 <div><div>
 <code>
+<span class="macro">@def(<span class="name">cmd prefix</span>)</span><br/>
+<span class="in1"></span><span class="keyword">while</span> (<span class="var">ne</span> != <span class="var">end</span> &amp;&amp; *<span class="var">ne</span> != <span class="str">'('</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isalpha</span>(*<span class="var">ne</span>)) {<br/>
+<span class="in3"></span><span class="var">ne</span> = <span class="var">end</span>;<br/>
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span>++<span class="var">ne</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">cmd prefix</span>)</span><br/>
+</code></div>
+<ul><li>
+check that the name contains only letters
+</li><li>
+and is followed by an opening parenthesis
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@def(<span class="name">cmd argument</span>)</span><br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>;<br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">ae</span> = <span class="var">ab</span>;<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>; <span class="type">auto</span> <span class="var">ae</span> = <span class="var">ab</span>;<br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">ae</span> != <span class="var">end</span> &amp;&amp; *<span class="var">ae</span> != <span class="str">')'</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (*<span class="var">ae</span> == <span class="str">'@'</span>) {<br/>
 <span class="in3"></span><span class="keyword">if</span> (++<span class="var">ae</span> == <span class="var">end</span>) { <span class="keyword">break</span>; }<br/>
@@ -902,9 +913,8 @@ more content can be added to it
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"put"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@put"</span> &lt;&lt; <span class="str">"("</span> &lt;&lt; <span class="var">arg</span> &lt;&lt;<br/>
-<span class="in4"></span><span class="str">") not in frag"</span><br/>
+<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"@put"</span> &lt;&lt; <span class="str">"("</span> &lt;&lt;<br/>
+<span class="in3"></span><span class="var">arg</span> &lt;&lt; <span class="str">") not in frag"</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_local</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
@@ -948,7 +958,8 @@ also if the fragment was expanded in multiple mode
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"inc"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"include in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
+<span class="in3"></span><span class="str">"include in frag ["</span> &lt;&lt;<br/>
+<span class="in4"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">inputs</span>.<span class="fn">has</span>(<span class="var">arg</span>)) {<br/>
 <span class="in3"></span><span class="var">inputs</span>.<span class="fn">push</span>(<span class="var">arg</span>);<br/>
@@ -1005,18 +1016,30 @@ when a multiple expanded fragment was already expanded with a normal  <code>@<sp
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Def"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"@Def in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span>);<br/>
-<span class="in2"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"Frag ["</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">"] already defined\n"</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do Def</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
 creates a new fragment in global namespace
-</li><li>
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">do Def</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
+<span class="in2"></span><span class="str">"@Def in frag ["</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"Frag ["</span> &lt;&lt;<br/>
+<span class="in3"></span><span class="var">arg</span> &lt;&lt; <span class="str">"] already defined\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do Def</span>)</span><br/>
+</code></div>
+<ul><li>
 if the fragment already exists, an error message is printed
 </li></ul>
 </div>
@@ -1024,18 +1047,29 @@ if the fragment already exists, an error message is printed
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Add"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"@Add in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span>);<br/>
-<span class="in2"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"Frag ["</span> &lt;&lt; <span class="var">arg</span> &lt;&lt; <span class="str">"] not defined\n"</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do Add</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
 extends a global fragment
-</li><li>
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">do Add</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"@Add in frag ["</span> &lt;&lt;<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"Frag ["</span> &lt;&lt; <span class="var">arg</span> &lt;&lt;<br/>
+<span class="in3"></span><span class="str">"] not defined\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do Add</span>)</span><br/>
+</code></div>
+<ul><li>
 a global fragment is any fragment that is defined in the global  namespace or in an input file that includes the current input file
 </li><li>
 if the fragment is not defined, an error message is printed
@@ -1046,7 +1080,8 @@ if the fragment is not defined, an error message is printed
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"rep"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@rep in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
+<span class="in3"></span><span class="str">"@rep in frag ["</span> &lt;&lt;<br/>
+<span class="in4"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_local</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
@@ -1063,7 +1098,8 @@ replaces the content of a local fragment
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Rep"</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@Rep in frag ["</span> &lt;&lt; <span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
+<span class="in3"></span><span class="str">"@Rep in frag ["</span> &lt;&lt;<br/>
+<span class="in4"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt; <span class="str">']'</span><br/>
 <span class="in2"></span>);<br/>
 <span class="in2"></span><span class="var">frag</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">clear frag</span>)</span>;<br/>
@@ -1095,15 +1131,7 @@ if the fragment is not defined, an error message is printed
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Put"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@Put not in frag"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">check frag ex. count</span>)</span>;<br/>
-<span class="in3"></span><span class="var">sub</span>-&gt;<span class="fn">addExpand</span>();<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">sub</span>);<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do Put</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
@@ -1114,23 +1142,47 @@ inserts a global fragment in the current fragment
 </div>
 <div><div>
 <code>
+<span class="macro">@def(<span class="name">do Put</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"@Put not in frag"</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check frag ex. count</span>)</span>;<br/>
+<span class="in2"></span><span class="var">sub</span>-&gt;<span class="fn">addExpand</span>();<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">sub</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do Put</span>)</span><br/>
+</code></div>
+<ul><li>
+check that the fragment is not already expanded
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Mul"</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>,<br/>
-<span class="in3"></span><span class="str">"@Mul not in frag"</span><br/>
-<span class="in2"></span>);<br/>
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">check for prev expands</span>)</span>;<br/>
-<span class="in3"></span><span class="var">sub</span>-&gt;<span class="fn">addMultiple</span>();<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">sub</span>);<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do Mul</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 <ul><li>
 inserts a global fragment multiple times
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">do Mul</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"@Mul not in frag"</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">sub</span> = <span class="var">inputs</span>.<span class="fn">get_global</span>(<span class="var">arg</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">check for prev expands</span>)</span>;<br/>
+<span class="in2"></span><span class="var">sub</span>-&gt;<span class="fn">addMultiple</span>();<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">sub</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do Mul</span>)</span><br/>
+</code></div>
+<ul><li>
+check that the fragment is not already used in a single expand
 </li></ul>
 </div>
 <div><div>
@@ -1528,18 +1580,32 @@ a fragment is only processed, if its name matches a command invocation
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">no_cmds</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">o</span>;<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">FILE</span> *<span class="var">f</span> {<br/>
-<span class="in3"></span><span class="fn">popen</span>(<span class="var">cmd</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>)<br/>
-<span class="in2"></span>};<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="fn">fwrite</span>(<span class="var">o</span>.<span class="fn">c_str</span>(), <span class="var">o</span>.<span class="fn">size</span>(), <span class="num">1</span>, <span class="var">f</span>);<br/>
-<span class="in3"></span><span class="fn">pclose</span>(<span class="var">f</span>);<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do write cmd</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write cmd in file</span>)</span><br/>
 </code></div>
 <ul><li>
 pipe serialized fragment directly to the command
+</li><li>
+if debug mode is activated the fragment is written to <code><span class="type">std</span>::<span class="var">cout</span></code>  instead
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">do write cmd</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">FILE</span> *<span class="var">f</span> {<br/>
+<span class="in2"></span><span class="fn">popen</span>(<span class="var">cmd</span>.<span class="fn">c_str</span>(), <span class="str">"w"</span>)<br/>
+<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="fn">fwrite</span>(<br/>
+<span class="in3"></span><span class="var">o</span>.<span class="fn">c_str</span>(), <span class="var">o</span>.<span class="fn">size</span>(), <span class="num">1</span>, <span class="var">f</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="fn">pclose</span>(<span class="var">f</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">do write cmd</span>)</span><br/>
+</code></div>
+<ul><li>
+open pipe and send fragment to it
 </li></ul>
 </div>
 <div><div>

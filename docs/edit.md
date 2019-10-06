@@ -30,16 +30,7 @@
 @Add(run loop)
 	if (cmd == "a" || cmd == "add") {
 		std::string prefix;
-		switch (curBlock->state) {
-			case RS::header:
-				prefix = "h"; break;
-			case RS::code:
-				prefix = "c"; break;
-			case RS::para:
-				prefix = "p"; break;
-			default:
-				prefix = "?"; break;
-		}
+		@put(find add prefix);
 		insert_before(
 			prefix,
 			curBlock->value
@@ -51,33 +42,60 @@
 * the `add` or `a` command adds value lines
 
 ```
+@def(find add prefix)
+	switch (curBlock->state) {
+		case RS::header:
+			prefix = "h"; break;
+		case RS::code:
+			prefix = "c"; break;
+		case RS::para:
+			prefix = "p"; break;
+		default:
+			prefix = "?"; break;
+	}
+@end(find add prefix)
+```
+* one character prefix for the different block types
+
+```
 @def(insert before)
 	int next = c.size();
 	@Put(do str range);
 	std::string l;
 	for (;;) {
-		std::cout << prefix << ' ' << (next + 1) << "? ";
-		std::getline(std::cin, l);
-		auto b = l.begin();
-		auto e = l.end();
-		while (b != e && *b <= ' ') { ++b; }
-		std::string t { b, e };
-		if (t.empty()) { continue; }
-		if (t == ".") { break; }
-		c.insert(c.begin() + next, l);
-		++next;
+		@put(insert next line);
+		break;
 	}
 	draw_block();
 @end(insert before)
 ```
 * insert strings at the end of the container
+
+```
+@def(insert next line)
+	std::cout << prefix << ' ' <<
+		(next + 1) << "? ";
+	std::getline(std::cin, l);
+	auto b = l.begin();
+	auto e = l.end();
+	while (b != e && *b <= ' ') { ++b; }
+	std::string t { b, e };
+	if (t.empty()) { continue; }
+	if (t == ".") { break; }
+	c.insert(c.begin() + next, l);
+	++next;
+	continue;
+@end(insert next line)
+```
 * read lines until a single `.` is read
 * spaces at the beginning of the line are stripped
 
 ```
 @Add(run loop)
 	if (cmd == ">>") {
-		if (curBlock->state == RS::header) {
+		if (
+			curBlock->state == RS::header
+		) {
 			++curBlock->level;
 			draw_block();
 			continue;

@@ -369,7 +369,9 @@
 @Def(do block range)
 	if (line) {
 		next = line(
-			(curBlock - curInput->blocks.begin()) + 1,
+			(curBlock -
+				curInput->blocks.begin()
+			) + 1,
 			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -382,7 +384,8 @@
 @Def(do inputs range)
 	if (line) {
 		next = line(
-			(curInput - inputs.begin()) + 1,
+			(curInput - inputs.begin()) +
+				1,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }

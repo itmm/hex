@@ -120,7 +120,10 @@ and restores it afterwards
 <span class="macro">@def(<span class="name">insert block</span>)</span><br/>
 <span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
 <span class="in2"></span><span class="var">curBlock</span>,<br/>
-<span class="in2"></span>{ <span class="var">state</span>, { <span class="str">"REPLACE"</span> }, {}, <span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ? <span class="num">1</span> : <span class="num">0</span> }<br/>
+<span class="in2"></span>{<br/>
+<span class="in3"></span><span class="var">state</span>, { <span class="str">"REPLACE"</span> }, {},<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ? <span class="num">1</span> : <span class="num">0</span><br/>
+<span class="in2"></span>}<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">insert block</span>)</span><br/>
 </code></div>

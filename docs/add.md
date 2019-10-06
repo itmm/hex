@@ -83,7 +83,10 @@
 @def(insert block)
 	curInput->blocks.insert(
 		curBlock,
-		{ state, { "REPLACE" }, {}, state == RS::header ? 1 : 0 }
+		{
+			state, { "REPLACE" }, {},
+			state == RS::header ? 1 : 0
+		}
 	);
 @end(insert block)
 ```

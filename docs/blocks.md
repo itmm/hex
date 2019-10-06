@@ -294,17 +294,28 @@
 ```
 @def(create para)
 	if (state == RS::new_element) {
-		if (blocks.empty() || blocks.back().state != RS::para) {
-			blocks.push_back({
-				RS::para, {}, {}, 0
-			});
-		}
-		blocks.back().value.push_back(line);
+		@put(create para block);
+		blocks.back().value.push_back(
+			line
+		);
 	}
 @end(create para)
 ```
 * needs to add a new block, if the last block is no paragraph block
 * then add the line to the last block
+
+```
+@def(create para block)
+	if (blocks.empty() ||
+		blocks.back().state != RS::para
+	) {
+		blocks.push_back({
+			RS::para, {}, {}, 0
+		});
+	}
+@end(create para block)
+```
+* if the last block is not a paragraph, then add one
 
 ```
 @def(add para)

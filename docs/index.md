@@ -358,8 +358,8 @@ int main(
 ```
 @def(process char)
 	if (frag) {
-		frag->add(
-			ch, inputs.cur().input().path(),
+		frag->add(ch,
+			inputs.cur().input().path(),
 			inputs.cur().line()
 		);
 	}
@@ -375,13 +375,7 @@ int main(
 	if (*i == '@') {
 		auto nb = i + 1;
 		auto ne = nb;
-		while (ne != end && *ne != '(') {
-			if (! isalpha(*ne)) {
-				ne = end;
-				break;
-			}
-			++ne;
-		}
+		@put(cmd prefix);
 		if (ne != end && ne != nb) {
 			std::string name { nb, ne };
 			@put(cmd argument);
@@ -395,9 +389,22 @@ int main(
 * but as normal characters that are not treated special
 
 ```
+@def(cmd prefix)
+	while (ne != end && *ne != '(') {
+		if (! isalpha(*ne)) {
+			ne = end;
+			break;
+		}
+		++ne;
+	}
+@end(cmd prefix)
+```
+* check that the name contains only letters
+* and is followed by an opening parenthesis
+
+```
 @def(cmd argument)
-	auto ab = ne + 1;
-	auto ae = ab;
+	auto ab = ne + 1; auto ae = ab;
 	while (ae != end && *ae != ')') {
 		if (*ae == '@') {
 			if (++ae == end) { break; }
@@ -610,9 +617,8 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "put") {
-		ASSERT_MSG(frag,
-			"@put" << "(" << arg <<
-				") not in frag"
+		ASSERT_MSG(frag, "@put" << "(" <<
+			arg << ") not in frag"
 		);
 		Frag *sub = inputs.get_local(arg);
 		if (sub) {
@@ -649,7 +655,8 @@ int main(
 @add(do special cmd)
 	if (name == "inc") {
 		ASSERT_MSG(! frag,
-			"include in frag [" << frag->name << ']'
+			"include in frag [" <<
+				frag->name << ']'
 		);
 		if (! inputs.has(arg)) {
 			inputs.push(arg);
@@ -696,31 +703,50 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "Def") {
-		ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
-		frag = inputs.get_global(arg);
-		if (isPopulatedFrag(frag)) {
-			std::cerr << "Frag [" << arg << "] already defined\n";
-		}
+		@put(do Def);
 		break;
 	}
 @end(do special cmd)
 ```
 * creates a new fragment in global namespace
+
+```
+@def(do Def)
+	ASSERT_MSG(! frag,
+		"@Def in frag [" <<
+		frag->name << ']'
+	);
+	frag = inputs.get_global(arg);
+	if (isPopulatedFrag(frag)) {
+		std::cerr << "Frag [" <<
+			arg << "] already defined\n";
+	}
+@end(do Def)
+```
 * if the fragment already exists, an error message is printed
 
 ```
 @add(do special cmd)
 	if (name == "Add") {
-		ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
-		frag = inputs.get_global(arg);
-		if (! isPopulatedFrag(frag)) {
-			std::cerr << "Frag [" << arg << "] not defined\n";
-		}
+		@put(do Add);
 		break;
 	}
 @end(do special cmd)
 ```
 * extends a global fragment
+
+```
+@def(do Add)
+	ASSERT_MSG(! frag, "@Add in frag [" <<
+		frag->name << ']'
+	);
+	frag = inputs.get_global(arg);
+	if (! isPopulatedFrag(frag)) {
+		std::cerr << "Frag [" << arg <<
+			"] not defined\n";
+	}
+@end(do Add)
+```
 * a global fragment is any fragment that is defined in the global
   namespace or in an input file that includes the current input file
 * if the fragment is not defined, an error message is printed
@@ -729,7 +755,8 @@ int main(
 @add(do special cmd)
 	if (name == "rep") {
 		ASSERT_MSG(! frag,
-			"@rep in frag [" << frag->name << ']'
+			"@rep in frag [" <<
+				frag->name << ']'
 		);
 		frag = inputs.get_local(arg);
 		@mul(clear frag);
@@ -743,7 +770,8 @@ int main(
 @add(do special cmd)
 	if (name == "Rep") {
 		ASSERT_MSG(! frag,
-			"@Rep in frag [" << frag->name << ']'
+			"@Rep in frag [" <<
+				frag->name << ']'
 		);
 		frag = inputs.get_global(arg);
 		@mul(clear frag);
@@ -768,15 +796,7 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "Put") {
-		ASSERT_MSG(frag,
-			"@Put not in frag"
-		);
-		Frag *sub = inputs.get_global(arg);
-		if (sub) {
-			@mul(check frag ex. count);
-			sub->addExpand();
-			frag->add(sub);
-		}
+		@put(do Put);
 		break;
 	}
 @end(do special cmd)
@@ -784,22 +804,40 @@ int main(
 * inserts a global fragment in the current fragment
 
 ```
+@def(do Put)
+	ASSERT_MSG(frag, "@Put not in frag");
+	Frag *sub = inputs.get_global(arg);
+	if (sub) {
+		@mul(check frag ex. count);
+		sub->addExpand();
+		frag->add(sub);
+	}
+@end(do Put)
+```
+* check that the fragment is not already expanded
+
+```
 @add(do special cmd)
 	if (name == "Mul") {
-		ASSERT_MSG(frag,
-			"@Mul not in frag"
-		);
-		Frag *sub = inputs.get_global(arg);
-		if (sub) {
-			@mul(check for prev expands);
-			sub->addMultiple();
-			frag->add(sub);
-		}
+		@put(do Mul);
 		break;
 	}
 @end(do special cmd)
 ```
 * inserts a global fragment multiple times
+
+```
+@def(do Mul)
+	ASSERT_MSG(frag, "@Mul not in frag");
+	Frag *sub = inputs.get_global(arg);
+	if (sub) {
+		@mul(check for prev expands);
+		sub->addMultiple();
+		frag->add(sub);
+	}
+@end(do Mul)
+```
+* check that the fragment is not already used in a single expand
 
 ```
 @add(do special cmd)
@@ -1109,17 +1147,28 @@ int main(
 	if (no_cmds) {
 		std::cout << o;
 	} else {
-		std::FILE *f {
-			popen(cmd.c_str(), "w")
-		};
-		if (f) {
-			std::fwrite(o.c_str(), o.size(), 1, f);
-			pclose(f);
-		}
+		@put(do write cmd);
 	}
 @end(write cmd in file)
 ```
 * pipe serialized fragment directly to the command
+* if debug mode is activated the fragment is written to `std::cout`
+  instead
+
+```
+@def(do write cmd)
+	std::FILE *f {
+		popen(cmd.c_str(), "w")
+	};
+	if (f) {
+		std::fwrite(
+			o.c_str(), o.size(), 1, f
+		);
+		pclose(f);
+	}
+@end(do write cmd)
+```
+* open pipe and send fragment to it
 
 ```
 @add(process argument) {

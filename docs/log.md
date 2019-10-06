@@ -50,7 +50,8 @@
 ```
 @Add(frag prereqs)
 	#define WARN_MSG(MSG) \
-		std::cerr << __FILE__ << ':' << __LINE__ << ' '; \
+		std::cerr << __FILE__ << ':' << \
+			__LINE__ << ' '; \
 		std::cerr << MSG; \
 		@mul(log newline);
 @end(frag prereqs)

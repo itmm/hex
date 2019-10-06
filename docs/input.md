@@ -141,11 +141,15 @@
 
 ```
 @Add(inputs elements)
-	Frag *find_local(const std::string &name) {
+	Frag *find_local(
+		const std::string &name
+	) {
 		ASSERT(! _open.empty());
 		Input &i = _open.back().input();
 		auto f = i.frags.find(name);
-		if (f == i.frags.end()) { return nullptr; }
+		if (f == i.frags.end()) {
+			return nullptr;
+		}
 		return &f->second;
 	}
 @End(inputs elements)
@@ -154,10 +158,14 @@
 
 ```
 @Add(inputs elements)
-	Frag *add_local(const std::string &name) {
+	Frag *add_local(
+		const std::string &name
+	) {
 		ASSERT(! _open.empty());
 		Input &i = _open.back().input();
-		return &i.frags.insert({ name, name }).first->second;
+		return &i.frags.insert({
+			name, name
+		}).first->second;
 	}
 @End(inputs elements)
 ```
@@ -165,7 +173,9 @@
 
 ```
 @Add(inputs elements)
-	Frag *get_local(const std::string &name) {
+	Frag *get_local(
+		const std::string &name
+	) {
 		Frag *result = find_local(name);
 		if (! result) {
 			result = add_local(name);
@@ -179,20 +189,14 @@
 
 ```
 @Add(inputs elements)
-	Frag *find_global(const std::string &name) {
-		if (_open.size() > 1) {
-			auto i = _open.end() - 2;
-			for (;; --i) {
-				auto &fs = i->input().frags;
-				auto f = fs.find(name);
-				if (f != fs.end()) {
-					return &f->second;
-				}
-				if (i == _open.begin()) { break; }
-			}
-		}
+	Frag *find_global(
+		const std::string &name
+	) {
+		@put(find global);
 		auto f = _root.find(name);
-		if (f == _root.end()) { return nullptr; }
+		if (f == _root.end()) {
+			return nullptr;
+		}
 		return &f->second;
 
 	}
@@ -202,9 +206,39 @@
   collection
 
 ```
+@def(find global)
+	if (_open.size() > 1) {
+		auto i = _open.end() - 2;
+		for (;; --i) {
+			@put(find in global file);
+			if (i == _open.begin()) {
+				break;
+			}
+		}
+	}
+@end(find global)
+```
+* walk through all open input files and return, if the fragment is found
+
+```
+@def(find in global file)
+	auto &fs = i->input().frags;
+	auto f = fs.find(name);
+	if (f != fs.end()) {
+		return &f->second;
+	}
+@end(find in global file)
+```
+* check if the fragment is found in the current input file
+
+```
 @Add(inputs elements)
-	Frag *add_global(const std::string &name) {
-		return &_root.insert({ name, name }).first->second;
+	Frag *add_global(
+		const std::string &name
+	) {
+		return &_root.insert({
+			name, name
+		}).first->second;
 	}
 @End(inputs elements)
 ```
@@ -221,7 +255,9 @@
 
 ```
 @Add(inputs elements)
-	Frag *get_global(const std::string &name) {
+	Frag *get_global(
+		const std::string &name
+	) {
 		Frag *result = find_global(name);
 		if (! result) {
 			result = add_global(name);
@@ -239,18 +275,29 @@
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
-		if (std::filesystem::exists("index.md")) {
-			_paths.push_back("index.md");
-		} else if (std::filesystem::exists("index.x")) {
-			_paths.push_back("index.x");
-		} else {
-			std::cerr << "no input paths\n";
-		}
+		@put(populate default file);
 	}
 	_current_path = _paths.begin();
 @End(clear inputs)
 ```
 * resets all open and used files
 * if the `_path`s are empty the default input file names will be used
-* if these exist
+
+```
+@def(populate default file)
+	if (std::filesystem::exists(
+		"index.md"
+	)) {
+		_paths.push_back("index.md");
+	} else if (std::filesystem::exists(
+		"index.x"
+	)) {
+		_paths.push_back("index.x");
+	} else {
+		std::cerr << "no input paths\n";
+		_paths.push_back("index.md");
+	}
+@end(populate default file)
+```
+* sets a default file
 

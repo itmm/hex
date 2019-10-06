@@ -6,6 +6,12 @@
 	#if defined HAVE_CONFIG_H
 		#include "config.h"
 	#endif
+@End(includes)
+```
+* use autoconf includes
+
+```
+@Add(includes)
 	#if defined HAVE_NCURSESW_CURSES_H
 		#include <ncursesw/curses.h>
 	#elif defined HAVE_NCURSESW_H
@@ -58,18 +64,24 @@
 			arg == "-c" ||
 			arg == "--curses"
 		) {
-			with_ncurses = true;
-			interactive = false;
-			write_files = false;
-			process_files = false;
-			html_files = false;
+			@put(activate curses);
 			continue;
 		}
 	#endif
 @End(process argument)
 ```
 * command line argument can signal that NCurses should be used
-* this will disable automatic file generation
+
+```
+@def(activate curses)
+	with_ncurses = true;
+	interactive = false;
+	write_files = false;
+	process_files = false;
+	html_files = false;
+@end(activate curses)
+```
+* disable automatic file generation
 * and the command line mode
 
 ```
@@ -142,6 +154,13 @@
 	curInput = inputs.begin();
 	curBlock = curInput->blocks.begin();
 	draw_page();
+@End(curses interact)
+```
+* set iterator to first block of first file
+* and display block
+
+```
+@Add(curses interact)
 	int ch;
 	try {
 		for (;;) {
@@ -190,55 +209,94 @@
 ```
 @def(draw page)
 	if (curBlock->state == RS::header) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			draw_line(++i);
-			for (int i = 0; i < curBlock->level; ++i) {
-				addch('#');
-			}
-			addch(' ');
-			addstr(l.c_str());
-			addstr("\n\n");
-		}
+		@put(draw header);
 	}
 @end(draw page)
+```
+* draw header block
+
+```
+@def(draw header)
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		@put(draw header line);
+	}
+@end(draw header)
+```
+* draw all headers in the current header block
+
+```
+@def(draw header line)
+	draw_line(++i);
+	for (
+		int j = 0; j < curBlock->level;
+		++j
+	) {
+		addch('#');
+	}
+	addch(' ');
+	addstr(l.c_str());
+	addstr("\n\n");
+@end(draw header line)
 ```
 * headers are written with the level number of `#`s
 
 ```
 @add(draw page)
 	if (curBlock->state == RS::code) {
-		addstr("    ```\n");
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			draw_line(++i);
-			addstr(l.c_str());
-			addch('\n');
-		}
-		addstr("    ```\n\n");
+		@put(draw code);
 	}
 @end(draw page)
+```
+* draw code block
+
+```
+@def(draw code)
+	addstr("    ```\n");
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		draw_line(++i);
+		addstr(l.c_str());
+		addch('\n');
+	}
+	addstr("    ```\n\n");
+@end(draw code)
 ```
 * code blocks are prefixed with the code tag from Markdown
 
 ```
 @add(draw page)
 	if (curBlock->state == RS::para) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			draw_line(++i);
-			addstr(l.c_str());
-			addstr("\n\n");
-		}
+		@put(draw para);
 	}
 @end(draw page)
+```
+* draw paragraph block
+
+```
+@def(draw para)
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		draw_line(++i);
+		addstr(l.c_str());
+		addstr("\n\n");
+	}
+@end(draw para)
 ```
 * paragraphs are separated by empty lines
 
 ```
 @add(draw page)
 	int j = 0;
-	for (const auto &l : curBlock->notes) {
+	for (
+		const auto &l : curBlock->notes
+	) {
 		draw_line(++j);
 		addstr("* ");
 		addstr(l.c_str());
@@ -251,14 +309,24 @@
 
 ```
 @add(draw page)
-	int idx = (curInput - inputs.begin()) + 1;
+	int idx =
+		(curInput - inputs.begin()) + 1;
 	draw_number(idx);
-	if (idx == static_cast<int>(inputs.size())) {
+	if (idx ==
+		static_cast<int>(inputs.size())
+	) {
 		addstr(" = $");
 	}
 	addch(' ');
 	addstr(curInput->path().c_str());
 	addch(':');
+@end(draw page)
+```
+* draw the current input file number
+* then draw the input file name
+
+```
+@add(draw page)
 	auto &bs { curInput->blocks };
 	idx = (curBlock - bs.begin()) + 1;
 	draw_number(idx);
@@ -269,20 +337,13 @@
 	}
 @end(draw page)
 ```
-* draw the current input file number
-* then draw the input file name
 * draw the current block number
 
 
 ```
 @add(curses cases)
 	case 'n': {
-		int next = (curBlock - curInput->blocks.begin()) + 1;
-		while (next >= static_cast<int>(curInput->blocks.size())) {
-			--next;
-		}
-		@Mul(do block range);
-		curBlock = curInput->blocks.begin() + next;
+		@put(next block);
 		draw_page();
 		break;
 	}
@@ -291,14 +352,25 @@
 * got to the next block
 
 ```
+@def(next block)
+	int next = (curBlock -
+		curInput->blocks.begin()) + 1;
+	while (next >= static_cast<int>(
+		curInput->blocks.size()
+	)) {
+		--next;
+	}
+	@Mul(do block range);
+	curBlock = curInput->blocks.begin() +
+		next;
+@end(next block)
+```
+* got to the next block
+
+```
 @add(curses cases)
 	case 'p' : {
-		int next = curBlock - curInput->blocks.begin();
-		if (next > 0) {
-			--next;
-		}
-		@Mul(do block range);
-		curBlock = curInput->blocks.begin() + next;
+		@put(prev block);
 		draw_page();
 		break;
 	}
@@ -307,15 +379,23 @@
 * go to the previous block
 
 ```
+@def(prev block)
+	int next = curBlock -
+		curInput->blocks.begin();
+	if (next > 0) {
+		--next;
+	}
+	@Mul(do block range);
+	curBlock =
+		curInput->blocks.begin() + next;
+@end(prev block)
+```
+* go to the previous block
+
+```
 @add(curses cases)
 	case 'f': {
-		int next =(curInput - inputs.begin()) + 1;
-		while (next >= static_cast<int>(inputs.size())) {
-			--next;
-		}
-		@Mul(do inputs range);
-		curInput = inputs.begin() + next;
-		curBlock = curInput->blocks.begin();
+		@put(next input);
 		draw_page();
 		continue;
 	}
@@ -324,19 +404,42 @@
 * go to the next input file
 
 ```
+@def(next input)
+	int next =
+		(curInput - inputs.begin()) + 1;
+	while (next >= static_cast<int>(
+		inputs.size()
+	)) {
+		--next;
+	}
+	@Mul(do inputs range);
+	curInput = inputs.begin() + next;
+	curBlock = curInput->blocks.begin();
+@end(next input)
+```
+* go to the next input file
+
+```
 @add(curses cases)
 	case 'b': {
-		int next = curInput - inputs.begin();
-		if (next) {
-			--next;
-		}
-		@Mul(do inputs range);
-		curInput = inputs.begin() + next;
-		curBlock = curInput->blocks.begin();
+		@put(prev input);
 		draw_page();
 		continue;
 	}
 @end(curses cases)
+```
+* go to the previous input file
+
+```
+@def(prev input)
+	int next = curInput - inputs.begin();
+	if (next) {
+		--next;
+	}
+	@Mul(do inputs range);
+	curInput = inputs.begin() + next;
+	curBlock = curInput->blocks.begin();
+@end(prev input)
 ```
 * go to the previous input file
 

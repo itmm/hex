@@ -159,6 +159,14 @@
 	@mul(write header tag);
 	out << "</div>\n";
 	status.state = HtmlState::inSlide;
+@end(process header)
+```
+* headers start a new slide group
+* before the slide group a HTML heading is written
+* the slide group starts with a slide that contains the heading
+
+```
+@add(process header)
 	for (const auto &note : b.notes) {
 		@mul(process note);
 	}
@@ -166,10 +174,8 @@
 	@mul(close slide);
 @end(process header)
 ```
-* headers start a new slide group
-* before the slide group a HTML heading is written
-* the slide group starts with a slide that contains the heading
-* notes are also written
+* add notes for the header
+* and close the slide
 
 ```
 @Add(needed by write_html) 
@@ -250,7 +256,9 @@
 @def(write header tag) {
 	out << "<h" << b.level << '>';
 	const auto &n = b.value[0];
-	process_content(out, n.begin(), n.end());
+	process_content(
+		out, n.begin(), n.end()
+	);
 	out << "</h" << b.level << ">\n";
 } @end(write header tag)
 ```
@@ -259,17 +267,14 @@
 ```
 @def(close previous HTML page)
 	switch (status.state) {
-		case HtmlState::nothing: {
+		case HtmlState::nothing:
 			@put(write HTML header);
 			break;
-		}
-		case HtmlState::inSlide: {
+		case HtmlState::inSlide:
 			out << "</div>\n";
 			// fallthrough
-		}
-		default: {
+		default:
 			out << "</div>\n";
-		}
 	}
 @end(close previous HTML page)
 ```
@@ -318,10 +323,17 @@
 ```
 @def(open code page)
 	if (
-		status.state == HtmlState::afterSlides
+		status.state ==
+			HtmlState::afterSlides
 	) {
 		out << "<div class=\"slides\">\n";
 	}
+@end(open code page)
+```
+* close a previous slide, if it is open
+
+```
+@add(open code page)
 	if (
 		status.state == HtmlState::inSlide
 	) {
@@ -472,21 +484,35 @@
 	if (*begin == '@') {
 		auto nb = begin + 1;
 		auto ne = nb;
-		while (ne != end && *ne != '(') {
-			if (! isalpha(*ne)) {
-				ne = end;
-				break;
-			}
-			++ne;
-		}
-		if (ne != end) {
-			std::string name {nb, ne};
-			auto ab = ne + 1;
-			auto ae = ab;
-			@put(macro loop);
-		}
+		@put(process cmd);
 	}
 @end(process code ch)
+```
+* process a command
+
+```
+@def(process cmd)
+	while (ne != end && *ne != '(') {
+		if (! isalpha(*ne)) {
+			ne = end;
+			break;
+		}
+		++ne;
+	}
+@end(process cmd)
+```
+* check that the command name only consists of letters
+* and ends with an open parenthesis
+
+```
+@add(process cmd)
+	if (ne != end) {
+		std::string name {nb, ne};
+		auto ab = ne + 1;
+		auto ae = ab;
+		@put(macro loop);
+	}
+@end(process cmd)
 ```
 * if a command is found, parse its argument
 
@@ -542,6 +568,12 @@
 		"Def", "Add", "Mul", "rep", "Rep",
 		"Put", "End"
 	};
+@end(special macro)
+```
+* known commands
+
+```
+@add(special macro)
 	if (
 		macros.find(name) != macros.end()
 	) {
@@ -752,7 +784,12 @@
 ```
 @add(process code helper)
 	using Set = std::set<std::string>;
+@end(process code helper)
+```
+* shorthand for the used `std::set`
 
+```
+@add(process code helper)
 	bool isKeyword(const std::string &s) {
 		static Set reserved {
 			@put(keywords)
@@ -760,7 +797,9 @@
 		return
 			reserved.find(s) !=
 				reserved.end() ||
-					(s.size() && s[0] == '#');
+					(s.size() &&
+						s[0] == '#'
+					);
 	}
 @end(process code helper)
 ```
@@ -857,16 +896,23 @@
 		const std::string ident,
 		char w
 	) {
-		if (isKeyword(ident)) {
-			span_str(out, "keyword", ident);
-		} else if (w == '(') {
-			span_str(out, "fn", ident);
-		@put(special ident classes)
-		} else {
-			span_str(out, "var", ident);
-		}
+		@put(process ident);
 	}
 @end(process code helper)
+```
+* process identifiers
+
+```
+@def(process ident)
+	if (isKeyword(ident)) {
+		span_str(out, "keyword", ident);
+	} else if (w == '(') {
+		span_str(out, "fn", ident);
+	@put(special ident classes)
+	} else {
+		span_str(out, "var", ident);
+	}
+@end(process ident)
 ```
 * keywords are directly recognized
 * an identifier is a function, if it is followed by `(`
@@ -903,7 +949,8 @@
 		const std::string &name
 	) {
 		writeMacroClass(out, "macro");
-		out << '@' << name << "(<span class=\"name\">";
+		out << '@' << name <<
+			"(<span class=\"name\">";
 	}
 @end(process code helper)
 ```
@@ -1083,9 +1130,18 @@
 
 ```
 @def(process para)
-	if (status.state == HtmlState::afterSlide) {
+	if (
+		status.state ==
+			HtmlState::afterSlide
+	) {
 		out << "</div>\n";
 	}
+@end(process para)
+```
+* close slide group
+
+```
+@add(process para)
 	if (
 		status.state != HtmlState::inPara
 	) {
@@ -1098,6 +1154,5 @@
 	out << '\n';
 @end(process para)
 ```
-* close slide group
 * open paragraph
 * process content with embedded code

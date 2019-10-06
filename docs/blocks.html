@@ -397,12 +397,10 @@ paragraphs are any other line that does not start with a space
 <code>
 <span class="macro">@def(<span class="name">create para</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() || <span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">para</span>) {<br/>
-<span class="in3"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in4"></span><span class="var">RS</span>::<span class="var">para</span>, {}, {}, <span class="num">0</span><br/>
-<span class="in3"></span>});<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>);<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">create para block</span>)</span>;<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<br/>
+<span class="in3"></span><span class="var">line</span><br/>
+<span class="in2"></span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">create para</span>)</span><br/>
 </code></div>
@@ -410,6 +408,22 @@ paragraphs are any other line that does not start with a space
 needs to add a new block, if the last block is no paragraph block
 </li><li>
 then add the line to the last block
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">create para block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">para</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in3"></span><span class="var">RS</span>::<span class="var">para</span>, {}, {}, <span class="num">0</span><br/>
+<span class="in2"></span>});<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">create para block</span>)</span><br/>
+</code></div>
+<ul><li>
+if the last block is not a paragraph, then add one
 </li></ul>
 </div>
 <div><div>

@@ -100,28 +100,10 @@ the range information of the sub <code><span class="type">Frag</span></code> wil
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">update_state</span>(<span class="type">Write_State</span> &amp;<span class="var">state</span>) <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">c</span> { <span class="var">_str</span>.<span class="fn">end</span>() };<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">_str</span>.<span class="fn">begin</span>() };<br/>
-<span class="in2"></span><span class="type">bool</span> <span class="var">some_nl</span> { <span class="num">false</span> };<br/>
-<span class="in2"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">c</span>) {<br/>
-<span class="in3"></span>--<span class="var">c</span>;<br/>
-<span class="in3"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\n'</span> || *<span class="var">c</span> == <span class="str">'\r'</span>) {<br/>
-<span class="in4"></span><span class="var">some_nl</span> = <span class="num">true</span>;<br/>
-<span class="in4"></span><span class="keyword">continue</span>;<br/>
-<span class="in3"></span>}<br/>
-<span class="in3"></span><span class="keyword">if</span> (*<span class="var">c</span> &lt;= <span class="str">' '</span>) { <span class="keyword">continue</span>; }<br/>
-<span class="in3"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\\'</span>) {<br/>
-<span class="in4"></span><span class="keyword">if</span> (<span class="var">some_nl</span>) {<br/>
-<span class="in5"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">true</span>;<br/>
-<span class="in5"></span><span class="keyword">return</span>;<br/>
-<span class="in4"></span>}<br/>
-<span class="in3"></span>}<br/>
-<span class="in3"></span><span class="keyword">break</span>;<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">c</span> &amp;&amp; *<span class="var">c</span> &gt; <span class="str">' '</span>) {<br/>
-<span class="in3"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">false</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">update_state</span>(<br/>
+<span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span><br/>
+<span class="in1"></span>) <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">update state</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -133,17 +115,57 @@ that is the case, if the line ends with a backslash followed by  newline charact
 </div>
 <div><div>
 <code>
+<span class="macro">@def(<span class="name">update state</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">c</span> { <span class="var">_str</span>.<span class="fn">end</span>() };<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">_str</span>.<span class="fn">begin</span>() };<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">some_nl</span> { <span class="num">false</span> };<br/>
+<span class="in1"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">c</span>) {<br/>
+<span class="in2"></span>--<span class="var">c</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">update state checks</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">c</span> &amp;&amp; *<span class="var">c</span> &gt; <span class="str">' '</span>) {<br/>
+<span class="in2"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">false</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">update state</span>)</span><br/>
+</code></div>
+<ul><li>
+if some characters are found in the line, it is not in a macro, if  it was not recognized in the loop
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">update state checks</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\n'</span> || *<span class="var">c</span> == <span class="str">'\r'</span>) {<br/>
+<span class="in2"></span><span class="var">some_nl</span> = <span class="num">true</span>;<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="keyword">if</span> (*<span class="var">c</span> &lt;= <span class="str">' '</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\\'</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">some_nl</span>) {<br/>
+<span class="in3"></span><span class="var">state</span>.<span class="var">in_macro</span> = <span class="num">true</span>;<br/>
+<span class="in3"></span><span class="keyword">return</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">update state checks</span>)</span><br/>
+</code></div>
+<ul><li>
+this method checks, if the input is in a multi-line macro definition
+</li><li>
+that is the case, if the line ends with a backslash followed by  newline characters
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">str</span>(<span class="type">Write_State</span> &amp;<span class="var">state</span>) <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="type">bool</span> <span class="var">old</span> { <span class="var">state</span>.<span class="var">in_macro</span> };<br/>
-<span class="in2"></span><span class="fn">update_state</span>(<span class="var">state</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">old</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">state</span>.<span class="var">c_style</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_first_line</span> &lt; <span class="num">1</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_str</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="var">_str</span>; };<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">str</span>(<br/>
+<span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span><br/>
+<span class="in1"></span>) <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check c-like</span>)</span>;<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">oss</span>;<br/>
 <span class="in2"></span><span class="var">oss</span> &lt;&lt; <span class="str">"\n#line "</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="var">_first_line</span> &lt;&lt; <span class="str">" \""</span> &lt;&lt; <span class="var">_file</span> &lt;&lt; <span class="str">"\"\n"</span> &lt;&lt; <span class="var">_str</span>;<br/>
+<span class="in3"></span><span class="var">_first_line</span> &lt;&lt; <span class="str">" \""</span> &lt;&lt;<br/>
+<span class="in3"></span><span class="var">_file</span> &lt;&lt; <span class="str">"\"\n"</span> &lt;&lt; <span class="var">_str</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">oss</span>.<span class="fn">str</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -156,6 +178,27 @@ if the current source file is C-like, a <code><span class="keyword">#line</span>
 so that a C compiler refers warnings and errors to the position in the  input file
 </li><li>
 not in the generated source file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">check c-like</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">old</span> { <span class="var">state</span>.<span class="var">in_macro</span> };<br/>
+<span class="in1"></span><span class="fn">update_state</span>(<span class="var">state</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">old</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">state</span>.<span class="var">c_style</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_first_line</span> &lt; <span class="num">1</span>) { <span class="keyword">return</span> <span class="var">_str</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_str</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="var">_str</span>; };<br/>
+<span class="macro">@end(<span class="name">check c-like</span>)</span><br/>
+</code></div>
+<ul><li>
+C-like macros are not added, if the current line is part of a  multi-line macro
+</li><li>
+or if the file does not support line-macros
+</li><li>
+or the line is not set
+</li><li>
+or the string is empty
 </li></ul>
 </div>
 <div><div>
@@ -393,7 +436,9 @@ a fragment is empty, if it does not have any entries
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="type">Write_State</span>::<span class="fn">Write_State</span>(<span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>):<br/>
+<span class="in1"></span><span class="type">Write_State</span>::<span class="fn">Write_State</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span><br/>
+<span class="in1"></span>):<br/>
 <span class="in2"></span><span class="var">c_style</span> { <span class="var">f</span>.<span class="fn">is_c_style</span>() }<br/>
 <span class="in1"></span>{ }<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -529,13 +574,13 @@ and adds text to this entry
 <code>
 <span class="macro">@def(<span class="name">assure frag entry</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">_entries</span>.<span class="fn">empty</span>()) {<br/>
-<span class="in2"></span><span class="var">_entries</span>.<span class="fn">emplace_back</span>(<span class="type">Frag_Entry</span> {});<br/>
+<span class="in2"></span><span class="var">_entries</span>.<span class="fn">emplace_back</span>();<br/>
 <span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<br/>
 <span class="in2"></span>! <span class="var">_entries</span>.<span class="fn">back</span>().<span class="fn">canAdd</span>(<br/>
 <span class="in3"></span><span class="var">file</span>, <span class="var">line</span><br/>
 <span class="in2"></span>)<br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<span class="type">Frag_Entry</span> {});<br/>
+<span class="in2"></span><span class="var">_entries</span>.<span class="fn">emplace_back</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">assure frag entry</span>)</span><br/>
 </code></div>
@@ -680,20 +725,43 @@ increases the <code>@<span class="var">mul</span></code> or <code>@<span class="
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">is_c_style</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">extensions</span>[] = {<br/>
-<span class="in3"></span><span class="str">".c"</span>, <span class="str">".h"</span>, <span class="str">".cpp"</span><br/>
-<span class="in2"></span>};<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> *<span class="var">end</span> = <span class="var">extensions</span> + <span class="fn">sizeof</span>(<span class="var">extensions</span>)/<span class="fn">sizeof</span>(*<span class="var">extensions</span>);<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> <span class="var">i</span> = <span class="var">extensions</span>; <span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span>) {<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">length</span>() &gt; <span class="var">i</span>-&gt;<span class="fn">length</span>()) {<br/>
-<span class="in4"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">substr</span>(<span class="var">name</span>.<span class="fn">length</span>() - <span class="var">i</span>-&gt;<span class="fn">length</span>()) == *<span class="var">i</span>) {<br/>
-<span class="in5"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
-<span class="in4"></span>}<br/>
-<span class="in3"></span>}<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">is c-style</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
+</code></div>
+<ul><li>
+check if a fragment supports C-like line number macros
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">is c-style</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">exts</span>[] = {<br/>
+<span class="in2"></span><span class="str">".c"</span>, <span class="str">".h"</span>, <span class="str">".cpp"</span><br/>
+<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> *<span class="var">end</span> =<br/>
+<span class="in2"></span><span class="var">exts</span> + <span class="fn">sizeof</span>(<span class="var">exts</span>)/<span class="fn">sizeof</span>(*<span class="var">exts</span>);<br/>
+<span class="macro">@end(<span class="name">is c-style</span>)</span><br/>
+</code></div>
+<ul><li>
+array of valid extensions
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">is c-style</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> <span class="var">i</span> = <span class="var">exts</span>; <span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">length</span>() &gt; <span class="var">i</span>-&gt;<span class="fn">length</span>()) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">name</span>.<span class="fn">substr</span>(<br/>
+<span class="in4"></span><span class="var">name</span>.<span class="fn">length</span>() -<br/>
+<span class="in5"></span><span class="var">i</span>-&gt;<span class="fn">length</span>()) == *<span class="var">i</span><br/>
+<span class="in3"></span>) {<br/>
+<span class="in4"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">is c-style</span>)</span><br/>
 </code></div>
 <ul><li>
 a fragment is of C style, if its name ends in one of the C/C++ file  extensions
@@ -811,11 +879,7 @@ estimate a <code><span class="type">Write_State</span></code> first
 <span class="in4"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">entry</span>.<span class="fn">str</span>(<span class="var">state</span>)) {<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="keyword">in</span>.<span class="fn">get</span>() != <span class="var">i</span>) {<br/>
-<span class="in4"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
-<span class="in3"></span>}<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check entry str</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">check entries</span>)</span><br/>
 </code></div>
@@ -823,6 +887,22 @@ estimate a <code><span class="type">Write_State</span></code> first
 recursively visit sub <code><span class="type">Frag</span></code>s
 </li><li>
 then compare the string value
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">check entry str</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">entry</span>.<span class="fn">str</span>(<span class="var">state</span>)<br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="keyword">in</span>.<span class="fn">get</span>() != <span class="var">i</span>) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">check entry str</span>)</span><br/>
+</code></div>
+<ul><li>
+compare string value character by character
 </li></ul>
 </div>
 <div><div>

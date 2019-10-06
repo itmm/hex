@@ -225,11 +225,15 @@ increase line number for each line
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_local</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_local</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
 <span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>();<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">end</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
@@ -241,10 +245,14 @@ find a fragment in the current open input file
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_local</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_local</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
 <span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>();<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">i</span>.<span class="var">frags</span>.<span class="fn">insert</span>({ <span class="var">name</span>, <span class="var">name</span> }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">i</span>.<span class="var">frags</span>.<span class="fn">insert</span>({<br/>
+<span class="in3"></span><span class="var">name</span>, <span class="var">name</span><br/>
+<span class="in2"></span>}).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -255,7 +263,9 @@ create a fragment in the current open input file
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_local</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_local</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">result</span> = <span class="fn">find_local</span>(<span class="var">name</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">result</span>) {<br/>
 <span class="in3"></span><span class="var">result</span> = <span class="fn">add_local</span>(<span class="var">name</span>);<br/>
@@ -273,20 +283,14 @@ if it is not present, it is created
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_global</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
-<span class="in3"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">_open</span>.<span class="fn">end</span>() - <span class="num">2</span>;<br/>
-<span class="in3"></span><span class="keyword">for</span> (;; --<span class="var">i</span>) {<br/>
-<span class="in4"></span><span class="type">auto</span> &amp;<span class="var">fs</span> = <span class="var">i</span>-&gt;<span class="fn">input</span>().<span class="var">frags</span>;<br/>
-<span class="in4"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">fs</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in4"></span><span class="keyword">if</span> (<span class="var">f</span> != <span class="var">fs</span>.<span class="fn">end</span>()) {<br/>
-<span class="in5"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
-<span class="in4"></span>}<br/>
-<span class="in4"></span><span class="keyword">if</span> (<span class="var">i</span> == <span class="var">_open</span>.<span class="fn">begin</span>()) { <span class="keyword">break</span>; }<br/>
-<span class="in3"></span>}<br/>
-<span class="in2"></span>}<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_global</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">find global</span>)</span>;<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">_root</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">_root</span>.<span class="fn">end</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">_root</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
 <br/>
 <span class="in1"></span>}<br/>
@@ -298,9 +302,45 @@ find a fragment in all but the current open input files or the <code><span class
 </div>
 <div><div>
 <code>
+<span class="macro">@def(<span class="name">find global</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">_open</span>.<span class="fn">end</span>() - <span class="num">2</span>;<br/>
+<span class="in2"></span><span class="keyword">for</span> (;; --<span class="var">i</span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">find in global file</span>)</span>;<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">i</span> == <span class="var">_open</span>.<span class="fn">begin</span>()) {<br/>
+<span class="in4"></span><span class="keyword">break</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">find global</span>)</span><br/>
+</code></div>
+<ul><li>
+walk through all open input files and return, if the fragment is found
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">find in global file</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> &amp;<span class="var">fs</span> = <span class="var">i</span>-&gt;<span class="fn">input</span>().<span class="var">frags</span>;<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">fs</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span> != <span class="var">fs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">find in global file</span>)</span><br/>
+</code></div>
+<ul><li>
+check if the fragment is found in the current input file
+</li></ul>
+</div>
+<div><div>
+<code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_global</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">_root</span>.<span class="fn">insert</span>({ <span class="var">name</span>, <span class="var">name</span> }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_global</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">_root</span>.<span class="fn">insert</span>({<br/>
+<span class="in3"></span><span class="var">name</span>, <span class="var">name</span><br/>
+<span class="in2"></span>}).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -323,7 +363,9 @@ getter for the <code><span class="var">_root</span></code> collection
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_global</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_global</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">result</span> = <span class="fn">find_global</span>(<span class="var">name</span>);<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">result</span>) {<br/>
 <span class="in3"></span><span class="var">result</span> = <span class="fn">add_global</span>(<span class="var">name</span>);<br/>
@@ -344,13 +386,7 @@ if it is not found, the function creates a fragment in the <code><span class="va
 <span class="in1"></span><span class="var">_used</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span><span class="var">_open</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">_paths</span>.<span class="fn">empty</span>()) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<span class="str">"index.md"</span>)) {<br/>
-<span class="in3"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
-<span class="in2"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<span class="str">"index.x"</span>)) {<br/>
-<span class="in3"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
-<span class="in2"></span>} <span class="keyword">else</span> {<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"no input paths\n"</span>;<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">populate default file</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">_current_path</span> = <span class="var">_paths</span>.<span class="fn">begin</span>();<br/>
 <span class="macro">@End(<span class="name">clear inputs</span>)</span><br/>
@@ -359,8 +395,27 @@ if it is not found, the function creates a fragment in the <code><span class="va
 resets all open and used files
 </li><li>
 if the <code><span class="var">_path</span></code>s are empty the default input file names will be used
-</li><li>
-if these exist
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">populate default file</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
+<span class="in2"></span><span class="str">"index.md"</span><br/>
+<span class="in1"></span>)) {<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
+<span class="in2"></span><span class="str">"index.x"</span><br/>
+<span class="in1"></span>)) {<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"no input paths\n"</span>;<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">populate default file</span>)</span><br/>
+</code></div>
+<ul><li>
+sets a default file
 </li></ul>
 </div>
 </body>
