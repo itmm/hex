@@ -496,13 +496,7 @@ this is used to avoid including files multiple times
 <code>
 <span class="macro">@rep(<span class="name">inputs read line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">empty</span>()) {<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">_current_path</span> != <span class="var">_paths</span>.<span class="fn">end</span>()) {<br/>
-<span class="in4"></span><span class="fn">push</span>(*<span class="var">_current_path</span>++);<br/>
-<span class="in3"></span>} <span class="keyword">else</span> {<br/>
-<span class="in4"></span><span class="keyword">break</span>;<br/>
-<span class="in3"></span>}<br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">push next path</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">try</span> {<br/>
 <span class="in3"></span><span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
 <span class="in3"></span><span class="keyword">return</span>;<br/>
@@ -518,6 +512,24 @@ this is used to avoid including files multiple times
 reads a line from the current file
 </li><li>
 when the end is reached, the file is popped and the line is read from  the previous file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">push next path</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<br/>
+<span class="in3"></span><span class="var">_current_path</span> != <span class="var">_paths</span>.<span class="fn">end</span>()<br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="fn">push</span>(*<span class="var">_current_path</span>++);<br/>
+<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">push next path</span>)</span><br/>
+</code></div>
+<ul><li>
+if no files are available, try to open a new one from the paht list
 </li></ul>
 </div>
 <div><div>

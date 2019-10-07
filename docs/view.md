@@ -102,7 +102,10 @@
 ```
 @Add(global elements)
 	void trim(std::string &s) {
-		while (! s.empty() && (s[0] & 0xff) <= ' ') {
+		while (
+			! s.empty() &&
+				(s[0] & 0xff) <= ' '
+		) {
 			s.erase(0, 1);
 		}
 	}
@@ -137,12 +140,7 @@
 ```
 @Add(run loop)
 	if (cmd == "n" || cmd == "next") {
-		int next = (curBlock - curInput->blocks.begin()) + 1;
-		while (next >= static_cast<int>(curInput->blocks.size())) {
-			--next;
-		}
-		@Mul(do block range);
-		curBlock = curInput->blocks.begin() + next;
+		@put(do next cmd);
 		draw_block();
 		continue;
 	}
@@ -151,14 +149,25 @@
 * go to next block
 
 ```
+@def(do next cmd)
+	int next = (curBlock -
+		curInput->blocks.begin()) + 1;
+	while (next >= static_cast<int>(
+		curInput->blocks.size()
+	)) {
+		--next;
+	}
+	@Mul(do block range);
+	curBlock =
+		curInput->blocks.begin() + next;
+@end(do next cmd)
+```
+* go to next block
+
+```
 @Add(run loop)
 	if (cmd == "p" || cmd == "prev") {
-		int next = curBlock - curInput->blocks.begin();
-		if (next > 0) {
-			--next;
-		}
-		@Mul(do block range);
-		curBlock = curInput->blocks.begin() + next;
+		@put(do prev cmd);
 		draw_block();
 		continue;
 	}
@@ -167,52 +176,108 @@
 * go to previous block
 
 ```
+@def(do prev cmd)
+	int next =curBlock -
+		curInput->blocks.begin();
+	if (next > 0) {
+		--next;
+	}
+	@Mul(do block range);
+	curBlock =
+		curInput->blocks.begin() + next;
+@end(do prev cmd)
+```
+* go to previous block
+
+```
 @def(draw block)
 	if (curBlock->state == RS::header) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": ";
-			for (int i = 0; i < curBlock->level; ++i) {
-				std::cout << '#';
-			}
-			std::cout << ' ' << l << "\n\n";
-		}
+		@put(draw header);
 	}
 @end(draw block)
 ```
 * draw header block
 
 ```
+@def(draw header)
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		std::cout << ++i << ": ";
+		@put(draw header level);
+		std::cout << ' ' << l << "\n\n";
+	}
+@end(draw header)
+```
+* draw header block
+
+```
+@def(draw header level)
+	for (
+		int i = 0;
+		i < curBlock->level; ++i
+	) {
+		std::cout << '#';
+	}
+@end(draw header level)
+```
+* draw header indent in Markdown syntax
+
+```
 @add(draw block)
 	if (curBlock->state == RS::code) {
-		std::cout << "```\n";
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": " << l << '\n';
-		}
-		std::cout << "```\n\n";
+		@put(draw code);
 	}
 @end(draw block)
 ```
 * draw code block
 
 ```
+@def(draw code)
+	std::cout << "```\n";
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		std::cout << ++i << ": " <<
+			l << '\n';
+	}
+	std::cout << "```\n\n";
+@end(draw code)
+```
+* draw code block
+
+```
 @add(draw block)
 	if (curBlock->state == RS::para) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": " << l << "\n\n";
-		}
+		@put(draw para);
 	}
 @end(draw block)
 ```
 * draw paragraph block
 
 ```
+@def(draw para)
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		std::cout << ++i << ": " <<
+			l << "\n\n";
+	}
+@end(draw para)
+```
+* draw paragraph block
+
+```
 @add(draw block)
 	int j = 0;
-	for (const auto &l : curBlock->notes) {
-		std::cout << ++j << ": * " << l << '\n';
+	for (
+		const auto &l : curBlock->notes
+	) {
+		std::cout << ++j << ": * " <<
+			l << '\n';
 	}
 	std::cout << '\n';
 @end(draw block)
@@ -240,13 +305,7 @@
 ```
 @Add(run loop)
 	if (cmd == "f" || cmd == "forward") {
-		int next =(curInput - inputs.begin()) + 1;
-		while (next >= static_cast<int>(inputs.size())) {
-			--next;
-		}
-		@Mul(do inputs range);
-		curInput = inputs.begin() + next;
-		curBlock = curInput->blocks.begin();
+		@put(do forward cmd);
 		draw_block();
 		continue;
 	}
@@ -255,19 +314,42 @@
 * go to next input file
 
 ```
+@def(do forward cmd)
+	int next =
+		(curInput - inputs.begin()) + 1;
+	while (next >= static_cast<int>(
+		inputs.size()
+	)) {
+		--next;
+	}
+	@Mul(do inputs range);
+	curInput = inputs.begin() + next;
+	curBlock = curInput->blocks.begin();
+@end(do forward cmd)
+```
+* go to next input file
+
+```
 @Add(run loop)
 	if (cmd == "b" || cmd == "backward") {
-		int next = curInput - inputs.begin();
-		if (next) {
-			--next;
-		}
-		@Mul(do inputs range);
-		curInput = inputs.begin() + next;
-		curBlock = curInput->blocks.begin();
+		@put(do backward cmd);
 		draw_block();
 		continue;
 	}
 @End(run loop)
+```
+* go to previous input file
+
+```
+@def(do backward cmd)
+	int next = curInput - inputs.begin();
+	if (next) {
+		--next;
+	}
+	@Mul(do inputs range);
+	curInput = inputs.begin() + next;
+	curBlock = curInput->blocks.begin();
+@end(do backward cmd)
 ```
 * go to previous input file
 

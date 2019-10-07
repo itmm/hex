@@ -1157,24 +1157,32 @@
 #line 333 "read.md"
 
 	for (;;) {
-		if (_open.empty()) {
-			if (_current_path != _paths.end()) {
-				push(*_current_path++);
-			} else {
-				break;
-			}
+		
+#line 352 "read.md"
+
+	if (_open.empty()) {
+		if (
+			_current_path != _paths.end()
+		) {
+			push(*_current_path++);
+		} else {
+			break;
 		}
+	}
+
+#line 335 "read.md"
+;
 		try {
 			_open.back().read_line(line);
 			return;
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 358 "read.md"
+#line 367 "read.md"
 
 	auto &f { _open.back().input() };
 	
-#line 372 "read.md"
+#line 381 "read.md"
 
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
@@ -1183,7 +1191,7 @@
 		});
 	}
 
-#line 360 "read.md"
+#line 369 "read.md"
 ;
 	for (auto &i : _used) {
 		if (i.path() == f.path()) {
@@ -1192,7 +1200,7 @@
 		}
 	}
 
-#line 347 "read.md"
+#line 341 "read.md"
 ;
 		_open.pop_back();
 	}
@@ -3231,44 +3239,82 @@
 
 	void draw_block() {
 		
-#line 170 "view.md"
+#line 193 "view.md"
 
 	if (curBlock->state == RS::header) {
+		
+#line 202 "view.md"
+
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		std::cout << ++i << ": ";
+		
+#line 216 "view.md"
+
+	for (
 		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": ";
-			for (int i = 0; i < curBlock->level; ++i) {
-				std::cout << '#';
-			}
-			std::cout << ' ' << l << "\n\n";
-		}
+		i < curBlock->level; ++i
+	) {
+		std::cout << '#';
 	}
 
-#line 186 "view.md"
+#line 208 "view.md"
+;
+		std::cout << ' ' << l << "\n\n";
+	}
+
+#line 195 "view.md"
+;
+	}
+
+#line 228 "view.md"
 
 	if (curBlock->state == RS::code) {
-		std::cout << "```\n";
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": " << l << '\n';
-		}
-		std::cout << "```\n\n";
+		
+#line 237 "view.md"
+
+	std::cout << "```\n";
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		std::cout << ++i << ": " <<
+			l << '\n';
+	}
+	std::cout << "```\n\n";
+
+#line 230 "view.md"
+;
 	}
 
-#line 200 "view.md"
+#line 252 "view.md"
 
 	if (curBlock->state == RS::para) {
-		int i = 0;
-		for (const auto &l : curBlock->value) {
-			std::cout << ++i << ": " << l << "\n\n";
-		}
+		
+#line 261 "view.md"
+
+	int i = 0;
+	for (
+		const auto &l : curBlock->value
+	) {
+		std::cout << ++i << ": " <<
+			l << "\n\n";
 	}
 
-#line 212 "view.md"
+#line 254 "view.md"
+;
+	}
+
+#line 274 "view.md"
 
 	int j = 0;
-	for (const auto &l : curBlock->notes) {
-		std::cout << ++j << ": * " << l << '\n';
+	for (
+		const auto &l : curBlock->notes
+	) {
+		std::cout << ++j << ": * " <<
+			l << '\n';
 	}
 	std::cout << '\n';
 
@@ -3280,7 +3326,7 @@
 
 	void draw_position() {
 		
-#line 223 "view.md"
+#line 288 "view.md"
 
 	auto &bs { curInput->blocks };
 	std::cout << curInput->path() << ':';
@@ -3300,7 +3346,10 @@
 #line 103 "view.md"
 
 	void trim(std::string &s) {
-		while (! s.empty() && (s[0] & 0xff) <= ' ') {
+		while (
+			! s.empty() &&
+				(s[0] & 0xff) <= ' '
+		) {
 			s.erase(0, 1);
 		}
 	}
@@ -3434,7 +3483,7 @@
 #line 131 "line.md"
 ;
 	
-#line 127 "range.md"
+#line 134 "range.md"
 
 	Range range;
 
@@ -3531,13 +3580,19 @@
 			Line::max, c.size() + 1
 		) - 1;
 		if (p < 0) { p = 0; }
-		if (p < next) {
-			c.erase(
-				c.begin() + p,
-				c.begin() + next
-			);
-			next = p;
-		}
+		
+#line 121 "range.md"
+
+	if (p < next) {
+		c.erase(
+			c.begin() + p,
+			c.begin() + next
+		);
+		next = p;
+	}
+
+#line 114 "range.md"
+;
 	}
 
 #line 63 "edit.md"
@@ -3580,24 +3635,48 @@
 	) {
 		auto b { s.begin() };
 		auto e { s.end() };
-		while (b != e && *b == ' ') { ++b; }
+		
+#line 127 "write.md"
+
+	while (b != e && *b == ' ') {
+		++b;
+	}
+
+#line 115 "write.md"
+;
 		auto c = b;
-		while (c != e) {
-			auto t = c;
-			while (t != e && *t == ' ') { ++t; }
-			while (t != e && *t != ' ') { ++t; }
-			if (c == b || t - b <= width) {
-				c = t;
-			} else {
-				break;
-			}
+		
+#line 136 "write.md"
+
+	while (c != e) {
+		auto t = c;
+		
+#line 151 "write.md"
+
+	while (t != e && *t == ' ') {
+		++t;
+	}
+	while (t != e && *t != ' ') {
+		++t;
+	}
+
+#line 139 "write.md"
+;
+		if (c == b || t - b <= width) {
+			c = t;
+		} else {
+			break;
 		}
+	}
+
+#line 117 "write.md"
+;
 		std::string res { b, c };
 		s.erase(s.begin(), c);
 		return res;
 	}
 
-#line 136 "write.md"
+#line 164 "write.md"
 
 	void multi_write(
 		std::ofstream &out,
@@ -3605,11 +3684,19 @@
 		std::string first_in,
 		const std::string &other_in
 	) {
-		while (! str.empty()) {
-			std::string p = split(str, 72 - first_in.size());
-			out << first_in << p << '\n';
-			first_in = other_in;
-		}
+		
+#line 178 "write.md"
+
+	while (! str.empty()) {
+		std::string p = split(
+			str, 72 - first_in.size()
+		);
+		out << first_in << p << '\n';
+		first_in = other_in;
+	}
+
+#line 171 "write.md"
+;
 	}
 
 #line 6 "write.md"
@@ -3674,7 +3761,7 @@
 
 	case RS::para: {
 		
-#line 154 "write.md"
+#line 191 "write.md"
 
 	bool first = true;
 	for (const auto &n: b.value) {
@@ -3694,7 +3781,7 @@
 			default: ;
 		}
 		
-#line 167 "write.md"
+#line 204 "write.md"
 
 	for (const auto &n: b.notes) {
 		multi_write(out, n, "* ", "  ");
@@ -3709,7 +3796,7 @@
 		}
 	}
 
-#line 250 "write.md"
+#line 302 "write.md"
 
 	bool is_prefix(
 		const std::string &s,
@@ -4257,7 +4344,7 @@
 	draw_block();
 	for (;;) {
 		
-#line 114 "view.md"
+#line 117 "view.md"
 
 	std::string cmd;
 	draw_position();
@@ -4275,53 +4362,34 @@
 		range << get_line(cmd);
 	}
 
-#line 121 "view.md"
+#line 124 "view.md"
 ;
 
-#line 129 "view.md"
+#line 132 "view.md"
 
 	if (cmd == "q" || cmd == "quit") {
 		break;
 	}
 
-#line 138 "view.md"
+#line 141 "view.md"
 
 	if (cmd == "n" || cmd == "next") {
-		int next = (curBlock - curInput->blocks.begin()) + 1;
-		while (next >= static_cast<int>(curInput->blocks.size())) {
-			--next;
-		}
 		
+#line 152 "view.md"
+
+	int next = (curBlock -
+		curInput->blocks.begin()) + 1;
+	while (next >= static_cast<int>(
+		curInput->blocks.size()
+	)) {
+		--next;
+	}
+	
 #line 78 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
-			curInput->blocks.size()
-		) - 1;
-		if (next < 0) { next = 0; }
-	}
-
-#line 144 "view.md"
-;
-		curBlock = curInput->blocks.begin() + next;
-		draw_block();
-		continue;
-	}
-
-#line 154 "view.md"
-
-	if (cmd == "p" || cmd == "prev") {
-		int next = curBlock - curInput->blocks.begin();
-		if (next > 0) {
-			--next;
-		}
-		
-#line 78 "range.md"
-
-	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
+		next = range.last()((curBlock -
+			curInput->blocks.begin()) + 1,
 			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -4329,59 +4397,111 @@
 
 #line 160 "view.md"
 ;
-		curBlock = curInput->blocks.begin() + next;
+	curBlock =
+		curInput->blocks.begin() + next;
+
+#line 143 "view.md"
+;
 		draw_block();
 		continue;
 	}
 
-#line 241 "view.md"
+#line 168 "view.md"
+
+	if (cmd == "p" || cmd == "prev") {
+		
+#line 179 "view.md"
+
+	int next =curBlock -
+		curInput->blocks.begin();
+	if (next > 0) {
+		--next;
+	}
+	
+#line 78 "range.md"
+
+	if (range) {
+		next = range.last()((curBlock -
+			curInput->blocks.begin()) + 1,
+			curInput->blocks.size()
+		) - 1;
+		if (next < 0) { next = 0; }
+	}
+
+#line 185 "view.md"
+;
+	curBlock =
+		curInput->blocks.begin() + next;
+
+#line 170 "view.md"
+;
+		draw_block();
+		continue;
+	}
+
+#line 306 "view.md"
 
 	if (cmd == "f" || cmd == "forward") {
-		int next =(curInput - inputs.begin()) + 1;
-		while (next >= static_cast<int>(inputs.size())) {
-			--next;
-		}
 		
+#line 317 "view.md"
+
+	int next =
+		(curInput - inputs.begin()) + 1;
+	while (next >= static_cast<int>(
+		inputs.size()
+	)) {
+		--next;
+	}
+	
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curInput - inputs.begin()) + 1,
+		next = range.last()((curInput -
+				inputs.begin()) + 1,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 247 "view.md"
+#line 325 "view.md"
 ;
-		curInput = inputs.begin() + next;
-		curBlock = curInput->blocks.begin();
+	curInput = inputs.begin() + next;
+	curBlock = curInput->blocks.begin();
+
+#line 308 "view.md"
+;
 		draw_block();
 		continue;
 	}
 
-#line 258 "view.md"
+#line 333 "view.md"
 
 	if (cmd == "b" || cmd == "backward") {
-		int next = curInput - inputs.begin();
-		if (next) {
-			--next;
-		}
 		
+#line 344 "view.md"
+
+	int next = curInput - inputs.begin();
+	if (next) {
+		--next;
+	}
+	
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curInput - inputs.begin()) + 1,
+		next = range.last()((curInput -
+				inputs.begin()) + 1,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 264 "view.md"
+#line 349 "view.md"
 ;
-		curInput = inputs.begin() + next;
-		curBlock = curInput->blocks.begin();
+	curInput = inputs.begin() + next;
+	curBlock = curInput->blocks.begin();
+
+#line 335 "view.md"
+;
 		draw_block();
 		continue;
 	}
@@ -4451,7 +4571,7 @@
 		continue;
 	}
 
-#line 176 "write.md"
+#line 213 "write.md"
 
 	if (cmd == "H" || cmd == "Html") {
 		write_input();
@@ -4459,46 +4579,58 @@
 		continue;
 	}
 
-#line 188 "write.md"
+#line 225 "write.md"
 
 	if (cmd == "F" || cmd == "Files") {
 		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
-		try {
-			read_sources();
-			files_write();
-		} catch (...) {
-			std::cerr << "!! aborted\n";
-			inputs = std::move(old);
-		}
+		
+#line 243 "write.md"
+
+	try {
+		read_sources();
+		files_write();
+	} catch (...) {
+		std::cerr << "!! aborted\n";
+		inputs = std::move(old);
+	}
+
+#line 230 "write.md"
+;
 		curInput = inputs.begin();
 		curBlock =
 			curInput->blocks.begin();
 		continue;
 	}
 
-#line 212 "write.md"
+#line 256 "write.md"
 
 	if (cmd == "P" || cmd == "Process") {
 		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
-		try {
-			read_sources();
-			files_write();
-			files_process();
-		} catch (...) {
-			std::cerr << "!! aborted\n";
-			inputs = std::move(old);
-		}
+		
+#line 275 "write.md"
+
+	try {
+		read_sources();
+		files_write();
+		files_process();
+	} catch (...) {
+		std::cerr << "!! aborted\n";
+		inputs = std::move(old);
+	}
+
+#line 261 "write.md"
+;
 		curInput = inputs.begin();
 		curBlock =
 			curInput->blocks.begin();
 		continue;
 	}
 
-#line 238 "write.md"
+#line 290 "write.md"
 
 	if (cmd == "M" || cmd == "Make") {
 		write_input();
@@ -4506,25 +4638,31 @@
 		continue;
 	}
 
-#line 266 "write.md"
+#line 318 "write.md"
  {
 	static const std::string p { "M " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " + cmd.substr(p.size())).c_str());
+		system(("make " +
+			cmd.substr(p.size())).c_str()
+		);
 		continue;
 	}
 } 
-#line 279 "write.md"
+#line 333 "write.md"
  {
-	static const std::string p { "Make " };
+	static const std::string p {
+		"Make "
+	};
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " + cmd.substr(p.size())).c_str());
+		system(("make " + 
+			cmd.substr(p.size())
+		).c_str());
 		continue;
 	}
 } 
-#line 292 "write.md"
+#line 350 "write.md"
 
 	if (cmd == "G" || cmd == "Git") {
 		write_input();
@@ -4532,21 +4670,25 @@
 		continue;
 	}
 
-#line 304 "write.md"
+#line 362 "write.md"
  {
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " + cmd.substr(p.size())).c_str());
+		system(("git " +
+			cmd.substr(p.size())
+		).c_str());
 		continue;
 	}
 } 
-#line 317 "write.md"
+#line 377 "write.md"
  {
 	static const std::string p { "Git " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " + cmd.substr(p.size())).c_str());
+		system(("git " +
+			cmd.substr(p.size())
+		).c_str());
 		continue;
 	}
 } 
@@ -4646,8 +4788,8 @@
 #line 78 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
+		next = range.last()((curBlock -
+			curInput->blocks.begin()) + 1,
 			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -4679,8 +4821,8 @@
 #line 78 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
+		next = range.last()((curBlock -
+			curInput->blocks.begin()) + 1,
 			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -4714,8 +4856,8 @@
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curInput - inputs.begin()) + 1,
+		next = range.last()((curInput -
+				inputs.begin()) + 1,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -4746,8 +4888,8 @@
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()(
-			(curInput - inputs.begin()) + 1,
+		next = range.last()((curInput -
+				inputs.begin()) + 1,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }

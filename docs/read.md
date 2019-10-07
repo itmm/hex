@@ -332,13 +332,7 @@
 ```
 @rep(inputs read line)
 	for (;;) {
-		if (_open.empty()) {
-			if (_current_path != _paths.end()) {
-				push(*_current_path++);
-			} else {
-				break;
-			}
-		}
+		@put(push next path);
 		try {
 			_open.back().read_line(line);
 			return;
@@ -353,6 +347,21 @@
 * reads a line from the current file
 * when the end is reached, the file is popped and the line is read from
   the previous file
+
+```
+@def(push next path)
+	if (_open.empty()) {
+		if (
+			_current_path != _paths.end()
+		) {
+			push(*_current_path++);
+		} else {
+			break;
+		}
+	}
+@end(push next path)
+```
+* if no files are available, try to open a new one from the paht list
 
 ```
 @def(save open input)

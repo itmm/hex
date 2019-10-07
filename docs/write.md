@@ -112,25 +112,53 @@
 	) {
 		auto b { s.begin() };
 		auto e { s.end() };
-		while (b != e && *b == ' ') { ++b; }
+		@put(split eat spaces);
 		auto c = b;
-		while (c != e) {
-			auto t = c;
-			while (t != e && *t == ' ') { ++t; }
-			while (t != e && *t != ' ') { ++t; }
-			if (c == b || t - b <= width) {
-				c = t;
-			} else {
-				break;
-			}
-		}
+		@put(fill line);
 		std::string res { b, c };
 		s.erase(s.begin(), c);
 		return res;
 	}
 @end(needed by write_input)
 ```
-* split strings to a specified width
+* split strings at word boundaries to a specified width
+
+```
+@def(split eat spaces)
+	while (b != e && *b == ' ') {
+		++b;
+	}
+@end(split eat spaces)
+```
+* skip starting spaces
+
+```
+@def(fill line)
+	while (c != e) {
+		auto t = c;
+		@put(next word);
+		if (c == b || t - b <= width) {
+			c = t;
+		} else {
+			break;
+		}
+	}
+@end(fill line)
+```
+* step over words until the line is too long
+
+```
+@def(next word)
+	while (t != e && *t == ' ') {
+		++t;
+	}
+	while (t != e && *t != ' ') {
+		++t;
+	}
+@end(next word)
+```
+* move to next word
+* and move over it
 
 ```
 @add(needed by write_input)
@@ -140,15 +168,24 @@
 		std::string first_in,
 		const std::string &other_in
 	) {
-		while (! str.empty()) {
-			std::string p = split(str, 72 - first_in.size());
-			out << first_in << p << '\n';
-			first_in = other_in;
-		}
+		@put(multi write);
 	}
 @end(needed by write_input)
 ```
 * writes a long string with different prefixes
+
+```
+@def(multi write)
+	while (! str.empty()) {
+		std::string p = split(
+			str, 72 - first_in.size()
+		);
+		out << first_in << p << '\n';
+		first_in = other_in;
+	}
+@end(multi write)
+```
+* split lines and write them line by line
 
 ```
 @def(write para)
@@ -190,13 +227,7 @@
 		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
-		try {
-			read_sources();
-			files_write();
-		} catch (...) {
-			std::cerr << "!! aborted\n";
-			inputs = std::move(old);
-		}
+		@put(write files);
 		curInput = inputs.begin();
 		curBlock =
 			curInput->blocks.begin();
@@ -209,19 +240,25 @@
 * and generate source files
 
 ```
+@def(write files)
+	try {
+		read_sources();
+		files_write();
+	} catch (...) {
+		std::cerr << "!! aborted\n";
+		inputs = std::move(old);
+	}
+@end(write files)
+```
+* generate source files
+
+```
 @Add(run loop)
 	if (cmd == "P" || cmd == "Process") {
 		write_input();
 		write_html();
 		Inputs old { std::move(inputs) };
-		try {
-			read_sources();
-			files_write();
-			files_process();
-		} catch (...) {
-			std::cerr << "!! aborted\n";
-			inputs = std::move(old);
-		}
+		@put(process files);
 		curInput = inputs.begin();
 		curBlock =
 			curInput->blocks.begin();
@@ -232,6 +269,21 @@
 * write input files
 * and generate HTML files
 * and generate source files
+* and process files
+
+```
+@def(process files)
+	try {
+		read_sources();
+		files_write();
+		files_process();
+	} catch (...) {
+		std::cerr << "!! aborted\n";
+		inputs = std::move(old);
+	}
+@end(process files)
+```
+* generate source files
 * and process files
 
 ```
@@ -267,7 +319,9 @@
 	static const std::string p { "M " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " + cmd.substr(p.size())).c_str());
+		system(("make " +
+			cmd.substr(p.size())).c_str()
+		);
 		continue;
 	}
 } @End(run loop)
@@ -277,10 +331,14 @@
 
 ```
 @Add(run loop) {
-	static const std::string p { "Make " };
+	static const std::string p {
+		"Make "
+	};
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " + cmd.substr(p.size())).c_str());
+		system(("make " + 
+			cmd.substr(p.size())
+		).c_str());
 		continue;
 	}
 } @End(run loop)
@@ -305,7 +363,9 @@
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " + cmd.substr(p.size())).c_str());
+		system(("git " +
+			cmd.substr(p.size())
+		).c_str());
 		continue;
 	}
 } @End(run loop)
@@ -318,7 +378,9 @@
 	static const std::string p { "Git " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " + cmd.substr(p.size())).c_str());
+		system(("git " +
+			cmd.substr(p.size())
+		).c_str());
 		continue;
 	}
 } @End(run loop)

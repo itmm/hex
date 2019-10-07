@@ -77,8 +77,8 @@
 ```
 @Rep(do block range)
 	if (range) {
-		next = range.last()(
-			(curBlock - curInput->blocks.begin()) + 1,
+		next = range.last()((curBlock -
+			curInput->blocks.begin()) + 1,
 			curInput->blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -90,8 +90,8 @@
 ```
 @Rep(do inputs range)
 	if (range) {
-		next = range.last()(
-			(curInput - inputs.begin()) + 1,
+		next = range.last()((curInput -
+				inputs.begin()) + 1,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
@@ -111,17 +111,24 @@
 			Line::max, c.size() + 1
 		) - 1;
 		if (p < 0) { p = 0; }
-		if (p < next) {
-			c.erase(
-				c.begin() + p,
-				c.begin() + next
-			);
-			next = p;
-		}
+		@put(erase range);
 	}
 @End(do str range)
 ```
 * strings can replace a full range with the new elements
+
+```
+@def(erase range)
+	if (p < next) {
+		c.erase(
+			c.begin() + p,
+			c.begin() + next
+		);
+		next = p;
+	}
+@end(erase range)
+```
+* erase whole range
 
 ```
 @Rep(range vars)
