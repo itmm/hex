@@ -181,6 +181,7 @@ int main(
 @add(global elements)
 	class Frag;
 	class Input;
+	class Frag_State;
 
 	#include <map>
 	using Frag_Map = std::map<std::string, Frag>;
@@ -196,6 +197,8 @@ int main(
 	Frag_Map &frag_map(const std::string &in);
 	Frag_Map &frag_map(const Input &in);
 	Frag_Map &frag_map();
+
+	Frag_State *split_frag();
 
 	void clear_frags();
 @end(global elements)
@@ -1256,11 +1259,17 @@ int main(
 ```
 @add(global elements)
 	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
-	Inputs_Frag_Map _all_frags;
+	class Frag_State {
+		public:
+			std::unique_ptr<Frag_State> parent;
+			Inputs_Frag_Map state;
+			Frag_State(std::unique_ptr<Frag_State> &&parent): parent { std::move(parent) } { }
+	};
+	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
 
 	Frag *find_frag(const std::string &in, const std::string &key) {
-		auto got { _all_frags[in].find(key) };
-		return got != _all_frags[in].end() ? &got->second : nullptr;
+		auto got { _all_frags->state[in].find(key) };
+		return got != _all_frags->state[in].end() ? &got->second : nullptr;
 	}
 	Frag *find_frag(const Input &in, const std::string &key) {
 		const Input *i { &in };
@@ -1275,8 +1284,16 @@ int main(
 		return find_frag(std::string { }, key);
 	}
 
+	Frag &add_frag(Frag_State &state, const std::string &in, const std::string &key) {
+		Frag *prev { nullptr };
+		if (state.parent) {
+			prev = &add_frag(*state.parent, in, key);
+		}
+		return state.state[in].insert({ key, { key, prev, nullptr } }).first->second;
+	}
+
 	Frag &add_frag(const std::string &in, const std::string &key) {
-		return _all_frags[in].insert({ key, { key, nullptr, nullptr } }).first->second;
+		return add_frag(*_all_frags, in, key);
 	}
 	Frag &add_frag(const Input &in, const std::string &key) {
 		return add_frag(in.path(), key);
@@ -1286,7 +1303,7 @@ int main(
 	}
 
 	Frag_Map &frag_map(const std::string &in) {
-		return _all_frags[in];
+		return _all_frags->state[in];
 	}
 
 	Frag_Map &frag_map(const Input &in) {
@@ -1296,5 +1313,12 @@ int main(
 		return frag_map(std::string { });
 	}
 
-	void clear_frags() { _all_frags.clear(); }
+	Frag_State *split_frag() {
+		Frag_State *current = &*_all_frags;
+		auto n { std::make_unique<Frag_State>(std::move(_all_frags)) };
+		_all_frags = std::move(n);
+		return current;
+	}
+
+	void clear_frags() { _all_frags = std::move(std::make_unique<Frag_State>(nullptr)); }
 @end(global elements)
