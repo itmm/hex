@@ -29,16 +29,6 @@ needed includes
 </div>
 <div><div>
 <code>
-<span class="macro">@Add(<span class="name">private inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">FragMap</span> <span class="var">_root</span>;<br/>
-<span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
-</code></div>
-<ul><li>
-root fragments for each <code><span class="type">Inputs</span></code> collection
-</li></ul>
-</div>
-<div><div>
-<code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur</span>() {<br/>
 <span class="in2"></span><span class="var">ASSERT</span> (! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
@@ -169,16 +159,6 @@ iterate over <code><span class="var">_used</span></code> collection
 each input file has a <code><span class="type">Frag</span></code> collection
 </li></ul>
 </div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
-<span class="in1"></span><span class="type">FragMap</span> <span class="var">frags</span>;<br/>
-<span class="macro">@end(<span class="name">input elements</span>)</span><br/>
-</code></div>
-<ul><li>
-<code><span class="type">Frag</span></code> collection of current file
-</li></ul>
-</div>
 </div>
 <h2>Line Numbers</h2>
 <div class="slides">
@@ -230,11 +210,7 @@ increase line number for each line
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
 <span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>();<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">i</span>.<span class="var">frags</span>.<span class="fn">end</span>()) {<br/>
-<span class="in3"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="var">i</span>, <span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -250,9 +226,7 @@ find a fragment in the current open input file
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
 <span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>();<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">i</span>.<span class="var">frags</span>.<span class="fn">insert</span>({<br/>
-<span class="in3"></span><span class="var">name</span>, <span class="var">name</span><br/>
-<span class="in2"></span>}).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="fn">get_frag</span>(<span class="var">i</span>, <span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -287,12 +261,7 @@ if it is not present, it is created
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">find global</span>)</span>;<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">_root</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span> == <span class="var">_root</span>.<span class="fn">end</span>()) {<br/>
-<span class="in3"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
-<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -321,10 +290,9 @@ walk through all open input files and return, if the fragment is found
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">find in global file</span>)</span><br/>
-<span class="in1"></span><span class="type">auto</span> &amp;<span class="var">fs</span> = <span class="var">i</span>-&gt;<span class="fn">input</span>().<span class="var">frags</span>;<br/>
-<span class="in1"></span><span class="type">auto</span> <span class="var">f</span> = <span class="var">fs</span>.<span class="fn">find</span>(<span class="var">name</span>);<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span> != <span class="var">fs</span>.<span class="fn">end</span>()) {<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">f</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="var">f</span> { <span class="fn">find_frag</span>(<span class="var">i</span>-&gt;<span class="fn">input</span>(), <span class="var">name</span>) };<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">f</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">find in global file</span>)</span><br/>
 </code></div>
@@ -338,26 +306,12 @@ check if the fragment is found in the current input file
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_global</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="var">_root</span>.<span class="fn">insert</span>({<br/>
-<span class="in3"></span><span class="var">name</span>, <span class="var">name</span><br/>
-<span class="in2"></span>}).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> &amp;<span class="fn">get_frag</span>(<span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
 add a fragment in the <code><span class="var">_root</span></code> collection
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">FragMap</span> &amp;<span class="fn">root</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_root</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
-</code></div>
-<ul><li>
-getter for the <code><span class="var">_root</span></code> collection
 </li></ul>
 </div>
 <div><div>

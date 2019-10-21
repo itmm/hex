@@ -1063,37 +1063,5 @@ otherwise all sub <code><span class="type">Frag</span></code>s will be searched
 as soon as a cycle is found, the search can be aborted
 </li></ul>
 </div>
-</div>
-<h2><code><span class="type">Frag</span></code> Collections</h2>
-<div class="slides">
-<div>
-<div>
-<h2><code><span class="type">Frag</span></code> Collections</h2>
-</div>
-<ul><li>
-Collections of <code><span class="type">Frag</span></code>s that are organized in hierarchies
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
-<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">map</span>&gt;<br/>
-<span class="macro">@end(<span class="name">includes</span>)</span><br/>
-</code></div>
-<ul><li>
-needs <code><span class="type">std</span>::<span class="type">map</span></code>
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">define frag</span>)</span><br/>
-<span class="in1"></span><span class="keyword">using</span> <span class="type">FragMap</span> =<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag</span>&gt;;<br/>
-<span class="macro">@end(<span class="name">define frag</span>)</span><br/>
-</code></div>
-<ul><li>
-A collection is a <code><span class="type">std</span>::<span class="type">map</span></code> of names to <code><span class="type">Frag</span></code>s
-</li></ul>
-</div>
 </body>
 </html>

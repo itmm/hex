@@ -814,21 +814,3 @@
 * otherwise all sub `Frag`s will be searched
 * as soon as a cycle is found, the search can be aborted
 
-## `Frag` Collections
-* Collections of `Frag`s that are organized in hierarchies
-
-```
-@Add(includes)
-	#include <map>
-@end(includes)
-```
-* needs `std::map`
-
-```
-@add(define frag)
-	using FragMap =
-		std::map<std::string, Frag>;
-@end(define frag)
-```
-* A collection is a `std::map` of names to `Frag`s
-

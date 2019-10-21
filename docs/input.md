@@ -11,13 +11,6 @@
 * needed includes
 
 ```
-@Add(private inputs elements)
-	FragMap _root;
-@End(private inputs elements)
-```
-* root fragments for each `Inputs` collection
-
-```
 @Add(inputs elements)
 	auto &cur() {
 		ASSERT (! _open.empty());
@@ -106,13 +99,6 @@
 ## Local `Frags`
 * each input file has a `Frag` collection
 
-```
-@Add(input elements)
-	FragMap frags;
-@end(input elements)
-```
-* `Frag` collection of current file
-
 ## Line Numbers
 * for each open input file the current line number is recorded
 
@@ -146,11 +132,7 @@
 	) {
 		ASSERT(! _open.empty());
 		Input &i = _open.back().input();
-		auto f = i.frags.find(name);
-		if (f == i.frags.end()) {
-			return nullptr;
-		}
-		return &f->second;
+		return find_frag(i, name);
 	}
 @End(inputs elements)
 ```
@@ -163,9 +145,7 @@
 	) {
 		ASSERT(! _open.empty());
 		Input &i = _open.back().input();
-		return &i.frags.insert({
-			name, name
-		}).first->second;
+		return &get_frag(i, name);
 	}
 @End(inputs elements)
 ```
@@ -193,12 +173,7 @@
 		const std::string &name
 	) {
 		@put(find global);
-		auto f = _root.find(name);
-		if (f == _root.end()) {
-			return nullptr;
-		}
-		return &f->second;
-
+		return find_frag(name);
 	}
 @End(inputs elements)
 ```
@@ -222,10 +197,9 @@
 
 ```
 @def(find in global file)
-	auto &fs = i->input().frags;
-	auto f = fs.find(name);
-	if (f != fs.end()) {
-		return &f->second;
+	Frag *f { find_frag(i->input(), name) };
+	if (f) {
+		return f;
 	}
 @end(find in global file)
 ```
@@ -236,22 +210,11 @@
 	Frag *add_global(
 		const std::string &name
 	) {
-		return &_root.insert({
-			name, name
-		}).first->second;
+		return &get_frag(name);
 	}
 @End(inputs elements)
 ```
 * add a fragment in the `_root` collection
-
-```
-@Add(inputs elements)
-	const FragMap &root() const {
-		return _root;
-	}
-@End(inputs elements)
-```
-* getter for the `_root` collection
 
 ```
 @Add(inputs elements)

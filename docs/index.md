@@ -178,6 +178,31 @@ int main(
 * follow them in order so that you do not miss important concepts
 
 ```
+@add(global elements)
+	class Frag;
+	class Input;
+
+	#include <map>
+	using Frag_Map = std::map<std::string, Frag>;
+	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
+
+	Frag *find_frag(const std::string &in, const std::string &key);
+	Frag *find_frag(const Input &in, const std::string &key);
+	Frag *find_frag(const std::string &key);
+
+	Frag &get_frag(const std::string &in, const std::string &key);
+	Frag &get_frag(const Input &in, const std::string &key);
+	Frag &get_frag(const std::string &key);
+
+	Frag_Map &frag_map(const std::string &in);
+	Frag_Map &frag_map(const Input &in);
+	Frag_Map &frag_map();
+
+	void clear_frags();
+@end(global elements)
+```
+
+```
 @inc(read.md)
 ```
 * defines the mechanisms of reading files line by line
@@ -956,7 +981,7 @@ int main(
 
 ```
 @def(files write)
-	for (auto &i : inputs.root()) {
+	for (auto &i : frag_map()) {
 		const Frag *frag {
 			&i.second
 		};
@@ -970,7 +995,7 @@ int main(
 ```
 @add(files write)
 	for (auto &j : inputs) {
-		for (auto &i : j.frags) {
+		for (auto &i : frag_map(j)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1097,7 +1122,7 @@ int main(
 
 ```
 @def(files process)
-	for (auto &i : inputs.root()) {
+	for (auto &i : frag_map()) {
 		const Frag *frag {
 			&i.second
 		};
@@ -1110,7 +1135,7 @@ int main(
 ```
 @add(files process)
 	for (auto &j : inputs) {
-		for (auto &i : j.frags) {
+		for (auto &i : frag_map(j)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1229,3 +1254,41 @@ int main(
 ```
 * list of open issues
 
+```
+@add(global elements)
+	Inputs_Frag_Map _all_frags;
+
+	Frag *find_frag(const std::string &in, const std::string &key) {
+		auto got { _all_frags[in].find(key) };
+		return got != _all_frags[in].end() ? &got->second : nullptr;
+	}
+	Frag *find_frag(const Input &in, const std::string &key) {
+		return find_frag(in.path(), key);
+	}
+	Frag *find_frag(const std::string &key) {
+		return find_frag(std::string { }, key);
+	}
+
+	Frag &get_frag(const std::string &in, const std::string &key) {
+		return _all_frags[in].insert({ key, { key } }).first->second;
+	}
+	Frag &get_frag(const Input &in, const std::string &key) {
+		return get_frag(in.path(), key);
+	}
+	Frag &get_frag(const std::string &key) {
+		return get_frag(std::string { }, key);
+	}
+
+	Frag_Map &frag_map(const std::string &in) {
+		return _all_frags[in];
+	}
+
+	Frag_Map &frag_map(const Input &in) {
+		return frag_map(in.path());
+	}
+	Frag_Map &frag_map() {
+		return frag_map(std::string { });
+	}
+
+	void clear_frags() { _all_frags.clear(); }
+@end(global elements)

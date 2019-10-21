@@ -331,6 +331,32 @@ follow them in order so that you do not miss important concepts
 </div>
 <div><div>
 <code>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span>;<br/>
+<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">map</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">using</span> <span class="type">Frag_Map</span> = <span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag</span>&gt;;<br/>
+<span class="in1"></span><span class="keyword">using</span> <span class="type">Inputs_Frag_Map</span> = <span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag_Map</span>&gt;;<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>);<br/>
+<span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>);<br/>
+<span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>();<br/>
+<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">clear_frags</span>();<br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
 <span class="macro">@inc(<span class="name"><a href="read.html">read.md</a></span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1341,7 +1367,7 @@ write files, if requested
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">files write</span>)</span><br/>
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">inputs</span>.<span class="fn">root</span>()) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="fn">frag_map</span>()) {<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in2"></span>};<br/>
@@ -1359,7 +1385,7 @@ additional the code checks if fragments were expanded not often enough
 <code>
 <span class="macro">@add(<span class="name">files write</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>.<span class="var">frags</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="fn">frag_map</span>(<span class="var">j</span>)) {<br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in3"></span>};<br/>
@@ -1517,7 +1543,7 @@ only process files if requested
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">files process</span>)</span><br/>
-<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">inputs</span>.<span class="fn">root</span>()) {<br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="fn">frag_map</span>()) {<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in2"></span>};<br/>
@@ -1533,7 +1559,7 @@ process commands that are key at root level
 <code>
 <span class="macro">@add(<span class="name">files process</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">j</span>.<span class="var">frags</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="fn">frag_map</span>(<span class="var">j</span>)) {<br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in3"></span>};<br/>
@@ -1697,6 +1723,47 @@ handle adding of new elements in the editor
 <ul><li>
 list of open issues
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Inputs_Frag_Map</span> <span class="var">_all_frags</span>;<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">_all_frags</span>[<span class="keyword">in</span>].<span class="fn">find</span>(<span class="var">key</span>) };<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">got</span> != <span class="var">_all_frags</span>[<span class="keyword">in</span>].<span class="fn">end</span>() ? &amp;<span class="var">got</span>-&gt;<span class="var">second</span> : <span class="num">nullptr</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="keyword">in</span>.<span class="fn">path</span>(), <span class="var">key</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="type">std</span>::<span class="type">string</span> { }, <span class="var">key</span>);<br/>
+<span class="in1"></span>}<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_all_frags</span>[<span class="keyword">in</span>].<span class="fn">insert</span>({ <span class="var">key</span>, { <span class="var">key</span> } }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">get_frag</span>(<span class="keyword">in</span>.<span class="fn">path</span>(), <span class="var">key</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">get_frag</span>(<span class="type">std</span>::<span class="type">string</span> { }, <span class="var">key</span>);<br/>
+<span class="in1"></span>}<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_all_frags</span>[<span class="keyword">in</span>];<br/>
+<span class="in1"></span>}<br/>
+<br/>
+<span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">frag_map</span>(<span class="keyword">in</span>.<span class="fn">path</span>());<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">frag_map</span>(<span class="type">std</span>::<span class="type">string</span> { });<br/>
+<span class="in1"></span>}<br/>
+<br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">clear_frags</span>() { <span class="var">_all_frags</span>.<span class="fn">clear</span>(); }<br/>
+<span class="macro">@end(<span class="name">global elements</span>)</span><br/>
+</code></div>
 </div>
 </body>
 </html>

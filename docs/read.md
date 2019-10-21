@@ -118,6 +118,7 @@
 ```
 @def(read sources) {
 	inputs.clear();
+	clear_frags();
 	@Put(additional read vars);
 	std::string line;
 	try { for (;;) {
