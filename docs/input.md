@@ -50,8 +50,9 @@
 ```
 @Add(inputs elements)
 	void push(const std::string &path) {
-		_used.push_back({ path });
-		_open.push_back({ path });
+		const Input *prev = _used.size() ? &_used.back(): nullptr;
+		_used.push_back({ path, prev });
+		_open.push_back({ path, prev });
 	}
 @End(inputs elements)
 ```
@@ -132,7 +133,7 @@
 	) {
 		ASSERT(! _open.empty());
 		Input &i = _open.back().input();
-		return find_frag(i, name);
+		return find_frag(i.path(), name);
 	}
 @End(inputs elements)
 ```
@@ -145,7 +146,7 @@
 	) {
 		ASSERT(! _open.empty());
 		Input &i = _open.back().input();
-		return &get_frag(i, name);
+		return &add_frag(i, name);
 	}
 @End(inputs elements)
 ```
@@ -184,11 +185,11 @@
 @def(find global)
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
-		for (;; --i) {
-			@put(find in global file);
-			if (i == _open.begin()) {
-				break;
-			}
+		Frag *f {
+			find_frag(i->input(), name)
+		};
+		if (f) {
+			return f;
 		}
 	}
 @end(find global)
@@ -196,21 +197,11 @@
 * walk through all open input files and return, if the fragment is found
 
 ```
-@def(find in global file)
-	Frag *f { find_frag(i->input(), name) };
-	if (f) {
-		return f;
-	}
-@end(find in global file)
-```
-* check if the fragment is found in the current input file
-
-```
 @Add(inputs elements)
 	Frag *add_global(
 		const std::string &name
 	) {
-		return &get_frag(name);
+		return &add_frag(name);
 	}
 @End(inputs elements)
 ```

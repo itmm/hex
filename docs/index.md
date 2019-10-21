@@ -184,15 +184,14 @@ int main(
 
 	#include <map>
 	using Frag_Map = std::map<std::string, Frag>;
-	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
 
 	Frag *find_frag(const std::string &in, const std::string &key);
 	Frag *find_frag(const Input &in, const std::string &key);
 	Frag *find_frag(const std::string &key);
 
-	Frag &get_frag(const std::string &in, const std::string &key);
-	Frag &get_frag(const Input &in, const std::string &key);
-	Frag &get_frag(const std::string &key);
+	Frag &add_frag(const std::string &in, const std::string &key);
+	Frag &add_frag(const Input &in, const std::string &key);
+	Frag &add_frag(const std::string &key);
 
 	Frag_Map &frag_map(const std::string &in);
 	Frag_Map &frag_map(const Input &in);
@@ -1256,6 +1255,7 @@ int main(
 
 ```
 @add(global elements)
+	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
 	Inputs_Frag_Map _all_frags;
 
 	Frag *find_frag(const std::string &in, const std::string &key) {
@@ -1263,20 +1263,26 @@ int main(
 		return got != _all_frags[in].end() ? &got->second : nullptr;
 	}
 	Frag *find_frag(const Input &in, const std::string &key) {
-		return find_frag(in.path(), key);
+		const Input *i { &in };
+		for (;;) {
+			Frag *f { find_frag(i->path(), key) };
+			if (f) { return f; }
+			if (! i->prev) { return nullptr; }
+			i = i->prev;
+		}
 	}
 	Frag *find_frag(const std::string &key) {
 		return find_frag(std::string { }, key);
 	}
 
-	Frag &get_frag(const std::string &in, const std::string &key) {
+	Frag &add_frag(const std::string &in, const std::string &key) {
 		return _all_frags[in].insert({ key, { key } }).first->second;
 	}
-	Frag &get_frag(const Input &in, const std::string &key) {
-		return get_frag(in.path(), key);
+	Frag &add_frag(const Input &in, const std::string &key) {
+		return add_frag(in.path(), key);
 	}
-	Frag &get_frag(const std::string &key) {
-		return get_frag(std::string { }, key);
+	Frag &add_frag(const std::string &key) {
+		return add_frag(std::string { }, key);
 	}
 
 	Frag_Map &frag_map(const std::string &in) {

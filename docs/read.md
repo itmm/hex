@@ -163,6 +163,7 @@
 	class Input {
 		public:
 			@Put(input elements);
+			const Input *prev;
 		private:
 			std::string _path;
 	};
@@ -191,8 +192,8 @@
 
 ```
 @Def(open input elements)
-	Open_Input(const std::string &path):
-		_input { path },
+	Open_Input(const std::string &path, const Input *prev):
+		_input { path, prev },
 		_file { path.c_str() }
 	{}
 @End(open input elements)
@@ -243,7 +244,8 @@
 
 ```
 @Def(input elements)
-	Input(const std::string &path):
+	Input(const std::string &path, const Input *prev):
+		prev { prev },
 		_path { path }
 	{}
 @End(input elements)
