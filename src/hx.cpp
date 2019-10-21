@@ -944,13 +944,13 @@
 
 	void clear() {
 		
-#line 201 "input.md"
+#line 199 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
 		
-#line 214 "input.md"
+#line 212 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
@@ -965,7 +965,7 @@
 		_paths.push_back("index.md");
 	}
 
-#line 205 "input.md"
+#line 203 "input.md"
 ;
 	}
 	_current_path = _paths.begin();
@@ -1054,12 +1054,10 @@
 
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
-		Frag *f {
-			find_frag(i->input(), name)
-		};
-		if (f) {
-			return f;
-		}
+		Frag *f { find_frag(
+			i->input(), name
+		) };
+		if (f) { return f; }
 	}
 
 #line 149 "input.md"
@@ -1067,7 +1065,7 @@
 		return find_frag(name);
 	}
 
-#line 173 "input.md"
+#line 171 "input.md"
 
 	Frag *add_global(
 		const std::string &name
@@ -1075,7 +1073,7 @@
 		return &add_frag(name);
 	}
 
-#line 184 "input.md"
+#line 182 "input.md"
 
 	Frag *get_global(
 		const std::string &name

@@ -158,12 +158,10 @@
 @def(find global)
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
-		Frag *f {
-			find_frag(i->input(), name)
-		};
-		if (f) {
-			return f;
-		}
+		Frag *f { find_frag(
+			i->input(), name
+		) };
+		if (f) { return f; }
 	}
 @end(find global)
 ```
