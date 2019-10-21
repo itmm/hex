@@ -944,13 +944,13 @@
 
 	void clear() {
 		
-#line 228 "input.md"
+#line 201 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
 		
-#line 241 "input.md"
+#line 214 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
@@ -965,7 +965,7 @@
 		_paths.push_back("index.md");
 	}
 
-#line 232 "input.md"
+#line 205 "input.md"
 ;
 	}
 	_current_path = _paths.begin();
@@ -1035,43 +1035,22 @@
 
 #line 130 "input.md"
 
-	Frag *find_local(
-		const std::string &name
-	) {
-		ASSERT(! _open.empty());
-		Input &i = _open.back().input();
-		return find_frag(i.path(), name);
-	}
-
-#line 143 "input.md"
-
-	Frag *add_local(
-		const std::string &name
-	) {
-		ASSERT(! _open.empty());
-		Input &i = _open.back().input();
-		return &add_frag(i, name);
-	}
-
-#line 156 "input.md"
-
 	Frag *get_local(
 		const std::string &name
 	) {
-		Frag *result = find_local(name);
-		if (! result) {
-			result = add_local(name);
-		}
-		return result;
+		ASSERT(! _open.empty());
+		Input &i = _open.back().input();
+		Frag *got { find_frag(i.path(), name) };
+		return got ?: &add_frag(i, name);
 	}
 
-#line 172 "input.md"
+#line 145 "input.md"
 
 	Frag *find_global(
 		const std::string &name
 	) {
 		
-#line 185 "input.md"
+#line 158 "input.md"
 
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
@@ -1083,12 +1062,12 @@
 		}
 	}
 
-#line 176 "input.md"
+#line 149 "input.md"
 ;
 		return find_frag(name);
 	}
 
-#line 200 "input.md"
+#line 173 "input.md"
 
 	Frag *add_global(
 		const std::string &name
@@ -1096,7 +1075,7 @@
 		return &add_frag(name);
 	}
 
-#line 211 "input.md"
+#line 184 "input.md"
 
 	Frag *get_global(
 		const std::string &name

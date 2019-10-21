@@ -128,40 +128,13 @@
 
 ```
 @Add(inputs elements)
-	Frag *find_local(
-		const std::string &name
-	) {
-		ASSERT(! _open.empty());
-		Input &i = _open.back().input();
-		return find_frag(i.path(), name);
-	}
-@End(inputs elements)
-```
-* find a fragment in the current open input file
-
-```
-@Add(inputs elements)
-	Frag *add_local(
-		const std::string &name
-	) {
-		ASSERT(! _open.empty());
-		Input &i = _open.back().input();
-		return &add_frag(i, name);
-	}
-@End(inputs elements)
-```
-* create a fragment in the current open input file
-
-```
-@Add(inputs elements)
 	Frag *get_local(
 		const std::string &name
 	) {
-		Frag *result = find_local(name);
-		if (! result) {
-			result = add_local(name);
-		}
-		return result;
+		ASSERT(! _open.empty());
+		Input &i = _open.back().input();
+		Frag *got { find_frag(i.path(), name) };
+		return got ?: &add_frag(i, name);
 	}
 @End(inputs elements)
 ```
