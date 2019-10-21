@@ -254,6 +254,8 @@
 		std::vector<Frag_Entry> _entries;
 		int _expands;
 		int _multiples;
+		Frag *_prefix;
+		Frag_Map *_meta;
 	public:
 		const std::string name;
 		@put(frag methods);
@@ -301,11 +303,15 @@
 ```
 @add(frag methods)
 	Frag(
-		const std::string &name
+		const std::string &name,
+		Frag *prefix,
+		Frag_Map *meta
 	):
 		_entries {},
 		_expands { 0 },
 		_multiples { 0 },
+		_prefix { prefix },
+		_meta { meta },
 		name { name }
 	{
 		if (isFile()) { ++_expands; }
@@ -318,7 +324,30 @@
 
 ```
 @add(frag methods)
+	const Frag *prefix() const {
+		return _prefix;
+	}
+	Frag *prefix() {
+		return _prefix;
+	}
+@end(frag methods)
+```
+* get prefix fragment
+
+```
+@add(frag methods)
+	Frag_Map *meta() {
+		return _meta;
+	}
+@end(frag methods)
+```
+
+```
+@add(frag methods)
 	void clear() {
+		if (_prefix) {
+			_prefix->clear();
+		}
 		_entries.clear();
 	}
 @end(frag methods)
@@ -329,6 +358,11 @@
 ```
 @add(frag methods)
 	bool empty() const {
+		if (
+			_prefix && ! _prefix->empty()
+		) {
+			return false;
+		}
 		return _entries.empty();
 	}
 @end(frag methods)
@@ -358,7 +392,7 @@
 	void test_frag_name(
 		const std::string &name
 	) {
-		Frag f(name);
+		Frag f(name, nullptr, nullptr);
 		ASSERT(f.name == name);
 	}
 @end(define frag)
@@ -376,7 +410,7 @@
 
 ```
 @add(unit-tests) {
-	Frag f { "ab" };
+	Frag f { "ab", nullptr, nullptr };
 	ASSERT(f.empty());
 } @end(unit-tests)
 ```
@@ -403,7 +437,7 @@
 
 ```
 @add(unit-tests) {
-	Frag f { "" };
+	Frag f { "", nullptr, nullptr };
 	Write_State s { f };
 	Frag_Entry entry;
 	ASSERT(entry.str(s).empty());
@@ -517,7 +551,7 @@
 ```
 @add(frag methods)
 	int expands() const {
-		return _expands;
+		return _expands + (_prefix ? _prefix->expands() : 0);
 	}
 @end(frag methods)
 ```
@@ -535,7 +569,7 @@
 ```
 @add(frag methods)
 	int multiples() const {
-		return _multiples;
+		return _multiples + (_prefix ? _prefix->multiples() : 0);
 	}
 @end(frag methods)
 ```
@@ -621,6 +655,11 @@
 
 ```
 @def(iterate entries)
+	if (frag.prefix()) {
+		serializeFrag(
+			*frag.prefix(), out, state
+		);
+	}
 	for (const auto &entry : frag) {
 		if (entry.frag) {
 			serializeFrag(
@@ -666,6 +705,11 @@
 
 ```
 @def(check entries)
+	if (f.prefix()) {
+		if (! check_frag(*f.prefix(), in, state)) {
+			return false;
+		}
+	}
 	for (const auto &entry : f) {
 		if (entry.frag) {
 			if (!check_frag(
@@ -740,7 +784,7 @@
 
 ```
 @add(unit-tests) {
-	Frag frag { "" };
+	Frag frag { "", nullptr, nullptr };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
@@ -750,8 +794,8 @@
 
 ```
 @add(unit-tests) {
-	Frag a { "" };
-	Frag b { "" };
+	Frag a { "", nullptr, nullptr };
+	Frag b { "", nullptr, nullptr };
 	addStringToFrag(&a, "abc");
 	b.add(&a);
 	addStringToFrag(&b, "def");
@@ -801,6 +845,9 @@
 
 ```
 @def(check cycle entries)
+	if (haystack->prefix() && isFragInFrag(needle, haystack->prefix())) {
+		return true;
+	}
 	for (const auto &i : *haystack)  {
 		if (! i.frag) { continue; }
 		if (isFragInFrag(

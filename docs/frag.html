@@ -327,6 +327,8 @@ needs <code><span class="type">std</span>::<span class="type">vector</span></cod
 <span class="in2"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Frag_Entry</span>&gt; <span class="var">_entries</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_expands</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_multiples</span>;<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">_prefix</span>;<br/>
+<span class="in2"></span><span class="type">Frag_Map</span> *<span class="var">_meta</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span>;<br/>
@@ -389,11 +391,15 @@ a <code><span class="type">Frag</span></code> describes a command if its name ha
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="fn">Frag</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>,<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">prefix</span>,<br/>
+<span class="in2"></span><span class="type">Frag_Map</span> *<span class="var">meta</span><br/>
 <span class="in1"></span>):<br/>
 <span class="in2"></span><span class="var">_entries</span> {},<br/>
 <span class="in2"></span><span class="var">_expands</span> { <span class="num">0</span> },<br/>
 <span class="in2"></span><span class="var">_multiples</span> { <span class="num">0</span> },<br/>
+<span class="in2"></span><span class="var">_prefix</span> { <span class="var">prefix</span> },<br/>
+<span class="in2"></span><span class="var">_meta</span> { <span class="var">meta</span> },<br/>
 <span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 <span class="in1"></span>{<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFile</span>()) { ++<span class="var">_expands</span>; }<br/>
@@ -410,7 +416,34 @@ if the <code><span class="type">Frag</span></code> is a name or command, it is c
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="fn">prefix</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_prefix</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">prefix</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_prefix</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
+</code></div>
+<ul><li>
+get prefix fragment
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
+<span class="in1"></span><span class="type">Frag_Map</span> *<span class="fn">meta</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_meta</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_prefix</span>) {<br/>
+<span class="in3"></span><span class="var">_prefix</span>-&gt;<span class="fn">clear</span>();<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="var">_entries</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
@@ -425,6 +458,11 @@ will be used by <code>@<span class="var">rep</span></code> and <code>@<span clas
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<br/>
+<span class="in3"></span><span class="var">_prefix</span> &amp;&amp; ! <span class="var">_prefix</span>-&gt;<span class="fn">empty</span>()<br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">_entries</span>.<span class="fn">empty</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
@@ -463,7 +501,7 @@ fragments have their own unit-test fragment
 <span class="in1"></span><span class="type">void</span> <span class="fn">test_frag_name</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="type">Frag</span> <span class="fn">f</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="type">Frag</span> <span class="fn">f</span>(<span class="var">name</span>, <span class="num">nullptr</span>, <span class="num">nullptr</span>);<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">f</span>.<span class="var">name</span> == <span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -487,7 +525,7 @@ verify that names are copied
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
-<span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">"ab"</span> };<br/>
+<span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">"ab"</span>, <span class="num">nullptr</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">f</span>.<span class="fn">empty</span>());<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
@@ -523,7 +561,7 @@ verify that an empty fragment has no sub <code><span class="type">Frag</span></c
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
-<span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">""</span> };<br/>
+<span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">""</span>, <span class="num">nullptr</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="type">Write_State</span> <span class="var">s</span> { <span class="var">f</span> };<br/>
 <span class="in1"></span><span class="type">Frag_Entry</span> <span class="var">entry</span>;<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="fn">str</span>(<span class="var">s</span>).<span class="fn">empty</span>());<br/>
@@ -677,7 +715,7 @@ getter for the end entries iterator
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">expands</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_expands</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_expands</span> + (<span class="var">_prefix</span> ? <span class="var">_prefix</span>-&gt;<span class="fn">expands</span>() : <span class="num">0</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
@@ -701,7 +739,7 @@ increases the <code>@<span class="var">put</span></code> or <code>@<span class="
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">multiples</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_multiples</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_multiples</span> + (<span class="var">_prefix</span> ? <span class="var">_prefix</span>-&gt;<span class="fn">multiples</span>() : <span class="num">0</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
@@ -815,6 +853,11 @@ estimate a <code><span class="type">Write_State</span></code> first
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">iterate entries</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>.<span class="fn">prefix</span>()) {<br/>
+<span class="in2"></span><span class="fn">serializeFrag</span>(<br/>
+<span class="in3"></span>*<span class="var">frag</span>.<span class="fn">prefix</span>(), <span class="var">out</span>, <span class="var">state</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">entry</span> : <span class="var">frag</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="fn">serializeFrag</span>(<br/>
@@ -870,6 +913,11 @@ estimate a <code><span class="type">Write_State</span></code> first
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">check entries</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>.<span class="fn">prefix</span>()) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="fn">check_frag</span>(*<span class="var">f</span>.<span class="fn">prefix</span>(), <span class="keyword">in</span>, <span class="var">state</span>)) {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">entry</span> : <span class="var">f</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">entry</span>.<span class="var">frag</span>) {<br/>
 <span class="in3"></span><span class="keyword">if</span> (!<span class="fn">check_frag</span>(<br/>
@@ -964,7 +1012,7 @@ adds a zero-terminated string to a <code><span class="type">Frag</span></code>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
-<span class="in1"></span><span class="type">Frag</span> <span class="var">frag</span> { <span class="str">""</span> };<br/>
+<span class="in1"></span><span class="type">Frag</span> <span class="var">frag</span> { <span class="str">""</span>, <span class="num">nullptr</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"abc"</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"def"</span>);<br/>
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
@@ -977,8 +1025,8 @@ checks that two strings are correctly serialized
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
-<span class="in1"></span><span class="type">Frag</span> <span class="var">a</span> { <span class="str">""</span> };<br/>
-<span class="in1"></span><span class="type">Frag</span> <span class="var">b</span> { <span class="str">""</span> };<br/>
+<span class="in1"></span><span class="type">Frag</span> <span class="var">a</span> { <span class="str">""</span>, <span class="num">nullptr</span>, <span class="num">nullptr</span> };<br/>
+<span class="in1"></span><span class="type">Frag</span> <span class="var">b</span> { <span class="str">""</span>, <span class="num">nullptr</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
@@ -1047,6 +1095,9 @@ if the container is itself the searched <code><span class="type">Frag</span></co
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">check cycle entries</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">haystack</span>-&gt;<span class="fn">prefix</span>() &amp;&amp; <span class="fn">isFragInFrag</span>(<span class="var">needle</span>, <span class="var">haystack</span>-&gt;<span class="fn">prefix</span>())) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : *<span class="var">haystack</span>)  {<br/>
 <span class="in2"></span><span class="keyword">if</span> (! <span class="var">i</span>.<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFragInFrag</span>(<br/>

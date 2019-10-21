@@ -256,28 +256,11 @@ walk through all open input files and return, if the fragment is found
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">add_global</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> &amp;<span class="fn">add_frag</span>(<span class="var">name</span>);<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
-</code></div>
-<ul><li>
-add a fragment in the <code><span class="var">_root</span></code> collection
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_global</span>(<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">result</span> = <span class="fn">find_global</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">result</span>) {<br/>
-<span class="in3"></span><span class="var">result</span> = <span class="fn">add_global</span>(<span class="var">name</span>);<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span> ?: &amp;<span class="fn">add_frag</span>(<span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>

@@ -169,25 +169,11 @@
 
 ```
 @Add(inputs elements)
-	Frag *add_global(
-		const std::string &name
-	) {
-		return &add_frag(name);
-	}
-@End(inputs elements)
-```
-* add a fragment in the `_root` collection
-
-```
-@Add(inputs elements)
 	Frag *get_global(
 		const std::string &name
 	) {
 		Frag *result = find_global(name);
-		if (! result) {
-			result = add_global(name);
-		}
-		return result;
+		return result ?: &add_frag(name);
 	}
 @End(inputs elements)
 ```

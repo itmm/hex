@@ -1276,7 +1276,7 @@ int main(
 	}
 
 	Frag &add_frag(const std::string &in, const std::string &key) {
-		return _all_frags[in].insert({ key, { key } }).first->second;
+		return _all_frags[in].insert({ key, { key, nullptr, nullptr } }).first->second;
 	}
 	Frag &add_frag(const Input &in, const std::string &key) {
 		return add_frag(in.path(), key);
