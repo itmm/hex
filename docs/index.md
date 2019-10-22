@@ -434,7 +434,7 @@ int main(
 	auto ab = ne + 1; auto ae = ab;
 	while (ae != end && *ae != ')') {
 		if (*ae == '@') {
-			if (++ae == end) { break; }
+			@put(handle at in cmd arg);
 		}
 		++ae;
 	}
@@ -448,6 +448,35 @@ int main(
 * arguments are read until the closing parenthesis
 * characters in the argument can be escaped by prefixing them with `@`
 * that is needed to allow for the closing parenthesis in the argument
+
+```
+@def(handle at in cmd arg)
+	if (++ae == end) { break; }
+	if (isalpha(*ae)) {
+		@put(handle cmd in cmd arg);
+	}
+@end(handle at in cmd arg)
+```
+
+```
+@def(handle cmd in cmd arg)
+	auto ac { ae };
+	while (isalpha(*ac)) {
+		++ac; if (ac == end) { break; }
+	}
+	if (ac != end && *ac == '(') {
+		int cnt = 1; ++ac;
+		while (ac != end && cnt != 0) {
+			if (*ac == '(') { ++cnt; }
+			if (*ac == ')') { --cnt; }
+			++ac;
+		}
+		if (cnt == 0) {
+			ae = ac - 1;
+		}
+	}
+@end(handle cmd in cmd arg)
+```
 
 ```
 @def(cmd found)
@@ -488,7 +517,17 @@ int main(
 ```
 @def(do default cmd)
 	if (frag) {
-		expand_cmd_arg(frag, arg);
+		if (frag->is_meta()) {
+			auto f { inputs.cur().input().path() };
+			auto l { inputs.cur().line() };
+			frag->add('@', f, l);
+			frag->add(name, f, l);
+			frag->add('(', f, l);
+			frag->add(arg, f, l);
+			frag->add(')', f, l);
+		} else {
+			expand_cmd_arg(frag, arg);
+		}
 	}
 @end(do default cmd)
 ```
@@ -598,8 +637,22 @@ int main(
 @add(do special cmd)
 	if (name == "end" || name == "End") {
 		ASSERT_FRAG();
-		@put(frag names must match);
-		frag = nullptr;
+		if (frag->is_meta()) {
+			if (frag->name == arg) {
+				frag = nullptr;
+			} else {
+				auto f { inputs.cur().input().path() };
+				auto l { inputs.cur().line() };
+				frag->add('@', f, l);
+				frag->add(name, f, l);
+				frag->add('(', f, l);
+				frag->add(arg, f, l);
+				frag->add(')', f, l);
+			}
+		} else {
+			@put(frag names must match);
+			frag = nullptr;
+		}
 		break;
 	}
 @end(do special cmd)
@@ -631,9 +684,19 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "add") {
-		ASSERT_NOT_FRAG();
-		frag = inputs.get_local(arg);
-		CHECK_DEFINED();
+		if (frag && frag->is_meta()) {
+			auto f { inputs.cur().input().path() };
+			auto l { inputs.cur().line() };
+			frag->add('@', f, l);
+			frag->add(name, f, l);
+			frag->add('(', f, l);
+			frag->add(arg, f, l);
+			frag->add(')', f, l);
+		} else {
+			ASSERT_NOT_FRAG();
+			frag = inputs.get_local(arg);
+			CHECK_DEFINED();
+		}
 		break;
 	}
 @end(do special cmd)
@@ -644,14 +707,17 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "put") {
-		ASSERT_MSG(frag, "@put" << "(" <<
-			arg << ") not in frag"
-		);
-		Frag *sub = inputs.get_local(arg);
-		if (sub) {
-			@mul(check frag ex. count);
-			sub->addExpand();
-			frag->add(sub);
+		if (! frag && arg.find('@') != std::string::npos) {
+		} else {
+			ASSERT_MSG(frag, "@put" << "(" <<
+				arg << ") not in frag"
+			);
+			Frag *sub = inputs.get_local(arg);
+			if (sub) {
+				@mul(check frag ex. count);
+				sub->addExpand();
+				frag->add(sub);
+			}
 		}
 		break;
 	}
@@ -1289,7 +1355,7 @@ int main(
 		if (state.parent) {
 			prev = &add_frag(*state.parent, in, key);
 		}
-		return state.state[in].insert({ key, { key, prev, nullptr } }).first->second;
+		return state.state[in].insert({ key, { key, prev } }).first->second;
 	}
 
 	Frag &add_frag(const std::string &in, const std::string &key) {
