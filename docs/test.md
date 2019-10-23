@@ -22,9 +22,8 @@
 
 ```
 @put(print @name(Alice))
-put(print @name(Bob))
+@put(print @name(Bob))
 ```
-
 
 ```
 @add(globals)

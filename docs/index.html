@@ -1848,9 +1848,15 @@ list of open issues
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Frag_State</span>&gt; <span class="var">_all_frags</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="num">nullptr</span>));<br/>
 <br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">Frag_State</span> &amp;<span class="var">s</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">s</span>.<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">find</span>(<span class="var">key</span>) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">s</span>.<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">return</span> &amp;<span class="var">got</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
-<span class="in2"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">_all_frags</span>-&gt;<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">find</span>(<span class="var">key</span>) };<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">got</span> != <span class="var">_all_frags</span>-&gt;<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">end</span>() ? &amp;<span class="var">got</span>-&gt;<span class="var">second</span> : <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(*<span class="var">_all_frags</span>, <span class="keyword">in</span>, <span class="var">key</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">Input</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Input</span> *<span class="var">i</span> { &amp;<span class="keyword">in</span> };<br/>
@@ -1900,6 +1906,11 @@ list of open issues
 <span class="in2"></span><span class="var">current</span>-&gt;<span class="var">meta_path</span> = <span class="var">inputs</span>.<span class="fn">open_head</span>();<br/>
 <span class="in2"></span><span class="var">current</span>-&gt;<span class="var">meta_values</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">values</span>);<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">n</span> { <span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="type">std</span>::<span class="fn">move</span>(<span class="var">_all_frags</span>)) };<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="var">current</span>-&gt;<span class="var">state</span>) {<br/>
+<span class="in3"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">i</span>.<span class="var">second</span>) {<br/>
+<span class="in4"></span><span class="var">n</span>-&gt;<span class="var">state</span>[<span class="var">i</span>.<span class="var">first</span>].<span class="fn">insert</span>({ <span class="var">j</span>.<span class="var">first</span>, { <span class="var">j</span>.<span class="var">first</span>, &amp;<span class="var">j</span>.<span class="var">second</span> } });<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="var">_all_frags</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">n</span>);<br/>
 <span class="in1"></span>}<br/>
 <br/>
@@ -1915,7 +1926,7 @@ list of open issues
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">eval_metas</span>() {<br/>
-<span class="in2"></span><span class="fn">eval_meta</span>(*<span class="var">_all_frags</span>);<br/>
+<span class="in2"></span>// <span class="fn">eval_meta</span>(*<span class="var">_all_frags</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>

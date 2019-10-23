@@ -1373,9 +1373,15 @@ int main(
 	};
 	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
 
+	Frag *find_frag(Frag_State &s, const std::string &in, const std::string &key) {
+		auto got { s.state[in].find(key) };
+		if (got != s.state[in].end()) {
+			return &got->second;
+		}
+		return nullptr;
+	}
 	Frag *find_frag(const std::string &in, const std::string &key) {
-		auto got { _all_frags->state[in].find(key) };
-		return got != _all_frags->state[in].end() ? &got->second : nullptr;
+		return find_frag(*_all_frags, in, key);
 	}
 	Frag *find_frag(const Input &in, const std::string &key) {
 		const Input *i { &in };
@@ -1425,6 +1431,11 @@ int main(
 		current->meta_path = inputs.open_head();
 		current->meta_values = std::move(values);
 		auto n { std::make_unique<Frag_State>(std::move(_all_frags)) };
+		for (auto &i : current->state) {
+			for (auto &j : i.second) {
+				n->state[i.first].insert({ j.first, { j.first, &j.second } });
+			}
+		}
 		_all_frags = std::move(n);
 	}
 

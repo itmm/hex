@@ -4160,9 +4160,15 @@
 	};
 	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
 
+	Frag *find_frag(Frag_State &s, const std::string &in, const std::string &key) {
+		auto got { s.state[in].find(key) };
+		if (got != s.state[in].end()) {
+			return &got->second;
+		}
+		return nullptr;
+	}
 	Frag *find_frag(const std::string &in, const std::string &key) {
-		auto got { _all_frags->state[in].find(key) };
-		return got != _all_frags->state[in].end() ? &got->second : nullptr;
+		return find_frag(*_all_frags, in, key);
 	}
 	Frag *find_frag(const Input &in, const std::string &key) {
 		const Input *i { &in };
@@ -4212,6 +4218,11 @@
 		current->meta_path = inputs.open_head();
 		current->meta_values = std::move(values);
 		auto n { std::make_unique<Frag_State>(std::move(_all_frags)) };
+		for (auto &i : current->state) {
+			for (auto &j : i.second) {
+				n->state[i.first].insert({ j.first, { j.first, &j.second } });
+			}
+		}
 		_all_frags = std::move(n);
 	}
 
@@ -4223,7 +4234,7 @@
 		}
 		if (fs.meta) {
 			
-#line 1449 "index.md"
+#line 1460 "index.md"
 
 	std::ostringstream out;
 	serializeFrag(*fs.meta, out);
@@ -4702,20 +4713,20 @@
 		}
 	}
 
-#line 1467 "index.md"
+#line 1478 "index.md"
 ;
 			process_char(frag, *i, cur_path, cur_line);
 		}
 		process_char(frag, '\n', cur_path, cur_line);
 	}
 
-#line 1438 "index.md"
+#line 1449 "index.md"
 ;
 		}
 	}
 
 	void eval_metas() {
-		eval_meta(*_all_frags);
+		// eval_meta(*_all_frags);
 	}
 
 #line 39 "index.md"
