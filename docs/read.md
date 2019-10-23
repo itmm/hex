@@ -126,6 +126,7 @@
 		@Put(process line);
 	} }
 	catch (const No_More_Lines &) {}
+	eval_metas();
 } @end(read sources)
 ```
 * first this function resets `inputs` to a clean state

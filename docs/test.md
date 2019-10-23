@@ -9,7 +9,7 @@
 ```
 @def(print @name())
 	@add(globals)
-		name @name()
+		name
 	@end(globals)
 @end(print @name())
 ```
@@ -22,8 +22,9 @@
 
 ```
 @put(print @name(Alice))
-@put(print @name(Bob))
+put(print @name(Bob))
 ```
+
 
 ```
 @add(globals)

@@ -198,9 +198,9 @@ int main(
 	Frag_Map &frag_map(const Input &in);
 	Frag_Map &frag_map();
 
-	Frag_State *split_frag();
-
+	void split_frag(Frag *meta, std::map<std::string, std::string> &&values);
 	void clear_frags();
+	void eval_metas();
 @end(global elements)
 ```
 
@@ -346,7 +346,7 @@ int main(
 ```
 @Add(needed by read_sources)
 	void process_char(
-		Frag *frag, char ch
+		Frag *frag, char ch, const std::string &cur_path, int cur_line
 	) {
 		@put(process char);
 	}
@@ -357,14 +357,18 @@ int main(
 ```
 @Add(process line)
 	auto end = line.cend();
+	Input &input { *inputs.get(inputs.open_head()) };
+	std::string cur_path = inputs.cur().input().path();
+	int cur_line = inputs.cur().line();
+	std::map<std::string, std::string> cmd_values;
 	for (
 		auto i = line.cbegin();
 		i != end; ++i
 	) {
-		@put(process special chars);
-		process_char(frag, *i);
+		@mul(process special chars);
+		process_char(frag, *i, cur_path, cur_line);
 	}
-	process_char(frag, '\n');
+	process_char(frag, '\n', cur_path, cur_line);
 @End(process line)
 ```
 * reads each character in the current line
@@ -385,10 +389,7 @@ int main(
 ```
 @def(process char)
 	if (frag) {
-		frag->add(ch,
-			inputs.cur().input().path(),
-			inputs.cur().line()
-		);
+		frag->add(ch, cur_path, cur_line);
 	}
 @end(process char)
 ```
@@ -504,7 +505,8 @@ int main(
 ```
 @Add(needed by read_sources)
 	inline void expand_cmd_arg(
-		Frag *f, const std::string &arg
+		Frag *f, const std::string &arg,
+		const std::string cur_path, int cur_line
 	) {
 		auto b = arg.begin();
 		auto e = arg.end();
@@ -518,15 +520,15 @@ int main(
 @def(do default cmd)
 	if (frag) {
 		if (frag->is_meta()) {
-			auto f { inputs.cur().input().path() };
-			auto l { inputs.cur().line() };
+			auto f { cur_path };
+			auto l { cur_line };
 			frag->add('@', f, l);
 			frag->add(name, f, l);
 			frag->add('(', f, l);
 			frag->add(arg, f, l);
 			frag->add(')', f, l);
 		} else {
-			expand_cmd_arg(frag, arg);
+			expand_cmd_arg(frag, arg, cur_path, cur_line);
 		}
 	}
 @end(do default cmd)
@@ -563,8 +565,7 @@ int main(
 @def(expand before)
 	f->add(
 		std::string { b, x },
-		inputs.cur().input().path(),
-		inputs.cur().line()
+		cur_path, cur_line
 	);
 @end(expand before)
 ```
@@ -573,11 +574,7 @@ int main(
 ```
 @def(expand escaped)
 	if (b != e) {
-		f->add(
-			*b,
-			inputs.cur().input().path(),
-			inputs.cur().line()
-		);
+		f->add(*b, cur_path, cur_line);
 		++b;
 	}
 @end(expand escaped)
@@ -612,7 +609,7 @@ int main(
 @def(do special cmd)
 	if (name == "def") {
 		ASSERT_NOT_FRAG();
-		frag = inputs.get_local(arg);
+		frag = inputs.get_local(input, arg);
 		CHECK_NOT_DEFINED();
 		break;
 	}
@@ -634,6 +631,16 @@ int main(
 * raise error, if command is not in an active fragment
 
 ```
+@add(do special cmd) {
+	auto i { cmd_values.find(name) };
+	if (i != cmd_values.end()) {
+		frag->add(i->second, cur_path, cur_line);
+		break;
+	}
+} @end(do special cmd)
+```
+
+```
 @add(do special cmd)
 	if (name == "end" || name == "End") {
 		ASSERT_FRAG();
@@ -641,8 +648,8 @@ int main(
 			if (frag->name == arg) {
 				frag = nullptr;
 			} else {
-				auto f { inputs.cur().input().path() };
-				auto l { inputs.cur().line() };
+				auto f { cur_path };
+				auto l { cur_line };
 				frag->add('@', f, l);
 				frag->add(name, f, l);
 				frag->add('(', f, l);
@@ -685,8 +692,8 @@ int main(
 @add(do special cmd)
 	if (name == "add") {
 		if (frag && frag->is_meta()) {
-			auto f { inputs.cur().input().path() };
-			auto l { inputs.cur().line() };
+			auto f { cur_path };
+			auto l { cur_line };
 			frag->add('@', f, l);
 			frag->add(name, f, l);
 			frag->add('(', f, l);
@@ -694,7 +701,7 @@ int main(
 			frag->add(')', f, l);
 		} else {
 			ASSERT_NOT_FRAG();
-			frag = inputs.get_local(arg);
+			frag = inputs.get_local(input, arg);
 			CHECK_DEFINED();
 		}
 		break;
@@ -705,14 +712,50 @@ int main(
 * more content can be added to it
 
 ```
+@Add(needed by read_sources)
+	void parse_args(const std::string &arg, std::string &pattern, std::map<std::string, std::string> &values) {
+		for (unsigned i = 0; i < arg.size(); ++i) {
+			if (arg[i] == '@') {
+				unsigned j = i + 1;
+				while (j < arg.size() && isalpha(arg[j])) { ++j; }
+				if (j > i + 1 && j < arg.size() && arg[j] == '(') {
+					int cnt = 1;
+					unsigned k = j + 1;
+					for (; k < arg.size() && cnt; ++k) {
+						if (arg[k] == '(') { ++cnt; }
+						if (arg[k] == ')') { --cnt; }
+					}
+					if (! cnt) {
+						std::string key { arg.substr(i + 1, j - i - 1) };
+						std::string value { arg.substr(j + 1, k - j - 1) };
+						values[key] = value;
+						pattern += '@';
+						pattern += key;
+						pattern += '(';
+						i = k - 1;
+					}
+				}
+			}
+			pattern += arg[i];
+		}
+	}
+@End(needed by read_sources)
+```
+
+```
 @add(do special cmd)
 	if (name == "put") {
 		if (! frag && arg.find('@') != std::string::npos) {
+			std::string pattern;
+			std::map<std::string, std::string> values;
+			parse_args(arg, pattern, values);
+			Frag *sub = inputs.get_local(input, pattern);
+			split_frag(sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
 			);
-			Frag *sub = inputs.get_local(arg);
+			Frag *sub = inputs.get_local(input, arg);
 			if (sub) {
 				@mul(check frag ex. count);
 				sub->addExpand();
@@ -768,7 +811,7 @@ int main(
 		ASSERT_MSG(frag,
 			"@mul not in frag"
 		);
-		Frag *sub = inputs.get_local(arg);
+		Frag *sub = inputs.get_local(input, arg);
 		if (sub) {
 			@mul(check for prev expands);
 			sub->addMultiple();
@@ -851,7 +894,7 @@ int main(
 			"@rep in frag [" <<
 				frag->name << ']'
 		);
-		frag = inputs.get_local(arg);
+		frag = inputs.get_local(input, arg);
 		@mul(clear frag);
 		break;
 	}
@@ -959,9 +1002,8 @@ int main(
 @def(process private frag)
 	std::hash<std::string> h;
 	auto cur {
-		h(inputs.cur().input().path() +
-			':' + arg) &
-				0x7fffffff
+		h(cur_path + ':' + arg) &
+			0x7fffffff
 	};
 @end(process private frag)
 ```
@@ -975,9 +1017,7 @@ int main(
 		cur << '_' <<
 		arg;
 	frag->add(
-		hashed.str(),
-		inputs.cur().input().path(),
-		inputs.cur().line()
+		hashed.str(), cur_path, cur_line
 	);
 @end(process private frag)
 ```
@@ -1002,9 +1042,8 @@ int main(
 @def(process magic frag)
 	std::hash<std::string> h;
 	auto cur {
-		h(inputs.cur().input().path() +
-			':' + arg) &
-				0x7fffffff
+		h(cur_path + ':' + arg) &
+			0x7fffffff
 	};
 @end(process magic frag)
 ```
@@ -1015,9 +1054,7 @@ int main(
 	std::ostringstream value;
 	value << cur;
 	frag->add(
-		value.str(),
-		inputs.cur().input().path(),
-		inputs.cur().line()
+		value.str(), cur_path, cur_line
 	);
 @end(process magic frag)
 ```
@@ -1330,6 +1367,9 @@ int main(
 			std::unique_ptr<Frag_State> parent;
 			Inputs_Frag_Map state;
 			Frag_State(std::unique_ptr<Frag_State> &&parent): parent { std::move(parent) } { }
+			Frag *meta = nullptr;
+			std::string meta_path;
+			std::map<std::string, std::string> meta_values;
 	};
 	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
 
@@ -1379,12 +1419,55 @@ int main(
 		return frag_map(std::string { });
 	}
 
-	Frag_State *split_frag() {
+	void split_frag(Frag *meta, std::map<std::string, std::string> &&values) {
 		Frag_State *current = &*_all_frags;
+		current->meta = meta;
+		current->meta_path = inputs.open_head();
+		current->meta_values = std::move(values);
 		auto n { std::make_unique<Frag_State>(std::move(_all_frags)) };
 		_all_frags = std::move(n);
-		return current;
 	}
 
 	void clear_frags() { _all_frags = std::move(std::make_unique<Frag_State>(nullptr)); }
+
+	void eval_meta(Frag_State &fs) {
+		if (fs.parent) {
+			eval_meta(*fs.parent);
+		}
+		if (fs.meta) {
+			@put(apply meta);
+		}
+	}
+
+	void eval_metas() {
+		eval_meta(*_all_frags);
+	}
 @end(global elements)
+```
+
+```
+@def(apply meta)
+	std::ostringstream out;
+	serializeFrag(*fs.meta, out);
+	std::istringstream in { out.str() };
+	std::string line;
+	Frag *frag = nullptr;
+	Input *ci { inputs.get(fs.meta_path) };
+	ASSERT(ci);
+	Input &input = *ci;
+	std::string cur_path = fs.meta_path;
+	int cur_line = -1;
+	auto &cmd_values = fs.meta_values;
+	while (std::getline(in, line)) {
+		auto end = line.cend();
+		for (
+			auto i = line.cbegin();
+			i != end; ++i
+		) {
+			@mul(process special chars);
+			process_char(frag, *i, cur_path, cur_line);
+		}
+		process_char(frag, '\n', cur_path, cur_line);
+	}
+@end(apply meta)
+```

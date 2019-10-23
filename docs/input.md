@@ -54,6 +54,18 @@
 		_used.push_back({ path, prev });
 		_open.push_back({ path, prev });
 	}
+	const std::string open_head() const {
+		ASSERT(! _open.empty());
+		return _open.back().input().path();
+	}
+	Input *get(const std::string &name) {
+		for (auto &i: _used) {
+			if (i.path() == name) {
+				return &i;
+			}
+		}
+		return nullptr;
+	}
 @End(inputs elements)
 ```
 * open new input file
@@ -129,10 +141,8 @@
 ```
 @Add(inputs elements)
 	Frag *get_local(
-		const std::string &name
+		Input &i, const std::string &name
 	) {
-		ASSERT(! _open.empty());
-		Input &i = _open.back().input();
 		Frag *got { find_frag(i.path(), name) };
 		return got ?: &add_frag(i, name);
 	}

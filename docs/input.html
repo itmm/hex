@@ -84,6 +84,18 @@ number of used input files
 <span class="in2"></span><span class="var">_used</span>.<span class="fn">push_back</span>({ <span class="var">path</span>, <span class="var">prev</span> });<br/>
 <span class="in2"></span><span class="var">_open</span>.<span class="fn">push_back</span>({ <span class="var">path</span>, <span class="var">prev</span> });<br/>
 <span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="fn">open_head</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>().<span class="fn">path</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Input</span> *<span class="fn">get</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span>: <span class="var">_used</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">i</span>.<span class="fn">path</span>() == <span class="var">name</span>) {<br/>
+<span class="in4"></span><span class="keyword">return</span> &amp;<span class="var">i</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
+<span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -207,10 +219,8 @@ increase line number for each line
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_local</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
-<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">input</span>();<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">got</span> { <span class="fn">find_frag</span>(<span class="var">i</span>.<span class="fn">path</span>(), <span class="var">name</span>) };<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">got</span> ?: &amp;<span class="fn">add_frag</span>(<span class="var">i</span>, <span class="var">name</span>);<br/>
 <span class="in1"></span>}<br/>
