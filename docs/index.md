@@ -645,7 +645,10 @@ int main(
 	if (name == "end" || name == "End") {
 		ASSERT_FRAG();
 		if (frag->is_meta()) {
-			if (frag->name == arg) {
+			std::string pattern;
+			std::map<std::string, std::string> values;
+			parse_args(arg, pattern, values);
+			if (frag->name == pattern) {
 				frag = nullptr;
 			} else {
 				auto f { cur_path };
@@ -727,7 +730,7 @@ int main(
 					}
 					if (! cnt) {
 						std::string key { arg.substr(i + 1, j - i - 1) };
-						std::string value { arg.substr(j + 1, k - j - 1) };
+						std::string value { arg.substr(j + 1, k - j - 2) };
 						values[key] = value;
 						pattern += '@';
 						pattern += key;
@@ -750,6 +753,7 @@ int main(
 			std::map<std::string, std::string> values;
 			parse_args(arg, pattern, values);
 			Frag *sub = inputs.get_local(input, pattern);
+			sub->addMultiple();
 			split_frag(sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
@@ -1362,26 +1366,41 @@ int main(
 ```
 @add(global elements)
 	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
+
 	class Frag_State {
 		public:
 			std::unique_ptr<Frag_State> parent;
 			Inputs_Frag_Map state;
-			Frag_State(std::unique_ptr<Frag_State> &&parent): parent { std::move(parent) } { }
+			Frag_State(std::unique_ptr<Frag_State> &&p): parent { std::move(p) } { }
 			Frag *meta = nullptr;
 			std::string meta_path;
 			std::map<std::string, std::string> meta_values;
 	};
-	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
 
-	Frag *find_frag(Frag_State &s, const std::string &in, const std::string &key) {
-		auto got { s.state[in].find(key) };
-		if (got != s.state[in].end()) {
+	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
+	Frag_State *_cur_state = nullptr;
+
+	Frag_State &cur_state() {
+		return _cur_state ? *_cur_state : *_all_frags;
+	}
+
+	Frag *find_frag(Frag_State &state, const std::string &in, const std::string &key) {
+		auto got { state.state[in].find(key) };
+		if (got != state.state[in].end()) {
 			return &got->second;
+		}
+		if (state.parent) {
+			Frag *pg = find_frag(*state.parent, in, key);
+			if (pg) {
+				pg->super = &state.state[in].insert({ key, { key, pg } }).first->second;
+				return pg->super;
+			}
 		}
 		return nullptr;
 	}
+
 	Frag *find_frag(const std::string &in, const std::string &key) {
-		return find_frag(*_all_frags, in, key);
+		return find_frag(cur_state(), in, key);
 	}
 	Frag *find_frag(const Input &in, const std::string &key) {
 		const Input *i { &in };
@@ -1401,11 +1420,13 @@ int main(
 		if (state.parent) {
 			prev = &add_frag(*state.parent, in, key);
 		}
-		return state.state[in].insert({ key, { key, prev } }).first->second;
+		Frag &res { state.state[in].insert({ key, { key, prev } }).first->second };
+		if (prev) { prev->super = &res; }
+		return res;
 	}
 
 	Frag &add_frag(const std::string &in, const std::string &key) {
-		return add_frag(*_all_frags, in, key);
+		return add_frag(cur_state(), in, key);
 	}
 	Frag &add_frag(const Input &in, const std::string &key) {
 		return add_frag(in.path(), key);
@@ -1414,8 +1435,20 @@ int main(
 		return add_frag(std::string { }, key);
 	}
 
+	Frag_Map &frag_map(Frag_State &state, const std::string &in) {
+		Frag_Map &cur { state.state[in] };
+		if (state.parent) {
+			Frag_Map &prev { frag_map(*state.parent, in) };
+			for (auto &f: prev) {
+				if (cur.find(f.first) == cur.end()) {
+					f.second.super = &cur.insert({ f.first, { f.first, &f.second } }).first->second;
+				}
+			}
+		}
+		return cur;
+	}
 	Frag_Map &frag_map(const std::string &in) {
-		return _all_frags->state[in];
+		return frag_map(cur_state(), in);
 	}
 
 	Frag_Map &frag_map(const Input &in) {
@@ -1426,20 +1459,16 @@ int main(
 	}
 
 	void split_frag(Frag *meta, std::map<std::string, std::string> &&values) {
-		Frag_State *current = &*_all_frags;
-		current->meta = meta;
-		current->meta_path = inputs.open_head();
-		current->meta_values = std::move(values);
-		auto n { std::make_unique<Frag_State>(std::move(_all_frags)) };
-		for (auto &i : current->state) {
-			for (auto &j : i.second) {
-				n->state[i.first].insert({ j.first, { j.first, &j.second } });
-			}
-		}
+		Frag_State &current = *_all_frags;
+		current.meta = meta;
+		current.meta_path = inputs.open_head();
+		current.meta_values = std::move(values);
+		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(_all_frags))) };
 		_all_frags = std::move(n);
+		_cur_state = nullptr;
 	}
 
-	void clear_frags() { _all_frags = std::move(std::make_unique<Frag_State>(nullptr)); }
+	void clear_frags() { _all_frags = std::move(std::make_unique<Frag_State>(nullptr)); _cur_state = nullptr; }
 
 	void eval_meta(Frag_State &fs) {
 		if (fs.parent) {
@@ -1467,8 +1496,9 @@ int main(
 	ASSERT(ci);
 	Input &input = *ci;
 	std::string cur_path = fs.meta_path;
-	int cur_line = -1;
+	int cur_line { 1 };
 	auto &cmd_values = fs.meta_values;
+	_cur_state = &fs;
 	while (std::getline(in, line)) {
 		auto end = line.cend();
 		for (
@@ -1480,5 +1510,6 @@ int main(
 		}
 		process_char(frag, '\n', cur_path, cur_line);
 	}
+	_cur_state = nullptr;
 @end(apply meta)
 ```

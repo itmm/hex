@@ -258,6 +258,7 @@
 		const bool _is_meta;
 	public:
 		const std::string name;
+		Frag *super = nullptr;
 		@put(frag methods);
 	};
 @end(define frag)
@@ -661,9 +662,12 @@
 	}
 	for (const auto &entry : frag) {
 		if (entry.frag) {
+			const Frag *f { entry.frag };
+			while (f->super) {
+				f = f->super;
+			}
 			serializeFrag(
-				*entry.frag, out,
-				state
+				*f, out, state
 			);
 		}
 		out << entry.str(state);

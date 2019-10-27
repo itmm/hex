@@ -549,8 +549,6 @@
 
 ```
 @def(macro default)
-	std::cerr << "unknown macro @" <<
-		name << '(' << arg << ")\n";
 	writeOneEscaped(out, '@');
 	writeEscaped(out, name);
 	writeOneEscaped(out, '(');
