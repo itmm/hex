@@ -334,6 +334,15 @@
 * this is used to avoid including files multiple times
 
 ```
+@Add(inputs elements)
+	Inputs() {
+		_open.reserve(200);
+		_used.reserve(200);
+	}
+@End(inputs elements)
+```
+
+```
 @rep(inputs read line)
 	for (;;) {
 		@put(push next path);

@@ -1022,6 +1022,13 @@
 ;
 	}
 
+#line 337 "read.md"
+
+	Inputs() {
+		_open.reserve(200);
+		_used.reserve(200);
+	}
+
 #line 14 "input.md"
 
 	auto &cur() {
@@ -1157,11 +1164,11 @@
 		std::string &line
 	) {
 		
-#line 337 "read.md"
+#line 346 "read.md"
 
 	for (;;) {
 		
-#line 356 "read.md"
+#line 365 "read.md"
 
 	if (_open.empty()) {
 		if (
@@ -1173,7 +1180,7 @@
 		}
 	}
 
-#line 339 "read.md"
+#line 348 "read.md"
 ;
 		try {
 			_open.back().read_line(line);
@@ -1181,11 +1188,11 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 371 "read.md"
+#line 380 "read.md"
 
 	auto &f { _open.back().input() };
 	
-#line 385 "read.md"
+#line 394 "read.md"
 
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
@@ -1194,7 +1201,7 @@
 		});
 	}
 
-#line 373 "read.md"
+#line 382 "read.md"
 ;
 	for (auto &i : _used) {
 		if (i.path() == f.path()) {
@@ -1203,7 +1210,7 @@
 		}
 	}
 
-#line 345 "read.md"
+#line 354 "read.md"
 ;
 		_open.pop_back();
 	}
