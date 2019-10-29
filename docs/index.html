@@ -1548,21 +1548,6 @@ if a fragment was not expanded, an error message is be written
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">serialize frag</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">multiples</span>() == <span class="num">1</span>) {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="str">"multiple frag ["</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt;<br/>
-<span class="in3"></span><span class="str">"] only used once\n"</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@end(<span class="name">serialize frag</span>)</span><br/>
-</code></div>
-<ul><li>
-if a multiple fragment is only expanded once, an error message is  written
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@add(<span class="name">serialize frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"frag ["</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">frag</span>-&gt;<span class="var">name</span> &lt;&lt;<br/>

@@ -1144,19 +1144,6 @@ int main(
 
 ```
 @add(serialize frag)
-	if (frag->multiples() == 1) {
-		std::cerr <<
-			"multiple frag [" <<
-			frag->name <<
-			"] only used once\n";
-	}
-@end(serialize frag)
-```
-* if a multiple fragment is only expanded once, an error message is
-  written
-
-```
-@add(serialize frag)
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
 			frag->name <<
