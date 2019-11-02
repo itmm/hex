@@ -187,15 +187,13 @@ int main(
 	using Frag_Map = std::map<std::string, Frag>;
 
 	Frag *find_frag(const std::string &in, const std::string &key);
-	Frag *find_frag(const Input &in, const std::string &key);
+	Frag *find_frag_in_files(const std::string &path, const std::string &key);
 	Frag *find_frag(const std::string &key);
 
 	Frag &add_frag(const std::string &in, const std::string &key);
-	Frag &add_frag(const Input &in, const std::string &key);
 	Frag &add_frag(const std::string &key);
 
 	Frag_Map &frag_map(const std::string &in);
-	Frag_Map &frag_map(const Input &in);
 	Frag_Map &frag_map();
 
 	void split_frag(Frag *meta, std::map<std::string, std::string> &&values);
@@ -357,7 +355,6 @@ int main(
 ```
 @Add(process line)
 	auto end = line.cend();
-	Input &input { *inputs.get(inputs.open_head()) };
 	std::string cur_path = inputs.cur().path();
 	int cur_line = inputs.cur().line();
 	std::map<std::string, std::string> cmd_values;
@@ -609,7 +606,7 @@ int main(
 @def(do special cmd)
 	if (name == "def") {
 		ASSERT_NOT_FRAG();
-		frag = inputs.get_local(input, arg);
+		frag = inputs.get_local(cur_path, arg);
 		CHECK_NOT_DEFINED();
 		break;
 	}
@@ -704,7 +701,7 @@ int main(
 			frag->add(')', f, l);
 		} else {
 			ASSERT_NOT_FRAG();
-			frag = inputs.get_local(input, arg);
+			frag = inputs.get_local(cur_path, arg);
 			CHECK_DEFINED();
 		}
 		break;
@@ -752,14 +749,14 @@ int main(
 			std::string pattern;
 			std::map<std::string, std::string> values;
 			parse_args(arg, pattern, values);
-			Frag *sub = inputs.get_local(input, pattern);
+			Frag *sub = inputs.get_local(cur_path, pattern);
 			sub->addMultiple();
 			split_frag(sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
 			);
-			Frag *sub = inputs.get_local(input, arg);
+			Frag *sub = inputs.get_local(cur_path, arg);
 			if (sub) {
 				@mul(check frag ex. count);
 				sub->addExpand();
@@ -815,7 +812,7 @@ int main(
 		ASSERT_MSG(frag,
 			"@mul not in frag"
 		);
-		Frag *sub = inputs.get_local(input, arg);
+		Frag *sub = inputs.get_local(cur_path, arg);
 		if (sub) {
 			@mul(check for prev expands);
 			sub->addMultiple();
@@ -898,7 +895,7 @@ int main(
 			"@rep in frag [" <<
 				frag->name << ']'
 		);
-		frag = inputs.get_local(input, arg);
+		frag = inputs.get_local(cur_path, arg);
 		@mul(clear frag);
 		break;
 	}
@@ -1104,7 +1101,7 @@ int main(
 ```
 @add(files write)
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j.second)) {
+		for (auto &i : frag_map(j.first)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1231,7 +1228,7 @@ int main(
 ```
 @add(files process)
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j.second)) {
+		for (auto &i : frag_map(j.first)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1389,13 +1386,14 @@ int main(
 	Frag *find_frag(const std::string &in, const std::string &key) {
 		return find_frag(cur_state(), in, key);
 	}
-	Frag *find_frag(const Input &in, const std::string &key) {
-		const Input *i { &in };
+	Frag *find_frag_in_files(const std::string &path, const std::string &key) {
+		std::string p { path };
 		for (;;) {
-			Frag *f { find_frag(i->path(), key) };
+			Frag *f { find_frag(p, key) };
 			if (f) { return f; }
-			if (i->prev.empty()) { return nullptr; }
-			i = inputs.get(i->prev);
+			const Input *i { inputs.get(path) };
+			if (!i || i->prev.empty()) { return nullptr; }
+			p = i->prev;
 		}
 	}
 	Frag *find_frag(const std::string &key) {
@@ -1414,9 +1412,6 @@ int main(
 
 	Frag &add_frag(const std::string &in, const std::string &key) {
 		return add_frag(cur_state(), in, key);
-	}
-	Frag &add_frag(const Input &in, const std::string &key) {
-		return add_frag(in.path(), key);
 	}
 	Frag &add_frag(const std::string &key) {
 		return add_frag(std::string { }, key);
@@ -1438,9 +1433,6 @@ int main(
 		return frag_map(cur_state(), in);
 	}
 
-	Frag_Map &frag_map(const Input &in) {
-		return frag_map(in.path());
-	}
 	Frag_Map &frag_map() {
 		return frag_map(std::string { });
 	}
@@ -1481,7 +1473,6 @@ int main(
 	Frag *frag = nullptr;
 	Input *ci { inputs.get(fs.meta_path) };
 	ASSERT(ci);
-	Input &input = *ci;
 	std::string cur_path = fs.meta_path;
 	int cur_line { 1 };
 	auto &cmd_values = fs.meta_values;

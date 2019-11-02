@@ -60,7 +60,7 @@
 				prev = _open.back().path();
 			}
 		}
-		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
+		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(prev))));
 		_open.emplace_back(path);
 	}
 	const std::string open_head() const {
@@ -147,10 +147,10 @@
 ```
 @Add(inputs elements)
 	Frag *get_local(
-		Input &i, const std::string &name
+		const std::string path, const std::string &name
 	) {
-		Frag *got { find_frag(i.path(), name) };
-		return got ?: &add_frag(i, name);
+		Frag *got { find_frag(path, name) };
+		return got ?: &add_frag(path, name);
 	}
 @End(inputs elements)
 ```
@@ -174,12 +174,10 @@
 @def(find global)
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
-		for (; i >= _open.begin(); --i) {
-			Frag *f { find_frag(
-				_used.find(i->path())->second, name
-			) };
-			if (f) { return f; }
-		}
+		Frag *f { find_frag_in_files(
+			i->path(), name
+		) };
+		if (f) { return f; }
 	}
 @end(find global)
 ```

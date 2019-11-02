@@ -165,8 +165,6 @@
 		public:
 			@Put(input elements);
 			const std::string prev;
-		private:
-			std::string _path;
 	};
 @End(open input prereqs)
 ```
@@ -237,9 +235,8 @@
 
 ```
 @Def(input elements)
-	Input(const std::string &path, const std::string &prev):
-		prev { prev },
-		_path { path }
+	Input(const std::string &prev = {}):
+		prev { prev }
 	{}
 @End(input elements)
 ```
@@ -267,15 +264,6 @@
 ```
 * no copy assignment
 * no move assignment
-
-```
-@Add(input elements)
-	const std::string &path() const {
-		return _path;
-	}
-@End(input elements)
-```
-* return path name
 
 ```
 @Add(open input elements)

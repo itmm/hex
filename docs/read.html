@@ -266,8 +266,6 @@ the <code><span class="type">Open_Input</span></code> class represents an <code>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
 <span class="in3"></span><span class="macro">@Put(<span class="name">input elements</span>)</span>;<br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prev</span>;<br/>
-<span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_path</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@End(<span class="name">open input prereqs</span>)</span><br/>
 </code></div>
@@ -361,9 +359,8 @@ no move assignment
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">input elements</span>)</span><br/>
-<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">prev</span>):<br/>
-<span class="in2"></span><span class="var">prev</span> { <span class="var">prev</span> },<br/>
-<span class="in2"></span><span class="var">_path</span> { <span class="var">path</span> }<br/>
+<span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">prev</span> = {}):<br/>
+<span class="in2"></span><span class="var">prev</span> { <span class="var">prev</span> }<br/>
 <span class="in1"></span>{}<br/>
 <span class="macro">@End(<span class="name">input elements</span>)</span><br/>
 </code></div>
@@ -401,18 +398,6 @@ no move constructor
 no copy assignment
 </li><li>
 no move assignment
-</li></ul>
-</div>
-<div><div>
-<code>
-<span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">path</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_path</span>;<br/>
-<span class="in1"></span>}<br/>
-<span class="macro">@End(<span class="name">input elements</span>)</span><br/>
-</code></div>
-<ul><li>
-return path name
 </li></ul>
 </div>
 <div><div>
