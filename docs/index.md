@@ -760,7 +760,7 @@ int main(
 			if (sub) {
 				@mul(check frag ex. count);
 				sub->addExpand();
-				frag->add(sub);
+				frag->add(sub, true);
 			}
 		}
 		break;
@@ -816,7 +816,7 @@ int main(
 		if (sub) {
 			@mul(check for prev expands);
 			sub->addMultiple();
-			frag->add(sub);
+			frag->add(sub, true);
 		}
 		break;
 	}
@@ -947,7 +947,7 @@ int main(
 	if (sub) {
 		@mul(check frag ex. count);
 		sub->addExpand();
-		frag->add(sub);
+		frag->add(sub, false);
 	}
 @end(do Put)
 ```
@@ -970,7 +970,7 @@ int main(
 	if (sub) {
 		@mul(check for prev expands);
 		sub->addMultiple();
-		frag->add(sub);
+		frag->add(sub, false);
 	}
 @end(do Mul)
 ```

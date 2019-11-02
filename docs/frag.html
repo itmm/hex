@@ -55,14 +55,30 @@ the state is initialized later from a <code><span class="type">Frag</span></code
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">define frag</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Frag_Ref</span> {<br/>
+<span class="in1"></span><span class="keyword">public</span>:<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">bool</span> <span class="var">local</span>;<br/>
+<span class="in2"></span><span class="fn">Frag_Ref</span>(<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span> = {},<br/>
+<span class="in3"></span><span class="type">bool</span> <span class="var">local</span> = <span class="num">true</span><br/>
+<span class="in2"></span>):<br/>
+<span class="in3"></span><span class="var">name</span> { <span class="var">name</span> },<br/>
+<span class="in3"></span><span class="var">local</span> { <span class="var">local</span> }<br/>
+<span class="in2"></span>{ }<br/>
+<span class="in1"></span>};<br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag_Entry</span> {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_str</span>;<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_file</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_first_line</span>;<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">_last_line</span>;<br/>
+<span class="in2"></span><span class="type">Frag_Ref</span> <span class="var">_sub</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">entry methods</span>)</span>;<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="fn">sub</span>() <span class="type">const</span> {<br/>
+<span class="in3"></span><span class="keyword">return</span> <span class="var">_sub</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -81,12 +97,8 @@ so a <code><span class="var">_frag</span></code> can easily concatenate bytes to
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">entry methods</span>)</span><br/>
-<span class="in1"></span><span class="fn">Frag_Entry</span>(<br/>
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span> = <span class="num">nullptr</span><br/>
-<span class="in1"></span>):<br/>
-<span class="in2"></span><span class="var">_first_line</span> { -<span class="num">1</span> },<br/>
-<span class="in2"></span><span class="var">frag</span> { <span class="var">frag</span> }<br/>
-<span class="in1"></span>{}<br/>
+<span class="in1"></span><span class="fn">Frag_Entry</span>(): <span class="var">frag</span> { <span class="num">nullptr</span> } { }<br/>
+<span class="in1"></span><span class="fn">Frag_Entry</span>(<span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">bool</span> <span class="var">local</span>);<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -96,6 +108,19 @@ no range is provided in this case
 </li><li>
 the range information of the sub <code><span class="type">Frag</span></code> will be used
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
+<span class="in1"></span><span class="var">inline</span> <span class="type">Frag_Entry</span>::<span class="fn">Frag_Entry</span>(<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">frag</span>, <span class="type">bool</span> <span class="var">local</span><br/>
+<span class="in1"></span>):<br/>
+<span class="in2"></span><span class="var">_first_line</span> { -<span class="num">1</span> },<br/>
+<span class="in2"></span><span class="var">_sub</span> { <span class="var">frag</span> ? <span class="var">frag</span>-&gt;<span class="var">name</span> : <span class="type">std</span>::<span class="type">string</span> { }, <span class="var">local</span> },<br/>
+<span class="in2"></span><span class="var">frag</span> { <span class="var">frag</span> }<br/>
+<span class="in1"></span>{}<br/>
+<span class="macro">@End(<span class="name">input prereqs</span>)</span><br/>
+</code></div>
 </div>
 <div><div>
 <code>
@@ -650,7 +675,7 @@ adds a single character to the <code><span class="type">Frag</span></code>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>);<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -663,7 +688,7 @@ assures that no cycle will result
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define cycle check</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">avoid frag cycles</span>)</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">add frag entry</span>)</span>;<br/>
@@ -679,7 +704,7 @@ checks, that the sub <code><span class="type">Frag</span></code> is valid and th
 <code>
 <span class="macro">@def(<span class="name">add frag entry</span>)</span><br/>
 <span class="in1"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<br/>
-<span class="in2"></span><span class="type">Frag_Entry</span> { <span class="var">child</span> }<br/>
+<span class="in2"></span><span class="type">Frag_Entry</span> { <span class="var">child</span>, <span class="var">local</span> }<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">add frag entry</span>)</span><br/>
 </code></div>
@@ -1031,9 +1056,9 @@ checks that two strings are correctly serialized
 <span class="in1"></span><span class="type">Frag</span> <span class="var">a</span> { <span class="str">""</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="type">Frag</span> <span class="var">b</span> { <span class="str">""</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>

@@ -31,14 +31,30 @@
 
 ```
 @def(define frag)
+	class Frag_Ref {
+	public:
+		const std::string name;
+		const bool local;
+		Frag_Ref(
+			const std::string &name = {},
+			bool local = true
+		):
+			name { name },
+			local { local }
+		{ }
+	};
 	class Frag_Entry {
 		std::string _str;
 		std::string _file;
 		int _first_line;
 		int _last_line;
+		Frag_Ref _sub;
 	public:
 		const Frag *frag;
 		@put(entry methods);
+		const Frag_Ref &sub() const {
+			return _sub;
+		}
 	};
 @end(define frag)
 ```
@@ -53,17 +69,25 @@
 
 ```
 @def(entry methods)
-	Frag_Entry(
-		Frag *frag = nullptr
-	):
-		_first_line { -1 },
-		frag { frag }
-	{}
+	Frag_Entry(): frag { nullptr } { }
+	Frag_Entry(Frag *frag, bool local);
 @end(entry methods)
 ```
 * an entry can be initialized with a sub `Frag`
 * no range is provided in this case
 * the range information of the sub `Frag` will be used
+
+```
+@Add(input prereqs)
+	inline Frag_Entry::Frag_Entry(
+		Frag *frag, bool local
+	):
+		_first_line { -1 },
+		_sub { frag ? frag->name : std::string { }, local },
+		frag { frag }
+	{}
+@End(input prereqs)
+```
 
 ```
 @add(entry methods)
@@ -502,7 +526,7 @@
 
 ```
 @add(frag methods)
-	Frag &add(Frag *child);
+	Frag &add(Frag *child, bool local);
 @end(frag methods)
 ```
 * adds a sub `Frag` to a `Frag`
@@ -511,7 +535,7 @@
 ```
 @add(define frag)
 	@put(define cycle check)
-	Frag &Frag::add(Frag *child) {
+	Frag &Frag::add(Frag *child, bool local) {
 		ASSERT(child);
 		@put(avoid frag cycles);
 		@put(add frag entry);
@@ -524,7 +548,7 @@
 ```
 @def(add frag entry)
 	_entries.push_back(
-		Frag_Entry { child }
+		Frag_Entry { child, local }
 	);
 @end(add frag entry)
 ```
@@ -800,9 +824,9 @@
 	Frag a { "", nullptr };
 	Frag b { "", nullptr };
 	addStringToFrag(&a, "abc");
-	b.add(&a);
+	b.add(&a, true);
 	addStringToFrag(&b, "def");
-	b.add(&a);
+	b.add(&a, true);
 	testFrag(b, "abcdefabc");
 } @end(unit-tests)
 ```
