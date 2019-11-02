@@ -83,11 +83,12 @@ number of used input files
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">Input</span> *<span class="var">prev</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">prev</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>()) {<br/>
 <span class="in3"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">_used</span>.<span class="fn">find</span>(<span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>()) };<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">_used</span>.<span class="fn">end</span>());<br/>
-<span class="in3"></span><span class="var">prev</span> = &amp;<span class="var">got</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">_used</span>.<span class="fn">end</span>()) {<br/>
+<span class="in4"></span><span class="var">prev</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>();<br/>
+<span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="var">_used</span>.<span class="fn">insert</span>(<span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt;::<span class="fn">value_type</span>(<span class="var">path</span>, <span class="fn">Input</span>(<span class="var">path</span>, <span class="var">prev</span>))));<br/>
 <span class="in2"></span><span class="var">_open</span>.<span class="fn">emplace_back</span>(<span class="var">path</span>);<br/>

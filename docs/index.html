@@ -1867,8 +1867,8 @@ list of open issues
 <span class="in2"></span><span class="keyword">for</span> (;;) {<br/>
 <span class="in3"></span><span class="type">Frag</span> *<span class="var">f</span> { <span class="fn">find_frag</span>(<span class="var">i</span>-&gt;<span class="fn">path</span>(), <span class="var">key</span>) };<br/>
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">f</span>) { <span class="keyword">return</span> <span class="var">f</span>; }<br/>
-<span class="in3"></span><span class="keyword">if</span> (! <span class="var">i</span>-&gt;<span class="var">prev</span>) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
-<span class="in3"></span><span class="var">i</span> = <span class="var">i</span>-&gt;<span class="var">prev</span>;<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">i</span>-&gt;<span class="var">prev</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span> <span class="num">nullptr</span>; }<br/>
+<span class="in3"></span><span class="var">i</span> = <span class="var">inputs</span>.<span class="fn">get</span>(<span class="var">i</span>-&gt;<span class="var">prev</span>);<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>

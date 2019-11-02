@@ -846,7 +846,7 @@
 			
 #line 239 "read.md"
 
-	Input(const std::string &path, const Input *prev):
+	Input(const std::string &path, const std::string &prev):
 		prev { prev },
 		_path { path }
 	{}
@@ -877,7 +877,7 @@
 
 #line 166 "read.md"
 ;
-			const Input *prev;
+			const std::string prev;
 		private:
 			std::string _path;
 	};
@@ -927,7 +927,7 @@
 
 	if (std::getline(_file, line)) {
 		
-#line 140 "input.md"
+#line 141 "input.md"
 
 	++_line;
 
@@ -947,7 +947,7 @@
 
 	Read_State state = RS::new_element;
 
-#line 131 "input.md"
+#line 132 "input.md"
 
 	int line() const {
 		return _line;
@@ -962,7 +962,7 @@
 	std::string _path;
 	std::ifstream _file;
 
-#line 124 "input.md"
+#line 125 "input.md"
 
 	int _line = 0;
 
@@ -988,13 +988,13 @@
 
 	void clear() {
 		
-#line 202 "input.md"
+#line 203 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
 		
-#line 215 "input.md"
+#line 216 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
@@ -1009,7 +1009,7 @@
 		_paths.push_back("index.md");
 	}
 
-#line 206 "input.md"
+#line 207 "input.md"
 ;
 	}
 	_current_path = _paths.begin();
@@ -1049,11 +1049,12 @@
 #line 54 "input.md"
 
 	void push(const std::string &path) {
-		const Input *prev = nullptr;
+		std::string prev;
 		if (_open.size()) {
 			auto got { _used.find(_open.back().path()) };
-			if (got != _used.end());
-			prev = &got->second;
+			if (got != _used.end()) {
+				prev = _open.back().path();
+			}
 		}
 		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
 		_open.emplace_back(path);
@@ -1070,31 +1071,31 @@
 		return nullptr;
 	}
 
-#line 82 "input.md"
+#line 83 "input.md"
 
 	void add(const std::string &path) {
 		_paths.push_back(path);
 		push(path);
 	}
 
-#line 97 "input.md"
+#line 98 "input.md"
 
 	bool has(
 		const std::string &name
 	) const {
 		
-#line 109 "input.md"
+#line 110 "input.md"
 
 	if (_used.find(name) != _used.end()) {
 		return true;
 	}
 
-#line 101 "input.md"
+#line 102 "input.md"
 ;
 		return false;
 	}
 
-#line 147 "input.md"
+#line 148 "input.md"
 
 	Frag *get_local(
 		Input &i, const std::string &name
@@ -1103,13 +1104,13 @@
 		return got ?: &add_frag(i, name);
 	}
 
-#line 160 "input.md"
+#line 161 "input.md"
 
 	Frag *find_global(
 		const std::string &name
 	) {
 		
-#line 173 "input.md"
+#line 174 "input.md"
 
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
@@ -1121,12 +1122,12 @@
 		}
 	}
 
-#line 164 "input.md"
+#line 165 "input.md"
 ;
 		return find_frag(name);
 	}
 
-#line 188 "input.md"
+#line 189 "input.md"
 
 	Frag *get_global(
 		const std::string &name
@@ -4172,8 +4173,8 @@
 		for (;;) {
 			Frag *f { find_frag(i->path(), key) };
 			if (f) { return f; }
-			if (! i->prev) { return nullptr; }
-			i = i->prev;
+			if (i->prev.empty()) { return nullptr; }
+			i = inputs.get(i->prev);
 		}
 	}
 	Frag *find_frag(const std::string &key) {

@@ -1394,8 +1394,8 @@ int main(
 		for (;;) {
 			Frag *f { find_frag(i->path(), key) };
 			if (f) { return f; }
-			if (! i->prev) { return nullptr; }
-			i = i->prev;
+			if (i->prev.empty()) { return nullptr; }
+			i = inputs.get(i->prev);
 		}
 	}
 	Frag *find_frag(const std::string &key) {

@@ -53,11 +53,12 @@
 ```
 @Add(inputs elements)
 	void push(const std::string &path) {
-		const Input *prev = nullptr;
+		std::string prev;
 		if (_open.size()) {
 			auto got { _used.find(_open.back().path()) };
-			if (got != _used.end());
-			prev = &got->second;
+			if (got != _used.end()) {
+				prev = _open.back().path();
+			}
 		}
 		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
 		_open.emplace_back(path);

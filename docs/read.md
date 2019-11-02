@@ -164,7 +164,7 @@
 	class Input {
 		public:
 			@Put(input elements);
-			const Input *prev;
+			const std::string prev;
 		private:
 			std::string _path;
 	};
@@ -237,7 +237,7 @@
 
 ```
 @Def(input elements)
-	Input(const std::string &path, const Input *prev):
+	Input(const std::string &path, const std::string &prev):
 		prev { prev },
 		_path { path }
 	{}

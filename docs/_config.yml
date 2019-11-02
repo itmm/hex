@@ -1,1 +1,1 @@
-exclude: [add.md, blocks.md, edit.md, frag.md, html.md, index.md, input.md, line.md, log.md, ncurses.md, range.md, read.md, todos.md, view.md, write.md]
+exclude: [add.md, blocks.md, edit.md, frag.md, html.md, index.md, input.md, line.md, log.md, ncurses.md, range.md, read.md, test.md, todos.md, view.md, write.md]
