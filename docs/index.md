@@ -1104,7 +1104,7 @@ int main(
 ```
 @add(files write)
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j)) {
+		for (auto &i : frag_map(j.second)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1231,7 +1231,7 @@ int main(
 ```
 @add(files process)
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j)) {
+		for (auto &i : frag_map(j.second)) {
 			const Frag *frag {
 				&i.second
 			};

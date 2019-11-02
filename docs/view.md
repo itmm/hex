@@ -10,7 +10,7 @@
 
 ```
 @Add(global elements)
-	std::vector<Input>::iterator curInput;
+	std::map<std::string, Input>::iterator curInput;
 	std::vector<Block>::iterator curBlock;
 @End(global elements)
 ```
@@ -66,7 +66,7 @@
 ```
 @Def(interactive)
 	curInput = inputs.begin();
-	curBlock = curInput->blocks.begin();
+	curBlock = curInput->second.blocks.begin();
 @End(interactive)
 ```
 * initialize on first block in first input file
@@ -151,15 +151,15 @@
 ```
 @def(do next cmd)
 	int next = (curBlock -
-		curInput->blocks.begin()) + 1;
+		curInput->second.blocks.begin()) + 1;
 	while (next >= static_cast<int>(
-		curInput->blocks.size()
+		curInput->second.blocks.size()
 	)) {
 		--next;
 	}
 	@Mul(do block range);
 	curBlock =
-		curInput->blocks.begin() + next;
+		curInput->second.blocks.begin() + next;
 @end(do next cmd)
 ```
 * go to next block
@@ -178,13 +178,13 @@
 ```
 @def(do prev cmd)
 	int next =curBlock -
-		curInput->blocks.begin();
+		curInput->second.blocks.begin();
 	if (next > 0) {
 		--next;
 	}
 	@Mul(do block range);
 	curBlock =
-		curInput->blocks.begin() + next;
+		curInput->second.blocks.begin() + next;
 @end(do prev cmd)
 ```
 * go to previous block
@@ -286,8 +286,8 @@
 
 ```
 @def(draw position)
-	auto &bs { curInput->blocks };
-	std::cout << curInput->path() << ':';
+	auto &bs { curInput->second.blocks };
+	std::cout << curInput->first << ':';
 	int idx =
 		(curBlock - bs.begin()) + 1;
 	std::cout << idx;
@@ -315,16 +315,22 @@
 
 ```
 @def(do forward cmd)
-	int next =
-		(curInput - inputs.begin()) + 1;
+	int next = 1;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	while (next >= static_cast<int>(
 		inputs.size()
 	)) {
 		--next;
 	}
 	@Mul(do inputs range);
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 @end(do forward cmd)
 ```
 * go to next input file
@@ -342,13 +348,20 @@
 
 ```
 @def(do backward cmd)
-	int next = curInput - inputs.begin();
+	int next = 0;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	if (next) {
 		--next;
 	}
 	@Mul(do inputs range);
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 @end(do backward cmd)
 ```
 * go to previous input file

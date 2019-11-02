@@ -931,7 +931,7 @@
 
 	if (std::getline(_file, line)) {
 		
-#line 135 "input.md"
+#line 137 "input.md"
 
 	++_line;
 
@@ -951,7 +951,7 @@
 
 	Read_State state = RS::new_element;
 
-#line 126 "input.md"
+#line 128 "input.md"
 
 	int line() const {
 		return _line;
@@ -966,7 +966,7 @@
 	Input _input;
 	std::ifstream _file;
 
-#line 119 "input.md"
+#line 121 "input.md"
 
 	int _line = 0;
 
@@ -992,13 +992,13 @@
 
 	void clear() {
 		
-#line 195 "input.md"
+#line 197 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
 		
-#line 208 "input.md"
+#line 210 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
@@ -1013,20 +1013,13 @@
 		_paths.push_back("index.md");
 	}
 
-#line 199 "input.md"
+#line 201 "input.md"
 ;
 	}
 	_current_path = _paths.begin();
 
 #line 111 "read.md"
 ;
-	}
-
-#line 337 "read.md"
-
-	Inputs() {
-		_open.reserve(200);
-		_used.reserve(200);
 	}
 
 #line 14 "input.md"
@@ -1057,8 +1050,13 @@
 #line 51 "input.md"
 
 	void push(const std::string &path) {
-		const Input *prev = _used.size() ? &_used.back(): nullptr;
-		_used.push_back({ path, prev });
+		const Input *prev = nullptr;
+		if (_open.size()) {
+			auto got { _used.find(_open.back().input().path()) };
+			if (got != _used.end());
+			prev = &got->second;
+		}
+		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
 		_open.push_back({ path, prev });
 	}
 	const std::string open_head() const {
@@ -1066,41 +1064,38 @@
 		return _open.back().input().path();
 	}
 	Input *get(const std::string &name) {
-		for (auto &i: _used) {
-			if (i.path() == name) {
-				return &i;
-			}
+		auto got { _used.find(name) };
+		if (got != _used.end()) {
+			return &got->second;
 		}
 		return nullptr;
 	}
 
-#line 75 "input.md"
+#line 79 "input.md"
 
 	void add(const std::string &path) {
 		_paths.push_back(path);
 		push(path);
 	}
 
-#line 90 "input.md"
+#line 94 "input.md"
 
 	bool has(
 		const std::string &name
 	) const {
 		
-#line 102 "input.md"
+#line 106 "input.md"
 
-	for (const auto &j : _used) {
-		if (j.path() == name) {
-			return true;
-		}
+	if (_used.find(name) != _used.end()) {
+		return true;
 	}
 
-#line 94 "input.md"
+#line 98 "input.md"
 ;
 		return false;
 	}
 
-#line 142 "input.md"
+#line 144 "input.md"
 
 	Frag *get_local(
 		Input &i, const std::string &name
@@ -1109,13 +1104,13 @@
 		return got ?: &add_frag(i, name);
 	}
 
-#line 155 "input.md"
+#line 157 "input.md"
 
 	Frag *find_global(
 		const std::string &name
 	) {
 		
-#line 168 "input.md"
+#line 170 "input.md"
 
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
@@ -1125,12 +1120,12 @@
 		if (f) { return f; }
 	}
 
-#line 159 "input.md"
+#line 161 "input.md"
 ;
 		return find_frag(name);
 	}
 
-#line 181 "input.md"
+#line 183 "input.md"
 
 	Frag *get_global(
 		const std::string &name
@@ -1152,7 +1147,7 @@
 #line 325 "read.md"
 
 	std::vector<Open_Input> _open;
-	std::vector<Input> _used;
+	std::map<std::string, Input> _used;
 
 #line 26 "read.md"
 ;
@@ -1164,11 +1159,11 @@
 		std::string &line
 	) {
 		
-#line 346 "read.md"
+#line 337 "read.md"
 
 	for (;;) {
 		
-#line 365 "read.md"
+#line 356 "read.md"
 
 	if (_open.empty()) {
 		if (
@@ -1180,7 +1175,7 @@
 		}
 	}
 
-#line 348 "read.md"
+#line 339 "read.md"
 ;
 		try {
 			_open.back().read_line(line);
@@ -1188,12 +1183,9 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 380 "read.md"
+#line 371 "read.md"
 
 	auto &f { _open.back().input() };
-	
-#line 394 "read.md"
-
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
 			RS::header,
@@ -1201,16 +1193,7 @@
 		});
 	}
 
-#line 382 "read.md"
-;
-	for (auto &i : _used) {
-		if (i.path() == f.path()) {
-			i = std::move(f);
-			break;
-		}
-	}
-
-#line 354 "read.md"
+#line 345 "read.md"
 ;
 		_open.pop_back();
 	}
@@ -2147,7 +2130,7 @@
 #line 1105 "index.md"
 
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j)) {
+		for (auto &i : frag_map(j.second)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -2257,7 +2240,7 @@
 #line 1232 "index.md"
 
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j)) {
+		for (auto &i : frag_map(j.second)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -2927,7 +2910,7 @@
 			
 #line 26 "html.md"
 
-	const std::string &name { cur.path() };
+	const std::string &name { cur.first };
 	auto ext { name.rfind('.') };
 	if (ext == std::string::npos) {
 		ext = name.size();
@@ -2944,7 +2927,7 @@
 #line 91 "html.md"
 
 	HtmlStatus status;
-	for (const auto &b : cur.blocks) {
+	for (const auto &b : cur.second.blocks) {
 		
 #line 101 "html.md"
 
@@ -3315,7 +3298,7 @@
 
 #line 12 "view.md"
 
-	std::vector<Input>::iterator curInput;
+	std::map<std::string, Input>::iterator curInput;
 	std::vector<Block>::iterator curBlock;
 
 #line 20 "view.md"
@@ -3423,8 +3406,8 @@
 		
 #line 288 "view.md"
 
-	auto &bs { curInput->blocks };
-	std::cout << curInput->path() << ':';
+	auto &bs { curInput->second.blocks };
+	std::cout << curInput->first << ':';
 	int idx =
 		(curBlock - bs.begin()) + 1;
 	std::cout << idx;
@@ -3578,7 +3561,7 @@
 #line 131 "line.md"
 ;
 	
-#line 134 "range.md"
+#line 139 "range.md"
 
 	Range range;
 
@@ -3664,7 +3647,7 @@
 
 	int next = c.size();
 	
-#line 104 "range.md"
+#line 109 "range.md"
 
 	if (range) {
 		next = range.last()(
@@ -3676,7 +3659,7 @@
 		) - 1;
 		if (p < 0) { p = 0; }
 		
-#line 121 "range.md"
+#line 126 "range.md"
 
 	if (p < next) {
 		c.erase(
@@ -3686,7 +3669,7 @@
 		next = p;
 	}
 
-#line 114 "range.md"
+#line 119 "range.md"
 ;
 	}
 
@@ -3802,13 +3785,13 @@
 #line 27 "write.md"
 
 	std::ofstream out {
-		cur.path().c_str()
+		cur.first.c_str()
 	};
 
 #line 36 "write.md"
 
 	bool first = true;
-	for (const auto &b : cur.blocks) {
+	for (const auto &b : cur.second.blocks) {
 		if (first) {
 			first = false;
 		} else { out << '\n'; }
@@ -3916,7 +3899,7 @@
 
 	if (
 		curBlock !=
-			curInput->blocks.end()
+			curInput->second.blocks.end()
 	) {
 		++curBlock;
 	}
@@ -3924,11 +3907,11 @@
 #line 53 "add.md"
 ;
 		int i = curBlock -
-			curInput->blocks.begin();
+			curInput->second.blocks.begin();
 		
 #line 83 "add.md"
 
-	curInput->blocks.insert(
+	curInput->second.blocks.insert(
 		curBlock,
 		{
 			state, { "REPLACE" }, {},
@@ -3939,7 +3922,7 @@
 #line 56 "add.md"
 ;
 		curBlock =
-			curInput->blocks.begin() + i;
+			curInput->second.blocks.begin() + i;
 	} else {
 		std::cerr << "! no file\n";
 	}
@@ -4106,8 +4089,11 @@
 
 #line 311 "ncurses.md"
 
-	int idx =
-		(curInput - inputs.begin()) + 1;
+	int idx = 1;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++idx;
+	}
 	draw_number(idx);
 	if (idx ==
 		static_cast<int>(inputs.size())
@@ -4115,12 +4101,12 @@
 		addstr(" = $");
 	}
 	addch(' ');
-	addstr(curInput->path().c_str());
+	addstr(curInput->first.c_str());
 	addch(':');
 
-#line 329 "ncurses.md"
+#line 332 "ncurses.md"
 
-	auto &bs { curInput->blocks };
+	auto &bs { curInput->second.blocks };
 	idx = (curBlock - bs.begin()) + 1;
 	draw_number(idx);
 	if (
@@ -5046,7 +5032,7 @@
 #line 67 "view.md"
 
 	curInput = inputs.begin();
-	curBlock = curInput->blocks.begin();
+	curBlock = curInput->second.blocks.begin();
 
 #line 84 "view.md"
 
@@ -5087,9 +5073,9 @@
 #line 152 "view.md"
 
 	int next = (curBlock -
-		curInput->blocks.begin()) + 1;
+		curInput->second.blocks.begin()) + 1;
 	while (next >= static_cast<int>(
-		curInput->blocks.size()
+		curInput->second.blocks.size()
 	)) {
 		--next;
 	}
@@ -5098,8 +5084,8 @@
 
 	if (range) {
 		next = range.last()((curBlock -
-			curInput->blocks.begin()) + 1,
-			curInput->blocks.size()
+			curInput->second.blocks.begin()) + 1,
+			curInput->second.blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -5107,7 +5093,7 @@
 #line 160 "view.md"
 ;
 	curBlock =
-		curInput->blocks.begin() + next;
+		curInput->second.blocks.begin() + next;
 
 #line 143 "view.md"
 ;
@@ -5122,7 +5108,7 @@
 #line 179 "view.md"
 
 	int next =curBlock -
-		curInput->blocks.begin();
+		curInput->second.blocks.begin();
 	if (next > 0) {
 		--next;
 	}
@@ -5131,8 +5117,8 @@
 
 	if (range) {
 		next = range.last()((curBlock -
-			curInput->blocks.begin()) + 1,
-			curInput->blocks.size()
+			curInput->second.blocks.begin()) + 1,
+			curInput->second.blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -5140,7 +5126,7 @@
 #line 185 "view.md"
 ;
 	curBlock =
-		curInput->blocks.begin() + next;
+		curInput->second.blocks.begin() + next;
 
 #line 170 "view.md"
 ;
@@ -5154,8 +5140,11 @@
 		
 #line 317 "view.md"
 
-	int next =
-		(curInput - inputs.begin()) + 1;
+	int next = 1;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	while (next >= static_cast<int>(
 		inputs.size()
 	)) {
@@ -5165,17 +5154,25 @@
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()((curInput -
-				inputs.begin()) + 1,
+		int idx = 1;
+		for (const auto &xx : inputs) {
+			if (xx.first == curInput->first) { break; }
+			++idx;
+		}
+		next = range.last()(
+			idx,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 325 "view.md"
+#line 328 "view.md"
 ;
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 
 #line 308 "view.md"
 ;
@@ -5183,13 +5180,17 @@
 		continue;
 	}
 
-#line 333 "view.md"
+#line 339 "view.md"
 
 	if (cmd == "b" || cmd == "backward") {
 		
-#line 344 "view.md"
+#line 350 "view.md"
 
-	int next = curInput - inputs.begin();
+	int next = 0;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	if (next) {
 		--next;
 	}
@@ -5197,19 +5198,27 @@
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()((curInput -
-				inputs.begin()) + 1,
+		int idx = 1;
+		for (const auto &xx : inputs) {
+			if (xx.first == curInput->first) { break; }
+			++idx;
+		}
+		next = range.last()(
+			idx,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 349 "view.md"
+#line 359 "view.md"
 ;
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 
-#line 335 "view.md"
+#line 341 "view.md"
 ;
 		draw_block();
 		continue;
@@ -5309,7 +5318,7 @@
 ;
 		curInput = inputs.begin();
 		curBlock =
-			curInput->blocks.begin();
+			curInput->second.blocks.begin();
 		continue;
 	}
 
@@ -5335,7 +5344,7 @@
 ;
 		curInput = inputs.begin();
 		curBlock =
-			curInput->blocks.begin();
+			curInput->second.blocks.begin();
 		continue;
 	}
 
@@ -5427,17 +5436,17 @@
 	if (cmd == "d" || cmd == "dup") {
 		if (curInput != inputs.end()) {
 			if (curBlock !=
-				curInput->blocks.end()
+				curInput->second.blocks.end()
 			) {
 				
 #line 121 "add.md"
 
 	int i = curBlock -
-		curInput->blocks.begin();
-	curInput->blocks.insert(
+		curInput->second.blocks.begin();
+	curInput->second.blocks.insert(
 		curBlock, *curBlock
 	);
-	curBlock = curInput->blocks.begin() +
+	curBlock = curInput->second.blocks.begin() +
 		i + 1;
 
 #line 107 "add.md"
@@ -5466,7 +5475,7 @@
 
 	Ncurses_Handler handler;
 	curInput = inputs.begin();
-	curBlock = curInput->blocks.begin();
+	curBlock = curInput->second.blocks.begin();
 	draw_page();
 
 #line 163 "ncurses.md"
@@ -5480,16 +5489,16 @@
 
 	case 'q': throw End_Of_Curses {};
 
-#line 344 "ncurses.md"
+#line 347 "ncurses.md"
 
 	case 'n': {
 		
-#line 355 "ncurses.md"
+#line 358 "ncurses.md"
 
 	int next = (curBlock -
-		curInput->blocks.begin()) + 1;
+		curInput->second.blocks.begin()) + 1;
 	while (next >= static_cast<int>(
-		curInput->blocks.size()
+		curInput->second.blocks.size()
 	)) {
 		--next;
 	}
@@ -5498,31 +5507,31 @@
 
 	if (range) {
 		next = range.last()((curBlock -
-			curInput->blocks.begin()) + 1,
-			curInput->blocks.size()
+			curInput->second.blocks.begin()) + 1,
+			curInput->second.blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 363 "ncurses.md"
+#line 366 "ncurses.md"
 ;
-	curBlock = curInput->blocks.begin() +
+	curBlock = curInput->second.blocks.begin() +
 		next;
 
-#line 346 "ncurses.md"
+#line 349 "ncurses.md"
 ;
 		draw_page();
 		break;
 	}
 
-#line 371 "ncurses.md"
+#line 374 "ncurses.md"
 
 	case 'p' : {
 		
-#line 382 "ncurses.md"
+#line 385 "ncurses.md"
 
 	int next = curBlock -
-		curInput->blocks.begin();
+		curInput->second.blocks.begin();
 	if (next > 0) {
 		--next;
 	}
@@ -5531,31 +5540,34 @@
 
 	if (range) {
 		next = range.last()((curBlock -
-			curInput->blocks.begin()) + 1,
-			curInput->blocks.size()
+			curInput->second.blocks.begin()) + 1,
+			curInput->second.blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 388 "ncurses.md"
+#line 391 "ncurses.md"
 ;
 	curBlock =
-		curInput->blocks.begin() + next;
+		curInput->second.blocks.begin() + next;
 
-#line 373 "ncurses.md"
+#line 376 "ncurses.md"
 ;
 		draw_page();
 		break;
 	}
 
-#line 396 "ncurses.md"
+#line 399 "ncurses.md"
 
 	case 'f': {
 		
-#line 407 "ncurses.md"
+#line 410 "ncurses.md"
 
-	int next =
-		(curInput - inputs.begin()) + 1;
+	int next = 1;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	while (next >= static_cast<int>(
 		inputs.size()
 	)) {
@@ -5565,31 +5577,43 @@
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()((curInput -
-				inputs.begin()) + 1,
+		int idx = 1;
+		for (const auto &xx : inputs) {
+			if (xx.first == curInput->first) { break; }
+			++idx;
+		}
+		next = range.last()(
+			idx,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 415 "ncurses.md"
+#line 421 "ncurses.md"
 ;
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 
-#line 398 "ncurses.md"
+#line 401 "ncurses.md"
 ;
 		draw_page();
 		continue;
 	}
 
-#line 423 "ncurses.md"
+#line 432 "ncurses.md"
 
 	case 'b': {
 		
-#line 434 "ncurses.md"
+#line 443 "ncurses.md"
 
-	int next = curInput - inputs.begin();
+	int next = 0;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	if (next) {
 		--next;
 	}
@@ -5597,19 +5621,27 @@
 #line 91 "range.md"
 
 	if (range) {
-		next = range.last()((curInput -
-				inputs.begin()) + 1,
+		int idx = 1;
+		for (const auto &xx : inputs) {
+			if (xx.first == curInput->first) { break; }
+			++idx;
+		}
+		next = range.last()(
+			idx,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
 
-#line 439 "ncurses.md"
+#line 452 "ncurses.md"
 ;
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 
-#line 425 "ncurses.md"
+#line 434 "ncurses.md"
 ;
 		draw_page();
 		continue;

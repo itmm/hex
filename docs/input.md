@@ -50,8 +50,13 @@
 ```
 @Add(inputs elements)
 	void push(const std::string &path) {
-		const Input *prev = _used.size() ? &_used.back(): nullptr;
-		_used.push_back({ path, prev });
+		const Input *prev = nullptr;
+		if (_open.size()) {
+			auto got { _used.find(_open.back().input().path()) };
+			if (got != _used.end());
+			prev = &got->second;
+		}
+		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
 		_open.push_back({ path, prev });
 	}
 	const std::string open_head() const {
@@ -59,10 +64,9 @@
 		return _open.back().input().path();
 	}
 	Input *get(const std::string &name) {
-		for (auto &i: _used) {
-			if (i.path() == name) {
-				return &i;
-			}
+		auto got { _used.find(name) };
+		if (got != _used.end()) {
+			return &got->second;
 		}
 		return nullptr;
 	}
@@ -100,10 +104,8 @@
 
 ```
 @def(has checks)
-	for (const auto &j : _used) {
-		if (j.path() == name) {
-			return true;
-		}
+	if (_used.find(name) != _used.end()) {
+		return true;
 	}
 @end(has checks)
 ```

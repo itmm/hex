@@ -26,7 +26,7 @@
 ```
 @def(write cur)
 	std::ofstream out {
-		cur.path().c_str()
+		cur.first.c_str()
 	};
 @end(write cur)
 ```
@@ -35,7 +35,7 @@
 ```
 @add(write cur)
 	bool first = true;
-	for (const auto &b : cur.blocks) {
+	for (const auto &b : cur.second.blocks) {
 		if (first) {
 			first = false;
 		} else { out << '\n'; }
@@ -230,7 +230,7 @@
 		@put(write files);
 		curInput = inputs.begin();
 		curBlock =
-			curInput->blocks.begin();
+			curInput->second.blocks.begin();
 		continue;
 	}
 @End(run loop)
@@ -261,7 +261,7 @@
 		@put(process files);
 		curInput = inputs.begin();
 		curBlock =
-			curInput->blocks.begin();
+			curInput->second.blocks.begin();
 		continue;
 	}
 @End(run loop)

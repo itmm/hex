@@ -152,7 +152,7 @@
 @Def(curses interact)
 	Ncurses_Handler handler;
 	curInput = inputs.begin();
-	curBlock = curInput->blocks.begin();
+	curBlock = curInput->second.blocks.begin();
 	draw_page();
 @End(curses interact)
 ```
@@ -309,8 +309,11 @@
 
 ```
 @add(draw page)
-	int idx =
-		(curInput - inputs.begin()) + 1;
+	int idx = 1;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++idx;
+	}
 	draw_number(idx);
 	if (idx ==
 		static_cast<int>(inputs.size())
@@ -318,7 +321,7 @@
 		addstr(" = $");
 	}
 	addch(' ');
-	addstr(curInput->path().c_str());
+	addstr(curInput->first.c_str());
 	addch(':');
 @end(draw page)
 ```
@@ -327,7 +330,7 @@
 
 ```
 @add(draw page)
-	auto &bs { curInput->blocks };
+	auto &bs { curInput->second.blocks };
 	idx = (curBlock - bs.begin()) + 1;
 	draw_number(idx);
 	if (
@@ -354,14 +357,14 @@
 ```
 @def(next block)
 	int next = (curBlock -
-		curInput->blocks.begin()) + 1;
+		curInput->second.blocks.begin()) + 1;
 	while (next >= static_cast<int>(
-		curInput->blocks.size()
+		curInput->second.blocks.size()
 	)) {
 		--next;
 	}
 	@Mul(do block range);
-	curBlock = curInput->blocks.begin() +
+	curBlock = curInput->second.blocks.begin() +
 		next;
 @end(next block)
 ```
@@ -381,13 +384,13 @@
 ```
 @def(prev block)
 	int next = curBlock -
-		curInput->blocks.begin();
+		curInput->second.blocks.begin();
 	if (next > 0) {
 		--next;
 	}
 	@Mul(do block range);
 	curBlock =
-		curInput->blocks.begin() + next;
+		curInput->second.blocks.begin() + next;
 @end(prev block)
 ```
 * go to the previous block
@@ -405,16 +408,22 @@
 
 ```
 @def(next input)
-	int next =
-		(curInput - inputs.begin()) + 1;
+	int next = 1;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	while (next >= static_cast<int>(
 		inputs.size()
 	)) {
 		--next;
 	}
 	@Mul(do inputs range);
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 @end(next input)
 ```
 * go to the next input file
@@ -432,13 +441,20 @@
 
 ```
 @def(prev input)
-	int next = curInput - inputs.begin();
+	int next = 0;
+	for (const auto &xx : inputs) {
+		if (xx.first == curInput->first) { break; }
+		++next;
+	}
 	if (next) {
 		--next;
 	}
 	@Mul(do inputs range);
-	curInput = inputs.begin() + next;
-	curBlock = curInput->blocks.begin();
+	curInput = inputs.begin();
+	for (; next > 0 && curInput != inputs.end(); --next) {
+		++curInput;
+	}
+	curBlock = curInput->second.blocks.begin();
 @end(prev input)
 ```
 * go to the previous input file

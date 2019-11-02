@@ -52,10 +52,10 @@
 	if (curInput != inputs.end()) {
 		@put(increase block);
 		int i = curBlock -
-			curInput->blocks.begin();
+			curInput->second.blocks.begin();
 		@put(insert block);
 		curBlock =
-			curInput->blocks.begin() + i;
+			curInput->second.blocks.begin() + i;
 	} else {
 		std::cerr << "! no file\n";
 	}
@@ -71,7 +71,7 @@
 @def(increase block)
 	if (
 		curBlock !=
-			curInput->blocks.end()
+			curInput->second.blocks.end()
 	) {
 		++curBlock;
 	}
@@ -81,7 +81,7 @@
 
 ```
 @def(insert block)
-	curInput->blocks.insert(
+	curInput->second.blocks.insert(
 		curBlock,
 		{
 			state, { "REPLACE" }, {},
@@ -102,7 +102,7 @@
 	if (cmd == "d" || cmd == "dup") {
 		if (curInput != inputs.end()) {
 			if (curBlock !=
-				curInput->blocks.end()
+				curInput->second.blocks.end()
 			) {
 				@put(duplicate);
 			}
@@ -120,11 +120,11 @@
 ```
 @def(duplicate)
 	int i = curBlock -
-		curInput->blocks.begin();
-	curInput->blocks.insert(
+		curInput->second.blocks.begin();
+	curInput->second.blocks.insert(
 		curBlock, *curBlock
 	);
-	curBlock = curInput->blocks.begin() +
+	curBlock = curInput->second.blocks.begin() +
 		i + 1;
 @end(duplicate)
 ```

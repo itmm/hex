@@ -78,8 +78,8 @@
 @Rep(do block range)
 	if (range) {
 		next = range.last()((curBlock -
-			curInput->blocks.begin()) + 1,
-			curInput->blocks.size()
+			curInput->second.blocks.begin()) + 1,
+			curInput->second.blocks.size()
 		) - 1;
 		if (next < 0) { next = 0; }
 	}
@@ -90,8 +90,13 @@
 ```
 @Rep(do inputs range)
 	if (range) {
-		next = range.last()((curInput -
-				inputs.begin()) + 1,
+		int idx = 1;
+		for (const auto &xx : inputs) {
+			if (xx.first == curInput->first) { break; }
+			++idx;
+		}
+		next = range.last()(
+			idx,
 			inputs.size()
 		) - 1;
 		if (next < 0) { next = 0; }

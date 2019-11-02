@@ -324,7 +324,7 @@
 ```
 @Add(private inputs elements)
 	std::vector<Open_Input> _open;
-	std::vector<Input> _used;
+	std::map<std::string, Input> _used;
 @End(private inputs elements)
 ```
 * `_open` contains all files open for reading
@@ -332,15 +332,6 @@
 * more files are pushed on it with include commands
 * `_used` contains all the files that were opened
 * this is used to avoid including files multiple times
-
-```
-@Add(inputs elements)
-	Inputs() {
-		_open.reserve(200);
-		_used.reserve(200);
-	}
-@End(inputs elements)
-```
 
 ```
 @rep(inputs read line)
@@ -379,26 +370,13 @@
 ```
 @def(save open input)
 	auto &f { _open.back().input() };
-	@put(assure not empty);
-	for (auto &i : _used) {
-		if (i.path() == f.path()) {
-			i = std::move(f);
-			break;
-		}
-	}
-@end(save open input)
-```
-* overwrite the `_used` file with the current opened file
-
-```
-@def(assure not empty)
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
 			RS::header,
 			{ "EMPTY FILE" }, {}
 		});
 	}
-@end(assure not empty)
+@end(save open input)
 ```
 * if the file was empty, one dummy block is added
 

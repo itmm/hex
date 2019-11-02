@@ -24,7 +24,7 @@
 
 ```
 @def(write cur HTML file)
-	const std::string &name { cur.path() };
+	const std::string &name { cur.first };
 	auto ext { name.rfind('.') };
 	if (ext == std::string::npos) {
 		ext = name.size();
@@ -90,7 +90,7 @@
 ```
 @def(write from in to out)
 	HtmlStatus status;
-	for (const auto &b : cur.blocks) {
+	for (const auto &b : cur.second.blocks) {
 		@put(process block);
 	}
 @end(write from in to out)
