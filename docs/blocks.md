@@ -121,7 +121,7 @@
 ```
 @def(line vars)
 	auto &blocks =
-		inputs.cur().input().blocks;
+		inputs.cur_input().blocks;
 @end(line vars)
 ```
 * get reference to `Block`s

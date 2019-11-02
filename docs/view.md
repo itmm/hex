@@ -66,7 +66,9 @@
 ```
 @Def(interactive)
 	curInput = inputs.begin();
+	std::cerr << "curInput == " << curInput->first << "; is end == " << (curInput == inputs.end()) << "\n";
 	curBlock = curInput->second.blocks.begin();
+	std::cerr << "curBlock == " << &*curBlock << "; is end == " << (curBlock == curInput->second.blocks.end()) << "\n";
 @End(interactive)
 ```
 * initialize on first block in first input file

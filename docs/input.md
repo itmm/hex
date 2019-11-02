@@ -16,6 +16,9 @@
 		ASSERT (! _open.empty());
 		return _open.back();
 	}
+	auto &cur_input() {
+		return _used.find(cur().path())->second;
+	}
 @End(inputs elements)
 ```
 * last opened open input file
@@ -52,16 +55,16 @@
 	void push(const std::string &path) {
 		const Input *prev = nullptr;
 		if (_open.size()) {
-			auto got { _used.find(_open.back().input().path()) };
+			auto got { _used.find(_open.back().path()) };
 			if (got != _used.end());
 			prev = &got->second;
 		}
 		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
-		_open.push_back({ path, prev });
+		_open.emplace_back(path);
 	}
 	const std::string open_head() const {
 		ASSERT(! _open.empty());
-		return _open.back().input().path();
+		return _open.back().path();
 	}
 	Input *get(const std::string &name) {
 		auto got { _used.find(name) };
@@ -170,10 +173,12 @@
 @def(find global)
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
-		Frag *f { find_frag(
-			i->input(), name
-		) };
-		if (f) { return f; }
+		for (; i >= _open.begin(); --i) {
+			Frag *f { find_frag(
+				_used.find(i->path())->second, name
+			) };
+			if (f) { return f; }
+		}
 	}
 @end(find global)
 ```

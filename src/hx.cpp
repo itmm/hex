@@ -844,19 +844,19 @@
 	class Input {
 		public:
 			
-#line 247 "read.md"
+#line 239 "read.md"
 
 	Input(const std::string &path, const Input *prev):
 		prev { prev },
 		_path { path }
 	{}
 
-#line 258 "read.md"
+#line 250 "read.md"
 
 	Input(const Input &) = delete;
 	Input(Input &&) = default;
 
-#line 267 "read.md"
+#line 259 "read.md"
 
 	Input &operator=(
 		const Input &
@@ -865,7 +865,7 @@
 		Input &&
 	) = default;
 
-#line 280 "read.md"
+#line 272 "read.md"
 
 	const std::string &path() const {
 		return _path;
@@ -889,59 +889,55 @@
 			
 #line 195 "read.md"
 
-	Open_Input(const std::string &path, const Input *prev):
-		_input { path, prev },
+	Open_Input(const std::string &path):
+		_path { path },
 		_file { path.c_str() }
 	{}
 
 #line 205 "read.md"
 
-	Open_Input(
-		const Open_Input &
-	) = delete;
-	Open_Input(
-		Open_Input &&
-	) = default;
-
-#line 218 "read.md"
-
-	Open_Input &operator=(
-		const Open_Input &
-	) = delete;
-	Open_Input &operator=(
-		Open_Input &&
-	) = default;
-
-#line 231 "read.md"
-
-	Input &input() { return _input; }
-
-#line 238 "read.md"
-
-	const Input &input() const {
-		return _input;
+	const std::string &path() const {
+		return _path; 
 	}
 
-#line 289 "read.md"
+#line 213 "read.md"
+
+	Open_Input(
+		const Open_Input &
+	) = delete;
+	Open_Input(
+		Open_Input &&
+	) = default;
+
+#line 226 "read.md"
+
+	Open_Input &operator=(
+		const Open_Input &
+	) = delete;
+	Open_Input &operator=(
+		Open_Input &&
+	) = default;
+
+#line 281 "read.md"
 
 	void read_line(std::string &line) {
 		if (_file.is_open()) {
 			
-#line 302 "read.md"
+#line 294 "read.md"
 
 	if (std::getline(_file, line)) {
 		
-#line 137 "input.md"
+#line 140 "input.md"
 
 	++_line;
 
-#line 304 "read.md"
+#line 296 "read.md"
 ;
 		return;
 	}
 	_file.close();
 
-#line 292 "read.md"
+#line 284 "read.md"
 ;
 		}
 		throw No_More_Lines {};
@@ -951,7 +947,7 @@
 
 	Read_State state = RS::new_element;
 
-#line 128 "input.md"
+#line 131 "input.md"
 
 	int line() const {
 		return _line;
@@ -963,10 +959,10 @@
 			
 #line 186 "read.md"
 
-	Input _input;
+	std::string _path;
 	std::ifstream _file;
 
-#line 121 "input.md"
+#line 124 "input.md"
 
 	int _line = 0;
 
@@ -992,13 +988,13 @@
 
 	void clear() {
 		
-#line 197 "input.md"
+#line 202 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_paths.empty()) {
 		
-#line 210 "input.md"
+#line 215 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
@@ -1013,7 +1009,7 @@
 		_paths.push_back("index.md");
 	}
 
-#line 201 "input.md"
+#line 206 "input.md"
 ;
 	}
 	_current_path = _paths.begin();
@@ -1028,40 +1024,43 @@
 		ASSERT (! _open.empty());
 		return _open.back();
 	}
+	auto &cur_input() {
+		return _used.find(cur().path())->second;
+	}
 
-#line 24 "input.md"
+#line 27 "input.md"
 
 	auto begin() {
 		return _used.begin();
 	}
 
-#line 33 "input.md"
+#line 36 "input.md"
 
 	auto end() {
 		return _used.end();
 	}
 
-#line 42 "input.md"
+#line 45 "input.md"
 
 	auto size() const {
 		return _used.size();
 	}
 
-#line 51 "input.md"
+#line 54 "input.md"
 
 	void push(const std::string &path) {
 		const Input *prev = nullptr;
 		if (_open.size()) {
-			auto got { _used.find(_open.back().input().path()) };
+			auto got { _used.find(_open.back().path()) };
 			if (got != _used.end());
 			prev = &got->second;
 		}
 		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(path, prev))));
-		_open.push_back({ path, prev });
+		_open.emplace_back(path);
 	}
 	const std::string open_head() const {
 		ASSERT(! _open.empty());
-		return _open.back().input().path();
+		return _open.back().path();
 	}
 	Input *get(const std::string &name) {
 		auto got { _used.find(name) };
@@ -1071,31 +1070,31 @@
 		return nullptr;
 	}
 
-#line 79 "input.md"
+#line 82 "input.md"
 
 	void add(const std::string &path) {
 		_paths.push_back(path);
 		push(path);
 	}
 
-#line 94 "input.md"
+#line 97 "input.md"
 
 	bool has(
 		const std::string &name
 	) const {
 		
-#line 106 "input.md"
+#line 109 "input.md"
 
 	if (_used.find(name) != _used.end()) {
 		return true;
 	}
 
-#line 98 "input.md"
+#line 101 "input.md"
 ;
 		return false;
 	}
 
-#line 144 "input.md"
+#line 147 "input.md"
 
 	Frag *get_local(
 		Input &i, const std::string &name
@@ -1104,28 +1103,30 @@
 		return got ?: &add_frag(i, name);
 	}
 
-#line 157 "input.md"
+#line 160 "input.md"
 
 	Frag *find_global(
 		const std::string &name
 	) {
 		
-#line 170 "input.md"
+#line 173 "input.md"
 
 	if (_open.size() > 1) {
 		auto i = _open.end() - 2;
-		Frag *f { find_frag(
-			i->input(), name
-		) };
-		if (f) { return f; }
+		for (; i >= _open.begin(); --i) {
+			Frag *f { find_frag(
+				_used.find(i->path())->second, name
+			) };
+			if (f) { return f; }
+		}
 	}
 
-#line 161 "input.md"
+#line 164 "input.md"
 ;
 		return find_frag(name);
 	}
 
-#line 183 "input.md"
+#line 188 "input.md"
 
 	Frag *get_global(
 		const std::string &name
@@ -1138,13 +1139,13 @@
 ;
 		private:
 			
-#line 315 "read.md"
+#line 307 "read.md"
 
 	std::vector<std::string> _paths;
 	std::vector<std::string>::
 		const_iterator _current_path;
 
-#line 325 "read.md"
+#line 317 "read.md"
 
 	std::vector<Open_Input> _open;
 	std::map<std::string, Input> _used;
@@ -1159,11 +1160,11 @@
 		std::string &line
 	) {
 		
-#line 337 "read.md"
+#line 329 "read.md"
 
 	for (;;) {
 		
-#line 356 "read.md"
+#line 348 "read.md"
 
 	if (_open.empty()) {
 		if (
@@ -1175,7 +1176,7 @@
 		}
 	}
 
-#line 339 "read.md"
+#line 331 "read.md"
 ;
 		try {
 			_open.back().read_line(line);
@@ -1183,9 +1184,9 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 371 "read.md"
+#line 363 "read.md"
 
-	auto &f { _open.back().input() };
+	auto &f { _used.find(_open.back().path())->second };
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
 			RS::header,
@@ -1193,7 +1194,7 @@
 		});
 	}
 
-#line 345 "read.md"
+#line 337 "read.md"
 ;
 		_open.pop_back();
 	}
@@ -1366,7 +1367,7 @@
 #line 122 "blocks.md"
 
 	auto &blocks =
-		inputs.cur().input().blocks;
+		inputs.cur_input().blocks;
 
 #line 44 "blocks.md"
 ;
@@ -1555,7 +1556,7 @@
 
 	auto end = line.cend();
 	Input &input { *inputs.get(inputs.open_head()) };
-	std::string cur_path = inputs.cur().input().path();
+	std::string cur_path = inputs.cur().path();
 	int cur_line = inputs.cur().line();
 	std::map<std::string, std::string> cmd_values;
 	for (
@@ -3313,15 +3314,15 @@
 
 	bool html_files = true;
 
-#line 75 "view.md"
+#line 77 "view.md"
 
 	void draw_block() {
 		
-#line 193 "view.md"
+#line 195 "view.md"
 
 	if (curBlock->state == RS::header) {
 		
-#line 202 "view.md"
+#line 204 "view.md"
 
 	int i = 0;
 	for (
@@ -3329,7 +3330,7 @@
 	) {
 		std::cout << ++i << ": ";
 		
-#line 216 "view.md"
+#line 218 "view.md"
 
 	for (
 		int i = 0;
@@ -3338,20 +3339,20 @@
 		std::cout << '#';
 	}
 
-#line 208 "view.md"
+#line 210 "view.md"
 ;
 		std::cout << ' ' << l << "\n\n";
 	}
 
-#line 195 "view.md"
+#line 197 "view.md"
 ;
 	}
 
-#line 228 "view.md"
+#line 230 "view.md"
 
 	if (curBlock->state == RS::code) {
 		
-#line 237 "view.md"
+#line 239 "view.md"
 
 	std::cout << "```\n";
 	int i = 0;
@@ -3363,15 +3364,15 @@
 	}
 	std::cout << "```\n\n";
 
-#line 230 "view.md"
+#line 232 "view.md"
 ;
 	}
 
-#line 252 "view.md"
+#line 254 "view.md"
 
 	if (curBlock->state == RS::para) {
 		
-#line 261 "view.md"
+#line 263 "view.md"
 
 	int i = 0;
 	for (
@@ -3381,11 +3382,11 @@
 			l << "\n\n";
 	}
 
-#line 254 "view.md"
+#line 256 "view.md"
 ;
 	}
 
-#line 274 "view.md"
+#line 276 "view.md"
 
 	int j = 0;
 	for (
@@ -3396,15 +3397,15 @@
 	}
 	std::cout << '\n';
 
-#line 77 "view.md"
+#line 79 "view.md"
 ;
 	}
 
-#line 94 "view.md"
+#line 96 "view.md"
 
 	void draw_position() {
 		
-#line 288 "view.md"
+#line 290 "view.md"
 
 	auto &bs { curInput->second.blocks };
 	std::cout << curInput->first << ':';
@@ -3417,11 +3418,11 @@
 		std::cout << " = $";
 	}
 
-#line 96 "view.md"
+#line 98 "view.md"
 ;
 	}
 
-#line 103 "view.md"
+#line 105 "view.md"
 
 	void trim(std::string &s) {
 		while (
@@ -5032,14 +5033,16 @@
 #line 67 "view.md"
 
 	curInput = inputs.begin();
+	std::cerr << "curInput == " << curInput->first << "; is end == " << (curInput == inputs.end()) << "\n";
 	curBlock = curInput->second.blocks.begin();
+	std::cerr << "curBlock == " << &*curBlock << "; is end == " << (curBlock == curInput->second.blocks.end()) << "\n";
 
-#line 84 "view.md"
+#line 86 "view.md"
 
 	draw_block();
 	for (;;) {
 		
-#line 117 "view.md"
+#line 119 "view.md"
 
 	std::string cmd;
 	draw_position();
@@ -5057,20 +5060,20 @@
 		range << get_line(cmd);
 	}
 
-#line 124 "view.md"
+#line 126 "view.md"
 ;
 
-#line 132 "view.md"
+#line 134 "view.md"
 
 	if (cmd == "q" || cmd == "quit") {
 		break;
 	}
 
-#line 141 "view.md"
+#line 143 "view.md"
 
 	if (cmd == "n" || cmd == "next") {
 		
-#line 152 "view.md"
+#line 154 "view.md"
 
 	int next = (curBlock -
 		curInput->second.blocks.begin()) + 1;
@@ -5090,22 +5093,22 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 160 "view.md"
+#line 162 "view.md"
 ;
 	curBlock =
 		curInput->second.blocks.begin() + next;
 
-#line 143 "view.md"
+#line 145 "view.md"
 ;
 		draw_block();
 		continue;
 	}
 
-#line 168 "view.md"
+#line 170 "view.md"
 
 	if (cmd == "p" || cmd == "prev") {
 		
-#line 179 "view.md"
+#line 181 "view.md"
 
 	int next =curBlock -
 		curInput->second.blocks.begin();
@@ -5123,22 +5126,22 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 185 "view.md"
+#line 187 "view.md"
 ;
 	curBlock =
 		curInput->second.blocks.begin() + next;
 
-#line 170 "view.md"
+#line 172 "view.md"
 ;
 		draw_block();
 		continue;
 	}
 
-#line 306 "view.md"
+#line 308 "view.md"
 
 	if (cmd == "f" || cmd == "forward") {
 		
-#line 317 "view.md"
+#line 319 "view.md"
 
 	int next = 1;
 	for (const auto &xx : inputs) {
@@ -5166,7 +5169,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 328 "view.md"
+#line 330 "view.md"
 ;
 	curInput = inputs.begin();
 	for (; next > 0 && curInput != inputs.end(); --next) {
@@ -5174,17 +5177,17 @@
 	}
 	curBlock = curInput->second.blocks.begin();
 
-#line 308 "view.md"
+#line 310 "view.md"
 ;
 		draw_block();
 		continue;
 	}
 
-#line 339 "view.md"
+#line 341 "view.md"
 
 	if (cmd == "b" || cmd == "backward") {
 		
-#line 350 "view.md"
+#line 352 "view.md"
 
 	int next = 0;
 	for (const auto &xx : inputs) {
@@ -5210,7 +5213,7 @@
 		if (next < 0) { next = 0; }
 	}
 
-#line 359 "view.md"
+#line 361 "view.md"
 ;
 	curInput = inputs.begin();
 	for (; next > 0 && curInput != inputs.end(); --next) {
@@ -5218,7 +5221,7 @@
 	}
 	curBlock = curInput->second.blocks.begin();
 
-#line 341 "view.md"
+#line 343 "view.md"
 ;
 		draw_block();
 		continue;
@@ -5458,7 +5461,7 @@
 		continue;
 	}
 
-#line 87 "view.md"
+#line 89 "view.md"
 ;
 	}
 

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Input Files</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Input Files</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Input Files</h1>
+</div>
+<ul><li>
+structure for handling input files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">iostream</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">vector</span>&gt;<br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">filesystem</span>&gt;<br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+<ul><li>
+needed includes
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur</span>() {<br/>
+<span class="in2"></span><span class="var">ASSERT</span> (! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_open</span>.<span class="fn">back</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur_input</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">find</span>(<span class="fn">cur</span>().<span class="fn">path</span>())-&gt;<span class="var">second</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+last opened open input file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+begin iterator for used input files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">end</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+end iterator for used input files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">auto</span> <span class="fn">size</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">size</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+number of used input files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">Input</span> *<span class="var">prev</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>()) {<br/>
+<span class="in3"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">_used</span>.<span class="fn">find</span>(<span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>()) };<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">_used</span>.<span class="fn">end</span>());<br/>
+<span class="in3"></span><span class="var">prev</span> = &amp;<span class="var">got</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="var">_used</span>.<span class="fn">insert</span>(<span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt;::<span class="fn">value_type</span>(<span class="var">path</span>, <span class="fn">Input</span>(<span class="var">path</span>, <span class="var">prev</span>))));<br/>
+<span class="in2"></span><span class="var">_open</span>.<span class="fn">emplace_back</span>(<span class="var">path</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="fn">open_head</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>();<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="type">Input</span> *<span class="fn">get</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">_used</span>.<span class="fn">find</span>(<span class="var">name</span>) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">_used</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">return</span> &amp;<span class="var">got</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+open new input file
+</li><li>
+is recorded as used input file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="var">path</span>);<br/>
+<span class="in2"></span><span class="fn">push</span>(<span class="var">path</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+add a file to be processed
+</li></ul>
+</div>
+</div>
+<h1>Get next line</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Get next line</h1>
+</div>
+<ul><li>
+reads next line from the current input file
+</li><li>
+if the end is reached, the current input file in popped
+</li><li>
+and the line is read from the previous input file
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">has</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">has checks</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+checks if the file is already used
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">has checks</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_used</span>.<span class="fn">find</span>(<span class="var">name</span>) != <span class="var">_used</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">has checks</span>)</span><br/>
+</code></div>
+<ul><li>
+iterate over <code><span class="var">_used</span></code> collection
+</li></ul>
+</div>
+</div>
+<h2>Local <code><span class="type">Frags</span></code></h2>
+<div class="slides">
+<div>
+<div>
+<h2>Local <code><span class="type">Frags</span></code></h2>
+</div>
+<ul><li>
+each input file has a <code><span class="type">Frag</span></code> collection
+</li></ul>
+</div>
+</div>
+<h2>Line Numbers</h2>
+<div class="slides">
+<div>
+<div>
+<h2>Line Numbers</h2>
+</div>
+<ul><li>
+for each open input file the current line number is recorded
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">private open input els</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">_line</span> = <span class="num">0</span>;<br/>
+<span class="macro">@end(<span class="name">private open input els</span>)</span><br/>
+</code></div>
+<ul><li>
+current line number
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">line</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">open input elements</span>)</span><br/>
+</code></div>
+<ul><li>
+getter for current line number
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">line read</span>)</span><br/>
+<span class="in1"></span>++<span class="var">_line</span>;<br/>
+<span class="macro">@End(<span class="name">line read</span>)</span><br/>
+</code></div>
+<ul><li>
+increase line number for each line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_local</span>(<br/>
+<span class="in2"></span><span class="type">Input</span> &amp;<span class="var">i</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">got</span> { <span class="fn">find_frag</span>(<span class="var">i</span>.<span class="fn">path</span>(), <span class="var">name</span>) };<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">got</span> ?: &amp;<span class="fn">add_frag</span>(<span class="var">i</span>, <span class="var">name</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+return a fragment in the current open input file
+</li><li>
+if it is not present, it is created
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_global</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">find global</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="var">name</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+find a fragment in all but the current open input files or the <code><span class="var">_root</span></code>  collection
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">find global</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
+<span class="in2"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">_open</span>.<span class="fn">end</span>() - <span class="num">2</span>;<br/>
+<span class="in2"></span><span class="keyword">for</span> (; <span class="var">i</span> &gt;= <span class="var">_open</span>.<span class="fn">begin</span>(); --<span class="var">i</span>) {<br/>
+<span class="in3"></span><span class="type">Frag</span> *<span class="var">f</span> { <span class="fn">find_frag</span>(<br/>
+<span class="in4"></span><span class="var">_used</span>.<span class="fn">find</span>(<span class="var">i</span>-&gt;<span class="fn">path</span>())-&gt;<span class="var">second</span>, <span class="var">name</span><br/>
+<span class="in3"></span>) };<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">f</span>) { <span class="keyword">return</span> <span class="var">f</span>; }<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">find global</span>)</span><br/>
+</code></div>
+<ul><li>
+walk through all open input files and return, if the fragment is found
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">get_global</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">result</span> = <span class="fn">find_global</span>(<span class="var">name</span>);<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">result</span> ?: &amp;<span class="fn">add_frag</span>(<span class="var">name</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
+</code></div>
+<ul><li>
+returns a global fragment
+</li><li>
+if it is not found, the function creates a fragment in the <code><span class="var">_root</span></code>  collection
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">clear inputs</span>)</span><br/>
+<span class="in1"></span><span class="var">_used</span>.<span class="fn">clear</span>();<br/>
+<span class="in1"></span><span class="var">_open</span>.<span class="fn">clear</span>();<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_paths</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">populate default file</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="var">_current_path</span> = <span class="var">_paths</span>.<span class="fn">begin</span>();<br/>
+<span class="macro">@End(<span class="name">clear inputs</span>)</span><br/>
+</code></div>
+<ul><li>
+resets all open and used files
+</li><li>
+if the <code><span class="var">_path</span></code>s are empty the default input file names will be used
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">populate default file</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
+<span class="in2"></span><span class="str">"index.md"</span><br/>
+<span class="in1"></span>)) {<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
+<span class="in2"></span><span class="str">"index.x"</span><br/>
+<span class="in1"></span>)) {<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"no input paths\n"</span>;<br/>
+<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">populate default file</span>)</span><br/>
+</code></div>
+<ul><li>
+sets a default file
+</li></ul>
+</div>
+</body>
+</html>

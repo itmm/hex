@@ -358,7 +358,7 @@ int main(
 @Add(process line)
 	auto end = line.cend();
 	Input &input { *inputs.get(inputs.open_head()) };
-	std::string cur_path = inputs.cur().input().path();
+	std::string cur_path = inputs.cur().path();
 	int cur_line = inputs.cur().line();
 	std::map<std::string, std::string> cmd_values;
 	for (

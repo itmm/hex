@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Entering Lines in Viewer and Editor</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Entering Lines in Viewer and Editor</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Entering Lines in Viewer and Editor</h1>
+</div>
+<ul><li>
+the <code><span class="type">Line</span></code> class can refer to specific entry in a vector
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">class</span> <span class="type">Line</span> {<br/>
+<span class="in2"></span><span class="keyword">public</span>:<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">line elements</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">private</span>:<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">line privates</span>)</span>;<br/>
+<span class="in1"></span>};<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+a line has private and public elements
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">operator</span>()(<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">cur</span>, <span class="type">int</span> <span class="var">end</span><br/>
+<span class="in1"></span>) <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">res</span> {};<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+to calculate the absolute line number, the method must know the  current line and the last line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">line privates</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">_line</span> { -<span class="num">1</span> };<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">_relative</span> { <span class="num">false</span> };<br/>
+<span class="macro">@end(<span class="name">line privates</span>)</span><br/>
+</code></div>
+<ul><li>
+integer for the line
+</li><li>
+and a flag, if the line is relative
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="var">operator</span> <span class="fn">bool</span>() <span class="type">const</span> {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span> &gt;= <span class="num">0</span> || <span class="var">_relative</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+a line is valid, if the number is non-negative
+</li><li>
+or the line is relative
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">get line</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (! *<span class="var">this</span>) {<br/>
+<span class="in2"></span><span class="var">res</span> = <span class="var">cur</span>;<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="var">res</span> = <span class="var">_line</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">_relative</span>) { <span class="var">res</span> += <span class="var">cur</span>; }<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">res</span> &lt; <span class="num">0</span>) { <span class="var">res</span> = <span class="num">0</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">res</span> &gt; <span class="var">end</span>) { <span class="var">res</span> = <span class="var">end</span>; }<br/>
+<span class="macro">@end(<span class="name">get line</span>)</span><br/>
+</code></div>
+<ul><li>
+if the line is not valid, the current line is returned
+</li><li>
+otherwise the line is assigned
+</li><li>
+if the line is relative, the value is added to the current line
+</li><li>
+the result is clamped to the valid interval
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line privates</span>)</span><br/>
+<span class="in1"></span><span class="fn">Line</span>(<span class="type">int</span> <span class="var">line</span>, <span class="type">bool</span> <span class="var">relative</span>):<br/>
+<span class="in2"></span><span class="var">_line</span> { <span class="var">line</span> },<br/>
+<span class="in2"></span><span class="var">_relative</span> { <span class="var">relative</span> }<br/>
+<span class="in1"></span>{}<br/>
+<span class="macro">@end(<span class="name">line privates</span>)</span><br/>
+</code></div>
+<ul><li>
+constructor copies arguments
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="fn">Line</span>() = <span class="keyword">default</span>;<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+empty constructor is possible
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">relative</span>(<span class="type">int</span> <span class="var">line</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="type">Line</span> { <span class="var">line</span>, <span class="num">true</span> };<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+create relative line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">line</span>(<span class="type">int</span> <span class="var">line</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="type">Line</span> { <span class="var">line</span>, <span class="num">false</span> };<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+create absolute line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">begin</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">line</span>(<span class="num">0</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+create reference to first line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">limits</span>&gt;<br/>
+<span class="macro">@End(<span class="name">includes</span>)</span><br/>
+</code></div>
+<ul><li>
+needs <code><span class="type">std</span>::<span class="var">numeric_limits</span></code>
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">line elements</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">max</span> =<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">numeric_limits</span>&lt;<span class="type">int</span>&gt;::<span class="fn">max</span>();<br/>
+<span class="in2"></span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">end</span>() {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">line</span>(<span class="var">max</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">line elements</span>)</span><br/>
+</code></div>
+<ul><li>
+end refers to a very big line number
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">range prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">range vars</span>)</span>;<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+needed global elements
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">range vars</span>)</span><br/>
+<span class="in1"></span><span class="type">Line</span> <span class="var">line</span>;<br/>
+<span class="macro">@End(<span class="name">range vars</span>)</span><br/>
+</code></div>
+<ul><li>
+variable holds current line specification
+</li><li>
+if any
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">get_number</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">res</span> = <span class="num">0</span>;<br/>
+<span class="in2"></span><span class="keyword">while</span> (<br/>
+<span class="in3"></span>! <span class="var">s</span>.<span class="fn">empty</span>() &amp;&amp; <span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])<br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="var">res</span> = <span class="var">res</span> * <span class="num">10</span> + <span class="var">s</span>[<span class="num">0</span>] - <span class="str">'0'</span>;<br/>
+<span class="in3"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+parse a decimal non-negative integer
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">Line</span> <span class="fn">get_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
+<span class="in2"></span><span class="type">Line</span> <span class="var">line</span> {};<br/>
+<span class="in2"></span><span class="var">do</span> {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">parse line</span>)</span>;<br/>
+<span class="in2"></span>} <span class="keyword">while</span> (<span class="num">false</span>);<br/>
+<span class="in2"></span><span class="fn">trim</span>(<span class="var">s</span>);<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">line</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+parses the head of a string, if it contains a line specification
+</li><li>
+the line parts are removed from the input string
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">parse line</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'.'</span>) {<br/>
+<span class="in2"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
+<span class="in2"></span><span class="var">line</span> = <span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">0</span>);<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">parse line</span>)</span><br/>
+</code></div>
+<ul><li>
+a <code>.</code> is treated as the current line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">parse line</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'+'</span>) {<br/>
+<span class="in2"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">n</span> = <span class="fn">get_number</span>(<span class="var">s</span>);<br/>
+<span class="in2"></span><span class="var">line</span> = <span class="type">Line</span>::<span class="fn">relative</span>(<span class="var">n</span>);<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">parse line</span>)</span><br/>
+</code></div>
+<ul><li>
+a <code>+</code> signals a positive relative offset from the current line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">parse line</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'-'</span>) {<br/>
+<span class="in2"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">n</span> = -<span class="fn">get_number</span>(<span class="var">s</span>);<br/>
+<span class="in2"></span><span class="var">line</span> = <span class="type">Line</span>::<span class="fn">relative</span>(<span class="var">n</span>);<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">parse line</span>)</span><br/>
+</code></div>
+<ul><li>
+a <code>-</code> signals a negative relative offset from the current line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">parse line</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'$'</span>) {<br/>
+<span class="in2"></span><span class="var">line</span> = <span class="type">Line</span>::<span class="fn">end</span>();<br/>
+<span class="in2"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">parse line</span>)</span><br/>
+</code></div>
+<ul><li>
+a <code><span class="var">$</span></code> signals the last line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">parse line</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) {<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">n</span> = <span class="fn">get_number</span>(<span class="var">s</span>);<br/>
+<span class="in2"></span><span class="var">line</span> = <span class="type">Line</span>::<span class="fn">line</span>(<span class="var">n</span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">parse line</span>)</span>;<br/>
+</code></div>
+<ul><li>
+a number without <code>+</code> or <code>-</code> signals an absolute line position
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">do range</span>)</span><br/>
+<span class="in1"></span><span class="var">line</span> = <span class="fn">get_line</span>(<span class="var">cmd</span>);<br/>
+<span class="macro">@End(<span class="name">do range</span>)</span><br/>
+</code></div>
+<ul><li>
+initialize the line from the command
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">perform unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">unit-tests</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">perform unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+own fragment for unit-tests
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span> {});<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+empty <code><span class="type">Line</span></code> is not valid
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">begin</span>());<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">end</span>());<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+begin and end are valid
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">0</span>));<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+absolute line is valid
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">0</span>));<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">2</span>));<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+relative lines are valid
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span> {}(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">5</span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+empty line returns current line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">begin</span>()(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">end</span>()(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">10</span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+begin and end return the correct values
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">0</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">6</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">6</span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">20</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">10</span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+absolute lines are returned
+</li><li>
+but may be clamped
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">2</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">7</span><br/>
+<span class="in1"></span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+simple positive relative line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">7</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">10</span><br/>
+<span class="in1"></span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+too big movement is clamped
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">2</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">3</span><br/>
+<span class="in1"></span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+simple negative relative line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">7</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span><br/>
+<span class="in1"></span>);<br/>
+<span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+too big negative movement is clamped
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"+3"</span>;<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">8</span><br/>
+<span class="in1"></span>);<br/>
+} <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+parse positive relative
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"."</span>;<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">5</span><br/>
+<span class="in1"></span>);<br/>
+} <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+parse current line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"$"</span>;<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
+<span class="in2"></span><span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">10</span> <br/>
+<span class="in1"></span>);<br/>
+} <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
+</code></div>
+<ul><li>
+parse last line
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">do block range</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
+<span class="in3"></span>(<span class="var">curBlock</span> -<br/>
+<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>()<br/>
+<span class="in3"></span>) + <span class="num">1</span>,<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">size</span>()<br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do block range</span>)</span><br/>
+</code></div>
+<ul><li>
+parse range over blocks collection
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">do inputs range</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
+<span class="in3"></span>(<span class="var">curInput</span> - <span class="var">inputs</span>.<span class="fn">begin</span>()) +<br/>
+<span class="in4"></span><span class="num">1</span>,<br/>
+<span class="in3"></span><span class="var">inputs</span>.<span class="fn">size</span>()<br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do inputs range</span>)</span><br/>
+</code></div>
+<ul><li>
+parse range over input files
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Def(<span class="name">do str range</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
+<span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>,<br/>
+<span class="in3"></span><span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
+<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">do str range</span>)</span><br/>
+</code></div>
+<ul><li>
+string ranges do not support relative movement
+</li></ul>
+</div>
+</body>
+</html>

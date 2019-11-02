@@ -184,7 +184,7 @@
 
 ```
 @Def(private open input els)
-	Input _input;
+	std::string _path;
 	std::ifstream _file;
 @End(private open input els)
 ```
@@ -193,13 +193,21 @@
 
 ```
 @Def(open input elements)
-	Open_Input(const std::string &path, const Input *prev):
-		_input { path, prev },
+	Open_Input(const std::string &path):
+		_path { path },
 		_file { path.c_str() }
 	{}
 @End(open input elements)
 ```
 * open file on construction
+
+```
+@Add(open input elements)
+	const std::string &path() const {
+		return _path; 
+	}
+@End(open input elements)
+```
 
 ```
 @Add(open input elements)
@@ -226,22 +234,6 @@
 ```
 * no copy assignment
 * no move assignment
-
-```
-@Add(open input elements)
-	Input &input() { return _input; }
-@End(open input elements)
-```
-* return input element
-
-```
-@Add(open input elements)
-	const Input &input() const {
-		return _input;
-	}
-@End(open input elements)
-```
-* return read-only input element
 
 ```
 @Def(input elements)
@@ -369,7 +361,7 @@
 
 ```
 @def(save open input)
-	auto &f { _open.back().input() };
+	auto &f { _used.find(_open.back().path())->second };
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
 			RS::header,

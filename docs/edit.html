@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit blocks in place</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Edit blocks in place</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Edit blocks in place</h1>
+</div>
+<ul><li>
+using a terminal editor to edit blocks
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">insert_before</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">prefix</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; &amp;<span class="var">c</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">insert before</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span><br/>
+</code></div>
+<ul><li>
+function to interactively insert lines at the end of the container
+</li><li>
+the <code><span class="var">prefix</span></code> is the prompt that is printed
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"l"</span> || <span class="var">cmd</span> == <span class="str">"list"</span>) {<br/>
+<span class="in2"></span><span class="fn">insert_before</span>(<br/>
+<span class="in3"></span><span class="str">"l"</span>, <span class="var">curBlock</span>-&gt;<span class="var">notes</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+the <code><span class="type">list</span></code> or <code><span class="var">l</span></code> command adds notes
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"a"</span> || <span class="var">cmd</span> == <span class="str">"add"</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">find add prefix</span>)</span>;<br/>
+<span class="in2"></span><span class="fn">insert_before</span>(<br/>
+<span class="in3"></span><span class="var">prefix</span>,<br/>
+<span class="in3"></span><span class="var">curBlock</span>-&gt;<span class="var">value</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+the <code><span class="var">add</span></code> or <code><span class="var">a</span></code> command adds value lines
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">find add prefix</span>)</span><br/>
+<span class="in1"></span><span class="keyword">switch</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span>) {<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">header</span>:<br/>
+<span class="in3"></span><span class="var">prefix</span> = <span class="str">"h"</span>; <span class="keyword">break</span>;<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">code</span>:<br/>
+<span class="in3"></span><span class="var">prefix</span> = <span class="str">"c"</span>; <span class="keyword">break</span>;<br/>
+<span class="in2"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">para</span>:<br/>
+<span class="in3"></span><span class="var">prefix</span> = <span class="str">"p"</span>; <span class="keyword">break</span>;<br/>
+<span class="in2"></span><span class="keyword">default</span>:<br/>
+<span class="in3"></span><span class="var">prefix</span> = <span class="str">"?"</span>; <span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">find add prefix</span>)</span><br/>
+</code></div>
+<ul><li>
+one character prefix for the different block types
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">insert before</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="var">c</span>.<span class="fn">size</span>();<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">do str range</span>)</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">l</span>;<br/>
+<span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">insert next line</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">break</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="fn">draw_block</span>();<br/>
+<span class="macro">@end(<span class="name">insert before</span>)</span><br/>
+</code></div>
+<ul><li>
+insert strings at the end of the container
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">insert next line</span>)</span><br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">prefix</span> &lt;&lt; <span class="str">' '</span> &lt;&lt;<br/>
+<span class="in2"></span>(<span class="var">next</span> + <span class="num">1</span>) &lt;&lt; <span class="str">"? "</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="fn">getline</span>(<span class="type">std</span>::<span class="var">cin</span>, <span class="var">l</span>);<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">b</span> = <span class="var">l</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="type">auto</span> <span class="var">e</span> = <span class="var">l</span>.<span class="fn">end</span>();<br/>
+<span class="in1"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> &lt;= <span class="str">' '</span>) { ++<span class="var">b</span>; }<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">t</span> { <span class="var">b</span>, <span class="var">e</span> };<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">t</span>.<span class="fn">empty</span>()) { <span class="keyword">continue</span>; }<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">t</span> == <span class="str">"."</span>) { <span class="keyword">break</span>; }<br/>
+<span class="in1"></span><span class="var">c</span>.<span class="fn">insert</span>(<span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">next</span>, <span class="var">l</span>);<br/>
+<span class="in1"></span>++<span class="var">next</span>;<br/>
+<span class="in1"></span><span class="keyword">continue</span>;<br/>
+<span class="macro">@end(<span class="name">insert next line</span>)</span><br/>
+</code></div>
+<ul><li>
+read lines until a single <code>.</code> is read
+</li><li>
+spaces at the beginning of the line are stripped
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"&gt;&gt;"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<br/>
+<span class="in3"></span><span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span><br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span>++<span class="var">curBlock</span>-&gt;<span class="var">level</span>;<br/>
+<span class="in3"></span><span class="fn">draw_block</span>();<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+<code>&gt;&gt;</code> increases the level of a header
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"&lt;&lt;"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">level</span> &gt; <span class="num">1</span>) {<br/>
+<span class="in3"></span>--<span class="var">curBlock</span>-&gt;<span class="var">level</span>;<br/>
+<span class="in3"></span><span class="fn">draw_block</span>();<br/>
+<span class="in3"></span><span class="keyword">continue</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+<code>&lt;&lt;</code> decreases the level of a header
+</li></ul>
+</div>
+</body>
+</html>

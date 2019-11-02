@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Adding blocks in editor</title>
+<link rel="stylesheet" type="text/css" href="slides/slides.css"></head>
+<body>
+<h1>Adding blocks in editor</h1>
+<div class="slides">
+<div>
+<div>
+<h1>Adding blocks in editor</h1>
+</div>
+<ul><li>
+define commands to add a header, code block or paragraph block after  the current slide
+</li><li>
+when reading again <code><span class="var">hx</span></code> will merge continuous paragraphs into one  block
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">add_block</span>(<span class="type">Read_State</span> <span class="var">state</span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">add block</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">global elements</span>)</span>;<br/>
+</code></div>
+<ul><li>
+the <code><span class="fn">add_block</span></code> function adds a new block after the current block
+</li><li>
+it sets its value to a default text
+</li><li>
+and makes the new block the current block
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"h"</span> || <span class="var">cmd</span> == <span class="str">"header"</span>) {<br/>
+<span class="in2"></span><span class="fn">add_block</span>(<span class="var">RS</span>::<span class="var">header</span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+generates a new header block
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"c"</span> || <span class="var">cmd</span> == <span class="str">"code"</span>) {<br/>
+<span class="in2"></span><span class="fn">add_block</span>(<span class="var">RS</span>::<span class="var">code</span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+generates a new code block
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"o"</span> || <span class="var">cmd</span> == <span class="str">"other"</span>) {<br/>
+<span class="in2"></span><span class="fn">add_block</span>(<span class="var">RS</span>::<span class="var">para</span>);<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+generates a new paragraph blocks
+</li><li>
+multiple paragraph blocks will be merged into one paragraph block on  read
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">add block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">increase block</span>)</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> -<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">insert block</span>)</span>;<br/>
+<span class="in2"></span><span class="var">curBlock</span> =<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>() + <span class="var">i</span>;<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! no file\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="fn">draw_block</span>();<br/>
+<span class="macro">@end(<span class="name">add block</span>)</span><br/>
+</code></div>
+<ul><li>
+<code><span class="fn">add_block</span></code> increases the current block if possible
+</li><li>
+so it can insert the new block before the iterator
+</li><li>
+as the insert can invalidate the iterators, it saves the distance
+</li><li>
+and restores it afterwards
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">increase block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">curBlock</span> !=<br/>
+<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">end</span>()<br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span>++<span class="var">curBlock</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">increase block</span>)</span><br/>
+</code></div>
+<ul><li>
+<code><span class="fn">add_block</span></code> does not advance beyond the end of the container
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">insert block</span>)</span><br/>
+<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
+<span class="in2"></span><span class="var">curBlock</span>,<br/>
+<span class="in2"></span>{<br/>
+<span class="in3"></span><span class="var">state</span>, { <span class="str">"REPLACE"</span> }, {},<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ? <span class="num">1</span> : <span class="num">0</span><br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>);<br/>
+<span class="macro">@end(<span class="name">insert block</span>)</span><br/>
+</code></div>
+<ul><li>
+<code><span class="fn">add_block</span></code> creates a new block with the requested <code><span class="var">state</span></code>
+</li><li>
+and a default text
+</li></ul>
+</div>
+</div>
+<h2>Duplicating the current block</h2>
+<div class="slides">
+<div>
+<div>
+<h2>Duplicating the current block</h2>
+</div>
+<ul><li>
+duplicates the current block
+</li><li>
+and sets the current block to the new copy
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"d"</span> || <span class="var">cmd</span> == <span class="str">"dup"</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">curBlock</span> !=<br/>
+<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">end</span>()<br/>
+<span class="in3"></span>) {<br/>
+<span class="in4"></span><span class="macro">@put(<span class="name">duplicate</span>)</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in2"></span>} <span class="keyword">else</span> {<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! no file\n"</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">continue</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@End(<span class="name">run loop</span>)</span><br/>
+</code></div>
+<ul><li>
+duplicates the current block
+</li><li>
+if the file is valid
+</li><li>
+and the current block is valid
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">duplicate</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> -<br/>
+<span class="in2"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
+<span class="in2"></span><span class="var">curBlock</span>, *<span class="var">curBlock</span><br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>() +<br/>
+<span class="in2"></span><span class="var">i</span> + <span class="num">1</span>;<br/>
+<span class="macro">@end(<span class="name">duplicate</span>)</span><br/>
+</code></div>
+<ul><li>
+the insert invalidates the iterator
+</li><li>
+so the offset is saved
+</li><li>
+a copy of the current block is inserted before the current block
+</li><li>
+that is the wrong way around but easier
+</li><li>
+and doesn't matter in the end
+</li><li>
+the new current block is set to the old current block
+</li><li>
+which is now the second of the two duplicates
+</li></ul>
+</div>
+</body>
+</html>
