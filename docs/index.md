@@ -1391,9 +1391,9 @@ int main(
 		for (;;) {
 			Frag *f { find_frag(p, key) };
 			if (f) { return f; }
-			const Input *i { inputs.get(path) };
-			if (!i || i->prev.empty()) { return nullptr; }
-			p = i->prev;
+			const Input &i { inputs[path] };
+			if (i.prev.empty()) { return nullptr; }
+			p = i.prev;
 		}
 	}
 	Frag *find_frag(const std::string &key) {
@@ -1471,8 +1471,6 @@ int main(
 	std::istringstream in { out.str() };
 	std::string line;
 	Frag *frag = nullptr;
-	Input *ci { inputs.get(fs.meta_path) };
-	ASSERT(ci);
 	std::string cur_path = fs.meta_path;
 	int cur_line { 1 };
 	auto &cmd_values = fs.meta_values;

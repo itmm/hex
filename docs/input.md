@@ -67,12 +67,10 @@
 		ASSERT(! _open.empty());
 		return _open.back().path();
 	}
-	Input *get(const std::string &name) {
-		auto got { _used.find(name) };
-		if (got != _used.end()) {
-			return &got->second;
-		}
-		return nullptr;
+	Input &operator[](
+		const std::string &name
+	) {
+		return _used[name];
 	}
 @End(inputs elements)
 ```
