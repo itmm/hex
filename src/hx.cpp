@@ -981,27 +981,27 @@
 
 	_used.clear();
 	_open.clear();
-	if (_paths.empty()) {
+	if (_roots.empty()) {
 		
 #line 214 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
 	)) {
-		_paths.push_back("index.md");
+		_roots.push_back("index.md");
 	} else if (std::filesystem::exists(
 		"index.x"
 	)) {
-		_paths.push_back("index.x");
+		_roots.push_back("index.x");
 	} else {
 		std::cerr << "no input paths\n";
-		_paths.push_back("index.md");
+		_roots.push_back("index.md");
 	}
 
 #line 205 "input.md"
 ;
 	}
-	_current_path = _paths.begin();
+	_current_path = _roots.begin();
 
 #line 111 "read.md"
 ;
@@ -1063,7 +1063,7 @@
 #line 83 "input.md"
 
 	void add(const std::string &path) {
-		_paths.push_back(path);
+		_roots.push_back(path);
 		push(path);
 	}
 
@@ -1129,7 +1129,7 @@
 			
 #line 295 "read.md"
 
-	std::vector<std::string> _paths;
+	std::vector<std::string> _roots;
 	std::vector<std::string>::
 		const_iterator _current_path;
 
@@ -1156,7 +1156,7 @@
 
 	if (_open.empty()) {
 		if (
-			_current_path != _paths.end()
+			_current_path != _roots.end()
 		) {
 			push(*_current_path++);
 		} else {

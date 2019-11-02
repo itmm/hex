@@ -116,7 +116,7 @@ is recorded as used input file
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
-<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="var">path</span>);<br/>
+<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="var">path</span>);<br/>
 <span class="in2"></span><span class="fn">push</span>(<span class="var">path</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
@@ -291,10 +291,10 @@ if it is not found, the function creates a fragment in the <code><span class="va
 <span class="macro">@Def(<span class="name">clear inputs</span>)</span><br/>
 <span class="in1"></span><span class="var">_used</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span><span class="var">_open</span>.<span class="fn">clear</span>();<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">_paths</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">_roots</span>.<span class="fn">empty</span>()) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">populate default file</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">_current_path</span> = <span class="var">_paths</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="var">_current_path</span> = <span class="var">_roots</span>.<span class="fn">begin</span>();<br/>
 <span class="macro">@End(<span class="name">clear inputs</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -309,14 +309,14 @@ if the <code><span class="var">_path</span></code>s are empty the default input 
 <span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
 <span class="in2"></span><span class="str">"index.md"</span><br/>
 <span class="in1"></span>)) {<br/>
-<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
 <span class="in2"></span><span class="str">"index.x"</span><br/>
 <span class="in1"></span>)) {<br/>
-<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"no input paths\n"</span>;<br/>
-<span class="in2"></span><span class="var">_paths</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">populate default file</span>)</span><br/>
 </code></div>

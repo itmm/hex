@@ -293,7 +293,7 @@
 
 ```
 @Def(private inputs elements)
-	std::vector<std::string> _paths;
+	std::vector<std::string> _roots;
 	std::vector<std::string>::
 		const_iterator _current_path;
 @End(private inputs elements)
@@ -336,7 +336,7 @@
 @def(push next path)
 	if (_open.empty()) {
 		if (
-			_current_path != _paths.end()
+			_current_path != _roots.end()
 		) {
 			push(*_current_path++);
 		} else {

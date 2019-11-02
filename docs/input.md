@@ -82,7 +82,7 @@
 ```
 @Add(inputs elements)
 	void add(const std::string &path) {
-		_paths.push_back(path);
+		_roots.push_back(path);
 		push(path);
 	}
 @End(inputs elements)
@@ -201,10 +201,10 @@
 @Def(clear inputs)
 	_used.clear();
 	_open.clear();
-	if (_paths.empty()) {
+	if (_roots.empty()) {
 		@put(populate default file);
 	}
-	_current_path = _paths.begin();
+	_current_path = _roots.begin();
 @End(clear inputs)
 ```
 * resets all open and used files
@@ -215,14 +215,14 @@
 	if (std::filesystem::exists(
 		"index.md"
 	)) {
-		_paths.push_back("index.md");
+		_roots.push_back("index.md");
 	} else if (std::filesystem::exists(
 		"index.x"
 	)) {
-		_paths.push_back("index.x");
+		_roots.push_back("index.x");
 	} else {
 		std::cerr << "no input paths\n";
-		_paths.push_back("index.md");
+		_roots.push_back("index.md");
 	}
 @end(populate default file)
 ```
