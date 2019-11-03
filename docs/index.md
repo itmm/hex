@@ -185,8 +185,6 @@ int main(
 	Frag *find_frag(const std::string &path, const std::string &key, bool local, std::string *got_path = nullptr);
 	Frag *find_frag(const std::string &path, const Frag_Ref &ref, std::string *got_path = nullptr);
 
-	Frag &add_frag(const std::string &in, const std::string &key);
-
 	Frag &get_frag(const std::string &path, const std::string &key, bool local);
 	Frag &get_frag(const std::string &path, const Frag_Ref &ref);
 
