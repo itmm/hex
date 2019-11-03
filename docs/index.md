@@ -1219,6 +1219,7 @@ int main(
 			&i.second
 		};
 		const std::string cur_path;
+		const std::string cur_name = i.first;
 		@mul(serialize cmd);
 	}
 @end(files process)
@@ -1233,6 +1234,7 @@ int main(
 				&i.second
 			};
 			const std::string cur_path = j.first;
+			const std::string cur_name = i.first;
 			@mul(serialize cmd);
 		}
 	}
@@ -1250,7 +1252,7 @@ int main(
 
 ```
 @def(serialize cmd) {
-	const std::string cmd { frag->cmd() };
+	const std::string cmd { Frag::cmd(cur_name) };
 	if (cmd.size()) {
 		@put(write cmd in file);
 	}

@@ -386,7 +386,7 @@ a <code><span class="type">Frag</span></code> describes a file if its name has t
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">cmd</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">std</span>::<span class="type">string</span> <span class="fn">cmd</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
 <span class="in3"></span><span class="str">"| "</span><br/>
 <span class="in2"></span>};<br/>
@@ -418,7 +418,7 @@ a <code><span class="type">Frag</span></code> describes a command if its name ha
 <span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 <span class="in1"></span>{<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFile</span>()) { ++<span class="var">_expands</span>; }<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="fn">cmd</span>().<span class="fn">size</span>()) { ++<span class="var">_expands</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">cmd</span>(<span class="var">name</span>).<span class="fn">size</span>()) { ++<span class="var">_expands</span>; }<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>

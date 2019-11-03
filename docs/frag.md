@@ -301,7 +301,7 @@
 
 ```
 @add(frag methods)
-	std::string cmd() const {
+	static std::string cmd(const std::string &name) {
 		static const std::string prefix {
 			"| "
 		};
@@ -330,7 +330,7 @@
 		name { name }
 	{
 		if (isFile()) { ++_expands; }
-		if (cmd().size()) { ++_expands; }
+		if (cmd(name).size()) { ++_expands; }
 	}
 @end(frag methods)
 ```

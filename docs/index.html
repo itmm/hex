@@ -1642,6 +1642,7 @@ only process files if requested
 <span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in2"></span>};<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span>;<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_name</span> = <span class="var">i</span>.<span class="var">first</span>;<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">files process</span>)</span><br/>
@@ -1659,6 +1660,7 @@ process commands that are key at root level
 <span class="in4"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in3"></span>};<br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span> = <span class="var">j</span>.<span class="var">first</span>;<br/>
+<span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_name</span> = <span class="var">i</span>.<span class="var">first</span>;<br/>
 <span class="in3"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
@@ -1683,7 +1685,7 @@ there is an option to disable command processing
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">serialize cmd</span>)</span> {<br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cmd</span> { <span class="var">frag</span>-&gt;<span class="fn">cmd</span>() };<br/>
+<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cmd</span> { <span class="type">Frag</span>::<span class="fn">cmd</span>(<span class="var">cur_name</span>) };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span>.<span class="fn">size</span>()) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">write cmd in file</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
