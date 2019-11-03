@@ -1377,8 +1377,7 @@ int main(
 		if (state.parent) {
 			Frag *pg = find_frag(*state.parent, in, key);
 			if (pg) {
-				pg->super = &state.state[in].insert({ key, { key, pg } }).first->second;
-				return pg->super;
+				return &state.state[in].insert({ key, { key, pg } }).first->second;
 			}
 		}
 		return nullptr;
@@ -1432,7 +1431,6 @@ int main(
 			prev = &add_frag(*state.parent, in, key);
 		}
 		Frag &res { state.state[in].insert({ key, { key, prev } }).first->second };
-		if (prev) { prev->super = &res; }
 		return res;
 	}
 
@@ -1457,7 +1455,7 @@ int main(
 			Frag_Map &prev { frag_map(*state.parent, in) };
 			for (auto &f: prev) {
 				if (cur.find(f.first) == cur.end()) {
-					f.second.super = &cur.insert({ f.first, { f.first, &f.second } }).first->second;
+					cur.insert({ f.first, { f.first, &f.second } });
 				}
 			}
 		}

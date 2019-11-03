@@ -274,7 +274,6 @@
 		const bool _is_meta;
 	public:
 		const std::string name;
-		Frag *super = nullptr;
 		@put(frag methods);
 	};
 @end(define frag)
@@ -682,9 +681,6 @@
 			std::string new_path = path;
 			const Frag *f { find_frag(entry.sub(), &new_path) };
 			if (f) {
-				while (f->super) {
-					f = f->super;
-				}
 				serializeFrag(
 					*f, out, state, new_path
 				);

@@ -347,7 +347,6 @@ needs <code><span class="type">std</span>::<span class="type">vector</span></cod
 <span class="in2"></span><span class="type">const</span> <span class="type">bool</span> <span class="var">_is_meta</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
-<span class="in2"></span><span class="type">Frag</span> *<span class="var">super</span> = <span class="num">nullptr</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -880,9 +879,6 @@ estimate a <code><span class="type">Write_State</span></code> first
 <span class="in3"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">new_path</span> = <span class="var">path</span>;<br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">f</span> { <span class="fn">find_frag</span>(<span class="var">entry</span>.<span class="fn">sub</span>(), &amp;<span class="var">new_path</span>) };<br/>
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
-<span class="in4"></span><span class="keyword">while</span> (<span class="var">f</span>-&gt;<span class="var">super</span>) {<br/>
-<span class="in5"></span><span class="var">f</span> = <span class="var">f</span>-&gt;<span class="var">super</span>;<br/>
-<span class="in4"></span>}<br/>
 <span class="in4"></span><span class="fn">serializeFrag</span>(<br/>
 <span class="in5"></span>*<span class="var">f</span>, <span class="var">out</span>, <span class="var">state</span>, <span class="var">new_path</span><br/>
 <span class="in4"></span>);<br/>

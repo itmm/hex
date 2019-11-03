@@ -1850,8 +1850,7 @@ list of open issues
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">state</span>.<span class="var">parent</span>) {<br/>
 <span class="in3"></span><span class="type">Frag</span> *<span class="var">pg</span> = <span class="fn">find_frag</span>(*<span class="var">state</span>.<span class="var">parent</span>, <span class="keyword">in</span>, <span class="var">key</span>);<br/>
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">pg</span>) {<br/>
-<span class="in4"></span><span class="var">pg</span>-&gt;<span class="var">super</span> = &amp;<span class="var">state</span>.<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">insert</span>({ <span class="var">key</span>, { <span class="var">key</span>, <span class="var">pg</span> } }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
-<span class="in4"></span><span class="keyword">return</span> <span class="var">pg</span>-&gt;<span class="var">super</span>;<br/>
+<span class="in4"></span><span class="keyword">return</span> &amp;<span class="var">state</span>.<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">insert</span>({ <span class="var">key</span>, { <span class="var">key</span>, <span class="var">pg</span> } }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">nullptr</span>;<br/>
@@ -1905,7 +1904,6 @@ list of open issues
 <span class="in3"></span><span class="var">prev</span> = &amp;<span class="fn">add_frag</span>(*<span class="var">state</span>.<span class="var">parent</span>, <span class="keyword">in</span>, <span class="var">key</span>);<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="type">Frag</span> &amp;<span class="var">res</span> { <span class="var">state</span>.<span class="var">state</span>[<span class="keyword">in</span>].<span class="fn">insert</span>({ <span class="var">key</span>, { <span class="var">key</span>, <span class="var">prev</span> } }).<span class="var">first</span>-&gt;<span class="var">second</span> };<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">prev</span>) { <span class="var">prev</span>-&gt;<span class="var">super</span> = &amp;<span class="var">res</span>; }<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>
@@ -1930,7 +1928,7 @@ list of open issues
 <span class="in3"></span><span class="type">Frag_Map</span> &amp;<span class="var">prev</span> { <span class="fn">frag_map</span>(*<span class="var">state</span>.<span class="var">parent</span>, <span class="keyword">in</span>) };<br/>
 <span class="in3"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">f</span>: <span class="var">prev</span>) {<br/>
 <span class="in4"></span><span class="keyword">if</span> (<span class="var">cur</span>.<span class="fn">find</span>(<span class="var">f</span>.<span class="var">first</span>) == <span class="var">cur</span>.<span class="fn">end</span>()) {<br/>
-<span class="in5"></span><span class="var">f</span>.<span class="var">second</span>.<span class="var">super</span> = &amp;<span class="var">cur</span>.<span class="fn">insert</span>({ <span class="var">f</span>.<span class="var">first</span>, { <span class="var">f</span>.<span class="var">first</span>, &amp;<span class="var">f</span>.<span class="var">second</span> } }).<span class="var">first</span>-&gt;<span class="var">second</span>;<br/>
+<span class="in5"></span><span class="var">cur</span>.<span class="fn">insert</span>({ <span class="var">f</span>.<span class="var">first</span>, { <span class="var">f</span>.<span class="var">first</span>, &amp;<span class="var">f</span>.<span class="var">second</span> } });<br/>
 <span class="in4"></span>}<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
