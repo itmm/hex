@@ -143,59 +143,6 @@
 * increase line number for each line
 
 ```
-@Add(inputs elements)
-	Frag *get_local(
-		const std::string path, const std::string &name
-	) {
-		Frag *got { find_frag(path, name) };
-		return got ?: &add_frag(path, name);
-	}
-@End(inputs elements)
-```
-* return a fragment in the current open input file
-* if it is not present, it is created
-
-```
-@Add(inputs elements)
-	Frag *find_global(
-		const std::string &name
-	) {
-		@put(find global);
-		return find_frag(name);
-	}
-@End(inputs elements)
-```
-* find a fragment in all but the current open input files or the `_root`
-  collection
-
-```
-@def(find global)
-	if (_open.size() > 1) {
-		auto i = _open.end() - 2;
-		Frag *f { find_frag_in_files(
-			i->path(), name
-		) };
-		if (f) { return f; }
-	}
-@end(find global)
-```
-* walk through all open input files and return, if the fragment is found
-
-```
-@Add(inputs elements)
-	Frag *get_global(
-		const std::string &name
-	) {
-		Frag *result = find_global(name);
-		return result ?: &add_frag(name);
-	}
-@End(inputs elements)
-```
-* returns a global fragment
-* if it is not found, the function creates a fragment in the `_root`
-  collection
-
-```
 @Def(clear inputs)
 	_used.clear();
 	_open.clear();

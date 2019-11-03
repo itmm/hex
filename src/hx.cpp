@@ -91,18 +91,18 @@
 #line 181 "index.md"
 
 	class Frag;
-	class Input;
-	class Frag_State;
+	class Frag_Ref;
+
+	Frag *find_frag(const std::string &path, const std::string &key, bool local, std::string *got_path = nullptr);
+	Frag *find_frag(const std::string &path, const Frag_Ref &ref, std::string *got_path = nullptr);
+
+	Frag &add_frag(const std::string &in, const std::string &key);
+
+	Frag &get_frag(const std::string &path, const std::string &key, bool local);
+	Frag &get_frag(const std::string &path, const Frag_Ref &ref);
 
 	#include <map>
 	using Frag_Map = std::map<std::string, Frag>;
-
-	Frag *find_frag(const std::string &in, const std::string &key);
-	Frag *find_frag_in_files(const std::string &path, const std::string &key);
-	Frag *find_frag(const std::string &key);
-
-	Frag &add_frag(const std::string &in, const std::string &key);
-	Frag &add_frag(const std::string &key);
 
 	Frag_Map &frag_map(const std::string &in);
 	Frag_Map &frag_map();
@@ -999,13 +999,13 @@
 
 	void clear() {
 		
-#line 199 "input.md"
+#line 146 "input.md"
 
 	_used.clear();
 	_open.clear();
 	if (_roots.empty()) {
 		
-#line 212 "input.md"
+#line 159 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
@@ -1020,7 +1020,7 @@
 		_roots.push_back("index.md");
 	}
 
-#line 203 "input.md"
+#line 150 "input.md"
 ;
 	}
 	_current_path = _roots.begin();
@@ -1102,45 +1102,6 @@
 #line 100 "input.md"
 ;
 		return false;
-	}
-
-#line 146 "input.md"
-
-	Frag *get_local(
-		const std::string path, const std::string &name
-	) {
-		Frag *got { find_frag(path, name) };
-		return got ?: &add_frag(path, name);
-	}
-
-#line 159 "input.md"
-
-	Frag *find_global(
-		const std::string &name
-	) {
-		
-#line 172 "input.md"
-
-	if (_open.size() > 1) {
-		auto i = _open.end() - 2;
-		Frag *f { find_frag_in_files(
-			i->path(), name
-		) };
-		if (f) { return f; }
-	}
-
-#line 163 "input.md"
-;
-		return find_frag(name);
-	}
-
-#line 185 "input.md"
-
-	Frag *get_global(
-		const std::string &name
-	) {
-		Frag *result = find_global(name);
-		return result ?: &add_frag(name);
 	}
 
 #line 24 "read.md"
@@ -1646,7 +1607,7 @@
 
 	if (name == "def") {
 		ASSERT_NOT_FRAG();
-		frag = inputs.get_local(cur_path, arg);
+		frag = &get_frag(cur_path, arg, true);
 		CHECK_NOT_DEFINED();
 		break;
 	}
@@ -1707,7 +1668,7 @@
 			frag->add(')', f, l);
 		} else {
 			ASSERT_NOT_FRAG();
-			frag = inputs.get_local(cur_path, arg);
+			frag = &get_frag(cur_path, arg, true);
 			CHECK_DEFINED();
 		}
 		break;
@@ -1720,14 +1681,14 @@
 			std::string pattern;
 			std::map<std::string, std::string> values;
 			parse_args(arg, pattern, values);
-			Frag *sub = inputs.get_local(cur_path, pattern);
+			Frag *sub = &get_frag(cur_path, pattern, true);
 			sub->addMultiple();
 			split_frag(sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
 			);
-			Frag *sub = inputs.get_local(cur_path, arg);
+			Frag *sub = &get_frag(cur_path, arg, true);
 			if (sub) {
 				
 #line 775 "index.md"
@@ -1771,7 +1732,7 @@
 		ASSERT_MSG(frag,
 			"@mul not in frag"
 		);
-		Frag *sub = inputs.get_local(cur_path, arg);
+		Frag *sub = &get_frag(cur_path, arg, true);
 		if (sub) {
 			
 #line 828 "index.md"
@@ -1801,7 +1762,7 @@
 		"@Def in frag [" <<
 		frag->name << ']'
 	);
-	frag = inputs.get_global(arg);
+	frag = &get_frag(cur_path, arg, false);
 	if (isPopulatedFrag(frag)) {
 		std::cerr << "Frag [" <<
 			arg << "] already defined\n";
@@ -1821,7 +1782,7 @@
 	ASSERT_MSG(! frag, "@Add in frag [" <<
 		frag->name << ']'
 	);
-	frag = inputs.get_global(arg);
+	frag = &get_frag(cur_path, arg, false);
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "Frag [" << arg <<
 			"] not defined\n";
@@ -1839,7 +1800,7 @@
 			"@rep in frag [" <<
 				frag->name << ']'
 		);
-		frag = inputs.get_local(cur_path, arg);
+		frag = &get_frag(cur_path, arg, true);
 		
 #line 922 "index.md"
 
@@ -1861,7 +1822,7 @@
 			"@Rep in frag [" <<
 				frag->name << ']'
 		);
-		frag = inputs.get_global(arg);
+		frag = &get_frag(cur_path, arg, false);
 		
 #line 922 "index.md"
 
@@ -1883,7 +1844,7 @@
 #line 944 "index.md"
 
 	ASSERT_MSG(frag, "@Put not in frag");
-	Frag *sub = inputs.get_global(arg);
+	Frag *sub = &get_frag(cur_path, arg, false);
 	if (sub) {
 		
 #line 775 "index.md"
@@ -1917,7 +1878,7 @@
 #line 967 "index.md"
 
 	ASSERT_MSG(frag, "@Mul not in frag");
-	Frag *sub = inputs.get_global(arg);
+	Frag *sub = &get_frag(cur_path, arg, false);
 	if (sub) {
 		
 #line 828 "index.md"
@@ -4174,18 +4135,39 @@
 	Frag *find_frag(const std::string &in, const std::string &key) {
 		return find_frag(cur_state(), in, key);
 	}
-	Frag *find_frag_in_files(const std::string &path, const std::string &key) {
+
+	Frag *find_frag_in_files(const std::string &path, const std::string &key, std::string *got_path) {
 		std::string p { path };
 		for (;;) {
 			Frag *f { find_frag(p, key) };
+			if (got_path) { *got_path = p; }
 			if (f) { return f; }
-			const Input &i { inputs[path] };
+			const Input &i { inputs[p] };
 			if (i.prev.empty()) { return nullptr; }
 			p = i.prev;
 		}
 	}
-	Frag *find_frag(const std::string &key) {
-		return find_frag(std::string { }, key);
+
+	Frag *find_frag(const std::string &path, const std::string &key, bool local, std::string *got_path) {
+		if (local) {
+			if (got_path) { *got_path = path; }
+			return find_frag(path, key);
+		} else {
+			Frag *f { nullptr };
+			Input &i { inputs[path] };
+			if (! i.prev.empty()) {
+				f = find_frag_in_files(i.prev, key, got_path);
+			}
+			if (! f) {
+				if (got_path) { *got_path = std::string { }; }
+				f = find_frag(std::string { }, key);
+			}
+			return f;
+		}
+	}
+
+	Frag *find_frag(const std::string &path, const Frag_Ref &ref, std::string *got_path) {
+		return find_frag(path, ref.name, ref.local, got_path);
 	}
 
 	Frag &add_frag(Frag_State &state, const std::string &in, const std::string &key) {
@@ -4201,8 +4183,15 @@
 	Frag &add_frag(const std::string &in, const std::string &key) {
 		return add_frag(cur_state(), in, key);
 	}
-	Frag &add_frag(const std::string &key) {
-		return add_frag(std::string { }, key);
+
+	Frag &get_frag(const std::string &path, const std::string &key, bool local) {
+		Frag *f { find_frag(path, key, local) };
+		if (f) { return *f; }
+		return add_frag(local ? path : std::string { }, key);
+	}
+
+	Frag &get_frag(const std::string &path, const Frag_Ref &ref) {
+		return get_frag(path, ref.name, ref.local);
 	}
 
 	Frag_Map &frag_map(Frag_State &state, const std::string &in) {
@@ -4243,7 +4232,7 @@
 		}
 		if (fs.meta) {
 			
-#line 1468 "index.md"
+#line 1496 "index.md"
 
 	std::ostringstream out;
 	serializeFrag(*fs.meta, out);
@@ -4336,7 +4325,7 @@
 
 	if (name == "def") {
 		ASSERT_NOT_FRAG();
-		frag = inputs.get_local(cur_path, arg);
+		frag = &get_frag(cur_path, arg, true);
 		CHECK_NOT_DEFINED();
 		break;
 	}
@@ -4397,7 +4386,7 @@
 			frag->add(')', f, l);
 		} else {
 			ASSERT_NOT_FRAG();
-			frag = inputs.get_local(cur_path, arg);
+			frag = &get_frag(cur_path, arg, true);
 			CHECK_DEFINED();
 		}
 		break;
@@ -4410,14 +4399,14 @@
 			std::string pattern;
 			std::map<std::string, std::string> values;
 			parse_args(arg, pattern, values);
-			Frag *sub = inputs.get_local(cur_path, pattern);
+			Frag *sub = &get_frag(cur_path, pattern, true);
 			sub->addMultiple();
 			split_frag(sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
 			);
-			Frag *sub = inputs.get_local(cur_path, arg);
+			Frag *sub = &get_frag(cur_path, arg, true);
 			if (sub) {
 				
 #line 775 "index.md"
@@ -4461,7 +4450,7 @@
 		ASSERT_MSG(frag,
 			"@mul not in frag"
 		);
-		Frag *sub = inputs.get_local(cur_path, arg);
+		Frag *sub = &get_frag(cur_path, arg, true);
 		if (sub) {
 			
 #line 828 "index.md"
@@ -4491,7 +4480,7 @@
 		"@Def in frag [" <<
 		frag->name << ']'
 	);
-	frag = inputs.get_global(arg);
+	frag = &get_frag(cur_path, arg, false);
 	if (isPopulatedFrag(frag)) {
 		std::cerr << "Frag [" <<
 			arg << "] already defined\n";
@@ -4511,7 +4500,7 @@
 	ASSERT_MSG(! frag, "@Add in frag [" <<
 		frag->name << ']'
 	);
-	frag = inputs.get_global(arg);
+	frag = &get_frag(cur_path, arg, false);
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "Frag [" << arg <<
 			"] not defined\n";
@@ -4529,7 +4518,7 @@
 			"@rep in frag [" <<
 				frag->name << ']'
 		);
-		frag = inputs.get_local(cur_path, arg);
+		frag = &get_frag(cur_path, arg, true);
 		
 #line 922 "index.md"
 
@@ -4551,7 +4540,7 @@
 			"@Rep in frag [" <<
 				frag->name << ']'
 		);
-		frag = inputs.get_global(arg);
+		frag = &get_frag(cur_path, arg, false);
 		
 #line 922 "index.md"
 
@@ -4573,7 +4562,7 @@
 #line 944 "index.md"
 
 	ASSERT_MSG(frag, "@Put not in frag");
-	Frag *sub = inputs.get_global(arg);
+	Frag *sub = &get_frag(cur_path, arg, false);
 	if (sub) {
 		
 #line 775 "index.md"
@@ -4607,7 +4596,7 @@
 #line 967 "index.md"
 
 	ASSERT_MSG(frag, "@Mul not in frag");
-	Frag *sub = inputs.get_global(arg);
+	Frag *sub = &get_frag(cur_path, arg, false);
 	if (sub) {
 		
 #line 828 "index.md"
@@ -4724,7 +4713,7 @@
 		}
 	}
 
-#line 1484 "index.md"
+#line 1512 "index.md"
 ;
 			process_char(frag, *i, cur_path, cur_line);
 		}
@@ -4732,7 +4721,7 @@
 	}
 	_cur_state = nullptr;
 
-#line 1457 "index.md"
+#line 1485 "index.md"
 ;
 		}
 	}
