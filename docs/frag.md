@@ -286,7 +286,7 @@
 
 ```
 @def(frag methods)
-	bool isFile() const {
+	static bool isFile(const std::string &name) {
 		static const std::string prefix {
 			"file: "
 		};
@@ -329,7 +329,7 @@
 		_is_meta { name.find('@') != std::string::npos },
 		name { name }
 	{
-		if (isFile()) { ++_expands; }
+		if (isFile(name)) { ++_expands; }
 		if (cmd(name).size()) { ++_expands; }
 	}
 @end(frag methods)

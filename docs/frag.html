@@ -368,7 +368,7 @@ also a count is kept, how often the <code><span class="type">Frag</span></code> 
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">isFile</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">bool</span> <span class="fn">isFile</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
 <span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
 <span class="in3"></span><span class="str">"file: "</span><br/>
 <span class="in2"></span>};<br/>
@@ -417,7 +417,7 @@ a <code><span class="type">Frag</span></code> describes a command if its name ha
 <span class="in2"></span><span class="var">_is_meta</span> { <span class="var">name</span>.<span class="fn">find</span>(<span class="str">'@'</span>) != <span class="type">std</span>::<span class="type">string</span>::<span class="var">npos</span> },<br/>
 <span class="in2"></span><span class="var">name</span> { <span class="var">name</span> }<br/>
 <span class="in1"></span>{<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFile</span>()) { ++<span class="var">_expands</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFile</span>(<span class="var">name</span>)) { ++<span class="var">_expands</span>; }<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">cmd</span>(<span class="var">name</span>).<span class="fn">size</span>()) { ++<span class="var">_expands</span>; }<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>

@@ -424,7 +424,7 @@
 		
 #line 288 "frag.md"
 
-	bool isFile() const {
+	static bool isFile(const std::string &name) {
 		static const std::string prefix {
 			"file: "
 		};
@@ -461,7 +461,7 @@
 		_is_meta { name.find('@') != std::string::npos },
 		name { name }
 	{
-		if (isFile()) { ++_expands; }
+		if (isFile(name)) { ++_expands; }
 		if (cmd(name).size()) { ++_expands; }
 	}
 
@@ -2026,13 +2026,13 @@
 #line 1067 "index.md"
 
 	
-#line 1154 "index.md"
+#line 1156 "index.md"
 
 	std::string file_name(const Frag &f) {
 		return f.name.substr(6);
 	}
 
-#line 1163 "index.md"
+#line 1165 "index.md"
 
 	bool file_changed(const Frag &f, std::string cur_path) {
 		std::ifstream in(
@@ -2058,12 +2058,13 @@
 			&i.second
 		};
 		std::string cur_path { };
+		std::string cur_name { i.first };
 		
-#line 1117 "index.md"
+#line 1119 "index.md"
  {
-	if (frag->isFile()) {
+	if (frag->isFile(cur_name)) {
 		
-#line 1184 "index.md"
+#line 1186 "index.md"
 
 	if (file_changed(*frag, cur_path)) {
 		std::ofstream out(
@@ -2072,11 +2073,11 @@
 		serializeFrag(*frag, out, cur_path);
 	}
 
-#line 1119 "index.md"
+#line 1121 "index.md"
 ;
 	}
 } 
-#line 1127 "index.md"
+#line 1129 "index.md"
  {
 	int sum {
 		frag->expands()
@@ -2088,7 +2089,7 @@
 			"] not called\n";
 	}
 } 
-#line 1142 "index.md"
+#line 1144 "index.md"
 
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
@@ -2096,24 +2097,25 @@
 			"] not populated\n";
 	}
 
-#line 1092 "index.md"
+#line 1093 "index.md"
 ;
 	}
 
-#line 1100 "index.md"
+#line 1101 "index.md"
 
 	for (auto &j : inputs) {
 		std::string cur_path { j.first };
 		for (auto &i : frag_map(cur_path)) {
+			const std::string cur_name { i.first };
 			const Frag *frag {
 				&i.second
 			};
 			
-#line 1117 "index.md"
+#line 1119 "index.md"
  {
-	if (frag->isFile()) {
+	if (frag->isFile(cur_name)) {
 		
-#line 1184 "index.md"
+#line 1186 "index.md"
 
 	if (file_changed(*frag, cur_path)) {
 		std::ofstream out(
@@ -2122,11 +2124,11 @@
 		serializeFrag(*frag, out, cur_path);
 	}
 
-#line 1119 "index.md"
+#line 1121 "index.md"
 ;
 	}
 } 
-#line 1127 "index.md"
+#line 1129 "index.md"
  {
 	int sum {
 		frag->expands()
@@ -2138,7 +2140,7 @@
 			"] not called\n";
 	}
 } 
-#line 1142 "index.md"
+#line 1144 "index.md"
 
 	if (! isPopulatedFrag(frag)) {
 		std::cerr << "frag [" <<
@@ -2146,7 +2148,7 @@
 			"] not populated\n";
 	}
 
-#line 1107 "index.md"
+#line 1109 "index.md"
 ;
 		}
 	}
@@ -2155,18 +2157,18 @@
 ;
 	}
 
-#line 1196 "index.md"
+#line 1198 "index.md"
 
 	
-#line 1247 "index.md"
+#line 1249 "index.md"
 
 	bool no_cmds = false;
 
-#line 1197 "index.md"
+#line 1199 "index.md"
 ;
 	void files_process() {
 		
-#line 1216 "index.md"
+#line 1218 "index.md"
 
 	for (auto &i : frag_map()) {
 		const Frag *frag {
@@ -2175,12 +2177,12 @@
 		const std::string cur_path;
 		const std::string cur_name = i.first;
 		
-#line 1254 "index.md"
+#line 1256 "index.md"
  {
 	const std::string cmd { Frag::cmd(cur_name) };
 	if (cmd.size()) {
 		
-#line 1264 "index.md"
+#line 1266 "index.md"
 
 	std::ostringstream out {};
 	serializeFrag(*frag, out, cur_path);
@@ -2189,7 +2191,7 @@
 		std::cout << o;
 	} else {
 		
-#line 1280 "index.md"
+#line 1282 "index.md"
 
 	std::FILE *f {
 		popen(cmd.c_str(), "w")
@@ -2201,19 +2203,19 @@
 		pclose(f);
 	}
 
-#line 1271 "index.md"
+#line 1273 "index.md"
 ;
 	}
 
-#line 1257 "index.md"
+#line 1259 "index.md"
 ;
 	}
 } 
-#line 1223 "index.md"
+#line 1225 "index.md"
 ;
 	}
 
-#line 1230 "index.md"
+#line 1232 "index.md"
 
 	for (auto &j : inputs) {
 		for (auto &i : frag_map(j.first)) {
@@ -2223,12 +2225,12 @@
 			const std::string cur_path = j.first;
 			const std::string cur_name = i.first;
 			
-#line 1254 "index.md"
+#line 1256 "index.md"
  {
 	const std::string cmd { Frag::cmd(cur_name) };
 	if (cmd.size()) {
 		
-#line 1264 "index.md"
+#line 1266 "index.md"
 
 	std::ostringstream out {};
 	serializeFrag(*frag, out, cur_path);
@@ -2237,7 +2239,7 @@
 		std::cout << o;
 	} else {
 		
-#line 1280 "index.md"
+#line 1282 "index.md"
 
 	std::FILE *f {
 		popen(cmd.c_str(), "w")
@@ -2249,20 +2251,20 @@
 		pclose(f);
 	}
 
-#line 1271 "index.md"
+#line 1273 "index.md"
 ;
 	}
 
-#line 1257 "index.md"
+#line 1259 "index.md"
 ;
 	}
 } 
-#line 1238 "index.md"
+#line 1240 "index.md"
 ;
 		}
 	}
 
-#line 1199 "index.md"
+#line 1201 "index.md"
 ;
 	}
 
@@ -4105,7 +4107,7 @@
 
 	#endif
 
-#line 1354 "index.md"
+#line 1356 "index.md"
 
 	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
 
@@ -4246,7 +4248,7 @@
 		}
 		if (fs.meta) {
 			
-#line 1504 "index.md"
+#line 1506 "index.md"
 
 	std::ostringstream out;
 	serializeFrag(*fs.meta, out, fs.meta_path);
@@ -4726,7 +4728,7 @@
 		}
 	}
 
-#line 1520 "index.md"
+#line 1522 "index.md"
 ;
 			process_char(frag, *i, cur_path, cur_line);
 		}
@@ -4734,7 +4736,7 @@
 	}
 	_cur_state = nullptr;
 
-#line 1493 "index.md"
+#line 1495 "index.md"
 ;
 		}
 	}
@@ -4935,7 +4937,7 @@
 		continue;
 	}
 } 
-#line 1295 "index.md"
+#line 1297 "index.md"
  {
 	static const std::string prefix {
 		"--no-cmds"
@@ -5018,7 +5020,7 @@
 		files_write();
 	}
 
-#line 1207 "index.md"
+#line 1209 "index.md"
 
 	if (process_files) {
 		files_process();

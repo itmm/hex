@@ -1089,6 +1089,7 @@ int main(
 			&i.second
 		};
 		std::string cur_path { };
+		std::string cur_name { i.first };
 		@mul(serialize frag);
 	}
 @end(files write)
@@ -1101,6 +1102,7 @@ int main(
 	for (auto &j : inputs) {
 		std::string cur_path { j.first };
 		for (auto &i : frag_map(cur_path)) {
+			const std::string cur_name { i.first };
 			const Frag *frag {
 				&i.second
 			};
@@ -1115,7 +1117,7 @@ int main(
 
 ```
 @def(serialize frag) {
-	if (frag->isFile()) {
+	if (frag->isFile(cur_name)) {
 		@put(write in file);
 	}
 } @end(serialize frag)
