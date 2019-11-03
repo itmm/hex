@@ -33,12 +33,15 @@
 @def(define frag)
 	class Frag_Ref {
 	public:
+		const std::string path;
 		const std::string name;
 		const bool local;
 		Frag_Ref(
+			const std::string &p,
 			const std::string &n,
 			bool l
 		):
+			path { p },
 			name { n },
 			local { l }
 		{ }
@@ -48,7 +51,7 @@
 		std::string _file;
 		int _first_line = -1;
 		int _last_line;
-		Frag_Ref _sub = { std::string { }, true };
+		Frag_Ref _sub = { std::string { }, std::string { }, true };
 	public:
 		@put(entry methods);
 		const Frag_Ref &sub() const {
@@ -536,7 +539,7 @@
 ```
 @def(add frag entry)
 	_entries.push_back(
-		Frag_Entry { Frag_Ref { child->name, local } }
+		Frag_Entry { Frag_Ref { path, child->name, local } }
 	);
 @end(add frag entry)
 ```
@@ -645,7 +648,6 @@
 		Write_State &state,
 		const std::string &path
 	) {
-		std::cout << "serialize [" << frag.name << "], [" << path << "]\n";
 		@put(iterate entries);
 	}
 @end(define frag)
@@ -678,7 +680,7 @@
 	for (const auto &entry : frag) {
 		if (! entry.sub().name.empty()) {
 			std::string new_path = path;
-			const Frag *f { find_frag(path, entry.sub(), &new_path) };
+			const Frag *f { find_frag(entry.sub(), &new_path) };
 			if (f) {
 				while (f->super) {
 					f = f->super;
@@ -738,7 +740,7 @@
 	for (const auto &entry : f) {
 		if (! entry.sub().name.empty()) {
 			std::string new_path = path;
-			const Frag *f { find_frag(path, entry.sub(), &new_path) };
+			const Frag *f { find_frag(entry.sub(), &new_path) };
 			if (f) {
 				if (! check_frag(
 					*f, in, state, new_path
@@ -896,7 +898,7 @@
 	for (const auto &i : *haystack)  {
 		if (i.sub().name.empty()) { continue; }
 		std::string new_path { path };
-		Frag *f { find_frag(path, i.sub(), &new_path) };
+		Frag *f { find_frag(i.sub(), &new_path) };
 		if (! f) { continue; }
 		if (isFragInFrag(
 			new_path, needle, f

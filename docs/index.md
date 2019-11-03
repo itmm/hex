@@ -183,11 +183,10 @@ int main(
 	class Frag_Ref;
 
 	Frag *find_frag(const std::string &path, const std::string &key, bool local, std::string *got_path = nullptr);
-	Frag *find_frag(const std::string &path, const Frag_Ref &ref, std::string *got_path = nullptr);
+	Frag *find_frag(const Frag_Ref &ref, std::string *got_path = nullptr);
 
 	Frag &get_frag(const std::string &path, const std::string &key, bool local);
-	Frag &get_frag(const std::string &path, const Frag_Ref &ref);
-	const std::string &path_for_global_frag(const std::string &key);
+	Frag &get_frag(const Frag_Ref &ref);
 
 	#include <map>
 	using Frag_Map = std::map<std::string, Frag>;
@@ -1089,7 +1088,7 @@ int main(
 		const Frag *frag {
 			&i.second
 		};
-		std::string cur_path { path_for_global_frag(i.first) };
+		std::string cur_path { };
 		@mul(serialize frag);
 	}
 @end(files write)
@@ -1219,7 +1218,7 @@ int main(
 		const Frag *frag {
 			&i.second
 		};
-		const std::string cur_path = path_for_global_frag(i.first);
+		const std::string cur_path;
 		@mul(serialize cmd);
 	}
 @end(files process)
@@ -1416,15 +1415,15 @@ int main(
 			if (! f) {
 				f = find_frag(std::string { }, key);
 				if (f) {
-					if (got_path) { *got_path = path_for_global_frag(key); }
+					if (got_path) { *got_path = std::string { }; }
 				}
 			}
 			return f;
 		}
 	}
 
-	Frag *find_frag(const std::string &path, const Frag_Ref &ref, std::string *got_path) {
-		return find_frag(path, ref.name, ref.local, got_path);
+	Frag *find_frag(const Frag_Ref &ref, std::string *got_path) {
+		return find_frag(ref.path, ref.name, ref.local, got_path);
 	}
 
 	Frag &add_frag(Frag_State &state, const std::string &in, const std::string &key) {
@@ -1437,24 +1436,19 @@ int main(
 		return res;
 	}
 
-	std::map<std::string, std::string> _global_frags;
-
 	Frag &add_frag(const std::string &in, const std::string &key) {
 		return add_frag(cur_state(), in, key);
 	}
 
 	Frag &get_frag(const std::string &path, const std::string &key, bool local) {
-		std::cerr << "get [" << key << "], " << ( local ? "local": "global") << ", " << path << "\n";
 		Frag *f { find_frag(path, key, local) };
 		if (f) { return *f; }
-		if (! local) {
-			_global_frags[key] = path;
-		}
-		return add_frag(local ? path : std::string { }, key);
+		const std::string new_path { local ? path : std::string { } };
+		return add_frag(new_path, key);
 	}
 
-	Frag &get_frag(const std::string &path, const Frag_Ref &ref) {
-		return get_frag(path, ref.name, ref.local);
+	Frag &get_frag(const Frag_Ref &ref) {
+		return get_frag(ref.path, ref.name, ref.local);
 	}
 
 	Frag_Map &frag_map(Frag_State &state, const std::string &in) {
@@ -1489,7 +1483,6 @@ int main(
 
 	void clear_frags() { 
 		_all_frags = std::move(std::make_unique<Frag_State>(nullptr)); _cur_state = nullptr;
-		_global_frags.clear();
 	}
 
 	void eval_meta(Frag_State &fs) {
@@ -1503,10 +1496,6 @@ int main(
 
 	void eval_metas() {
 		eval_meta(*_all_frags);
-	}
-
-	const std::string &path_for_global_frag(const std::string &key) {
-		return _global_frags[key];
 	}
 @end(global elements)
 ```

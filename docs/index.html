@@ -336,11 +336,10 @@ follow them in order so that you do not miss important concepts
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag_Ref</span>;<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>, <span class="type">bool</span> <span class="var">local</span>, <span class="type">std</span>::<span class="type">string</span> *<span class="var">got_path</span> = <span class="num">nullptr</span>);<br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>, <span class="type">std</span>::<span class="type">string</span> *<span class="var">got_path</span> = <span class="num">nullptr</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>, <span class="type">std</span>::<span class="type">string</span> *<span class="var">got_path</span> = <span class="num">nullptr</span>);<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>, <span class="type">bool</span> <span class="var">local</span>);<br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>);<br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">path_for_global_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>);<br/>
 <br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">map</span>&gt;<br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="type">Frag_Map</span> = <span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag</span>&gt;;<br/>
@@ -1479,7 +1478,7 @@ write files, if requested
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span> { <span class="fn">path_for_global_frag</span>(<span class="var">i</span>.<span class="var">first</span>) };<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span> { };<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">serialize frag</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">files write</span>)</span><br/>
@@ -1642,7 +1641,7 @@ only process files if requested
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">frag</span> {<br/>
 <span class="in3"></span>&amp;<span class="var">i</span>.<span class="var">second</span><br/>
 <span class="in2"></span>};<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span> = <span class="fn">path_for_global_frag</span>(<span class="var">i</span>.<span class="var">first</span>);<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span>;<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">serialize cmd</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">files process</span>)</span><br/>
@@ -1889,15 +1888,15 @@ list of open issues
 <span class="in3"></span><span class="keyword">if</span> (! <span class="var">f</span>) {<br/>
 <span class="in4"></span><span class="var">f</span> = <span class="fn">find_frag</span>(<span class="type">std</span>::<span class="type">string</span> { }, <span class="var">key</span>);<br/>
 <span class="in4"></span><span class="keyword">if</span> (<span class="var">f</span>) {<br/>
-<span class="in5"></span><span class="keyword">if</span> (<span class="var">got_path</span>) { *<span class="var">got_path</span> = <span class="fn">path_for_global_frag</span>(<span class="var">key</span>); }<br/>
+<span class="in5"></span><span class="keyword">if</span> (<span class="var">got_path</span>) { *<span class="var">got_path</span> = <span class="type">std</span>::<span class="type">string</span> { }; }<br/>
 <span class="in4"></span>}<br/>
 <span class="in3"></span>}<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="var">f</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <br/>
-<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>, <span class="type">std</span>::<span class="type">string</span> *<span class="var">got_path</span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="var">path</span>, <span class="var">ref</span>.<span class="var">name</span>, <span class="var">ref</span>.<span class="var">local</span>, <span class="var">got_path</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>, <span class="type">std</span>::<span class="type">string</span> *<span class="var">got_path</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">find_frag</span>(<span class="var">ref</span>.<span class="var">path</span>, <span class="var">ref</span>.<span class="var">name</span>, <span class="var">ref</span>.<span class="var">local</span>, <span class="var">got_path</span>);<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add_frag</span>(<span class="type">Frag_State</span> &amp;<span class="var">state</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
@@ -1910,24 +1909,19 @@ list of open issues
 <span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">_global_frags</span>;<br/>
-<br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">add_frag</span>(<span class="fn">cur_state</span>(), <span class="keyword">in</span>, <span class="var">key</span>);<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>, <span class="type">bool</span> <span class="var">local</span>) {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"get ["</span> &lt;&lt; <span class="var">key</span> &lt;&lt; <span class="str">"], "</span> &lt;&lt; ( <span class="var">local</span> ? <span class="str">"local"</span>: <span class="str">"global"</span>) &lt;&lt; <span class="str">", "</span> &lt;&lt; <span class="var">path</span> &lt;&lt; <span class="str">"\n"</span>;<br/>
 <span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> { <span class="fn">find_frag</span>(<span class="var">path</span>, <span class="var">key</span>, <span class="var">local</span>) };<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">f</span>) { <span class="keyword">return</span> *<span class="var">f</span>; }<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">local</span>) {<br/>
-<span class="in3"></span><span class="var">_global_frags</span>[<span class="var">key</span>] = <span class="var">path</span>;<br/>
-<span class="in2"></span>}<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="fn">add_frag</span>(<span class="var">local</span> ? <span class="var">path</span> : <span class="type">std</span>::<span class="type">string</span> { }, <span class="var">key</span>);<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">new_path</span> { <span class="var">local</span> ? <span class="var">path</span> : <span class="type">std</span>::<span class="type">string</span> { } };<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">add_frag</span>(<span class="var">new_path</span>, <span class="var">key</span>);<br/>
 <span class="in1"></span>}<br/>
 <br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="fn">get_frag</span>(<span class="var">path</span>, <span class="var">ref</span>.<span class="var">name</span>, <span class="var">ref</span>.<span class="var">local</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">get_frag</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">ref</span>) {<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="fn">get_frag</span>(<span class="var">ref</span>.<span class="var">path</span>, <span class="var">ref</span>.<span class="var">name</span>, <span class="var">ref</span>.<span class="var">local</span>);<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag_Map</span> &amp;<span class="fn">frag_map</span>(<span class="type">Frag_State</span> &amp;<span class="var">state</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>) {<br/>
@@ -1962,7 +1956,6 @@ list of open issues
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear_frags</span>() { <br/>
 <span class="in2"></span><span class="var">_all_frags</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="num">nullptr</span>)); <span class="var">_cur_state</span> = <span class="num">nullptr</span>;<br/>
-<span class="in2"></span><span class="var">_global_frags</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">eval_meta</span>(<span class="type">Frag_State</span> &amp;<span class="var">fs</span>) {<br/>
@@ -1976,10 +1969,6 @@ list of open issues
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">eval_metas</span>() {<br/>
 <span class="in2"></span><span class="fn">eval_meta</span>(*<span class="var">_all_frags</span>);<br/>
-<span class="in1"></span>}<br/>
-<br/>
-<span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">path_for_global_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_global_frags</span>[<span class="var">key</span>];<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
