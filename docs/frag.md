@@ -36,21 +36,20 @@
 		const std::string name;
 		const bool local;
 		Frag_Ref(
-			const std::string &name = {},
-			bool local = true
+			const std::string &n,
+			bool l
 		):
-			name { name },
-			local { local }
+			name { n },
+			local { l }
 		{ }
 	};
 	class Frag_Entry {
 		std::string _str;
 		std::string _file;
-		int _first_line;
+		int _first_line = -1;
 		int _last_line;
-		Frag_Ref _sub;
+		Frag_Ref _sub = { std::string { }, true };
 	public:
-		const Frag *frag;
 		@put(entry methods);
 		const Frag_Ref &sub() const {
 			return _sub;
@@ -69,25 +68,15 @@
 
 ```
 @def(entry methods)
-	Frag_Entry(): frag { nullptr } { }
-	Frag_Entry(Frag *frag, bool local);
+	Frag_Entry() { }
+	Frag_Entry(Frag_Ref sub):
+		_sub { sub }
+	{ }
 @end(entry methods)
 ```
 * an entry can be initialized with a sub `Frag`
 * no range is provided in this case
 * the range information of the sub `Frag` will be used
-
-```
-@Add(input prereqs)
-	inline Frag_Entry::Frag_Entry(
-		Frag *frag, bool local
-	):
-		_first_line { -1 },
-		_sub { frag ? frag->name : std::string { }, local },
-		frag { frag }
-	{}
-@End(input prereqs)
-```
 
 ```
 @add(entry methods)
@@ -454,7 +443,6 @@
 ```
 @add(unit-tests) {
 	Frag_Entry entry;
-	ASSERT(! entry.frag);
 } @end(unit-tests)
 ```
 * verify that an empty fragment has no sub `Frag`
@@ -548,7 +536,7 @@
 ```
 @def(add frag entry)
 	_entries.push_back(
-		Frag_Entry { child, local }
+		Frag_Entry { Frag_Ref { child->name, local } }
 	);
 @end(add frag entry)
 ```
@@ -654,8 +642,10 @@
 	void serializeFrag(
 		const Frag &frag,
 		std::ostream &out,
-		Write_State &state
+		Write_State &state,
+		const std::string &path
 	) {
+		std::cout << "serialize [" << frag.name << "], [" << path << "]\n";
 		@put(iterate entries);
 	}
 @end(define frag)
@@ -666,11 +656,12 @@
 @add(define frag)
 	void serializeFrag(
 		const Frag &f,
-		std::ostream &out
+		std::ostream &out,
+		const std::string &path
 	) {
 		Write_State state { f };
 		return serializeFrag(
-			f, out, state
+			f, out, state, path
 		);
 	}
 @end(define frag)
@@ -681,18 +672,23 @@
 @def(iterate entries)
 	if (frag.prefix()) {
 		serializeFrag(
-			*frag.prefix(), out, state
+			*frag.prefix(), out, state, path
 		);
 	}
 	for (const auto &entry : frag) {
-		if (entry.frag) {
-			const Frag *f { entry.frag };
-			while (f->super) {
-				f = f->super;
+		if (! entry.sub().name.empty()) {
+			std::string new_path = path;
+			const Frag *f { find_frag(path, entry.sub(), &new_path) };
+			if (f) {
+				while (f->super) {
+					f = f->super;
+				}
+				serializeFrag(
+					*f, out, state, new_path
+				);
+			} else {
+				std::cerr << "no frag [" << entry.sub().name << "], " << (entry.sub().local ? "local" : "global" ) << ", [" << path << "]\n";
 			}
-			serializeFrag(
-				*f, out, state
-			);
 		}
 		out << entry.str(state);
 	}
@@ -706,7 +702,8 @@
 	bool check_frag(
 		const Frag &f,
 		std::istream &in,
-		Write_State &state
+		Write_State &state,
+		const std::string &path
 	) {
 		@put(check entries);
 		return true;
@@ -719,11 +716,12 @@
 @add(define frag)
 	bool check_frag(
 		const Frag &f,
-		std::istream &in
+		std::istream &in,
+		const std::string &path
 	) {
 		Write_State state { f };
 		return check_frag(
-			f, in, state
+			f, in, state, path
 		);
 	}
 @end(define frag)
@@ -733,17 +731,20 @@
 ```
 @def(check entries)
 	if (f.prefix()) {
-		if (! check_frag(*f.prefix(), in, state)) {
+		if (! check_frag(*f.prefix(), in, state, path)) {
 			return false;
 		}
 	}
 	for (const auto &entry : f) {
-		if (entry.frag) {
-			if (!check_frag(
-				*entry.frag, in,
-				state
-			)) {
-				return false;
+		if (! entry.sub().name.empty()) {
+			std::string new_path = path;
+			const Frag *f { find_frag(path, entry.sub(), &new_path) };
+			if (f) {
+				if (! check_frag(
+					*f, in, state, new_path
+				)) {
+					return false;
+				}
 			}
 		}
 		@put(check entry str);
@@ -788,7 +789,7 @@
 ```
 @def(serialize test frag)
 	std::ostringstream buffer;
-	serializeFrag(frag, buffer);
+	serializeFrag(frag, buffer, "");
 	ASSERT(buffer.str() == expected);
 @end(serialize test frag)
 ```
@@ -811,7 +812,8 @@
 
 ```
 @add(unit-tests) {
-	Frag frag { "", nullptr };
+	clear_frags();
+	Frag frag { "a", nullptr };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
 	testFrag(frag, "abcdef");
@@ -821,12 +823,27 @@
 
 ```
 @add(unit-tests) {
-	Frag a { "", nullptr };
-	Frag b { "", nullptr };
+	clear_frags();
+	Frag &a { get_frag("", "a", true) };
+	Frag &b { get_frag("", "b", true) };
 	addStringToFrag(&a, "abc");
 	b.add("", &a, true);
 	addStringToFrag(&b, "def");
 	b.add("", &a, true);
+	testFrag(b, "abcdefabc");
+} @end(unit-tests)
+```
+* checks that sub `Frag`s are serialized correctly
+
+```
+@add(unit-tests) {
+	clear_frags();
+	Frag &a { get_frag("", "a", false) };
+	Frag &b { get_frag("", "b", true) };
+	addStringToFrag(&a, "abc");
+	b.add("", &a, true);
+	addStringToFrag(&b, "def");
+	b.add("", &a, false);
 	testFrag(b, "abcdefabc");
 } @end(unit-tests)
 ```

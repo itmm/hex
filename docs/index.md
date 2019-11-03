@@ -187,6 +187,7 @@ int main(
 
 	Frag &get_frag(const std::string &path, const std::string &key, bool local);
 	Frag &get_frag(const std::string &path, const Frag_Ref &ref);
+	const std::string &path_for_global_frag(const std::string &key);
 
 	#include <map>
 	using Frag_Map = std::map<std::string, Frag>;
@@ -755,11 +756,10 @@ int main(
 				arg << ") not in frag"
 			);
 			Frag *sub = &get_frag(cur_path, arg, true);
-			if (sub) {
-				@mul(check frag ex. count);
-				sub->addExpand();
-				frag->add(cur_path, sub, true);
-			}
+			ASSERT(sub);
+			@mul(check frag ex. count);
+			sub->addExpand();
+			frag->add(cur_path, sub, true);
 		}
 		break;
 	}
@@ -1089,6 +1089,7 @@ int main(
 		const Frag *frag {
 			&i.second
 		};
+		std::string cur_path { path_for_global_frag(i.first) };
 		@mul(serialize frag);
 	}
 @end(files write)
@@ -1099,7 +1100,8 @@ int main(
 ```
 @add(files write)
 	for (auto &j : inputs) {
-		for (auto &i : frag_map(j.first)) {
+		std::string cur_path { j.first };
+		for (auto &i : frag_map(cur_path)) {
 			const Frag *frag {
 				&i.second
 			};
@@ -1160,11 +1162,11 @@ int main(
 
 ```
 @add(needed by files write)
-	bool file_changed(const Frag &f) {
+	bool file_changed(const Frag &f, std::string cur_path) {
 		std::ifstream in(
 			file_name(f).c_str()
 		);
-		if (! check_frag(f, in)) {
+		if (! check_frag(f, in, cur_path)) {
 			return true;
 		}
 		if (in.get() != EOF) {
@@ -1181,11 +1183,11 @@ int main(
 
 ```
 @def(write in file)
-	if (file_changed(*frag)) {
+	if (file_changed(*frag, cur_path)) {
 		std::ofstream out(
 			file_name(*frag).c_str()
 		);
-		serializeFrag(*frag, out);
+		serializeFrag(*frag, out, cur_path);
 	}
 @end(write in file)
 ```
@@ -1217,6 +1219,7 @@ int main(
 		const Frag *frag {
 			&i.second
 		};
+		const std::string cur_path = path_for_global_frag(i.first);
 		@mul(serialize cmd);
 	}
 @end(files process)
@@ -1230,6 +1233,7 @@ int main(
 			const Frag *frag {
 				&i.second
 			};
+			const std::string cur_path = j.first;
 			@mul(serialize cmd);
 		}
 	}
@@ -1258,7 +1262,7 @@ int main(
 ```
 @def(write cmd in file)
 	std::ostringstream out {};
-	serializeFrag(*frag, out);
+	serializeFrag(*frag, out, cur_path);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;
@@ -1389,8 +1393,10 @@ int main(
 		std::string p { path };
 		for (;;) {
 			Frag *f { find_frag(p, key) };
-			if (got_path) { *got_path = p; }
-			if (f) { return f; }
+			if (f) {
+				if (got_path) { *got_path = p; }
+				return f;
+			}
 			const Input &i { inputs[p] };
 			if (i.prev.empty()) { return nullptr; }
 			p = i.prev;
@@ -1408,8 +1414,10 @@ int main(
 				f = find_frag_in_files(i.prev, key, got_path);
 			}
 			if (! f) {
-				if (got_path) { *got_path = std::string { }; }
 				f = find_frag(std::string { }, key);
+				if (f) {
+					if (got_path) { *got_path = path_for_global_frag(key); }
+				}
 			}
 			return f;
 		}
@@ -1429,13 +1437,19 @@ int main(
 		return res;
 	}
 
+	std::map<std::string, std::string> _global_frags;
+
 	Frag &add_frag(const std::string &in, const std::string &key) {
 		return add_frag(cur_state(), in, key);
 	}
 
 	Frag &get_frag(const std::string &path, const std::string &key, bool local) {
+		std::cerr << "get [" << key << "], " << ( local ? "local": "global") << ", " << path << "\n";
 		Frag *f { find_frag(path, key, local) };
 		if (f) { return *f; }
+		if (! local) {
+			_global_frags[key] = path;
+		}
 		return add_frag(local ? path : std::string { }, key);
 	}
 
@@ -1473,7 +1487,10 @@ int main(
 		_cur_state = nullptr;
 	}
 
-	void clear_frags() { _all_frags = std::move(std::make_unique<Frag_State>(nullptr)); _cur_state = nullptr; }
+	void clear_frags() { 
+		_all_frags = std::move(std::make_unique<Frag_State>(nullptr)); _cur_state = nullptr;
+		_global_frags.clear();
+	}
 
 	void eval_meta(Frag_State &fs) {
 		if (fs.parent) {
@@ -1487,13 +1504,17 @@ int main(
 	void eval_metas() {
 		eval_meta(*_all_frags);
 	}
+
+	const std::string &path_for_global_frag(const std::string &key) {
+		return _global_frags[key];
+	}
 @end(global elements)
 ```
 
 ```
 @def(apply meta)
 	std::ostringstream out;
-	serializeFrag(*fs.meta, out);
+	serializeFrag(*fs.meta, out, fs.meta_path);
 	std::istringstream in { out.str() };
 	std::string line;
 	Frag *frag = nullptr;
