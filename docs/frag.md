@@ -526,7 +526,7 @@
 
 ```
 @add(frag methods)
-	Frag &add(Frag *child, bool local);
+	Frag &add(const std::string &path, Frag *child, bool local);
 @end(frag methods)
 ```
 * adds a sub `Frag` to a `Frag`
@@ -535,7 +535,7 @@
 ```
 @add(define frag)
 	@put(define cycle check)
-	Frag &Frag::add(Frag *child, bool local) {
+	Frag &Frag::add(const std::string &path, Frag *child, bool local) {
 		ASSERT(child);
 		@put(avoid frag cycles);
 		@put(add frag entry);
@@ -824,9 +824,9 @@
 	Frag a { "", nullptr };
 	Frag b { "", nullptr };
 	addStringToFrag(&a, "abc");
-	b.add(&a, true);
+	b.add("", &a, true);
 	addStringToFrag(&b, "def");
-	b.add(&a, true);
+	b.add("", &a, true);
 	testFrag(b, "abcdefabc");
 } @end(unit-tests)
 ```
@@ -838,6 +838,7 @@
 ```
 @def(define cycle check)
 	bool isFragInFrag(
+		const std::string &path,
 		const Frag *needle,
 		const Frag *haystack
 	) {
@@ -855,7 +856,7 @@
 ```
 @def(avoid frag cycles)
 	ASSERT(! isFragInFrag(
-		this, child
+		path, this, child
 	));
 @end(avoid frag cycles)
 ```
@@ -872,13 +873,16 @@
 
 ```
 @def(check cycle entries)
-	if (haystack->prefix() && isFragInFrag(needle, haystack->prefix())) {
+	if (haystack->prefix() && isFragInFrag(path, needle, haystack->prefix())) {
 		return true;
 	}
 	for (const auto &i : *haystack)  {
-		if (! i.frag) { continue; }
+		if (i.sub().name.empty()) { continue; }
+		std::string new_path { path };
+		Frag *f { find_frag(path, i.sub(), &new_path) };
+		if (! f) { continue; }
 		if (isFragInFrag(
-			needle, i.frag
+			new_path, needle, f
 		)) {
 			return true;
 		}

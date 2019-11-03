@@ -554,7 +554,7 @@
 
 #line 528 "frag.md"
 
-	Frag &add(Frag *child, bool local);
+	Frag &add(const std::string &path, Frag *child, bool local);
 
 #line 558 "frag.md"
 
@@ -657,49 +657,53 @@
 #line 839 "frag.md"
 
 	bool isFragInFrag(
+		const std::string &path,
 		const Frag *needle,
 		const Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
 		
-#line 865 "frag.md"
+#line 866 "frag.md"
 
 	if (needle == haystack) {
 		return true;
 	}
 
-#line 846 "frag.md"
+#line 847 "frag.md"
 ;
 		
-#line 874 "frag.md"
+#line 875 "frag.md"
 
-	if (haystack->prefix() && isFragInFrag(needle, haystack->prefix())) {
+	if (haystack->prefix() && isFragInFrag(path, needle, haystack->prefix())) {
 		return true;
 	}
 	for (const auto &i : *haystack)  {
-		if (! i.frag) { continue; }
+		if (i.sub().name.empty()) { continue; }
+		std::string new_path { path };
+		Frag *f { find_frag(path, i.sub(), &new_path) };
+		if (! f) { continue; }
 		if (isFragInFrag(
-			needle, i.frag
+			new_path, needle, f
 		)) {
 			return true;
 		}
 	}
 
-#line 847 "frag.md"
+#line 848 "frag.md"
 ;
 		return false;
 	}
 
 #line 537 "frag.md"
 
-	Frag &Frag::add(Frag *child, bool local) {
+	Frag &Frag::add(const std::string &path, Frag *child, bool local) {
 		ASSERT(child);
 		
-#line 856 "frag.md"
+#line 857 "frag.md"
 
 	ASSERT(! isFragInFrag(
-		this, child
+		path, this, child
 	));
 
 #line 540 "frag.md"
@@ -1705,7 +1709,7 @@
 #line 759 "index.md"
 ;
 				sub->addExpand();
-				frag->add(sub, true);
+				frag->add(cur_path, sub, true);
 			}
 		}
 		break;
@@ -1745,7 +1749,7 @@
 #line 815 "index.md"
 ;
 			sub->addMultiple();
-			frag->add(sub, true);
+			frag->add(cur_path, sub, true);
 		}
 		break;
 	}
@@ -1861,7 +1865,7 @@
 #line 946 "index.md"
 ;
 		sub->addExpand();
-		frag->add(sub, false);
+		frag->add(cur_path, sub, false);
 	}
 
 #line 934 "index.md"
@@ -1891,7 +1895,7 @@
 #line 969 "index.md"
 ;
 		sub->addMultiple();
-		frag->add(sub, false);
+		frag->add(cur_path, sub, false);
 	}
 
 #line 957 "index.md"
@@ -4423,7 +4427,7 @@
 #line 759 "index.md"
 ;
 				sub->addExpand();
-				frag->add(sub, true);
+				frag->add(cur_path, sub, true);
 			}
 		}
 		break;
@@ -4463,7 +4467,7 @@
 #line 815 "index.md"
 ;
 			sub->addMultiple();
-			frag->add(sub, true);
+			frag->add(cur_path, sub, true);
 		}
 		break;
 	}
@@ -4579,7 +4583,7 @@
 #line 946 "index.md"
 ;
 		sub->addExpand();
-		frag->add(sub, false);
+		frag->add(cur_path, sub, false);
 	}
 
 #line 934 "index.md"
@@ -4609,7 +4613,7 @@
 #line 969 "index.md"
 ;
 		sub->addMultiple();
-		frag->add(sub, false);
+		frag->add(cur_path, sub, false);
 	}
 
 #line 957 "index.md"
@@ -4777,9 +4781,9 @@
 	Frag a { "", nullptr };
 	Frag b { "", nullptr };
 	addStringToFrag(&a, "abc");
-	b.add(&a, true);
+	b.add("", &a, true);
 	addStringToFrag(&b, "def");
-	b.add(&a, true);
+	b.add("", &a, true);
 	testFrag(b, "abcdefabc");
 } 
 #line 409 "frag.md"

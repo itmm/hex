@@ -675,7 +675,7 @@ adds a single character to the <code><span class="type">Frag</span></code>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>);<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -688,7 +688,7 @@ assures that no cycle will result
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define cycle check</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>) {<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">avoid frag cycles</span>)</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">add frag entry</span>)</span>;<br/>
@@ -1056,9 +1056,9 @@ checks that two strings are correctly serialized
 <span class="in1"></span><span class="type">Frag</span> <span class="var">a</span> { <span class="str">""</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="type">Frag</span> <span class="var">b</span> { <span class="str">""</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(&amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
@@ -1081,6 +1081,7 @@ checks if the addition of a sub <code><span class="type">Frag</span></code> woul
 <code>
 <span class="macro">@def(<span class="name">define cycle check</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">needle</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="var">haystack</span><br/>
 <span class="in1"></span>) {<br/>
@@ -1100,7 +1101,7 @@ checks, if the parent <code><span class="type">Frag</span></code> <code><span cl
 <code>
 <span class="macro">@def(<span class="name">avoid frag cycles</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(! <span class="fn">isFragInFrag</span>(<br/>
-<span class="in2"></span><span class="var">this</span>, <span class="var">child</span><br/>
+<span class="in2"></span><span class="var">path</span>, <span class="var">this</span>, <span class="var">child</span><br/>
 <span class="in1"></span>));<br/>
 <span class="macro">@end(<span class="name">avoid frag cycles</span>)</span><br/>
 </code></div>
@@ -1123,13 +1124,16 @@ if the container is itself the searched <code><span class="type">Frag</span></co
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">check cycle entries</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">haystack</span>-&gt;<span class="fn">prefix</span>() &amp;&amp; <span class="fn">isFragInFrag</span>(<span class="var">needle</span>, <span class="var">haystack</span>-&gt;<span class="fn">prefix</span>())) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">haystack</span>-&gt;<span class="fn">prefix</span>() &amp;&amp; <span class="fn">isFragInFrag</span>(<span class="var">path</span>, <span class="var">needle</span>, <span class="var">haystack</span>-&gt;<span class="fn">prefix</span>())) {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">i</span> : *<span class="var">haystack</span>)  {<br/>
-<span class="in2"></span><span class="keyword">if</span> (! <span class="var">i</span>.<span class="var">frag</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">i</span>.<span class="fn">sub</span>().<span class="var">name</span>.<span class="fn">empty</span>()) { <span class="keyword">continue</span>; }<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">new_path</span> { <span class="var">path</span> };<br/>
+<span class="in2"></span><span class="type">Frag</span> *<span class="var">f</span> { <span class="fn">find_frag</span>(<span class="var">path</span>, <span class="var">i</span>.<span class="fn">sub</span>(), &amp;<span class="var">new_path</span>) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">f</span>) { <span class="keyword">continue</span>; }<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="fn">isFragInFrag</span>(<br/>
-<span class="in3"></span><span class="var">needle</span>, <span class="var">i</span>.<span class="var">frag</span><br/>
+<span class="in3"></span><span class="var">new_path</span>, <span class="var">needle</span>, <span class="var">f</span><br/>
 <span class="in2"></span>)) {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in2"></span>}<br/>
