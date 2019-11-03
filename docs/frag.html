@@ -27,7 +27,7 @@ the infix traversal of this <code><span class="var">DAG</span></code> generates 
 <span class="in2"></span><span class="type">bool</span> <span class="var">in_macro</span> = <span class="num">false</span>;<br/>
 <span class="in2"></span><span class="type">bool</span> <span class="var">c_style</span>;<br/>
 <br/>
-<span class="in2"></span><span class="fn">Write_State</span>(<span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>);<br/>
+<span class="in2"></span><span class="fn">Write_State</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">f</span>);<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@End(<span class="name">input prereqs</span>)</span><br/>
 </code></div>
@@ -490,9 +490,9 @@ a fragment is empty, if it does not have any entries
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">Write_State</span>::<span class="fn">Write_State</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span><br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">f</span><br/>
 <span class="in1"></span>):<br/>
-<span class="in2"></span><span class="var">c_style</span> { <span class="var">f</span>.<span class="fn">is_c_style</span>() }<br/>
+<span class="in2"></span><span class="var">c_style</span> { <span class="type">Frag</span>::<span class="fn">is_c_style</span>(<span class="var">f</span>) }<br/>
 <span class="in1"></span>{ }<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -576,7 +576,7 @@ verify that an empty fragment has no sub <code><span class="type">Frag</span></c
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">""</span>, <span class="num">nullptr</span> };<br/>
-<span class="in1"></span><span class="type">Write_State</span> <span class="var">s</span> { <span class="var">f</span> };<br/>
+<span class="in1"></span><span class="type">Write_State</span> <span class="var">s</span> { <span class="str">""</span> };<br/>
 <span class="in1"></span><span class="type">Frag_Entry</span> <span class="var">entry</span>;<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">entry</span>.<span class="fn">str</span>(<span class="var">s</span>).<span class="fn">empty</span>());<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
@@ -776,7 +776,7 @@ increases the <code>@<span class="var">mul</span></code> or <code>@<span class="
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">is_c_style</span>() <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">bool</span> <span class="fn">is_c_style</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">is c-style</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -851,11 +851,12 @@ iterate over the entries
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>,<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="type">Write_State</span> <span class="var">state</span> { <span class="var">f</span> };<br/>
+<span class="in2"></span><span class="type">Write_State</span> <span class="var">state</span> { <span class="var">name</span> };<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">serializeFrag</span>(<br/>
 <span class="in3"></span><span class="var">f</span>, <span class="var">out</span>, <span class="var">state</span>, <span class="var">path</span><br/>
 <span class="in2"></span>);<br/>
@@ -918,11 +919,12 @@ checks if the traversal results in the same value as a <code><span class="type">
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">check_frag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>,<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">istream</span> &amp;<span class="keyword">in</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="type">Write_State</span> <span class="var">state</span> { <span class="var">f</span> };<br/>
+<span class="in2"></span><span class="type">Write_State</span> <span class="var">state</span> { <span class="var">name</span> };<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">check_frag</span>(<br/>
 <span class="in3"></span><span class="var">f</span>, <span class="keyword">in</span>, <span class="var">state</span>, <span class="var">path</span><br/>
 <span class="in2"></span>);<br/>
@@ -983,6 +985,7 @@ compare string value character by character
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<br/>
+<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">expected</span><br/>
 <span class="in1"></span>) {<br/>
@@ -1008,7 +1011,7 @@ needs <code><span class="type">std</span>::<span class="var">ostringstream</span
 <code>
 <span class="macro">@def(<span class="name">serialize test frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
-<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">frag</span>, <span class="var">buffer</span>, <span class="str">""</span>);<br/>
+<span class="in1"></span><span class="fn">serializeFrag</span>(<span class="var">name</span>, <span class="var">frag</span>, <span class="var">buffer</span>, <span class="str">""</span>);<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="var">buffer</span>.<span class="fn">str</span>() == <span class="var">expected</span>);<br/>
 <span class="macro">@end(<span class="name">serialize test frag</span>)</span><br/>
 </code></div>
@@ -1042,7 +1045,7 @@ adds a zero-terminated string to a <code><span class="type">Frag</span></code>
 <span class="in1"></span><span class="type">Frag</span> <span class="var">frag</span> { <span class="str">"a"</span>, <span class="num">nullptr</span> };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"abc"</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">frag</span>, <span class="str">"def"</span>);<br/>
-<span class="in1"></span><span class="fn">testFrag</span>(<span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
+<span class="in1"></span><span class="fn">testFrag</span>(<span class="str">"a"</span>, <span class="var">frag</span>, <span class="str">"abcdef"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1059,7 +1062,7 @@ checks that two strings are correctly serialized
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
-<span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
+<span class="in1"></span><span class="fn">testFrag</span>(<span class="str">"b"</span>, <span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1076,7 +1079,7 @@ checks that sub <code><span class="type">Frag</span></code>s are serialized corr
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
 <span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">false</span>);<br/>
-<span class="in1"></span><span class="fn">testFrag</span>(<span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
+<span class="in1"></span><span class="fn">testFrag</span>(<span class="str">"b"</span>, <span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>

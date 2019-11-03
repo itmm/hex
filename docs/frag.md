@@ -11,7 +11,7 @@
 		bool in_macro = false;
 		bool c_style;
 
-		Write_State(const Frag &f);
+		Write_State(const std::string &f);
 	};
 @End(input prereqs)
 ```
@@ -387,9 +387,9 @@
 ```
 @add(define frag)
 	Write_State::Write_State(
-		const Frag &f
+		const std::string &f
 	):
-		c_style { f.is_c_style() }
+		c_style { Frag::is_c_style(f) }
 	{ }
 @end(define frag)
 ```
@@ -452,7 +452,7 @@
 ```
 @add(unit-tests) {
 	Frag f { "", nullptr };
-	Write_State s { f };
+	Write_State s { "" };
 	Frag_Entry entry;
 	ASSERT(entry.str(s).empty());
 } @end(unit-tests)
@@ -600,7 +600,7 @@
 
 ```
 @add(frag methods)
-	bool is_c_style() const {
+	static bool is_c_style(const std::string &name) {
 		@put(is c-style);
 		return false;
 	}
@@ -656,11 +656,12 @@
 ```
 @add(define frag)
 	void serializeFrag(
+		const std::string &name,
 		const Frag &f,
 		std::ostream &out,
 		const std::string &path
 	) {
-		Write_State state { f };
+		Write_State state { name };
 		return serializeFrag(
 			f, out, state, path
 		);
@@ -713,11 +714,12 @@
 ```
 @add(define frag)
 	bool check_frag(
+		const std::string &name,
 		const Frag &f,
 		std::istream &in,
 		const std::string &path
 	) {
-		Write_State state { f };
+		Write_State state { name };
 		return check_frag(
 			f, in, state, path
 		);
@@ -768,6 +770,7 @@
 ```
 @add(define frag)
 	void testFrag(
+		const std::string &name,
 		const Frag &frag,
 		const std::string &expected
 	) {
@@ -787,7 +790,7 @@
 ```
 @def(serialize test frag)
 	std::ostringstream buffer;
-	serializeFrag(frag, buffer, "");
+	serializeFrag(name, frag, buffer, "");
 	ASSERT(buffer.str() == expected);
 @end(serialize test frag)
 ```
@@ -814,7 +817,7 @@
 	Frag frag { "a", nullptr };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
-	testFrag(frag, "abcdef");
+	testFrag("a", frag, "abcdef");
 } @end(unit-tests)
 ```
 * checks that two strings are correctly serialized
@@ -828,7 +831,7 @@
 	b.add("", &a, true);
 	addStringToFrag(&b, "def");
 	b.add("", &a, true);
-	testFrag(b, "abcdefabc");
+	testFrag("b", b, "abcdefabc");
 } @end(unit-tests)
 ```
 * checks that sub `Frag`s are serialized correctly
@@ -842,7 +845,7 @@
 	b.add("", &a, true);
 	addStringToFrag(&b, "def");
 	b.add("", &a, false);
-	testFrag(b, "abcdefabc");
+	testFrag("b", b, "abcdefabc");
 } @end(unit-tests)
 ```
 * checks that sub `Frag`s are serialized correctly

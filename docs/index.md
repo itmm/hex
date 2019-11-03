@@ -194,7 +194,7 @@ int main(
 	Frag_Map &frag_map(const std::string &in);
 	Frag_Map &frag_map();
 
-	void split_frag(Frag *meta, std::map<std::string, std::string> &&values);
+	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values);
 	void clear_frags();
 	void eval_metas();
 @end(global elements)
@@ -749,7 +749,7 @@ int main(
 			parse_args(arg, pattern, values);
 			Frag *sub = &get_frag(cur_path, pattern, true);
 			sub->addMultiple();
-			split_frag(sub, std::move(values));
+			split_frag(pattern, sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
@@ -1154,8 +1154,8 @@ int main(
 
 ```
 @def(needed by files write)
-	std::string file_name(const Frag &f) {
-		return f.name.substr(6);
+	std::string file_name(const std::string &name) {
+		return name.substr(6);
 	}
 @end(needed by files write)
 ```
@@ -1163,11 +1163,11 @@ int main(
 
 ```
 @add(needed by files write)
-	bool file_changed(const Frag &f, std::string cur_path) {
+	bool file_changed(const std::string &name, const Frag &f, std::string cur_path) {
 		std::ifstream in(
-			file_name(f).c_str()
+			file_name(name).c_str()
 		);
-		if (! check_frag(f, in, cur_path)) {
+		if (! check_frag(name, f, in, cur_path)) {
 			return true;
 		}
 		if (in.get() != EOF) {
@@ -1184,11 +1184,11 @@ int main(
 
 ```
 @def(write in file)
-	if (file_changed(*frag, cur_path)) {
+	if (file_changed(cur_name, *frag, cur_path)) {
 		std::ofstream out(
-			file_name(*frag).c_str()
+			file_name(cur_name).c_str()
 		);
-		serializeFrag(*frag, out, cur_path);
+		serializeFrag(cur_name, *frag, out, cur_path);
 	}
 @end(write in file)
 ```
@@ -1265,7 +1265,7 @@ int main(
 ```
 @def(write cmd in file)
 	std::ostringstream out {};
-	serializeFrag(*frag, out, cur_path);
+	serializeFrag(cur_name, *frag, out, cur_path);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;
@@ -1363,6 +1363,7 @@ int main(
 			Frag_State(std::unique_ptr<Frag_State> &&p): parent { std::move(p) } { }
 			Frag *meta = nullptr;
 			std::string meta_path;
+			std::string meta_name;
 			std::map<std::string, std::string> meta_values;
 	};
 
@@ -1473,11 +1474,12 @@ int main(
 		return frag_map(std::string { });
 	}
 
-	void split_frag(Frag *meta, std::map<std::string, std::string> &&values) {
+	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values) {
 		Frag_State &current = *_all_frags;
 		current.meta = meta;
 		current.meta_path = inputs.open_head();
 		current.meta_values = std::move(values);
+		current.meta_name = name;
 		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(_all_frags))) };
 		_all_frags = std::move(n);
 		_cur_state = nullptr;
@@ -1505,7 +1507,7 @@ int main(
 ```
 @def(apply meta)
 	std::ostringstream out;
-	serializeFrag(*fs.meta, out, fs.meta_path);
+	serializeFrag(fs.meta_name, *fs.meta, out, fs.meta_path);
 	std::istringstream in { out.str() };
 	std::string line;
 	Frag *frag = nullptr;

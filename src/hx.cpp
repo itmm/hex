@@ -26,7 +26,7 @@
 
 	#include <vector>
 
-#line 781 "frag.md"
+#line 784 "frag.md"
 
 	#include <sstream>
 
@@ -105,7 +105,7 @@
 	Frag_Map &frag_map(const std::string &in);
 	Frag_Map &frag_map();
 
-	void split_frag(Frag *meta, std::map<std::string, std::string> &&values);
+	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values);
 	void clear_frags();
 	void eval_metas();
 
@@ -179,7 +179,7 @@
 		bool in_macro = false;
 		bool c_style;
 
-		Write_State(const Frag &f);
+		Write_State(const std::string &f);
 	};
 
 #line 25 "frag.md"
@@ -597,7 +597,7 @@
 
 #line 602 "frag.md"
 
-	bool is_c_style() const {
+	static bool is_c_style(const std::string &name) {
 		
 #line 612 "frag.md"
 
@@ -632,9 +632,9 @@
 #line 388 "frag.md"
 
 	Write_State::Write_State(
-		const Frag &f
+		const std::string &f
 	):
-		c_style { f.is_c_style() }
+		c_style { Frag::is_c_style(f) }
 	{ }
 
 #line 406 "frag.md"
@@ -657,7 +657,7 @@
 #line 526 "frag.md"
 
 	
-#line 854 "frag.md"
+#line 857 "frag.md"
 
 	bool isFragInFrag(
 		const std::string &path,
@@ -667,16 +667,16 @@
 		ASSERT(needle);
 		ASSERT(haystack);
 		
-#line 881 "frag.md"
+#line 884 "frag.md"
 
 	if (needle == haystack) {
 		return true;
 	}
 
-#line 862 "frag.md"
+#line 865 "frag.md"
 ;
 		
-#line 890 "frag.md"
+#line 893 "frag.md"
 
 	if (haystack->prefix() && isFragInFrag(path, needle, haystack->prefix())) {
 		return true;
@@ -693,7 +693,7 @@
 		}
 	}
 
-#line 863 "frag.md"
+#line 866 "frag.md"
 ;
 		return false;
 	}
@@ -703,7 +703,7 @@
 	Frag &Frag::add(const std::string &path, Frag *child, bool local) {
 		ASSERT(child);
 		
-#line 872 "frag.md"
+#line 875 "frag.md"
 
 	ASSERT(! isFragInFrag(
 		path, this, child
@@ -732,7 +732,7 @@
 		const std::string &path
 	) {
 		
-#line 673 "frag.md"
+#line 674 "frag.md"
 
 	if (frag.prefix()) {
 		serializeFrag(
@@ -761,17 +761,18 @@
 #line 657 "frag.md"
 
 	void serializeFrag(
+		const std::string &name,
 		const Frag &f,
 		std::ostream &out,
 		const std::string &path
 	) {
-		Write_State state { f };
+		Write_State state { name };
 		return serializeFrag(
 			f, out, state, path
 		);
 	}
 
-#line 699 "frag.md"
+#line 700 "frag.md"
 
 	bool check_frag(
 		const Frag &f,
@@ -780,7 +781,7 @@
 		const std::string &path
 	) {
 		
-#line 730 "frag.md"
+#line 732 "frag.md"
 
 	if (f.prefix()) {
 		if (! check_frag(*f.prefix(), in, state, path)) {
@@ -800,7 +801,7 @@
 			}
 		}
 		
-#line 756 "frag.md"
+#line 758 "frag.md"
 
 	for (
 		const auto &i : entry.str(state)
@@ -810,46 +811,48 @@
 		}
 	}
 
-#line 748 "frag.md"
+#line 750 "frag.md"
 ;
 	}
 
-#line 706 "frag.md"
+#line 707 "frag.md"
 ;
 		return true;
 	}
 
-#line 714 "frag.md"
+#line 715 "frag.md"
 
 	bool check_frag(
+		const std::string &name,
 		const Frag &f,
 		std::istream &in,
 		const std::string &path
 	) {
-		Write_State state { f };
+		Write_State state { name };
 		return check_frag(
 			f, in, state, path
 		);
 	}
 
-#line 769 "frag.md"
+#line 771 "frag.md"
 
 	void testFrag(
+		const std::string &name,
 		const Frag &frag,
 		const std::string &expected
 	) {
 		
-#line 788 "frag.md"
+#line 791 "frag.md"
 
 	std::ostringstream buffer;
-	serializeFrag(frag, buffer, "");
+	serializeFrag(name, frag, buffer, "");
 	ASSERT(buffer.str() == expected);
 
-#line 774 "frag.md"
+#line 777 "frag.md"
 ;
 	}
 
-#line 798 "frag.md"
+#line 801 "frag.md"
 
 	void addStringToFrag(
 		Frag *frag,
@@ -1687,7 +1690,7 @@
 			parse_args(arg, pattern, values);
 			Frag *sub = &get_frag(cur_path, pattern, true);
 			sub->addMultiple();
-			split_frag(sub, std::move(values));
+			split_frag(pattern, sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
@@ -2028,17 +2031,17 @@
 	
 #line 1156 "index.md"
 
-	std::string file_name(const Frag &f) {
-		return f.name.substr(6);
+	std::string file_name(const std::string &name) {
+		return name.substr(6);
 	}
 
 #line 1165 "index.md"
 
-	bool file_changed(const Frag &f, std::string cur_path) {
+	bool file_changed(const std::string &name, const Frag &f, std::string cur_path) {
 		std::ifstream in(
-			file_name(f).c_str()
+			file_name(name).c_str()
 		);
-		if (! check_frag(f, in, cur_path)) {
+		if (! check_frag(name, f, in, cur_path)) {
 			return true;
 		}
 		if (in.get() != EOF) {
@@ -2066,11 +2069,11 @@
 		
 #line 1186 "index.md"
 
-	if (file_changed(*frag, cur_path)) {
+	if (file_changed(cur_name, *frag, cur_path)) {
 		std::ofstream out(
-			file_name(*frag).c_str()
+			file_name(cur_name).c_str()
 		);
-		serializeFrag(*frag, out, cur_path);
+		serializeFrag(cur_name, *frag, out, cur_path);
 	}
 
 #line 1121 "index.md"
@@ -2117,11 +2120,11 @@
 		
 #line 1186 "index.md"
 
-	if (file_changed(*frag, cur_path)) {
+	if (file_changed(cur_name, *frag, cur_path)) {
 		std::ofstream out(
-			file_name(*frag).c_str()
+			file_name(cur_name).c_str()
 		);
-		serializeFrag(*frag, out, cur_path);
+		serializeFrag(cur_name, *frag, out, cur_path);
 	}
 
 #line 1121 "index.md"
@@ -2185,7 +2188,7 @@
 #line 1266 "index.md"
 
 	std::ostringstream out {};
-	serializeFrag(*frag, out, cur_path);
+	serializeFrag(cur_name, *frag, out, cur_path);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;
@@ -2233,7 +2236,7 @@
 #line 1266 "index.md"
 
 	std::ostringstream out {};
-	serializeFrag(*frag, out, cur_path);
+	serializeFrag(cur_name, *frag, out, cur_path);
 	std::string o { out.str() };
 	if (no_cmds) {
 		std::cout << o;
@@ -4118,6 +4121,7 @@
 			Frag_State(std::unique_ptr<Frag_State> &&p): parent { std::move(p) } { }
 			Frag *meta = nullptr;
 			std::string meta_path;
+			std::string meta_name;
 			std::map<std::string, std::string> meta_values;
 	};
 
@@ -4228,11 +4232,12 @@
 		return frag_map(std::string { });
 	}
 
-	void split_frag(Frag *meta, std::map<std::string, std::string> &&values) {
+	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values) {
 		Frag_State &current = *_all_frags;
 		current.meta = meta;
 		current.meta_path = inputs.open_head();
 		current.meta_values = std::move(values);
+		current.meta_name = name;
 		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(_all_frags))) };
 		_all_frags = std::move(n);
 		_cur_state = nullptr;
@@ -4248,10 +4253,10 @@
 		}
 		if (fs.meta) {
 			
-#line 1506 "index.md"
+#line 1508 "index.md"
 
 	std::ostringstream out;
-	serializeFrag(*fs.meta, out, fs.meta_path);
+	serializeFrag(fs.meta_name, *fs.meta, out, fs.meta_path);
 	std::istringstream in { out.str() };
 	std::string line;
 	Frag *frag = nullptr;
@@ -4417,7 +4422,7 @@
 			parse_args(arg, pattern, values);
 			Frag *sub = &get_frag(cur_path, pattern, true);
 			sub->addMultiple();
-			split_frag(sub, std::move(values));
+			split_frag(pattern, sub, std::move(values));
 		} else {
 			ASSERT_MSG(frag, "@put" << "(" <<
 				arg << ") not in frag"
@@ -4728,7 +4733,7 @@
 		}
 	}
 
-#line 1522 "index.md"
+#line 1524 "index.md"
 ;
 			process_char(frag, *i, cur_path, cur_line);
 		}
@@ -4736,7 +4741,7 @@
 	}
 	_cur_state = nullptr;
 
-#line 1495 "index.md"
+#line 1497 "index.md"
 ;
 		}
 	}
@@ -4777,19 +4782,19 @@
 #line 453 "frag.md"
  {
 	Frag f { "", nullptr };
-	Write_State s { f };
+	Write_State s { "" };
 	Frag_Entry entry;
 	ASSERT(entry.str(s).empty());
 } 
-#line 812 "frag.md"
+#line 815 "frag.md"
  {
 	clear_frags();
 	Frag frag { "a", nullptr };
 	addStringToFrag(&frag, "abc");
 	addStringToFrag(&frag, "def");
-	testFrag(frag, "abcdef");
+	testFrag("a", frag, "abcdef");
 } 
-#line 823 "frag.md"
+#line 826 "frag.md"
  {
 	clear_frags();
 	Frag &a { get_frag("", "a", true) };
@@ -4798,9 +4803,9 @@
 	b.add("", &a, true);
 	addStringToFrag(&b, "def");
 	b.add("", &a, true);
-	testFrag(b, "abcdefabc");
+	testFrag("b", b, "abcdefabc");
 } 
-#line 837 "frag.md"
+#line 840 "frag.md"
  {
 	clear_frags();
 	Frag &a { get_frag("", "a", false) };
@@ -4809,7 +4814,7 @@
 	b.add("", &a, true);
 	addStringToFrag(&b, "def");
 	b.add("", &a, false);
-	testFrag(b, "abcdefabc");
+	testFrag("b", b, "abcdefabc");
 } 
 #line 400 "frag.md"
 ;
