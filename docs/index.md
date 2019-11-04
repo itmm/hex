@@ -758,7 +758,7 @@ int main(
 			ASSERT(sub);
 			@mul(check frag ex. count);
 			sub->addExpand();
-			frag->add(cur_path, sub, true);
+			frag->add(cur_path, arg, true);
 		}
 		break;
 	}
@@ -813,7 +813,7 @@ int main(
 		if (sub) {
 			@mul(check for prev expands);
 			sub->addMultiple();
-			frag->add(cur_path, sub, true);
+			frag->add(cur_path, arg, true);
 		}
 		break;
 	}
@@ -944,7 +944,7 @@ int main(
 	if (sub) {
 		@mul(check frag ex. count);
 		sub->addExpand();
-		frag->add(cur_path, sub, false);
+		frag->add(cur_path, arg, false);
 	}
 @end(do Put)
 ```
@@ -967,7 +967,7 @@ int main(
 	if (sub) {
 		@mul(check for prev expands);
 		sub->addMultiple();
-		frag->add(cur_path, sub, false);
+		frag->add(cur_path, arg, false);
 	}
 @end(do Mul)
 ```

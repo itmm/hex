@@ -516,7 +516,7 @@
 
 ```
 @add(frag methods)
-	Frag &add(const std::string &path, Frag *child, bool local);
+	Frag &add(const Frag_Ref &sub);
 @end(frag methods)
 ```
 * adds a sub `Frag` to a `Frag`
@@ -525,8 +525,7 @@
 ```
 @add(define frag)
 	@put(define cycle check)
-	Frag &Frag::add(const std::string &path, Frag *child, bool local) {
-		ASSERT(child);
+	Frag &Frag::add(const Frag_Ref &sub) {
 		@put(avoid frag cycles);
 		@put(add frag entry);
 		return *this;
@@ -538,7 +537,7 @@
 ```
 @def(add frag entry)
 	_entries.push_back(
-		Frag_Entry { Frag_Ref { path, child->name, local } }
+		Frag_Entry { sub }
 	);
 @end(add frag entry)
 ```
@@ -828,9 +827,9 @@
 	Frag &a { get_frag("", "a", true) };
 	Frag &b { get_frag("", "b", true) };
 	addStringToFrag(&a, "abc");
-	b.add("", &a, true);
+	b.add(Frag_Ref { "", "a", true });
 	addStringToFrag(&b, "def");
-	b.add("", &a, true);
+	b.add(Frag_Ref { "", "a", true });
 	testFrag("b", b, "abcdefabc");
 } @end(unit-tests)
 ```
@@ -842,9 +841,9 @@
 	Frag &a { get_frag("", "a", false) };
 	Frag &b { get_frag("", "b", true) };
 	addStringToFrag(&a, "abc");
-	b.add("", &a, true);
+	b.add(Frag_Ref { "", "a", true });
 	addStringToFrag(&b, "def");
-	b.add("", &a, false);
+	b.add(Frag_Ref { "", "a", false });
 	testFrag("b", b, "abcdefabc");
 } @end(unit-tests)
 ```
@@ -873,8 +872,9 @@
 
 ```
 @def(avoid frag cycles)
+	Frag &f { get_frag(sub) };
 	ASSERT(! isFragInFrag(
-		path, this, child
+		sub.path, this, &f
 	));
 @end(avoid frag cycles)
 ```

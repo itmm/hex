@@ -664,7 +664,7 @@ adds a single character to the <code><span class="type">Frag</span></code>
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">sub</span>);<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -677,8 +677,7 @@ assures that no cycle will result
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define cycle check</span>)</span><br/>
-<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>, <span class="type">Frag</span> *<span class="var">child</span>, <span class="type">bool</span> <span class="var">local</span>) {<br/>
-<span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">child</span>);<br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">sub</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">avoid frag cycles</span>)</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">add frag entry</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
@@ -693,7 +692,7 @@ checks, that the sub <code><span class="type">Frag</span></code> is valid and th
 <code>
 <span class="macro">@def(<span class="name">add frag entry</span>)</span><br/>
 <span class="in1"></span><span class="var">_entries</span>.<span class="fn">push_back</span>(<br/>
-<span class="in2"></span><span class="type">Frag_Entry</span> { <span class="type">Frag_Ref</span> { <span class="var">path</span>, <span class="var">child</span>-&gt;<span class="var">name</span>, <span class="var">local</span> } }<br/>
+<span class="in2"></span><span class="type">Frag_Entry</span> { <span class="var">sub</span> }<br/>
 <span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">add frag entry</span>)</span><br/>
 </code></div>
@@ -1059,9 +1058,9 @@ checks that two strings are correctly serialized
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">a</span> { <span class="fn">get_frag</span>(<span class="str">""</span>, <span class="str">"a"</span>, <span class="num">true</span>) };<br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">b</span> { <span class="fn">get_frag</span>(<span class="str">""</span>, <span class="str">"b"</span>, <span class="num">true</span>) };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="type">Frag_Ref</span> { <span class="str">""</span>, <span class="str">"a"</span>, <span class="num">true</span> });<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="type">Frag_Ref</span> { <span class="str">""</span>, <span class="str">"a"</span>, <span class="num">true</span> });<br/>
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="str">"b"</span>, <span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
@@ -1076,9 +1075,9 @@ checks that sub <code><span class="type">Frag</span></code>s are serialized corr
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">a</span> { <span class="fn">get_frag</span>(<span class="str">""</span>, <span class="str">"a"</span>, <span class="num">false</span>) };<br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">b</span> { <span class="fn">get_frag</span>(<span class="str">""</span>, <span class="str">"b"</span>, <span class="num">true</span>) };<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">a</span>, <span class="str">"abc"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">true</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="type">Frag_Ref</span> { <span class="str">""</span>, <span class="str">"a"</span>, <span class="num">true</span> });<br/>
 <span class="in1"></span><span class="fn">addStringToFrag</span>(&amp;<span class="var">b</span>, <span class="str">"def"</span>);<br/>
-<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="str">""</span>, &amp;<span class="var">a</span>, <span class="num">false</span>);<br/>
+<span class="in1"></span><span class="var">b</span>.<span class="fn">add</span>(<span class="type">Frag_Ref</span> { <span class="str">""</span>, <span class="str">"a"</span>, <span class="num">false</span> });<br/>
 <span class="in1"></span><span class="fn">testFrag</span>(<span class="str">"b"</span>, <span class="var">b</span>, <span class="str">"abcdefabc"</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
@@ -1120,8 +1119,9 @@ checks, if the parent <code><span class="type">Frag</span></code> <code><span cl
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">avoid frag cycles</span>)</span><br/>
+<span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">f</span> { <span class="fn">get_frag</span>(<span class="var">sub</span>) };<br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(! <span class="fn">isFragInFrag</span>(<br/>
-<span class="in2"></span><span class="var">path</span>, <span class="var">this</span>, <span class="var">child</span><br/>
+<span class="in2"></span><span class="var">sub</span>.<span class="var">path</span>, <span class="var">this</span>, &amp;<span class="var">f</span><br/>
 <span class="in1"></span>));<br/>
 <span class="macro">@end(<span class="name">avoid frag cycles</span>)</span><br/>
 </code></div>

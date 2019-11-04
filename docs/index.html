@@ -1059,7 +1059,7 @@ more content can be added to it
 <span class="in3"></span><span class="fn">ASSERT</span>(<span class="var">sub</span>);<br/>
 <span class="in3"></span><span class="macro">@mul(<span class="name">check frag ex. count</span>)</span>;<br/>
 <span class="in3"></span><span class="var">sub</span>-&gt;<span class="fn">addExpand</span>();<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">sub</span>, <span class="num">true</span>);<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">arg</span>, <span class="num">true</span>);<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1126,7 +1126,7 @@ files that were are already included are ignored
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
 <span class="in3"></span><span class="macro">@mul(<span class="name">check for prev expands</span>)</span>;<br/>
 <span class="in3"></span><span class="var">sub</span>-&gt;<span class="fn">addMultiple</span>();<br/>
-<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">sub</span>, <span class="num">true</span>);<br/>
+<span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">arg</span>, <span class="num">true</span>);<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1287,7 +1287,7 @@ inserts a global fragment in the current fragment
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">check frag ex. count</span>)</span>;<br/>
 <span class="in2"></span><span class="var">sub</span>-&gt;<span class="fn">addExpand</span>();<br/>
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">sub</span>, <span class="num">false</span>);<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">arg</span>, <span class="num">false</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do Put</span>)</span><br/>
 </code></div>
@@ -1316,7 +1316,7 @@ inserts a global fragment multiple times
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>) {<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">check for prev expands</span>)</span>;<br/>
 <span class="in2"></span><span class="var">sub</span>-&gt;<span class="fn">addMultiple</span>();<br/>
-<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">sub</span>, <span class="num">false</span>);<br/>
+<span class="in2"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="var">cur_path</span>, <span class="var">arg</span>, <span class="num">false</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do Mul</span>)</span><br/>
 </code></div>
