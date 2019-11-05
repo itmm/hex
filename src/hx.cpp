@@ -1714,7 +1714,7 @@
 #line 759 "index.md"
 ;
 			sub->addExpand();
-			frag->add(cur_path, arg, true);
+			frag->add(Frag_Ref { cur_path, arg, true });
 		}
 		break;
 	}
@@ -1753,7 +1753,7 @@
 #line 814 "index.md"
 ;
 			sub->addMultiple();
-			frag->add(cur_path, arg, true);
+			frag->add(Frag_Ref { cur_path, arg, true });
 		}
 		break;
 	}
@@ -1869,7 +1869,7 @@
 #line 945 "index.md"
 ;
 		sub->addExpand();
-		frag->add(cur_path, arg, false);
+		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 933 "index.md"
@@ -1899,7 +1899,7 @@
 #line 968 "index.md"
 ;
 		sub->addMultiple();
-		frag->add(cur_path, arg, false);
+		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 956 "index.md"
@@ -4446,7 +4446,7 @@
 #line 759 "index.md"
 ;
 			sub->addExpand();
-			frag->add(cur_path, arg, true);
+			frag->add(Frag_Ref { cur_path, arg, true });
 		}
 		break;
 	}
@@ -4485,7 +4485,7 @@
 #line 814 "index.md"
 ;
 			sub->addMultiple();
-			frag->add(cur_path, arg, true);
+			frag->add(Frag_Ref { cur_path, arg, true });
 		}
 		break;
 	}
@@ -4601,7 +4601,7 @@
 #line 945 "index.md"
 ;
 		sub->addExpand();
-		frag->add(cur_path, arg, false);
+		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 933 "index.md"
@@ -4631,7 +4631,7 @@
 #line 968 "index.md"
 ;
 		sub->addMultiple();
-		frag->add(cur_path, arg, false);
+		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 956 "index.md"
