@@ -812,7 +812,8 @@
 	"while", "class", "public", "private",
 	"template", "typename", "using",
 	"function", "throw", "namespace",
-	"once", "constexpr", "volatile"
+	"once", "constexpr", "volatile",
+	"override"
 @end(keywords)
 ```
 * known keywords
