@@ -2376,9 +2376,9 @@
 
 	"break", "case", "catch", "continue",
 	"default", "delete", "else", "for",
-	"if", "in", "new", "return", "static",
-	"switch", "try", "typeof", "while",
-	"class", "public", "private",
+	"if", "in", "inline", "new", "return",
+	"static", "switch", "try", "typeof",
+	"while", "class", "public", "private",
 	"template", "typename", "using",
 	"function", "throw", "namespace",
 	"once", "constexpr", "volatile"
