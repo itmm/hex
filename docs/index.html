@@ -8,9 +8,9 @@
 <h1>HTML Extractor</h1>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h1>HTML Extractor</h1>
-</div>
+</div></div>
 <ul><li>
 this presentation is the program <b>HTML Extractor</b> (<code><span class="var">hx</span></code>)
 </li><li>
@@ -29,9 +29,9 @@ Have fun!
 <h2>What is <code><span class="var">hx</span></code>?</h2>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h2>What is <code><span class="var">hx</span></code>?</h2>
-</div>
+</div></div>
 <ul><li>
 <code><span class="var">hx</span></code> is a program that parses a Markdown document and extracts source  code or an executable program out of it
 </li><li>
@@ -44,9 +44,9 @@ but also it generates a HTML documentation like the one you are  currently readi
 <h2>Why use Markdown document?</h2>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h2>Why use Markdown document?</h2>
-</div>
+</div></div>
 <ul><li>
 Markdown documents are structured text documents
 </li><li>
@@ -61,9 +61,9 @@ these slides should be decorated with notes
 <h2><code><span class="var">SWP</span></code> ≠ Literate Programming</h2>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h2><code><span class="var">SWP</span></code> ≠ Literate Programming</h2>
-</div>
+</div></div>
 <ul><li>
 <code><span class="var">SWP</span></code> should not document a finished program
 </li><li>
@@ -80,9 +80,9 @@ so it does not contain features that are described the later slides
 <h2>A very top-down view of <code><span class="var">hx</span></code></h2>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h2>A very top-down view of <code><span class="var">hx</span></code></h2>
-</div>
+</div></div>
 <ul><li>
 in the first code slide contains the highest view of the <code><span class="var">hx</span></code> program
 </li><li>
@@ -113,9 +113,9 @@ these elements and the body of the <code><span class="fn">main</span></code> fun
 <h3>Commands</h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Commands</h3>
-</div>
+</div></div>
 <ul><li>
 the first code slide has three <code><span class="var">hx</span></code> commands: <code><span class="keyword">@Def</span></code>, <code><span class="keyword">@put</span></code>,  and <code><span class="keyword">@End</span></code>
 </li><li>
@@ -130,9 +130,9 @@ for now assume, that no closing parenthesis or ampersand is part of  the argumen
 <h3>Fragments</h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Fragments</h3>
-</div>
+</div></div>
 <ul><li>
 <code><span class="var">hx</span></code> processes code fragments
 </li><li>
@@ -149,9 +149,9 @@ and must be the same as the argument value of the closing command
 <h3>Defined Fragments</h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Defined Fragments</h3>
-</div>
+</div></div>
 <ul><li>
 three fragments are defined on the first code page
 </li><li>
@@ -166,9 +166,9 @@ but the three presented so far all do
 <h3>Including fragments</h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Including fragments</h3>
-</div>
+</div></div>
 <ul><li>
 a fragment can be included into another fragment with the <code><span class="keyword">@put</span></code>  command
 </li><li>
@@ -185,9 +185,9 @@ so it is possible to include a fragment that is not defined yet
 <h3>Naming files</h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Naming files</h3>
-</div>
+</div></div>
 <ul><li>
 fragments whose name start with <code><span class="str">file: </span></code> are special
 </li><li>
@@ -202,9 +202,9 @@ the first code slide creates one fragment that is written into the  file named <
 <h3>Generating the first source code</h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Generating the first source code</h3>
-</div>
+</div></div>
 <ul><li>
 if we stop here and run <code><span class="var">hx</span></code>, the following code will be generated
 </li></ul>
@@ -229,9 +229,9 @@ so it does not do much
 <h3>Steps in <code><span class="fn">main</span></code></h3>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h3>Steps in <code><span class="fn">main</span></code></h3>
-</div>
+</div></div>
 <ul><li>
 the next code slides identify multiple steps to perform in the  <code><span class="fn">main</span></code> function
 </li></ul>
@@ -320,9 +320,9 @@ and lastly the HTML documentation is generated
 <h2>Next steps</h2>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h2>Next steps</h2>
-</div>
+</div></div>
 <ul><li>
 the following slides refer to documents that document the next steps  of <code><span class="var">hx</span></code>
 </li><li>
@@ -421,9 +421,9 @@ the blocks are mostly needed for the interactive editor that is  block-based
 <h2>Parsing command line arguments</h2>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h2>Parsing command line arguments</h2>
-</div>
+</div></div>
 <ul><li>
 parses the command line arguments element by element
 </li></ul>
@@ -536,9 +536,9 @@ from these files slides and source code are generated
 <h1>Read input files</h1>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h1>Read input files</h1>
-</div>
+</div></div>
 <ul><li>
 the code of this section reads input files, extracts the fragments  and blocks and establishes their interdependencies
 </li></ul>
@@ -1437,9 +1437,9 @@ add the hash value to the fragment
 <h1>Serialize Fragments</h1>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h1>Serialize Fragments</h1>
-</div>
+</div></div>
 <ul><li>
 generate source code by traversing the tree of all fragments that  specify files
 </li><li>

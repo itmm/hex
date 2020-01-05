@@ -155,9 +155,18 @@
 	@mul(write header tag);
 	out << "<div class=\"slides\">\n";
 	out << "<div>\n";
-	out << "<div>\n";
+	out << "<div><div class=\"headers\">\n";
 	@mul(write header tag);
-	out << "</div>\n";
+	for (unsigned i = 1; i < b.value.size(); ++i)
+	{
+		out << "<h" << (b.level + 1) << '>';
+		const auto &n = b.value[i];
+		process_content(
+			out, n.begin(), n.end()
+		);
+		out << "</h" << (b.level + 1) << ">\n";
+	}
+	out << "</div></div>\n";
 	status.state = HtmlState::inSlide;
 @end(process header)
 ```
@@ -850,7 +859,7 @@
 	"union", "unsigned", "void", "double",
 	"string", "std", "ifstream",
 	"istream", "ofstream", "ostream",
-	"vector", "map", "list"
+	"vector", "map", "list", "float"
 @end(types)
 ```
 * known types

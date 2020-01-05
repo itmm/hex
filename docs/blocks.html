@@ -8,9 +8,9 @@
 <h1>Separating input into blocks</h1>
 <div class="slides">
 <div>
-<div>
+<div><div class="headers">
 <h1>Separating input into blocks</h1>
-</div>
+</div></div>
 <ul><li>
 the input is treated as a sequence of blocks.
 </li><li>
@@ -115,7 +115,8 @@ new state for parsing headers
 <span class="macro">@def(<span class="name">states without newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">'#'</span> &amp;&amp;<br/>
-<span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span><br/>
+<span class="in2"></span>(<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>)<br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">header</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">got header line</span>)</span>;<br/>
@@ -195,9 +196,17 @@ get reference to <code><span class="type">Block</span></code>s
 <span class="in2"></span>; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">'#'</span>; ++<span class="var">b</span>, ++<span class="var">l</span><br/>
 <span class="in1"></span>) {}<br/>
 <span class="in1"></span><span class="keyword">for</span> (; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">' '</span>; ++<span class="var">b</span>) {}<br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in2"></span><span class="var">RS</span>::<span class="var">header</span>, {{ <span class="var">b</span>, <span class="var">e</span> }}, {}, <span class="var">l</span><br/>
-<span class="in1"></span>});<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">header</span> ||<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">size</span>()<br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in3"></span><span class="var">RS</span>::<span class="var">header</span>, {}, {}, <span class="var">l</span><br/>
+<span class="in2"></span>});<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">emplace_back</span>(<br/>
+<span class="in2"></span><span class="var">b</span>, <span class="var">e</span><br/>
+<span class="in1"></span>);<br/>
 <span class="macro">@end(<span class="name">got header line</span>)</span><br/>
 </code></div>
 <ul><li>

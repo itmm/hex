@@ -74,7 +74,8 @@
 @def(states without newlines)
 	if (
 		line[0] == '#' &&
-		state == RS::new_element
+		(state == RS::new_element ||
+			state == RS::header)
 	) {
 		state = RS::header;
 		@put(got header line);
@@ -135,9 +136,17 @@
 		; b != e && *b == '#'; ++b, ++l
 	) {}
 	for (; b != e && *b == ' '; ++b) {}
-	blocks.push_back({
-		RS::header, {{ b, e }}, {}, l
-	});
+	if (blocks.empty() ||
+		blocks.back().state != RS::header ||
+		blocks.back().notes.size()
+	) {
+		blocks.push_back({
+			RS::header, {}, {}, l
+		});
+	}
+	blocks.back().value.emplace_back(
+		b, e
+	);
 @end(got header line)
 ```
 * count `#`s
