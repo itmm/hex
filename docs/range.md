@@ -7,8 +7,8 @@
 		public:
 			@put(range elements);
 		private:
-			Line _prev;
-			Line _last;
+			Line prev_;
+			Line last_;
 	};
 @End(range prereqs)
 ```
@@ -17,7 +17,7 @@
 ```
 @def(range elements)
 	Line prev() {
-		return _prev ?: _last;
+		return prev_ ?: last_;
 	}
 @end(range elements)
 ```
@@ -28,7 +28,7 @@
 ```
 @add(range elements)
 	Line last() {
-		return _last;
+		return last_;
 	}
 @end(range elements)
 ```
@@ -37,8 +37,8 @@
 ```
 @add(range elements)
 	Range &operator<<(const Line &l) {
-		_prev = _last;
-		_last = l;
+		prev_ = last_;
+		last_ = l;
 		return *this;
 	}
 @end(range elements)
@@ -48,7 +48,7 @@
 ```
 @add(range elements)
 	operator bool() {
-		return _last;
+		return last_;
 	}
 @end(range elements)
 ```

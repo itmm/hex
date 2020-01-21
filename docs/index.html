@@ -1840,11 +1840,11 @@ list of open issues
 <span class="in3"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">meta_values</span>;<br/>
 <span class="in1"></span>};<br/>
 <br/>
-<span class="in1"></span><span class="type">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Frag_State</span>&gt; <span class="var">_all_frags</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="num">nullptr</span>));<br/>
-<span class="in1"></span><span class="type">Frag_State</span> *<span class="var">_cur_state</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Frag_State</span>&gt; <span class="var">all_frags_</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="num">nullptr</span>));<br/>
+<span class="in1"></span><span class="type">Frag_State</span> *<span class="var">cur_state_</span> = <span class="num">nullptr</span>;<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag_State</span> &amp;<span class="fn">cur_state</span>() {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_cur_state</span> ? *<span class="var">_cur_state</span> : *<span class="var">_all_frags</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">cur_state_</span> ? *<span class="var">cur_state_</span> : *<span class="var">all_frags_</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="fn">find_frag</span>(<span class="type">Frag_State</span> &amp;<span class="var">state</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="keyword">in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">key</span>) {<br/>
@@ -1948,18 +1948,18 @@ list of open issues
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">split_frag</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>, <span class="type">Frag</span> *<span class="var">meta</span>, <span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">std</span>::<span class="type">string</span>&gt; &amp;&amp;<span class="var">values</span>) {<br/>
-<span class="in2"></span><span class="type">Frag_State</span> &amp;<span class="var">current</span> = *<span class="var">_all_frags</span>;<br/>
+<span class="in2"></span><span class="type">Frag_State</span> &amp;<span class="var">current</span> = *<span class="var">all_frags_</span>;<br/>
 <span class="in2"></span><span class="var">current</span>.<span class="var">meta</span> = <span class="var">meta</span>;<br/>
 <span class="in2"></span><span class="var">current</span>.<span class="var">meta_path</span> = <span class="var">inputs</span>.<span class="fn">open_head</span>();<br/>
 <span class="in2"></span><span class="var">current</span>.<span class="var">meta_values</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">values</span>);<br/>
 <span class="in2"></span><span class="var">current</span>.<span class="var">meta_name</span> = <span class="var">name</span>;<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Frag_State</span>&gt; <span class="var">n</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="type">std</span>::<span class="fn">move</span>(<span class="var">_all_frags</span>))) };<br/>
-<span class="in2"></span><span class="var">_all_frags</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">n</span>);<br/>
-<span class="in2"></span><span class="var">_cur_state</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">unique_ptr</span>&lt;<span class="type">Frag_State</span>&gt; <span class="var">n</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="type">std</span>::<span class="fn">move</span>(<span class="var">all_frags_</span>))) };<br/>
+<span class="in2"></span><span class="var">all_frags_</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="var">n</span>);<br/>
+<span class="in2"></span><span class="var">cur_state_</span> = <span class="num">nullptr</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear_frags</span>() { <br/>
-<span class="in2"></span><span class="var">_all_frags</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="num">nullptr</span>)); <span class="var">_cur_state</span> = <span class="num">nullptr</span>;<br/>
+<span class="in2"></span><span class="var">all_frags_</span> = <span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="var">make_unique</span>&lt;<span class="type">Frag_State</span>&gt;(<span class="num">nullptr</span>)); <span class="var">cur_state_</span> = <span class="num">nullptr</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">eval_meta</span>(<span class="type">Frag_State</span> &amp;<span class="var">fs</span>) {<br/>
@@ -1972,7 +1972,7 @@ list of open issues
 <span class="in1"></span>}<br/>
 <br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">eval_metas</span>() {<br/>
-<span class="in2"></span><span class="fn">eval_meta</span>(*<span class="var">_all_frags</span>);<br/>
+<span class="in2"></span><span class="fn">eval_meta</span>(*<span class="var">all_frags_</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -1988,7 +1988,7 @@ list of open issues
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span> = <span class="var">fs</span>.<span class="var">meta_path</span>;<br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">cur_line</span> { <span class="num">1</span> };<br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="var">cmd_values</span> = <span class="var">fs</span>.<span class="var">meta_values</span>;<br/>
-<span class="in1"></span><span class="var">_cur_state</span> = &amp;<span class="var">fs</span>;<br/>
+<span class="in1"></span><span class="var">cur_state_</span> = &amp;<span class="var">fs</span>;<br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="keyword">in</span>, <span class="var">line</span>)) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">line</span>.<span class="fn">cend</span>();<br/>
 <span class="in2"></span><span class="keyword">for</span> (<br/>
@@ -2000,7 +2000,7 @@ list of open issues
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">_cur_state</span> = <span class="num">nullptr</span>;<br/>
+<span class="in1"></span><span class="var">cur_state_</span> = <span class="num">nullptr</span>;<br/>
 <span class="macro">@end(<span class="name">apply meta</span>)</span><br/>
 </code></div>
 </div>

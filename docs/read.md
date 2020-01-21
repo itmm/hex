@@ -182,8 +182,8 @@
 
 ```
 @Def(private open input els)
-	std::string _path;
-	std::ifstream _file;
+	std::string path_;
+	std::ifstream file_;
 @End(private open input els)
 ```
 * open file contains a file
@@ -192,8 +192,8 @@
 ```
 @Def(open input elements)
 	Open_Input(const std::string &path):
-		_path { path },
-		_file { path.c_str() }
+		path_ { path },
+		file_ { path.c_str() }
 	{}
 @End(open input elements)
 ```
@@ -202,7 +202,7 @@
 ```
 @Add(open input elements)
 	const std::string &path() const {
-		return _path; 
+		return path_; 
 	}
 @End(open input elements)
 ```
@@ -268,7 +268,7 @@
 ```
 @Add(open input elements)
 	void read_line(std::string &line) {
-		if (_file.is_open()) {
+		if (file_.is_open()) {
 			@put(get line);
 		}
 		throw No_More_Lines {};
@@ -280,11 +280,11 @@
 
 ```
 @def(get line)
-	if (std::getline(_file, line)) {
+	if (std::getline(file_, line)) {
 		@Put(line read);
 		return;
 	}
-	_file.close();
+	file_.close();
 @end(get line)
 ```
 * if could read line, return
@@ -293,9 +293,9 @@
 
 ```
 @Def(private inputs elements)
-	std::vector<std::string> _roots;
+	std::vector<std::string> roots_;
 	std::vector<std::string>::
-		const_iterator _current_path;
+		const_iterator current_path_;
 @End(private inputs elements)
 ```
 * has a list of input files
@@ -303,8 +303,8 @@
 
 ```
 @Add(private inputs elements)
-	std::vector<Open_Input> _open;
-	std::map<std::string, Input> _used;
+	std::vector<Open_Input> open_;
+	std::map<std::string, Input> used_;
 @End(private inputs elements)
 ```
 * `_open` contains all files open for reading
@@ -318,12 +318,12 @@
 	for (;;) {
 		@put(push next path);
 		try {
-			_open.back().read_line(line);
+			open_.back().read_line(line);
 			return;
 		}
 		catch (const No_More_Lines &) {}
 		@put(save open input);
-		_open.pop_back();
+		open_.pop_back();
 	}
 	throw No_More_Lines {};
 @end(inputs read line)
@@ -334,11 +334,11 @@
 
 ```
 @def(push next path)
-	if (_open.empty()) {
+	if (open_.empty()) {
 		if (
-			_current_path != _roots.end()
+			current_path_ != roots_.end()
 		) {
-			push(*_current_path++);
+			push(*current_path_++);
 		} else {
 			break;
 		}
@@ -349,7 +349,7 @@
 
 ```
 @def(save open input)
-	auto &f { _used.find(_open.back().path())->second };
+	auto &f { used_.find(open_.back().path())->second };
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
 			RS::header,

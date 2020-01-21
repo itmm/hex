@@ -49,8 +49,8 @@ to calculate the absolute line number, the method must know the  current line an
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">line privates</span>)</span><br/>
-<span class="in1"></span><span class="type">int</span> <span class="var">_line</span> { -<span class="num">1</span> };<br/>
-<span class="in1"></span><span class="type">bool</span> <span class="var">_relative</span> { <span class="num">false</span> };<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">line_</span> { -<span class="num">1</span> };<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">relative_</span> { <span class="num">false</span> };<br/>
 <span class="macro">@end(<span class="name">line privates</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -63,7 +63,7 @@ and a flag, if the line is relative
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="var">operator</span> <span class="fn">bool</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span> &gt;= <span class="num">0</span> || <span class="var">_relative</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">line_</span> &gt;= <span class="num">0</span> || <span class="var">relative_</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">line elements</span>)</span><br/>
 </code></div>
@@ -79,8 +79,8 @@ or the line is relative
 <span class="in1"></span><span class="keyword">if</span> (! *<span class="var">this</span>) {<br/>
 <span class="in2"></span><span class="var">res</span> = <span class="var">cur</span>;<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
-<span class="in2"></span><span class="var">res</span> = <span class="var">_line</span>;<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_relative</span>) { <span class="var">res</span> += <span class="var">cur</span>; }<br/>
+<span class="in2"></span><span class="var">res</span> = <span class="var">line_</span>;<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">relative_</span>) { <span class="var">res</span> += <span class="var">cur</span>; }<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">res</span> &lt; <span class="num">0</span>) { <span class="var">res</span> = <span class="num">0</span>; }<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">res</span> &gt; <span class="var">end</span>) { <span class="var">res</span> = <span class="var">end</span>; }<br/>
@@ -100,8 +100,8 @@ the result is clamped to the valid interval
 <code>
 <span class="macro">@add(<span class="name">line privates</span>)</span><br/>
 <span class="in1"></span><span class="fn">Line</span>(<span class="type">int</span> <span class="var">line</span>, <span class="type">bool</span> <span class="var">relative</span>):<br/>
-<span class="in2"></span><span class="var">_line</span> { <span class="var">line</span> },<br/>
-<span class="in2"></span><span class="var">_relative</span> { <span class="var">relative</span> }<br/>
+<span class="in2"></span><span class="var">line_</span> { <span class="var">line</span> },<br/>
+<span class="in2"></span><span class="var">relative_</span> { <span class="var">relative</span> }<br/>
 <span class="in1"></span>{}<br/>
 <span class="macro">@end(<span class="name">line privates</span>)</span><br/>
 </code></div>

@@ -31,11 +31,11 @@ needed includes
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur</span>() {<br/>
-<span class="in2"></span><span class="var">ASSERT</span> (! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_open</span>.<span class="fn">back</span>();<br/>
+<span class="in2"></span><span class="var">ASSERT</span> (! <span class="var">open_</span>.<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">open_</span>.<span class="fn">back</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur_input</span>() {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">find</span>(<span class="fn">cur</span>().<span class="fn">path</span>())-&gt;<span class="var">second</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">used_</span>.<span class="fn">find</span>(<span class="fn">cur</span>().<span class="fn">path</span>())-&gt;<span class="var">second</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -47,7 +47,7 @@ last opened open input file
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">used_</span>.<span class="fn">begin</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -59,7 +59,7 @@ begin iterator for used input files
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">end</span>();<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">used_</span>.<span class="fn">end</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -71,7 +71,7 @@ end iterator for used input files
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">size</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>.<span class="fn">size</span>();<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">used_</span>.<span class="fn">size</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -84,23 +84,23 @@ number of used input files
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">prev</span>;<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">size</span>()) {<br/>
-<span class="in3"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">_used</span>.<span class="fn">find</span>(<span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>()) };<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">_used</span>.<span class="fn">end</span>()) {<br/>
-<span class="in4"></span><span class="var">prev</span> = <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>();<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">open_</span>.<span class="fn">size</span>()) {<br/>
+<span class="in3"></span><span class="type">auto</span> <span class="var">got</span> { <span class="var">used_</span>.<span class="fn">find</span>(<span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">path</span>()) };<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">got</span> != <span class="var">used_</span>.<span class="fn">end</span>()) {<br/>
+<span class="in4"></span><span class="var">prev</span> = <span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">path</span>();<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">_used</span>.<span class="fn">insert</span>(<span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt;::<span class="fn">value_type</span>(<span class="var">path</span>, <span class="fn">Input</span>(<span class="var">prev</span>))));<br/>
-<span class="in2"></span><span class="var">_open</span>.<span class="fn">emplace_back</span>(<span class="var">path</span>);<br/>
+<span class="in2"></span><span class="var">used_</span>.<span class="fn">insert</span>(<span class="type">std</span>::<span class="fn">move</span>(<span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt;::<span class="fn">value_type</span>(<span class="var">path</span>, <span class="fn">Input</span>(<span class="var">prev</span>))));<br/>
+<span class="in2"></span><span class="var">open_</span>.<span class="fn">emplace_back</span>(<span class="var">path</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="fn">open_head</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">_open</span>.<span class="fn">empty</span>());<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>();<br/>
+<span class="in2"></span><span class="fn">ASSERT</span>(! <span class="var">open_</span>.<span class="fn">empty</span>());<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">path</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="type">Input</span> &amp;<span class="var">operator</span>[](<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_used</span>[<span class="var">name</span>];<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">used_</span>[<span class="var">name</span>];<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -114,7 +114,7 @@ is recorded as used input file
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
-<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="var">path</span>);<br/>
+<span class="in2"></span><span class="var">roots_</span>.<span class="fn">push_back</span>(<span class="var">path</span>);<br/>
 <span class="in2"></span><span class="fn">push</span>(<span class="var">path</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
@@ -156,7 +156,7 @@ checks if the file is already used
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">has checks</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">_used</span>.<span class="fn">find</span>(<span class="var">name</span>) != <span class="var">_used</span>.<span class="fn">end</span>()) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">used_</span>.<span class="fn">find</span>(<span class="var">name</span>) != <span class="var">used_</span>.<span class="fn">end</span>()) {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">has checks</span>)</span><br/>
@@ -190,7 +190,7 @@ for each open input file the current line number is recorded
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">private open input els</span>)</span><br/>
-<span class="in1"></span><span class="type">int</span> <span class="var">_line</span> = <span class="num">0</span>;<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">line_</span> = <span class="num">0</span>;<br/>
 <span class="macro">@end(<span class="name">private open input els</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -201,7 +201,7 @@ current line number
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">line</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_line</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">line_</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -212,7 +212,7 @@ getter for current line number
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">line read</span>)</span><br/>
-<span class="in1"></span>++<span class="var">_line</span>;<br/>
+<span class="in1"></span>++<span class="var">line_</span>;<br/>
 <span class="macro">@End(<span class="name">line read</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -222,12 +222,12 @@ increase line number for each line
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">clear inputs</span>)</span><br/>
-<span class="in1"></span><span class="var">_used</span>.<span class="fn">clear</span>();<br/>
-<span class="in1"></span><span class="var">_open</span>.<span class="fn">clear</span>();<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">_roots</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in1"></span><span class="var">used_</span>.<span class="fn">clear</span>();<br/>
+<span class="in1"></span><span class="var">open_</span>.<span class="fn">clear</span>();<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">roots_</span>.<span class="fn">empty</span>()) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">populate default file</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">_current_path</span> = <span class="var">_roots</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="var">current_path_</span> = <span class="var">roots_</span>.<span class="fn">begin</span>();<br/>
 <span class="macro">@End(<span class="name">clear inputs</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -242,14 +242,14 @@ if the <code><span class="var">_path</span></code>s are empty the default input 
 <span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
 <span class="in2"></span><span class="str">"index.md"</span><br/>
 <span class="in1"></span>)) {<br/>
-<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in2"></span><span class="var">roots_</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>
 <span class="in2"></span><span class="str">"index.x"</span><br/>
 <span class="in1"></span>)) {<br/>
-<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
+<span class="in2"></span><span class="var">roots_</span>.<span class="fn">push_back</span>(<span class="str">"index.x"</span>);<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"no input paths\n"</span>;<br/>
-<span class="in2"></span><span class="var">_roots</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
+<span class="in2"></span><span class="var">roots_</span>.<span class="fn">push_back</span>(<span class="str">"index.md"</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">populate default file</span>)</span><br/>
 </code></div>

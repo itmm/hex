@@ -13,11 +13,11 @@
 ```
 @Add(inputs elements)
 	auto &cur() {
-		ASSERT (! _open.empty());
-		return _open.back();
+		ASSERT (! open_.empty());
+		return open_.back();
 	}
 	auto &cur_input() {
-		return _used.find(cur().path())->second;
+		return used_.find(cur().path())->second;
 	}
 @End(inputs elements)
 ```
@@ -26,7 +26,7 @@
 ```
 @Add(inputs elements)
 	auto begin() {
-		return _used.begin();
+		return used_.begin();
 	}
 @End(inputs elements)
 ```
@@ -35,7 +35,7 @@
 ```
 @Add(inputs elements)
 	auto end() {
-		return _used.end();
+		return used_.end();
 	}
 @End(inputs elements)
 ```
@@ -44,7 +44,7 @@
 ```
 @Add(inputs elements)
 	auto size() const {
-		return _used.size();
+		return used_.size();
 	}
 @End(inputs elements)
 ```
@@ -54,23 +54,23 @@
 @Add(inputs elements)
 	void push(const std::string &path) {
 		std::string prev;
-		if (_open.size()) {
-			auto got { _used.find(_open.back().path()) };
-			if (got != _used.end()) {
-				prev = _open.back().path();
+		if (open_.size()) {
+			auto got { used_.find(open_.back().path()) };
+			if (got != used_.end()) {
+				prev = open_.back().path();
 			}
 		}
-		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(prev))));
-		_open.emplace_back(path);
+		used_.insert(std::move(std::map<std::string, Input>::value_type(path, Input(prev))));
+		open_.emplace_back(path);
 	}
 	const std::string open_head() const {
-		ASSERT(! _open.empty());
-		return _open.back().path();
+		ASSERT(! open_.empty());
+		return open_.back().path();
 	}
 	Input &operator[](
 		const std::string &name
 	) {
-		return _used[name];
+		return used_[name];
 	}
 @End(inputs elements)
 ```
@@ -80,7 +80,7 @@
 ```
 @Add(inputs elements)
 	void add(const std::string &path) {
-		_roots.push_back(path);
+		roots_.push_back(path);
 		push(path);
 	}
 @End(inputs elements)
@@ -106,7 +106,7 @@
 
 ```
 @def(has checks)
-	if (_used.find(name) != _used.end()) {
+	if (used_.find(name) != used_.end()) {
 		return true;
 	}
 @end(has checks)
@@ -121,7 +121,7 @@
 
 ```
 @Add(private open input els)
-	int _line = 0;
+	int line_ = 0;
 @end(private open input els)
 ```
 * current line number
@@ -129,7 +129,7 @@
 ```
 @Add(open input elements)
 	int line() const {
-		return _line;
+		return line_;
 	}
 @end(open input elements)
 ```
@@ -137,19 +137,19 @@
 
 ```
 @Def(line read)
-	++_line;
+	++line_;
 @End(line read)
 ```
 * increase line number for each line
 
 ```
 @Def(clear inputs)
-	_used.clear();
-	_open.clear();
-	if (_roots.empty()) {
+	used_.clear();
+	open_.clear();
+	if (roots_.empty()) {
 		@put(populate default file);
 	}
-	_current_path = _roots.begin();
+	current_path_ = roots_.begin();
 @End(clear inputs)
 ```
 * resets all open and used files
@@ -160,14 +160,14 @@
 	if (std::filesystem::exists(
 		"index.md"
 	)) {
-		_roots.push_back("index.md");
+		roots_.push_back("index.md");
 	} else if (std::filesystem::exists(
 		"index.x"
 	)) {
-		_roots.push_back("index.x");
+		roots_.push_back("index.x");
 	} else {
 		std::cerr << "no input paths\n";
-		_roots.push_back("index.md");
+		roots_.push_back("index.md");
 	}
 @end(populate default file)
 ```

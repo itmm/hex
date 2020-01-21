@@ -29,8 +29,8 @@
 
 ```
 @def(line privates)
-	int _line { -1 };
-	bool _relative { false };
+	int line_ { -1 };
+	bool relative_ { false };
 @end(line privates)
 ```
 * integer for the line
@@ -39,7 +39,7 @@
 ```
 @add(line elements)
 	operator bool() const {
-		return _line >= 0 || _relative;
+		return line_ >= 0 || relative_;
 	}
 @end(line elements)
 ```
@@ -51,8 +51,8 @@
 	if (! *this) {
 		res = cur;
 	} else {
-		res = _line;
-		if (_relative) { res += cur; }
+		res = line_;
+		if (relative_) { res += cur; }
 	}
 	if (res < 0) { res = 0; }
 	if (res > end) { res = end; }
@@ -66,8 +66,8 @@
 ```
 @add(line privates)
 	Line(int line, bool relative):
-		_line { line },
-		_relative { relative }
+		line_ { line },
+		relative_ { relative }
 	{}
 @end(line privates)
 ```

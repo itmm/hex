@@ -1367,11 +1367,11 @@ int main(
 			std::map<std::string, std::string> meta_values;
 	};
 
-	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
-	Frag_State *_cur_state = nullptr;
+	std::unique_ptr<Frag_State> all_frags_ = std::move(std::make_unique<Frag_State>(nullptr));
+	Frag_State *cur_state_ = nullptr;
 
 	Frag_State &cur_state() {
-		return _cur_state ? *_cur_state : *_all_frags;
+		return cur_state_ ? *cur_state_ : *all_frags_;
 	}
 
 	Frag *find_frag(Frag_State &state, const std::string &in, const std::string &key) {
@@ -1475,18 +1475,18 @@ int main(
 	}
 
 	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values) {
-		Frag_State &current = *_all_frags;
+		Frag_State &current = *all_frags_;
 		current.meta = meta;
 		current.meta_path = inputs.open_head();
 		current.meta_values = std::move(values);
 		current.meta_name = name;
-		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(_all_frags))) };
-		_all_frags = std::move(n);
-		_cur_state = nullptr;
+		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(all_frags_))) };
+		all_frags_ = std::move(n);
+		cur_state_ = nullptr;
 	}
 
 	void clear_frags() { 
-		_all_frags = std::move(std::make_unique<Frag_State>(nullptr)); _cur_state = nullptr;
+		all_frags_ = std::move(std::make_unique<Frag_State>(nullptr)); cur_state_ = nullptr;
 	}
 
 	void eval_meta(Frag_State &fs) {
@@ -1499,7 +1499,7 @@ int main(
 	}
 
 	void eval_metas() {
-		eval_meta(*_all_frags);
+		eval_meta(*all_frags_);
 	}
 @end(global elements)
 ```
@@ -1514,7 +1514,7 @@ int main(
 	std::string cur_path = fs.meta_path;
 	int cur_line { 1 };
 	auto &cmd_values = fs.meta_values;
-	_cur_state = &fs;
+	cur_state_ = &fs;
 	while (std::getline(in, line)) {
 		auto end = line.cend();
 		for (
@@ -1526,6 +1526,6 @@ int main(
 		}
 		process_char(frag, '\n', cur_path, cur_line);
 	}
-	_cur_state = nullptr;
+	cur_state_ = nullptr;
 @end(apply meta)
 ```

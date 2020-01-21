@@ -290,8 +290,8 @@ needs <code><span class="type">std</span>::<span class="type">ifstream</span></c
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">private open input els</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">_path</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="var">_file</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">path_</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">ifstream</span> <span class="var">file_</span>;<br/>
 <span class="macro">@End(<span class="name">private open input els</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -304,8 +304,8 @@ and an input stream
 <code>
 <span class="macro">@Def(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Open_Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>):<br/>
-<span class="in2"></span><span class="var">_path</span> { <span class="var">path</span> },<br/>
-<span class="in2"></span><span class="var">_file</span> { <span class="var">path</span>.<span class="fn">c_str</span>() }<br/>
+<span class="in2"></span><span class="var">path_</span> { <span class="var">path</span> },<br/>
+<span class="in2"></span><span class="var">file_</span> { <span class="var">path</span>.<span class="fn">c_str</span>() }<br/>
 <span class="in1"></span>{}<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -317,7 +317,7 @@ open file on construction
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">path</span>() <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">_path</span>; <br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">path_</span>; <br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
@@ -404,7 +404,7 @@ no move assignment
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">_file</span>.<span class="fn">is_open</span>()) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">file_</span>.<span class="fn">is_open</span>()) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
@@ -420,11 +420,11 @@ if that fails or file was closed, then throw an exception
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">get line</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="var">_file</span>, <span class="var">line</span>)) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="var">file_</span>, <span class="var">line</span>)) {<br/>
 <span class="in2"></span><span class="macro">@Put(<span class="name">line read</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">return</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">_file</span>.<span class="fn">close</span>();<br/>
+<span class="in1"></span><span class="var">file_</span>.<span class="fn">close</span>();<br/>
 <span class="macro">@end(<span class="name">get line</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -438,9 +438,9 @@ and fall through to the exception throwing code
 <div><div>
 <code>
 <span class="macro">@Def(<span class="name">private inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">_roots</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">roots_</span>;<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt;::<br/>
-<span class="in2"></span><span class="var">const_iterator</span> <span class="var">_current_path</span>;<br/>
+<span class="in2"></span><span class="var">const_iterator</span> <span class="var">current_path_</span>;<br/>
 <span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -452,8 +452,8 @@ and an iterator for the current path
 <div><div>
 <code>
 <span class="macro">@Add(<span class="name">private inputs elements</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">_open</span>;<br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt; <span class="var">_used</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">open_</span>;<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt; <span class="var">used_</span>;<br/>
 <span class="macro">@End(<span class="name">private inputs elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -474,12 +474,12 @@ this is used to avoid including files multiple times
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">push next path</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">try</span> {<br/>
-<span class="in3"></span><span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
+<span class="in3"></span><span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
 <span class="in3"></span><span class="keyword">return</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">save open input</span>)</span>;<br/>
-<span class="in2"></span><span class="var">_open</span>.<span class="fn">pop_back</span>();<br/>
+<span class="in2"></span><span class="var">open_</span>.<span class="fn">pop_back</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="macro">@end(<span class="name">inputs read line</span>)</span><br/>
@@ -493,11 +493,11 @@ when the end is reached, the file is popped and the line is read from  the previ
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">push next path</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">_open</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">open_</span>.<span class="fn">empty</span>()) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<br/>
-<span class="in3"></span><span class="var">_current_path</span> != <span class="var">_roots</span>.<span class="fn">end</span>()<br/>
+<span class="in3"></span><span class="var">current_path_</span> != <span class="var">roots_</span>.<span class="fn">end</span>()<br/>
 <span class="in2"></span>) {<br/>
-<span class="in3"></span><span class="fn">push</span>(*<span class="var">_current_path</span>++);<br/>
+<span class="in3"></span><span class="fn">push</span>(*<span class="var">current_path_</span>++);<br/>
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 <span class="in2"></span>}<br/>
@@ -511,7 +511,7 @@ if no files are available, try to open a new one from the paht list
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">save open input</span>)</span><br/>
-<span class="in1"></span><span class="type">auto</span> &amp;<span class="var">f</span> { <span class="var">_used</span>.<span class="fn">find</span>(<span class="var">_open</span>.<span class="fn">back</span>().<span class="fn">path</span>())-&gt;<span class="var">second</span> };<br/>
+<span class="in1"></span><span class="type">auto</span> &amp;<span class="var">f</span> { <span class="var">used_</span>.<span class="fn">find</span>(<span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">path</span>())-&gt;<span class="var">second</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>.<span class="var">blocks</span>.<span class="fn">empty</span>()) {<br/>
 <span class="in2"></span><span class="var">f</span>.<span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
 <span class="in3"></span><span class="var">RS</span>::<span class="var">header</span>,<br/>

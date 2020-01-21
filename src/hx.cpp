@@ -247,18 +247,18 @@
 		{ }
 	};
 	class Frag_Entry {
-		std::string _str;
-		std::string _file;
-		int _first_line = -1;
-		int _last_line;
-		Frag_Ref _sub = { std::string { }, std::string { }, true };
+		std::string str_;
+		std::string file_;
+		int first_line_ { -1 };
+		int last_line_;
+		Frag_Ref sub_ = { std::string {}, std::string {}, true };
 	public:
 		
 #line 73 "frag.md"
 
 	Frag_Entry() { }
 	Frag_Entry(Frag_Ref sub):
-		_sub { sub }
+		sub_ { sub }
 	{ }
 
 #line 85 "frag.md"
@@ -269,8 +269,8 @@
 		
 #line 98 "frag.md"
 
-	auto c { _str.end() };
-	auto b { _str.begin() };
+	auto c { str_.end() };
+	auto b { str_.begin() };
 	bool some_nl { false };
 	while (b != c) {
 		--c;
@@ -311,17 +311,17 @@
 
 	bool old { state.in_macro };
 	update_state(state);
-	if (old) { return _str; }
-	if (! state.c_style) { return _str; }
-	if (_first_line < 1) { return _str; }
-	if (_str.empty()) { return _str; };
+	if (old) { return str_; }
+	if (! state.c_style) { return str_; }
+	if (first_line_ < 1) { return str_; }
+	if (str_.empty()) { return str_; };
 
 #line 139 "frag.md"
 ;
 		std::ostringstream oss;
 		oss << "\n#line " <<
-			_first_line << " \"" <<
-			_file << "\"\n" << _str;
+			first_line_ << " \"" <<
+			file_ << "\"\n" << str_;
 		return oss.str();
 	}
 
@@ -335,16 +335,16 @@
 #line 186 "frag.md"
 
 	if (
-		_file.empty() || _first_line <= 0
+		file_.empty() || first_line_ <= 0
 	) {
-		_file = file;
-		_first_line = line;
+		file_ = file;
+		first_line_ = line;
 	}
-	_last_line = line;
+	last_line_ = line;
 
 #line 177 "frag.md"
 ;
-		_str += ch;
+		str_ += ch;
 	}
 
 #line 200 "frag.md"
@@ -358,16 +358,16 @@
 #line 186 "frag.md"
 
 	if (
-		_file.empty() || _first_line <= 0
+		file_.empty() || first_line_ <= 0
 	) {
-		_file = file;
-		_first_line = line;
+		file_ = file;
+		first_line_ = line;
 	}
-	_last_line = line;
+	last_line_ = line;
 
 #line 206 "frag.md"
 ;
-		_str += value;
+		str_ += value;
 	}
 
 #line 214 "frag.md"
@@ -380,7 +380,7 @@
 #line 228 "frag.md"
 
 	if (
-		! _file.empty() && file != _file
+		! file_.empty() && file != file_
 	) {
 		return false;
 	}
@@ -388,9 +388,9 @@
 #line 240 "frag.md"
 
 	if (
-		_last_line > 0 &&
-		_last_line != line &&
-		_last_line + 1 != line
+		last_line_ > 0 &&
+		last_line_ != line &&
+		last_line_ + 1 != line
 	) {
 		return false;
 	}
@@ -407,18 +407,18 @@
 #line 56 "frag.md"
 ;
 		const Frag_Ref &sub() const {
-			return _sub;
+			return sub_;
 		}
 	};
 
 #line 268 "frag.md"
 
 	class Frag {
-		std::vector<Frag_Entry> _entries;
-		int _expands;
-		int _multiples;
-		Frag *_prefix;
-		const bool _is_meta;
+		std::vector<Frag_Entry> entries_;
+		int expands_;
+		int multiples_;
+		Frag *prefix_;
+		const bool is_meta_;
 	public:
 		const std::string name;
 		
@@ -454,50 +454,50 @@
 		const std::string &name,
 		Frag *prefix
 	):
-		_entries {},
-		_expands { 0 },
-		_multiples { 0 },
-		_prefix { prefix },
-		_is_meta { name.find('@') != std::string::npos },
+		entries_ {},
+		expands_ { 0 },
+		multiples_ { 0 },
+		prefix_ { prefix },
+		is_meta_ { name.find('@') != std::string::npos },
 		name { name }
 	{
-		if (isFile(name)) { ++_expands; }
-		if (cmd(name).size()) { ++_expands; }
+		if (isFile(name)) { ++expands_; }
+		if (cmd(name).size()) { ++expands_; }
 	}
 
 #line 341 "frag.md"
 
 	const Frag *prefix() const {
-		return _prefix;
+		return prefix_;
 	}
 	Frag *prefix() {
-		return _prefix;
+		return prefix_;
 	}
 
 #line 353 "frag.md"
 
 	bool is_meta() {
-		return _is_meta;
+		return is_meta_;
 	}
 
 #line 361 "frag.md"
 
 	void clear() {
-		if (_prefix) {
-			_prefix->clear();
+		if (prefix_) {
+			prefix_->clear();
 		}
-		_entries.clear();
+		entries_.clear();
 	}
 
 #line 374 "frag.md"
 
 	bool empty() const {
 		if (
-			_prefix && ! _prefix->empty()
+			prefix_ && ! prefix_->empty()
 		) {
 			return false;
 		}
-		return _entries.empty();
+		return entries_.empty();
 	}
 
 #line 466 "frag.md"
@@ -511,19 +511,19 @@
 		
 #line 486 "frag.md"
 
-	if (_entries.empty()) {
-		_entries.emplace_back();
+	if (entries_.empty()) {
+		entries_.emplace_back();
 	} else if (
-		! _entries.back().canAdd(
+		! entries_.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.emplace_back();
+		entries_.emplace_back();
 	}
 
 #line 473 "frag.md"
 ;
-		_entries.back().add(
+		entries_.back().add(
 			value, file, line
 		);
 	}
@@ -538,19 +538,19 @@
 		
 #line 486 "frag.md"
 
-	if (_entries.empty()) {
-		_entries.emplace_back();
+	if (entries_.empty()) {
+		entries_.emplace_back();
 	} else if (
-		! _entries.back().canAdd(
+		! entries_.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.emplace_back();
+		entries_.emplace_back();
 	}
 
 #line 508 "frag.md"
 ;
-		_entries.back().add(
+		entries_.back().add(
 			ch, file, line
 		);
 	}
@@ -562,37 +562,37 @@
 #line 547 "frag.md"
 
 	auto begin() const {
-		return _entries.cbegin();
+		return entries_.cbegin();
 	}
 
 #line 556 "frag.md"
 
 	auto end() const {
-		return _entries.cend();
+		return entries_.cend();
 	}
 
 #line 565 "frag.md"
 
 	int expands() const {
-		return _expands + (_prefix ? _prefix->expands() : 0);
+		return expands_ + (prefix_ ? prefix_->expands() : 0);
 	}
 
 #line 574 "frag.md"
 
 	void addExpand() {
-		++_expands;
+		++expands_;
 	}
 
 #line 583 "frag.md"
 
 	int multiples() const {
-		return _multiples + (_prefix ? _prefix->multiples() : 0);
+		return multiples_ + (prefix_ ? prefix_->multiples() : 0);
 	}
 
 #line 592 "frag.md"
 
 	void addMultiple() {
-		++_multiples;
+		++multiples_;
 	}
 
 #line 601 "frag.md"
@@ -714,7 +714,7 @@
 		
 #line 538 "frag.md"
 
-	_entries.push_back(
+	entries_.push_back(
 		Frag_Entry { sub }
 	);
 
@@ -908,14 +908,14 @@
 #line 193 "read.md"
 
 	Open_Input(const std::string &path):
-		_path { path },
-		_file { path.c_str() }
+		path_ { path },
+		file_ { path.c_str() }
 	{}
 
 #line 203 "read.md"
 
 	const std::string &path() const {
-		return _path; 
+		return path_; 
 	}
 
 #line 211 "read.md"
@@ -939,21 +939,21 @@
 #line 269 "read.md"
 
 	void read_line(std::string &line) {
-		if (_file.is_open()) {
+		if (file_.is_open()) {
 			
 #line 282 "read.md"
 
-	if (std::getline(_file, line)) {
+	if (std::getline(file_, line)) {
 		
 #line 139 "input.md"
 
-	++_line;
+	++line_;
 
 #line 284 "read.md"
 ;
 		return;
 	}
-	_file.close();
+	file_.close();
 
 #line 272 "read.md"
 ;
@@ -968,7 +968,7 @@
 #line 130 "input.md"
 
 	int line() const {
-		return _line;
+		return line_;
 	}
 
 #line 152 "read.md"
@@ -977,12 +977,12 @@
 			
 #line 184 "read.md"
 
-	std::string _path;
-	std::ifstream _file;
+	std::string path_;
+	std::ifstream file_;
 
 #line 123 "input.md"
 
-	int _line = 0;
+	int line_ = 0;
 
 #line 154 "read.md"
 ;
@@ -1008,29 +1008,29 @@
 		
 #line 146 "input.md"
 
-	_used.clear();
-	_open.clear();
-	if (_roots.empty()) {
+	used_.clear();
+	open_.clear();
+	if (roots_.empty()) {
 		
 #line 159 "input.md"
 
 	if (std::filesystem::exists(
 		"index.md"
 	)) {
-		_roots.push_back("index.md");
+		roots_.push_back("index.md");
 	} else if (std::filesystem::exists(
 		"index.x"
 	)) {
-		_roots.push_back("index.x");
+		roots_.push_back("index.x");
 	} else {
 		std::cerr << "no input paths\n";
-		_roots.push_back("index.md");
+		roots_.push_back("index.md");
 	}
 
 #line 150 "input.md"
 ;
 	}
-	_current_path = _roots.begin();
+	current_path_ = roots_.begin();
 
 #line 111 "read.md"
 ;
@@ -1039,58 +1039,58 @@
 #line 14 "input.md"
 
 	auto &cur() {
-		ASSERT (! _open.empty());
-		return _open.back();
+		ASSERT (! open_.empty());
+		return open_.back();
 	}
 	auto &cur_input() {
-		return _used.find(cur().path())->second;
+		return used_.find(cur().path())->second;
 	}
 
 #line 27 "input.md"
 
 	auto begin() {
-		return _used.begin();
+		return used_.begin();
 	}
 
 #line 36 "input.md"
 
 	auto end() {
-		return _used.end();
+		return used_.end();
 	}
 
 #line 45 "input.md"
 
 	auto size() const {
-		return _used.size();
+		return used_.size();
 	}
 
 #line 54 "input.md"
 
 	void push(const std::string &path) {
 		std::string prev;
-		if (_open.size()) {
-			auto got { _used.find(_open.back().path()) };
-			if (got != _used.end()) {
-				prev = _open.back().path();
+		if (open_.size()) {
+			auto got { used_.find(open_.back().path()) };
+			if (got != used_.end()) {
+				prev = open_.back().path();
 			}
 		}
-		_used.insert(std::move(std::map<std::string, Input>::value_type(path, Input(prev))));
-		_open.emplace_back(path);
+		used_.insert(std::move(std::map<std::string, Input>::value_type(path, Input(prev))));
+		open_.emplace_back(path);
 	}
 	const std::string open_head() const {
-		ASSERT(! _open.empty());
-		return _open.back().path();
+		ASSERT(! open_.empty());
+		return open_.back().path();
 	}
 	Input &operator[](
 		const std::string &name
 	) {
-		return _used[name];
+		return used_[name];
 	}
 
 #line 81 "input.md"
 
 	void add(const std::string &path) {
-		_roots.push_back(path);
+		roots_.push_back(path);
 		push(path);
 	}
 
@@ -1102,7 +1102,7 @@
 		
 #line 108 "input.md"
 
-	if (_used.find(name) != _used.end()) {
+	if (used_.find(name) != used_.end()) {
 		return true;
 	}
 
@@ -1117,14 +1117,14 @@
 			
 #line 295 "read.md"
 
-	std::vector<std::string> _roots;
+	std::vector<std::string> roots_;
 	std::vector<std::string>::
-		const_iterator _current_path;
+		const_iterator current_path_;
 
 #line 305 "read.md"
 
-	std::vector<Open_Input> _open;
-	std::map<std::string, Input> _used;
+	std::vector<Open_Input> open_;
+	std::map<std::string, Input> used_;
 
 #line 26 "read.md"
 ;
@@ -1142,11 +1142,11 @@
 		
 #line 336 "read.md"
 
-	if (_open.empty()) {
+	if (open_.empty()) {
 		if (
-			_current_path != _roots.end()
+			current_path_ != roots_.end()
 		) {
-			push(*_current_path++);
+			push(*current_path_++);
 		} else {
 			break;
 		}
@@ -1155,14 +1155,14 @@
 #line 319 "read.md"
 ;
 		try {
-			_open.back().read_line(line);
+			open_.back().read_line(line);
 			return;
 		}
 		catch (const No_More_Lines &) {}
 		
 #line 351 "read.md"
 
-	auto &f { _used.find(_open.back().path())->second };
+	auto &f { used_.find(open_.back().path())->second };
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
 			RS::header,
@@ -1172,7 +1172,7 @@
 
 #line 325 "read.md"
 ;
-		_open.pop_back();
+		open_.pop_back();
 	}
 	throw No_More_Lines {};
 
@@ -3451,8 +3451,8 @@
 	if (! *this) {
 		res = cur;
 	} else {
-		res = _line;
-		if (_relative) { res += cur; }
+		res = line_;
+		if (relative_) { res += cur; }
 	}
 	if (res < 0) { res = 0; }
 	if (res > end) { res = end; }
@@ -3465,7 +3465,7 @@
 #line 40 "line.md"
 
 	operator bool() const {
-		return _line >= 0 || _relative;
+		return line_ >= 0 || relative_;
 	}
 
 #line 77 "line.md"
@@ -3505,14 +3505,14 @@
 			
 #line 31 "line.md"
 
-	int _line { -1 };
-	bool _relative { false };
+	int line_ { -1 };
+	bool relative_ { false };
 
 #line 67 "line.md"
 
 	Line(int line, bool relative):
-		_line { line },
-		_relative { relative }
+		line_ { line },
+		relative_ { relative }
 	{}
 
 #line 10 "line.md"
@@ -3530,34 +3530,34 @@
 #line 18 "range.md"
 
 	Line prev() {
-		return _prev ?: _last;
+		return prev_ ?: last_;
 	}
 
 #line 29 "range.md"
 
 	Line last() {
-		return _last;
+		return last_;
 	}
 
 #line 38 "range.md"
 
 	Range &operator<<(const Line &l) {
-		_prev = _last;
-		_last = l;
+		prev_ = last_;
+		last_ = l;
 		return *this;
 	}
 
 #line 49 "range.md"
 
 	operator bool() {
-		return _last;
+		return last_;
 	}
 
 #line 8 "range.md"
 ;
 		private:
-			Line _prev;
-			Line _last;
+			Line prev_;
+			Line last_;
 	};
 
 #line 131 "line.md"
@@ -4144,11 +4144,11 @@
 			std::map<std::string, std::string> meta_values;
 	};
 
-	std::unique_ptr<Frag_State> _all_frags = std::move(std::make_unique<Frag_State>(nullptr));
-	Frag_State *_cur_state = nullptr;
+	std::unique_ptr<Frag_State> all_frags_ = std::move(std::make_unique<Frag_State>(nullptr));
+	Frag_State *cur_state_ = nullptr;
 
 	Frag_State &cur_state() {
-		return _cur_state ? *_cur_state : *_all_frags;
+		return cur_state_ ? *cur_state_ : *all_frags_;
 	}
 
 	Frag *find_frag(Frag_State &state, const std::string &in, const std::string &key) {
@@ -4252,18 +4252,18 @@
 	}
 
 	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values) {
-		Frag_State &current = *_all_frags;
+		Frag_State &current = *all_frags_;
 		current.meta = meta;
 		current.meta_path = inputs.open_head();
 		current.meta_values = std::move(values);
 		current.meta_name = name;
-		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(_all_frags))) };
-		_all_frags = std::move(n);
-		_cur_state = nullptr;
+		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(all_frags_))) };
+		all_frags_ = std::move(n);
+		cur_state_ = nullptr;
 	}
 
 	void clear_frags() { 
-		_all_frags = std::move(std::make_unique<Frag_State>(nullptr)); _cur_state = nullptr;
+		all_frags_ = std::move(std::make_unique<Frag_State>(nullptr)); cur_state_ = nullptr;
 	}
 
 	void eval_meta(Frag_State &fs) {
@@ -4282,7 +4282,7 @@
 	std::string cur_path = fs.meta_path;
 	int cur_line { 1 };
 	auto &cmd_values = fs.meta_values;
-	_cur_state = &fs;
+	cur_state_ = &fs;
 	while (std::getline(in, line)) {
 		auto end = line.cend();
 		for (
@@ -4758,7 +4758,7 @@
 		}
 		process_char(frag, '\n', cur_path, cur_line);
 	}
-	_cur_state = nullptr;
+	cur_state_ = nullptr;
 
 #line 1497 "index.md"
 ;
@@ -4766,7 +4766,7 @@
 	}
 
 	void eval_metas() {
-		eval_meta(*_all_frags);
+		eval_meta(*all_frags_);
 	}
 
 #line 39 "index.md"

@@ -47,15 +47,15 @@
 		{ }
 	};
 	class Frag_Entry {
-		std::string _str;
-		std::string _file;
-		int _first_line = -1;
-		int _last_line;
-		Frag_Ref _sub = { std::string { }, std::string { }, true };
+		std::string str_;
+		std::string file_;
+		int first_line_ { -1 };
+		int last_line_;
+		Frag_Ref sub_ = { std::string {}, std::string {}, true };
 	public:
 		@put(entry methods);
 		const Frag_Ref &sub() const {
-			return _sub;
+			return sub_;
 		}
 	};
 @end(define frag)
@@ -73,7 +73,7 @@
 @def(entry methods)
 	Frag_Entry() { }
 	Frag_Entry(Frag_Ref sub):
-		_sub { sub }
+		sub_ { sub }
 	{ }
 @end(entry methods)
 ```
@@ -96,8 +96,8 @@
 
 ```
 @def(update state)
-	auto c { _str.end() };
-	auto b { _str.begin() };
+	auto c { str_.end() };
+	auto b { str_.begin() };
 	bool some_nl { false };
 	while (b != c) {
 		--c;
@@ -139,8 +139,8 @@
 		@put(check c-like);
 		std::ostringstream oss;
 		oss << "\n#line " <<
-			_first_line << " \"" <<
-			_file << "\"\n" << _str;
+			first_line_ << " \"" <<
+			file_ << "\"\n" << str_;
 		return oss.str();
 	}
 @end(entry methods)
@@ -156,10 +156,10 @@
 @def(check c-like)
 	bool old { state.in_macro };
 	update_state(state);
-	if (old) { return _str; }
-	if (! state.c_style) { return _str; }
-	if (_first_line < 1) { return _str; }
-	if (_str.empty()) { return _str; };
+	if (old) { return str_; }
+	if (! state.c_style) { return str_; }
+	if (first_line_ < 1) { return str_; }
+	if (str_.empty()) { return str_; };
 @end(check c-like)
 ```
 * C-like macros are not added, if the current line is part of a
@@ -175,7 +175,7 @@
 		int line
 	) {
 		@mul(copy file and line);
-		_str += ch;
+		str_ += ch;
 	}
 @end(entry methods)
 ```
@@ -185,12 +185,12 @@
 ```
 @def(copy file and line)
 	if (
-		_file.empty() || _first_line <= 0
+		file_.empty() || first_line_ <= 0
 	) {
-		_file = file;
-		_first_line = line;
+		file_ = file;
+		first_line_ = line;
 	}
-	_last_line = line;
+	last_line_ = line;
 @end(copy file and line)
 ```
 * if the entry is empty, the beginning of the range is updated
@@ -204,7 +204,7 @@
 		int line
 	) {
 		@mul(copy file and line);
-		_str += value;
+		str_ += value;
 	}
 @end(entry methods)
 ```
@@ -227,7 +227,7 @@
 ```
 @def(can add)
 	if (
-		! _file.empty() && file != _file
+		! file_.empty() && file != file_
 	) {
 		return false;
 	}
@@ -239,9 +239,9 @@
 ```
 @add(can add)
 	if (
-		_last_line > 0 &&
-		_last_line != line &&
-		_last_line + 1 != line
+		last_line_ > 0 &&
+		last_line_ != line &&
+		last_line_ + 1 != line
 	) {
 		return false;
 	}
@@ -267,11 +267,11 @@
 ```
 @add(define frag)
 	class Frag {
-		std::vector<Frag_Entry> _entries;
-		int _expands;
-		int _multiples;
-		Frag *_prefix;
-		const bool _is_meta;
+		std::vector<Frag_Entry> entries_;
+		int expands_;
+		int multiples_;
+		Frag *prefix_;
+		const bool is_meta_;
 	public:
 		const std::string name;
 		@put(frag methods);
@@ -322,15 +322,15 @@
 		const std::string &name,
 		Frag *prefix
 	):
-		_entries {},
-		_expands { 0 },
-		_multiples { 0 },
-		_prefix { prefix },
-		_is_meta { name.find('@') != std::string::npos },
+		entries_ {},
+		expands_ { 0 },
+		multiples_ { 0 },
+		prefix_ { prefix },
+		is_meta_ { name.find('@') != std::string::npos },
 		name { name }
 	{
-		if (isFile(name)) { ++_expands; }
-		if (cmd(name).size()) { ++_expands; }
+		if (isFile(name)) { ++expands_; }
+		if (cmd(name).size()) { ++expands_; }
 	}
 @end(frag methods)
 ```
@@ -340,10 +340,10 @@
 ```
 @add(frag methods)
 	const Frag *prefix() const {
-		return _prefix;
+		return prefix_;
 	}
 	Frag *prefix() {
-		return _prefix;
+		return prefix_;
 	}
 @end(frag methods)
 ```
@@ -352,7 +352,7 @@
 ```
 @add(frag methods)
 	bool is_meta() {
-		return _is_meta;
+		return is_meta_;
 	}
 @end(frag methods)
 ```
@@ -360,10 +360,10 @@
 ```
 @add(frag methods)
 	void clear() {
-		if (_prefix) {
-			_prefix->clear();
+		if (prefix_) {
+			prefix_->clear();
 		}
-		_entries.clear();
+		entries_.clear();
 	}
 @end(frag methods)
 ```
@@ -374,11 +374,11 @@
 @add(frag methods)
 	bool empty() const {
 		if (
-			_prefix && ! _prefix->empty()
+			prefix_ && ! prefix_->empty()
 		) {
 			return false;
 		}
-		return _entries.empty();
+		return entries_.empty();
 	}
 @end(frag methods)
 ```
@@ -471,7 +471,7 @@
 	) {
 		if (value.empty()) { return; }
 		@mul(assure frag entry);
-		_entries.back().add(
+		entries_.back().add(
 			value, file, line
 		);
 	}
@@ -484,14 +484,14 @@
 
 ```
 @def(assure frag entry)
-	if (_entries.empty()) {
-		_entries.emplace_back();
+	if (entries_.empty()) {
+		entries_.emplace_back();
 	} else if (
-		! _entries.back().canAdd(
+		! entries_.back().canAdd(
 			file, line
 		)
 	) {
-		_entries.emplace_back();
+		entries_.emplace_back();
 	}
 @end(assure frag entry)
 ```
@@ -506,7 +506,7 @@
 		int line
 	) {
 		@mul(assure frag entry);
-		_entries.back().add(
+		entries_.back().add(
 			ch, file, line
 		);
 	}
@@ -536,7 +536,7 @@
 
 ```
 @def(add frag entry)
-	_entries.push_back(
+	entries_.push_back(
 		Frag_Entry { sub }
 	);
 @end(add frag entry)
@@ -546,7 +546,7 @@
 ```
 @add(frag methods)
 	auto begin() const {
-		return _entries.cbegin();
+		return entries_.cbegin();
 	}
 @end(frag methods)
 ```
@@ -555,7 +555,7 @@
 ```
 @add(frag methods)
 	auto end() const {
-		return _entries.cend();
+		return entries_.cend();
 	}
 @end(frag methods)
 ```
@@ -564,7 +564,7 @@
 ```
 @add(frag methods)
 	int expands() const {
-		return _expands + (_prefix ? _prefix->expands() : 0);
+		return expands_ + (prefix_ ? prefix_->expands() : 0);
 	}
 @end(frag methods)
 ```
@@ -573,7 +573,7 @@
 ```
 @add(frag methods)
 	void addExpand() {
-		++_expands;
+		++expands_;
 	}
 @end(frag methods)
 ```
@@ -582,7 +582,7 @@
 ```
 @add(frag methods)
 	int multiples() const {
-		return _multiples + (_prefix ? _prefix->multiples() : 0);
+		return multiples_ + (prefix_ ? prefix_->multiples() : 0);
 	}
 @end(frag methods)
 ```
@@ -591,7 +591,7 @@
 ```
 @add(frag methods)
 	void addMultiple() {
-		++_multiples;
+		++multiples_;
 	}
 @end(frag methods)
 ```
