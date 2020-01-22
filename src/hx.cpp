@@ -146,11 +146,11 @@
 ,
 	notes
 
-#line 280 "blocks.md"
+#line 281 "blocks.md"
 ,
 	para
 
-#line 343 "blocks.md"
+#line 345 "blocks.md"
 ,
 	img
 
@@ -1446,10 +1446,17 @@
 			state == RS::header ||
 			state == RS::after_code ||
 			state == RS::notes
+			
+#line 352 "blocks.md"
+ ||
+	state == RS::img
+
+#line 226 "blocks.md"
+
 		) {
 			state = RS::notes;
 			
-#line 253 "blocks.md"
+#line 254 "blocks.md"
 
 	auto b { line.begin() };
 	auto e { line.end() };
@@ -1462,33 +1469,33 @@
 		b, e
 	);
 
-#line 228 "blocks.md"
+#line 229 "blocks.md"
 ;
 			break;
 		}
 	}
 
-#line 239 "blocks.md"
+#line 240 "blocks.md"
 
 	if (
 		line[0] == ' ' &&
 		state == RS::notes
 	) {
 		
-#line 271 "blocks.md"
+#line 272 "blocks.md"
 
 	blocks.back().notes.back() +=
 		line;
 
-#line 244 "blocks.md"
+#line 245 "blocks.md"
 ;
 		break;
 	}
 
-#line 288 "blocks.md"
+#line 289 "blocks.md"
 
 	
-#line 350 "blocks.md"
+#line 358 "blocks.md"
 
 	if (line[0] == '!') {
 		if (
@@ -1496,11 +1503,11 @@
 			state == RS::img
 		) {
 			
-#line 366 "blocks.md"
+#line 374 "blocks.md"
 
 	if (state == RS::new_element) {
 		
-#line 377 "blocks.md"
+#line 385 "blocks.md"
 
 	if (blocks.empty() ||
 		blocks.back().state != RS::img
@@ -1510,17 +1517,17 @@
 		});
 	}
 
-#line 368 "blocks.md"
+#line 376 "blocks.md"
 ;
 		blocks.back().value.push_back(
 			line
 		);
 	}
 
-#line 356 "blocks.md"
+#line 364 "blocks.md"
 ;
 			
-#line 389 "blocks.md"
+#line 397 "blocks.md"
 
 	if (line.size() < 3 || line[1] != '(' || line[line.size() - 1] != ')') {
 		std::cerr << "wrong line " << line << "\n";
@@ -1529,14 +1536,14 @@
 		blocks.back().value.push_back(line.substr(2, line.size() - 3));
 	}
 
-#line 357 "blocks.md"
+#line 365 "blocks.md"
 ;
 			state = RS::img;
 			break;
 		}
 	}
 
-#line 289 "blocks.md"
+#line 290 "blocks.md"
 ;
 	if (line[0] != ' ') {
 		if (
@@ -1544,11 +1551,11 @@
 			state == RS::para
 		) {
 			
-#line 306 "blocks.md"
+#line 307 "blocks.md"
 
 	if (state == RS::new_element) {
 		
-#line 319 "blocks.md"
+#line 320 "blocks.md"
 
 	if (blocks.empty() ||
 		blocks.back().state != RS::para
@@ -1558,24 +1565,25 @@
 		});
 	}
 
-#line 308 "blocks.md"
+#line 309 "blocks.md"
 ;
 		blocks.back().value.push_back(
 			line
 		);
 	}
 
-#line 295 "blocks.md"
+#line 296 "blocks.md"
 ;
 			
-#line 332 "blocks.md"
+#line 333 "blocks.md"
 
 	if (state == RS::para) {
 		blocks.back().value.back() +=
 			" " + line;
 	}
 
-#line 296 "blocks.md"
+
+#line 297 "blocks.md"
 ;
 			state = RS::para;
 			break;

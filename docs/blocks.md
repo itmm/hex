@@ -223,6 +223,7 @@
 			state == RS::header ||
 			state == RS::after_code ||
 			state == RS::notes
+			@put(can have notes)
 		) {
 			state = RS::notes;
 			@put(got note);
@@ -334,6 +335,7 @@
 		blocks.back().value.back() +=
 			" " + line;
 	}
+
 @end(add para)
 ```
 * if the current paragraph is extended, the line will be added to the
@@ -345,6 +347,12 @@
 @end(read states)
 ```
 * special state for image slides
+
+```
+@def(can have notes) ||
+	state == RS::img
+@end(can have notes)
+```
 
 ```
 @def(pre default states)

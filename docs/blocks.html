@@ -307,6 +307,7 @@ special state for handling states
 <span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ||<br/>
 <span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">after_code</span> ||<br/>
 <span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span><br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">can have notes</span>)</span><br/>
 <span class="in2"></span>) {<br/>
 <span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">notes</span>;<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">got note</span>)</span>;<br/>
@@ -444,6 +445,7 @@ if the last block is not a paragraph, then add one
 <span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">back</span>() +=<br/>
 <span class="in3"></span><span class="str">" "</span> + <span class="var">line</span>;<br/>
 <span class="in1"></span>}<br/>
+<br/>
 <span class="macro">@end(<span class="name">add para</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -459,6 +461,13 @@ if the current paragraph is extended, the line will be added to the  last paragr
 <ul><li>
 special state for image slides
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">can have notes</span>)</span> ||<br/>
+<span class="in1"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span><br/>
+<span class="macro">@end(<span class="name">can have notes</span>)</span><br/>
+</code></div>
 </div>
 <div><div>
 <code>
