@@ -1189,7 +1189,7 @@
 			HtmlState::afterSlides
 	) {
 		out << "<div class=\"slides\">\n";
-		status.state = HtmlState::afterSlide;
+		status.state = HtmlState::inSlide;
 	}
 @end(open img page)
 ```
@@ -1197,11 +1197,6 @@
 
 ```
 @def(process img)
-	if (
-		status.state == HtmlState::inSlide
-	) {
-		out << "</div>\n";
-	}
 	out << "<div><div>\n";
 	out	<< "<img src=\"" << img << "\">\n";
 	out << "</div>\n";

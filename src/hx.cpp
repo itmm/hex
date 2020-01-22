@@ -3331,7 +3331,7 @@
 			HtmlState::afterSlides
 	) {
 		out << "<div class=\"slides\">\n";
-		status.state = HtmlState::afterSlide;
+		status.state = HtmlState::inSlide;
 	}
 
 #line 1171 "html.md"
@@ -3340,11 +3340,6 @@
 			
 #line 1199 "html.md"
 
-	if (
-		status.state == HtmlState::inSlide
-	) {
-		out << "</div>\n";
-	}
 	out << "<div><div>\n";
 	out	<< "<img src=\"" << img << "\">\n";
 	out << "</div>\n";

@@ -1534,7 +1534,7 @@ write code and notes
 <span class="in3"></span><span class="type">HtmlState</span>::<span class="var">afterSlides</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">afterSlide</span>;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">open img page</span>)</span><br/>
 </code></div>
@@ -1545,11 +1545,6 @@ close a previous slide, if it is open
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process img</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inSlide</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
-<span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span>	&lt;&lt; <span class="str">"&lt;img src=\""</span> &lt;&lt; <span class="var">img</span> &lt;&lt; <span class="str">"\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
