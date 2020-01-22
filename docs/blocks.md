@@ -398,9 +398,7 @@
 	if (line.size() < 3 || line[1] != '(' || line[line.size() - 1] != ')') {
 		std::cerr << "wrong line " << line << "\n";
 	}
-	if (state == RS::img) {
-		blocks.back().value.push_back(line.substr(2, line.size() - 3));
-	}
+	blocks.back().value.push_back(line.substr(2, line.size() - 3));
 @end(add img)
 ```
 

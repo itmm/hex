@@ -517,9 +517,7 @@ special state for image slides
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">size</span>() &lt; <span class="num">3</span> || <span class="var">line</span>[<span class="num">1</span>] != <span class="str">'('</span> || <span class="var">line</span>[<span class="var">line</span>.<span class="fn">size</span>() - <span class="num">1</span>] != <span class="str">')'</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"wrong line "</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">"\n"</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span>) {<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>.<span class="fn">substr</span>(<span class="num">2</span>, <span class="var">line</span>.<span class="fn">size</span>() - <span class="num">3</span>));<br/>
-<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>.<span class="fn">substr</span>(<span class="num">2</span>, <span class="var">line</span>.<span class="fn">size</span>() - <span class="num">3</span>));<br/>
 <span class="macro">@end(<span class="name">add img</span>)</span><br/>
 </code></div>
 </div>
