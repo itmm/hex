@@ -1506,5 +1506,54 @@ open paragraph
 process content with embedded code
 </li></ul>
 </div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">process block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">open img page</span>)</span>;<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">img</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">process img</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close slide</span>)</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">process block</span>)</span><br/>
+</code></div>
+<ul><li>
+write code and notes
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">open img page</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> ==<br/>
+<span class="in3"></span><span class="type">HtmlState</span>::<span class="var">afterSlides</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">open img page</span>)</span><br/>
+</code></div>
+<ul><li>
+close a previous slide, if it is open
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">process img</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> == <span class="type">HtmlState</span>::<span class="var">inSlide</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inSlide</span>;<br/>
+<span class="in1"></span><span class="var">out</span>	&lt;&lt; <span class="str">"&lt;img src=\""</span> &lt;&lt; <span class="var">img</span> &lt;&lt; <span class="str">"\"&gt;\n"</span>;<br/>
+<span class="macro">@end(<span class="name">process img</span>)</span><br/>
+</code></div>
+</div>
 </body>
 </html>

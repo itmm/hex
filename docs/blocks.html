@@ -118,6 +118,7 @@ new state for parsing headers
 <span class="in2"></span>(<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
 <span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>)<br/>
 <span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="type">bool</span> <span class="var">was_new</span> { <span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> };<br/>
 <span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">header</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">got header line</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
@@ -196,7 +197,7 @@ get reference to <code><span class="type">Block</span></code>s
 <span class="in2"></span>; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">'#'</span>; ++<span class="var">b</span>, ++<span class="var">l</span><br/>
 <span class="in1"></span>) {}<br/>
 <span class="in1"></span><span class="keyword">for</span> (; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">' '</span>; ++<span class="var">b</span>) {}<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">was_new</span> || <span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
 <span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">header</span> ||<br/>
 <span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">size</span>()<br/>
 <span class="in1"></span>) {<br/>
@@ -385,6 +386,7 @@ these can be used to describe functionality outside of simple slides
 <div><div>
 <code>
 <span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">pre default states</span>)</span>;<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] != <span class="str">' '</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<br/>
 <span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
@@ -447,6 +449,70 @@ if the last block is not a paragraph, then add one
 <ul><li>
 if the current paragraph is extended, the line will be added to the  last paragraph of the last block
 </li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
+<span class="in1"></span><span class="var">img</span><br/>
+<span class="macro">@end(<span class="name">read states</span>)</span><br/>
+</code></div>
+<ul><li>
+special state for image slides
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">pre default states</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'!'</span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
+<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span><br/>
+<span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">create img</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">add img</span>)</span>;<br/>
+<span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">img</span>;<br/>
+<span class="in3"></span><span class="keyword">break</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">pre default states</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">create img</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span>) {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">create img block</span>)</span>;<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<br/>
+<span class="in3"></span><span class="var">line</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">create img</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">create img block</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">img</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
+<span class="in3"></span><span class="var">RS</span>::<span class="var">img</span>, {}, {}, <span class="num">0</span><br/>
+<span class="in2"></span>});<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">create img block</span>)</span><br/>
+</code></div>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">add img</span>)</span><br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">size</span>() &lt; <span class="num">3</span> || <span class="var">line</span>[<span class="num">1</span>] != <span class="str">'('</span> || <span class="var">line</span>[<span class="var">line</span>.<span class="fn">size</span>() - <span class="num">1</span>] != <span class="str">')'</span>) {<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"wrong line "</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">"\n"</span>;<br/>
+<span class="in1"></span>}<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span>) {<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>.<span class="fn">substr</span>(<span class="num">2</span>, <span class="var">line</span>.<span class="fn">size</span>() - <span class="num">3</span>));<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">add img</span>)</span><br/>
+</code></div>
 </div>
 </body>
 </html>

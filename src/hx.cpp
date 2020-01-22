@@ -13,7 +13,7 @@
 
 	#include <fstream>
 
-#line 97 "blocks.md"
+#line 98 "blocks.md"
 
 	#include <vector>
 
@@ -137,18 +137,22 @@
 ,
 	header
 
-#line 157 "blocks.md"
+#line 158 "blocks.md"
 ,
 	code,
 	after_code
 
-#line 212 "blocks.md"
+#line 213 "blocks.md"
 ,
 	notes
 
-#line 279 "blocks.md"
+#line 280 "blocks.md"
 ,
 	para
+
+#line 343 "blocks.md"
+,
+	img
 
 #line 17 "blocks.md"
 
@@ -158,7 +162,7 @@
 
 	using RS = Read_State;
 
-#line 104 "blocks.md"
+#line 105 "blocks.md"
 
 	struct Block {
 		Read_State state;
@@ -891,7 +895,7 @@
 		Input &&
 	) = default;
 
-#line 116 "blocks.md"
+#line 117 "blocks.md"
 
 	std::vector<Block> blocks;
 
@@ -1340,7 +1344,7 @@
 	do {
 		auto &state = inputs.cur().state;
 		
-#line 123 "blocks.md"
+#line 124 "blocks.md"
 
 	auto &blocks =
 		inputs.cur_input().blocks;
@@ -1348,7 +1352,7 @@
 #line 44 "blocks.md"
 ;
 		
-#line 165 "blocks.md"
+#line 166 "blocks.md"
 
 	if (
 		line == "```" &&
@@ -1356,31 +1360,31 @@
 	) {
 		state = RS::code;
 		
-#line 194 "blocks.md"
+#line 195 "blocks.md"
 
 	blocks.push_back({
 		RS::code, {}, {}, 0
 	});
 
-#line 171 "blocks.md"
+#line 172 "blocks.md"
 ;
 		break;
 	}
 
-#line 179 "blocks.md"
+#line 180 "blocks.md"
 
 	if (state == RS::code) {
 		if (line == "```") {
 			state = RS::after_code;
 		} else {
 			
-#line 203 "blocks.md"
+#line 204 "blocks.md"
 
 	blocks.back().value.push_back(
 		line
 	);
 
-#line 184 "blocks.md"
+#line 185 "blocks.md"
 ;
 		}
 		break;
@@ -1406,9 +1410,10 @@
 		(state == RS::new_element ||
 			state == RS::header)
 	) {
+		bool was_new { state == RS::new_element };
 		state = RS::header;
 		
-#line 131 "blocks.md"
+#line 132 "blocks.md"
 
 	auto b { line.begin() };
 	auto e { line.end() };
@@ -1417,7 +1422,7 @@
 		; b != e && *b == '#'; ++b, ++l
 	) {}
 	for (; b != e && *b == ' '; ++b) {}
-	if (blocks.empty() ||
+	if (was_new || blocks.empty() ||
 		blocks.back().state != RS::header ||
 		blocks.back().notes.size()
 	) {
@@ -1429,12 +1434,12 @@
 		b, e
 	);
 
-#line 81 "blocks.md"
+#line 82 "blocks.md"
 ;
 		break;
 	}
 
-#line 219 "blocks.md"
+#line 220 "blocks.md"
 
 	if (line[0] == '*') {
 		if (
@@ -1444,7 +1449,7 @@
 		) {
 			state = RS::notes;
 			
-#line 252 "blocks.md"
+#line 253 "blocks.md"
 
 	auto b { line.begin() };
 	auto e { line.end() };
@@ -1457,42 +1462,93 @@
 		b, e
 	);
 
-#line 227 "blocks.md"
+#line 228 "blocks.md"
 ;
 			break;
 		}
 	}
 
-#line 238 "blocks.md"
+#line 239 "blocks.md"
 
 	if (
 		line[0] == ' ' &&
 		state == RS::notes
 	) {
 		
-#line 270 "blocks.md"
+#line 271 "blocks.md"
 
 	blocks.back().notes.back() +=
 		line;
 
-#line 243 "blocks.md"
+#line 244 "blocks.md"
 ;
 		break;
 	}
 
-#line 287 "blocks.md"
+#line 288 "blocks.md"
 
+	
+#line 350 "blocks.md"
+
+	if (line[0] == '!') {
+		if (
+			state == RS::new_element ||
+			state == RS::img
+		) {
+			
+#line 366 "blocks.md"
+
+	if (state == RS::new_element) {
+		
+#line 377 "blocks.md"
+
+	if (blocks.empty() ||
+		blocks.back().state != RS::img
+	) {
+		blocks.push_back({
+			RS::img, {}, {}, 0
+		});
+	}
+
+#line 368 "blocks.md"
+;
+		blocks.back().value.push_back(
+			line
+		);
+	}
+
+#line 356 "blocks.md"
+;
+			
+#line 389 "blocks.md"
+
+	if (line.size() < 3 || line[1] != '(' || line[line.size() - 1] != ')') {
+		std::cerr << "wrong line " << line << "\n";
+	}
+	if (state == RS::img) {
+		blocks.back().value.push_back(line.substr(2, line.size() - 3));
+	}
+
+#line 357 "blocks.md"
+;
+			state = RS::img;
+			break;
+		}
+	}
+
+#line 289 "blocks.md"
+;
 	if (line[0] != ' ') {
 		if (
 			state == RS::new_element ||
 			state == RS::para
 		) {
 			
-#line 304 "blocks.md"
+#line 306 "blocks.md"
 
 	if (state == RS::new_element) {
 		
-#line 317 "blocks.md"
+#line 319 "blocks.md"
 
 	if (blocks.empty() ||
 		blocks.back().state != RS::para
@@ -1502,24 +1558,24 @@
 		});
 	}
 
-#line 306 "blocks.md"
+#line 308 "blocks.md"
 ;
 		blocks.back().value.push_back(
 			line
 		);
 	}
 
-#line 293 "blocks.md"
+#line 295 "blocks.md"
 ;
 			
-#line 330 "blocks.md"
+#line 332 "blocks.md"
 
 	if (state == RS::para) {
 		blocks.back().value.back() +=
 			" " + line;
 	}
 
-#line 294 "blocks.md"
+#line 296 "blocks.md"
 ;
 			state = RS::para;
 			break;
@@ -1529,7 +1585,7 @@
 #line 47 "blocks.md"
 ;
 		
-#line 90 "blocks.md"
+#line 91 "blocks.md"
 
 	std::cerr << "!! " << line << '\n';
 
@@ -3258,6 +3314,102 @@
 	}
 
 #line 134 "html.md"
+;
+	}
+
+#line 1169 "html.md"
+
+	if (b.state == RS::img) {
+		
+#line 1186 "html.md"
+
+	if (
+		status.state ==
+			HtmlState::afterSlides
+	) {
+		out << "<div class=\"slides\">\n";
+	}
+
+#line 1171 "html.md"
+;
+		for (const auto &img : b.value) {
+			
+#line 1198 "html.md"
+
+	if (
+		status.state == HtmlState::inSlide
+	) {
+		out << "</div>\n";
+	}
+	out << "<div><div>\n";
+	status.state = HtmlState::inSlide;
+	out	<< "<img src=\"" << img << "\">\n";
+
+#line 1173 "html.md"
+;
+		}
+		for (const auto &note : b.notes) {
+			
+#line 989 "html.md"
+
+	auto end = note.end();
+	auto begin = note.begin();
+
+#line 997 "html.md"
+
+	if (
+		status.state != HtmlState::inNotes
+	) {
+		
+#line 1014 "html.md"
+
+	if (
+		status.state != HtmlState::inSlide
+	) {
+		out << "<div>\n";
+	}
+	status.state = HtmlState::inNotes;
+	out << "<ul><li>\n";
+
+#line 1001 "html.md"
+;
+	} else {
+		out << "</li><li>\n";
+	}
+	process_content(out, begin, end);
+	out << '\n';
+
+#line 1176 "html.md"
+;
+		}
+		
+#line 978 "html.md"
+
+	if (
+		status.state == HtmlState::inNotes
+	) {
+		out << "</li></ul>\n";
+	}
+
+#line 1127 "html.md"
+
+	if (
+		status.state == HtmlState::inPara
+	) {
+		out << "</p>\n";
+		status.state =
+			HtmlState::afterSlides;
+	}
+
+#line 1178 "html.md"
+;
+		
+#line 141 "html.md"
+
+	out << "</div>\n";
+	status.state = HtmlState::afterSlide;
+
+#line 1179 "html.md"
 ;
 	}
 

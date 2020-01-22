@@ -1164,3 +1164,46 @@
 ```
 * open paragraph
 * process content with embedded code
+
+```
+@add(process block)
+	if (b.state == RS::img) {
+		@put(open img page);
+		for (const auto &img : b.value) {
+			@put(process img);
+		}
+		for (const auto &note : b.notes) {
+			@mul(process note);
+		}
+		@mul(close specials);
+		@mul(close slide);
+	}
+@end(process block)
+```
+* write code and notes
+
+```
+@def(open img page)
+	if (
+		status.state ==
+			HtmlState::afterSlides
+	) {
+		out << "<div class=\"slides\">\n";
+	}
+@end(open img page)
+```
+* close a previous slide, if it is open
+
+```
+@def(process img)
+	if (
+		status.state == HtmlState::inSlide
+	) {
+		out << "</div>\n";
+	}
+	out << "<div><div>\n";
+	status.state = HtmlState::inSlide;
+	out	<< "<img src=\"" << img << "\">\n";
+@end(process img)
+```
+

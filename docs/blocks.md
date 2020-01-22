@@ -77,6 +77,7 @@
 		(state == RS::new_element ||
 			state == RS::header)
 	) {
+		bool was_new { state == RS::new_element };
 		state = RS::header;
 		@put(got header line);
 		break;
@@ -136,7 +137,7 @@
 		; b != e && *b == '#'; ++b, ++l
 	) {}
 	for (; b != e && *b == ' '; ++b) {}
-	if (blocks.empty() ||
+	if (was_new || blocks.empty() ||
 		blocks.back().state != RS::header ||
 		blocks.back().notes.size()
 	) {
@@ -285,6 +286,7 @@
 
 ```
 @add(states without newlines)
+	@put(pre default states);
 	if (line[0] != ' ') {
 		if (
 			state == RS::new_element ||
@@ -336,4 +338,61 @@
 ```
 * if the current paragraph is extended, the line will be added to the
   last paragraph of the last block
+
+```
+@add(read states),
+	img
+@end(read states)
+```
+* special state for image slides
+
+```
+@def(pre default states)
+	if (line[0] == '!') {
+		if (
+			state == RS::new_element ||
+			state == RS::img
+		) {
+			@put(create img);
+			@put(add img);
+			state = RS::img;
+			break;
+		}
+	}
+@end(pre default states)
+```
+
+```
+@def(create img)
+	if (state == RS::new_element) {
+		@put(create img block);
+		blocks.back().value.push_back(
+			line
+		);
+	}
+@end(create img)
+```
+
+```
+@def(create img block)
+	if (blocks.empty() ||
+		blocks.back().state != RS::img
+	) {
+		blocks.push_back({
+			RS::img, {}, {}, 0
+		});
+	}
+@end(create img block)
+```
+
+```
+@def(add img)
+	if (line.size() < 3 || line[1] != '(' || line[line.size() - 1] != ')') {
+		std::cerr << "wrong line " << line << "\n";
+	}
+	if (state == RS::img) {
+		blocks.back().value.push_back(line.substr(2, line.size() - 3));
+	}
+@end(add img)
+```
 
