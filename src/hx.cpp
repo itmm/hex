@@ -3331,13 +3331,14 @@
 			HtmlState::afterSlides
 	) {
 		out << "<div class=\"slides\">\n";
+		status.state = HtmlState::afterSlide;
 	}
 
 #line 1171 "html.md"
 ;
 		for (const auto &img : b.value) {
 			
-#line 1198 "html.md"
+#line 1199 "html.md"
 
 	if (
 		status.state == HtmlState::inSlide
@@ -3345,8 +3346,8 @@
 		out << "</div>\n";
 	}
 	out << "<div><div>\n";
-	status.state = HtmlState::inSlide;
 	out	<< "<img src=\"" << img << "\">\n";
+	out << "</div>\n";
 
 #line 1173 "html.md"
 ;
