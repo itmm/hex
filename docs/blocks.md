@@ -374,9 +374,6 @@
 @def(create img)
 	if (state == RS::new_element) {
 		@put(create img block);
-		blocks.back().value.push_back(
-			line
-		);
 	}
 @end(create img)
 ```

@@ -1507,7 +1507,7 @@
 
 	if (state == RS::new_element) {
 		
-#line 385 "blocks.md"
+#line 382 "blocks.md"
 
 	if (blocks.empty() ||
 		blocks.back().state != RS::img
@@ -1519,15 +1519,12 @@
 
 #line 376 "blocks.md"
 ;
-		blocks.back().value.push_back(
-			line
-		);
 	}
 
 #line 364 "blocks.md"
 ;
 			
-#line 397 "blocks.md"
+#line 394 "blocks.md"
 
 	if (line.size() < 3 || line[1] != '(' || line[line.size() - 1] != ')') {
 		std::cerr << "wrong line " << line << "\n";
