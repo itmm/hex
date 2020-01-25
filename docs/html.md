@@ -154,8 +154,8 @@
 	@put(close previous HTML page);
 	@mul(write header tag);
 	out << "<div class=\"slides\">\n";
-	out << "<div>\n";
-	out << "<div><div class=\"headers\">\n";
+	out << "<div class=\"page\">\n";
+	out << "<div class=\"slide\"><div class=\"headers\">\n";
 	@mul(write header tag);
 	for (unsigned i = 1; i < b.value.size(); ++i)
 	{
@@ -348,7 +348,7 @@
 	) {
 		out << "</div>\n";
 	}
-	out << "<div><div>\n";
+	out << "<div class=\"page\"><div class=\"slide\">\n";
 	out << "<code>\n";
 	status.state = HtmlState::inCode;
 @end(open code page)
@@ -1015,7 +1015,7 @@
 	if (
 		status.state != HtmlState::inSlide
 	) {
-		out << "<div>\n";
+		out << "<div class=\"page\">\n";
 	}
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";
@@ -1197,7 +1197,7 @@
 
 ```
 @def(process img)
-	out << "<div><div>\n";
+	out << "<div class=\"page\"><div class=\"slide\">\n";
 	out	<< "<img src=\"" << img << "\">\n";
 	out << "</div>\n";
 @end(process img)

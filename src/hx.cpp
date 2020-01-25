@@ -3039,8 +3039,8 @@
 #line 155 "html.md"
 ;
 	out << "<div class=\"slides\">\n";
-	out << "<div>\n";
-	out << "<div><div class=\"headers\">\n";
+	out << "<div class=\"page\">\n";
+	out << "<div class=\"slide\"><div class=\"headers\">\n";
 	
 #line 265 "html.md"
  {
@@ -3085,7 +3085,7 @@
 	if (
 		status.state != HtmlState::inSlide
 	) {
-		out << "<div>\n";
+		out << "<div class=\"page\">\n";
 	}
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";
@@ -3155,7 +3155,7 @@
 	) {
 		out << "</div>\n";
 	}
-	out << "<div><div>\n";
+	out << "<div class=\"page\"><div class=\"slide\">\n";
 	out << "<code>\n";
 	status.state = HtmlState::inCode;
 
@@ -3199,7 +3199,7 @@
 	if (
 		status.state != HtmlState::inSlide
 	) {
-		out << "<div>\n";
+		out << "<div class=\"page\">\n";
 	}
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";
@@ -3340,7 +3340,7 @@
 			
 #line 1199 "html.md"
 
-	out << "<div><div>\n";
+	out << "<div class=\"page\"><div class=\"slide\">\n";
 	out	<< "<img src=\"" << img << "\">\n";
 	out << "</div>\n";
 
@@ -3365,7 +3365,7 @@
 	if (
 		status.state != HtmlState::inSlide
 	) {
-		out << "<div>\n";
+		out << "<div class=\"page\">\n";
 	}
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";

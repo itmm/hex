@@ -215,8 +215,8 @@ writes heading entry
 <span class="in1"></span><span class="macro">@put(<span class="name">close previous HTML page</span>)</span>;<br/>
 <span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div class=\"headers\"&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slide\"&gt;&lt;div class=\"headers\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">unsigned</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">b</span>.<span class="var">value</span>.<span class="fn">size</span>(); ++<span class="var">i</span>)<br/>
 <span class="in1"></span>{<br/>
@@ -466,7 +466,7 @@ close a previous slide, if it is open
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;&lt;div class=\"slide\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;code&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inCode</span>;<br/>
 <span class="macro">@end(<span class="name">open code page</span>)</span><br/>
@@ -1311,7 +1311,7 @@ and write note
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inSlide</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;\n"</span>;<br/>
+<span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;\n"</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inNotes</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;ul&gt;&lt;li&gt;\n"</span>;<br/>
@@ -1545,7 +1545,7 @@ close a previous slide, if it is open
 <div><div>
 <code>
 <span class="macro">@def(<span class="name">process img</span>)</span><br/>
-<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div&gt;&lt;div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;&lt;div class=\"slide\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span>	&lt;&lt; <span class="str">"&lt;img src=\""</span> &lt;&lt; <span class="var">img</span> &lt;&lt; <span class="str">"\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">process img</span>)</span><br/>
