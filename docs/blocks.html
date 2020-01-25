@@ -499,7 +499,8 @@ special state for image slides
 <code>
 <span class="macro">@def(<span class="name">create img block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">img</span><br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">img</span> ||<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">size</span>()<br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
 <span class="in3"></span><span class="var">RS</span>::<span class="var">img</span>, {}, {}, <span class="num">0</span><br/>

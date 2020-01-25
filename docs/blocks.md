@@ -381,7 +381,8 @@
 ```
 @def(create img block)
 	if (blocks.empty() ||
-		blocks.back().state != RS::img
+		blocks.back().state != RS::img ||
+		blocks.back().notes.size()
 	) {
 		blocks.push_back({
 			RS::img, {}, {}, 0

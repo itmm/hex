@@ -1510,7 +1510,8 @@
 #line 382 "blocks.md"
 
 	if (blocks.empty() ||
-		blocks.back().state != RS::img
+		blocks.back().state != RS::img ||
+		blocks.back().notes.size()
 	) {
 		blocks.push_back({
 			RS::img, {}, {}, 0
@@ -1524,7 +1525,7 @@
 #line 364 "blocks.md"
 ;
 			
-#line 394 "blocks.md"
+#line 395 "blocks.md"
 
 	if (line.size() < 3 || line[1] != '(' || line[line.size() - 1] != ')') {
 		std::cerr << "wrong line " << line << "\n";
