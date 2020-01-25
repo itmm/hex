@@ -7,8 +7,8 @@
 <body>
 <h1>Separating input into blocks</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Separating input into blocks</h1>
 </div></div>
 <ul><li>
@@ -19,7 +19,7 @@ each block has a type, a value and optional notes.
 blocks are separated by empty lines.
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span><br/>
@@ -29,7 +29,7 @@ blocks are separated by empty lines.
 this file uses a local shortcut for the global fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="type">enum</span> <span class="keyword">class</span> <span class="type">Read_State</span> {<br/>
@@ -44,7 +44,7 @@ the <code><span class="type">Read_State</span></code> identifies the mode that t
 the default <code><span class="var">new_element</span></code> signals that a new block is starting
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="type">RS</span> = <span class="type">Read_State</span>;<br/>
@@ -54,7 +54,7 @@ the default <code><span class="var">new_element</span></code> signals that a new
 <code><span class="var">RS</span></code> is a shortcut for the <code><span class="type">Read_State</span></code>.
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Read_State</span> <span class="var">state</span> = <span class="type">RS</span>::<span class="var">new_element</span>;<br/>
@@ -66,7 +66,7 @@ each input element has a <code><span class="type">Read_State</span></code>.
 the initial value is <code><span class="var">new_element</span></code>.
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span><span class="var">do</span> {<br/>
@@ -87,7 +87,7 @@ the loop will not iterate
 but intermediate steps are allowed to <code><span class="keyword">break</span></code> out of the loop
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">handle newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">empty</span>()) {<br/>
@@ -100,7 +100,7 @@ but intermediate steps are allowed to <code><span class="keyword">break</span></
 if the line is empty, start a new element
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">read states</span>)</span>,<br/>
 <span class="in1"></span><span class="var">header</span><br/>
@@ -110,7 +110,7 @@ if the line is empty, start a new element
 new state for parsing headers
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">states without newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -131,7 +131,7 @@ headers start if the previous line is empty
 and the current line starts with <code><span class="keyword">#</span></code>
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">unknown line</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"!! "</span> &lt;&lt; <span class="var">line</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
@@ -141,7 +141,7 @@ and the current line starts with <code><span class="keyword">#</span></code>
 write error message for unrecognized line
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">vector</span>&gt;<br/>
@@ -151,7 +151,7 @@ write error message for unrecognized line
 <code><span class="type">Block</span></code> has <code><span class="type">std</span>::<span class="type">vector</span></code> of strings
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="type">struct</span> <span class="type">Block</span> {<br/>
@@ -166,7 +166,7 @@ write error message for unrecognized line
 <code><span class="type">Block</span></code> contains values and notes
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Block</span>&gt; <span class="var">blocks</span>;<br/>
@@ -176,7 +176,7 @@ write error message for unrecognized line
 <code><span class="type">Input</span></code> contains container of <code><span class="type">Block</span></code>s
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">line vars</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="var">blocks</span> =<br/>
@@ -187,7 +187,7 @@ write error message for unrecognized line
 get reference to <code><span class="type">Block</span></code>s
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">got header line</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">line</span>.<span class="fn">begin</span>() };<br/>
@@ -218,7 +218,7 @@ skip spaces
 rest is header title
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
 <span class="in1"></span><span class="var">code</span>,<br/>
@@ -229,7 +229,7 @@ rest is header title
 new states for parsing code blocks
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">states with newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -246,7 +246,7 @@ new states for parsing code blocks
 recognize start of code block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">states with newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
@@ -265,7 +265,7 @@ when in code block, distinguish between ending of code block
 and the processing of a code line
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">enter code block</span>)</span><br/>
 <span class="in1"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
@@ -277,7 +277,7 @@ and the processing of a code line
 add a new code block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">got code line</span>)</span><br/>
 <span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<br/>
@@ -289,7 +289,7 @@ add a new code block
 add the code line
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
 <span class="in1"></span><span class="var">notes</span><br/>
@@ -299,7 +299,7 @@ add the code line
 special state for handling states
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'*'</span>) {<br/>
@@ -322,7 +322,7 @@ a note starts with a line that has a <code>*</code> as its first character
 the line must directly follow a header, a code section or be part of a  note section
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -340,7 +340,7 @@ longer notes can be continued over multiple lines
 the additional lines need to start with a space
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">got note</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">line</span>.<span class="fn">begin</span>() };<br/>
@@ -361,7 +361,7 @@ to process a note all <code>*</code>s and spaces at the beginning of the line ar
 the rest is added as a note
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">add note</span>)</span><br/>
 <span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">back</span>() +=<br/>
@@ -372,7 +372,7 @@ the rest is added as a note
 if a note is continued over multiple lines, the additional lines are  added to the last note
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
 <span class="in1"></span><span class="var">para</span><br/>
@@ -384,7 +384,7 @@ special state for non-slide paragraphs
 these can be used to describe functionality outside of simple slides
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">pre default states</span>)</span>;<br/>
@@ -405,7 +405,7 @@ these can be used to describe functionality outside of simple slides
 paragraphs are any other line that does not start with a space
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">create para</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span>) {<br/>
@@ -422,7 +422,7 @@ needs to add a new block, if the last block is no paragraph block
 then add the line to the last block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">create para block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
@@ -438,7 +438,7 @@ then add the line to the last block
 if the last block is not a paragraph, then add one
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">add para</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
@@ -452,7 +452,7 @@ if the last block is not a paragraph, then add one
 if the current paragraph is extended, the line will be added to the  last paragraph of the last block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">read states</span>)</span>,<br/>
 <span class="in1"></span><span class="var">img</span><br/>
@@ -462,14 +462,14 @@ if the current paragraph is extended, the line will be added to the  last paragr
 special state for image slides
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">can have notes</span>)</span> ||<br/>
 <span class="in1"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span><br/>
 <span class="macro">@end(<span class="name">can have notes</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">pre default states</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'!'</span>) {<br/>
@@ -486,7 +486,7 @@ special state for image slides
 <span class="macro">@end(<span class="name">pre default states</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">create img</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span>) {<br/>
@@ -495,7 +495,7 @@ special state for image slides
 <span class="macro">@end(<span class="name">create img</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">create img block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
@@ -508,7 +508,7 @@ special state for image slides
 <span class="macro">@end(<span class="name">create img block</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">add img</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">size</span>() &lt; <span class="num">3</span> || <span class="var">line</span>[<span class="num">1</span>] != <span class="str">'('</span> || <span class="var">line</span>[<span class="var">line</span>.<span class="fn">size</span>() - <span class="num">1</span>] != <span class="str">')'</span>) {<br/>

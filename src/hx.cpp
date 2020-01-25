@@ -3331,8 +3331,8 @@
 			HtmlState::afterSlides
 	) {
 		out << "<div class=\"slides\">\n";
-		status.state = HtmlState::inSlide;
 	}
+	status.state = HtmlState::inSlide;
 
 #line 1171 "html.md"
 ;

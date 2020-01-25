@@ -7,8 +7,8 @@
 <body>
 <h1>HTML Extractor</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>HTML Extractor</h1>
 </div></div>
 <ul><li>
@@ -28,8 +28,8 @@ Have fun!
 </div>
 <h2>What is <code><span class="var">hx</span></code>?</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>What is <code><span class="var">hx</span></code>?</h2>
 </div></div>
 <ul><li>
@@ -43,8 +43,8 @@ but also it generates a HTML documentation like the one you are  currently readi
 </div>
 <h2>Why use Markdown document?</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Why use Markdown document?</h2>
 </div></div>
 <ul><li>
@@ -60,8 +60,8 @@ these slides should be decorated with notes
 </div>
 <h2><code><span class="var">SWP</span></code> ≠ Literate Programming</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2><code><span class="var">SWP</span></code> ≠ Literate Programming</h2>
 </div></div>
 <ul><li>
@@ -79,8 +79,8 @@ so it does not contain features that are described the later slides
 </div>
 <h2>A very top-down view of <code><span class="var">hx</span></code></h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>A very top-down view of <code><span class="var">hx</span></code></h2>
 </div></div>
 <ul><li>
@@ -89,7 +89,7 @@ in the first code slide contains the highest view of the <code><span class="var"
 while not very interesting, it contains a lot of commands that show  how <code><span class="var">hx</span></code> works
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">file: ../src/hx.cpp</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">global elements</span>)</span><br/>
@@ -112,8 +112,8 @@ these elements and the body of the <code><span class="fn">main</span></code> fun
 </div>
 <h3>Commands</h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Commands</h3>
 </div></div>
 <ul><li>
@@ -129,8 +129,8 @@ for now assume, that no closing parenthesis or ampersand is part of  the argumen
 </div>
 <h3>Fragments</h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Fragments</h3>
 </div></div>
 <ul><li>
@@ -148,8 +148,8 @@ and must be the same as the argument value of the closing command
 </div>
 <h3>Defined Fragments</h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Defined Fragments</h3>
 </div></div>
 <ul><li>
@@ -165,8 +165,8 @@ but the three presented so far all do
 </div>
 <h3>Including fragments</h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Including fragments</h3>
 </div></div>
 <ul><li>
@@ -184,8 +184,8 @@ so it is possible to include a fragment that is not defined yet
 </div>
 <h3>Naming files</h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Naming files</h3>
 </div></div>
 <ul><li>
@@ -201,15 +201,15 @@ the first code slide creates one fragment that is written into the  file named <
 </div>
 <h3>Generating the first source code</h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Generating the first source code</h3>
 </div></div>
 <ul><li>
 if we stop here and run <code><span class="var">hx</span></code>, the following code will be generated
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="type">int</span> <span class="fn">main</span>(<br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">argc</span>,<br/>
@@ -228,15 +228,15 @@ so it does not do much
 </div>
 <h3>Steps in <code><span class="fn">main</span></code></h3>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h3>Steps in <code><span class="fn">main</span></code></h3>
 </div></div>
 <ul><li>
 the next code slides identify multiple steps to perform in the  <code><span class="fn">main</span></code> function
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> ! <span class="var">NDEBUG</span><br/>
@@ -258,7 +258,7 @@ the use of <code><span class="keyword">@def</span></code> instead of <code><span
 and in all input files that are included directly or indirectly by  this input file for the first time
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">process arguments</span>)</span>;<br/>
@@ -274,7 +274,7 @@ the ability of macros to grow with time is borrowed from Literate  Programming
 but is is far more important in <code><span class="var">SWP</span></code>, as a slide provides only limited  space
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">read source files</span>)</span>;<br/>
@@ -286,7 +286,7 @@ next the source files are read into a fragment tree
 here a lot of interesting things are happening but right now it will  expand to nothing as nothing is described yet
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">serialize fragments</span>)</span>;<br/>
@@ -296,7 +296,7 @@ here a lot of interesting things are happening but right now it will  expand to 
 in the next step <code><span class="var">hx</span></code> writes the content of every file fragment in its  designated file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">write HTML file</span>)</span>;<br/>
@@ -306,7 +306,7 @@ in the next step <code><span class="var">hx</span></code> writes the content of 
 and lastly the HTML documentation is generated
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">includes</span>)</span>;<br/>
@@ -319,8 +319,8 @@ and lastly the HTML documentation is generated
 </div>
 <h2>Next steps</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Next steps</h2>
 </div></div>
 <ul><li>
@@ -329,7 +329,7 @@ the following slides refer to documents that document the next steps  of <code><
 follow them in order so that you do not miss important concepts
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
@@ -353,7 +353,7 @@ follow them in order so that you do not miss important concepts
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="read.html">read.md</a></span>)</span><br/>
 </code></div>
@@ -367,7 +367,7 @@ the file is read only once, no matter how often it is included
 you can click on the argument value in the HTML documentation to  navigate to the documentation from this file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="blocks.html">blocks.md</a></span>)</span><br/>
 </code></div>
@@ -379,7 +379,7 @@ a block has a type, a value and optional notes
 blocks are separated by newlines
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="log.html">log.md</a></span>)</span><br/>
 </code></div>
@@ -387,7 +387,7 @@ blocks are separated by newlines
 defines logging mechanism
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="frag.html">frag.md</a></span>)</span><br/>
 </code></div>
@@ -403,7 +403,7 @@ if they are not defined in the end, they will be expanded to nothing
 so even a partial program can be generated
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="input.html">input.md</a></span>)</span><br/>
 </code></div>
@@ -420,15 +420,15 @@ the blocks are mostly needed for the interactive editor that is  block-based
 </div>
 <h2>Parsing command line arguments</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Parsing command line arguments</h2>
 </div></div>
 <ul><li>
 parses the command line arguments element by element
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process arguments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> { <span class="num">1</span> }; <span class="var">i</span> &lt; <span class="var">argc</span>; ++<span class="var">i</span>) {<br/>
@@ -452,7 +452,7 @@ so the end of the loop is an indicator that an unknown argument  occurred.
 if it is not a known argument it may be a file name.
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">stylesheet</span> {<br/>
@@ -468,7 +468,7 @@ an argument can specify the used file
 but a default is presented here
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process argument</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
@@ -487,7 +487,7 @@ but a default is presented here
 sets a new stylesheet path
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">blockLimit</span> = -<span class="num">1</span>;<br/>
@@ -497,7 +497,7 @@ sets a new stylesheet path
 limits the number of blocks that will be processed
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">process argument</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
@@ -519,7 +519,7 @@ the user can limit the number of blocks that will be processed
 so the user can verify that subsets are working properly
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process file argument</span>)</span><br/>
 <span class="in1"></span><span class="var">inputs</span>.<span class="fn">add</span>(<span class="var">arg</span>);<br/>
@@ -535,15 +535,15 @@ from these files slides and source code are generated
 </div>
 <h1>Read input files</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Read input files</h1>
 </div></div>
 <ul><li>
 the code of this section reads input files, extracts the fragments  and blocks and establishes their interdependencies
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="var">SI</span> =<br/>
@@ -556,7 +556,7 @@ the code uses string iterators at a lot of places
 so it defines a shorthand to reduce clutter on the slides
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_char</span>(<br/>
@@ -570,7 +570,7 @@ so it defines a shorthand to reduce clutter on the slides
 adds a single character to the content of a fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">line</span>.<span class="fn">cend</span>();<br/>
@@ -595,7 +595,7 @@ special characters are processed first
 if the character was not special, it will be added to the current  active fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">additional read vars</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> *<span class="var">frag</span> { <span class="num">nullptr</span> };<br/>
@@ -609,7 +609,7 @@ at the beginning there is no active fragment
 so the pointer is <code><span class="num">nullptr</span></code>
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process char</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
@@ -623,7 +623,7 @@ if there is an active fragment, the character will be added to its  contents
 based on the current input file and line number the fragment may open  a new block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process special chars</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (*<span class="var">i</span> == <span class="str">'@'</span>) {<br/>
@@ -647,7 +647,7 @@ if the input is not matching it is not treated as a syntax error
 but as normal characters that are not treated special
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">cmd prefix</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">ne</span> != <span class="var">end</span> &amp;&amp; *<span class="var">ne</span> != <span class="str">'('</span>) {<br/>
@@ -665,7 +665,7 @@ check that the name contains only letters
 and is followed by an opening parenthesis
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">cmd argument</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>; <span class="type">auto</span> <span class="var">ae</span> = <span class="var">ab</span>;<br/>
@@ -690,7 +690,7 @@ characters in the argument can be escaped by prefixing them with <code>@</code>
 that is needed to allow for the closing parenthesis in the argument
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">handle at in cmd arg</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (++<span class="var">ae</span> == <span class="var">end</span>) { <span class="keyword">break</span>; }<br/>
@@ -700,7 +700,7 @@ that is needed to allow for the closing parenthesis in the argument
 <span class="macro">@end(<span class="name">handle at in cmd arg</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">handle cmd in cmd arg</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">ac</span> { <span class="var">ae</span> };<br/>
@@ -721,7 +721,7 @@ that is needed to allow for the closing parenthesis in the argument
 <span class="macro">@end(<span class="name">handle cmd in cmd arg</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">cmd found</span>)</span><br/>
 <span class="in1"></span><span class="var">i</span> = <span class="var">ae</span>;<br/>
@@ -750,7 +750,7 @@ and can be ignored in generated source code
 after processing a block the code adjusts the limit
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="keyword">inline</span> <span class="type">void</span> <span class="fn">expand_cmd_arg</span>(<br/>
@@ -767,7 +767,7 @@ after processing a block the code adjusts the limit
 performs the default expansion of an unknown command
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do default cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>) {<br/>
@@ -789,7 +789,7 @@ performs the default expansion of an unknown command
 if the command was not a functional command, it will be replaced by its  argument in source code
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">algorithm</span>&gt;<br/>
@@ -799,7 +799,7 @@ if the command was not a functional command, it will be replaced by its  argumen
 <code><span class="type">std</span>::<span class="var">find</span></code> is used on the next slide
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">expand loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">e</span>) {<br/>
@@ -822,7 +822,7 @@ the argument may contain escaped sequences starting with <code>@</code>
 the code will unescape them
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">expand before</span>)</span><br/>
 <span class="in1"></span><span class="var">f</span>-&gt;<span class="fn">add</span>(<br/>
@@ -835,7 +835,7 @@ the code will unescape them
 copy everything that is before the current iterator
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">expand escaped</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">e</span>) {<br/>
@@ -848,7 +848,7 @@ copy everything that is before the current iterator
 add escaped char, if there is one
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">ASSERT_NOT_FRAG</span>() \<br/>
@@ -863,7 +863,7 @@ add escaped char, if there is one
 raise error, if command is in an active fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">CHECK_NOT_DEFINED</span>() \<br/>
@@ -878,7 +878,7 @@ raise error, if command is in an active fragment
 warn, if fragment is already filled with some content
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"def"</span>) {<br/>
@@ -895,7 +895,7 @@ creates a new fragment
 fragment must not be created multiple times
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">ASSERT_FRAG</span>() \<br/>
@@ -910,7 +910,7 @@ fragment must not be created multiple times
 raise error, if command is not in an active fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span> {<br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">i</span> { <span class="var">cmd_values</span>.<span class="fn">find</span>(<span class="var">name</span>) };<br/>
@@ -921,7 +921,7 @@ raise error, if command is not in an active fragment
 } <span class="macro">@end(<span class="name">do special cmd</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"end"</span> || <span class="var">name</span> == <span class="str">"End"</span>) {<br/>
@@ -953,7 +953,7 @@ raise error, if command is not in an active fragment
 interrupts the active fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">frag names must match</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>-&gt;<span class="var">name</span> == <span class="var">arg</span>,<br/>
@@ -966,7 +966,7 @@ interrupts the active fragment
 the name of the fragment must match the command argument
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">CHECK_DEFINED</span>() \<br/>
@@ -981,7 +981,7 @@ the name of the fragment must match the command argument
 warn, if fragment is not filled with some content
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"add"</span>) {<br/>
@@ -1008,7 +1008,7 @@ reopens an existing fragment
 more content can be added to it
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">parse_args</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">arg</span>, <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">pattern</span>, <span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">std</span>::<span class="type">string</span>&gt; &amp;<span class="var">values</span>) {<br/>
@@ -1040,7 +1040,7 @@ more content can be added to it
 <span class="macro">@End(<span class="name">needed by read_sources</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"put"</span>) {<br/>
@@ -1071,7 +1071,7 @@ searches the fragment and integrates it
 if the fragment is not found, a new one is created to be populated  later
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">check frag ex. count</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="fn">expands</span>()) {<br/>
@@ -1092,7 +1092,7 @@ if the fragment was already expanded, an error message is generated
 also if the fragment was expanded in multiple mode
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"inc"</span>) {<br/>
@@ -1115,7 +1115,7 @@ opens the file and pushes it on the stack of open file
 files that were are already included are ignored
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"mul"</span>) {<br/>
@@ -1136,7 +1136,7 @@ files that were are already included are ignored
 expands a fragment multiple times
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">check for prev expands</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">sub</span>-&gt;<span class="fn">expands</span>()) {<br/>
@@ -1151,7 +1151,7 @@ expands a fragment multiple times
 when a multiple expanded fragment was already expanded with a normal  <code>@<span class="var">put</span></code> an error message is printed
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Def"</span>) {<br/>
@@ -1164,7 +1164,7 @@ when a multiple expanded fragment was already expanded with a normal  <code>@<sp
 creates a new fragment in global namespace
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do Def</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>,<br/>
@@ -1182,7 +1182,7 @@ creates a new fragment in global namespace
 if the fragment already exists, an error message is printed
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Add"</span>) {<br/>
@@ -1195,7 +1195,7 @@ if the fragment already exists, an error message is printed
 extends a global fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do Add</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(! <span class="var">frag</span>, <span class="str">"@Add in frag ["</span> &lt;&lt;<br/>
@@ -1214,7 +1214,7 @@ a global fragment is any fragment that is defined in the global  namespace or in
 if the fragment is not defined, an error message is printed
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"rep"</span>) {<br/>
@@ -1232,7 +1232,7 @@ if the fragment is not defined, an error message is printed
 replaces the content of a local fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Rep"</span>) {<br/>
@@ -1250,7 +1250,7 @@ replaces the content of a local fragment
 replace the content of a global fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">clear frag</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"frag ["</span> &lt;&lt;<br/>
@@ -1266,7 +1266,7 @@ clears the content of a fragment
 if the fragment is not defined, an error message is printed
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Put"</span>) {<br/>
@@ -1279,7 +1279,7 @@ if the fragment is not defined, an error message is printed
 inserts a global fragment in the current fragment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do Put</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"@Put not in frag"</span>);<br/>
@@ -1295,7 +1295,7 @@ inserts a global fragment in the current fragment
 check that the fragment is not already expanded
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"Mul"</span>) {<br/>
@@ -1308,7 +1308,7 @@ check that the fragment is not already expanded
 inserts a global fragment multiple times
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do Mul</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT_MSG</span>(<span class="var">frag</span>, <span class="str">"@Mul not in frag"</span>);<br/>
@@ -1324,7 +1324,7 @@ inserts a global fragment multiple times
 check that the fragment is not already used in a single expand
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"priv"</span>) {<br/>
@@ -1342,7 +1342,7 @@ creates a private identifier
 the identifier is based on the argument, but extended with a  hash-code based on the name and current input file name
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">functional</span>&gt;<br/>
@@ -1353,7 +1353,7 @@ the identifier is based on the argument, but extended with a  hash-code based on
 needed for hashing 
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process private frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">hash</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">h</span>;<br/>
@@ -1369,7 +1369,7 @@ hash the current path and argument
 mask the hash to a positive integer
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">process private frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">hashed</span>;<br/>
@@ -1389,7 +1389,7 @@ the hash,
 and the original argument
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">do special cmd</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"magic"</span>) {<br/>
@@ -1405,7 +1405,7 @@ and the original argument
 create a hash value based on the argument and the current path
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">process magic frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">hash</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">h</span>;<br/>
@@ -1419,7 +1419,7 @@ create a hash value based on the argument and the current path
 calculate hash value
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">process magic frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">value</span>;<br/>
@@ -1436,8 +1436,8 @@ add the hash value to the fragment
 </div>
 <h1>Serialize Fragments</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Serialize Fragments</h1>
 </div></div>
 <ul><li>
@@ -1446,7 +1446,7 @@ generate source code by traversing the tree of all fragments that  specify files
 and write the contents into the files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">needed by files write</span>)</span><br/>
@@ -1459,7 +1459,7 @@ and write the contents into the files
 write all files generated from fragments
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">serialize fragments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">write_files</span>) {<br/>
@@ -1471,7 +1471,7 @@ write all files generated from fragments
 write files, if requested
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">files write</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="fn">frag_map</span>()) {<br/>
@@ -1490,7 +1490,7 @@ fragments that start with <code><span class="var">file</span>:</code> represent 
 additional the code checks if fragments were expanded not often enough
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">files write</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
@@ -1511,7 +1511,7 @@ also look for <code><span class="var">file</span>:</code> fragments in the local
 so you should define file fragments as global to avoid overwriting of  files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">serialize frag</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>-&gt;<span class="fn">isFile</span>(<span class="var">cur_name</span>)) {<br/>
@@ -1525,7 +1525,7 @@ fragments that start with <code><span class="var">file</span>:</code> represent 
 additional the code checks if fragments were expanded not often enough
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">serialize frag</span>)</span> {<br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">sum</span> {<br/>
@@ -1543,7 +1543,7 @@ additional the code checks if fragments were expanded not often enough
 if a fragment was not expanded, an error message is be written
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">serialize frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! <span class="fn">isPopulatedFrag</span>(<span class="var">frag</span>)) {<br/>
@@ -1557,7 +1557,7 @@ if a fragment was not expanded, an error message is be written
 if a fragment was expanded, but not defined, an error message is  written
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">needed by files write</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">file_name</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
@@ -1569,7 +1569,7 @@ if a fragment was expanded, but not defined, an error message is  written
 command argument without <code><span class="str">"file:"</span></code> prefix is the file name
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">needed by files write</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">file_changed</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>, <span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">f</span>, <span class="type">std</span>::<span class="type">string</span> <span class="var">cur_path</span>) {<br/>
@@ -1594,7 +1594,7 @@ if the fragments serialize to the content of the file, it must not be  rewritten
 and the modification date can stay the same
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">write in file</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">file_changed</span>(<span class="var">cur_name</span>, *<span class="var">frag</span>, <span class="var">cur_path</span>)) {<br/>
@@ -1609,7 +1609,7 @@ and the modification date can stay the same
 write fragment to the specified file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">needed by files process</span>)</span>;<br/>
@@ -1624,7 +1624,7 @@ serialize all files that are processed by external programs
 instead of directly written out
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">serialize fragments</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">process_files</span>) {<br/>
@@ -1636,7 +1636,7 @@ instead of directly written out
 only process files if requested
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">files process</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">i</span> : <span class="fn">frag_map</span>()) {<br/>
@@ -1653,7 +1653,7 @@ only process files if requested
 process commands that are key at root level
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">files process</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">j</span> : <span class="var">inputs</span>) {<br/>
@@ -1674,7 +1674,7 @@ process commands that are defined at the top of source files
 this behavior is deprecated
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">needed by files process</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">no_cmds</span> = <span class="num">false</span>;<br/>
@@ -1684,7 +1684,7 @@ this behavior is deprecated
 there is an option to disable command processing
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">serialize cmd</span>)</span> {<br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">cmd</span> { <span class="type">Frag</span>::<span class="fn">cmd</span>(<span class="var">cur_name</span>) };<br/>
@@ -1697,7 +1697,7 @@ there is an option to disable command processing
 a fragment is only processed, if its name matches a command invocation
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">write cmd in file</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">out</span> {};<br/>
@@ -1716,7 +1716,7 @@ pipe serialized fragment directly to the command
 if debug mode is activated the fragment is written to <code><span class="type">std</span>::<span class="var">cout</span></code>  instead
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">do write cmd</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">FILE</span> *<span class="var">f</span> {<br/>
@@ -1734,7 +1734,7 @@ if debug mode is activated the fragment is written to <code><span class="type">s
 open pipe and send fragment to it
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">process argument</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prefix</span> {<br/>
@@ -1752,7 +1752,7 @@ disable command execution with a command switch
 the file will be serialized to <code><span class="type">std</span>::<span class="var">cout</span></code> instead
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="html.html">html.md</a></span>)</span><br/>
 </code></div>
@@ -1760,7 +1760,7 @@ the file will be serialized to <code><span class="type">std</span>::<span class=
 generate HTML slide show
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="view.html">view.md</a></span>)</span><br/>
 </code></div>
@@ -1768,7 +1768,7 @@ generate HTML slide show
 Interactive display of slides
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="line.html">line.md</a></span>)</span><br/>
 </code></div>
@@ -1776,7 +1776,7 @@ Interactive display of slides
 parsing lines with commands entered by the user
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="edit.html">edit.md</a></span>)</span><br/>
 </code></div>
@@ -1784,7 +1784,7 @@ parsing lines with commands entered by the user
 edit slides in place
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="range.html">range.md</a></span>)</span><br/>
 </code></div>
@@ -1792,7 +1792,7 @@ edit slides in place
 handle range requests in the editor
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="write.html">write.md</a></span>)</span><br/>
 </code></div>
@@ -1800,7 +1800,7 @@ handle range requests in the editor
 handle write commands in the editor
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="add.html">add.md</a></span>)</span><br/>
 </code></div>
@@ -1808,7 +1808,7 @@ handle write commands in the editor
 handle adding of new elements in the editor
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="ncurses.html">ncurses.md</a></span>)</span><br/>
 </code></div>
@@ -1816,7 +1816,7 @@ handle adding of new elements in the editor
 <code><span class="var">ncurses</span></code> interface for the editor
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@inc(<span class="name"><a href="todos.html">todos.md</a></span>)</span><br/>
 </code></div>
@@ -1824,7 +1824,7 @@ handle adding of new elements in the editor
 list of open issues
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">using</span> <span class="type">Inputs_Frag_Map</span> = <span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Frag_Map</span>&gt;;<br/>
@@ -1977,7 +1977,7 @@ list of open issues
 <span class="macro">@end(<span class="name">global elements</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">apply meta</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">out</span>;<br/>

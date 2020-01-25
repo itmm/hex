@@ -7,15 +7,15 @@
 <body>
 <h1>Input Files</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Input Files</h1>
 </div></div>
 <ul><li>
 structure for handling input files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">iostream</span>&gt;<br/>
@@ -27,7 +27,7 @@ structure for handling input files
 needed includes
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="fn">cur</span>() {<br/>
@@ -43,7 +43,7 @@ needed includes
 last opened open input file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() {<br/>
@@ -55,7 +55,7 @@ last opened open input file
 begin iterator for used input files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() {<br/>
@@ -67,7 +67,7 @@ begin iterator for used input files
 end iterator for used input files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">size</span>() <span class="type">const</span> {<br/>
@@ -79,7 +79,7 @@ end iterator for used input files
 number of used input files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">push</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
@@ -110,7 +110,7 @@ open new input file
 is recorded as used input file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>) {<br/>
@@ -126,8 +126,8 @@ add a file to be processed
 </div>
 <h1>Get next line</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Get next line</h1>
 </div></div>
 <ul><li>
@@ -138,7 +138,7 @@ if the end is reached, the current input file in popped
 and the line is read from the previous input file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">has</span>(<br/>
@@ -153,7 +153,7 @@ and the line is read from the previous input file
 checks if the file is already used
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">has checks</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">used_</span>.<span class="fn">find</span>(<span class="var">name</span>) != <span class="var">used_</span>.<span class="fn">end</span>()) {<br/>
@@ -168,8 +168,8 @@ iterate over <code><span class="var">_used</span></code> collection
 </div>
 <h2>Local <code><span class="type">Frags</span></code></h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Local <code><span class="type">Frags</span></code></h2>
 </div></div>
 <ul><li>
@@ -179,15 +179,15 @@ each input file has a <code><span class="type">Frag</span></code> collection
 </div>
 <h2>Line Numbers</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Line Numbers</h2>
 </div></div>
 <ul><li>
 for each open input file the current line number is recorded
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">private open input els</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">line_</span> = <span class="num">0</span>;<br/>
@@ -197,7 +197,7 @@ for each open input file the current line number is recorded
 current line number
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">line</span>() <span class="type">const</span> {<br/>
@@ -209,7 +209,7 @@ current line number
 getter for current line number
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">line read</span>)</span><br/>
 <span class="in1"></span>++<span class="var">line_</span>;<br/>
@@ -219,7 +219,7 @@ getter for current line number
 increase line number for each line
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">clear inputs</span>)</span><br/>
 <span class="in1"></span><span class="var">used_</span>.<span class="fn">clear</span>();<br/>
@@ -236,7 +236,7 @@ resets all open and used files
 if the <code><span class="var">_path</span></code>s are empty the default input file names will be used
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">populate default file</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="var">filesystem</span>::<span class="fn">exists</span>(<br/>

@@ -7,8 +7,8 @@
 <body>
 <h1>Adding blocks in editor</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Adding blocks in editor</h1>
 </div></div>
 <ul><li>
@@ -17,7 +17,7 @@ define commands to add a header, code block or paragraph block after  the curren
 when reading again <code><span class="var">hx</span></code> will merge continuous paragraphs into one  block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add_block</span>(<span class="type">Read_State</span> <span class="var">state</span>) {<br/>
@@ -33,7 +33,7 @@ it sets its value to a default text
 and makes the new block the current block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"h"</span> || <span class="var">cmd</span> == <span class="str">"header"</span>) {<br/>
@@ -46,7 +46,7 @@ and makes the new block the current block
 generates a new header block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"c"</span> || <span class="var">cmd</span> == <span class="str">"code"</span>) {<br/>
@@ -59,7 +59,7 @@ generates a new header block
 generates a new code block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"o"</span> || <span class="var">cmd</span> == <span class="str">"other"</span>) {<br/>
@@ -74,7 +74,7 @@ generates a new paragraph blocks
 multiple paragraph blocks will be merged into one paragraph block on  read
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">add block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
@@ -100,7 +100,7 @@ as the insert can invalidate the iterators, it saves the distance
 and restores it afterwards
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">increase block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -115,7 +115,7 @@ and restores it afterwards
 <code><span class="fn">add_block</span></code> does not advance beyond the end of the container
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">insert block</span>)</span><br/>
 <span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
@@ -136,8 +136,8 @@ and a default text
 </div>
 <h2>Duplicating the current block</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Duplicating the current block</h2>
 </div></div>
 <ul><li>
@@ -146,7 +146,7 @@ duplicates the current block
 and sets the current block to the new copy
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"d"</span> || <span class="var">cmd</span> == <span class="str">"dup"</span>) {<br/>
@@ -171,7 +171,7 @@ if the file is valid
 and the current block is valid
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">duplicate</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> -<br/>

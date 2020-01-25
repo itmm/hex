@@ -7,15 +7,15 @@
 <body>
 <h1>Read the input files</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>Read the input files</h1>
 </div></div>
 <ul><li>
 processes the input files line by line
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span>;<br/>
@@ -30,8 +30,8 @@ groups all code from this input file together
 </div>
 <h2>The <code><span class="type">Inputs</span></code> class</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>The <code><span class="type">Inputs</span></code> class</h2>
 </div></div>
 <ul><li>
@@ -44,7 +44,7 @@ some are waiting to be processed
 all is abstracted away, so that the interface provides lines until  everything is processed
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">inputs prereqs</span>)</span>;<br/>
@@ -66,7 +66,7 @@ these can be grouped in the fragment <code><span class="str">inputs prereqs</spa
 <code><span class="keyword">@Put</span></code> inserts a fragment from the global scope
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;string&gt;</span><br/>
@@ -76,7 +76,7 @@ these can be grouped in the fragment <code><span class="str">inputs prereqs</spa
 needs <code><span class="type">std</span>::<span class="type">string</span></code>
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span>);<br/>
@@ -88,7 +88,7 @@ defines method to read a line
 to avoid creating too much objects the storage is passed as argument
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="type">Inputs</span>::<span class="fn">read_line</span>(<br/>
@@ -104,7 +104,7 @@ method is not defined inline in the class because it is used multiple  times
 and it is somewhat big
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="type">struct</span> <span class="type">No_More_Lines</span> {};<br/>
@@ -114,7 +114,7 @@ and it is somewhat big
 the code throws this exception, when no more lines are available
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">inputs read line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
@@ -127,12 +127,12 @@ a trivial first implementation always throws the exception
 </div>
 <h2>Reading everything</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>Reading everything</h2>
 </div></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="type">Inputs</span> <span class="var">inputs</span>;<br/>
@@ -148,7 +148,7 @@ to continue the processing after the processing of the included file  finishes
 also all read files are kept
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">needed by read_sources</span>)</span>;<br/>
@@ -161,7 +161,7 @@ also all read files are kept
 read all sources that are registered in the global <code><span class="var">inputs</span></code> variable
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">read source files</span>)</span><br/>
 <span class="in1"></span><span class="fn">read_sources</span>();<br/>
@@ -173,7 +173,7 @@ the <code><span class="fn">main</span></code> calls this function to read the so
 in the interactive environment this function may also be called
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
@@ -187,7 +187,7 @@ remove all state from the <code><span class="var">inputs</span></code> variable
 all that is kept is the list of initial source files
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">read sources</span>)</span> {<br/>
 <span class="in1"></span><span class="var">inputs</span>.<span class="fn">clear</span>();<br/>
@@ -215,8 +215,8 @@ end of input is signaled with an exception
 </div>
 <h2>What is a file?</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2>What is a file?</h2>
 </div></div>
 <ul><li>
@@ -234,15 +234,15 @@ so a special class <code><span class="type">Input</span></code> will represent a
 </div>
 <h2><code><span class="type">Input</span></code> class</h2>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h2><code><span class="type">Input</span></code> class</h2>
 </div></div>
 <ul><li>
 defines the <code><span class="type">Input</span></code> class
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">open input prereqs</span>)</span>;<br/>
@@ -258,7 +258,7 @@ defines the <code><span class="type">Input</span></code> class
 the <code><span class="type">Open_Input</span></code> class represents an <code><span class="type">Input</span></code> file that is also  currently open for reading
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">open input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span>;<br/>
@@ -277,7 +277,7 @@ but these are defined later
 for just now the path of the file is stored
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;fstream&gt;</span><br/>
@@ -287,7 +287,7 @@ for just now the path of the file is stored
 needs <code><span class="type">std</span>::<span class="type">ifstream</span></code>
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">private open input els</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">path_</span>;<br/>
@@ -300,7 +300,7 @@ open file contains a file
 and an input stream
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Open_Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span>):<br/>
@@ -313,7 +313,7 @@ and an input stream
 open file on construction
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="fn">path</span>() <span class="type">const</span> {<br/>
@@ -322,7 +322,7 @@ open file on construction
 <span class="macro">@End(<span class="name">open input elements</span>)</span><br/>
 </code></div>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Open_Input</span>(<br/>
@@ -339,7 +339,7 @@ no copy construction
 no move construction
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Open_Input</span> &amp;<span class="var">operator</span>=(<br/>
@@ -356,7 +356,7 @@ no copy assignment
 no move assignment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">input elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">prev</span> = {}):<br/>
@@ -370,7 +370,7 @@ in the constructor the <code><span class="var">name</span></code> will be saved
 additional elements can be initialized later
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Input</span>(<span class="type">const</span> <span class="type">Input</span> &amp;) = <span class="keyword">delete</span>;<br/>
@@ -383,7 +383,7 @@ no copy constructor
 no move constructor
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Input</span> &amp;<span class="var">operator</span>=(<br/>
@@ -400,7 +400,7 @@ no copy assignment
 no move assignment
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span>) {<br/>
@@ -417,7 +417,7 @@ if file is open, return next line from this file
 if that fails or file was closed, then throw an exception
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">get line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="var">file_</span>, <span class="var">line</span>)) {<br/>
@@ -435,7 +435,7 @@ otherwise close file
 and fall through to the exception throwing code
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">private inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">std</span>::<span class="type">string</span>&gt; <span class="var">roots_</span>;<br/>
@@ -449,7 +449,7 @@ has a list of input files
 and an iterator for the current path
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">private inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">vector</span>&lt;<span class="type">Open_Input</span>&gt; <span class="var">open_</span>;<br/>
@@ -468,7 +468,7 @@ more files are pushed on it with include commands
 this is used to avoid including files multiple times
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@rep(<span class="name">inputs read line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
@@ -490,7 +490,7 @@ reads a line from the current file
 when the end is reached, the file is popped and the line is read from  the previous file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">push next path</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">open_</span>.<span class="fn">empty</span>()) {<br/>
@@ -508,7 +508,7 @@ when the end is reached, the file is popped and the line is read from  the previ
 if no files are available, try to open a new one from the paht list
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">save open input</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="var">f</span> { <span class="var">used_</span>.<span class="fn">find</span>(<span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">path</span>())-&gt;<span class="var">second</span> };<br/>

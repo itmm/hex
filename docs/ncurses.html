@@ -7,15 +7,15 @@
 <body>
 <h1>NCurses Support</h1>
 <div class="slides">
-<div>
-<div><div class="headers">
+<div class="page">
+<div class="slide"><div class="headers">
 <h1>NCurses Support</h1>
 </div></div>
 <ul><li>
 use NCurses interface for a full screen viewer/editor
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> <span class="var">defined</span> <span class="var">HAVE_CONFIG_H</span><br/>
@@ -27,7 +27,7 @@ use NCurses interface for a full screen viewer/editor
 use autoconf includes
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> <span class="var">defined</span> <span class="var">HAVE_NCURSESW_CURSES_H</span><br/>
@@ -47,7 +47,7 @@ use autoconf includes
 use autoconf to include the right headers
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">locale</span>.<span class="var">h</span>&gt;<br/>
@@ -57,7 +57,7 @@ use autoconf to include the right headers
 needed for switching to <code><span class="var">UTF</span>-<span class="num">8</span></code>
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
@@ -69,7 +69,7 @@ needed for switching to <code><span class="var">UTF</span>-<span class="num">8</
 only define if available
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">ncurses globals</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span><br/>
@@ -79,7 +79,7 @@ only define if available
 local fragment to reduce typing overhead
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">with_ncurses</span> = <span class="num">false</span>;<br/>
@@ -89,7 +89,7 @@ local fragment to reduce typing overhead
 should NCurses be used
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">process argument</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
@@ -107,7 +107,7 @@ should NCurses be used
 command line argument can signal that NCurses should be used
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">activate curses</span>)</span><br/>
 <span class="in1"></span><span class="var">with_ncurses</span> = <span class="num">true</span>;<br/>
@@ -123,7 +123,7 @@ disable automatic file generation
 and the command line mode
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#if</span> <span class="var">HAVE_CURSES</span><br/>
@@ -137,7 +137,7 @@ and the command line mode
 add NCurses interaction to the <code><span class="fn">main</span></code> function
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Ncurses_Handler</span> {<br/>
@@ -155,7 +155,7 @@ add NCurses interaction to the <code><span class="fn">main</span></code> functio
 special handler to automatically setup and tear down NCurses
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">setup curses</span>)</span><br/>
 <span class="in1"></span><span class="fn">setlocale</span>(<span class="var">LC_CTYPE</span>, <span class="str">""</span>);<br/>
@@ -169,7 +169,7 @@ special handler to automatically setup and tear down NCurses
 initialize NCurses
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">teardown curses</span>)</span><br/>
 <span class="in1"></span><span class="fn">endwin</span>();<br/>
@@ -179,7 +179,7 @@ initialize NCurses
 close NCurses window
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="type">struct</span> <span class="type">End_Of_Curses</span> {};<br/>
@@ -189,7 +189,7 @@ close NCurses window
 special NCurses exception that terminates the NCurses interaction
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">needed by draw page</span>)</span><br/>
@@ -205,7 +205,7 @@ special NCurses exception that terminates the NCurses interaction
 draw page with NCurses
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Def(<span class="name">curses interact</span>)</span><br/>
 <span class="in1"></span><span class="type">Ncurses_Handler</span> <span class="var">handler</span>;<br/>
@@ -220,7 +220,7 @@ set iterator to first block of first file
 and display block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@Add(<span class="name">curses interact</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">ch</span>;<br/>
@@ -238,7 +238,7 @@ and display block
 loop until NCurses should be terminated
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">curses cases</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'q'</span>: <span class="keyword">throw</span> <span class="type">End_Of_Curses</span> {};<br/>
@@ -248,7 +248,7 @@ loop until NCurses should be terminated
 terminates NCurses
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">needed by draw page</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">draw_number</span>(<span class="type">int</span> <span class="var">l</span>) {<br/>
@@ -262,7 +262,7 @@ terminates NCurses
 draw a number recursively
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">needed by draw page</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">draw_line</span>(<span class="type">int</span> <span class="var">l</span>) {<br/>
@@ -280,7 +280,7 @@ draw a line number prefix
 line numbers smaller than <code><span class="num">10</span></code> are padded with a space
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">draw page</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>) {<br/>
@@ -292,7 +292,7 @@ line numbers smaller than <code><span class="num">10</span></code> are padded wi
 draw header block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">draw header</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>;<br/>
@@ -307,7 +307,7 @@ draw header block
 draw all headers in the current header block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">draw header line</span>)</span><br/>
 <span class="in1"></span><span class="fn">draw_line</span>(++<span class="var">i</span>);<br/>
@@ -326,7 +326,7 @@ draw all headers in the current header block
 headers are written with the level number of <code><span class="keyword">#</span></code>s
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">draw page</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
@@ -338,7 +338,7 @@ headers are written with the level number of <code><span class="keyword">#</span
 draw code block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">draw code</span>)</span><br/>
 <span class="in1"></span><span class="fn">addstr</span>(<span class="str">"    ```\n"</span>);<br/>
@@ -357,7 +357,7 @@ draw code block
 code blocks are prefixed with the code tag from Markdown
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">draw page</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
@@ -369,7 +369,7 @@ code blocks are prefixed with the code tag from Markdown
 draw paragraph block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">draw para</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>;<br/>
@@ -386,7 +386,7 @@ draw paragraph block
 paragraphs are separated by empty lines
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">draw page</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">j</span> = <span class="num">0</span>;<br/>
@@ -405,7 +405,7 @@ paragraphs are separated by empty lines
 notes are prefixed with <code>*</code>
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">draw page</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">idx</span> = <span class="num">1</span>;<br/>
@@ -430,7 +430,7 @@ draw the current input file number
 then draw the input file name
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">draw page</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="var">bs</span> { <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span> };<br/>
@@ -447,7 +447,7 @@ then draw the input file name
 draw the current block number
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">curses cases</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'n'</span>: {<br/>
@@ -461,7 +461,7 @@ draw the current block number
 got to the next block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">next block</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = (<span class="var">curBlock</span> -<br/>
@@ -480,7 +480,7 @@ got to the next block
 got to the next block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">curses cases</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'p'</span> : {<br/>
@@ -494,7 +494,7 @@ got to the next block
 go to the previous block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">prev block</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="var">curBlock</span> -<br/>
@@ -511,7 +511,7 @@ go to the previous block
 go to the previous block
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">curses cases</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'f'</span>: {<br/>
@@ -525,7 +525,7 @@ go to the previous block
 go to the next input file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">next input</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="num">1</span>;<br/>
@@ -550,7 +550,7 @@ go to the next input file
 go to the next input file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@add(<span class="name">curses cases</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="str">'b'</span>: {<br/>
@@ -564,7 +564,7 @@ go to the next input file
 go to the previous input file
 </li></ul>
 </div>
-<div><div>
+<div class="page"><div class="slide">
 <code>
 <span class="macro">@def(<span class="name">prev input</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="num">0</span>;<br/>
