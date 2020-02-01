@@ -157,14 +157,17 @@
 	out << "<div class=\"page\">\n";
 	out << "<div class=\"slide\"><div class=\"headers\">\n";
 	@mul(write header tag);
-	for (unsigned i = 1; i < b.value.size(); ++i)
-	{
-		out << "<h" << (b.level + 1) << '>';
-		const auto &n = b.value[i];
-		process_content(
-			out, n.begin(), n.end()
-		);
-		out << "</h" << (b.level + 1) << ">\n";
+	if (b.value.size() > 1) {
+		out << "<ul>\n";
+		for (unsigned i = 1; i < b.value.size(); ++i) {
+			out << "<li><h" << (b.level + 1) << '>';
+			const auto &n = b.value[i];
+			process_content(
+				out, n.begin(), n.end()
+			);
+			out << "</h" << (b.level + 1) << "></li>\n";
+		}
+		out << "</ul>\n";
 	}
 	out << "</div></div>\n";
 	status.state = HtmlState::inSlide;

@@ -49,11 +49,11 @@
 
 	#include <string>
 
-#line 739 "html.md"
+#line 742 "html.md"
 
 	#include <cctype>
 
-#line 785 "html.md"
+#line 788 "html.md"
 
 	#include <set>
 
@@ -2351,15 +2351,15 @@
 		afterSlide,
 		afterSlides
 		
-#line 326 "html.md"
+#line 329 "html.md"
 
 	, inCode
 
-#line 971 "html.md"
+#line 974 "html.md"
 
 	, inNotes
 
-#line 1120 "html.md"
+#line 1123 "html.md"
 
 	, inPara
 
@@ -2379,14 +2379,14 @@
 
 	};
 
-#line 190 "html.md"
+#line 193 "html.md"
  
 	void writeOneEscaped(
 		std::ostream &out, char ch
 	) {
 		switch (ch) {
 			
-#line 221 "html.md"
+#line 224 "html.md"
 
 	case '<':
 		out << "&lt;";
@@ -2398,14 +2398,14 @@
 		out << "&amp;";
 		break;
 
-#line 195 "html.md"
+#line 198 "html.md"
 
 			default:
 				out << ch;
 		}
 	}
 
-#line 206 "html.md"
+#line 209 "html.md"
 
 	void writeEscaped(
 		std::ostream &out,
@@ -2416,10 +2416,10 @@
 		}
 	}
 
-#line 236 "html.md"
+#line 239 "html.md"
 
 	
-#line 467 "html.md"
+#line 470 "html.md"
 
 	void span_str(
 		std::ostream &out,
@@ -2432,16 +2432,16 @@
 		out << "</span>";
 	}
 
-#line 792 "html.md"
+#line 795 "html.md"
 
 	using Set = std::set<std::string>;
 
-#line 799 "html.md"
+#line 802 "html.md"
 
 	bool isKeyword(const std::string &s) {
 		static Set reserved {
 			
-#line 816 "html.md"
+#line 819 "html.md"
 
 	"break", "case", "catch", "continue",
 	"default", "delete", "else", "for",
@@ -2453,7 +2453,7 @@
 	"once", "constexpr", "volatile",
 	"override"
 
-#line 802 "html.md"
+#line 805 "html.md"
 
 		};
 		return
@@ -2464,15 +2464,15 @@
 					);
 	}
 
-#line 831 "html.md"
+#line 834 "html.md"
 
 	bool isType(const std::string &s) {
 		
-#line 841 "html.md"
+#line 844 "html.md"
 
 	static Set reserved {
 		
-#line 855 "html.md"
+#line 858 "html.md"
 
 	"FILE", "auto", "bool", "char",
 	"const", "enum", "extern", "int",
@@ -2482,7 +2482,7 @@
 	"istream", "ofstream", "ostream",
 	"vector", "map", "list", "float"
 
-#line 843 "html.md"
+#line 846 "html.md"
 
 	};
 	if (reserved.find(s) !=
@@ -2491,7 +2491,7 @@
 		return true;
 	}
 
-#line 868 "html.md"
+#line 871 "html.md"
 
 	if (s.size() >= 2) {
 		if (isupper(s[0]) &&
@@ -2501,12 +2501,12 @@
 		}
 	}
 
-#line 833 "html.md"
+#line 836 "html.md"
 ;
 		return false;
 	}
 
-#line 882 "html.md"
+#line 885 "html.md"
 
 	bool isNum(const std::string &s) {
 		static Set reserved {
@@ -2521,7 +2521,7 @@
 			reserved.end();
 	}
 
-#line 901 "html.md"
+#line 904 "html.md"
 
 	void process_ident(
 		std::ostream &out,
@@ -2529,31 +2529,31 @@
 		char w
 	) {
 		
-#line 914 "html.md"
+#line 917 "html.md"
 
 	if (isKeyword(ident)) {
 		span_str(out, "keyword", ident);
 	} else if (w == '(') {
 		span_str(out, "fn", ident);
 	
-#line 930 "html.md"
+#line 933 "html.md"
 
 	} else if (isType(ident)) {
 		span_str(out, "type", ident);
 	} else if (isNum(ident)) {
 		span_str(out, "num", ident);
 
-#line 919 "html.md"
+#line 922 "html.md"
 
 	} else {
 		span_str(out, "var", ident);
 	}
 
-#line 907 "html.md"
+#line 910 "html.md"
 ;
 	}
 
-#line 941 "html.md"
+#line 944 "html.md"
 
 	void writeMacroClass(
 		std::ostream &out,
@@ -2563,7 +2563,7 @@
 			name << "\">";
 	}
 
-#line 954 "html.md"
+#line 957 "html.md"
 
 	void writeMacroHeader(
 		std::ostream &out,
@@ -2574,14 +2574,14 @@
 			"(<span class=\"name\">";
 	}
 
-#line 237 "html.md"
+#line 240 "html.md"
 ;
 	void process_code(
 		std::ostream &out,
 		SI begin, SI end
 	) {
 		
-#line 403 "html.md"
+#line 406 "html.md"
 
 	int indent = 0;
 	while (
@@ -2595,11 +2595,11 @@
 			<< "\"></span>";
 	}
 
-#line 421 "html.md"
+#line 424 "html.md"
 
 	for (; begin != end; ++begin) {
 		
-#line 432 "html.md"
+#line 435 "html.md"
 
 	if (
 		*begin == '`' ||
@@ -2607,7 +2607,7 @@
 		*begin == '"'
 	) {
 		
-#line 446 "html.md"
+#line 449 "html.md"
 
 	auto w = begin + 1;
 	while (w != end && *w != *begin) {
@@ -2622,24 +2622,24 @@
 		continue;
 	}
 
-#line 483 "html.md"
+#line 486 "html.md"
 
 	std::string name {begin, w + 1};
 	span_str(out, "str", name);
 	begin = w;
 
-#line 438 "html.md"
+#line 441 "html.md"
 ;
 		continue;
 	}
 
-#line 492 "html.md"
+#line 495 "html.md"
 
 	if (*begin == '@') {
 		auto nb = begin + 1;
 		auto ne = nb;
 		
-#line 503 "html.md"
+#line 506 "html.md"
 
 	while (ne != end && *ne != '(') {
 		if (! isalpha(*ne)) {
@@ -2649,14 +2649,14 @@
 		++ne;
 	}
 
-#line 517 "html.md"
+#line 520 "html.md"
 
 	if (ne != end) {
 		std::string name {nb, ne};
 		auto ab = ne + 1;
 		auto ae = ab;
 		
-#line 529 "html.md"
+#line 532 "html.md"
 
 	while (ae != end && *ae != ')') {
 		if (*ae == '@') {
@@ -2668,11 +2668,11 @@
 	if (ae != end) {
 		std::string arg {ab, ae};
 		
-#line 547 "html.md"
+#line 550 "html.md"
 
 	do {
 		
-#line 572 "html.md"
+#line 575 "html.md"
 
 	static Set macros = {
 		"def", "end", "add", "put", "mul",
@@ -2680,7 +2680,7 @@
 		"Put", "End"
 	};
 
-#line 583 "html.md"
+#line 586 "html.md"
 
 	if (
 		macros.find(name) != macros.end()
@@ -2691,11 +2691,11 @@
 		break;
 	}
 
-#line 597 "html.md"
+#line 600 "html.md"
 
 	if (name == "inc") {
 		
-#line 607 "html.md"
+#line 610 "html.md"
 
 	auto ext = arg.find_last_of('.');
 	if (ext == std::string::npos) {
@@ -2708,12 +2708,12 @@
 	out << arg <<
 		"</a></span>)</span>";
 
-#line 599 "html.md"
+#line 602 "html.md"
 ;
 		break;
 	}
 
-#line 623 "html.md"
+#line 626 "html.md"
 
 	if (name == "s" || name == "str") {
 		writeMacroClass(out, "str");
@@ -2728,7 +2728,7 @@
 		break;
 	}
 
-#line 641 "html.md"
+#line 644 "html.md"
 
 	if (name == "f" || name == "fn") {
 		writeMacroClass(out, "fn");
@@ -2737,7 +2737,7 @@
 		break;
 	}
 
-#line 653 "html.md"
+#line 656 "html.md"
 
 	if (name == "v" || name == "var") {
 		writeMacroClass(out, "var");
@@ -2746,7 +2746,7 @@
 		break;
 	}
 
-#line 665 "html.md"
+#line 668 "html.md"
 
 	if (name == "k" || name == "key") {
 		writeMacroClass(out, "keyword");
@@ -2755,7 +2755,7 @@
 		break;
 	}
 
-#line 677 "html.md"
+#line 680 "html.md"
 
 	if (name == "n" || name == "num") {
 		writeMacroClass(out, "num");
@@ -2764,7 +2764,7 @@
 		break;
 	}
 
-#line 689 "html.md"
+#line 692 "html.md"
 
 	if (name == "t" || name == "typ") {
 		writeMacroClass(out, "type");
@@ -2773,7 +2773,7 @@
 		break;
 	}
 
-#line 701 "html.md"
+#line 704 "html.md"
 
 	if (name == "b" || name == "br") {
 		writeMacroClass(out, "virt");
@@ -2781,7 +2781,7 @@
 		break;
 	}
 
-#line 713 "html.md"
+#line 716 "html.md"
 
 	if (name == "priv") {
 		writeMacroClass(out, "var");
@@ -2791,7 +2791,7 @@
 		break;
 	}
 
-#line 726 "html.md"
+#line 729 "html.md"
 
 	if (name == "magic") {
 		writeMacroClass(out, "num");
@@ -2801,10 +2801,10 @@
 		break;
 	}
 
-#line 549 "html.md"
+#line 552 "html.md"
 ;
 		
-#line 560 "html.md"
+#line 563 "html.md"
 
 	writeOneEscaped(out, '@');
 	writeEscaped(out, name);
@@ -2812,29 +2812,29 @@
 	writeEscaped(out, arg);
 	writeOneEscaped(out, ')');
 
-#line 550 "html.md"
+#line 553 "html.md"
 ;
 	} while (false);
 	begin = ae;
 
-#line 539 "html.md"
+#line 542 "html.md"
 ;
 		continue;
 	}
 
-#line 522 "html.md"
+#line 525 "html.md"
 ;
 	}
 
-#line 496 "html.md"
+#line 499 "html.md"
 ;
 	}
 
-#line 746 "html.md"
+#line 749 "html.md"
 
 	auto w = begin;
 	
-#line 758 "html.md"
+#line 761 "html.md"
 
 	while (w != end && (
 		std::isalnum(*w) ||
@@ -2844,11 +2844,11 @@
 		++w;
 	}
 
-#line 748 "html.md"
+#line 751 "html.md"
 ;
 	if (w != begin) {
 		
-#line 772 "html.md"
+#line 775 "html.md"
 
 	std::string ident {begin, w};
 	begin = w - 1;
@@ -2857,36 +2857,36 @@
 		w != end ? *w : ' '
 	);
 
-#line 750 "html.md"
+#line 753 "html.md"
 ;
 		continue;
 	}
 
-#line 423 "html.md"
+#line 426 "html.md"
 ;
 		writeOneEscaped(out, *begin);
 	}
 
-#line 242 "html.md"
+#line 245 "html.md"
 ;
 	}
 
-#line 252 "html.md"
+#line 255 "html.md"
 
 	void process_content(
 		std::ostream &out,
 		SI begin, SI end
 	) {
 		
-#line 1028 "html.md"
+#line 1031 "html.md"
 
 	for(; begin != end; ++begin) {
 		
-#line 1040 "html.md"
+#line 1043 "html.md"
 
 	if (*begin == '`') {
 		
-#line 1049 "html.md"
+#line 1052 "html.md"
 
 	auto w = begin + 1;
 	while (w != end && *w != '`') {
@@ -2900,11 +2900,11 @@
 		continue;
 	}
 
-#line 1042 "html.md"
+#line 1045 "html.md"
 ;
 	}
 
-#line 1066 "html.md"
+#line 1069 "html.md"
 
 	if (
 		*begin == '*' &&
@@ -2912,7 +2912,7 @@
 		*(begin + 1) == '*'
 	) {
 		
-#line 1079 "html.md"
+#line 1082 "html.md"
 
 	auto w = begin + 2;
 	while (
@@ -2922,14 +2922,14 @@
 		++w;
 	}
 
-#line 1092 "html.md"
+#line 1095 "html.md"
 
 	if (
 		w != end && (w + 1 ) != end &&
 		*w == '*' && *(w + 1) == '*'
 	) {
 		
-#line 1105 "html.md"
+#line 1108 "html.md"
 
 	out << "<b>";
 	writeEscaped(
@@ -2938,21 +2938,21 @@
 	out << "</b>";
 	begin = w + 1;
 
-#line 1097 "html.md"
+#line 1100 "html.md"
 ;
 		continue;
 	}
 
-#line 1072 "html.md"
+#line 1075 "html.md"
 ;
 	}
 
-#line 1030 "html.md"
+#line 1033 "html.md"
 ;
 		writeOneEscaped(out, *begin);
 	}
 
-#line 257 "html.md"
+#line 260 "html.md"
 ;
 	}
 
@@ -2989,18 +2989,18 @@
 #line 153 "html.md"
 
 	
-#line 277 "html.md"
+#line 280 "html.md"
 
 	switch (status.state) {
 		case HtmlState::nothing:
 			
-#line 295 "html.md"
+#line 298 "html.md"
 
 	out << "<!doctype html>\n";
 	out << "<html lang=\"en\">\n";
 	out << "<head>\n";
 	
-#line 307 "html.md"
+#line 310 "html.md"
 
 	out << "<meta charset=\"utf-8\">\n";
 	out << "<title>";
@@ -3010,12 +3010,12 @@
 		"type=\"text/css\" href=\""
 		<< stylesheet << "\">";
 
-#line 299 "html.md"
+#line 302 "html.md"
 ;
 	out << "</head>\n";
 	out << "<body>\n";
 
-#line 280 "html.md"
+#line 283 "html.md"
 ;
 			break;
 		case HtmlState::inSlide:
@@ -3028,7 +3028,7 @@
 #line 154 "html.md"
 ;
 	
-#line 265 "html.md"
+#line 268 "html.md"
  {
 	out << "<h" << b.level << '>';
 	const auto &n = b.value[0];
@@ -3043,7 +3043,7 @@
 	out << "<div class=\"page\">\n";
 	out << "<div class=\"slide\"><div class=\"headers\">\n";
 	
-#line 265 "html.md"
+#line 268 "html.md"
  {
 	out << "<h" << b.level << '>';
 	const auto &n = b.value[0];
@@ -3054,34 +3054,37 @@
 } 
 #line 159 "html.md"
 ;
-	for (unsigned i = 1; i < b.value.size(); ++i)
-	{
-		out << "<h" << (b.level + 1) << '>';
-		const auto &n = b.value[i];
-		process_content(
-			out, n.begin(), n.end()
-		);
-		out << "</h" << (b.level + 1) << ">\n";
+	if (b.value.size() > 1) {
+		out << "<ul>\n";
+		for (unsigned i = 1; i < b.value.size(); ++i) {
+			out << "<li><h" << (b.level + 1) << '>';
+			const auto &n = b.value[i];
+			process_content(
+				out, n.begin(), n.end()
+			);
+			out << "</h" << (b.level + 1) << "></li>\n";
+		}
+		out << "</ul>\n";
 	}
 	out << "</div></div>\n";
 	status.state = HtmlState::inSlide;
 
-#line 178 "html.md"
+#line 181 "html.md"
 
 	for (const auto &note : b.notes) {
 		
-#line 989 "html.md"
+#line 992 "html.md"
 
 	auto end = note.end();
 	auto begin = note.begin();
 
-#line 997 "html.md"
+#line 1000 "html.md"
 
 	if (
 		status.state != HtmlState::inNotes
 	) {
 		
-#line 1014 "html.md"
+#line 1017 "html.md"
 
 	if (
 		status.state != HtmlState::inSlide
@@ -3091,7 +3094,7 @@
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";
 
-#line 1001 "html.md"
+#line 1004 "html.md"
 ;
 	} else {
 		out << "</li><li>\n";
@@ -3099,11 +3102,11 @@
 	process_content(out, begin, end);
 	out << '\n';
 
-#line 180 "html.md"
+#line 183 "html.md"
 ;
 	}
 	
-#line 978 "html.md"
+#line 981 "html.md"
 
 	if (
 		status.state == HtmlState::inNotes
@@ -3111,7 +3114,7 @@
 		out << "</li></ul>\n";
 	}
 
-#line 1127 "html.md"
+#line 1130 "html.md"
 
 	if (
 		status.state == HtmlState::inPara
@@ -3121,7 +3124,7 @@
 			HtmlState::afterSlides;
 	}
 
-#line 182 "html.md"
+#line 185 "html.md"
 ;
 	
 #line 141 "html.md"
@@ -3129,7 +3132,7 @@
 	out << "</div>\n";
 	status.state = HtmlState::afterSlide;
 
-#line 183 "html.md"
+#line 186 "html.md"
 ;
 
 #line 103 "html.md"
@@ -3140,7 +3143,7 @@
 
 	if (b.state == RS::code) {
 		
-#line 333 "html.md"
+#line 336 "html.md"
 
 	if (
 		status.state ==
@@ -3149,7 +3152,7 @@
 		out << "<div class=\"slides\">\n";
 	}
 
-#line 345 "html.md"
+#line 348 "html.md"
 
 	if (
 		status.state == HtmlState::inSlide
@@ -3164,7 +3167,7 @@
 ;
 		for (const auto &code : b.value) {
 			
-#line 392 "html.md"
+#line 395 "html.md"
 
 	process_code(
 		out, code.begin(), code.end()
@@ -3175,7 +3178,7 @@
 ;
 		}
 		
-#line 360 "html.md"
+#line 363 "html.md"
 
 	out << "</code></div>\n";
 	status.state = HtmlState::inSlide;
@@ -3184,18 +3187,18 @@
 ;
 		for (const auto &note : b.notes) {
 			
-#line 989 "html.md"
+#line 992 "html.md"
 
 	auto end = note.end();
 	auto begin = note.begin();
 
-#line 997 "html.md"
+#line 1000 "html.md"
 
 	if (
 		status.state != HtmlState::inNotes
 	) {
 		
-#line 1014 "html.md"
+#line 1017 "html.md"
 
 	if (
 		status.state != HtmlState::inSlide
@@ -3205,7 +3208,7 @@
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";
 
-#line 1001 "html.md"
+#line 1004 "html.md"
 ;
 	} else {
 		out << "</li><li>\n";
@@ -3217,7 +3220,7 @@
 ;
 		}
 		
-#line 978 "html.md"
+#line 981 "html.md"
 
 	if (
 		status.state == HtmlState::inNotes
@@ -3225,7 +3228,7 @@
 		out << "</li></ul>\n";
 	}
 
-#line 1127 "html.md"
+#line 1130 "html.md"
 
 	if (
 		status.state == HtmlState::inPara
@@ -3252,7 +3255,7 @@
 	if (b.state == RS::para) {
 		for (const auto &para : b.value) {
 			
-#line 1140 "html.md"
+#line 1143 "html.md"
 
 	if (
 		status.state ==
@@ -3261,7 +3264,7 @@
 		out << "</div>\n";
 	}
 
-#line 1152 "html.md"
+#line 1155 "html.md"
 
 	if (
 		status.state != HtmlState::inPara
@@ -3277,7 +3280,7 @@
 #line 131 "html.md"
 ;
 			
-#line 978 "html.md"
+#line 981 "html.md"
 
 	if (
 		status.state == HtmlState::inNotes
@@ -3285,7 +3288,7 @@
 		out << "</li></ul>\n";
 	}
 
-#line 1127 "html.md"
+#line 1130 "html.md"
 
 	if (
 		status.state == HtmlState::inPara
@@ -3299,7 +3302,7 @@
 ;
 		}
 		
-#line 978 "html.md"
+#line 981 "html.md"
 
 	if (
 		status.state == HtmlState::inNotes
@@ -3307,7 +3310,7 @@
 		out << "</li></ul>\n";
 	}
 
-#line 1127 "html.md"
+#line 1130 "html.md"
 
 	if (
 		status.state == HtmlState::inPara
@@ -3321,11 +3324,11 @@
 ;
 	}
 
-#line 1169 "html.md"
+#line 1172 "html.md"
 
 	if (b.state == RS::img) {
 		
-#line 1186 "html.md"
+#line 1189 "html.md"
 
 	if (
 		status.state ==
@@ -3335,33 +3338,33 @@
 	}
 	status.state = HtmlState::inSlide;
 
-#line 1171 "html.md"
+#line 1174 "html.md"
 ;
 		for (const auto &img : b.value) {
 			
-#line 1199 "html.md"
+#line 1202 "html.md"
 
 	out << "<div class=\"page\"><div class=\"slide\">\n";
 	out	<< "<img src=\"" << img << "\">\n";
 	out << "</div>\n";
 
-#line 1173 "html.md"
+#line 1176 "html.md"
 ;
 		}
 		for (const auto &note : b.notes) {
 			
-#line 989 "html.md"
+#line 992 "html.md"
 
 	auto end = note.end();
 	auto begin = note.begin();
 
-#line 997 "html.md"
+#line 1000 "html.md"
 
 	if (
 		status.state != HtmlState::inNotes
 	) {
 		
-#line 1014 "html.md"
+#line 1017 "html.md"
 
 	if (
 		status.state != HtmlState::inSlide
@@ -3371,7 +3374,7 @@
 	status.state = HtmlState::inNotes;
 	out << "<ul><li>\n";
 
-#line 1001 "html.md"
+#line 1004 "html.md"
 ;
 	} else {
 		out << "</li><li>\n";
@@ -3379,11 +3382,11 @@
 	process_content(out, begin, end);
 	out << '\n';
 
-#line 1176 "html.md"
+#line 1179 "html.md"
 ;
 		}
 		
-#line 978 "html.md"
+#line 981 "html.md"
 
 	if (
 		status.state == HtmlState::inNotes
@@ -3391,7 +3394,7 @@
 		out << "</li></ul>\n";
 	}
 
-#line 1127 "html.md"
+#line 1130 "html.md"
 
 	if (
 		status.state == HtmlState::inPara
@@ -3401,7 +3404,7 @@
 			HtmlState::afterSlides;
 	}
 
-#line 1178 "html.md"
+#line 1181 "html.md"
 ;
 		
 #line 141 "html.md"
@@ -3409,7 +3412,7 @@
 	out << "</div>\n";
 	status.state = HtmlState::afterSlide;
 
-#line 1179 "html.md"
+#line 1182 "html.md"
 ;
 	}
 
@@ -3417,7 +3420,7 @@
 ;
 	}
 
-#line 368 "html.md"
+#line 371 "html.md"
 
 	if (
 		status.state == HtmlState::inCode
@@ -3426,7 +3429,7 @@
 			"unterminated code block\n";
 	}
 
-#line 380 "html.md"
+#line 383 "html.md"
 
 	if (
 		status.state != HtmlState::nothing
