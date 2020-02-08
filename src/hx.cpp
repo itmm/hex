@@ -3058,11 +3058,11 @@
 		out << "<ul>\n";
 		for (unsigned i = 1; i < b.value.size(); ++i) {
 			bool hidden { b.value[i][0] == '-' };
-			out << "<li><h" << (b.level + 1);
+			out << "<li";
 			if (hidden) {
 				out << " class=\"hidden\"";
 			}
-			out << '>';
+			out << "><h" << (b.level + 1) << '>';
 			const auto &n = b.value[i];
 			auto bg { n.begin() };
 			if (hidden) { ++bg; }
