@@ -160,10 +160,17 @@
 	if (b.value.size() > 1) {
 		out << "<ul>\n";
 		for (unsigned i = 1; i < b.value.size(); ++i) {
-			out << "<li><h" << (b.level + 1) << '>';
+			bool hidden { b.value[i][0] == '-' };
+			out << "<li><h" << (b.level + 1);
+			if (hidden) {
+				out << " class=\"hidden\"";
+			}
+			out << '>';
 			const auto &n = b.value[i];
+			auto bg { n.begin() };
+			if (hidden) { ++bg; }
 			process_content(
-				out, n.begin(), n.end()
+				out, bg, n.end()
 			);
 			out << "</h" << (b.level + 1) << "></li>\n";
 		}

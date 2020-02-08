@@ -221,10 +221,17 @@ writes heading entry
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">value</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;ul&gt;\n"</span>;<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">unsigned</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">b</span>.<span class="var">value</span>.<span class="fn">size</span>(); ++<span class="var">i</span>) {<br/>
-<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;li&gt;&lt;h"</span> &lt;&lt; (<span class="var">b</span>.<span class="var">level</span> + <span class="num">1</span>) &lt;&lt; <span class="str">'&gt;'</span>;<br/>
+<span class="in3"></span><span class="type">bool</span> <span class="var">hidden</span> { <span class="var">b</span>.<span class="var">value</span>[<span class="var">i</span>][<span class="num">0</span>] == <span class="str">'-'</span> };<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;li&gt;&lt;h"</span> &lt;&lt; (<span class="var">b</span>.<span class="var">level</span> + <span class="num">1</span>);<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">hidden</span>) {<br/>
+<span class="in4"></span><span class="var">out</span> &lt;&lt; <span class="str">" class=\"hidden\""</span>;<br/>
+<span class="in3"></span>}<br/>
+<span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">'&gt;'</span>;<br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">n</span> = <span class="var">b</span>.<span class="var">value</span>[<span class="var">i</span>];<br/>
+<span class="in3"></span><span class="type">auto</span> <span class="var">bg</span> { <span class="var">n</span>.<span class="fn">begin</span>() };<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">hidden</span>) { ++<span class="var">bg</span>; }<br/>
 <span class="in3"></span><span class="fn">process_content</span>(<br/>
-<span class="in4"></span><span class="var">out</span>, <span class="var">n</span>.<span class="fn">begin</span>(), <span class="var">n</span>.<span class="fn">end</span>()<br/>
+<span class="in4"></span><span class="var">out</span>, <span class="var">bg</span>, <span class="var">n</span>.<span class="fn">end</span>()<br/>
 <span class="in3"></span>);<br/>
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/h"</span> &lt;&lt; (<span class="var">b</span>.<span class="var">level</span> + <span class="num">1</span>) &lt;&lt; <span class="str">"&gt;&lt;/li&gt;\n"</span>;<br/>
 <span class="in2"></span>}<br/>
