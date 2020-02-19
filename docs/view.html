@@ -8,14 +8,14 @@
 <h1>Interactive Display of slides</h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Interactive Display of slides</h1>
 </div></div>
 <ul><li>
 display slides in a terminal editor
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">interactive</span> = <span class="num">false</span>;<br/>
@@ -25,7 +25,7 @@ display slides in a terminal editor
 is <code><span class="var">hx</span></code> running in interactive mode
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">map</span>&lt;<span class="type">std</span>::<span class="type">string</span>, <span class="type">Input</span>&gt;::<span class="var">iterator</span> <span class="var">curInput</span>;<br/>
@@ -36,7 +36,7 @@ is <code><span class="var">hx</span></code> running in interactive mode
 iterator to the current block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">write_files</span> = <span class="num">true</span>;<br/>
@@ -46,7 +46,7 @@ iterator to the current block
 should source files be automatically written
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">process_files</span> = <span class="num">true</span>;<br/>
@@ -56,7 +56,7 @@ should source files be automatically written
 should files be automatically processed
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">html_files</span> = <span class="num">true</span>;<br/>
@@ -66,7 +66,7 @@ should files be automatically processed
 should HTML slides be generated
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@Add(<span class="name">process argument</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -85,7 +85,7 @@ should HTML slides be generated
 interactive mode turns off automatic generation
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@Add(<span class="name">main body</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">interactive</span>) {<br/>
@@ -97,7 +97,7 @@ interactive mode turns off automatic generation
 run interactive editor
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@Def(<span class="name">interactive</span>)</span><br/>
 <span class="in1"></span><span class="var">curInput</span> = <span class="var">inputs</span>.<span class="fn">begin</span>();<br/>
@@ -110,7 +110,7 @@ run interactive editor
 initialize on first block in first input file
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">10</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">draw_block</span>() {<br/>
@@ -122,7 +122,7 @@ initialize on first block in first input file
 draw current block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@Add(<span class="name">interactive</span>)</span><br/>
 <span class="in1"></span><span class="fn">draw_block</span>();<br/>
@@ -135,7 +135,7 @@ draw current block
 run interactive loop
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">12</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">draw_position</span>() {<br/>
@@ -147,7 +147,7 @@ run interactive loop
 draw current position
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">13</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">trim</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
@@ -164,7 +164,7 @@ draw current position
 remove non-printable characters at the beginning of a string
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">14</div>
 <code>
 <span class="macro">@Def(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">cmd</span>;<br/>
@@ -184,7 +184,7 @@ read command
 process command
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">15</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"q"</span> || <span class="var">cmd</span> == <span class="str">"quit"</span>) {<br/>
@@ -196,7 +196,7 @@ process command
 quit interactive mode
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">16</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"n"</span> || <span class="var">cmd</span> == <span class="str">"next"</span>) {<br/>
@@ -210,7 +210,7 @@ quit interactive mode
 go to next block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">17</div>
 <code>
 <span class="macro">@def(<span class="name">do next cmd</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = (<span class="var">curBlock</span> -<br/>
@@ -229,7 +229,7 @@ go to next block
 go to next block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">18</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"p"</span> || <span class="var">cmd</span> == <span class="str">"prev"</span>) {<br/>
@@ -243,7 +243,7 @@ go to next block
 go to previous block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">19</div>
 <code>
 <span class="macro">@def(<span class="name">do prev cmd</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> =<span class="var">curBlock</span> -<br/>
@@ -260,7 +260,7 @@ go to previous block
 go to previous block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">20</div>
 <code>
 <span class="macro">@def(<span class="name">draw block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>) {<br/>
@@ -272,7 +272,7 @@ go to previous block
 draw header block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">21</div>
 <code>
 <span class="macro">@def(<span class="name">draw header</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>;<br/>
@@ -289,7 +289,7 @@ draw header block
 draw header block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">22</div>
 <code>
 <span class="macro">@def(<span class="name">draw header level</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<br/>
@@ -304,7 +304,7 @@ draw header block
 draw header indent in Markdown syntax
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">23</div>
 <code>
 <span class="macro">@add(<span class="name">draw block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
@@ -316,7 +316,7 @@ draw header indent in Markdown syntax
 draw code block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">24</div>
 <code>
 <span class="macro">@def(<span class="name">draw code</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="str">"```\n"</span>;<br/>
@@ -334,7 +334,7 @@ draw code block
 draw code block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">25</div>
 <code>
 <span class="macro">@add(<span class="name">draw block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
@@ -346,7 +346,7 @@ draw code block
 draw paragraph block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">26</div>
 <code>
 <span class="macro">@def(<span class="name">draw para</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>;<br/>
@@ -362,7 +362,7 @@ draw paragraph block
 draw paragraph block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">27</div>
 <code>
 <span class="macro">@add(<span class="name">draw block</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">j</span> = <span class="num">0</span>;<br/>
@@ -379,7 +379,7 @@ draw paragraph block
 draw notes
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">28</div>
 <code>
 <span class="macro">@def(<span class="name">draw position</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="var">bs</span> { <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span> };<br/>
@@ -402,7 +402,7 @@ draw current input file name
 draw current block number
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">29</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"f"</span> || <span class="var">cmd</span> == <span class="str">"forward"</span>) {<br/>
@@ -416,7 +416,7 @@ draw current block number
 go to next input file
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">30</div>
 <code>
 <span class="macro">@def(<span class="name">do forward cmd</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="num">1</span>;<br/>
@@ -441,7 +441,7 @@ go to next input file
 go to next input file
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">31</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"b"</span> || <span class="var">cmd</span> == <span class="str">"backward"</span>) {<br/>
@@ -455,7 +455,7 @@ go to next input file
 go to previous input file
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">32</div>
 <code>
 <span class="macro">@def(<span class="name">do backward cmd</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="num">0</span>;<br/>

@@ -8,14 +8,14 @@
 <h1>Pair of <code><span class="type">Line</span></code>s</h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Pair of <code><span class="type">Line</span></code>s</h1>
 </div></div>
 <ul><li>
 one or two <code><span class="type">Line</span></code>s form a range expression
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Def(<span class="name">range prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Range</span> {<br/>
@@ -31,7 +31,7 @@ one or two <code><span class="type">Line</span></code>s form a range expression
 range has two <code><span class="type">Line</span></code>s
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@def(<span class="name">range elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Line</span> <span class="fn">prev</span>() {<br/>
@@ -47,7 +47,7 @@ if <code><span class="var">_prev</span></code> is available, it is returned
 otherwise <code><span class="var">_last</span></code> is returned
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@add(<span class="name">range elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Line</span> <span class="fn">last</span>() {<br/>
@@ -59,7 +59,7 @@ otherwise <code><span class="var">_last</span></code> is returned
 getter for last read <code><span class="type">Line</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@add(<span class="name">range elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Range</span> &amp;<span class="var">operator</span>&lt;&lt;(<span class="type">const</span> <span class="type">Line</span> &amp;<span class="var">l</span>) {<br/>
@@ -73,7 +73,7 @@ getter for last read <code><span class="type">Line</span></code>
 push <code><span class="type">Line</span></code> into <code><span class="type">Range</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@add(<span class="name">range elements</span>)</span><br/>
 <span class="in1"></span><span class="var">operator</span> <span class="fn">bool</span>() {<br/>
@@ -85,7 +85,7 @@ push <code><span class="type">Line</span></code> into <code><span class="type">R
 is <code><span class="var">_last</span></code> a valid <code><span class="type">Line</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@Add(<span class="name">range vars</span>)</span><br/>
 <span class="in1"></span><span class="type">Range</span> <span class="var">range</span>;<br/>
@@ -95,7 +95,7 @@ is <code><span class="var">_last</span></code> a valid <code><span class="type">
 global <code><span class="type">Range</span></code> element
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@Rep(<span class="name">do range</span>)</span><br/>
 <span class="in1"></span><span class="var">range</span> = <span class="type">Range</span> {};<br/>
@@ -112,7 +112,7 @@ read one or two <code><span class="type">Line</span></code> elements
 two <code><span class="type">Line</span></code> elements are separated with <code>,</code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@Rep(<span class="name">do block range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">range</span>) {<br/>
@@ -128,7 +128,7 @@ two <code><span class="type">Line</span></code> elements are separated with <cod
 blocks use only one element from range
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">10</div>
 <code>
 <span class="macro">@Rep(<span class="name">do inputs range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">range</span>) {<br/>
@@ -149,7 +149,7 @@ blocks use only one element from range
 input files use only one element from range
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@Rep(<span class="name">do str range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">range</span>) {<br/>
@@ -169,7 +169,7 @@ input files use only one element from range
 strings can replace a full range with the new elements
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">12</div>
 <code>
 <span class="macro">@def(<span class="name">erase range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">p</span> &lt; <span class="var">next</span>) {<br/>
@@ -185,7 +185,7 @@ strings can replace a full range with the new elements
 erase whole range
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">13</div>
 <code>
 <span class="macro">@Rep(<span class="name">range vars</span>)</span><br/>
 <span class="in1"></span><span class="type">Range</span> <span class="var">range</span>;<br/>

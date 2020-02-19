@@ -8,14 +8,14 @@
 <h1>Edit blocks in place</h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Edit blocks in place</h1>
 </div></div>
 <ul><li>
 using a terminal editor to edit blocks
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">insert_before</span>(<br/>
@@ -32,7 +32,7 @@ function to interactively insert lines at the end of the container
 the <code><span class="var">prefix</span></code> is the prompt that is printed
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"l"</span> || <span class="var">cmd</span> == <span class="str">"list"</span>) {<br/>
@@ -47,7 +47,7 @@ the <code><span class="var">prefix</span></code> is the prompt that is printed
 the <code><span class="type">list</span></code> or <code><span class="var">l</span></code> command adds notes
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"a"</span> || <span class="var">cmd</span> == <span class="str">"add"</span>) {<br/>
@@ -65,7 +65,7 @@ the <code><span class="type">list</span></code> or <code><span class="var">l</sp
 the <code><span class="var">add</span></code> or <code><span class="var">a</span></code> command adds value lines
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@def(<span class="name">find add prefix</span>)</span><br/>
 <span class="in1"></span><span class="keyword">switch</span> (<span class="var">curBlock</span>-&gt;<span class="var">state</span>) {<br/>
@@ -84,7 +84,7 @@ the <code><span class="var">add</span></code> or <code><span class="var">a</span
 one character prefix for the different block types
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@def(<span class="name">insert before</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">next</span> = <span class="var">c</span>.<span class="fn">size</span>();<br/>
@@ -101,7 +101,7 @@ one character prefix for the different block types
 insert strings at the end of the container
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@def(<span class="name">insert next line</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">cout</span> &lt;&lt; <span class="var">prefix</span> &lt;&lt; <span class="str">' '</span> &lt;&lt;<br/>
@@ -124,7 +124,7 @@ read lines until a single <code>.</code> is read
 spaces at the beginning of the line are stripped
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"&gt;&gt;"</span>) {<br/>
@@ -142,7 +142,7 @@ spaces at the beginning of the line are stripped
 <code>&gt;&gt;</code> increases the level of a header
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"&lt;&lt;"</span>) {<br/>

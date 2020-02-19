@@ -8,7 +8,7 @@
 <h1>Logging</h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Logging</h1>
 </div></div>
 <ul><li>
@@ -21,7 +21,7 @@ the macro will throw an <code><span class="type">std</span>::<span class="var">e
 this normally terminates the running program
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> <span class="str">&lt;iostream&gt;</span><br/>
@@ -34,7 +34,7 @@ this normally terminates the running program
 a standard exception from <code><span class="str">&lt;exception&gt;</span></code> is used to indicate failed  conditions
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@Def(<span class="name">frag prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>) \<br/>
@@ -57,7 +57,7 @@ no details are given and the line is terminated with a newline
 then an exception is raised
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@Add(<span class="name">frag prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">ASSERT_MSG</span>(<span class="var">COND</span>, <span class="var">MSG</span>) \<br/>
@@ -75,7 +75,7 @@ the macro <code><span class="fn">ASSERT_MSG</span></code> has an additional argu
 <code><span class="var">MSG</span></code> can be multiple parameters concatenated by <code>&lt;&lt;</code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@Add(<span class="name">frag prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">WARN_MSG</span>(<span class="var">MSG</span>) \<br/>
@@ -91,7 +91,7 @@ a warning writes the same message, as an assertion
 but it will not terminate the program
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@def(<span class="name">log preamble</span>)</span> \<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; \<br/>
@@ -107,7 +107,7 @@ this is recognized by a number of editors
 afterwards a short error message is written
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@def(<span class="name">log newline</span>)</span> \<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">'\n'</span>; \<br/>
@@ -117,7 +117,7 @@ afterwards a short error message is written
 a simple newline terminates an error message
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@def(<span class="name">throw</span>)</span> \<br/>
 <span class="in1"></span><span class="keyword">throw</span> <span class="type">std</span>::<span class="fn">exception</span>(); \<br/>

@@ -8,14 +8,14 @@
 <h1>Entering Lines in Viewer and Editor</h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Entering Lines in Viewer and Editor</h1>
 </div></div>
 <ul><li>
 the <code><span class="type">Line</span></code> class can refer to specific entry in a vector
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Line</span> {<br/>
@@ -30,7 +30,7 @@ the <code><span class="type">Line</span></code> class can refer to specific entr
 a line has private and public elements
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@def(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">operator</span>()(<br/>
@@ -46,7 +46,7 @@ a line has private and public elements
 to calculate the absolute line number, the method must know the  current line and the last line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@def(<span class="name">line privates</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">line_</span> { -<span class="num">1</span> };<br/>
@@ -59,7 +59,7 @@ integer for the line
 and a flag, if the line is relative
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="var">operator</span> <span class="fn">bool</span>() <span class="type">const</span> {<br/>
@@ -73,7 +73,7 @@ a line is valid, if the number is non-negative
 or the line is relative
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@def(<span class="name">get line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (! *<span class="var">this</span>) {<br/>
@@ -96,7 +96,7 @@ if the line is relative, the value is added to the current line
 the result is clamped to the valid interval
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@add(<span class="name">line privates</span>)</span><br/>
 <span class="in1"></span><span class="fn">Line</span>(<span class="type">int</span> <span class="var">line</span>, <span class="type">bool</span> <span class="var">relative</span>):<br/>
@@ -109,7 +109,7 @@ the result is clamped to the valid interval
 constructor copies arguments
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="fn">Line</span>() = <span class="keyword">default</span>;<br/>
@@ -119,7 +119,7 @@ constructor copies arguments
 empty constructor is possible
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">relative</span>(<span class="type">int</span> <span class="var">line</span>) {<br/>
@@ -131,7 +131,7 @@ empty constructor is possible
 create relative line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">10</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">line</span>(<span class="type">int</span> <span class="var">line</span>) {<br/>
@@ -143,7 +143,7 @@ create relative line
 create absolute line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">begin</span>() {<br/>
@@ -155,7 +155,7 @@ create absolute line
 create reference to first line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">12</div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">limits</span>&gt;<br/>
@@ -165,7 +165,7 @@ create reference to first line
 needs <code><span class="type">std</span>::<span class="var">numeric_limits</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">13</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">max</span> =<br/>
@@ -180,7 +180,7 @@ needs <code><span class="type">std</span>::<span class="var">numeric_limits</spa
 end refers to a very big line number
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">14</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">range prereqs</span>)</span>;<br/>
@@ -191,7 +191,7 @@ end refers to a very big line number
 needed global elements
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">15</div>
 <code>
 <span class="macro">@Def(<span class="name">range vars</span>)</span><br/>
 <span class="in1"></span><span class="type">Line</span> <span class="var">line</span>;<br/>
@@ -203,7 +203,7 @@ variable holds current line specification
 if any
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">16</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">get_number</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
@@ -222,7 +222,7 @@ if any
 parse a decimal non-negative integer
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">17</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Line</span> <span class="fn">get_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
@@ -241,7 +241,7 @@ parses the head of a string, if it contains a line specification
 the line parts are removed from the input string
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">18</div>
 <code>
 <span class="macro">@def(<span class="name">parse line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'.'</span>) {<br/>
@@ -255,7 +255,7 @@ the line parts are removed from the input string
 a <code>.</code> is treated as the current line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">19</div>
 <code>
 <span class="macro">@add(<span class="name">parse line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'+'</span>) {<br/>
@@ -270,7 +270,7 @@ a <code>.</code> is treated as the current line
 a <code>+</code> signals a positive relative offset from the current line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">20</div>
 <code>
 <span class="macro">@add(<span class="name">parse line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'-'</span>) {<br/>
@@ -285,7 +285,7 @@ a <code>+</code> signals a positive relative offset from the current line
 a <code>-</code> signals a negative relative offset from the current line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">21</div>
 <code>
 <span class="macro">@add(<span class="name">parse line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">s</span>[<span class="num">0</span>] == <span class="str">'$'</span>) {<br/>
@@ -299,7 +299,7 @@ a <code>-</code> signals a negative relative offset from the current line
 a <code><span class="var">$</span></code> signals the last line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">22</div>
 <code>
 <span class="macro">@add(<span class="name">parse line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) {<br/>
@@ -313,7 +313,7 @@ a <code><span class="var">$</span></code> signals the last line
 a number without <code>+</code> or <code>-</code> signals an absolute line position
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">23</div>
 <code>
 <span class="macro">@Def(<span class="name">do range</span>)</span><br/>
 <span class="in1"></span><span class="var">line</span> = <span class="fn">get_line</span>(<span class="var">cmd</span>);<br/>
@@ -323,7 +323,7 @@ a number without <code>+</code> or <code>-</code> signals an absolute line posit
 initialize the line from the command
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">24</div>
 <code>
 <span class="macro">@Add(<span class="name">perform unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">unit-tests</span>)</span>;<br/>
@@ -333,7 +333,7 @@ initialize the line from the command
 own fragment for unit-tests
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">25</div>
 <code>
 <span class="macro">@def(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(! <span class="type">Line</span> {});<br/>
@@ -343,7 +343,7 @@ own fragment for unit-tests
 empty <code><span class="type">Line</span></code> is not valid
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">26</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">begin</span>());<br/>
@@ -354,7 +354,7 @@ empty <code><span class="type">Line</span></code> is not valid
 begin and end are valid
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">27</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">0</span>));<br/>
@@ -364,7 +364,7 @@ begin and end are valid
 absolute line is valid
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">28</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(<span class="num">0</span>));<br/>
@@ -375,7 +375,7 @@ absolute line is valid
 relative lines are valid
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">29</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span> {}(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">5</span>);<br/>
@@ -385,7 +385,7 @@ relative lines are valid
 empty line returns current line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">30</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">begin</span>()(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span>);<br/>
@@ -396,7 +396,7 @@ empty line returns current line
 begin and end return the correct values
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">31</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">line</span>(<span class="num">0</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span>);<br/>
@@ -410,7 +410,7 @@ absolute lines are returned
 but may be clamped
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">32</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
@@ -422,7 +422,7 @@ but may be clamped
 simple positive relative line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">33</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
@@ -434,7 +434,7 @@ simple positive relative line
 too big movement is clamped
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">34</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
@@ -446,7 +446,7 @@ too big movement is clamped
 simple negative relative line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">35</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">ASSERT</span>(<br/>
@@ -458,7 +458,7 @@ simple negative relative line
 too big negative movement is clamped
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">36</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"+3"</span>;<br/>
@@ -471,7 +471,7 @@ too big negative movement is clamped
 parse positive relative
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">37</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"."</span>;<br/>
@@ -484,7 +484,7 @@ parse positive relative
 parse current line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">38</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"$"</span>;<br/>
@@ -497,7 +497,7 @@ parse current line
 parse last line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">39</div>
 <code>
 <span class="macro">@Def(<span class="name">do block range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
@@ -515,7 +515,7 @@ parse last line
 parse range over blocks collection
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">40</div>
 <code>
 <span class="macro">@Def(<span class="name">do inputs range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
@@ -532,7 +532,7 @@ parse range over blocks collection
 parse range over input files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">41</div>
 <code>
 <span class="macro">@Def(<span class="name">do str range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>

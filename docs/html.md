@@ -90,6 +90,7 @@
 ```
 @def(write from in to out)
 	HtmlStatus status;
+	int slide_nr { 0 };
 	for (const auto &b : cur.second.blocks) {
 		@put(process block);
 	}
@@ -155,7 +156,9 @@
 	@mul(write header tag);
 	out << "<div class=\"slides\">\n";
 	out << "<div class=\"page\">\n";
-	out << "<div class=\"slide\"><div class=\"headers\">\n";
+	out << "<div class=\"slide\">";
+	@mul(slide nr);
+	out << "<div class=\"headers\">\n";
 	@mul(write header tag);
 	if (b.value.size() > 1) {
 		out << "<ul>\n";
@@ -358,8 +361,9 @@
 	) {
 		out << "</div>\n";
 	}
-	out << "<div class=\"page\"><div class=\"slide\">\n";
-	out << "<code>\n";
+	out << "<div class=\"page\"><div class=\"slide\">";
+	@mul(slide nr);
+	out << "\n<code>\n";
 	status.state = HtmlState::inCode;
 @end(open code page)
 ```
@@ -1207,9 +1211,15 @@
 
 ```
 @def(process img)
-	out << "<div class=\"page\"><div class=\"slide\">\n";
-	out	<< "<img src=\"" << img << "\">\n";
+	out << "<div class=\"page\"><div class=\"slide\">";
+	@mul(slide nr);
+	out	<< "\n<img src=\"" << img << "\">\n";
 	out << "</div>\n";
 @end(process img)
 ```
 
+```
+@def(slide nr)
+	out << "<div class=\"slide-nr\">" << ++slide_nr << "</div>";
+@end(slide nr)
+```

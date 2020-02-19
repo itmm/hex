@@ -8,7 +8,7 @@
 <h1>Description of the <code><span class="type">Frag</span></code> <code><span class="keyword">class</span></code></h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Description of the <code><span class="type">Frag</span></code> <code><span class="keyword">class</span></code></h1>
 </div></div>
 <ul><li>
@@ -17,7 +17,7 @@
 the infix traversal of this <code><span class="var">DAG</span></code> generates the source code files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span>;<br/>
@@ -41,7 +41,7 @@ and only if the current output is not in a C-like macro definition
 the state is initialized later from a <code><span class="type">Frag</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="macro">@Put(<span class="name">frag prereqs</span>)</span>;<br/>
@@ -52,7 +52,7 @@ the state is initialized later from a <code><span class="type">Frag</span></code
 <code><span class="type">Frag</span></code>s are global elements
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@def(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag_Ref</span> {<br/>
@@ -96,7 +96,7 @@ if both are available the <code><span class="type">Frag</span></code> expands th
 so a <code><span class="var">_frag</span></code> can easily concatenate bytes to the <code><span class="var">_str</span></code> of its last  entry
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@def(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="fn">Frag_Entry</span>() { }<br/>
@@ -113,7 +113,7 @@ no range is provided in this case
 the range information of the sub <code><span class="type">Frag</span></code> will be used
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">update_state</span>(<br/>
@@ -129,7 +129,7 @@ this method checks, if the input is in a multi-line macro definition
 that is the case, if the line ends with a backslash followed by  newline characters
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@def(<span class="name">update state</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">c</span> { <span class="var">str_</span>.<span class="fn">end</span>() };<br/>
@@ -149,7 +149,7 @@ that is the case, if the line ends with a backslash followed by  newline charact
 if some characters are found in the line, it is not in a macro, if  it was not recognized in the loop
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@def(<span class="name">update state checks</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (*<span class="var">c</span> == <span class="str">'\n'</span> || *<span class="var">c</span> == <span class="str">'\r'</span>) {<br/>
@@ -171,7 +171,7 @@ this method checks, if the input is in a multi-line macro definition
 that is the case, if the line ends with a backslash followed by  newline characters
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">str</span>(<br/>
@@ -196,7 +196,7 @@ so that a C compiler refers warnings and errors to the position in the  input fi
 not in the generated source file
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">10</div>
 <code>
 <span class="macro">@def(<span class="name">check c-like</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">old</span> { <span class="var">state</span>.<span class="var">in_macro</span> };<br/>
@@ -217,7 +217,7 @@ or the line is not set
 or the string is empty
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
@@ -235,7 +235,7 @@ adds a character to an entry
 also the range of the entry is updated
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">12</div>
 <code>
 <span class="macro">@def(<span class="name">copy file and line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -253,7 +253,7 @@ if the entry is empty, the beginning of the range is updated
 also the end of the range is updated
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">13</div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
@@ -270,7 +270,7 @@ also the end of the range is updated
 adds a whole <code><span class="type">std</span>::<span class="type">string</span></code> to an entry
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">14</div>
 <code>
 <span class="macro">@add(<span class="name">entry methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">canAdd</span>(<br/>
@@ -286,7 +286,7 @@ adds a whole <code><span class="type">std</span>::<span class="type">string</spa
 checks if a character at the specified position can be added to the  fragment
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">15</div>
 <code>
 <span class="macro">@def(<span class="name">can add</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -300,7 +300,7 @@ checks if a character at the specified position can be added to the  fragment
 if the entry has a different file name, the character can not be added  to this fragment
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">16</div>
 <code>
 <span class="macro">@add(<span class="name">can add</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
@@ -316,7 +316,7 @@ if the entry has a different file name, the character can not be added  to this 
 if the last line does not match to the position, the character can not  be added
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">17</div>
 <code>
 <span class="macro">@add(<span class="name">can add</span>)</span><br/>
 <span class="in1"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
@@ -326,7 +326,7 @@ if the last line does not match to the position, the character can not  be added
 otherwise the character can be added
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">18</div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="type">vector</span>&gt;<br/>
@@ -336,7 +336,7 @@ otherwise the character can be added
 needs <code><span class="type">std</span>::<span class="type">vector</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">19</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Frag</span> {<br/>
@@ -361,11 +361,11 @@ also a count is kept, how often the <code><span class="type">Frag</span></code> 
 <h2>add a <code><span class="type">Frag</span></code></h2>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">20</div><div class="headers">
 <h2>add a <code><span class="type">Frag</span></code></h2>
 </div></div>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">21</div>
 <code>
 <span class="macro">@def(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">bool</span> <span class="fn">isFile</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
@@ -383,7 +383,7 @@ also a count is kept, how often the <code><span class="type">Frag</span></code> 
 a <code><span class="type">Frag</span></code> describes a file if its name has the prefix <code><span class="str">file: </span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">22</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">std</span>::<span class="type">string</span> <span class="fn">cmd</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
@@ -403,7 +403,7 @@ a <code><span class="type">Frag</span></code> describes a file if its name has t
 a <code><span class="type">Frag</span></code> describes a command if its name has the prefix <code><span class="str">| </span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">23</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="fn">Frag</span>(<br/>
@@ -428,7 +428,7 @@ initializes as <code><span class="type">Frag</span></code>
 if the <code><span class="type">Frag</span></code> is a name or command, it is counted as a single expand
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">24</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">const</span> <span class="type">Frag</span> *<span class="fn">prefix</span>() <span class="type">const</span> {<br/>
@@ -443,7 +443,7 @@ if the <code><span class="type">Frag</span></code> is a name or command, it is c
 get prefix fragment
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">25</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">is_meta</span>() {<br/>
@@ -452,7 +452,7 @@ get prefix fragment
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
 </code></div>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">26</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
@@ -469,7 +469,7 @@ deletes all entries
 will be used by <code>@<span class="var">rep</span></code> and <code>@<span class="type">Rep</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">27</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">empty</span>() <span class="type">const</span> {<br/>
@@ -486,7 +486,7 @@ will be used by <code>@<span class="var">rep</span></code> and <code>@<span clas
 a fragment is empty, if it does not have any entries
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">28</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">Write_State</span>::<span class="fn">Write_State</span>(<br/>
@@ -500,7 +500,7 @@ a fragment is empty, if it does not have any entries
 the C-like property is copied from the fragment
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">29</div>
 <code>
 <span class="macro">@Def(<span class="name">perform unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">unit-tests</span>)</span>;<br/>
@@ -510,7 +510,7 @@ the C-like property is copied from the fragment
 fragments have their own unit-test fragment
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">30</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">test_frag_name</span>(<br/>
@@ -525,7 +525,7 @@ fragments have their own unit-test fragment
 checks, if the fragment name is copied correctly
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">31</div>
 <code>
 <span class="macro">@def(<span class="name">unit-tests</span>)</span><br/>
 <span class="in1"></span><span class="fn">test_frag_name</span>(<span class="str">"abc"</span>);<br/>
@@ -537,7 +537,7 @@ checks, if the fragment name is copied correctly
 verify that names are copied
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">32</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">"ab"</span>, <span class="num">nullptr</span> };<br/>
@@ -548,7 +548,7 @@ verify that names are copied
 check that a new <code><span class="type">Frag</span></code> has no entries
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">33</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isPopulatedFrag</span>(<br/>
@@ -562,7 +562,7 @@ check that a new <code><span class="type">Frag</span></code> has no entries
 check that a fragment is not empty
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">34</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">Frag_Entry</span> <span class="var">entry</span>;<br/>
@@ -572,7 +572,7 @@ check that a fragment is not empty
 verify that an empty fragment has no sub <code><span class="type">Frag</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">35</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">Frag</span> <span class="var">f</span> { <span class="str">""</span>, <span class="num">nullptr</span> };<br/>
@@ -589,14 +589,14 @@ an empty entry will not return any bytes
 <h2>Add entries to <code><span class="type">Frag</span></code>s</h2>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">36</div><div class="headers">
 <h2>Add entries to <code><span class="type">Frag</span></code>s</h2>
 </div></div>
 <ul><li>
 add sub <code><span class="type">Frag</span></code>s or text to a <code><span class="type">Frag</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">37</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
@@ -622,7 +622,7 @@ otherwise the method assures that there is an entry
 and adds text to this entry
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">38</div>
 <code>
 <span class="macro">@def(<span class="name">assure frag entry</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">entries_</span>.<span class="fn">empty</span>()) {<br/>
@@ -642,7 +642,7 @@ if there are no entries, a new one is added
 otherwise if the text is at the wrong position, a new one is also added
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">39</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">add</span>(<br/>
@@ -661,7 +661,7 @@ otherwise if the text is at the wrong position, a new one is also added
 adds a single character to the <code><span class="type">Frag</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">40</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="fn">add</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">sub</span>);<br/>
@@ -673,7 +673,7 @@ adds a sub <code><span class="type">Frag</span></code> to a <code><span class="t
 assures that no cycle will result
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">41</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define cycle check</span>)</span><br/>
@@ -688,7 +688,7 @@ assures that no cycle will result
 checks, that the sub <code><span class="type">Frag</span></code> is valid and that no cycles will result
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">42</div>
 <code>
 <span class="macro">@def(<span class="name">add frag entry</span>)</span><br/>
 <span class="in1"></span><span class="var">entries_</span>.<span class="fn">push_back</span>(<br/>
@@ -700,7 +700,7 @@ checks, that the sub <code><span class="type">Frag</span></code> is valid and th
 creates a new entry for the sub <code><span class="type">Frag</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">43</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">begin</span>() <span class="type">const</span> {<br/>
@@ -712,7 +712,7 @@ creates a new entry for the sub <code><span class="type">Frag</span></code>
 getter for the begin entries iterator
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">44</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="fn">end</span>() <span class="type">const</span> {<br/>
@@ -724,7 +724,7 @@ getter for the begin entries iterator
 getter for the end entries iterator
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">45</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">expands</span>() <span class="type">const</span> {<br/>
@@ -736,7 +736,7 @@ getter for the end entries iterator
 how often was the <code><span class="type">Frag</span></code> <code>@<span class="var">put</span></code> or <code>@<span class="type">Put</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">46</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">addExpand</span>() {<br/>
@@ -748,7 +748,7 @@ how often was the <code><span class="type">Frag</span></code> <code>@<span class
 increases the <code>@<span class="var">put</span></code> or <code>@<span class="type">Put</span></code> count
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">47</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">multiples</span>() <span class="type">const</span> {<br/>
@@ -760,7 +760,7 @@ increases the <code>@<span class="var">put</span></code> or <code>@<span class="
 how often was the <code><span class="type">Frag</span></code> <code>@<span class="var">mul</span></code> or <code>@<span class="type">Mul</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">48</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">addMultiple</span>() {<br/>
@@ -772,7 +772,7 @@ how often was the <code><span class="type">Frag</span></code> <code>@<span class
 increases the <code>@<span class="var">mul</span></code> or <code>@<span class="type">Mul</span></code> count
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">49</div>
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">bool</span> <span class="fn">is_c_style</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
@@ -785,7 +785,7 @@ increases the <code>@<span class="var">mul</span></code> or <code>@<span class="
 check if a fragment supports C-like line number macros
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">50</div>
 <code>
 <span class="macro">@def(<span class="name">is c-style</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">exts</span>[] = {<br/>
@@ -799,7 +799,7 @@ check if a fragment supports C-like line number macros
 array of valid extensions
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">51</div>
 <code>
 <span class="macro">@add(<span class="name">is c-style</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">auto</span> <span class="var">i</span> = <span class="var">exts</span>; <span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span>) {<br/>
@@ -822,14 +822,14 @@ a fragment is of C style, if its name ends in one of the C/C++ file  extensions
 <h2>Serialize <code><span class="type">Frag</span></code>s</h2>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">52</div><div class="headers">
 <h2>Serialize <code><span class="type">Frag</span></code>s</h2>
 </div></div>
 <ul><li>
 write <code><span class="type">Frag</span></code> traversal to a <code><span class="type">std</span>::<span class="type">ostream</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">53</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
@@ -846,7 +846,7 @@ write <code><span class="type">Frag</span></code> traversal to a <code><span cla
 iterate over the entries
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">54</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">serializeFrag</span>(<br/>
@@ -866,7 +866,7 @@ iterate over the entries
 estimate a <code><span class="type">Write_State</span></code> first
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">55</div>
 <code>
 <span class="macro">@def(<span class="name">iterate entries</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">frag</span>.<span class="fn">prefix</span>()) {<br/>
@@ -896,7 +896,7 @@ recursively visit sub <code><span class="type">Frag</span></code>s
 then write the string value
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">56</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">check_frag</span>(<br/>
@@ -914,7 +914,7 @@ then write the string value
 checks if the traversal results in the same value as a <code><span class="type">std</span>::<span class="type">istream</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">57</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">check_frag</span>(<br/>
@@ -934,7 +934,7 @@ checks if the traversal results in the same value as a <code><span class="type">
 estimate a <code><span class="type">Write_State</span></code> first
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">58</div>
 <code>
 <span class="macro">@def(<span class="name">check entries</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">f</span>.<span class="fn">prefix</span>()) {<br/>
@@ -964,7 +964,7 @@ recursively visit sub <code><span class="type">Frag</span></code>s
 then compare the string value
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">59</div>
 <code>
 <span class="macro">@def(<span class="name">check entry str</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<br/>
@@ -980,7 +980,7 @@ then compare the string value
 compare string value character by character
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">60</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">testFrag</span>(<br/>
@@ -996,7 +996,7 @@ compare string value character by character
 verifies that a <code><span class="type">Frag</span></code> serializes as expected
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">61</div>
 <code>
 <span class="macro">@Add(<span class="name">includes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#include</span> &lt;<span class="var">sstream</span>&gt;<br/>
@@ -1006,7 +1006,7 @@ verifies that a <code><span class="type">Frag</span></code> serializes as expect
 needs <code><span class="type">std</span>::<span class="var">ostringstream</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">62</div>
 <code>
 <span class="macro">@def(<span class="name">serialize test frag</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">buffer</span>;<br/>
@@ -1020,7 +1020,7 @@ serializes the <code><span class="type">Frag</span></code>
 and compares resulting value
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">63</div>
 <code>
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">addStringToFrag</span>(<br/>
@@ -1037,7 +1037,7 @@ and compares resulting value
 adds a zero-terminated string to a <code><span class="type">Frag</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">64</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="fn">clear_frags</span>();<br/>
@@ -1051,7 +1051,7 @@ adds a zero-terminated string to a <code><span class="type">Frag</span></code>
 checks that two strings are correctly serialized
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">65</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="fn">clear_frags</span>();<br/>
@@ -1068,7 +1068,7 @@ checks that two strings are correctly serialized
 checks that sub <code><span class="type">Frag</span></code>s are serialized correctly
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">66</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="fn">clear_frags</span>();<br/>
@@ -1089,14 +1089,14 @@ checks that sub <code><span class="type">Frag</span></code>s are serialized corr
 <h2>Cycle detection</h2>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">67</div><div class="headers">
 <h2>Cycle detection</h2>
 </div></div>
 <ul><li>
 checks if the addition of a sub <code><span class="type">Frag</span></code> would result in a cycle
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">68</div>
 <code>
 <span class="macro">@def(<span class="name">define cycle check</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isFragInFrag</span>(<br/>
@@ -1116,7 +1116,7 @@ checks if the addition of a sub <code><span class="type">Frag</span></code> woul
 checks, if the parent <code><span class="type">Frag</span></code> <code><span class="var">needle</span></code> is already present in the <code><span class="var">DAG</span></code>  starting at the sub <code><span class="type">Frag</span></code> <code><span class="var">haystack</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">69</div>
 <code>
 <span class="macro">@def(<span class="name">avoid frag cycles</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="var">f</span> { <span class="fn">get_frag</span>(<span class="var">sub</span>) };<br/>
@@ -1129,7 +1129,7 @@ checks, if the parent <code><span class="type">Frag</span></code> <code><span cl
 a sub <code><span class="type">Frag</span></code> can not be added, if a cycle would result
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">70</div>
 <code>
 <span class="macro">@def(<span class="name">check cycle frag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">needle</span> == <span class="var">haystack</span>) {<br/>
@@ -1141,7 +1141,7 @@ a sub <code><span class="type">Frag</span></code> can not be added, if a cycle w
 if the container is itself the searched <code><span class="type">Frag</span></code>, a cycle would result
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">71</div>
 <code>
 <span class="macro">@def(<span class="name">check cycle entries</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">haystack</span>-&gt;<span class="fn">prefix</span>() &amp;&amp; <span class="fn">isFragInFrag</span>(<span class="var">path</span>, <span class="var">needle</span>, <span class="var">haystack</span>-&gt;<span class="fn">prefix</span>())) {<br/>

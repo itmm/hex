@@ -8,14 +8,14 @@
 <h1>Write all input files</h1>
 <div class="slides">
 <div class="page">
-<div class="slide"><div class="headers">
+<div class="slide"><div class="slide-nr">1</div><div class="headers">
 <h1>Write all input files</h1>
 </div></div>
 <ul><li>
 Replace all read input files with the current content
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">needed by write_input</span>)</span><br/>
@@ -30,7 +30,7 @@ Replace all read input files with the current content
 write all input files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"W"</span> || <span class="var">cmd</span> == <span class="str">"Write"</span>) {<br/>
@@ -43,7 +43,7 @@ write all input files
 write all input files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@def(<span class="name">write cur</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="var">out</span> {<br/>
@@ -55,7 +55,7 @@ write all input files
 open output file
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@add(<span class="name">write cur</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">first</span> = <span class="num">true</span>;<br/>
@@ -75,7 +75,7 @@ open output file
 write each block
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">6</div>
 <code>
 <span class="macro">@def(<span class="name">write block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">header</span>: {<br/>
@@ -88,7 +88,7 @@ write each block
 write header
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@def(<span class="name">write header</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">n</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
@@ -106,7 +106,7 @@ write header
 write header Markdown
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@add(<span class="name">write block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">code</span>: {<br/>
@@ -119,7 +119,7 @@ write header Markdown
 write code
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@def(<span class="name">write code</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"```\n"</span>;<br/>
@@ -133,7 +133,7 @@ write code
 write code Markdown
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">10</div>
 <code>
 <span class="macro">@add(<span class="name">write block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">case</span> <span class="var">RS</span>::<span class="var">para</span>: {<br/>
@@ -146,7 +146,7 @@ write code Markdown
 write paragraph
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@def(<span class="name">needed by write_input</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">split</span>(<br/>
@@ -167,7 +167,7 @@ write paragraph
 split strings at word boundaries to a specified width
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">12</div>
 <code>
 <span class="macro">@def(<span class="name">split eat spaces</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">' '</span>) {<br/>
@@ -179,7 +179,7 @@ split strings at word boundaries to a specified width
 skip starting spaces
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">13</div>
 <code>
 <span class="macro">@def(<span class="name">fill line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">c</span> != <span class="var">e</span>) {<br/>
@@ -197,7 +197,7 @@ skip starting spaces
 step over words until the line is too long
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">14</div>
 <code>
 <span class="macro">@def(<span class="name">next word</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">t</span> != <span class="var">e</span> &amp;&amp; *<span class="var">t</span> == <span class="str">' '</span>) {<br/>
@@ -214,7 +214,7 @@ move to next word
 and move over it
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">15</div>
 <code>
 <span class="macro">@add(<span class="name">needed by write_input</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">multi_write</span>(<br/>
@@ -231,7 +231,7 @@ and move over it
 writes a long string with different prefixes
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">16</div>
 <code>
 <span class="macro">@def(<span class="name">multi write</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (! <span class="var">str</span>.<span class="fn">empty</span>()) {<br/>
@@ -247,7 +247,7 @@ writes a long string with different prefixes
 split lines and write them line by line
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">17</div>
 <code>
 <span class="macro">@def(<span class="name">write para</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="var">first</span> = <span class="num">true</span>;<br/>
@@ -263,7 +263,7 @@ split lines and write them line by line
 paragraphs are split without any prefixes
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">18</div>
 <code>
 <span class="macro">@def(<span class="name">write notes</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">n</span>: <span class="var">b</span>.<span class="var">notes</span>) {<br/>
@@ -275,7 +275,7 @@ paragraphs are split without any prefixes
 notes are split
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">19</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"H"</span> || <span class="var">cmd</span> == <span class="str">"Html"</span>) {<br/>
@@ -291,7 +291,7 @@ write input files
 and generate HTML files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">20</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"F"</span> || <span class="var">cmd</span> == <span class="str">"Files"</span>) {<br/>
@@ -314,7 +314,7 @@ and generate HTML files
 and generate source files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">21</div>
 <code>
 <span class="macro">@def(<span class="name">write files</span>)</span><br/>
 <span class="in1"></span><span class="keyword">try</span> {<br/>
@@ -330,7 +330,7 @@ and generate source files
 generate source files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">22</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"P"</span> || <span class="var">cmd</span> == <span class="str">"Process"</span>) {<br/>
@@ -355,7 +355,7 @@ and generate source files
 and process files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">23</div>
 <code>
 <span class="macro">@def(<span class="name">process files</span>)</span><br/>
 <span class="in1"></span><span class="keyword">try</span> {<br/>
@@ -374,7 +374,7 @@ generate source files
 and process files
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">24</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"M"</span> || <span class="var">cmd</span> == <span class="str">"Make"</span>) {<br/>
@@ -390,7 +390,7 @@ write input files
 and invoke <code><span class="var">make</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">25</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">is_prefix</span>(<br/>
@@ -409,7 +409,7 @@ and invoke <code><span class="var">make</span></code>
 check is one string is a prefix of another string
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">26</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"M "</span> };<br/>
@@ -428,7 +428,7 @@ write input files
 and run make with a specific target
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">27</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> {<br/>
@@ -449,7 +449,7 @@ write input files
 and run make with a specific target
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">28</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"G"</span> || <span class="var">cmd</span> == <span class="str">"Git"</span>) {<br/>
@@ -465,7 +465,7 @@ write input files
 and run <code><span class="var">git</span> <span class="var">status</span></code>
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">29</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"G "</span> };<br/>
@@ -484,7 +484,7 @@ write input files
 and run <code><span class="var">git</span></code> with arguments
 </li></ul>
 </div>
-<div class="page"><div class="slide">
+<div class="page"><div class="slide"><div class="slide-nr">30</div>
 <code>
 <span class="macro">@Add(<span class="name">run loop</span>)</span> {<br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"Git "</span> };<br/>
