@@ -2444,14 +2444,14 @@
 #line 830 "html.md"
 
 	"break", "case", "catch", "continue",
-	"default", "delete", "else", "for",
-	"if", "in", "inline", "new", "return",
-	"static", "switch", "try", "typeof",
-	"while", "class", "public", "private",
-	"template", "typename", "using",
-	"function", "throw", "namespace",
-	"once", "constexpr", "volatile",
-	"override"
+	"default", "delete", "do", "else",
+	"for", "if", "in", "inline", "new",
+	"return", "static", "switch", "try",
+	"typeof", "while", "class", "public",
+	"private", "template", "typename",
+	"using", "function", "throw",
+	"namespace", "once", "constexpr",
+	"volatile", "override"
 
 #line 816 "html.md"
 
