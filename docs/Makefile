@@ -1,8 +1,7 @@
 .PHONY: all
 
-CXXFLAGS += -Wall
-
 all:
-	cd .. && make
-	../src/hx
+	hx
+	cd ../build && make
+	../build/src/hx
 

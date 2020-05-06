@@ -9,3 +9,4 @@ src/Makefile
 *.o
 stamp-*
 autom4te.cache/
+build
