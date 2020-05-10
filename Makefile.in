@@ -324,7 +324,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = docs src
+SUBDIRS = docs docs/slides src
 dist_doc_DATA = README.md LICENSE INSTALL AUTHORS
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

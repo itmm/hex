@@ -24,8 +24,6 @@ dist_doc_DATA = add.html \
 	range.md \
 	read.html \
 	read.md \
-	slides/bg.svg \
-	slides/slides.css \
 	test.html \
 	test.md \
 	todos.html \

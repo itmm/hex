@@ -4,4 +4,4 @@ AM_INIT_AUTOMAKE
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
 AX_WITH_CURSES
-AC_OUTPUT(Makefile src/Makefile docs/Makefile)
+AC_OUTPUT(Makefile src/Makefile docs/Makefile docs/slides/Makefile)
