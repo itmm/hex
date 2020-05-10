@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = src
-dist_doc_DATA = README.md
+SUBDIRS = docs src
+dist_doc_DATA = README.md LICENSE INSTALL AUTHORS

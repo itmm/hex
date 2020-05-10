@@ -23,8 +23,8 @@
 
 ```
 @Add(input prereqs)
-	@Put(frag prereqs);
-	@put(define frag);
+	@Put(frag prereqs)
+	@put(define frag)
 @end(input prereqs)
 ```
 * `Frag`s are global elements
@@ -53,7 +53,7 @@
 		int last_line_;
 		Frag_Ref sub_ = { std::string {}, std::string {}, true };
 	public:
-		@put(entry methods);
+		@put(entry methods)
 		const Frag_Ref &sub() const {
 			return sub_;
 		}
@@ -86,7 +86,7 @@
 	void update_state(
 		Write_State &state
 	) const {
-		@put(update state);
+		@put(update state)
 	}
 @end(entry methods)
 ```
@@ -101,7 +101,7 @@
 	bool some_nl { false };
 	while (b != c) {
 		--c;
-		@put(update state checks);
+		@put(update state checks)
 		break;
 	}
 	if (b != c && *c > ' ') {
@@ -136,7 +136,7 @@
 	std::string str(
 		Write_State &state
 	) const {
-		@put(check c-like);
+		@put(check c-like)
 		std::ostringstream oss;
 		oss << "\n#line " <<
 			first_line_ << " \"" <<
@@ -174,7 +174,7 @@
 		char ch, const std::string &file,
 		int line
 	) {
-		@mul(copy file and line);
+		@mul(copy file and line)
 		str_ += ch;
 	}
 @end(entry methods)
@@ -203,7 +203,7 @@
 		const std::string &file,
 		int line
 	) {
-		@mul(copy file and line);
+		@mul(copy file and line)
 		str_ += value;
 	}
 @end(entry methods)
@@ -216,7 +216,7 @@
 		const std::string &file,
 		int line
 	) {
-		@put(can add);
+		@put(can add)
 		return false;
 	}
 @end(entry methods)
@@ -274,7 +274,7 @@
 		const bool is_meta_;
 	public:
 		const std::string name;
-		@put(frag methods);
+		@put(frag methods)
 	};
 @end(define frag)
 ```
@@ -397,7 +397,7 @@
 
 ```
 @Def(perform unit-tests)
-	@put(unit-tests);
+	@put(unit-tests)
 @end(perform unit-tests)
 ```
 * fragments have their own unit-test fragment
@@ -470,7 +470,7 @@
 		int line
 	) {
 		if (value.empty()) { return; }
-		@mul(assure frag entry);
+		@mul(assure frag entry)
 		entries_.back().add(
 			value, file, line
 		);
@@ -505,7 +505,7 @@
 		const std::string &file,
 		int line
 	) {
-		@mul(assure frag entry);
+		@mul(assure frag entry)
 		entries_.back().add(
 			ch, file, line
 		);
@@ -526,8 +526,8 @@
 @add(define frag)
 	@put(define cycle check)
 	Frag &Frag::add(const Frag_Ref &sub) {
-		@put(avoid frag cycles);
-		@put(add frag entry);
+		@put(avoid frag cycles)
+		@put(add frag entry)
 		return *this;
 	}
 @end(define frag)
@@ -600,7 +600,7 @@
 ```
 @add(frag methods)
 	static bool is_c_style(const std::string &name) {
-		@put(is c-style);
+		@put(is c-style)
 		return false;
 	}
 @end(frag methods)
@@ -646,7 +646,7 @@
 		Write_State &state,
 		const std::string &path
 	) {
-		@put(iterate entries);
+		@put(iterate entries)
 	}
 @end(define frag)
 ```
@@ -703,7 +703,7 @@
 		Write_State &state,
 		const std::string &path
 	) {
-		@put(check entries);
+		@put(check entries)
 		return true;
 	}
 @end(define frag)
@@ -746,7 +746,7 @@
 				}
 			}
 		}
-		@put(check entry str);
+		@put(check entry str)
 	}
 @end(check entries)
 ```
@@ -773,7 +773,7 @@
 		const Frag &frag,
 		const std::string &expected
 	) {
-		@put(serialize test frag);
+		@put(serialize test frag)
 	}
 @end(define frag)
 ```
@@ -861,8 +861,8 @@
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
-		@put(check cycle frag);
-		@put(check cycle entries);
+		@put(check cycle frag)
+		@put(check cycle entries)
 		return false;
 	}
 @end(define cycle check)

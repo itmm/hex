@@ -35,7 +35,7 @@ range has two <code><span class="type">Line</span></code>s
 <code>
 <span class="macro">@def(<span class="name">range elements</span>)</span><br/>
 <span class="in1"></span><span class="type">Line</span> <span class="fn">prev</span>() {<br/>
-<span class="in2"></span><span class="keyword">return</span> <span class="var">prev_</span> ?: <span class="var">last_</span>;<br/>
+<span class="in2"></span><span class="keyword">return</span> <span class="var">prev_</span> ? <span class="var">prev_</span> : <span class="var">last_</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">range elements</span>)</span><br/>
 </code></div>

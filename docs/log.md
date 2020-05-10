@@ -19,9 +19,9 @@
 @Def(frag prereqs)
 	#define ASSERT(COND) \
 		if (! (COND)) { \
-			@mul(log preamble); \
-			@mul(log newline); \
-			@mul(throw); \
+			@mul(log preamble) \
+			@mul(log newline) \
+			@mul(throw) \
 		}
 @End(frag prereqs)
 ```
@@ -36,10 +36,10 @@
 @Add(frag prereqs)
 	#define ASSERT_MSG(COND, MSG) \
 		if (! (COND)) { \
-			@mul(log preamble); \
+			@mul(log preamble) \
 			std::cerr << ": " << MSG; \
-			@mul(log newline); \
-			@mul(throw); \
+			@mul(log newline) \
+			@mul(throw) \
 		}
 @End(frag prereqs)
 ```
@@ -53,7 +53,7 @@
 		std::cerr << __FILE__ << ':' << \
 			__LINE__ << ' '; \
 		std::cerr << MSG; \
-		@mul(log newline);
+		@mul(log newline)
 @end(frag prereqs)
 ```
 * a warning writes the same message, as an assertion

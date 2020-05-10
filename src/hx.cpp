@@ -86,7 +86,7 @@
 	#include <locale.h>
 
 #line 170 "index.md"
-;
+
 
 #line 181 "index.md"
 
@@ -197,13 +197,13 @@
 	std::cerr << \
 		__FILE__ << ':' << __LINE__ << \
 		' ' << #COND << " FAILED"; \
-; \
+ \
 			 \
 	std::cerr << '\n'; \
-; \
+ \
 			 \
 	throw std::exception(); \
-; \
+ \
 		}
 
 #line 36 "log.md"
@@ -214,14 +214,14 @@
 	std::cerr << \
 		__FILE__ << ':' << __LINE__ << \
 		' ' << #COND << " FAILED"; \
-; \
+ \
 			std::cerr << ": " << MSG; \
 			 \
 	std::cerr << '\n'; \
-; \
+ \
 			 \
 	throw std::exception(); \
-; \
+ \
 		}
 
 #line 51 "log.md"
@@ -232,8 +232,8 @@
 		std::cerr << MSG; \
 		 \
 	std::cerr << '\n'; \
-;
-;
+
+
 	
 	class Frag_Ref {
 	public:
@@ -294,7 +294,7 @@
 	}
 
 #line 104 "frag.md"
-;
+
 		break;
 	}
 	if (b != c && *c > ' ') {
@@ -302,7 +302,7 @@
 	}
 
 #line 89 "frag.md"
-;
+
 	}
 
 #line 135 "frag.md"
@@ -321,7 +321,7 @@
 	if (str_.empty()) { return str_; };
 
 #line 139 "frag.md"
-;
+
 		std::ostringstream oss;
 		oss << "\n#line " <<
 			first_line_ << " \"" <<
@@ -347,7 +347,7 @@
 	last_line_ = line;
 
 #line 177 "frag.md"
-;
+
 		str_ += ch;
 	}
 
@@ -370,7 +370,7 @@
 	last_line_ = line;
 
 #line 206 "frag.md"
-;
+
 		str_ += value;
 	}
 
@@ -404,12 +404,12 @@
 	return true;
 
 #line 219 "frag.md"
-;
+
 		return false;
 	}
 
 #line 56 "frag.md"
-;
+
 		const Frag_Ref &sub() const {
 			return sub_;
 		}
@@ -526,7 +526,7 @@
 	}
 
 #line 473 "frag.md"
-;
+
 		entries_.back().add(
 			value, file, line
 		);
@@ -553,7 +553,7 @@
 	}
 
 #line 508 "frag.md"
-;
+
 		entries_.back().add(
 			ch, file, line
 		);
@@ -625,12 +625,12 @@
 	}
 
 #line 603 "frag.md"
-;
+
 		return false;
 	}
 
 #line 277 "frag.md"
-;
+
 	};
 
 #line 388 "frag.md"
@@ -678,7 +678,7 @@
 	}
 
 #line 864 "frag.md"
-;
+
 		
 #line 893 "frag.md"
 
@@ -698,7 +698,7 @@
 	}
 
 #line 865 "frag.md"
-;
+
 		return false;
 	}
 
@@ -714,7 +714,7 @@
 	));
 
 #line 529 "frag.md"
-;
+
 		
 #line 538 "frag.md"
 
@@ -723,7 +723,7 @@
 	);
 
 #line 530 "frag.md"
-;
+
 		return *this;
 	}
 
@@ -759,7 +759,7 @@
 	}
 
 #line 649 "frag.md"
-;
+
 	}
 
 #line 656 "frag.md"
@@ -816,11 +816,11 @@
 	}
 
 #line 749 "frag.md"
-;
+
 	}
 
 #line 706 "frag.md"
-;
+
 		return true;
 	}
 
@@ -853,7 +853,7 @@
 	ASSERT(buffer.str() == expected);
 
 #line 776 "frag.md"
-;
+
 	}
 
 #line 800 "frag.md"
@@ -868,10 +868,10 @@
 	}
 
 #line 27 "frag.md"
-;
+
 
 #line 163 "read.md"
-;
+
 	class Input {
 		public:
 			
@@ -900,12 +900,12 @@
 	std::vector<Block> blocks;
 
 #line 166 "read.md"
-;
+
 			const std::string prev;
 	};
 
 #line 149 "read.md"
-;
+
 	class Open_Input {
 		public:
 			
@@ -954,13 +954,13 @@
 	++line_;
 
 #line 284 "read.md"
-;
+
 		return;
 	}
 	file_.close();
 
 #line 272 "read.md"
-;
+
 		}
 		throw No_More_Lines {};
 	}
@@ -976,7 +976,7 @@
 	}
 
 #line 152 "read.md"
-;
+
 		private:
 			
 #line 184 "read.md"
@@ -989,7 +989,7 @@
 	int line_ = 0;
 
 #line 154 "read.md"
-;
+
 	};
 
 #line 334 "index.md"
@@ -998,7 +998,7 @@
 		std::string::const_iterator;
 
 #line 21 "read.md"
-;
+
 	class Inputs {
 		public:
 			
@@ -1037,7 +1037,7 @@
 	current_path_ = roots_.begin();
 
 #line 111 "read.md"
-;
+
 	}
 
 #line 14 "input.md"
@@ -1116,7 +1116,7 @@
 	}
 
 #line 24 "read.md"
-;
+
 		private:
 			
 #line 295 "read.md"
@@ -1131,7 +1131,7 @@
 	std::map<std::string, Input> used_;
 
 #line 26 "read.md"
-;
+
 	};
 
 #line 51 "read.md"
@@ -1157,7 +1157,7 @@
 	}
 
 #line 319 "read.md"
-;
+
 		try {
 			open_.back().read_line(line);
 			return;
@@ -1175,13 +1175,13 @@
 	}
 
 #line 325 "read.md"
-;
+
 		open_.pop_back();
 	}
 	throw No_More_Lines {};
 
 #line 55 "read.md"
-;
+
 	}
 
 #line 80 "read.md"
@@ -1208,7 +1208,7 @@
 	}
 
 #line 347 "index.md"
-;
+
 	}
 
 #line 501 "index.md"
@@ -1233,7 +1233,7 @@
 	);
 
 #line 545 "index.md"
-;
+
 		if (x != e) {
 			b = x + 1;
 			
@@ -1245,14 +1245,14 @@
 	}
 
 #line 548 "index.md"
-;
+
 		} else {
 			b = e;
 		}
 	}
 
 #line 508 "index.md"
-;
+
 	}
 
 #line 580 "index.md"
@@ -1321,7 +1321,7 @@
 	}
 
 #line 92 "read.md"
-;
+
 	void read_sources() {
 		
 #line 119 "read.md"
@@ -1334,7 +1334,7 @@
 	Frag *frag { nullptr };
 
 #line 122 "read.md"
-;
+
 	std::string line;
 	try { for (;;) {
 		inputs.read_line(line);
@@ -1625,7 +1625,7 @@
 	}
 
 #line 401 "index.md"
-;
+
 		if (ne != end && ne != nb) {
 			std::string name { nb, ne };
 			
@@ -1659,11 +1659,11 @@
 	}
 
 #line 452 "index.md"
-;
+
 	}
 
 #line 433 "index.md"
-;
+
 		}
 		++ae;
 	}
@@ -1725,7 +1725,7 @@
 	);
 
 #line 658 "index.md"
-;
+
 			frag = nullptr;
 		}
 		break;
@@ -1781,7 +1781,7 @@
 	}
 
 #line 759 "index.md"
-;
+
 			sub->addExpand();
 			frag->add(Frag_Ref { cur_path, arg, true });
 		}
@@ -1820,7 +1820,7 @@
 	}
 
 #line 814 "index.md"
-;
+
 			sub->addMultiple();
 			frag->add(Frag_Ref { cur_path, arg, true });
 		}
@@ -1844,7 +1844,7 @@
 	}
 
 #line 840 "index.md"
-;
+
 		break;
 	}
 
@@ -1864,7 +1864,7 @@
 	}
 
 #line 865 "index.md"
-;
+
 		break;
 	}
 
@@ -1886,7 +1886,7 @@
 	frag->clear();
 
 #line 896 "index.md"
-;
+
 		break;
 	}
 
@@ -1908,7 +1908,7 @@
 	frag->clear();
 
 #line 911 "index.md"
-;
+
 		break;
 	}
 
@@ -1936,13 +1936,13 @@
 	}
 
 #line 945 "index.md"
-;
+
 		sub->addExpand();
 		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 933 "index.md"
-;
+
 		break;
 	}
 
@@ -1966,13 +1966,13 @@
 	}
 
 #line 968 "index.md"
-;
+
 		sub->addMultiple();
 		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 956 "index.md"
-;
+
 		break;
 	}
 
@@ -2002,7 +2002,7 @@
 	);
 
 #line 982 "index.md"
-;
+
 		break;
 	}
 
@@ -2030,12 +2030,12 @@
 	);
 
 #line 1032 "index.md"
-;
+
 		break;
 	}
 
 #line 485 "index.md"
-;
+
 		
 #line 515 "index.md"
 
@@ -2054,40 +2054,40 @@
 	}
 
 #line 486 "index.md"
-;
+
 	} while (false);
 	if (blockLimit && outside && frag) {
 		--blockLimit;
 	}
 
 #line 439 "index.md"
-;
+
 		continue;
 	}
 
 #line 404 "index.md"
-;
+
 		}
 	}
 
 #line 363 "index.md"
-;
+
 		process_char(frag, *i, cur_path, cur_line);
 	}
 	process_char(frag, '\n', cur_path, cur_line);
 
 #line 126 "read.md"
-;
+
 	} }
 	catch (const No_More_Lines &) {}
 	eval_metas();
 } 
 #line 94 "read.md"
-;
+
 	}
 
 #line 6 "read.md"
-;
+
 
 #line 268 "index.md"
 
@@ -2146,7 +2146,7 @@
 	}
 
 #line 1121 "index.md"
-;
+
 	}
 } 
 #line 1129 "index.md"
@@ -2170,7 +2170,7 @@
 	}
 
 #line 1093 "index.md"
-;
+
 	}
 
 #line 1101 "index.md"
@@ -2197,7 +2197,7 @@
 	}
 
 #line 1121 "index.md"
-;
+
 	}
 } 
 #line 1129 "index.md"
@@ -2221,12 +2221,12 @@
 	}
 
 #line 1109 "index.md"
-;
+
 		}
 	}
 
 #line 1070 "index.md"
-;
+
 	}
 
 #line 1198 "index.md"
@@ -2237,7 +2237,7 @@
 	bool no_cmds = false;
 
 #line 1199 "index.md"
-;
+
 	void files_process() {
 		
 #line 1218 "index.md"
@@ -2276,15 +2276,15 @@
 	}
 
 #line 1273 "index.md"
-;
+
 	}
 
 #line 1259 "index.md"
-;
+
 	}
 } 
 #line 1225 "index.md"
-;
+
 	}
 
 #line 1232 "index.md"
@@ -2324,20 +2324,20 @@
 	}
 
 #line 1273 "index.md"
-;
+
 	}
 
 #line 1259 "index.md"
-;
+
 	}
 } 
 #line 1240 "index.md"
-;
+
 		}
 	}
 
 #line 1201 "index.md"
-;
+
 	}
 
 #line 5 "html.md"
@@ -2502,7 +2502,7 @@
 	}
 
 #line 847 "html.md"
-;
+
 		return false;
 	}
 
@@ -2550,7 +2550,7 @@
 	}
 
 #line 921 "html.md"
-;
+
 	}
 
 #line 955 "html.md"
@@ -2575,7 +2575,7 @@
 	}
 
 #line 250 "html.md"
-;
+
 	void process_code(
 		std::ostream &out,
 		SI begin, SI end
@@ -2629,7 +2629,7 @@
 	begin = w;
 
 #line 452 "html.md"
-;
+
 		continue;
 	}
 
@@ -2709,7 +2709,7 @@
 		"</a></span>)</span>";
 
 #line 613 "html.md"
-;
+
 		break;
 	}
 
@@ -2802,7 +2802,7 @@
 	}
 
 #line 563 "html.md"
-;
+
 		
 #line 574 "html.md"
 
@@ -2813,21 +2813,21 @@
 	writeOneEscaped(out, ')');
 
 #line 564 "html.md"
-;
+
 	} while (false);
 	begin = ae;
 
 #line 553 "html.md"
-;
+
 		continue;
 	}
 
 #line 536 "html.md"
-;
+
 	}
 
 #line 510 "html.md"
-;
+
 	}
 
 #line 760 "html.md"
@@ -2845,7 +2845,7 @@
 	}
 
 #line 762 "html.md"
-;
+
 	if (w != begin) {
 		
 #line 786 "html.md"
@@ -2858,17 +2858,17 @@
 	);
 
 #line 764 "html.md"
-;
+
 		continue;
 	}
 
 #line 437 "html.md"
-;
+
 		writeOneEscaped(out, *begin);
 	}
 
 #line 255 "html.md"
-;
+
 	}
 
 #line 265 "html.md"
@@ -2901,7 +2901,7 @@
 	}
 
 #line 1056 "html.md"
-;
+
 	}
 
 #line 1080 "html.md"
@@ -2939,21 +2939,21 @@
 	begin = w + 1;
 
 #line 1111 "html.md"
-;
+
 		continue;
 	}
 
 #line 1086 "html.md"
-;
+
 	}
 
 #line 1044 "html.md"
-;
+
 		writeOneEscaped(out, *begin);
 	}
 
 #line 270 "html.md"
-;
+
 	}
 
 #line 6 "html.md"
@@ -3012,12 +3012,12 @@
 		<< stylesheet << "\">";
 
 #line 312 "html.md"
-;
+
 	out << "</head>\n";
 	out << "<body>\n";
 
 #line 293 "html.md"
-;
+
 			break;
 		case HtmlState::inSlide:
 			out << "</div>\n";
@@ -3027,7 +3027,7 @@
 	}
 
 #line 155 "html.md"
-;
+
 	
 #line 278 "html.md"
  {
@@ -3039,7 +3039,7 @@
 	out << "</h" << b.level << ">\n";
 } 
 #line 156 "html.md"
-;
+
 	out << "<div class=\"slides\">\n";
 	out << "<div class=\"page\">\n";
 	out << "<div class=\"slide\">";
@@ -3049,7 +3049,7 @@
 	out << "<div class=\"slide-nr\">" << ++slide_nr << "</div>";
 
 #line 160 "html.md"
-;
+
 	out << "<div class=\"headers\">\n";
 	
 #line 278 "html.md"
@@ -3062,7 +3062,7 @@
 	out << "</h" << b.level << ">\n";
 } 
 #line 162 "html.md"
-;
+
 	if (b.value.size() > 1) {
 		out << "<ul>\n";
 		for (unsigned i = 1; i < b.value.size(); ++i) {
@@ -3111,7 +3111,7 @@
 	out << "<ul><li>\n";
 
 #line 1015 "html.md"
-;
+
 	} else {
 		out << "</li><li>\n";
 	}
@@ -3119,7 +3119,7 @@
 	out << '\n';
 
 #line 193 "html.md"
-;
+
 	}
 	
 #line 992 "html.md"
@@ -3141,7 +3141,7 @@
 	}
 
 #line 195 "html.md"
-;
+
 	
 #line 142 "html.md"
 
@@ -3149,10 +3149,10 @@
 	status.state = HtmlState::afterSlide;
 
 #line 196 "html.md"
-;
+
 
 #line 104 "html.md"
-;
+
 	}
 
 #line 111 "html.md"
@@ -3182,12 +3182,12 @@
 	out << "<div class=\"slide-nr\">" << ++slide_nr << "</div>";
 
 #line 365 "html.md"
-;
+
 	out << "\n<code>\n";
 	status.state = HtmlState::inCode;
 
 #line 113 "html.md"
-;
+
 		for (const auto &code : b.value) {
 			
 #line 406 "html.md"
@@ -3198,7 +3198,7 @@
 	out << "<br/>\n";
 
 #line 115 "html.md"
-;
+
 		}
 		
 #line 374 "html.md"
@@ -3207,7 +3207,7 @@
 	status.state = HtmlState::inSlide;
 
 #line 117 "html.md"
-;
+
 		for (const auto &note : b.notes) {
 			
 #line 1003 "html.md"
@@ -3232,7 +3232,7 @@
 	out << "<ul><li>\n";
 
 #line 1015 "html.md"
-;
+
 	} else {
 		out << "</li><li>\n";
 	}
@@ -3240,7 +3240,7 @@
 	out << '\n';
 
 #line 119 "html.md"
-;
+
 		}
 		
 #line 992 "html.md"
@@ -3262,7 +3262,7 @@
 	}
 
 #line 121 "html.md"
-;
+
 		
 #line 142 "html.md"
 
@@ -3270,7 +3270,7 @@
 	status.state = HtmlState::afterSlide;
 
 #line 122 "html.md"
-;
+
 	}
 
 #line 129 "html.md"
@@ -3301,7 +3301,7 @@
 	out << '\n';
 
 #line 132 "html.md"
-;
+
 			
 #line 992 "html.md"
 
@@ -3322,7 +3322,7 @@
 	}
 
 #line 133 "html.md"
-;
+
 		}
 		
 #line 992 "html.md"
@@ -3344,7 +3344,7 @@
 	}
 
 #line 135 "html.md"
-;
+
 	}
 
 #line 1183 "html.md"
@@ -3362,7 +3362,7 @@
 	status.state = HtmlState::inSlide;
 
 #line 1185 "html.md"
-;
+
 		for (const auto &img : b.value) {
 			
 #line 1213 "html.md"
@@ -3374,12 +3374,12 @@
 	out << "<div class=\"slide-nr\">" << ++slide_nr << "</div>";
 
 #line 1215 "html.md"
-;
+
 	out	<< "\n<img src=\"" << img << "\">\n";
 	out << "</div>\n";
 
 #line 1187 "html.md"
-;
+
 		}
 		for (const auto &note : b.notes) {
 			
@@ -3405,7 +3405,7 @@
 	out << "<ul><li>\n";
 
 #line 1015 "html.md"
-;
+
 	} else {
 		out << "</li><li>\n";
 	}
@@ -3413,7 +3413,7 @@
 	out << '\n';
 
 #line 1190 "html.md"
-;
+
 		}
 		
 #line 992 "html.md"
@@ -3435,7 +3435,7 @@
 	}
 
 #line 1192 "html.md"
-;
+
 		
 #line 142 "html.md"
 
@@ -3443,11 +3443,11 @@
 	status.state = HtmlState::afterSlide;
 
 #line 1193 "html.md"
-;
+
 	}
 
 #line 95 "html.md"
-;
+
 	}
 
 #line 382 "html.md"
@@ -3468,14 +3468,14 @@
 	}
 
 #line 46 "html.md"
-;
+
 
 #line 37 "html.md"
-;
+
 	out.close();
 
 #line 9 "html.md"
-;
+
 		}
 	}
 
@@ -3643,7 +3643,7 @@
 	if (res > end) { res = end; }
 
 #line 22 "line.md"
-;
+
 		return res;
 	}
 
@@ -3685,7 +3685,7 @@
 	}
 
 #line 8 "line.md"
-;
+
 		private:
 			
 #line 31 "line.md"
@@ -3701,7 +3701,7 @@
 	{}
 
 #line 10 "line.md"
-;
+
 	};
 
 #line 130 "line.md"
@@ -3715,7 +3715,7 @@
 #line 18 "range.md"
 
 	Line prev() {
-		return prev_ ?: last_;
+		return prev_ ? prev_ : last_;
 	}
 
 #line 29 "range.md"
@@ -3746,14 +3746,14 @@
 	};
 
 #line 131 "line.md"
-;
+
 	
 #line 139 "range.md"
 
 	Range range;
 
 #line 132 "line.md"
-;
+
 
 #line 146 "line.md"
 
@@ -3817,7 +3817,7 @@
 	}
 
 #line 166 "line.md"
-;
+
 		} while (false);
 		trim(s);
 		return line;
@@ -4492,7 +4492,7 @@
 	}
 
 #line 401 "index.md"
-;
+
 		if (ne != end && ne != nb) {
 			std::string name { nb, ne };
 			
@@ -4526,11 +4526,11 @@
 	}
 
 #line 452 "index.md"
-;
+
 	}
 
 #line 433 "index.md"
-;
+
 		}
 		++ae;
 	}
@@ -4592,7 +4592,7 @@
 	);
 
 #line 658 "index.md"
-;
+
 			frag = nullptr;
 		}
 		break;
@@ -4648,7 +4648,7 @@
 	}
 
 #line 759 "index.md"
-;
+
 			sub->addExpand();
 			frag->add(Frag_Ref { cur_path, arg, true });
 		}
@@ -4687,7 +4687,7 @@
 	}
 
 #line 814 "index.md"
-;
+
 			sub->addMultiple();
 			frag->add(Frag_Ref { cur_path, arg, true });
 		}
@@ -4711,7 +4711,7 @@
 	}
 
 #line 840 "index.md"
-;
+
 		break;
 	}
 
@@ -4731,7 +4731,7 @@
 	}
 
 #line 865 "index.md"
-;
+
 		break;
 	}
 
@@ -4753,7 +4753,7 @@
 	frag->clear();
 
 #line 896 "index.md"
-;
+
 		break;
 	}
 
@@ -4775,7 +4775,7 @@
 	frag->clear();
 
 #line 911 "index.md"
-;
+
 		break;
 	}
 
@@ -4803,13 +4803,13 @@
 	}
 
 #line 945 "index.md"
-;
+
 		sub->addExpand();
 		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 933 "index.md"
-;
+
 		break;
 	}
 
@@ -4833,13 +4833,13 @@
 	}
 
 #line 968 "index.md"
-;
+
 		sub->addMultiple();
 		frag->add(Frag_Ref { cur_path, arg, false });
 	}
 
 #line 956 "index.md"
-;
+
 		break;
 	}
 
@@ -4869,7 +4869,7 @@
 	);
 
 #line 982 "index.md"
-;
+
 		break;
 	}
 
@@ -4897,12 +4897,12 @@
 	);
 
 #line 1032 "index.md"
-;
+
 		break;
 	}
 
 #line 485 "index.md"
-;
+
 		
 #line 515 "index.md"
 
@@ -4921,24 +4921,24 @@
 	}
 
 #line 486 "index.md"
-;
+
 	} while (false);
 	if (blockLimit && outside && frag) {
 		--blockLimit;
 	}
 
 #line 439 "index.md"
-;
+
 		continue;
 	}
 
 #line 404 "index.md"
-;
+
 		}
 	}
 
 #line 1524 "index.md"
-;
+
 			process_char(frag, *i, cur_path, cur_line);
 		}
 		process_char(frag, '\n', cur_path, cur_line);
@@ -4946,7 +4946,7 @@
 	cur_state_ = nullptr;
 
 #line 1497 "index.md"
-;
+
 		}
 	}
 
@@ -5021,7 +5021,7 @@
 	testFrag("b", b, "abcdefabc");
 } 
 #line 400 "frag.md"
-;
+
 
 #line 241 "line.md"
 
@@ -5105,10 +5105,10 @@
 	);
 } 
 #line 242 "line.md"
-;
+
 
 #line 117 "index.md"
-;
+
 	#endif
 
 #line 132 "index.md"
@@ -5192,7 +5192,7 @@
 	#endif
 
 #line 251 "index.md"
-;
+
 		
 #line 320 "index.md"
 
@@ -5200,7 +5200,7 @@
 	continue;
 
 #line 252 "index.md"
-;
+
 		ASSERT_MSG(false,
 			"unknown argument [" <<
 			argv[i] << ']'
@@ -5208,7 +5208,7 @@
 	}
 
 #line 133 "index.md"
-;
+
 
 #line 145 "index.md"
 
@@ -5218,7 +5218,7 @@
 	read_sources();
 
 #line 146 "index.md"
-;
+
 
 #line 154 "index.md"
 
@@ -5236,7 +5236,7 @@
 	}
 
 #line 155 "index.md"
-;
+
 
 #line 162 "index.md"
 
@@ -5248,7 +5248,7 @@
 	}
 
 #line 163 "index.md"
-;
+
 
 #line 58 "view.md"
 

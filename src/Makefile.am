@@ -1,30 +1,9 @@
-AM_CXXFLAGS = -Wall
+AM_CXXFLAGS = --pedantic -Wall -Werror -std=c++17 -O2
 bin_PROGRAMS = hx
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@ -lstdc++fs
 hx_CPPFLAGS = @CURSES_CFLAGS@
-
-hx.cpp: hx_run
-
-hx_run: \
-  ../docs/add.md \
-  ../docs/blocks.md \
-  ../docs/edit.md \
-  ../docs/frag.md \
-  ../docs/html.md \
-  ../docs/index.md \
-  ../docs/input.md \
-  ../docs/line.md \
-  ../docs/log.md \
-  ../docs/ncurses.md \
-  ../docs/range.md \
-  ../docs/read.md \
-  ../docs/todos.md \
-  ../docs/view.md \
-  ../docs/write.md
-	@echo "  HX"
-	@cd ../docs && hx
-	@date > hx_run
+hx_DEPENDENCIES = $(srcdir)/../docs/hx_run
 
 dist_bin_SCRIPTS = \
 	hx-files.sh \

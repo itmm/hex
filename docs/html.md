@@ -6,7 +6,7 @@
 	@Put(needed by write_html)
 	void write_html() {
 		for (auto &cur : inputs) {
-			@put(write cur HTML file);
+			@put(write cur HTML file)
 		}
 	}
 @End(global elements)
@@ -34,7 +34,7 @@
 		".html"
 	};
 	std::ofstream out { outPath.c_str() };
-	@put(write cur HTML file to out);
+	@put(write cur HTML file to out)
 	out.close();
 @end(write cur HTML file)
 ```
@@ -43,7 +43,7 @@
 
 ```
 @def(write cur HTML file to out)
-	@put(write from in to out);
+	@put(write from in to out)
 @end(write cur HTML file to out)
 ```
 * write HTML to the just opened `std::ofstream` `out`
@@ -92,7 +92,7 @@
 	HtmlStatus status;
 	int slide_nr { 0 };
 	for (const auto &b : cur.second.blocks) {
-		@put(process block);
+		@put(process block)
 	}
 @end(write from in to out)
 ```
@@ -101,7 +101,7 @@
 ```
 @def(process block)
 	if (b.state == RS::header) {
-		@put(process header);
+		@put(process header)
 	}
 @end(process block)
 ```
@@ -110,16 +110,16 @@
 ```
 @add(process block)
 	if (b.state == RS::code) {
-		@put(open code page);
+		@put(open code page)
 		for (const auto &code : b.value) {
-			@put(process code);
+			@put(process code)
 		}
-		@put(close code page);
+		@put(close code page)
 		for (const auto &note : b.notes) {
-			@mul(process note);
+			@mul(process note)
 		}
-		@mul(close specials);
-		@mul(close slide);
+		@mul(close specials)
+		@mul(close slide)
 	}
 @end(process block)
 ```
@@ -129,10 +129,10 @@
 @add(process block)
 	if (b.state == RS::para) {
 		for (const auto &para : b.value) {
-			@put(process para);
-			@mul(close specials);
+			@put(process para)
+			@mul(close specials)
 		}
-		@mul(close specials);
+		@mul(close specials)
 	}
 @end(process block)
 ```
@@ -152,14 +152,14 @@
 
 ```
 @def(process header)
-	@put(close previous HTML page);
-	@mul(write header tag);
+	@put(close previous HTML page)
+	@mul(write header tag)
 	out << "<div class=\"slides\">\n";
 	out << "<div class=\"page\">\n";
 	out << "<div class=\"slide\">";
-	@mul(slide nr);
+	@mul(slide nr)
 	out << "<div class=\"headers\">\n";
-	@mul(write header tag);
+	@mul(write header tag)
 	if (b.value.size() > 1) {
 		out << "<ul>\n";
 		for (unsigned i = 1; i < b.value.size(); ++i) {
@@ -190,10 +190,10 @@
 ```
 @add(process header)
 	for (const auto &note : b.notes) {
-		@mul(process note);
+		@mul(process note)
 	}
-	@mul(close specials);
-	@mul(close slide);
+	@mul(close specials)
+	@mul(close slide)
 @end(process header)
 ```
 * add notes for the header
@@ -247,12 +247,12 @@
 
 ```
 @Add(needed by write_html)
-	@put(process code helper);
+	@put(process code helper)
 	void process_code(
 		std::ostream &out,
 		SI begin, SI end
 	) {
-		@put(do code);
+		@put(do code)
 	}
 @end(needed by write_html)
 ```
@@ -267,7 +267,7 @@
 		std::ostream &out,
 		SI begin, SI end
 	) {
-		@put(process content line);
+		@put(process content line)
 	}
 @end(needed by write_html)
 ```
@@ -290,7 +290,7 @@
 @def(close previous HTML page)
 	switch (status.state) {
 		case HtmlState::nothing:
-			@put(write HTML header);
+			@put(write HTML header)
 			break;
 		case HtmlState::inSlide:
 			out << "</div>\n";
@@ -309,7 +309,7 @@
 	out << "<!doctype html>\n";
 	out << "<html lang=\"en\">\n";
 	out << "<head>\n";
-	@put(write HTML header entries);
+	@put(write HTML header entries)
 	out << "</head>\n";
 	out << "<body>\n";
 @end(write HTML header)
@@ -362,7 +362,7 @@
 		out << "</div>\n";
 	}
 	out << "<div class=\"page\"><div class=\"slide\">";
-	@mul(slide nr);
+	@mul(slide nr)
 	out << "\n<code>\n";
 	status.state = HtmlState::inCode;
 @end(open code page)
@@ -434,7 +434,7 @@
 ```
 @add(do code)
 	for (; begin != end; ++begin) {
-		@put(process code ch);
+		@put(process code ch)
 		writeOneEscaped(out, *begin);
 	}
 @end(do code)
@@ -449,7 +449,7 @@
 		*begin == '\'' ||
 		*begin == '"'
 	) {
-		@put(process string);
+		@put(process string)
 		continue;
 	}
 @end(process code ch)
@@ -507,7 +507,7 @@
 	if (*begin == '@') {
 		auto nb = begin + 1;
 		auto ne = nb;
-		@put(process cmd);
+		@put(process cmd)
 	}
 @end(process code ch)
 ```
@@ -533,7 +533,7 @@
 		std::string name {nb, ne};
 		auto ab = ne + 1;
 		auto ae = ab;
-		@put(macro loop);
+		@put(macro loop)
 	}
 @end(process cmd)
 ```
@@ -550,7 +550,7 @@
 	}
 	if (ae != end) {
 		std::string arg {ab, ae};
-		@put(got macro);
+		@put(got macro)
 		continue;
 	}
 @end(macro loop)
@@ -560,8 +560,8 @@
 ```
 @def(got macro)
 	do {
-		@put(special macro);
-		@put(macro default);
+		@put(special macro)
+		@put(macro default)
 	} while (false);
 	begin = ae;
 @end(got macro)
@@ -610,7 +610,7 @@
 ```
 @add(special macro)
 	if (name == "inc") {
-		@put(write include);
+		@put(write include)
 		break;
 	}
 @end(special macro)
@@ -759,9 +759,9 @@
 ```
 @add(process code ch)
 	auto w = begin;
-	@put(find identifier end);
+	@put(find identifier end)
 	if (w != begin) {
-		@put(process identifier);
+		@put(process identifier)
 		continue;
 	}
 @end(process code ch)
@@ -844,7 +844,7 @@
 ```
 @add(process code helper)
 	bool isType(const std::string &s) {
-		@put(is type);
+		@put(is type)
 		return false;
 	}
 @end(process code helper)
@@ -918,7 +918,7 @@
 		const std::string ident,
 		char w
 	) {
-		@put(process ident);
+		@put(process ident)
 	}
 @end(process code helper)
 ```
@@ -1012,7 +1012,7 @@
 	if (
 		status.state != HtmlState::inNotes
 	) {
-		@put(switch into note mode);
+		@put(switch into note mode)
 	} else {
 		out << "</li><li>\n";
 	}
@@ -1041,7 +1041,7 @@
 ```
 @def(process content line)
 	for(; begin != end; ++begin) {
-		@put(special content line);
+		@put(special content line)
 		writeOneEscaped(out, *begin);
 	}
 @end(process content line)
@@ -1053,7 +1053,7 @@
 ```
 @def(special content line)
 	if (*begin == '`') {
-		@put(inline code);
+		@put(inline code)
 	}
 @end(special content line)
 ```
@@ -1083,7 +1083,7 @@
 		(begin + 1) != end &&
 		*(begin + 1) == '*'
 	) {
-		@put(bold block);
+		@put(bold block)
 	}
 @end(special content line)
 ```
@@ -1108,7 +1108,7 @@
 		w != end && (w + 1 ) != end &&
 		*w == '*' && *(w + 1) == '*'
 	) {
-		@put(do bold);
+		@put(do bold)
 		continue;
 	}
 @end(bold block)
@@ -1182,15 +1182,15 @@
 ```
 @add(process block)
 	if (b.state == RS::img) {
-		@put(open img page);
+		@put(open img page)
 		for (const auto &img : b.value) {
-			@put(process img);
+			@put(process img)
 		}
 		for (const auto &note : b.notes) {
-			@mul(process note);
+			@mul(process note)
 		}
-		@mul(close specials);
-		@mul(close slide);
+		@mul(close specials)
+		@mul(close slide)
 	}
 @end(process block)
 ```
@@ -1212,7 +1212,7 @@
 ```
 @def(process img)
 	out << "<div class=\"page\"><div class=\"slide\">";
-	@mul(slide nr);
+	@mul(slide nr)
 	out	<< "\n<img src=\"" << img << "\">\n";
 	out << "</div>\n";
 @end(process img)

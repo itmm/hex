@@ -17,7 +17,7 @@
 ```
 @def(range elements)
 	Line prev() {
-		return prev_ ?: last_;
+		return prev_ ? prev_ : last_;
 	}
 @end(range elements)
 ```

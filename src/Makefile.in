@@ -103,7 +103,6 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_hx_OBJECTS = hx-hx.$(OBJEXT)
 hx_OBJECTS = $(am_hx_OBJECTS)
-hx_DEPENDENCIES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -288,10 +287,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CXXFLAGS = -Wall
+AM_CXXFLAGS = --pedantic -Wall -Werror -std=c++17 -O2
 hx_SOURCES = hx.cpp
 hx_LDADD = @CURSES_LIBS@ -lstdc++fs
 hx_CPPFLAGS = @CURSES_CFLAGS@
+hx_DEPENDENCIES = $(srcdir)/../docs/hx_run
 dist_bin_SCRIPTS = \
 	hx-files.sh \
 	hx-incs.sh \
@@ -664,28 +664,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS
 
 .PRECIOUS: Makefile
 
-
-hx.cpp: hx_run
-
-hx_run: \
-  ../docs/add.md \
-  ../docs/blocks.md \
-  ../docs/edit.md \
-  ../docs/frag.md \
-  ../docs/html.md \
-  ../docs/index.md \
-  ../docs/input.md \
-  ../docs/line.md \
-  ../docs/log.md \
-  ../docs/ncurses.md \
-  ../docs/range.md \
-  ../docs/read.md \
-  ../docs/todos.md \
-  ../docs/view.md \
-  ../docs/write.md
-	@echo "  HX"
-	@cd ../docs && hx
-	@date > hx_run
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

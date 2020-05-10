@@ -3,7 +3,7 @@
 
 ```
 @Add(global elements)
-	@put(globals);
+	@put(globals)
 @End(global elements)
 ```
 * shorthand for global fragment
@@ -18,12 +18,12 @@
 
 ```
 @def(globals)
-	@Put(inputs prereqs);
+	@Put(inputs prereqs)
 	class Inputs {
 		public:
-			@Put(inputs elements);
+			@Put(inputs elements)
 		private:
-			@Put(private inputs elements);
+			@Put(private inputs elements)
 	};
 @end(globals)
 ```
@@ -52,7 +52,7 @@
 	void Inputs::read_line(
 		std::string &line
 	) {
-		@put(inputs read line);
+		@put(inputs read line)
 	}
 @end(globals)
 ```
@@ -89,9 +89,9 @@
 
 ```
 @add(globals)
-	@Put(needed by read_sources);
+	@Put(needed by read_sources)
 	void read_sources() {
-		@put(read sources);
+		@put(read sources)
 	}
 @end(globals)
 ```
@@ -108,7 +108,7 @@
 ```
 @Add(inputs elements)
 	void clear() {
-		@Put(clear inputs);
+		@Put(clear inputs)
 	}
 @End(inputs elements)
 ```
@@ -119,11 +119,11 @@
 @def(read sources) {
 	inputs.clear();
 	clear_frags();
-	@Put(additional read vars);
+	@Put(additional read vars)
 	std::string line;
 	try { for (;;) {
 		inputs.read_line(line);
-		@Put(process line);
+		@Put(process line)
 	} }
 	catch (const No_More_Lines &) {}
 	eval_metas();
@@ -146,12 +146,12 @@
 
 ```
 @Add(inputs prereqs)
-	@Put(open input prereqs);
+	@Put(open input prereqs)
 	class Open_Input {
 		public:
-			@Put(open input elements);
+			@Put(open input elements)
 		private:
-			@Put(private open input els);
+			@Put(private open input els)
 	};
 @End(inputs prereqs)
 ```
@@ -160,10 +160,10 @@
 
 ```
 @Def(open input prereqs)
-	@Put(input prereqs);
+	@Put(input prereqs)
 	class Input {
 		public:
-			@Put(input elements);
+			@Put(input elements)
 			const std::string prev;
 	};
 @End(open input prereqs)
@@ -269,7 +269,7 @@
 @Add(open input elements)
 	void read_line(std::string &line) {
 		if (file_.is_open()) {
-			@put(get line);
+			@put(get line)
 		}
 		throw No_More_Lines {};
 	}
@@ -281,7 +281,7 @@
 ```
 @def(get line)
 	if (std::getline(file_, line)) {
-		@Put(line read);
+		@Put(line read)
 		return;
 	}
 	file_.close();
@@ -316,13 +316,13 @@
 ```
 @rep(inputs read line)
 	for (;;) {
-		@put(push next path);
+		@put(push next path)
 		try {
 			open_.back().read_line(line);
 			return;
 		}
 		catch (const No_More_Lines &) {}
-		@put(save open input);
+		@put(save open input)
 		open_.pop_back();
 	}
 	throw No_More_Lines {};

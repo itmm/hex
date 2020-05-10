@@ -114,7 +114,7 @@ int main(
 ```
 @def(main body)
 	#if ! NDEBUG
-		@put(perform unit-tests);
+		@put(perform unit-tests)
 	#endif
 @end(main body)
 ```
@@ -130,7 +130,7 @@ int main(
 
 ```
 @add(main body)
-	@put(process arguments);
+	@put(process arguments)
 @end(main body)
 ```
 * after the unit-tests `@f(main)` parses the arguments passed to it from
@@ -143,7 +143,7 @@ int main(
 
 ```
 @add(main body)
-	@put(read source files);
+	@put(read source files)
 @end(main body)
 ```
 * next the source files are read into a fragment tree
@@ -152,7 +152,7 @@ int main(
 
 ```
 @add(main body)
-	@put(serialize fragments);
+	@put(serialize fragments)
 @end(main body)
 ```
 * in the next step `hx` writes the content of every file fragment in its
@@ -160,14 +160,14 @@ int main(
 
 ```
 @add(main body)
-	@put(write HTML file);
+	@put(write HTML file)
 @end(main body)
 ```
 * and lastly the HTML documentation is generated
 
 ```
 @def(global elements)
-	@put(includes);
+	@put(includes)
 @end(global elements)
 ```
 * `hx` defines a global fragment for included files
@@ -248,8 +248,8 @@ int main(
 @def(process arguments)
 	for (int i { 1 }; i < argc; ++i) {
 		std::string arg { argv[i] };
-		@put(process argument);
-		@put(process file argument);
+		@put(process argument)
+		@put(process file argument)
 		ASSERT_MSG(false,
 			"unknown argument [" <<
 			argv[i] << ']'
@@ -344,7 +344,7 @@ int main(
 	void process_char(
 		Frag *frag, char ch, const std::string &cur_path, int cur_line
 	) {
-		@put(process char);
+		@put(process char)
 	}
 @End(needed by read_sources)
 ```
@@ -360,7 +360,7 @@ int main(
 		auto i = line.cbegin();
 		i != end; ++i
 	) {
-		@mul(process special chars);
+		@mul(process special chars)
 		process_char(frag, *i, cur_path, cur_line);
 	}
 	process_char(frag, '\n', cur_path, cur_line);
@@ -398,10 +398,10 @@ int main(
 	if (*i == '@') {
 		auto nb = i + 1;
 		auto ne = nb;
-		@put(cmd prefix);
+		@put(cmd prefix)
 		if (ne != end && ne != nb) {
 			std::string name { nb, ne };
-			@put(cmd argument);
+			@put(cmd argument)
 		}
 	}
 @end(process special chars)
@@ -430,13 +430,13 @@ int main(
 	auto ab = ne + 1; auto ae = ab;
 	while (ae != end && *ae != ')') {
 		if (*ae == '@') {
-			@put(handle at in cmd arg);
+			@put(handle at in cmd arg)
 		}
 		++ae;
 	}
 	if (ae != end) {
 		std::string arg {ab, ae};
-		@put(cmd found);
+		@put(cmd found)
 		continue;
 	}
 @end(cmd argument)
@@ -449,7 +449,7 @@ int main(
 @def(handle at in cmd arg)
 	if (++ae == end) { break; }
 	if (isalpha(*ae)) {
-		@put(handle cmd in cmd arg);
+		@put(handle cmd in cmd arg)
 	}
 @end(handle at in cmd arg)
 ```
@@ -482,8 +482,8 @@ int main(
 		if (outside && ! blockLimit) {
 			break;
 		}
-		@put(do special cmd);
-		@put(do default cmd);
+		@put(do special cmd)
+		@put(do default cmd)
 	} while (false);
 	if (blockLimit && outside && frag) {
 		--blockLimit;
@@ -505,7 +505,7 @@ int main(
 	) {
 		auto b = arg.begin();
 		auto e = arg.end();
-		@put(expand loop);
+		@put(expand loop)
 	}
 @End(needed by read_sources)
 ```
@@ -542,10 +542,10 @@ int main(
 @def(expand loop)
 	while (b != e) {
 		auto x = std::find(b, e, '@');
-		@put(expand before);
+		@put(expand before)
 		if (x != e) {
 			b = x + 1;
-			@put(expand escaped);
+			@put(expand escaped)
 		} else {
 			b = e;
 		}
@@ -655,7 +655,7 @@ int main(
 				frag->add(')', f, l);
 			}
 		} else {
-			@put(frag names must match);
+			@put(frag names must match)
 			frag = nullptr;
 		}
 		break;
@@ -756,7 +756,7 @@ int main(
 			);
 			Frag *sub = &get_frag(cur_path, arg, true);
 			ASSERT(sub);
-			@mul(check frag ex. count);
+			@mul(check frag ex. count)
 			sub->addExpand();
 			frag->add(Frag_Ref { cur_path, arg, true });
 		}
@@ -811,7 +811,7 @@ int main(
 		);
 		Frag *sub = &get_frag(cur_path, arg, true);
 		if (sub) {
-			@mul(check for prev expands);
+			@mul(check for prev expands)
 			sub->addMultiple();
 			frag->add(Frag_Ref { cur_path, arg, true });
 		}
@@ -837,7 +837,7 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "Def") {
-		@put(do Def);
+		@put(do Def)
 		break;
 	}
 @end(do special cmd)
@@ -862,7 +862,7 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "Add") {
-		@put(do Add);
+		@put(do Add)
 		break;
 	}
 @end(do special cmd)
@@ -893,7 +893,7 @@ int main(
 				frag->name << ']'
 		);
 		frag = &get_frag(cur_path, arg, true);
-		@mul(clear frag);
+		@mul(clear frag)
 		break;
 	}
 @end(do special cmd)
@@ -908,7 +908,7 @@ int main(
 				frag->name << ']'
 		);
 		frag = &get_frag(cur_path, arg, false);
-		@mul(clear frag);
+		@mul(clear frag)
 		break;
 	}
 @end(do special cmd)
@@ -930,7 +930,7 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "Put") {
-		@put(do Put);
+		@put(do Put)
 		break;
 	}
 @end(do special cmd)
@@ -942,7 +942,7 @@ int main(
 	ASSERT_MSG(frag, "@Put not in frag");
 	Frag *sub = &get_frag(cur_path, arg, false);
 	if (sub) {
-		@mul(check frag ex. count);
+		@mul(check frag ex. count)
 		sub->addExpand();
 		frag->add(Frag_Ref { cur_path, arg, false });
 	}
@@ -953,7 +953,7 @@ int main(
 ```
 @add(do special cmd)
 	if (name == "Mul") {
-		@put(do Mul);
+		@put(do Mul)
 		break;
 	}
 @end(do special cmd)
@@ -965,7 +965,7 @@ int main(
 	ASSERT_MSG(frag, "@Mul not in frag");
 	Frag *sub = &get_frag(cur_path, arg, false);
 	if (sub) {
-		@mul(check for prev expands);
+		@mul(check for prev expands)
 		sub->addMultiple();
 		frag->add(Frag_Ref { cur_path, arg, false });
 	}
@@ -979,7 +979,7 @@ int main(
 		ASSERT_MSG(frag,
 			"@priv not in frag"
 		);
-		@put(process private frag);
+		@put(process private frag)
 		break;
 	}
 @end(do special cmd)
@@ -1029,7 +1029,7 @@ int main(
 		ASSERT_MSG(frag,
 			"@magic not in frag"
 		);
-		@put(process magic frag);
+		@put(process magic frag)
 		break;
 	}
 @end(do special cmd)
@@ -1067,7 +1067,7 @@ int main(
 @add(global elements)
 	@put(needed by files write)
 	void files_write() {
-		@put(files write);
+		@put(files write)
 	}
 @end(global elements)
 ```
@@ -1090,7 +1090,7 @@ int main(
 		};
 		std::string cur_path { };
 		std::string cur_name { i.first };
-		@mul(serialize frag);
+		@mul(serialize frag)
 	}
 @end(files write)
 ```
@@ -1106,7 +1106,7 @@ int main(
 			const Frag *frag {
 				&i.second
 			};
-			@mul(serialize frag);
+			@mul(serialize frag)
 		}
 	}
 @end(files write)
@@ -1118,7 +1118,7 @@ int main(
 ```
 @def(serialize frag) {
 	if (frag->isFile(cur_name)) {
-		@put(write in file);
+		@put(write in file)
 	}
 } @end(serialize frag)
 ```
@@ -1196,9 +1196,9 @@ int main(
 
 ```
 @add(global elements)
-	@put(needed by files process);
+	@put(needed by files process)
 	void files_process() {
-		@put(files process);
+		@put(files process)
 	}
 @end(global elements)
 ```
@@ -1222,7 +1222,7 @@ int main(
 		};
 		const std::string cur_path;
 		const std::string cur_name = i.first;
-		@mul(serialize cmd);
+		@mul(serialize cmd)
 	}
 @end(files process)
 ```
@@ -1237,7 +1237,7 @@ int main(
 			};
 			const std::string cur_path = j.first;
 			const std::string cur_name = i.first;
-			@mul(serialize cmd);
+			@mul(serialize cmd)
 		}
 	}
 @end(files process)
@@ -1256,7 +1256,7 @@ int main(
 @def(serialize cmd) {
 	const std::string cmd { Frag::cmd(cur_name) };
 	if (cmd.size()) {
-		@put(write cmd in file);
+		@put(write cmd in file)
 	}
 } @end(serialize cmd)
 ```
@@ -1270,7 +1270,7 @@ int main(
 	if (no_cmds) {
 		std::cout << o;
 	} else {
-		@put(do write cmd);
+		@put(do write cmd)
 	}
 @end(write cmd in file)
 ```
@@ -1494,7 +1494,7 @@ int main(
 			eval_meta(*fs.parent);
 		}
 		if (fs.meta) {
-			@put(apply meta);
+			@put(apply meta)
 		}
 	}
 
@@ -1521,7 +1521,7 @@ int main(
 			auto i = line.cbegin();
 			i != end; ++i
 		) {
-			@mul(process special chars);
+			@mul(process special chars)
 			process_char(frag, *i, cur_path, cur_line);
 		}
 		process_char(frag, '\n', cur_path, cur_line);

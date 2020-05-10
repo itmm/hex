@@ -21,7 +21,7 @@ code to generate HTML slides from the input files
 <span class="in1"></span><span class="macro">@Put(<span class="name">needed by write_html</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">write_html</span>() {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">auto</span> &amp;<span class="var">cur</span> : <span class="var">inputs</span>) {<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">write cur HTML file</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">write cur HTML file</span>)</span><br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
@@ -55,7 +55,7 @@ generate HTML slides, if they should be generated
 <span class="in2"></span><span class="str">".html"</span><br/>
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="var">out</span> { <span class="var">outPath</span>.<span class="fn">c_str</span>() };<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">write cur HTML file to out</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">write cur HTML file to out</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span>.<span class="fn">close</span>();<br/>
 <span class="macro">@end(<span class="name">write cur HTML file</span>)</span><br/>
 </code></div>
@@ -66,7 +66,7 @@ the name of the HTML slides results from replacing the extension of the  input f
 <div class="page"><div class="slide"><div class="slide-nr">5</div>
 <code>
 <span class="macro">@def(<span class="name">write cur HTML file to out</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">write from in to out</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">write from in to out</span>)</span><br/>
 <span class="macro">@end(<span class="name">write cur HTML file to out</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -129,7 +129,7 @@ needs <code><span class="type">std</span>::<span class="type">string</span></cod
 <span class="in1"></span><span class="type">HtmlStatus</span> <span class="var">status</span>;<br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">slide_nr</span> { <span class="num">0</span> };<br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">b</span> : <span class="var">cur</span>.<span class="var">second</span>.<span class="var">blocks</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process block</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process block</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">write from in to out</span>)</span><br/>
 </code></div>
@@ -141,7 +141,7 @@ process each block
 <code>
 <span class="macro">@def(<span class="name">process block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process header</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process header</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
@@ -153,16 +153,16 @@ write header
 <code>
 <span class="macro">@add(<span class="name">process block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">code</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">open code page</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">open code page</span>)</span><br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">code</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">process code</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">process code</span>)</span><br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">close code page</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">close code page</span>)</span><br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span><br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">close slide</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span><br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close slide</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
@@ -175,10 +175,10 @@ write code and notes
 <span class="macro">@add(<span class="name">process block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">para</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">process para</span>)</span>;<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">process para</span>)</span><br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">close specials</span>)</span><br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
@@ -213,14 +213,14 @@ writes heading entry
 <div class="page"><div class="slide"><div class="slide-nr">16</div>
 <code>
 <span class="macro">@def(<span class="name">process header</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">close previous HTML page</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">close previous HTML page</span>)</span><br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slides\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slide\"&gt;"</span>;<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">slide nr</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">slide nr</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"headers\"&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">write header tag</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">value</span>.<span class="fn">size</span>() &gt; <span class="num">1</span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;ul&gt;\n"</span>;<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">unsigned</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> &lt; <span class="var">b</span>.<span class="var">value</span>.<span class="fn">size</span>(); ++<span class="var">i</span>) {<br/>
@@ -256,10 +256,10 @@ the slide group starts with a slide that contains the heading
 <code>
 <span class="macro">@add(<span class="name">process header</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">process note</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">process note</span>)</span><br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">close slide</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">close specials</span>)</span><br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">close slide</span>)</span><br/>
 <span class="macro">@end(<span class="name">process header</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -328,12 +328,12 @@ the characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code> are 
 <div class="page"><div class="slide"><div class="slide-nr">21</div>
 <code>
 <span class="macro">@Add(<span class="name">needed by write_html</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">process_code</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">do code</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do code</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
@@ -352,7 +352,7 @@ and in normal text that contains embedded code (e.g. in the notes or  headings)
 <span class="in2"></span><span class="type">std</span>::<span class="type">ostream</span> &amp;<span class="var">out</span>,<br/>
 <span class="in2"></span><span class="var">SI</span> <span class="var">begin</span>, <span class="var">SI</span> <span class="var">end</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process content line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process content line</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">needed by write_html</span>)</span><br/>
 </code></div>
@@ -382,7 +382,7 @@ writes a HTML header tag of the right level
 <span class="macro">@def(<span class="name">close previous HTML page</span>)</span><br/>
 <span class="in1"></span><span class="keyword">switch</span> (<span class="var">status</span>.<span class="var">state</span>) {<br/>
 <span class="in2"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">nothing</span>:<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">write HTML header</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">write HTML header</span>)</span><br/>
 <span class="in3"></span><span class="keyword">break</span>;<br/>
 <span class="in2"></span><span class="keyword">case</span> <span class="type">HtmlState</span>::<span class="var">inSlide</span>:<br/>
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
@@ -406,7 +406,7 @@ at the beginning of the document the HTML header is written
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;!doctype html&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;html lang=\"en\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;head&gt;\n"</span>;<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">write HTML header entries</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">write HTML header entries</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/head&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;body&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">write HTML header</span>)</span><br/>
@@ -480,7 +480,7 @@ close a previous slide, if it is open
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;&lt;div class=\"slide\"&gt;"</span>;<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">slide nr</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">slide nr</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"\n&lt;code&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">inCode</span>;<br/>
 <span class="macro">@end(<span class="name">open code page</span>)</span><br/>
@@ -574,7 +574,7 @@ an <code>&lt;<span class="var">span</span>&gt;</code> for the indentation is wri
 <code>
 <span class="macro">@add(<span class="name">do code</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (; <span class="var">begin</span> != <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process code ch</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process code ch</span>)</span><br/>
 <span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, *<span class="var">begin</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do code</span>)</span><br/>
@@ -593,7 +593,7 @@ if their is no special treatment, copy it to HTML
 <span class="in2"></span>*<span class="var">begin</span> == <span class="str">'\''</span> ||<br/>
 <span class="in2"></span>*<span class="var">begin</span> == <span class="str">'"'</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process string</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process string</span>)</span><br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
@@ -664,7 +664,7 @@ write formatted string
 <span class="in1"></span><span class="keyword">if</span> (*<span class="var">begin</span> == <span class="str">'@'</span>) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">nb</span> = <span class="var">begin</span> + <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">ne</span> = <span class="var">nb</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process cmd</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process cmd</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
 </code></div>
@@ -697,7 +697,7 @@ and ends with an open parenthesis
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">name</span> {<span class="var">nb</span>, <span class="var">ne</span>};<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">ab</span> = <span class="var">ne</span> + <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">ae</span> = <span class="var">ab</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">macro loop</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">macro loop</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process cmd</span>)</span><br/>
 </code></div>
@@ -717,7 +717,7 @@ if a command is found, parse its argument
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">ae</span> != <span class="var">end</span>) {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">arg</span> {<span class="var">ab</span>, <span class="var">ae</span>};<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">got macro</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">got macro</span>)</span><br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">macro loop</span>)</span><br/>
@@ -730,8 +730,8 @@ if a command argument is parsed, the command is parsed
 <code>
 <span class="macro">@def(<span class="name">got macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">do</span> {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">special macro</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">macro default</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">special macro</span>)</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">macro default</span>)</span><br/>
 <span class="in1"></span>} <span class="keyword">while</span> (<span class="num">false</span>);<br/>
 <span class="in1"></span><span class="var">begin</span> = <span class="var">ae</span>;<br/>
 <span class="macro">@end(<span class="name">got macro</span>)</span><br/>
@@ -793,7 +793,7 @@ fragment commands are copied with pretty printing to HTML
 <code>
 <span class="macro">@add(<span class="name">special macro</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"inc"</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">write include</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">write include</span>)</span><br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">special macro</span>)</span><br/>
@@ -979,9 +979,9 @@ needs <code><span class="type">std</span>::<span class="var">isalnum</span></cod
 <code>
 <span class="macro">@add(<span class="name">process code ch</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">w</span> = <span class="var">begin</span>;<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">find identifier end</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">find identifier end</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">w</span> != <span class="var">begin</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process identifier</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process identifier</span>)</span><br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code ch</span>)</span><br/>
@@ -1087,7 +1087,7 @@ known keywords
 <code>
 <span class="macro">@add(<span class="name">process code helper</span>)</span><br/>
 <span class="in1"></span><span class="type">bool</span> <span class="fn">isType</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">is type</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">is type</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
@@ -1176,7 +1176,7 @@ or is one of the known numeric values
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">ident</span>,<br/>
 <span class="in2"></span><span class="type">char</span> <span class="var">w</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">process ident</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">process ident</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process code helper</span>)</span><br/>
 </code></div>
@@ -1303,7 +1303,7 @@ quick access for limits
 <span class="in1"></span><span class="keyword">if</span> (<br/>
 <span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inNotes</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">switch into note mode</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">switch into note mode</span>)</span><br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/li&gt;&lt;li&gt;\n"</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1341,7 +1341,7 @@ open list
 <code>
 <span class="macro">@def(<span class="name">process content line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span>(; <span class="var">begin</span> != <span class="var">end</span>; ++<span class="var">begin</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">special content line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">special content line</span>)</span><br/>
 <span class="in2"></span><span class="fn">writeOneEscaped</span>(<span class="var">out</span>, *<span class="var">begin</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process content line</span>)</span><br/>
@@ -1356,7 +1356,7 @@ if no special treatment happens, the character is copied to the  HTML output
 <code>
 <span class="macro">@def(<span class="name">special content line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (*<span class="var">begin</span> == <span class="str">'`'</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">inline code</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">inline code</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">special content line</span>)</span><br/>
 </code></div>
@@ -1392,7 +1392,7 @@ if a closing tick is found, format the code with <code><span class="fn">process_
 <span class="in2"></span>(<span class="var">begin</span> + <span class="num">1</span>) != <span class="var">end</span> &amp;&amp;<br/>
 <span class="in2"></span>*(<span class="var">begin</span> + <span class="num">1</span>) == <span class="str">'*'</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">bold block</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">bold block</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">special content line</span>)</span><br/>
 </code></div>
@@ -1423,7 +1423,7 @@ search for the closing mark
 <span class="in2"></span><span class="var">w</span> != <span class="var">end</span> &amp;&amp; (<span class="var">w</span> + <span class="num">1</span> ) != <span class="var">end</span> &amp;&amp;<br/>
 <span class="in2"></span>*<span class="var">w</span> == <span class="str">'*'</span> &amp;&amp; *(<span class="var">w</span> + <span class="num">1</span>) == <span class="str">'*'</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">do bold</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">do bold</span>)</span><br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">bold block</span>)</span><br/>
@@ -1524,15 +1524,15 @@ process content with embedded code
 <code>
 <span class="macro">@add(<span class="name">process block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">open img page</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">open img page</span>)</span><br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">img</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">process img</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">process img</span>)</span><br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span><br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">close slide</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close specials</span>)</span><br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">close slide</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">process block</span>)</span><br/>
 </code></div>
@@ -1560,7 +1560,7 @@ close a previous slide, if it is open
 <code>
 <span class="macro">@def(<span class="name">process img</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;&lt;div class=\"slide\"&gt;"</span>;<br/>
-<span class="in1"></span><span class="macro">@mul(<span class="name">slide nr</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@mul(<span class="name">slide nr</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span>	&lt;&lt; <span class="str">"\n&lt;img src=\""</span> &lt;&lt; <span class="var">img</span> &lt;&lt; <span class="str">"\"&gt;\n"</span>;<br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">process img</span>)</span><br/>

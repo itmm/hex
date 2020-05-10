@@ -39,9 +39,9 @@ a standard exception from <code><span class="str">&lt;exception&gt;</span></code
 <span class="macro">@Def(<span class="name">frag prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">ASSERT</span>(<span class="var">COND</span>) \<br/>
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">log preamble</span>)</span>; \<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">log newline</span>)</span>; \<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">throw</span>)</span>; \<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">log preamble</span>)</span> \<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">log newline</span>)</span> \<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">throw</span>)</span> \<br/>
 <span class="in2"></span>}<br/>
 <span class="macro">@End(<span class="name">frag prereqs</span>)</span><br/>
 </code></div>
@@ -62,10 +62,10 @@ then an exception is raised
 <span class="macro">@Add(<span class="name">frag prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">#define</span> <span class="fn">ASSERT_MSG</span>(<span class="var">COND</span>, <span class="var">MSG</span>) \<br/>
 <span class="in2"></span><span class="keyword">if</span> (! (<span class="var">COND</span>)) { \<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">log preamble</span>)</span>; \<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">log preamble</span>)</span> \<br/>
 <span class="in3"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">": "</span> &lt;&lt; <span class="var">MSG</span>; \<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">log newline</span>)</span>; \<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">throw</span>)</span>; \<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">log newline</span>)</span> \<br/>
+<span class="in3"></span><span class="macro">@mul(<span class="name">throw</span>)</span> \<br/>
 <span class="in2"></span>}<br/>
 <span class="macro">@End(<span class="name">frag prereqs</span>)</span><br/>
 </code></div>
@@ -82,7 +82,7 @@ the macro <code><span class="fn">ASSERT_MSG</span></code> has an additional argu
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">__FILE__</span> &lt;&lt; <span class="str">':'</span> &lt;&lt; \<br/>
 <span class="in3"></span><span class="var">__LINE__</span> &lt;&lt; <span class="str">' '</span>; \<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="var">MSG</span>; \<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">log newline</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">log newline</span>)</span><br/>
 <span class="macro">@end(<span class="name">frag prereqs</span>)</span><br/>
 </code></div>
 <ul><li>

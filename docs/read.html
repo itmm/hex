@@ -18,7 +18,7 @@ processes the input files line by line
 <div class="page"><div class="slide"><div class="slide-nr">2</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span><br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -47,12 +47,12 @@ all is abstracted away, so that the interface provides lines until  everything i
 <div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@def(<span class="name">globals</span>)</span><br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">inputs prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">inputs prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Inputs</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">inputs elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">inputs elements</span>)</span><br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">private inputs elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">private inputs elements</span>)</span><br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">globals</span>)</span><br/>
 </code></div>
@@ -94,7 +94,7 @@ to avoid creating too much objects the storage is passed as argument
 <span class="in1"></span><span class="type">void</span> <span class="type">Inputs</span>::<span class="fn">read_line</span>(<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">inputs read line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">inputs read line</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">globals</span>)</span><br/>
 </code></div>
@@ -151,9 +151,9 @@ also all read files are kept
 <div class="page"><div class="slide"><div class="slide-nr">12</div>
 <code>
 <span class="macro">@add(<span class="name">globals</span>)</span><br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">needed by read_sources</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">needed by read_sources</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">read_sources</span>() {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">read sources</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">read sources</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">globals</span>)</span><br/>
 </code></div>
@@ -177,7 +177,7 @@ in the interactive environment this function may also be called
 <code>
 <span class="macro">@Add(<span class="name">inputs elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">clear</span>() {<br/>
-<span class="in2"></span><span class="macro">@Put(<span class="name">clear inputs</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">clear inputs</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">inputs elements</span>)</span><br/>
 </code></div>
@@ -192,11 +192,11 @@ all that is kept is the list of initial source files
 <span class="macro">@def(<span class="name">read sources</span>)</span> {<br/>
 <span class="in1"></span><span class="var">inputs</span>.<span class="fn">clear</span>();<br/>
 <span class="in1"></span><span class="fn">clear_frags</span>();<br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">additional read vars</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">additional read vars</span>)</span><br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">line</span>;<br/>
 <span class="in1"></span><span class="keyword">try</span> { <span class="keyword">for</span> (;;) {<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
-<span class="in2"></span><span class="macro">@Put(<span class="name">process line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span>} }<br/>
 <span class="in1"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>
 <span class="in1"></span><span class="fn">eval_metas</span>();<br/>
@@ -245,12 +245,12 @@ defines the <code><span class="type">Input</span></code> class
 <div class="page"><div class="slide"><div class="slide-nr">18</div>
 <code>
 <span class="macro">@Add(<span class="name">inputs prereqs</span>)</span><br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">open input prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">open input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Open_Input</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">open input elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">open input elements</span>)</span><br/>
 <span class="in2"></span><span class="keyword">private</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">private open input els</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">private open input els</span>)</span><br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@End(<span class="name">inputs prereqs</span>)</span><br/>
 </code></div>
@@ -261,10 +261,10 @@ the <code><span class="type">Open_Input</span></code> class represents an <code>
 <div class="page"><div class="slide"><div class="slide-nr">19</div>
 <code>
 <span class="macro">@Def(<span class="name">open input prereqs</span>)</span><br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">input prereqs</span>)</span><br/>
 <span class="in1"></span><span class="keyword">class</span> <span class="type">Input</span> {<br/>
 <span class="in2"></span><span class="keyword">public</span>:<br/>
-<span class="in3"></span><span class="macro">@Put(<span class="name">input elements</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@Put(<span class="name">input elements</span>)</span><br/>
 <span class="in3"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">prev</span>;<br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@End(<span class="name">open input prereqs</span>)</span><br/>
@@ -405,7 +405,7 @@ no move assignment
 <span class="macro">@Add(<span class="name">open input elements</span>)</span><br/>
 <span class="in1"></span><span class="type">void</span> <span class="fn">read_line</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">file_</span>.<span class="fn">is_open</span>()) {<br/>
-<span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span>;<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">get line</span>)</span><br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>
 <span class="in1"></span>}<br/>
@@ -421,7 +421,7 @@ if that fails or file was closed, then throw an exception
 <code>
 <span class="macro">@def(<span class="name">get line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="var">file_</span>, <span class="var">line</span>)) {<br/>
-<span class="in2"></span><span class="macro">@Put(<span class="name">line read</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@Put(<span class="name">line read</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">file_</span>.<span class="fn">close</span>();<br/>
@@ -472,13 +472,13 @@ this is used to avoid including files multiple times
 <code>
 <span class="macro">@rep(<span class="name">inputs read line</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (;;) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">push next path</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">push next path</span>)</span><br/>
 <span class="in2"></span><span class="keyword">try</span> {<br/>
 <span class="in3"></span><span class="var">open_</span>.<span class="fn">back</span>().<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
 <span class="in3"></span><span class="keyword">return</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">save open input</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">save open input</span>)</span><br/>
 <span class="in2"></span><span class="var">open_</span>.<span class="fn">pop_back</span>();<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">throw</span> <span class="type">No_More_Lines</span> {};<br/>

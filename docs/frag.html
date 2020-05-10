@@ -44,8 +44,8 @@ the state is initialized later from a <code><span class="type">Frag</span></code
 <div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@Add(<span class="name">input prereqs</span>)</span><br/>
-<span class="in1"></span><span class="macro">@Put(<span class="name">frag prereqs</span>)</span>;<br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">define frag</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@Put(<span class="name">frag prereqs</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">define frag</span>)</span><br/>
 <span class="macro">@end(<span class="name">input prereqs</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -77,7 +77,7 @@ the state is initialized later from a <code><span class="type">Frag</span></code
 <span class="in2"></span><span class="type">int</span> <span class="var">last_line_</span>;<br/>
 <span class="in2"></span><span class="type">Frag_Ref</span> <span class="var">sub_</span> = { <span class="type">std</span>::<span class="type">string</span> {}, <span class="type">std</span>::<span class="type">string</span> {}, <span class="num">true</span> };<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">entry methods</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">entry methods</span>)</span><br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="fn">sub</span>() <span class="type">const</span> {<br/>
 <span class="in3"></span><span class="keyword">return</span> <span class="var">sub_</span>;<br/>
 <span class="in2"></span>}<br/>
@@ -119,7 +119,7 @@ the range information of the sub <code><span class="type">Frag</span></code> wil
 <span class="in1"></span><span class="type">void</span> <span class="fn">update_state</span>(<br/>
 <span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span><br/>
 <span class="in1"></span>) <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">update state</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">update state</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
 </code></div>
@@ -137,7 +137,7 @@ that is the case, if the line ends with a backslash followed by  newline charact
 <span class="in1"></span><span class="type">bool</span> <span class="var">some_nl</span> { <span class="num">false</span> };<br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="var">b</span> != <span class="var">c</span>) {<br/>
 <span class="in2"></span>--<span class="var">c</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">update state checks</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">update state checks</span>)</span><br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">b</span> != <span class="var">c</span> &amp;&amp; *<span class="var">c</span> &gt; <span class="str">' '</span>) {<br/>
@@ -177,7 +177,7 @@ that is the case, if the line ends with a backslash followed by  newline charact
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">str</span>(<br/>
 <span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span><br/>
 <span class="in1"></span>) <span class="type">const</span> {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check c-like</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check c-like</span>)</span><br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">ostringstream</span> <span class="var">oss</span>;<br/>
 <span class="in2"></span><span class="var">oss</span> &lt;&lt; <span class="str">"\n#line "</span> &lt;&lt;<br/>
 <span class="in3"></span><span class="var">first_line_</span> &lt;&lt; <span class="str">" \""</span> &lt;&lt;<br/>
@@ -224,7 +224,7 @@ or the string is empty
 <span class="in2"></span><span class="type">char</span> <span class="var">ch</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span><br/>
 <span class="in2"></span><span class="var">str_</span> += <span class="var">ch</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -261,7 +261,7 @@ also the end of the range is updated
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">copy file and line</span>)</span><br/>
 <span class="in2"></span><span class="var">str_</span> += <span class="var">value</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -277,7 +277,7 @@ adds a whole <code><span class="type">std</span>::<span class="type">string</spa
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">can add</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">can add</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">entry methods</span>)</span><br/>
@@ -347,7 +347,7 @@ needs <code><span class="type">std</span>::<span class="type">vector</span></cod
 <span class="in2"></span><span class="type">const</span> <span class="type">bool</span> <span class="var">is_meta_</span>;<br/>
 <span class="in1"></span><span class="keyword">public</span>:<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">name</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span>};<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -503,7 +503,7 @@ the C-like property is copied from the fragment
 <div class="page"><div class="slide"><div class="slide-nr">29</div>
 <code>
 <span class="macro">@Def(<span class="name">perform unit-tests</span>)</span><br/>
-<span class="in1"></span><span class="macro">@put(<span class="name">unit-tests</span>)</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">unit-tests</span>)</span><br/>
 <span class="macro">@end(<span class="name">perform unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -605,7 +605,7 @@ add sub <code><span class="type">Frag</span></code>s or text to a <code><span cl
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">value</span>.<span class="fn">empty</span>()) { <span class="keyword">return</span>; }<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span><br/>
 <span class="in2"></span><span class="var">entries_</span>.<span class="fn">back</span>().<span class="fn">add</span>(<br/>
 <span class="in3"></span><span class="var">value</span>, <span class="var">file</span>, <span class="var">line</span><br/>
 <span class="in2"></span>);<br/>
@@ -650,7 +650,7 @@ otherwise if the text is at the wrong position, a new one is also added
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">file</span>,<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">line</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@mul(<span class="name">assure frag entry</span>)</span><br/>
 <span class="in2"></span><span class="var">entries_</span>.<span class="fn">back</span>().<span class="fn">add</span>(<br/>
 <span class="in3"></span><span class="var">ch</span>, <span class="var">file</span>, <span class="var">line</span><br/>
 <span class="in2"></span>);<br/>
@@ -678,8 +678,8 @@ assures that no cycle will result
 <span class="macro">@add(<span class="name">define frag</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">define cycle check</span>)</span><br/>
 <span class="in1"></span><span class="type">Frag</span> &amp;<span class="type">Frag</span>::<span class="fn">add</span>(<span class="type">const</span> <span class="type">Frag_Ref</span> &amp;<span class="var">sub</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">avoid frag cycles</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">add frag entry</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">avoid frag cycles</span>)</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">add frag entry</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> *<span class="var">this</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -776,7 +776,7 @@ increases the <code>@<span class="var">mul</span></code> or <code>@<span class="
 <code>
 <span class="macro">@add(<span class="name">frag methods</span>)</span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">bool</span> <span class="fn">is_c_style</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">name</span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">is c-style</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">is c-style</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">frag methods</span>)</span><br/>
@@ -838,7 +838,7 @@ write <code><span class="type">Frag</span></code> traversal to a <code><span cla
 <span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">iterate entries</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">iterate entries</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -905,7 +905,7 @@ then write the string value
 <span class="in2"></span><span class="type">Write_State</span> &amp;<span class="var">state</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">path</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check entries</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check entries</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">true</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
@@ -954,7 +954,7 @@ estimate a <code><span class="type">Write_State</span></code> first
 <span class="in4"></span>}<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check entry str</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check entry str</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">check entries</span>)</span><br/>
 </code></div>
@@ -988,7 +988,7 @@ compare string value character by character
 <span class="in2"></span><span class="type">const</span> <span class="type">Frag</span> &amp;<span class="var">frag</span>,<br/>
 <span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">expected</span><br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">serialize test frag</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">serialize test frag</span>)</span><br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define frag</span>)</span><br/>
 </code></div>
@@ -1106,8 +1106,8 @@ checks if the addition of a sub <code><span class="type">Frag</span></code> woul
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">needle</span>);<br/>
 <span class="in2"></span><span class="fn">ASSERT</span>(<span class="var">haystack</span>);<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check cycle frag</span>)</span>;<br/>
-<span class="in2"></span><span class="macro">@put(<span class="name">check cycle entries</span>)</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check cycle frag</span>)</span><br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">check cycle entries</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="num">false</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">define cycle check</span>)</span><br/>

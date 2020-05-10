@@ -5,9 +5,9 @@
 @Add(global elements)
 	class Line {
 		public:
-			@put(line elements);
+			@put(line elements)
 		private:
-			@put(line privates);
+			@put(line privates)
 	};
 @End(global elements)
 ```
@@ -19,7 +19,7 @@
 		int cur, int end
 	) const {
 		int res {};
-		@put(get line);
+		@put(get line)
 		return res;
 	}
 @end(line elements)
@@ -128,8 +128,8 @@
 
 ```
 @Add(global elements)
-	@Put(range prereqs);
-	@Put(range vars);
+	@Put(range prereqs)
+	@Put(range vars)
 @End(global elements)
 ```
 * needed global elements
@@ -163,7 +163,7 @@
 	Line get_line(std::string &s) {
 		Line line {};
 		do {
-			@put(parse line);
+			@put(parse line)
 		} while (false);
 		trim(s);
 		return line;
@@ -239,7 +239,7 @@
 
 ```
 @Add(perform unit-tests)
-	@put(unit-tests);
+	@put(unit-tests)
 @end(perform unit-tests)
 ```
 * own fragment for unit-tests
