@@ -24,8 +24,6 @@ dist_doc_DATA = add.html \
 	range.md \
 	read.html \
 	read.md \
-	test.html \
-	test.md \
 	todos.html \
 	todos.md \
 	view.html \
@@ -45,7 +43,6 @@ hx_run: add.md \
 	ncurses.md \
 	range.md \
 	read.md \
-	test.md \
 	view.md \
 	write.md
 	cd $(srcdir) && hx
