@@ -156,7 +156,7 @@
 	@mul(write header tag)
 	out << "<div class=\"slides\">\n";
 	out << "<div class=\"page\">\n";
-	out << "<div class=\"slide\">";
+	out << "<div class=\"slide slide-header\">";
 	@mul(slide nr)
 	out << "<div class=\"headers\">\n";
 	@mul(write header tag)

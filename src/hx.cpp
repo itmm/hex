@@ -3042,7 +3042,7 @@
 
 	out << "<div class=\"slides\">\n";
 	out << "<div class=\"page\">\n";
-	out << "<div class=\"slide\">";
+	out << "<div class=\"slide slide-header\">";
 	
 #line 1222 "html.md"
 
