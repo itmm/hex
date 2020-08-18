@@ -197,15 +197,6 @@ all that is kept is the list of initial source files
 <span class="in1"></span><span class="type">bool</span> <span class="var">skip_spaces</span> { <span class="num">false</span> };<br/>
 <span class="in1"></span><span class="keyword">try</span> { <span class="keyword">for</span> (;;) {<br/>
 <span class="in2"></span><span class="var">inputs</span>.<span class="fn">read_line</span>(<span class="var">line</span>);<br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">skip_spaces</span>) {<br/>
-<span class="in3"></span><span class="keyword">while</span> (! <span class="var">line</span>.<span class="fn">empty</span>() &amp;&amp; <span class="var">line</span>[<span class="num">0</span>] &lt;= <span class="str">' '</span>) {<br/>
-<span class="in4"></span><span class="var">line</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
-<span class="in3"></span>}<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">empty</span>()) {<br/>
-<span class="in4"></span><span class="keyword">continue</span>;<br/>
-<span class="in3"></span>}<br/>
-<span class="in3"></span><span class="var">skip_spaces</span> = <span class="num">false</span>;<br/>
-<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="macro">@Put(<span class="name">process line</span>)</span><br/>
 <span class="in1"></span>} }<br/>
 <span class="in1"></span><span class="keyword">catch</span> (<span class="type">const</span> <span class="type">No_More_Lines</span> &amp;) {}<br/>

@@ -531,9 +531,9 @@ int main(
 		} else {
 			expand_cmd_arg(frag, arg, cur_path, cur_line);
 		}
-		if (name == "b") {
-			skip_spaces = true;
-		}
+	}
+	if (name == "b") {
+		skip_spaces = true;
 	}
 @end(do default cmd)
 ```

@@ -9,7 +9,7 @@
 
 	#include <string>
 
-#line 187 "read.md"
+#line 178 "read.md"
 
 	#include <fstream>
 
@@ -119,10 +119,10 @@
 
 	struct No_More_Lines {};
 
-#line 158 "read.md"
+#line 149 "read.md"
 
 	
-#line 172 "read.md"
+#line 163 "read.md"
 
 	
 #line 7 "blocks.md"
@@ -870,23 +870,23 @@
 #line 27 "frag.md"
 
 
-#line 173 "read.md"
+#line 164 "read.md"
 
 	class Input {
 		public:
 			
-#line 247 "read.md"
+#line 238 "read.md"
 
 	Input(const std::string &prev = {}):
 		prev { prev }
 	{}
 
-#line 257 "read.md"
+#line 248 "read.md"
 
 	Input(const Input &) = delete;
 	Input(Input &&) = default;
 
-#line 266 "read.md"
+#line 257 "read.md"
 
 	Input &operator=(
 		const Input &
@@ -899,30 +899,30 @@
 
 	std::vector<Block> blocks;
 
-#line 176 "read.md"
+#line 167 "read.md"
 
 			const std::string prev;
 	};
 
-#line 159 "read.md"
+#line 150 "read.md"
 
 	class Open_Input {
 		public:
 			
-#line 203 "read.md"
+#line 194 "read.md"
 
 	Open_Input(const std::string &path):
 		path_ { path },
 		file_ { path.c_str() }
 	{}
 
-#line 213 "read.md"
+#line 204 "read.md"
 
 	const std::string &path() const {
 		return path_; 
 	}
 
-#line 221 "read.md"
+#line 212 "read.md"
 
 	Open_Input(
 		const Open_Input &
@@ -931,7 +931,7 @@
 		Open_Input &&
 	) = default;
 
-#line 234 "read.md"
+#line 225 "read.md"
 
 	Open_Input &operator=(
 		const Open_Input &
@@ -940,12 +940,12 @@
 		Open_Input &&
 	) = default;
 
-#line 279 "read.md"
+#line 270 "read.md"
 
 	void read_line(std::string &line) {
 		if (file_.is_open()) {
 			
-#line 292 "read.md"
+#line 283 "read.md"
 
 	if (std::getline(file_, line)) {
 		
@@ -953,13 +953,13 @@
 
 	++line_;
 
-#line 294 "read.md"
+#line 285 "read.md"
 
 		return;
 	}
 	file_.close();
 
-#line 282 "read.md"
+#line 273 "read.md"
 
 		}
 		throw No_More_Lines {};
@@ -975,11 +975,11 @@
 		return line_;
 	}
 
-#line 162 "read.md"
+#line 153 "read.md"
 
 		private:
 			
-#line 194 "read.md"
+#line 185 "read.md"
 
 	std::string path_;
 	std::ifstream file_;
@@ -988,7 +988,7 @@
 
 	int line_ = 0;
 
-#line 164 "read.md"
+#line 155 "read.md"
 
 	};
 
@@ -1119,13 +1119,13 @@
 
 		private:
 			
-#line 305 "read.md"
+#line 296 "read.md"
 
 	std::vector<std::string> roots_;
 	std::vector<std::string>::
 		const_iterator current_path_;
 
-#line 315 "read.md"
+#line 306 "read.md"
 
 	std::vector<Open_Input> open_;
 	std::map<std::string, Input> used_;
@@ -1140,11 +1140,11 @@
 		std::string &line
 	) {
 		
-#line 327 "read.md"
+#line 318 "read.md"
 
 	for (;;) {
 		
-#line 346 "read.md"
+#line 337 "read.md"
 
 	if (open_.empty()) {
 		if (
@@ -1156,7 +1156,7 @@
 		}
 	}
 
-#line 329 "read.md"
+#line 320 "read.md"
 
 		try {
 			open_.back().read_line(line);
@@ -1164,7 +1164,7 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 361 "read.md"
+#line 352 "read.md"
 
 	auto &f { used_.find(open_.back().path())->second };
 	if (f.blocks.empty()) {
@@ -1174,7 +1174,7 @@
 		});
 	}
 
-#line 335 "read.md"
+#line 326 "read.md"
 
 		open_.pop_back();
 	}
@@ -1339,15 +1339,6 @@
 	bool skip_spaces { false };
 	try { for (;;) {
 		inputs.read_line(line);
-		if (skip_spaces) {
-			while (! line.empty() && line[0] <= ' ') {
-				line.erase(0, 1);
-			}
-			if (line.empty()) {
-				continue;
-			}
-			skip_spaces = false;
-		}
 		
 #line 41 "blocks.md"
 
@@ -2065,9 +2056,9 @@
 		} else {
 			expand_cmd_arg(frag, arg, cur_path, cur_line);
 		}
-		if (name == "b") {
-			skip_spaces = true;
-		}
+	}
+	if (name == "b") {
+		skip_spaces = true;
 	}
 
 #line 492 "index.md"
@@ -2095,7 +2086,7 @@
 		process_char(frag, '\n', cur_path, cur_line);
 	}
 
-#line 136 "read.md"
+#line 127 "read.md"
 
 	} }
 	catch (const No_More_Lines &) {}
@@ -2796,7 +2787,7 @@
 
 	if (name == "b" || name == "br") {
 		writeMacroClass(out, "virt");
-		out << "</span><br/>";
+		out << "</span>";
 		break;
 	}
 
@@ -4942,9 +4933,9 @@
 		} else {
 			expand_cmd_arg(frag, arg, cur_path, cur_line);
 		}
-		if (name == "b") {
-			skip_spaces = true;
-		}
+	}
+	if (name == "b") {
+		skip_spaces = true;
 	}
 
 #line 492 "index.md"

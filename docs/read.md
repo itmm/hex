@@ -124,15 +124,6 @@
 	bool skip_spaces { false };
 	try { for (;;) {
 		inputs.read_line(line);
-		if (skip_spaces) {
-			while (! line.empty() && line[0] <= ' ') {
-				line.erase(0, 1);
-			}
-			if (line.empty()) {
-				continue;
-			}
-			skip_spaces = false;
-		}
 		@Put(process line)
 	} }
 	catch (const No_More_Lines &) {}
