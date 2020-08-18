@@ -581,10 +581,16 @@ adds a single character to the content of a fragment
 <span class="in2"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">line</span>.<span class="fn">cbegin</span>();<br/>
 <span class="in2"></span><span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span><br/>
 <span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">skip_spaces</span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (*<span class="var">i</span> &lt;= <span class="str">' '</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="in3"></span><span class="var">skip_spaces</span> = <span class="num">false</span>;<br/>
+<span class="in2"></span>}<br/>
 <span class="in2"></span><span class="macro">@mul(<span class="name">process special chars</span>)</span><br/>
 <span class="in2"></span><span class="fn">process_char</span>(<span class="var">frag</span>, *<span class="var">i</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
 <span class="in1"></span>}<br/>
-<span class="in1"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
+<span class="in1"></span><span class="keyword">if</span> (! <span class="var">skip_spaces</span>) {<br/>
+<span class="in2"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
+<span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">process line</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -781,6 +787,9 @@ performs the default expansion of an unknown command
 <span class="in3"></span><span class="var">frag</span>-&gt;<span class="fn">add</span>(<span class="str">')'</span>, <span class="var">f</span>, <span class="var">l</span>);<br/>
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 <span class="in3"></span><span class="fn">expand_cmd_arg</span>(<span class="var">frag</span>, <span class="var">arg</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
+<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">name</span> == <span class="str">"b"</span>) {<br/>
+<span class="in3"></span><span class="var">skip_spaces</span> = <span class="num">true</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">do default cmd</span>)</span><br/>
@@ -1989,16 +1998,23 @@ list of open issues
 <span class="in1"></span><span class="type">int</span> <span class="var">cur_line</span> { <span class="num">1</span> };<br/>
 <span class="in1"></span><span class="type">auto</span> &amp;<span class="var">cmd_values</span> = <span class="var">fs</span>.<span class="var">meta_values</span>;<br/>
 <span class="in1"></span><span class="var">cur_state_</span> = &amp;<span class="var">fs</span>;<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="var">skip_spaces</span> { <span class="num">false</span> };<br/>
 <span class="in1"></span><span class="keyword">while</span> (<span class="type">std</span>::<span class="fn">getline</span>(<span class="keyword">in</span>, <span class="var">line</span>)) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">end</span> = <span class="var">line</span>.<span class="fn">cend</span>();<br/>
 <span class="in2"></span><span class="keyword">for</span> (<br/>
 <span class="in3"></span><span class="type">auto</span> <span class="var">i</span> = <span class="var">line</span>.<span class="fn">cbegin</span>();<br/>
 <span class="in3"></span><span class="var">i</span> != <span class="var">end</span>; ++<span class="var">i</span><br/>
 <span class="in2"></span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">skip_spaces</span>) {<br/>
+<span class="in4"></span><span class="keyword">if</span> (*<span class="var">i</span> &lt;= <span class="str">' '</span>) { <span class="keyword">continue</span>; }<br/>
+<span class="in4"></span><span class="var">skip_spaces</span> = <span class="num">false</span>;<br/>
+<span class="in3"></span>}<br/>
 <span class="in3"></span><span class="macro">@mul(<span class="name">process special chars</span>)</span><br/>
 <span class="in3"></span><span class="fn">process_char</span>(<span class="var">frag</span>, *<span class="var">i</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">skip_spaces</span>) {<br/>
+<span class="in3"></span><span class="fn">process_char</span>(<span class="var">frag</span>, <span class="str">'\n'</span>, <span class="var">cur_path</span>, <span class="var">cur_line</span>);<br/>
+<span class="in2"></span>}<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">cur_state_</span> = <span class="num">nullptr</span>;<br/>
 <span class="macro">@end(<span class="name">apply meta</span>)</span><br/>

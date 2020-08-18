@@ -360,10 +360,16 @@ int main(
 		auto i = line.cbegin();
 		i != end; ++i
 	) {
+		if (skip_spaces) {
+			if (*i <= ' ') { continue; }
+			skip_spaces = false;
+		}
 		@mul(process special chars)
 		process_char(frag, *i, cur_path, cur_line);
 	}
-	process_char(frag, '\n', cur_path, cur_line);
+	if (! skip_spaces) {
+		process_char(frag, '\n', cur_path, cur_line);
+	}
 @End(process line)
 ```
 * reads each character in the current line
@@ -524,6 +530,9 @@ int main(
 			frag->add(')', f, l);
 		} else {
 			expand_cmd_arg(frag, arg, cur_path, cur_line);
+		}
+		if (name == "b") {
+			skip_spaces = true;
 		}
 	}
 @end(do default cmd)
@@ -1515,16 +1524,23 @@ int main(
 	int cur_line { 1 };
 	auto &cmd_values = fs.meta_values;
 	cur_state_ = &fs;
+	bool skip_spaces { false };
 	while (std::getline(in, line)) {
 		auto end = line.cend();
 		for (
 			auto i = line.cbegin();
 			i != end; ++i
 		) {
+			if (skip_spaces) {
+				if (*i <= ' ') { continue; }
+				skip_spaces = false;
+			}
 			@mul(process special chars)
 			process_char(frag, *i, cur_path, cur_line);
 		}
-		process_char(frag, '\n', cur_path, cur_line);
+		if (! skip_spaces) {
+			process_char(frag, '\n', cur_path, cur_line);
+		}
 	}
 	cur_state_ = nullptr;
 @end(apply meta)
