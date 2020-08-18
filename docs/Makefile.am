@@ -45,6 +45,6 @@ hx_run: add.md \
 	read.md \
 	view.md \
 	write.md
-	cd $(srcdir) && hx
+	cd $(srcdir) && which hx 2> /dev/null && hx || true
 	date >$(srcdir)/$@
 

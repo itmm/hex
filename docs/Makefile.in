@@ -500,7 +500,7 @@ hx_run: add.md \
 	read.md \
 	view.md \
 	write.md
-	cd $(srcdir) && hx
+	cd $(srcdir) && which hx 2> /dev/null && hx || true
 	date >$(srcdir)/$@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
