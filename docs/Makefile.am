@@ -43,6 +43,7 @@ hx_run: add.md \
 	ncurses.md \
 	range.md \
 	read.md \
+	todos.md \
 	view.md \
 	write.md
 	cd $(srcdir) && which hx 2> /dev/null && hx || true
