@@ -115,8 +115,12 @@
 			@put(process code)
 		}
 		@put(close code page)
+		if (b.notes.size()) {
 		for (const auto &note : b.notes) {
 			@mul(process note)
+		}
+		} else {
+			out << "<ul></ul>\n";
 		}
 		@mul(close specials)
 		@mul(close slide)
@@ -373,7 +377,6 @@
 ```
 @def(close code page)
 	out << "</code></div>\n";
-	status.state = HtmlState::inSlide;
 @end(close code page)
 ```
 * closes `<code>` tag when the slide is closed
