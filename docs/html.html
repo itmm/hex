@@ -158,10 +158,10 @@ write header
 <span class="in3"></span><span class="macro">@put(<span class="name">process code</span>)</span><br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">close code page</span>)</span><br/>
-<span class="in2"></span><span class="keyword">if</span> (<span class="var">b</span>.<span class="var">notes</span>.<span class="fn">size</span>()) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
-<span class="in3"></span><span class="macro">@mul(<span class="name">process note</span>)</span><br/>
-<span class="in2"></span>}<br/>
+<span class="in2"></span><span class="keyword">if</span> (! <span class="var">b</span>.<span class="var">notes</span>.<span class="fn">empty</span>()) {<br/>
+<span class="in3"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">note</span> : <span class="var">b</span>.<span class="var">notes</span>) {<br/>
+<span class="in4"></span><span class="macro">@mul(<span class="name">process note</span>)</span><br/>
+<span class="in3"></span>}<br/>
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;ul&gt;&lt;/ul&gt;\n"</span>;<br/>
 <span class="in2"></span>}<br/>
@@ -499,6 +499,7 @@ and sets the current state
 <code>
 <span class="macro">@def(<span class="name">close code page</span>)</span><br/>
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/code&gt;&lt;/div&gt;\n"</span>;<br/>
+<span class="in1"></span><span class="var">status</span>.<span class="var">state</span> = <span class="type">HtmlState</span>::<span class="var">afterSlide</span>;<br/>
 <span class="macro">@end(<span class="name">close code page</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -1326,7 +1327,8 @@ and write note
 <code>
 <span class="macro">@def(<span class="name">switch into note mode</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inSlide</span><br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">inSlide</span> &amp;&amp;<br/>
+<span class="in2"></span><span class="var">status</span>.<span class="var">state</span> != <span class="type">HtmlState</span>::<span class="var">afterSlide</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"page\"&gt;\n"</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -1568,6 +1570,7 @@ close a previous slide, if it is open
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;/div&gt;\n"</span>;<br/>
 <span class="macro">@end(<span class="name">process img</span>)</span><br/>
 </code></div>
+<ul></ul>
 </div>
 <div class="page"><div class="slide"><div class="slide-nr">99</div>
 <code>
@@ -1575,6 +1578,7 @@ close a previous slide, if it is open
 <span class="in1"></span><span class="var">out</span> &lt;&lt; <span class="str">"&lt;div class=\"slide-nr\"&gt;"</span> &lt;&lt; ++<span class="var">slide_nr</span> &lt;&lt; <span class="str">"&lt;/div&gt;"</span>;<br/>
 <span class="macro">@end(<span class="name">slide nr</span>)</span><br/>
 </code></div>
+<ul></ul>
 </div>
 </body>
 </html>

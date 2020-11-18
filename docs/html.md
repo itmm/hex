@@ -115,10 +115,10 @@
 			@put(process code)
 		}
 		@put(close code page)
-		if (b.notes.size()) {
-		for (const auto &note : b.notes) {
-			@mul(process note)
-		}
+		if (! b.notes.empty()) {
+			for (const auto &note : b.notes) {
+				@mul(process note)
+			}
 		} else {
 			out << "<ul></ul>\n";
 		}
@@ -377,6 +377,7 @@
 ```
 @def(close code page)
 	out << "</code></div>\n";
+	status.state = HtmlState::afterSlide;
 @end(close code page)
 ```
 * closes `<code>` tag when the slide is closed
@@ -1030,7 +1031,8 @@
 ```
 @def(switch into note mode)
 	if (
-		status.state != HtmlState::inSlide
+		status.state != HtmlState::inSlide &&
+		status.state != HtmlState::afterSlide
 	) {
 		out << "<div class=\"page\">\n";
 	}
