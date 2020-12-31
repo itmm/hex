@@ -4078,7 +4078,7 @@
 		}
 	}
 
-#line 302 "write.md"
+#line 303 "write.md"
 
 	bool is_prefix(
 		const std::string &s,
@@ -5606,61 +5606,67 @@
 
 	if (cmd == "M" || cmd == "Make") {
 		write_input();
-		system("make");
+		int rc { system("make") };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 
-#line 318 "write.md"
+#line 319 "write.md"
  {
 	static const std::string p { "M " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " +
+		int rc {system(("make " +
 			cmd.substr(p.size())).c_str()
-		);
+		) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } 
-#line 333 "write.md"
+#line 335 "write.md"
  {
 	static const std::string p {
 		"Make "
 	};
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " + 
+		int rc { system(("make " + 
 			cmd.substr(p.size())
-		).c_str());
+		).c_str()) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } 
-#line 350 "write.md"
+#line 353 "write.md"
 
 	if (cmd == "G" || cmd == "Git") {
 		write_input();
-		system("git status");
+		int rc = system("git status");
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 
-#line 362 "write.md"
+#line 366 "write.md"
  {
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " +
+		int rc { system(("git " +
 			cmd.substr(p.size())
-		).c_str());
+		).c_str()) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } 
-#line 377 "write.md"
+#line 382 "write.md"
  {
 	static const std::string p { "Git " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " +
+		int rc { system(("git " +
 			cmd.substr(p.size())
-		).c_str());
+		).c_str()) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } 

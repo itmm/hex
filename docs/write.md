@@ -290,7 +290,8 @@
 @Add(run loop)
 	if (cmd == "M" || cmd == "Make") {
 		write_input();
-		system("make");
+		int rc { system("make") };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 @End(run loop)
@@ -319,9 +320,10 @@
 	static const std::string p { "M " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " +
+		int rc {system(("make " +
 			cmd.substr(p.size())).c_str()
-		);
+		) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } @End(run loop)
@@ -336,9 +338,10 @@
 	};
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("make " + 
+		int rc { system(("make " + 
 			cmd.substr(p.size())
-		).c_str());
+		).c_str()) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } @End(run loop)
@@ -350,7 +353,8 @@
 @Add(run loop)
 	if (cmd == "G" || cmd == "Git") {
 		write_input();
-		system("git status");
+		int rc = system("git status");
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 @End(run loop)
@@ -363,9 +367,10 @@
 	static const std::string p { "G " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " +
+		int rc { system(("git " +
 			cmd.substr(p.size())
-		).c_str());
+		).c_str()) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } @End(run loop)
@@ -378,9 +383,10 @@
 	static const std::string p { "Git " };
 	if (is_prefix(cmd, p)) {
 		write_input();
-		system(("git " +
+		int rc { system(("git " +
 			cmd.substr(p.size())
-		).c_str());
+		).c_str()) };
+		if (rc) { std::cerr << "failed\n"; }
 		continue;
 	}
 } @End(run loop)

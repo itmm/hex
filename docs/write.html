@@ -379,7 +379,8 @@ and process files
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"M"</span> || <span class="var">cmd</span> == <span class="str">"Make"</span>) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="fn">system</span>(<span class="str">"make"</span>);<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>(<span class="str">"make"</span>) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -415,9 +416,10 @@ check is one string is a prefix of another string
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"M "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="fn">system</span>((<span class="str">"make "</span> +<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> {<span class="fn">system</span>((<span class="str">"make "</span> +<br/>
 <span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>()<br/>
-<span class="in2"></span>);<br/>
+<span class="in2"></span>) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -436,9 +438,10 @@ and run make with a specific target
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="fn">system</span>((<span class="str">"make "</span> + <br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"make "</span> + <br/>
 <span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())<br/>
-<span class="in2"></span>).<span class="fn">c_str</span>());<br/>
+<span class="in2"></span>).<span class="fn">c_str</span>()) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -454,7 +457,8 @@ and run make with a specific target
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"G"</span> || <span class="var">cmd</span> == <span class="str">"Git"</span>) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="fn">system</span>(<span class="str">"git status"</span>);<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> = <span class="fn">system</span>(<span class="str">"git status"</span>);<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -471,9 +475,10 @@ and run <code><span class="var">git</span> <span class="var">status</span></code
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"G "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="fn">system</span>((<span class="str">"git "</span> +<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"git "</span> +<br/>
 <span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())<br/>
-<span class="in2"></span>).<span class="fn">c_str</span>());<br/>
+<span class="in2"></span>).<span class="fn">c_str</span>()) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -490,9 +495,10 @@ and run <code><span class="var">git</span></code> with arguments
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"Git "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="fn">system</span>((<span class="str">"git "</span> +<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"git "</span> +<br/>
 <span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())<br/>
-<span class="in2"></span>).<span class="fn">c_str</span>());<br/>
+<span class="in2"></span>).<span class="fn">c_str</span>()) };<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 } <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
