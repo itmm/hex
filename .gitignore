@@ -1,12 +1,3 @@
 hx
 hx.exe
-Makefile
-config.h
-config.log
-config.status
-src/.deps
-src/Makefile
-*.o
-stamp-*
-autom4te.cache/
-build
+/cmake-build-debug/
