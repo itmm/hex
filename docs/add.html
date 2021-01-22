@@ -79,11 +79,9 @@ multiple paragraph blocks will be merged into one paragraph block on  read
 <span class="macro">@def(<span class="name">add block</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">increase block</span>)</span>;<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> -<br/>
-<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> - <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">insert block</span>)</span>;<br/>
-<span class="in2"></span><span class="var">curBlock</span> =<br/>
-<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>() + <span class="var">i</span>;<br/>
+<span class="in2"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>() + <span class="var">i</span>;<br/>
 <span class="in1"></span>} <span class="keyword">else</span> {<br/>
 <span class="in2"></span><span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"! no file\n"</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -103,10 +101,7 @@ and restores it afterwards
 <div class="page"><div class="slide"><div class="slide-nr">7</div>
 <code>
 <span class="macro">@def(<span class="name">increase block</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">curBlock</span> !=<br/>
-<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">end</span>()<br/>
-<span class="in1"></span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">curBlock</span> != <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">end</span>()) {<br/>
 <span class="in2"></span>++<span class="var">curBlock</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">increase block</span>)</span><br/>
@@ -118,13 +113,10 @@ and restores it afterwards
 <div class="page"><div class="slide"><div class="slide-nr">8</div>
 <code>
 <span class="macro">@def(<span class="name">insert block</span>)</span><br/>
-<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
-<span class="in2"></span><span class="var">curBlock</span>,<br/>
-<span class="in2"></span>{<br/>
-<span class="in3"></span><span class="var">state</span>, { <span class="str">"REPLACE"</span> }, {},<br/>
-<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ? <span class="num">1</span> : <span class="num">0</span><br/>
-<span class="in2"></span>}<br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<span class="var">curBlock</span>, {<br/>
+<span class="in2"></span><span class="var">state</span>, { <span class="str">"REPLACE"</span> }, {},<br/>
+<span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span> ? <span class="num">1</span> : <span class="num">0</span><br/>
+<span class="in1"></span>});<br/>
 <span class="macro">@end(<span class="name">insert block</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -151,9 +143,7 @@ and sets the current block to the new copy
 <span class="macro">@Add(<span class="name">run loop</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">cmd</span> == <span class="str">"d"</span> || <span class="var">cmd</span> == <span class="str">"dup"</span>) {<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">curInput</span> != <span class="var">inputs</span>.<span class="fn">end</span>()) {<br/>
-<span class="in3"></span><span class="keyword">if</span> (<span class="var">curBlock</span> !=<br/>
-<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">end</span>()<br/>
-<span class="in3"></span>) {<br/>
+<span class="in3"></span><span class="keyword">if</span> (<span class="var">curBlock</span> != <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">end</span>()) {<br/>
 <span class="in4"></span><span class="macro">@put(<span class="name">duplicate</span>)</span>;<br/>
 <span class="in3"></span>}<br/>
 <span class="in2"></span>} <span class="keyword">else</span> {<br/>
@@ -174,13 +164,9 @@ and the current block is valid
 <div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@def(<span class="name">duplicate</span>)</span><br/>
-<span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> -<br/>
-<span class="in2"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
-<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<br/>
-<span class="in2"></span><span class="var">curBlock</span>, *<span class="var">curBlock</span><br/>
-<span class="in1"></span>);<br/>
-<span class="in1"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>() +<br/>
-<span class="in2"></span><span class="var">i</span> + <span class="num">1</span>;<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">i</span> = <span class="var">curBlock</span> - <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in1"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">insert</span>(<span class="var">curBlock</span>, *<span class="var">curBlock</span>);<br/>
+<span class="in1"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>() + <span class="var">i</span> + <span class="num">1</span>;<br/>
 <span class="macro">@end(<span class="name">duplicate</span>)</span><br/>
 </code></div>
 <ul><li>

@@ -9,7 +9,6 @@
 * Überschriften automatisch numerieren
 * Link auf Definition/Weiterführung
 * Links auf Usages
-* Folien nummerieren
 * Aufteilung in Dateien nach Entstehung, nicht nach Themen
 * Links formatieren
 * @inc außerhalb von Code-Blöcken für HTML

@@ -1,7 +1,7 @@
 # Input Files
 * structure for handling input files
 
-```
+```c++
 @Add(includes)
 	#include <iostream>
 	#include <vector>
@@ -10,7 +10,7 @@
 ```
 * needed includes
 
-```
+```c++
 @Add(inputs elements)
 	auto &cur() {
 		ASSERT (! open_.empty());
@@ -23,7 +23,7 @@
 ```
 * last opened open input file
 
-```
+```c++
 @Add(inputs elements)
 	auto begin() {
 		return used_.begin();
@@ -32,7 +32,7 @@
 ```
 * begin iterator for used input files
 
-```
+```c++
 @Add(inputs elements)
 	auto end() {
 		return used_.end();
@@ -41,7 +41,7 @@
 ```
 * end iterator for used input files
 
-```
+```c++
 @Add(inputs elements)
 	auto size() const {
 		return used_.size();
@@ -50,7 +50,7 @@
 ```
 * number of used input files
 
-```
+```c++
 @Add(inputs elements)
 	void push(const std::string &path) {
 		std::string prev;
@@ -60,16 +60,16 @@
 				prev = open_.back().path();
 			}
 		}
-		used_.insert(std::move(std::map<std::string, Input>::value_type(path, Input(prev))));
+		used_.insert(std::move(
+			std::map<std::string, Input>::value_type(path, Input(prev))
+		));
 		open_.emplace_back(path);
 	}
 	const std::string open_head() const {
 		ASSERT(! open_.empty());
 		return open_.back().path();
 	}
-	Input &operator[](
-		const std::string &name
-	) {
+	Input &operator[](const std::string &name) {
 		return used_[name];
 	}
 @End(inputs elements)
@@ -77,7 +77,7 @@
 * open new input file
 * is recorded as used input file
 
-```
+```c++
 @Add(inputs elements)
 	void add(const std::string &path) {
 		roots_.push_back(path);
@@ -92,11 +92,9 @@
 * if the end is reached, the current input file in popped
 * and the line is read from the previous input file
 
-```
+```c++
 @Add(inputs elements)
-	bool has(
-		const std::string &name
-	) const {
+	bool has(const std::string &name) const {
 		@put(has checks);
 		return false;
 	}
@@ -104,7 +102,7 @@
 ```
 * checks if the file is already used
 
-```
+```c++
 @def(has checks)
 	if (used_.find(name) != used_.end()) {
 		return true;
@@ -119,14 +117,14 @@
 ## Line Numbers
 * for each open input file the current line number is recorded
 
-```
+```c++
 @Add(private open input els)
 	int line_ = 0;
 @end(private open input els)
 ```
 * current line number
 
-```
+```c++
 @Add(open input elements)
 	int line() const {
 		return line_;
@@ -135,14 +133,14 @@
 ```
 * getter for current line number
 
-```
+```c++
 @Def(line read)
 	++line_;
 @End(line read)
 ```
 * increase line number for each line
 
-```
+```c++
 @Def(clear inputs)
 	used_.clear();
 	open_.clear();
@@ -155,15 +153,11 @@
 * resets all open and used files
 * if the `_path`s are empty the default input file names will be used
 
-```
+```c++
 @def(populate default file)
-	if (std::filesystem::exists(
-		"index.md"
-	)) {
+	if (std::filesystem::exists("index.md")) {
 		roots_.push_back("index.md");
-	} else if (std::filesystem::exists(
-		"index.x"
-	)) {
+	} else if (std::filesystem::exists("index.x")) {
 		roots_.push_back("index.x");
 	} else {
 		std::cerr << "no input paths\n";

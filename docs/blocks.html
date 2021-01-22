@@ -113,11 +113,7 @@ new state for parsing headers
 <div class="page"><div class="slide"><div class="slide-nr">9</div>
 <code>
 <span class="macro">@def(<span class="name">states without newlines</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">'#'</span> &amp;&amp;<br/>
-<span class="in2"></span>(<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
-<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>)<br/>
-<span class="in1"></span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'#'</span> &amp;&amp; (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> || <span class="var">state</span> == <span class="var">RS</span>::<span class="var">header</span>)) {<br/>
 <span class="in2"></span><span class="type">bool</span> <span class="var">was_new</span> { <span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> };<br/>
 <span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">header</span>;<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">got header line</span>)</span>;<br/>
@@ -193,17 +189,12 @@ get reference to <code><span class="type">Block</span></code>s
 <span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">line</span>.<span class="fn">begin</span>() };<br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">e</span> { <span class="var">line</span>.<span class="fn">end</span>() };<br/>
 <span class="in1"></span><span class="type">int</span> <span class="var">l</span> { <span class="num">0</span> };<br/>
-<span class="in1"></span><span class="keyword">for</span> (<br/>
-<span class="in2"></span>; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">'#'</span>; ++<span class="var">b</span>, ++<span class="var">l</span><br/>
-<span class="in1"></span>) {}<br/>
+<span class="in1"></span><span class="keyword">for</span> (; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">'#'</span>; ++<span class="var">b</span>, ++<span class="var">l</span>) {}<br/>
 <span class="in1"></span><span class="keyword">for</span> (; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; *<span class="var">b</span> == <span class="str">' '</span>; ++<span class="var">b</span>) {}<br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">was_new</span> || <span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">header</span> ||<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">was_new</span> || <span class="var">blocks</span>.<span class="fn">empty</span>() || <span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">header</span> ||<br/>
 <span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">size</span>()<br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in3"></span><span class="var">RS</span>::<span class="var">header</span>, {}, {}, <span class="var">l</span><br/>
-<span class="in2"></span>});<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({ <span class="var">RS</span>::<span class="var">header</span>, {}, {}, <span class="var">l</span> });<br/>
 <span class="in1"></span>}<br/>
 <span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">emplace_back</span>(<br/>
 <span class="in2"></span><span class="var">b</span>, <span class="var">e</span><br/>
@@ -232,8 +223,7 @@ new states for parsing code blocks
 <div class="page"><div class="slide"><div class="slide-nr">17</div>
 <code>
 <span class="macro">@def(<span class="name">states with newlines</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">line</span> == <span class="str">"```"</span> &amp;&amp;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>.<span class="fn">size</span>() &gt;= <span class="num">3</span> &amp;&amp; <span class="var">line</span>.<span class="fn">substr</span>(<span class="num">0</span>, <span class="num">3</span>) == <span class="str">"```"</span> &amp;&amp;<br/>
 <span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">code</span>;<br/>
@@ -268,9 +258,7 @@ and the processing of a code line
 <div class="page"><div class="slide"><div class="slide-nr">19</div>
 <code>
 <span class="macro">@def(<span class="name">enter code block</span>)</span><br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in2"></span><span class="var">RS</span>::<span class="var">code</span>, {}, {}, <span class="num">0</span><br/>
-<span class="in1"></span>});<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({ <span class="var">RS</span>::<span class="var">code</span>, {}, {}, <span class="num">0</span> });<br/>
 <span class="macro">@end(<span class="name">enter code block</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -280,9 +268,7 @@ add a new code block
 <div class="page"><div class="slide"><div class="slide-nr">20</div>
 <code>
 <span class="macro">@def(<span class="name">got code line</span>)</span><br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<br/>
-<span class="in2"></span><span class="var">line</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>);<br/>
 <span class="macro">@end(<span class="name">got code line</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -325,10 +311,7 @@ the line must directly follow a header, a code section or be part of a  note sec
 <div class="page"><div class="slide"><div class="slide-nr">23</div>
 <code>
 <span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<br/>
-<span class="in2"></span><span class="var">line</span>[<span class="num">0</span>] == <span class="str">' '</span> &amp;&amp;<br/>
-<span class="in2"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span><br/>
-<span class="in1"></span>) {<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">' '</span> &amp;&amp; <span class="var">state</span> == <span class="var">RS</span>::<span class="var">notes</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">add note</span>)</span>;<br/>
 <span class="in2"></span><span class="keyword">break</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -345,14 +328,8 @@ the additional lines need to start with a space
 <span class="macro">@def(<span class="name">got note</span>)</span><br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">line</span>.<span class="fn">begin</span>() };<br/>
 <span class="in1"></span><span class="type">auto</span> <span class="var">e</span> { <span class="var">line</span>.<span class="fn">end</span>() };<br/>
-<span class="in1"></span><span class="keyword">for</span> (;<br/>
-<span class="in2"></span><span class="var">b</span> != <span class="var">e</span> &amp;&amp;<br/>
-<span class="in3"></span>(*<span class="var">b</span> == <span class="str">'*'</span> || *<span class="var">b</span> == <span class="str">' '</span>);<br/>
-<span class="in2"></span>++<span class="var">b</span><br/>
-<span class="in1"></span>) {}<br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">emplace_back</span>(<br/>
-<span class="in2"></span><span class="var">b</span>, <span class="var">e</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="keyword">for</span> (; <span class="var">b</span> != <span class="var">e</span> &amp;&amp; (*<span class="var">b</span> == <span class="str">'*'</span> || *<span class="var">b</span> == <span class="str">' '</span>); ++<span class="var">b</span>) {}<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">emplace_back</span>(<span class="var">b</span>, <span class="var">e</span>);<br/>
 <span class="macro">@end(<span class="name">got note</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -364,8 +341,7 @@ the rest is added as a note
 <div class="page"><div class="slide"><div class="slide-nr">25</div>
 <code>
 <span class="macro">@def(<span class="name">add note</span>)</span><br/>
-<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">back</span>() +=<br/>
-<span class="in2"></span><span class="var">line</span>;<br/>
+<span class="in1"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">back</span>() += <span class="var">line</span>;<br/>
 <span class="macro">@end(<span class="name">add note</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -389,10 +365,7 @@ these can be used to describe functionality outside of simple slides
 <span class="macro">@add(<span class="name">states without newlines</span>)</span><br/>
 <span class="in1"></span><span class="macro">@put(<span class="name">pre default states</span>)</span>;<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] != <span class="str">' '</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<br/>
-<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
-<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span><br/>
-<span class="in2"></span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> || <span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">create para</span>)</span>;<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">add para</span>)</span>;<br/>
 <span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">para</span>;<br/>
@@ -410,9 +383,7 @@ paragraphs are any other line that does not start with a space
 <span class="macro">@def(<span class="name">create para</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">create para block</span>)</span>;<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<br/>
-<span class="in3"></span><span class="var">line</span><br/>
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">push_back</span>(<span class="var">line</span>);<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">create para</span>)</span><br/>
 </code></div>
@@ -425,12 +396,8 @@ then add the line to the last block
 <div class="page"><div class="slide"><div class="slide-nr">29</div>
 <code>
 <span class="macro">@def(<span class="name">create para block</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">para</span><br/>
-<span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in3"></span><span class="var">RS</span>::<span class="var">para</span>, {}, {}, <span class="num">0</span><br/>
-<span class="in2"></span>});<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() || <span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">para</span>) {<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({ <span class="var">RS</span>::<span class="var">para</span>, {}, {}, <span class="num">0</span> });<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">create para block</span>)</span><br/>
 </code></div>
@@ -442,8 +409,7 @@ if the last block is not a paragraph, then add one
 <code>
 <span class="macro">@def(<span class="name">add para</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">para</span>) {<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">back</span>() +=<br/>
-<span class="in3"></span><span class="str">" "</span> + <span class="var">line</span>;<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">value</span>.<span class="fn">back</span>() += <span class="str">" "</span> + <span class="var">line</span>;<br/>
 <span class="in1"></span>}<br/>
 <br/>
 <span class="macro">@end(<span class="name">add para</span>)</span><br/>
@@ -474,10 +440,7 @@ special state for image slides
 <code>
 <span class="macro">@def(<span class="name">pre default states</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>[<span class="num">0</span>] == <span class="str">'!'</span>) {<br/>
-<span class="in2"></span><span class="keyword">if</span> (<br/>
-<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> ||<br/>
-<span class="in3"></span><span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span><br/>
-<span class="in2"></span>) {<br/>
+<span class="in2"></span><span class="keyword">if</span> (<span class="var">state</span> == <span class="var">RS</span>::<span class="var">new_element</span> || <span class="var">state</span> == <span class="var">RS</span>::<span class="var">img</span>) {<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">create img</span>)</span>;<br/>
 <span class="in3"></span><span class="macro">@put(<span class="name">add img</span>)</span>;<br/>
 <span class="in3"></span><span class="var">state</span> = <span class="var">RS</span>::<span class="var">img</span>;<br/>
@@ -501,13 +464,10 @@ special state for image slides
 <div class="page"><div class="slide"><div class="slide-nr">35</div>
 <code>
 <span class="macro">@def(<span class="name">create img block</span>)</span><br/>
-<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() ||<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">img</span> ||<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">blocks</span>.<span class="fn">empty</span>() || <span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">state</span> != <span class="var">RS</span>::<span class="var">img</span> ||<br/>
 <span class="in2"></span><span class="var">blocks</span>.<span class="fn">back</span>().<span class="var">notes</span>.<span class="fn">size</span>()<br/>
 <span class="in1"></span>) {<br/>
-<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({<br/>
-<span class="in3"></span><span class="var">RS</span>::<span class="var">img</span>, {}, {}, <span class="num">0</span><br/>
-<span class="in2"></span>});<br/>
+<span class="in2"></span><span class="var">blocks</span>.<span class="fn">push_back</span>({ <span class="var">RS</span>::<span class="var">img</span>, {}, {}, <span class="num">0</span> });<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">create img block</span>)</span><br/>
 </code></div>

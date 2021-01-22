@@ -1,7 +1,7 @@
 # Read the input files
 * processes the input files line by line
 
-```
+```c++
 @Add(global elements)
 	@put(globals)
 @End(global elements)
@@ -16,7 +16,7 @@
 * all is abstracted away, so that the interface provides lines until
   everything is processed
 
-```
+```c++
 @def(globals)
 	@Put(inputs prereqs)
 	class Inputs {
@@ -32,14 +32,14 @@
 * these can be grouped in the fragment `@s(inputs prereqs)`
 * `@k(@Put)` inserts a fragment from the global scope
 
-```
+```c++
 @Def(includes)
 	#include @s(<string>)
 @End(includes)
 ```
 * needs `std::string`
 
-```
+```c++
 @Def(inputs elements)
 	void read_line(std::string &line);
 @End(inputs elements)
@@ -47,11 +47,9 @@
 * defines method to read a line
 * to avoid creating too much objects the storage is passed as argument
 
-```
+```c++
 @add(globals)
-	void Inputs::read_line(
-		std::string &line
-	) {
+	void Inputs::read_line(std::string &line) {
 		@put(inputs read line)
 	}
 @end(globals)
@@ -60,14 +58,14 @@
   times
 * and it is somewhat big
 
-```
+```c++
 @Def(inputs prereqs)
 	struct No_More_Lines {};
 @End(inputs prereqs)
 ```
 * the code throws this exception, when no more lines are available
 
-```
+```c++
 @def(inputs read line)
 	throw No_More_Lines {};
 @end(inputs read line)
@@ -76,7 +74,7 @@
 
 ## Reading everything
 
-```
+```c++
 @add(globals)
 	Inputs inputs;
 @end(globals)
@@ -87,7 +85,7 @@
   finishes
 * also all read files are kept
 
-```
+```c++
 @add(globals)
 	@Put(needed by read_sources)
 	void read_sources() {
@@ -97,7 +95,7 @@
 ```
 * read all sources that are registered in the global `inputs` variable
 
-```
+```c++
 @Def(read source files)
 	read_sources();
 @End(read source files)
@@ -105,7 +103,7 @@
 * the `@f(main)` calls this function to read the sources
 * in the interactive environment this function may also be called
 
-```
+```c++
 @Add(inputs elements)
 	void clear() {
 		@Put(clear inputs)
@@ -115,7 +113,7 @@
 * remove all state from the `inputs` variable
 * all that is kept is the list of initial source files
 
-```
+```c++
 @def(read sources) {
 	inputs.clear();
 	clear_frags();
@@ -145,7 +143,7 @@
 ## `Input` class
 * defines the `Input` class
 
-```
+```c++
 @Add(inputs prereqs)
 	@Put(open input prereqs)
 	class Open_Input {
@@ -159,7 +157,7 @@
 * the `Open_Input` class represents an `Input` file that is also
   currently open for reading
 
-```
+```c++
 @Def(open input prereqs)
 	@Put(input prereqs)
 	class Input {
@@ -174,14 +172,14 @@
 * but these are defined later
 * for just now the path of the file is stored
 
-```
+```c++
 @Add(includes)
 	#include @s(<fstream>)
 @End(includes)
 ```
 * needs `std::ifstream`
 
-```
+```c++
 @Def(private open input els)
 	std::string path_;
 	std::ifstream file_;
@@ -190,7 +188,7 @@
 * open file contains a file
 * and an input stream
 
-```
+```c++
 @Def(open input elements)
 	Open_Input(const std::string &path):
 		path_ { path },
@@ -200,7 +198,7 @@
 ```
 * open file on construction
 
-```
+```c++
 @Add(open input elements)
 	const std::string &path() const {
 		return path_; 
@@ -208,43 +206,33 @@
 @End(open input elements)
 ```
 
-```
+```c++
 @Add(open input elements)
-	Open_Input(
-		const Open_Input &
-	) = delete;
-	Open_Input(
-		Open_Input &&
-	) = default;
+	Open_Input(const Open_Input &) = delete;
+	Open_Input(Open_Input &&) = default;
 @End(open input elements)
 ```
 * no copy construction
 * no move construction
 
-```
+```c++
 @Add(open input elements)
-	Open_Input &operator=(
-		const Open_Input &
-	) = delete;
-	Open_Input &operator=(
-		Open_Input &&
-	) = default;
+	Open_Input &operator=(const Open_Input &) = delete;
+	Open_Input &operator=(Open_Input &&) = default;
 @End(open input elements)
 ```
 * no copy assignment
 * no move assignment
 
-```
+```c++
 @Def(input elements)
-	Input(const std::string &prev = {}):
-		prev { prev }
-	{}
+	Input(const std::string &prev = {}): prev { prev } { }
 @End(input elements)
 ```
 * in the constructor the `name` will be saved
 * additional elements can be initialized later
 
-```
+```c++
 @Add(input elements)
 	Input(const Input &) = delete;
 	Input(Input &&) = default;
@@ -253,20 +241,16 @@
 * no copy constructor
 * no move constructor
 
-```
+```c++
 @Add(input elements)
-	Input &operator=(
-		const Input &
-	) = delete;
-	Input &operator=(
-		Input &&
-	) = default;
+	Input &operator=(const Input &) = delete;
+	Input &operator=(Input &&) = default;
 @End(input elements)
 ```
 * no copy assignment
 * no move assignment
 
-```
+```c++
 @Add(open input elements)
 	void read_line(std::string &line) {
 		if (file_.is_open()) {
@@ -279,7 +263,7 @@
 * if file is open, return next line from this file
 * if that fails or file was closed, then throw an exception
 
-```
+```c++
 @def(get line)
 	if (std::getline(file_, line)) {
 		@Put(line read)
@@ -292,17 +276,16 @@
 * otherwise close file
 * and fall through to the exception throwing code
 
-```
+```c++
 @Def(private inputs elements)
 	std::vector<std::string> roots_;
-	std::vector<std::string>::
-		const_iterator current_path_;
+	std::vector<std::string>::const_iterator current_path_;
 @End(private inputs elements)
 ```
 * has a list of input files
 * and an iterator for the current path
 
-```
+```c++
 @Add(private inputs elements)
 	std::vector<Open_Input> open_;
 	std::map<std::string, Input> used_;
@@ -314,7 +297,7 @@
 * `_used` contains all the files that were opened
 * this is used to avoid including files multiple times
 
-```
+```c++
 @rep(inputs read line)
 	for (;;) {
 		@put(push next path)
@@ -333,12 +316,10 @@
 * when the end is reached, the file is popped and the line is read from
   the previous file
 
-```
+```c++
 @def(push next path)
 	if (open_.empty()) {
-		if (
-			current_path_ != roots_.end()
-		) {
+		if (current_path_ != roots_.end()) {
 			push(*current_path_++);
 		} else {
 			break;
@@ -348,13 +329,12 @@
 ```
 * if no files are available, try to open a new one from the paht list
 
-```
+```c++
 @def(save open input)
 	auto &f { used_.find(open_.back().path())->second };
 	if (f.blocks.empty()) {
 		f.blocks.push_back({
-			RS::header,
-			{ "EMPTY FILE" }, {}
+			RS::header, { "EMPTY FILE" }, {}
 		});
 	}
 @end(save open input)

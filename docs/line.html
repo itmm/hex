@@ -33,9 +33,7 @@ a line has private and public elements
 <div class="page"><div class="slide"><div class="slide-nr">3</div>
 <code>
 <span class="macro">@def(<span class="name">line elements</span>)</span><br/>
-<span class="in1"></span><span class="type">int</span> <span class="fn">operator</span>()(<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">cur</span>, <span class="type">int</span> <span class="var">end</span><br/>
-<span class="in1"></span>) <span class="type">const</span> {<br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">operator</span>()(<span class="type">int</span> <span class="var">cur</span>, <span class="type">int</span> <span class="var">end</span>) <span class="type">const</span> {<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">res</span> {};<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">get line</span>)</span><br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">res</span>;<br/>
@@ -100,8 +98,7 @@ the result is clamped to the valid interval
 <code>
 <span class="macro">@add(<span class="name">line privates</span>)</span><br/>
 <span class="in1"></span><span class="fn">Line</span>(<span class="type">int</span> <span class="var">line</span>, <span class="type">bool</span> <span class="var">relative</span>):<br/>
-<span class="in2"></span><span class="var">line_</span> { <span class="var">line</span> },<br/>
-<span class="in2"></span><span class="var">relative_</span> { <span class="var">relative</span> }<br/>
+<span class="in2"></span><span class="var">line_</span> { <span class="var">line</span> }, <span class="var">relative_</span> { <span class="var">relative</span> }<br/>
 <span class="in1"></span>{}<br/>
 <span class="macro">@end(<span class="name">line privates</span>)</span><br/>
 </code></div>
@@ -168,8 +165,7 @@ needs <code><span class="type">std</span>::<span class="var">numeric_limits</spa
 <div class="page"><div class="slide"><div class="slide-nr">13</div>
 <code>
 <span class="macro">@add(<span class="name">line elements</span>)</span><br/>
-<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">max</span> =<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="var">numeric_limits</span>&lt;<span class="type">int</span>&gt;::<span class="fn">max</span>();<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">max</span> { <span class="type">std</span>::<span class="var">numeric_limits</span>&lt;<span class="type">int</span>&gt;::<span class="fn">max</span>() };<br/>
 <span class="in2"></span><br/>
 <span class="in1"></span><span class="keyword">static</span> <span class="type">Line</span> <span class="fn">end</span>() {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="fn">line</span>(<span class="var">max</span>);<br/>
@@ -208,9 +204,7 @@ if any
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
 <span class="in1"></span><span class="type">int</span> <span class="fn">get_number</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>) {<br/>
 <span class="in2"></span><span class="type">int</span> <span class="var">res</span> = <span class="num">0</span>;<br/>
-<span class="in2"></span><span class="keyword">while</span> (<br/>
-<span class="in3"></span>! <span class="var">s</span>.<span class="fn">empty</span>() &amp;&amp; <span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])<br/>
-<span class="in2"></span>) {<br/>
+<span class="in2"></span><span class="keyword">while</span> (! <span class="var">s</span>.<span class="fn">empty</span>() &amp;&amp; <span class="fn">isdigit</span>(<span class="var">s</span>[<span class="num">0</span>])) {<br/>
 <span class="in3"></span><span class="var">res</span> = <span class="var">res</span> * <span class="num">10</span> + <span class="var">s</span>[<span class="num">0</span>] - <span class="str">'0'</span>;<br/>
 <span class="in3"></span><span class="var">s</span>.<span class="fn">erase</span>(<span class="num">0</span>, <span class="num">1</span>);<br/>
 <span class="in2"></span>}<br/>
@@ -437,9 +431,7 @@ too big movement is clamped
 <div class="page"><div class="slide"><div class="slide-nr">34</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span><span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">2</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">3</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">2</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">3</span>);<br/>
 <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -449,9 +441,7 @@ simple negative relative line
 <div class="page"><div class="slide"><div class="slide-nr">35</div>
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span><br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span><span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">7</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="type">Line</span>::<span class="fn">relative</span>(-<span class="num">7</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">0</span>);<br/>
 <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -462,9 +452,7 @@ too big negative movement is clamped
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"+3"</span>;<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span><span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">8</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">8</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -475,9 +463,7 @@ parse positive relative
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"."</span>;<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span><span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">5</span><br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">5</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -488,9 +474,7 @@ parse current line
 <code>
 <span class="macro">@add(<span class="name">unit-tests</span>)</span> {<br/>
 <span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">f</span> = <span class="str">"$"</span>;<br/>
-<span class="in1"></span><span class="fn">ASSERT</span>(<br/>
-<span class="in2"></span><span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">10</span> <br/>
-<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="fn">ASSERT</span>(<span class="fn">get_line</span>(<span class="var">f</span>)(<span class="num">5</span>, <span class="num">10</span>) == <span class="num">10</span>);<br/>
 } <span class="macro">@end(<span class="name">unit-tests</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -502,9 +486,7 @@ parse last line
 <span class="macro">@Def(<span class="name">do block range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
 <span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
-<span class="in3"></span>(<span class="var">curBlock</span> -<br/>
-<span class="in4"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>()<br/>
-<span class="in3"></span>) + <span class="num">1</span>,<br/>
+<span class="in3"></span>(<span class="var">curBlock</span> - <span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">begin</span>() ) + <span class="num">1</span>,<br/>
 <span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">blocks</span>.<span class="fn">size</span>()<br/>
 <span class="in2"></span>) - <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
@@ -519,11 +501,7 @@ parse range over blocks collection
 <code>
 <span class="macro">@Def(<span class="name">do inputs range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
-<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
-<span class="in3"></span>(<span class="var">curInput</span> - <span class="var">inputs</span>.<span class="fn">begin</span>()) +<br/>
-<span class="in4"></span><span class="num">1</span>,<br/>
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">size</span>()<br/>
-<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>((<span class="var">curInput</span> - <span class="var">inputs</span>.<span class="fn">begin</span>()) + <span class="num">1</span>, <span class="var">inputs</span>.<span class="fn">size</span>()) - <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">do inputs range</span>)</span><br/>
@@ -536,10 +514,7 @@ parse range over input files
 <code>
 <span class="macro">@Def(<span class="name">do str range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">line</span>) {<br/>
-<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<br/>
-<span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>,<br/>
-<span class="in3"></span><span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
-<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="fn">line</span>(<span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span>) - <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">do str range</span>)</span><br/>

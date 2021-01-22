@@ -137,10 +137,7 @@ blocks use only one element from range
 <span class="in3"></span><span class="keyword">if</span> (<span class="var">xx</span>.<span class="var">first</span> == <span class="var">curInput</span>-&gt;<span class="var">first</span>) { <span class="keyword">break</span>; }<br/>
 <span class="in3"></span>++<span class="var">idx</span>;<br/>
 <span class="in2"></span>}<br/>
-<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<br/>
-<span class="in3"></span><span class="var">idx</span>,<br/>
-<span class="in3"></span><span class="var">inputs</span>.<span class="fn">size</span>()<br/>
-<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<span class="var">idx</span>, <span class="var">inputs</span>.<span class="fn">size</span>()) - <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">do inputs range</span>)</span><br/>
@@ -153,13 +150,9 @@ input files use only one element from range
 <code>
 <span class="macro">@Rep(<span class="name">do str range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">range</span>) {<br/>
-<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<br/>
-<span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
-<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="var">next</span> = <span class="var">range</span>.<span class="fn">last</span>()(<span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span>) - <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">next</span> &lt; <span class="num">0</span>) { <span class="var">next</span> = <span class="num">0</span>; }<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">p</span> = <span class="var">range</span>.<span class="fn">prev</span>()(<br/>
-<span class="in3"></span><span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span><br/>
-<span class="in2"></span>) - <span class="num">1</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">p</span> = <span class="var">range</span>.<span class="fn">prev</span>()(<span class="type">Line</span>::<span class="var">max</span>, <span class="var">c</span>.<span class="fn">size</span>() + <span class="num">1</span>) - <span class="num">1</span>;<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">p</span> &lt; <span class="num">0</span>) { <span class="var">p</span> = <span class="num">0</span>; }<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">erase range</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -173,10 +166,7 @@ strings can replace a full range with the new elements
 <code>
 <span class="macro">@def(<span class="name">erase range</span>)</span><br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="var">p</span> &lt; <span class="var">next</span>) {<br/>
-<span class="in2"></span><span class="var">c</span>.<span class="fn">erase</span>(<br/>
-<span class="in3"></span><span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">p</span>,<br/>
-<span class="in3"></span><span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">next</span><br/>
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="var">c</span>.<span class="fn">erase</span>(<span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">p</span>, <span class="var">c</span>.<span class="fn">begin</span>() + <span class="var">next</span>);<br/>
 <span class="in2"></span><span class="var">next</span> = <span class="var">p</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@end(<span class="name">erase range</span>)</span><br/>

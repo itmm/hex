@@ -34,13 +34,10 @@
 * while not very interesting, it contains a lot of commands that show
   how `hx` works
 
-```
+```c++
 @Def(file: ../src/hx.cpp)
 	@put(global elements)
-	int main(
-		int argc,
-		const char **argv
-	) {
+	int main(int argc, const char **argv) {
 		@put(main body)
 	}
 @End(file: ../src/hx.cpp)
@@ -96,11 +93,8 @@
 ### Generating the first source code
 * if we stop here and run `hx`, the following code will be generated
 
-```
-int main(
-	int argc,
-	const char **argv
-) {
+```c++
+int main(int argc, const char **argv) {
 }
 ```
 * the unknown fragments are noted in the output of `hx`
@@ -111,7 +105,7 @@ int main(
 * the next code slides identify multiple steps to perform in the
   `@f(main)` function
 
-```
+```c++
 @def(main body)
 	#if ! NDEBUG
 		@put(perform unit-tests)
@@ -128,7 +122,7 @@ int main(
 * and in all input files that are included directly or indirectly by
   this input file for the first time
 
-```
+```c++
 @add(main body)
 	@put(process arguments)
 @end(main body)
@@ -141,7 +135,7 @@ int main(
 * but is is far more important in `SWP`, as a slide provides only limited
   space
 
-```
+```c++
 @add(main body)
 	@put(read source files)
 @end(main body)
@@ -150,7 +144,7 @@ int main(
 * here a lot of interesting things are happening but right now it will
   expand to nothing as nothing is described yet
 
-```
+```c++
 @add(main body)
 	@put(serialize fragments)
 @end(main body)
@@ -158,14 +152,14 @@ int main(
 * in the next step `hx` writes the content of every file fragment in its
   designated file
 
-```
+```c++
 @add(main body)
 	@put(write HTML file)
 @end(main body)
 ```
 * and lastly the HTML documentation is generated
 
-```
+```c++
 @def(global elements)
 	@put(includes)
 @end(global elements)
@@ -177,15 +171,19 @@ int main(
   of `hx`
 * follow them in order so that you do not miss important concepts
 
-```
+```c++
 @add(global elements)
 	class Frag;
 	class Frag_Ref;
 
-	Frag *find_frag(const std::string &path, const std::string &key, bool local, std::string *got_path = nullptr);
+	Frag *find_frag(const std::string &path, const std::string &key,
+		bool local, std::string *got_path = nullptr
+	);
 	Frag *find_frag(const Frag_Ref &ref, std::string *got_path = nullptr);
 
-	Frag &get_frag(const std::string &path, const std::string &key, bool local);
+	Frag &get_frag(const std::string &path,
+		const std::string &key, bool local
+	);
 	Frag &get_frag(const Frag_Ref &ref);
 
 	#include <map>
@@ -194,13 +192,15 @@ int main(
 	Frag_Map &frag_map(const std::string &in);
 	Frag_Map &frag_map();
 
-	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values);
+	void split_frag(const std::string &name, Frag *meta,
+		std::map<std::string, std::string> &&values
+	);
 	void clear_frags();
 	void eval_metas();
 @end(global elements)
 ```
 
-```
+```c++
 @inc(read.md)
 ```
 * defines the mechanisms of reading files line by line
@@ -210,19 +210,19 @@ int main(
 * you can click on the argument value in the HTML documentation to
   navigate to the documentation from this file
 
-```
+```c++
 @inc(blocks.md)
 ```
 * the input is split into blocks
 * a block has a type, a value and optional notes
 * blocks are separated by newlines
 
-```
+```c++
 @inc(log.md)
 ```
 * defines logging mechanism
 
-```
+```c++
 @inc(frag.md)
 ```
 * fragments are flexible macro definitions
@@ -231,7 +231,7 @@ int main(
 * if they are not defined in the end, they will be expanded to nothing
 * so even a partial program can be generated
 
-```
+```c++
 @inc(input.md)
 ```
 * the input class contains all the blocks and fragments that the input
@@ -244,16 +244,13 @@ int main(
 ## Parsing command line arguments
 * parses the command line arguments element by element
 
-```
+```c++
 @def(process arguments)
 	for (int i { 1 }; i < argc; ++i) {
 		std::string arg { argv[i] };
 		@put(process argument)
 		@put(process file argument)
-		ASSERT_MSG(false,
-			"unknown argument [" <<
-			argv[i] << ']'
-		);
+		ASSERT_MSG(false, "unknown argument [" << argv[i] << ']');
 	}
 @end(process arguments)
 ```
@@ -264,51 +261,38 @@ int main(
   occurred.
 * if it is not a known argument it may be a file name.
 
-```
+```c++
 @add(global elements)
-	std::string stylesheet {
-		"slides/slides.css"
-	};
+	std::string stylesheet { "slides/slides.css" };
 @end(global elements)
 ```
 * for the HTML-output a CSS-stylesheet is used
 * an argument can specify the used file
 * but a default is presented here
 
-```
+```c++
 @def(process argument) {
-	static const std::string prefix {
-		"--css="
-	};
-	if (arg.substr(
-		0, prefix.length()
-	) == prefix) {
-		stylesheet =
-			arg.substr(prefix.length());
+	static const std::string prefix { "--css=" };
+	if (arg.substr(0, prefix.length()) == prefix) {
+		stylesheet = arg.substr(prefix.length());
 		continue;
 	}
 } @end(process argument)
 ```
 * sets a new stylesheet path
 
-```
+```c++
 @Def(needed by read_sources)
 	int blockLimit = -1;
 @End(needed by read_sources)
 ```
 * limits the number of blocks that will be processed
 
-```
+```c++
 @add(process argument) {
-	static const std::string prefix {
-		"--limit="
-	};
-	if (arg.substr(
-		0, prefix.length()
-	) == prefix) {
-		blockLimit = std::stoi(
-			arg.substr(prefix.length())
-		);
+	static const std::string prefix { "--limit=" };
+	if (arg.substr(0, prefix.length()) == prefix) {
+		blockLimit = std::stoi(arg.substr(prefix.length()));
 		continue;
 	}
 } @end(process argument)
@@ -316,7 +300,7 @@ int main(
 * the user can limit the number of blocks that will be processed
 * so the user can verify that subsets are working properly
 
-```
+```c++
 @def(process file argument)
 	inputs.add(arg);
 	continue;
@@ -330,16 +314,15 @@ int main(
 * the code of this section reads input files, extracts the fragments
   and blocks and establishes their interdependencies
 
-```
+```c++
 @Add(inputs prereqs)
-	using SI =
-		std::string::const_iterator;
+	using SI = std::string::const_iterator;
 @End(inputs prereqs)
 ```
 * the code uses string iterators at a lot of places
 * so it defines a shorthand to reduce clutter on the slides
 
-```
+```c++
 @Add(needed by read_sources)
 	void process_char(
 		Frag *frag, char ch, const std::string &cur_path, int cur_line
@@ -350,16 +333,13 @@ int main(
 ```
 * adds a single character to the content of a fragment
 
-```
+```c++
 @Add(process line)
 	auto end = line.cend();
 	std::string cur_path = inputs.cur().path();
 	int cur_line = inputs.cur().line();
 	std::map<std::string, std::string> cmd_values;
-	for (
-		auto i = line.cbegin();
-		i != end; ++i
-	) {
+	for (auto i = line.cbegin(); i != end; ++i) {
 		if (skip_spaces) {
 			if (*i <= ' ') { continue; }
 			skip_spaces = false;
@@ -377,7 +357,7 @@ int main(
 * if the character was not special, it will be added to the current
   active fragment
 
-```
+```c++
 @Def(additional read vars)
 	Frag *frag { nullptr };
 @End(additional read vars)
@@ -387,7 +367,7 @@ int main(
 * at the beginning there is no active fragment
 * so the pointer is `nullptr`
 
-```
+```c++
 @def(process char)
 	if (frag) {
 		frag->add(ch, cur_path, cur_line);
@@ -399,7 +379,7 @@ int main(
 * based on the current input file and line number the fragment may open
   a new block
 
-```
+```c++
 @def(process special chars)
 	if (*i == '@') {
 		auto nb = i + 1;
@@ -417,7 +397,7 @@ int main(
 * if the input is not matching it is not treated as a syntax error
 * but as normal characters that are not treated special
 
-```
+```c++
 @def(cmd prefix)
 	while (ne != end && *ne != '(') {
 		if (! isalpha(*ne)) {
@@ -431,7 +411,7 @@ int main(
 * check that the name contains only letters
 * and is followed by an opening parenthesis
 
-```
+```c++
 @def(cmd argument)
 	auto ab = ne + 1; auto ae = ab;
 	while (ae != end && *ae != ')') {
@@ -451,7 +431,7 @@ int main(
 * characters in the argument can be escaped by prefixing them with `@`
 * that is needed to allow for the closing parenthesis in the argument
 
-```
+```c++
 @def(handle at in cmd arg)
 	if (++ae == end) { break; }
 	if (isalpha(*ae)) {
@@ -460,7 +440,7 @@ int main(
 @end(handle at in cmd arg)
 ```
 
-```
+```c++
 @def(handle cmd in cmd arg)
 	auto ac { ae };
 	while (isalpha(*ac)) {
@@ -480,7 +460,7 @@ int main(
 @end(handle cmd in cmd arg)
 ```
 
-```
+```c++
 @def(cmd found)
 	i = ae;
 	bool outside = ! frag;
@@ -503,7 +483,7 @@ int main(
 * and can be ignored in generated source code
 * after processing a block the code adjusts the limit
 
-```
+```c++
 @Add(needed by read_sources)
 	inline void expand_cmd_arg(
 		Frag *f, const std::string &arg,
@@ -517,7 +497,7 @@ int main(
 ```
 * performs the default expansion of an unknown command
 
-```
+```c++
 @def(do default cmd)
 	if (frag) {
 		if (frag->is_meta()) {
@@ -540,14 +520,14 @@ int main(
 * if the command was not a functional command, it will be replaced by its
   argument in source code
 
-```
+```c++
 @add(includes)
 	#include <algorithm>
 @end(includes)
 ```
 * `std::find` is used on the next slide
 
-```
+```c++
 @def(expand loop)
 	while (b != e) {
 		auto x = std::find(b, e, '@');
@@ -565,17 +545,14 @@ int main(
 * the argument may contain escaped sequences starting with `@`
 * the code will unescape them
 
-```
+```c++
 @def(expand before)
-	f->add(
-		std::string { b, x },
-		cur_path, cur_line
-	);
+	f->add(std::string { b, x }, cur_path, cur_line);
 @end(expand before)
 ```
 * copy everything that is before the current iterator
 
-```
+```c++
 @def(expand escaped)
 	if (b != e) {
 		f->add(*b, cur_path, cur_line);
@@ -585,7 +562,7 @@ int main(
 ```
 * add escaped char, if there is one
 
-```
+```c++
 @Add(needed by read_sources)
 	#define ASSERT_NOT_FRAG() \
 		ASSERT_MSG(! frag, '@' << \
@@ -597,7 +574,7 @@ int main(
 ```
 * raise error, if command is in an active fragment
 
-```
+```c++
 @Add(needed by read_sources)
 	#define CHECK_NOT_DEFINED() \
 		if (isPopulatedFrag(frag)) { \
@@ -609,7 +586,7 @@ int main(
 ```
 * warn, if fragment is already filled with some content
 
-```
+```c++
 @def(do special cmd)
 	if (name == "def") {
 		ASSERT_NOT_FRAG();
@@ -622,7 +599,7 @@ int main(
 * creates a new fragment
 * fragment must not be created multiple times
 
-```
+```c++
 @Add(needed by read_sources)
 	#define ASSERT_FRAG() \
 		ASSERT_MSG(frag, '@' << \
@@ -634,7 +611,7 @@ int main(
 ```
 * raise error, if command is not in an active fragment
 
-```
+```c++
 @add(do special cmd) {
 	auto i { cmd_values.find(name) };
 	if (i != cmd_values.end()) {
@@ -644,7 +621,7 @@ int main(
 } @end(do special cmd)
 ```
 
-```
+```c++
 @add(do special cmd)
 	if (name == "end" || name == "End") {
 		ASSERT_FRAG();
@@ -673,17 +650,16 @@ int main(
 ```
 * interrupts the active fragment
 
-```
+```c++
 @def(frag names must match)
 	ASSERT_MSG(frag->name == arg,
-		"closing [" << arg <<
-		"] != [" << frag->name << ']'
+		"closing [" << arg << "] != [" << frag->name << ']'
 	);
 @end(frag names must match)
 ```
 * the name of the fragment must match the command argument
 
-```
+```c++
 @Add(needed by read_sources)
 	#define CHECK_DEFINED() \
 		if (! isPopulatedFrag(frag)) { \
@@ -695,7 +671,7 @@ int main(
 ```
 * warn, if fragment is not filled with some content
 
-```
+```c++
 @add(do special cmd)
 	if (name == "add") {
 		if (frag && frag->is_meta()) {
@@ -718,16 +694,18 @@ int main(
 * reopens an existing fragment
 * more content can be added to it
 
-```
+```c++
 @Add(needed by read_sources)
-	void parse_args(const std::string &arg, std::string &pattern, std::map<std::string, std::string> &values) {
-		for (unsigned i = 0; i < arg.size(); ++i) {
+	void parse_args(const std::string &arg, std::string &pattern,
+		std::map<std::string, std::string> &values
+	) {
+		for (unsigned i { 0 }; i < arg.size(); ++i) {
 			if (arg[i] == '@') {
-				unsigned j = i + 1;
+				unsigned j { i + 1 };
 				while (j < arg.size() && isalpha(arg[j])) { ++j; }
 				if (j > i + 1 && j < arg.size() && arg[j] == '(') {
-					int cnt = 1;
-					unsigned k = j + 1;
+					int cnt { 1 };
+					unsigned k { j + 1 };
 					for (; k < arg.size() && cnt; ++k) {
 						if (arg[k] == '(') { ++cnt; }
 						if (arg[k] == ')') { --cnt; }
@@ -749,7 +727,7 @@ int main(
 @End(needed by read_sources)
 ```
 
-```
+```c++
 @add(do special cmd)
 	if (name == "put") {
 		if (! frag && arg.find('@') != std::string::npos) {
@@ -760,9 +738,7 @@ int main(
 			sub->addMultiple();
 			split_frag(pattern, sub, std::move(values));
 		} else {
-			ASSERT_MSG(frag, "@put" << "(" <<
-				arg << ") not in frag"
-			);
+			ASSERT_MSG(frag, "@put" << "(" << arg << ") not in frag");
 			Frag *sub = &get_frag(cur_path, arg, true);
 			ASSERT(sub);
 			@mul(check frag ex. count)
@@ -777,30 +753,23 @@ int main(
 * if the fragment is not found, a new one is created to be populated
   later
 
-```
+```c++
 @def(check frag ex. count)
 	if (sub->expands()) {
-		std::cerr <<
-			"multiple expands of [" <<
-			sub->name << "]\n";
+		std::cerr << "multiple expands of [" << sub->name << "]\n";
 	}
 	if (sub->multiples()) {
-		std::cerr <<
-			"expand after mult of ["
-			<< sub->name << "]\n";
+		std::cerr << "expand after mult of [" << sub->name << "]\n";
 	}
 @end(check frag ex. count)
 ```
 * if the fragment was already expanded, an error message is generated
 * also if the fragment was expanded in multiple mode
 
-```
+```c++
 @add(do special cmd)
 	if (name == "inc") {
-		ASSERT_MSG(! frag,
-			"include in frag [" <<
-				frag->name << ']'
-		);
+		ASSERT_MSG(! frag, "include in frag [" << frag->name << ']');
 		if (! inputs.has(arg)) {
 			inputs.push(arg);
 		}
@@ -812,12 +781,10 @@ int main(
 * opens the file and pushes it on the stack of open file
 * files that were are already included are ignored
 
-```
+```c++
 @add(do special cmd)
 	if (name == "mul") {
-		ASSERT_MSG(frag,
-			"@mul not in frag"
-		);
+		ASSERT_MSG(frag, "@mul not in frag");
 		Frag *sub = &get_frag(cur_path, arg, true);
 		if (sub) {
 			@mul(check for prev expands)
@@ -830,20 +797,17 @@ int main(
 ```
 * expands a fragment multiple times
 
-```
+```c++
 @def(check for prev expands)
 	if (sub->expands()) {
-		std::cerr <<
-			"multiple after " <<
-			"expand of [" <<
-			sub->name << "]\n";
+		std::cerr << "multiple after expand of [" << sub->name << "]\n";
 	}
 @end(check for prev expands)
 ```
 * when a multiple expanded fragment was already expanded with a normal
   `@put` an error message is printed
 
-```
+```c++
 @add(do special cmd)
 	if (name == "Def") {
 		@put(do Def)
@@ -853,22 +817,18 @@ int main(
 ```
 * creates a new fragment in global namespace
 
-```
+```c++
 @def(do Def)
-	ASSERT_MSG(! frag,
-		"@Def in frag [" <<
-		frag->name << ']'
-	);
+	ASSERT_MSG(! frag, "@Def in frag [" << frag->name << ']');
 	frag = &get_frag(cur_path, arg, false);
 	if (isPopulatedFrag(frag)) {
-		std::cerr << "Frag [" <<
-			arg << "] already defined\n";
+		std::cerr << "Frag [" << arg << "] already defined\n";
 	}
 @end(do Def)
 ```
 * if the fragment already exists, an error message is printed
 
-```
+```c++
 @add(do special cmd)
 	if (name == "Add") {
 		@put(do Add)
@@ -878,15 +838,12 @@ int main(
 ```
 * extends a global fragment
 
-```
+```c++
 @def(do Add)
-	ASSERT_MSG(! frag, "@Add in frag [" <<
-		frag->name << ']'
-	);
+	ASSERT_MSG(! frag, "@Add in frag [" << frag->name << ']');
 	frag = &get_frag(cur_path, arg, false);
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "Frag [" << arg <<
-			"] not defined\n";
+		std::cerr << "Frag [" << arg << "] not defined\n";
 	}
 @end(do Add)
 ```
@@ -894,13 +851,10 @@ int main(
   namespace or in an input file that includes the current input file
 * if the fragment is not defined, an error message is printed
 
-```
+```c++
 @add(do special cmd)
 	if (name == "rep") {
-		ASSERT_MSG(! frag,
-			"@rep in frag [" <<
-				frag->name << ']'
-		);
+		ASSERT_MSG(! frag, "@rep in frag [" << frag->name << ']');
 		frag = &get_frag(cur_path, arg, true);
 		@mul(clear frag)
 		break;
@@ -909,13 +863,10 @@ int main(
 ```
 * replaces the content of a local fragment
 
-```
+```c++
 @add(do special cmd)
 	if (name == "Rep") {
-		ASSERT_MSG(! frag,
-			"@Rep in frag [" <<
-				frag->name << ']'
-		);
+		ASSERT_MSG(! frag, "@Rep in frag [" << frag->name << ']');
 		frag = &get_frag(cur_path, arg, false);
 		@mul(clear frag)
 		break;
@@ -924,19 +875,16 @@ int main(
 ```
 * replace the content of a global fragment
 
-```
+```c++
 @def(clear frag)
-	ASSERT_MSG(frag, "frag [" <<
-		name <<
-		"] not defined"
-	);
+	ASSERT_MSG(frag, "frag [" << name << "] not defined");
 	frag->clear();
 @end(clear frag)
 ```
 * clears the content of a fragment
 * if the fragment is not defined, an error message is printed
 
-```
+```c++
 @add(do special cmd)
 	if (name == "Put") {
 		@put(do Put)
@@ -946,7 +894,7 @@ int main(
 ```
 * inserts a global fragment in the current fragment
 
-```
+```c++
 @def(do Put)
 	ASSERT_MSG(frag, "@Put not in frag");
 	Frag *sub = &get_frag(cur_path, arg, false);
@@ -959,7 +907,7 @@ int main(
 ```
 * check that the fragment is not already expanded
 
-```
+```c++
 @add(do special cmd)
 	if (name == "Mul") {
 		@put(do Mul)
@@ -969,7 +917,7 @@ int main(
 ```
 * inserts a global fragment multiple times
 
-```
+```c++
 @def(do Mul)
 	ASSERT_MSG(frag, "@Mul not in frag");
 	Frag *sub = &get_frag(cur_path, arg, false);
@@ -982,12 +930,10 @@ int main(
 ```
 * check that the fragment is not already used in a single expand
 
-```
+```c++
 @add(do special cmd)
 	if (name == "priv") {
-		ASSERT_MSG(frag,
-			"@priv not in frag"
-		);
+		ASSERT_MSG(frag, "@priv not in frag");
 		@put(process private frag)
 		break;
 	}
@@ -997,7 +943,7 @@ int main(
 * the identifier is based on the argument, but extended with a
   hash-code based on the name and current input file name
 
-```
+```c++
 @add(includes)
 	#include <functional>
 	#include <sstream>
@@ -1005,39 +951,30 @@ int main(
 ```
 * needed for hashing 
 
-```
+```c++
 @def(process private frag)
 	std::hash<std::string> h;
-	auto cur {
-		h(cur_path + ':' + arg) &
-			0x7fffffff
-	};
+	auto cur { h(cur_path + ':' + arg) & 0x7fffffff };
 @end(process private frag)
 ```
 * hash the current path and argument
 * mask the hash to a positive integer
 
-```
+```c++
 @add(process private frag)
 	std::ostringstream hashed;
-	hashed << "_private_" <<
-		cur << '_' <<
-		arg;
-	frag->add(
-		hashed.str(), cur_path, cur_line
-	);
+	hashed << "_private_" << cur << '_' << arg;
+	frag->add(hashed.str(), cur_path, cur_line);
 @end(process private frag)
 ```
 * new identifier has a common prefix,
 * the hash,
 * and the original argument
 
-```
+```c++
 @add(do special cmd)
 	if (name == "magic") {
-		ASSERT_MSG(frag,
-			"@magic not in frag"
-		);
+		ASSERT_MSG(frag, "@magic not in frag");
 		@put(process magic frag)
 		break;
 	}
@@ -1045,24 +982,19 @@ int main(
 ```
 * create a hash value based on the argument and the current path
 
-```
+```c++
 @def(process magic frag)
 	std::hash<std::string> h;
-	auto cur {
-		h(cur_path + ':' + arg) &
-			0x7fffffff
-	};
+	auto cur { h(cur_path + ':' + arg) & 0x7fffffff };
 @end(process magic frag)
 ```
 * calculate hash value
 
-```
+```c++
 @add(process magic frag)
 	std::ostringstream value;
 	value << cur;
-	frag->add(
-		value.str(), cur_path, cur_line
-	);
+	frag->add(value.str(), cur_path, cur_line);
 @end(process magic frag)
 ```
 * add the hash value to the fragment
@@ -1072,7 +1004,7 @@ int main(
   specify files
 * and write the contents into the files
 
-```
+```c++
 @add(global elements)
 	@put(needed by files write)
 	void files_write() {
@@ -1082,7 +1014,7 @@ int main(
 ```
 * write all files generated from fragments
 
-```
+```c++
 @def(serialize fragments)
 	if (write_files) {
 		files_write();
@@ -1091,12 +1023,10 @@ int main(
 ```
 * write files, if requested
 
-```
+```c++
 @def(files write)
 	for (auto &i : frag_map()) {
-		const Frag *frag {
-			&i.second
-		};
+		const Frag *frag { &i.second };
 		std::string cur_path { };
 		std::string cur_name { i.first };
 		@mul(serialize frag)
@@ -1106,15 +1036,13 @@ int main(
 * fragments that start with `file:` represent files
 * additional the code checks if fragments were expanded not often enough
 
-```
+```c++
 @add(files write)
 	for (auto &j : inputs) {
 		std::string cur_path { j.first };
 		for (auto &i : frag_map(cur_path)) {
 			const std::string cur_name { i.first };
-			const Frag *frag {
-				&i.second
-			};
+			const Frag *frag { &i.second };
 			@mul(serialize frag)
 		}
 	}
@@ -1124,7 +1052,7 @@ int main(
 * so you should define file fragments as global to avoid overwriting of
   files
 
-```
+```c++
 @def(serialize frag) {
 	if (frag->isFile(cur_name)) {
 		@put(write in file)
@@ -1134,34 +1062,27 @@ int main(
 * fragments that start with `file:` represent files
 * additional the code checks if fragments were expanded not often enough
 
-```
+```c++
 @add(serialize frag) {
-	int sum {
-		frag->expands()
-			+ frag->multiples()
-	};
+	int sum { frag->expands() + frag->multiples() };
 	if (sum <= 0) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not called\n";
+		std::cerr << "frag [" << frag->name << "] not called\n";
 	}
 } @end(serialize frag)
 ```
 * if a fragment was not expanded, an error message is be written
 
-```
+```c++
 @add(serialize frag)
 	if (! isPopulatedFrag(frag)) {
-		std::cerr << "frag [" <<
-			frag->name <<
-			"] not populated\n";
+		std::cerr << "frag [" << frag->name << "] not populated\n";
 	}
 @end(serialize frag)
 ```
 * if a fragment was expanded, but not defined, an error message is
   written
 
-```
+```c++
 @def(needed by files write)
 	std::string file_name(const std::string &name) {
 		return name.substr(6);
@@ -1170,12 +1091,10 @@ int main(
 ```
 * command argument without `"file:"` prefix is the file name
 
-```
+```c++
 @add(needed by files write)
 	bool file_changed(const std::string &name, const Frag &f, std::string cur_path) {
-		std::ifstream in(
-			file_name(name).c_str()
-		);
+		std::ifstream in { file_name(name).c_str() };
 		if (! check_frag(name, f, in, cur_path)) {
 			return true;
 		}
@@ -1191,19 +1110,17 @@ int main(
   rewritten
 * and the modification date can stay the same
 
-```
+```c++
 @def(write in file)
 	if (file_changed(cur_name, *frag, cur_path)) {
-		std::ofstream out(
-			file_name(cur_name).c_str()
-		);
+		std::ofstream out(file_name(cur_name).c_str());
 		serializeFrag(cur_name, *frag, out, cur_path);
 	}
 @end(write in file)
 ```
 * write fragment to the specified file
 
-```
+```c++
 @add(global elements)
 	@put(needed by files process)
 	void files_process() {
@@ -1214,7 +1131,7 @@ int main(
 * serialize all files that are processed by external programs
 * instead of directly written out
 
-```
+```c++
 @add(serialize fragments)
 	if (process_files) {
 		files_process();
@@ -1223,12 +1140,10 @@ int main(
 ```
 * only process files if requested
 
-```
+```c++
 @def(files process)
 	for (auto &i : frag_map()) {
-		const Frag *frag {
-			&i.second
-		};
+		const Frag *frag { &i.second };
 		const std::string cur_path;
 		const std::string cur_name = i.first;
 		@mul(serialize cmd)
@@ -1237,13 +1152,11 @@ int main(
 ```
 * process commands that are key at root level
 
-```
+```c++
 @add(files process)
 	for (auto &j : inputs) {
 		for (auto &i : frag_map(j.first)) {
-			const Frag *frag {
-				&i.second
-			};
+			const Frag *frag { &i.second };
 			const std::string cur_path = j.first;
 			const std::string cur_name = i.first;
 			@mul(serialize cmd)
@@ -1254,14 +1167,14 @@ int main(
 * process commands that are defined at the top of source files
 * this behavior is deprecated
 
-```
+```c++
 @def(needed by files process)
 	bool no_cmds = false;
 @end(needed by files process)
 ```
 * there is an option to disable command processing
 
-```
+```c++
 @def(serialize cmd) {
 	const std::string cmd { Frag::cmd(cur_name) };
 	if (cmd.size()) {
@@ -1271,7 +1184,7 @@ int main(
 ```
 * a fragment is only processed, if its name matches a command invocation
 
-```
+```c++
 @def(write cmd in file)
 	std::ostringstream out {};
 	serializeFrag(cur_name, *frag, out, cur_path);
@@ -1287,26 +1200,20 @@ int main(
 * if debug mode is activated the fragment is written to `std::cout`
   instead
 
-```
+```c++
 @def(do write cmd)
-	std::FILE *f {
-		popen(cmd.c_str(), "w")
-	};
+	std::FILE *f { popen(cmd.c_str(), "w") };
 	if (f) {
-		std::fwrite(
-			o.c_str(), o.size(), 1, f
-		);
+		std::fwrite(o.c_str(), o.size(), 1, f);
 		pclose(f);
 	}
 @end(do write cmd)
 ```
 * open pipe and send fragment to it
 
-```
+```c++
 @add(process argument) {
-	static const std::string prefix {
-		"--no-cmds"
-	};
+	static const std::string prefix { "--no-cmds" };
 	if (arg == prefix) {
 		no_cmds = true;
 		continue;
@@ -1316,52 +1223,52 @@ int main(
 * disable command execution with a command switch
 * the file will be serialized to `std::cout` instead
 
-```
+```c++
 @inc(html.md)
 ```
 * generate HTML slide show
 
-```
+```c++
 @inc(view.md)
 ```
 * Interactive display of slides
 
-```
+```c++
 @inc(line.md)
 ```
 * parsing lines with commands entered by the user
 
-```
+```c++
 @inc(edit.md)
 ```
 * edit slides in place
 
-```
+```c++
 @inc(range.md)
 ```
 * handle range requests in the editor
 
-```
+```c++
 @inc(write.md)
 ```
 * handle write commands in the editor
 
-```
+```c++
 @inc(add.md)
 ```
 * handle adding of new elements in the editor
 
-```
+```c++
 @inc(ncurses.md)
 ```
 * `ncurses` interface for the editor
 
-```
+```c++
 @inc(todos.md)
 ```
 * list of open issues
 
-```
+```c++
 @add(global elements)
 	using Inputs_Frag_Map = std::map<std::string, Frag_Map>;
 
@@ -1369,21 +1276,26 @@ int main(
 		public:
 			std::unique_ptr<Frag_State> parent;
 			Inputs_Frag_Map state;
-			Frag_State(std::unique_ptr<Frag_State> &&p): parent { std::move(p) } { }
+			Frag_State(std::unique_ptr<Frag_State> &&p):
+			 	parent { std::move(p) }
+			{ }
 			Frag *meta = nullptr;
 			std::string meta_path;
 			std::string meta_name;
 			std::map<std::string, std::string> meta_values;
 	};
 
-	std::unique_ptr<Frag_State> all_frags_ = std::move(std::make_unique<Frag_State>(nullptr));
+	std::unique_ptr<Frag_State> all_frags_ =
+	 	std::move(std::make_unique<Frag_State>(nullptr));
 	Frag_State *cur_state_ = nullptr;
 
 	Frag_State &cur_state() {
 		return cur_state_ ? *cur_state_ : *all_frags_;
 	}
 
-	Frag *find_frag(Frag_State &state, const std::string &in, const std::string &key) {
+	Frag *find_frag(Frag_State &state, const std::string &in,
+		const std::string &key
+	) {
 		auto got { state.state[in].find(key) };
 		if (got != state.state[in].end()) {
 			return &got->second;
@@ -1391,7 +1303,9 @@ int main(
 		if (state.parent) {
 			Frag *pg = find_frag(*state.parent, in, key);
 			if (pg) {
-				return &state.state[in].insert({ key, { key, pg } }).first->second;
+				return &state.state[in].insert({
+				 	key, { key, pg }
+				 }).first->second;
 			}
 		}
 		return nullptr;
@@ -1401,7 +1315,9 @@ int main(
 		return find_frag(cur_state(), in, key);
 	}
 
-	Frag *find_frag_in_files(const std::string &path, const std::string &key, std::string *got_path) {
+	Frag *find_frag_in_files(const std::string &path, const std::string &key,
+		std::string *got_path
+	) {
 		std::string p { path };
 		for (;;) {
 			Frag *f { find_frag(p, key) };
@@ -1415,7 +1331,9 @@ int main(
 		}
 	}
 
-	Frag *find_frag(const std::string &path, const std::string &key, bool local, std::string *got_path) {
+	Frag *find_frag(const std::string &path, const std::string &key,
+		bool local, std::string *got_path
+	) {
 		if (local) {
 			if (got_path) { *got_path = path; }
 			return find_frag(path, key);
@@ -1439,12 +1357,16 @@ int main(
 		return find_frag(ref.path, ref.name, ref.local, got_path);
 	}
 
-	Frag &add_frag(Frag_State &state, const std::string &in, const std::string &key) {
+	Frag &add_frag(Frag_State &state, const std::string &in,
+		const std::string &key
+	) {
 		Frag *prev { nullptr };
 		if (state.parent) {
 			prev = &add_frag(*state.parent, in, key);
 		}
-		Frag &res { state.state[in].insert({ key, { key, prev } }).first->second };
+		Frag &res { state.state[in].insert({
+		 	key, { key, prev }
+		 }).first->second };
 		return res;
 	}
 
@@ -1452,7 +1374,9 @@ int main(
 		return add_frag(cur_state(), in, key);
 	}
 
-	Frag &get_frag(const std::string &path, const std::string &key, bool local) {
+	Frag &get_frag(const std::string &path,
+		const std::string &key, bool local
+	) {
 		Frag *f { find_frag(path, key, local) };
 		if (f) { return *f; }
 		const std::string new_path { local ? path : std::string { } };
@@ -1483,19 +1407,24 @@ int main(
 		return frag_map(std::string { });
 	}
 
-	void split_frag(const std::string &name, Frag *meta, std::map<std::string, std::string> &&values) {
+	void split_frag(const std::string &name, Frag *meta,
+		std::map<std::string, std::string> &&values
+	) {
 		Frag_State &current = *all_frags_;
 		current.meta = meta;
 		current.meta_path = inputs.open_head();
 		current.meta_values = std::move(values);
 		current.meta_name = name;
-		std::unique_ptr<Frag_State> n { std::move(std::make_unique<Frag_State>(std::move(all_frags_))) };
+		std::unique_ptr<Frag_State> n {
+			std::move(std::make_unique<Frag_State>(std::move(all_frags_)))
+		};
 		all_frags_ = std::move(n);
 		cur_state_ = nullptr;
 	}
 
 	void clear_frags() { 
-		all_frags_ = std::move(std::make_unique<Frag_State>(nullptr)); cur_state_ = nullptr;
+		all_frags_ = std::move(std::make_unique<Frag_State>(nullptr));
+		cur_state_ = nullptr;
 	}
 
 	void eval_meta(Frag_State &fs) {
@@ -1513,7 +1442,7 @@ int main(
 @end(global elements)
 ```
 
-```
+```c++
 @def(apply meta)
 	std::ostringstream out;
 	serializeFrag(fs.meta_name, *fs.meta, out, fs.meta_path);
@@ -1527,10 +1456,7 @@ int main(
 	bool skip_spaces { false };
 	while (std::getline(in, line)) {
 		auto end = line.cend();
-		for (
-			auto i = line.cbegin();
-			i != end; ++i
-		) {
+		for (auto i = line.cbegin(); i != end; ++i) {
 			if (skip_spaces) {
 				if (*i <= ' ') { continue; }
 				skip_spaces = false;

@@ -46,9 +46,7 @@ write all input files
 <div class="page"><div class="slide"><div class="slide-nr">4</div>
 <code>
 <span class="macro">@def(<span class="name">write cur</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="var">out</span> {<br/>
-<span class="in2"></span><span class="var">cur</span>.<span class="var">first</span>.<span class="fn">c_str</span>()<br/>
-<span class="in1"></span>};<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">ofstream</span> <span class="var">out</span> { <span class="var">cur</span>.<span class="var">first</span>.<span class="fn">c_str</span>() };<br/>
 <span class="macro">@end(<span class="name">write cur</span>)</span><br/>
 </code></div>
 <ul><li>
@@ -92,9 +90,7 @@ write header
 <code>
 <span class="macro">@def(<span class="name">write header</span>)</span><br/>
 <span class="in1"></span><span class="keyword">for</span> (<span class="type">const</span> <span class="type">auto</span> &amp;<span class="var">n</span> : <span class="var">b</span>.<span class="var">value</span>) {<br/>
-<span class="in2"></span><span class="keyword">for</span> (<br/>
-<span class="in3"></span><span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="var">b</span>.<span class="var">level</span>; ++<span class="var">i</span><br/>
-<span class="in2"></span>) {<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="var">b</span>.<span class="var">level</span>; ++<span class="var">i</span>) {<br/>
 <span class="in3"></span><span class="var">out</span> &lt;&lt; <span class="str">'#'</span>;<br/>
 <span class="in2"></span>}<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="str">' '</span>;<br/>
@@ -149,9 +145,7 @@ write paragraph
 <div class="page"><div class="slide"><div class="slide-nr">11</div>
 <code>
 <span class="macro">@def(<span class="name">needed by write_input</span>)</span><br/>
-<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">split</span>(<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>, <span class="type">int</span> <span class="var">width</span><br/>
-<span class="in1"></span>) {<br/>
+<span class="in1"></span><span class="type">std</span>::<span class="type">string</span> <span class="fn">split</span>(<span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>, <span class="type">int</span> <span class="var">width</span>) {<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">b</span> { <span class="var">s</span>.<span class="fn">begin</span>() };<br/>
 <span class="in2"></span><span class="type">auto</span> <span class="var">e</span> { <span class="var">s</span>.<span class="fn">end</span>() };<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">split eat spaces</span>)</span>;<br/>
@@ -217,11 +211,8 @@ and move over it
 <div class="page"><div class="slide"><div class="slide-nr">15</div>
 <code>
 <span class="macro">@add(<span class="name">needed by write_input</span>)</span><br/>
-<span class="in1"></span><span class="type">void</span> <span class="fn">multi_write</span>(<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">ofstream</span> &amp;<span class="var">out</span>,<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">str</span>,<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">first_in</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">other_in</span><br/>
+<span class="in1"></span><span class="type">void</span> <span class="fn">multi_write</span>(<span class="type">std</span>::<span class="type">ofstream</span> &amp;<span class="var">out</span>, <span class="type">std</span>::<span class="type">string</span> <span class="var">str</span>,<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">first_in</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">other_in</span><br/>
 <span class="in1"></span>) {<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">multi write</span>)</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -235,9 +226,7 @@ writes a long string with different prefixes
 <code>
 <span class="macro">@def(<span class="name">multi write</span>)</span><br/>
 <span class="in1"></span><span class="keyword">while</span> (! <span class="var">str</span>.<span class="fn">empty</span>()) {<br/>
-<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> = <span class="fn">split</span>(<br/>
-<span class="in3"></span><span class="var">str</span>, <span class="num">72</span> - <span class="var">first_in</span>.<span class="fn">size</span>()<br/>
-<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> = <span class="fn">split</span>(<span class="var">str</span>, <span class="num">72</span> - <span class="var">first_in</span>.<span class="fn">size</span>());<br/>
 <span class="in2"></span><span class="var">out</span> &lt;&lt; <span class="var">first_in</span> &lt;&lt; <span class="var">p</span> &lt;&lt; <span class="str">'\n'</span>;<br/>
 <span class="in2"></span><span class="var">first_in</span> = <span class="var">other_in</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -300,8 +289,7 @@ and generate HTML files
 <span class="in2"></span><span class="type">Inputs</span> <span class="var">old</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="var">inputs</span>) };<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">write files</span>)</span>;<br/>
 <span class="in2"></span><span class="var">curInput</span> = <span class="var">inputs</span>.<span class="fn">begin</span>();<br/>
-<span class="in2"></span><span class="var">curBlock</span> =<br/>
-<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -339,8 +327,7 @@ generate source files
 <span class="in2"></span><span class="type">Inputs</span> <span class="var">old</span> { <span class="type">std</span>::<span class="fn">move</span>(<span class="var">inputs</span>) };<br/>
 <span class="in2"></span><span class="macro">@put(<span class="name">process files</span>)</span>;<br/>
 <span class="in2"></span><span class="var">curInput</span> = <span class="var">inputs</span>.<span class="fn">begin</span>();<br/>
-<span class="in2"></span><span class="var">curBlock</span> =<br/>
-<span class="in3"></span><span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
+<span class="in2"></span><span class="var">curBlock</span> = <span class="var">curInput</span>-&gt;<span class="var">second</span>.<span class="var">blocks</span>.<span class="fn">begin</span>();<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">run loop</span>)</span><br/>
@@ -394,15 +381,9 @@ and invoke <code><span class="var">make</span></code>
 <div class="page"><div class="slide"><div class="slide-nr">25</div>
 <code>
 <span class="macro">@Add(<span class="name">global elements</span>)</span><br/>
-<span class="in1"></span><span class="type">bool</span> <span class="fn">is_prefix</span>(<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>,<br/>
-<span class="in2"></span><span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">p</span><br/>
-<span class="in1"></span>) {<br/>
+<span class="in1"></span><span class="type">bool</span> <span class="fn">is_prefix</span>(<span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">s</span>, <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> &amp;<span class="var">p</span>) {<br/>
 <span class="in2"></span><span class="keyword">return</span> <span class="var">s</span>.<span class="fn">size</span>() &gt;= <span class="var">p</span>.<span class="fn">size</span>() &amp;&amp;<br/>
-<span class="in3"></span><span class="type">std</span>::<span class="fn">equal</span>(<br/>
-<span class="in4"></span><span class="var">p</span>.<span class="fn">begin</span>(), <span class="var">p</span>.<span class="fn">end</span>(),<br/>
-<span class="in4"></span><span class="var">s</span>.<span class="fn">begin</span>()<br/>
-<span class="in3"></span>);<br/>
+<span class="in3"></span><span class="type">std</span>::<span class="fn">equal</span>(<span class="var">p</span>.<span class="fn">begin</span>(), <span class="var">p</span>.<span class="fn">end</span>(), <span class="var">s</span>.<span class="fn">begin</span>());<br/>
 <span class="in1"></span>}<br/>
 <span class="macro">@End(<span class="name">global elements</span>)</span><br/>
 </code></div>
@@ -416,9 +397,7 @@ check is one string is a prefix of another string
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"M "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> {<span class="fn">system</span>((<span class="str">"make "</span> +<br/>
-<span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>()<br/>
-<span class="in2"></span>) };<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> {<span class="fn">system</span>((<span class="str">"make "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>()) };<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -438,9 +417,7 @@ and run make with a specific target
 <span class="in1"></span>};<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"make "</span> + <br/>
-<span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())<br/>
-<span class="in2"></span>).<span class="fn">c_str</span>()) };<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"make "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>()) };<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -475,9 +452,7 @@ and run <code><span class="var">git</span> <span class="var">status</span></code
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"G "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"git "</span> +<br/>
-<span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())<br/>
-<span class="in2"></span>).<span class="fn">c_str</span>()) };<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"git "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>()) };<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>
@@ -495,9 +470,7 @@ and run <code><span class="var">git</span></code> with arguments
 <span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">std</span>::<span class="type">string</span> <span class="var">p</span> { <span class="str">"Git "</span> };<br/>
 <span class="in1"></span><span class="keyword">if</span> (<span class="fn">is_prefix</span>(<span class="var">cmd</span>, <span class="var">p</span>)) {<br/>
 <span class="in2"></span><span class="fn">write_input</span>();<br/>
-<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"git "</span> +<br/>
-<span class="in3"></span><span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())<br/>
-<span class="in2"></span>).<span class="fn">c_str</span>()) };<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">rc</span> { <span class="fn">system</span>((<span class="str">"git "</span> + <span class="var">cmd</span>.<span class="fn">substr</span>(<span class="var">p</span>.<span class="fn">size</span>())).<span class="fn">c_str</span>()) };<br/>
 <span class="in2"></span><span class="keyword">if</span> (<span class="var">rc</span>) { <span class="type">std</span>::<span class="var">cerr</span> &lt;&lt; <span class="str">"failed\n"</span>; }<br/>
 <span class="in2"></span><span class="keyword">continue</span>;<br/>
 <span class="in1"></span>}<br/>

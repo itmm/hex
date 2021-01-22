@@ -2,7 +2,7 @@
 * `Frag`s form a directed acyclic graph (`DAG`)
 * the infix traversal of this `DAG` generates the source code files
 
-```
+```c++
 @Add(input prereqs)
 	class Frag;
 
@@ -21,7 +21,7 @@
 * and only if the current output is not in a C-like macro definition
 * the state is initialized later from a `Frag`
 
-```
+```c++
 @Add(input prereqs)
 	@Put(frag prereqs)
 	@put(define frag)
@@ -29,21 +29,15 @@
 ```
 * `Frag`s are global elements
 
-```
+```c++
 @def(define frag)
 	class Frag_Ref {
 	public:
 		const std::string path;
 		const std::string name;
 		const bool local;
-		Frag_Ref(
-			const std::string &p,
-			const std::string &n,
-			bool l
-		):
-			path { p },
-			name { n },
-			local { l }
+		Frag_Ref(const std::string &p, const std::string &n, bool l):
+			path { p }, name { n }, local { l }
 		{ }
 	};
 	class Frag_Entry {
@@ -69,7 +63,7 @@
 * so a `_frag` can easily concatenate bytes to the `_str` of its last
   entry
 
-```
+```c++
 @def(entry methods)
 	Frag_Entry() { }
 	Frag_Entry(Frag_Ref sub):
@@ -81,11 +75,9 @@
 * no range is provided in this case
 * the range information of the sub `Frag` will be used
 
-```
+```c++
 @add(entry methods)
-	void update_state(
-		Write_State &state
-	) const {
+	void update_state(Write_State &state) const {
 		@put(update state)
 	}
 @end(entry methods)
@@ -94,7 +86,7 @@
 * that is the case, if the line ends with a backslash followed by
   newline characters
 
-```
+```c++
 @def(update state)
 	auto c { str_.end() };
 	auto b { str_.begin() };
@@ -112,7 +104,7 @@
 * if some characters are found in the line, it is not in a macro, if
   it was not recognized in the loop
 
-```
+```c++
 @def(update state checks)
 	if (*c == '\n' || *c == '\r') {
 		some_nl = true;
@@ -131,16 +123,12 @@
 * that is the case, if the line ends with a backslash followed by
   newline characters
 
-```
+```c++
 @add(entry methods)
-	std::string str(
-		Write_State &state
-	) const {
+	std::string str(Write_State &state) const {
 		@put(check c-like)
 		std::ostringstream oss;
-		oss << "\n#line " <<
-			first_line_ << " \"" <<
-			file_ << "\"\n" << str_;
+		oss << "\n#line " << first_line_ << " \"" << file_ << "\"\n" << str_;
 		return oss.str();
 	}
 @end(entry methods)
@@ -152,7 +140,7 @@
   input file
 * not in the generated source file
 
-```
+```c++
 @def(check c-like)
 	bool old { state.in_macro };
 	update_state(state);
@@ -168,12 +156,9 @@
 * or the line is not set
 * or the string is empty
 
-```
+```c++
 @add(entry methods)
-	void add(
-		char ch, const std::string &file,
-		int line
-	) {
+	void add(char ch, const std::string &file, int line) {
 		@mul(copy file and line)
 		str_ += ch;
 	}
@@ -182,11 +167,9 @@
 * adds a character to an entry
 * also the range of the entry is updated
 
-```
+```c++
 @def(copy file and line)
-	if (
-		file_.empty() || first_line_ <= 0
-	) {
+	if (file_.empty() || first_line_ <= 0) {
 		file_ = file;
 		first_line_ = line;
 	}
@@ -196,13 +179,9 @@
 * if the entry is empty, the beginning of the range is updated
 * also the end of the range is updated
 
-```
+```c++
 @add(entry methods)
-	void add(
-		const std::string &value,
-		const std::string &file,
-		int line
-	) {
+	void add(const std::string &value, const std::string &file, int line) {
 		@mul(copy file and line)
 		str_ += value;
 	}
@@ -210,12 +189,9 @@
 ```
 * adds a whole `std::string` to an entry
 
-```
+```c++
 @add(entry methods)
-	bool canAdd(
-		const std::string &file,
-		int line
-	) {
+	bool canAdd(const std::string &file, int line) {
 		@put(can add)
 		return false;
 	}
@@ -224,11 +200,9 @@
 * checks if a character at the specified position can be added to the
   fragment
 
-```
+```c++
 @def(can add)
-	if (
-		! file_.empty() && file != file_
-	) {
+	if (! file_.empty() && file != file_) {
 		return false;
 	}
 @end(can add)
@@ -236,13 +210,9 @@
 * if the entry has a different file name, the character can not be added
   to this fragment
 
-```
+```c++
 @add(can add)
-	if (
-		last_line_ > 0 &&
-		last_line_ != line &&
-		last_line_ + 1 != line
-	) {
+	if (last_line_ > 0 && last_line_ != line && last_line_ + 1 != line) {
 		return false;
 	}
 @end(can add)
@@ -250,21 +220,21 @@
 * if the last line does not match to the position, the character can not
   be added
 
-```
+```c++
 @add(can add)
 	return true;
 @end(can add)
 ```
 * otherwise the character can be added
 
-```
+```c++
 @Add(includes)
 	#include <vector>
 @end(includes)
 ```
 * needs `std::vector`
 
-```
+```c++
 @add(define frag)
 	class Frag {
 		std::vector<Frag_Entry> entries_;
@@ -284,50 +254,33 @@
 
 ## add a `Frag`
 
-```
+```c++
 @def(frag methods)
 	static bool isFile(const std::string &name) {
-		static const std::string prefix {
-			"file: "
-		};
-		std::string p {
-			name.substr(0, prefix.size())
-		};
+		static const std::string prefix { "file: " };
+		std::string p { name.substr(0, prefix.size()) };
 		return p == prefix;
 	}
 @end(frag methods)
 ```
 * a `Frag` describes a file if its name has the prefix `@s(file: )`
 
-```
+```c++
 @add(frag methods)
 	static std::string cmd(const std::string &name) {
-		static const std::string prefix {
-			"| "
-		};
-		std::string p {
-			name.substr(0, prefix.size())
-		};
-		return p == prefix ?
-			name.substr(prefix.size()) :
-			std::string {};
+		static const std::string prefix { "| " };
+		std::string p { name.substr(0, prefix.size()) };
+		return p == prefix ? name.substr(prefix.size()) : std::string {};
 	}
 @end(frag methods)
 ```
 * a `Frag` describes a command if its name has the prefix `@s(| )`
 
-```
+```c++
 @add(frag methods)
-	Frag(
-		const std::string &name,
-		Frag *prefix
-	):
-		entries_ {},
-		expands_ { 0 },
-		multiples_ { 0 },
-		prefix_ { prefix },
-		is_meta_ { name.find('@') != std::string::npos },
-		name { name }
+	Frag(const std::string &name, Frag *prefix):
+		entries_ {}, expands_ { 0 }, multiples_ { 0 }, prefix_ { prefix },
+		is_meta_ { name.find('@') != std::string::npos }, name { name }
 	{
 		if (isFile(name)) { ++expands_; }
 		if (cmd(name).size()) { ++expands_; }
@@ -337,7 +290,7 @@
 * initializes as `Frag`
 * if the `Frag` is a name or command, it is counted as a single expand
 
-```
+```c++
 @add(frag methods)
 	const Frag *prefix() const {
 		return prefix_;
@@ -349,7 +302,7 @@
 ```
 * get prefix fragment
 
-```
+```c++
 @add(frag methods)
 	bool is_meta() {
 		return is_meta_;
@@ -357,7 +310,7 @@
 @end(frag methods)
 ```
 
-```
+```c++
 @add(frag methods)
 	void clear() {
 		if (prefix_) {
@@ -370,12 +323,10 @@
 * deletes all entries
 * will be used by `@rep` and `@Rep`
 
-```
+```c++
 @add(frag methods)
 	bool empty() const {
-		if (
-			prefix_ && ! prefix_->empty()
-		) {
+		if (prefix_ && ! prefix_->empty()) {
 			return false;
 		}
 		return entries_.empty();
@@ -384,29 +335,25 @@
 ```
 * a fragment is empty, if it does not have any entries
 
-```
+```c++
 @add(define frag)
-	Write_State::Write_State(
-		const std::string &f
-	):
+	Write_State::Write_State(const std::string &f):
 		c_style { Frag::is_c_style(f) }
 	{ }
 @end(define frag)
 ```
 * the C-like property is copied from the fragment
 
-```
+```c++
 @Def(perform unit-tests)
 	@put(unit-tests)
 @end(perform unit-tests)
 ```
 * fragments have their own unit-test fragment
 
-```
+```c++
 @add(define frag)
-	void test_frag_name(
-		const std::string &name
-	) {
+	void test_frag_name(const std::string &name) {
 		Frag f(name, nullptr);
 		ASSERT(f.name == name);
 	}
@@ -414,7 +361,7 @@
 ```
 * checks, if the fragment name is copied correctly
 
-```
+```c++
 @def(unit-tests)
 	test_frag_name("abc");
 	test_frag_name("");
@@ -423,7 +370,7 @@
 ```
 * verify that names are copied
 
-```
+```c++
 @add(unit-tests) {
 	Frag f { "ab", nullptr };
 	ASSERT(f.empty());
@@ -431,25 +378,23 @@
 ```
 * check that a new `Frag` has no entries
 
-```
+```c++
 @add(define frag)
-	bool isPopulatedFrag(
-		const Frag *f
-	) {
+	bool isPopulatedFrag(const Frag *f) {
 		return f && ! f->empty();
 	}
 @end(define frag)
 ```
 * check that a fragment is not empty
 
-```
+```c++
 @add(unit-tests) {
 	Frag_Entry entry;
 } @end(unit-tests)
 ```
 * verify that an empty fragment has no sub `Frag`
 
-```
+```c++
 @add(unit-tests) {
 	Frag f { "", nullptr };
 	Write_State s { "" };
@@ -462,18 +407,12 @@
 ## Add entries to `Frag`s
 * add sub `Frag`s or text to a `Frag`
 
-```
+```c++
 @add(frag methods)
-	void add(
-		const std::string &value,
-		const std::string &file,
-		int line
-	) {
+	void add(const std::string &value, const std::string &file, int line) {
 		if (value.empty()) { return; }
 		@mul(assure frag entry)
-		entries_.back().add(
-			value, file, line
-		);
+		entries_.back().add(value, file, line);
 	}
 @end(frag methods)
 ```
@@ -482,15 +421,11 @@
 * otherwise the method assures that there is an entry
 * and adds text to this entry
 
-```
+```c++
 @def(assure frag entry)
 	if (entries_.empty()) {
 		entries_.emplace_back();
-	} else if (
-		! entries_.back().canAdd(
-			file, line
-		)
-	) {
+	} else if (! entries_.back().canAdd(file, line)) {
 		entries_.emplace_back();
 	}
 @end(assure frag entry)
@@ -498,23 +433,17 @@
 * if there are no entries, a new one is added
 * otherwise if the text is at the wrong position, a new one is also added
 
-```
+```c++
 @add(frag methods)
-	void add(
-		char ch,
-		const std::string &file,
-		int line
-	) {
+	void add(char ch, const std::string &file, int line) {
 		@mul(assure frag entry)
-		entries_.back().add(
-			ch, file, line
-		);
+		entries_.back().add(ch, file, line);
 	}
 @end(frag methods)
 ```
 * adds a single character to the `Frag`
 
-```
+```c++
 @add(frag methods)
 	Frag &add(const Frag_Ref &sub);
 @end(frag methods)
@@ -522,7 +451,7 @@
 * adds a sub `Frag` to a `Frag`
 * assures that no cycle will result
 
-```
+```c++
 @add(define frag)
 	@put(define cycle check)
 	Frag &Frag::add(const Frag_Ref &sub) {
@@ -534,16 +463,14 @@
 ```
 * checks, that the sub `Frag` is valid and that no cycles will result
 
-```
+```c++
 @def(add frag entry)
-	entries_.push_back(
-		Frag_Entry { sub }
-	);
+	entries_.push_back(Frag_Entry { sub });
 @end(add frag entry)
 ```
 * creates a new entry for the sub `Frag`
 
-```
+```c++
 @add(frag methods)
 	auto begin() const {
 		return entries_.cbegin();
@@ -552,7 +479,7 @@
 ```
 * getter for the begin entries iterator
 
-```
+```c++
 @add(frag methods)
 	auto end() const {
 		return entries_.cend();
@@ -561,7 +488,7 @@
 ```
 * getter for the end entries iterator
 
-```
+```c++
 @add(frag methods)
 	int expands() const {
 		return expands_ + (prefix_ ? prefix_->expands() : 0);
@@ -570,7 +497,7 @@
 ```
 * how often was the `Frag` `@put` or `@Put`
 
-```
+```c++
 @add(frag methods)
 	void addExpand() {
 		++expands_;
@@ -579,7 +506,7 @@
 ```
 * increases the `@put` or `@Put` count
 
-```
+```c++
 @add(frag methods)
 	int multiples() const {
 		return multiples_ + (prefix_ ? prefix_->multiples() : 0);
@@ -588,7 +515,7 @@
 ```
 * how often was the `Frag` `@mul` or `@Mul`
 
-```
+```c++
 @add(frag methods)
 	void addMultiple() {
 		++multiples_;
@@ -597,7 +524,7 @@
 ```
 * increases the `@mul` or `@Mul` count
 
-```
+```c++
 @add(frag methods)
 	static bool is_c_style(const std::string &name) {
 		@put(is c-style)
@@ -607,25 +534,19 @@
 ```
 * check if a fragment supports C-like line number macros
 
-```
+```c++
 @def(is c-style)
-	static const std::string exts[] = {
-		".c", ".h", ".cpp"
-	};
-	const std::string *end =
-		exts + sizeof(exts)/sizeof(*exts);
+	static const std::string exts[] = { ".c", ".h", ".cpp" };
+	const std::string *end = exts + sizeof(exts)/sizeof(*exts);
 @end(is c-style)
 ```
 * array of valid extensions
 
-```
+```c++
 @add(is c-style)
 	for (auto i = exts; i != end; ++i) {
 		if (name.length() > i->length()) {
-			if (name.substr(
-				name.length() -
-					i->length()) == *i
-			) {
+			if (name.substr(name.length() - i->length()) == *i) {
 				return true;
 			}
 		}
@@ -638,13 +559,10 @@
 ## Serialize `Frag`s
 * write `Frag` traversal to a `std::ostream`
 
-```
+```c++
 @add(define frag)
-	void serializeFrag(
-		const Frag &frag,
-		std::ostream &out,
-		Write_State &state,
-		const std::string &path
+	void serializeFrag(const Frag &frag, std::ostream &out,
+		Write_State &state, const std::string &path
 	) {
 		@put(iterate entries)
 	}
@@ -652,40 +570,33 @@
 ```
 * iterate over the entries
 
-```
+```c++
 @add(define frag)
-	void serializeFrag(
-		const std::string &name,
-		const Frag &f,
-		std::ostream &out,
-		const std::string &path
+	void serializeFrag(const std::string &name, const Frag &f,
+		std::ostream &out, const std::string &path
 	) {
 		Write_State state { name };
-		return serializeFrag(
-			f, out, state, path
-		);
+		return serializeFrag(f, out, state, path);
 	}
 @end(define frag)
 ```
 * estimate a `Write_State` first
 
-```
+```c++
 @def(iterate entries)
 	if (frag.prefix()) {
-		serializeFrag(
-			*frag.prefix(), out, state, path
-		);
+		serializeFrag(*frag.prefix(), out, state, path);
 	}
 	for (const auto &entry : frag) {
 		if (! entry.sub().name.empty()) {
 			std::string new_path = path;
 			const Frag *f { find_frag(entry.sub(), &new_path) };
 			if (f) {
-				serializeFrag(
-					*f, out, state, new_path
-				);
+				serializeFrag(*f, out, state, new_path);
 			} else {
-				std::cerr << "no frag [" << entry.sub().name << "], " << (entry.sub().local ? "local" : "global" ) << ", [" << path << "]\n";
+				std::cerr << "no frag [" << entry.sub().name << "], " <<
+					(entry.sub().local ? "local" : "global" ) << ", [" <<
+					path << "]\n";
 			}
 		}
 		out << entry.str(state);
@@ -695,13 +606,10 @@
 * recursively visit sub `Frag`s
 * then write the string value
 
-```
+```c++
 @add(define frag)
-	bool check_frag(
-		const Frag &f,
-		std::istream &in,
-		Write_State &state,
-		const std::string &path
+	bool check_frag(const Frag &f, std::istream &in,
+		Write_State &state, const std::string &path
 	) {
 		@put(check entries)
 		return true;
@@ -710,24 +618,19 @@
 ```
 * checks if the traversal results in the same value as a `std::istream`
 
-```
+```c++
 @add(define frag)
-	bool check_frag(
-		const std::string &name,
-		const Frag &f,
-		std::istream &in,
-		const std::string &path
+	bool check_frag(const std::string &name, const Frag &f,
+		std::istream &in, const std::string &path
 	) {
 		Write_State state { name };
-		return check_frag(
-			f, in, state, path
-		);
+		return check_frag(f, in, state, path);
 	}
 @end(define frag)
 ```
 * estimate a `Write_State` first
 
-```
+```c++
 @def(check entries)
 	if (f.prefix()) {
 		if (! check_frag(*f.prefix(), in, state, path)) {
@@ -739,9 +642,7 @@
 			std::string new_path = path;
 			const Frag *f { find_frag(entry.sub(), &new_path) };
 			if (f) {
-				if (! check_frag(
-					*f, in, state, new_path
-				)) {
+				if (! check_frag(*f, in, state, new_path)) {
 					return false;
 				}
 			}
@@ -753,11 +654,9 @@
 * recursively visit sub `Frag`s
 * then compare the string value
 
-```
+```c++
 @def(check entry str)
-	for (
-		const auto &i : entry.str(state)
-	) {
+	for (const auto &i : entry.str(state)) {
 		if (in.get() != i) {
 			return false;
 		}
@@ -766,12 +665,10 @@
 ```
 * compare string value character by character
 
-```
+```c++
 @add(define frag)
-	void testFrag(
-		const std::string &name,
-		const Frag &frag,
-		const std::string &expected
+	void testFrag(const std::string &name,
+		const Frag &frag, const std::string &expected
 	) {
 		@put(serialize test frag)
 	}
@@ -779,14 +676,14 @@
 ```
 * verifies that a `Frag` serializes as expected
 
-```
+```c++
 @Add(includes)
 	#include <sstream>
 @end(includes)
 ```
 * needs `std::ostringstream`
 
-```
+```c++
 @def(serialize test frag)
 	std::ostringstream buffer;
 	serializeFrag(name, frag, buffer, "");
@@ -796,21 +693,16 @@
 * serializes the `Frag`
 * and compares resulting value
 
-```
+```c++
 @add(define frag)
-	void addStringToFrag(
-		Frag *frag,
-		const std::string &str
-	) {
-		frag->add(
-			str, std::string {}, 0
-		);
+	void addStringToFrag(Frag *frag, const std::string &str) {
+		frag->add(str, std::string {}, 0);
 	}
 @end(define frag)
 ```
 * adds a zero-terminated string to a `Frag`
 
-```
+```c++
 @add(unit-tests) {
 	clear_frags();
 	Frag frag { "a", nullptr };
@@ -821,7 +713,7 @@
 ```
 * checks that two strings are correctly serialized
 
-```
+```c++
 @add(unit-tests) {
 	clear_frags();
 	Frag &a { get_frag("", "a", true) };
@@ -835,7 +727,7 @@
 ```
 * checks that sub `Frag`s are serialized correctly
 
-```
+```c++
 @add(unit-tests) {
 	clear_frags();
 	Frag &a { get_frag("", "a", false) };
@@ -852,12 +744,10 @@
 ## Cycle detection
 * checks if the addition of a sub `Frag` would result in a cycle
 
-```
+```c++
 @def(define cycle check)
-	bool isFragInFrag(
-		const std::string &path,
-		const Frag *needle,
-		const Frag *haystack
+	bool isFragInFrag(const std::string &path,
+		const Frag *needle, const Frag *haystack
 	) {
 		ASSERT(needle);
 		ASSERT(haystack);
@@ -870,17 +760,15 @@
 * checks, if the parent `Frag` `needle` is already present in the `DAG`
   starting at the sub `Frag` `haystack`
 
-```
+```c++
 @def(avoid frag cycles)
 	Frag &f { get_frag(sub) };
-	ASSERT(! isFragInFrag(
-		sub.path, this, &f
-	));
+	ASSERT(! isFragInFrag(sub.path, this, &f));
 @end(avoid frag cycles)
 ```
 * a sub `Frag` can not be added, if a cycle would result
 
-```
+```c++
 @def(check cycle frag)
 	if (needle == haystack) {
 		return true;
@@ -889,9 +777,11 @@
 ```
 * if the container is itself the searched `Frag`, a cycle would result
 
-```
+```c++
 @def(check cycle entries)
-	if (haystack->prefix() && isFragInFrag(path, needle, haystack->prefix())) {
+	if (haystack->prefix() &&
+		isFragInFrag(path, needle, haystack->prefix())
+	) {
 		return true;
 	}
 	for (const auto &i : *haystack)  {
@@ -899,9 +789,7 @@
 		std::string new_path { path };
 		Frag *f { find_frag(i.sub(), &new_path) };
 		if (! f) { continue; }
-		if (isFragInFrag(
-			new_path, needle, f
-		)) {
+		if (isFragInFrag(new_path, needle, f)) {
 			return true;
 		}
 	}

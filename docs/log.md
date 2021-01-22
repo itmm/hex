@@ -5,7 +5,7 @@
 * the macro will throw an `std::exception` if the condition was not met
 * this normally terminates the running program
 
-```
+```c++
 @Add(includes)
 	#include @s(<iostream>)
 	#include @s(<exception>)
@@ -15,7 +15,7 @@
 * a standard exception from `@s(<exception>)` is used to indicate failed
   conditions
 
-```
+```c++
 @Def(frag prereqs)
 	#define ASSERT(COND) \
 		if (! (COND)) { \
@@ -32,7 +32,7 @@
 * no details are given and the line is terminated with a newline
 * then an exception is raised
 
-```
+```c++
 @Add(frag prereqs)
 	#define ASSERT_MSG(COND, MSG) \
 		if (! (COND)) { \
@@ -47,7 +47,7 @@
   writes after the preamble
 * `MSG` can be multiple parameters concatenated by `<<`
 
-```
+```c++
 @Add(frag prereqs)
 	#define WARN_MSG(MSG) \
 		std::cerr << __FILE__ << ':' << \
@@ -59,7 +59,7 @@
 * a warning writes the same message, as an assertion
 * but it will not terminate the program
 
-```
+```c++
 @def(log preamble) \
 	std::cerr << \
 		__FILE__ << ':' << __LINE__ << \
@@ -70,18 +70,17 @@
 * this is recognized by a number of editors
 * afterwards a short error message is written
 
-```
+```c++
 @def(log newline) \
 	std::cerr << '\n'; \
 @end(log newline)
 ```
 * a simple newline terminates an error message
 
-```
+```c++
 @def(throw) \
 	throw std::exception(); \
 @end(throw)
 ```
 * the assert macros throw a generic `std::exception` if the condition
   was not met
-
