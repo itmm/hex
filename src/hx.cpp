@@ -775,7 +775,6 @@
 #line 245 "read.md"
 
 	Input &operator=(const Input &) = delete;
-	Input &operator=(Input &&) = default;
 
 #line 113 "blocks.md"
 
@@ -814,12 +813,12 @@
 	Open_Input &operator=(const Open_Input &) = delete;
 	Open_Input &operator=(Open_Input &&) = default;
 
-#line 254 "read.md"
+#line 253 "read.md"
 
 	void read_line(std::string &line) {
 		if (file_.is_open()) {
 			
-#line 267 "read.md"
+#line 266 "read.md"
 
 	if (std::getline(file_, line)) {
 		
@@ -827,13 +826,13 @@
 
 	++line_;
 
-#line 269 "read.md"
+#line 268 "read.md"
 
 		return;
 	}
 	file_.close();
 
-#line 257 "read.md"
+#line 256 "read.md"
 
 		}
 		throw No_More_Lines {};
@@ -986,12 +985,12 @@
 
 		private:
 			
-#line 280 "read.md"
+#line 279 "read.md"
 
 	std::vector<std::string> roots_;
 	std::vector<std::string>::const_iterator current_path_;
 
-#line 289 "read.md"
+#line 288 "read.md"
 
 	std::vector<Open_Input> open_;
 	std::map<std::string, Input> used_;
@@ -1004,11 +1003,11 @@
 
 	void Inputs::read_line(std::string &line) {
 		
-#line 301 "read.md"
+#line 300 "read.md"
 
 	for (;;) {
 		
-#line 320 "read.md"
+#line 319 "read.md"
 
 	if (open_.empty()) {
 		if (current_path_ != roots_.end()) {
@@ -1018,7 +1017,7 @@
 		}
 	}
 
-#line 303 "read.md"
+#line 302 "read.md"
 
 		try {
 			open_.back().read_line(line);
@@ -1026,7 +1025,7 @@
 		}
 		catch (const No_More_Lines &) {}
 		
-#line 333 "read.md"
+#line 332 "read.md"
 
 	auto &f { used_.find(open_.back().path())->second };
 	if (f.blocks.empty()) {
@@ -1035,7 +1034,7 @@
 		});
 	}
 
-#line 309 "read.md"
+#line 308 "read.md"
 
 		open_.pop_back();
 	}

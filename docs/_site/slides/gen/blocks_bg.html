@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Zufällige Rechtecke</title>
+<link rel="stylesheet" type="text/css" href="slides.css"></head>
+<body>
+<h1>Zufällige Rechtecke</h1>
+<div class="slides">
+<div><div>
+<h1>Zufällige Rechtecke</h1>
+</div>
+<ul><li>
+Generiert eine Hintergrund-Grafik mit zufälligen Rechtecken
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">file: blocks_bg.c</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">functions</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="fn">main</span>() {<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">main</span>)</span><br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">file: blocks_bg.c</span>)</span><br/>
+</code></div>
+<ul><li>
+Das C-Programm besteht aus mehreren Blöcken
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">includes</span>)</span><br/>
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdio</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">stdlib</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">time</span>.<span class="var">h</span>&gt;<br/>
+<span class="in1"></span>#<span class="var">include</span> &lt;<span class="var">math</span>.<span class="var">h</span>&gt;<br/>
+<span class="macro">@end(<span class="name">includes</span>)</span><br/>
+</code></div>
+<ul><li>
+<code><span class="str">&lt;time.h&gt;</span></code> wird für Zufalls-Initialisierung benötigt
+</li><li>
+<code><span class="str">&lt;math.h&gt;</span></code> wird für die Abstandsberechnung benötigt (Wurzel)
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">cols</span> = <span class="num">10</span>;<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">rows</span> = <span class="num">8</span>;<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+<ul><li>
+Anzahl der Rechtecke
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">globals</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">width</span> = <span class="num">10</span>;<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">gap</span> = <span class="num">2</span>;<br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">int</span> <span class="var">step</span> = <span class="num">12</span>;<br/>
+<span class="macro">@end(<span class="name">globals</span>)</span><br/>
+</code></div>
+<ul><li>
+Kantenlänge, Abstand und Offset
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">functions</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="var">inline</span> <span class="type">void</span> <span class="fn">toHex</span>(<br/>
+<span class="in2"></span><span class="type">char</span> *<span class="var">dst</span>, <span class="type">int</span> <span class="var">v</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="keyword">static</span> <span class="type">const</span> <span class="type">char</span> <span class="var">digits</span>[] =<br/>
+<span class="in3"></span><span class="str">"0123456789abcdef"</span>;<br/>
+<span class="in2"></span><span class="var">dst</span>[<span class="num">0</span>] = <span class="var">digits</span>[<span class="var">v</span> &gt;&gt; <span class="num">4</span>];<br/>
+<span class="in2"></span><span class="var">dst</span>[<span class="num">1</span>] = <span class="var">digits</span>[<span class="var">v</span> &amp; <span class="num">0xf</span>];<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">functions</span>)</span><br/>
+</code></div>
+<ul><li>
+Generiert zweistellige Hex-Zahl aus einem Byte
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@add(<span class="name">functions</span>)</span><br/>
+<span class="in1"></span><span class="keyword">static</span> <span class="var">inline</span> <span class="type">void</span> <span class="fn">buildColor</span>(<br/>
+<span class="in2"></span><span class="type">char</span> *<span class="var">dst</span>,<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">r</span>, <span class="type">int</span> <span class="var">g</span>, <span class="type">int</span> <span class="var">b</span><br/>
+<span class="in1"></span>) {<br/>
+<span class="in2"></span><span class="fn">toHex</span>(<span class="var">dst</span> + <span class="num">1</span>, <span class="var">r</span>);<br/>
+<span class="in2"></span><span class="fn">toHex</span>(<span class="var">dst</span> + <span class="num">3</span>, <span class="var">g</span>);<br/>
+<span class="in2"></span><span class="fn">toHex</span>(<span class="var">dst</span> + <span class="num">5</span>, <span class="var">b</span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">functions</span>)</span><br/>
+</code></div>
+<ul><li>
+Generiert Farbe in hexadezimaler Schreibweise
+</li><li>
+Komponenten sind rot, grün und blau
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">main</span>)</span><br/>
+<span class="in1"></span><span class="fn">srand</span>(<span class="fn">time</span>(<span class="num">NULL</span>));<br/>
+<span class="in1"></span><span class="fn">printf</span>(<br/>
+<span class="in2"></span><span class="str">"&lt;svg version=\"1.1\" "</span><br/>
+<span class="in2"></span><span class="str">"baseProfile=\"full\" "</span><br/>
+<span class="in2"></span><span class="str">"width=\"%d\" height=\"%d\" "</span><br/>
+<span class="in2"></span><span class="str">"xmlns=\"http://www.w3.org/"</span><br/>
+<span class="in3"></span><span class="str">"2000/svg\"&gt;\n"</span>,<br/>
+<span class="in2"></span><span class="var">cols</span> * <span class="var">step</span> - <span class="var">gap</span>,<br/>
+<span class="in2"></span><span class="var">rows</span> * <span class="var">step</span> - <span class="var">gap</span><br/>
+<span class="in1"></span>);<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">generate cells</span>)</span>;<br/>
+<span class="in1"></span><span class="fn">puts</span>(<span class="str">"&lt;/svg&gt;"</span>);<br/>
+<span class="macro">@end(<span class="name">main</span>)</span><br/>
+</code></div>
+<ul><li>
+Schreibt SVG-Rahmen
+</li><li>
+Und generiert einzelne Zellen
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">generate cells</span>)</span><br/>
+<span class="in1"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">j</span> = <span class="num">0</span>; <span class="var">j</span> &lt; <span class="var">rows</span>; ++<span class="var">j</span>) {<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">dy</span> = <span class="var">j</span>;<br/>
+<span class="in2"></span><span class="type">int</span> <span class="var">dyq</span> = <span class="var">dy</span> * <span class="var">dy</span>;<br/>
+<span class="in2"></span><span class="type">double</span> <span class="var">maxDist</span> = <span class="fn">sqrt</span>(<br/>
+<span class="in3"></span><span class="var">cols</span> * <span class="var">cols</span> + <span class="var">rows</span> * <span class="var">rows</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in2"></span><span class="keyword">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="var">cols</span>; ++<span class="var">i</span>) {<br/>
+<span class="in3"></span><span class="macro">@put(<span class="name">cells in row</span>)</span>;<br/>
+<span class="in2"></span>}<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">generate cells</span>)</span><br/>
+</code></div>
+<ul><li>
+Die Zellen werden zeilenweise generiert
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">cells in row</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">dx</span> = (<span class="var">cols</span> - <span class="num">1</span> - <span class="var">i</span>);<br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">dxq</span> = <span class="var">dx</span> * <span class="var">dx</span>;<br/>
+<span class="in1"></span><span class="type">double</span> <span class="var">dist</span> =<br/>
+<span class="in2"></span><span class="fn">sqrt</span>(<span class="var">dxq</span> + <span class="var">dyq</span>) / <span class="var">maxDist</span>;<br/>
+<span class="in1"></span><span class="macro">@put(<span class="name">generate cell</span>)</span>;<br/>
+<span class="macro">@end(<span class="name">cells in row</span>)</span><br/>
+</code></div>
+<ul><li>
+Für jede Zelle wird relativer Abstand zur rechten oberen Ecke bestimmt
+</li><li>
+Und die Zelle generiert
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">generate cell</span>)</span><br/>
+<span class="in1"></span><span class="type">double</span> <span class="var">r</span> = <span class="fn">rand</span>() * <span class="num">1</span>.<span class="num">0</span> / <span class="var">RAND_MAX</span>;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="var">r</span> &lt; <span class="var">dist</span>) {<br/>
+<span class="in2"></span><span class="type">char</span> <span class="var">fill</span>[<span class="num">8</span>] = <span class="str">"#123456"</span>;<br/>
+<span class="in2"></span><span class="macro">@put(<span class="name">set fill color</span>)</span>;<br/>
+<span class="in2"></span><span class="fn">printf</span>(<br/>
+<span class="in3"></span><span class="str">"\t&lt;rect x=\"%d\" y=\"%d\" "</span><br/>
+<span class="in3"></span><span class="str">"width=\"%d\" height=\"%d\" "</span><br/>
+<span class="in3"></span><span class="str">"fill=\"%s\"&gt;&lt;/rect&gt;\n"</span>,<br/>
+<span class="in3"></span><span class="var">i</span> * <span class="var">step</span>, <span class="var">j</span> * <span class="var">step</span>, <span class="var">width</span>,<br/>
+<span class="in3"></span><span class="var">width</span>, <span class="var">fill</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">generate cell</span>)</span><br/>
+</code></div>
+<ul><li>
+Es wird per Zufall entschieden, ob das Rechteck gezeichnet werden soll
+</li><li>
+In der rechten oberen Ecke werden weniger Rechtecke gezeichnet
+</li></ul>
+</div>
+<div><div>
+<code>
+<span class="macro">@def(<span class="name">set fill color</span>)</span><br/>
+<span class="in1"></span><span class="type">int</span> <span class="var">d</span> = <span class="fn">rand</span>() % <span class="num">0x08</span>;<br/>
+<span class="in1"></span><span class="keyword">if</span> (<span class="fn">rand</span>() % <span class="num">10</span> == <span class="num">0</span>) {<br/>
+<span class="in2"></span><span class="fn">buildColor</span>(<br/>
+<span class="in3"></span><span class="var">fill</span>, <span class="num">0xee</span>, <span class="num">0xee</span>, <span class="num">0xff</span> - <span class="var">d</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in1"></span>} <span class="keyword">else</span> {<br/>
+<span class="in2"></span><span class="fn">buildColor</span>(<br/>
+<span class="in3"></span><span class="var">fill</span>, <span class="num">0xee</span>, <span class="num">0xff</span> - <span class="var">d</span>, <span class="num">0xee</span><br/>
+<span class="in2"></span>);<br/>
+<span class="in1"></span>}<br/>
+<span class="macro">@end(<span class="name">set fill color</span>)</span><br/>
+</code></div>
+<ul><li>
+Das Rechteck wird entweder grünlich oder bläulich gezeichnet
+</li><li>
+Der Farb-Code wird um eine zufällige Komponente verschoben
+</li></ul>
+</div>
+</body>
+</html>

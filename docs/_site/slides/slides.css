@@ -1,0 +1,147 @@
+body {
+	max-width: 960px;
+	padding: 20px;
+	font-size: large;
+	margin: 0 auto;
+	color: #bababa;
+	background-color: #45494a;
+	background-image: url(bg.svg);
+	background-attachment: fixed;
+	background-size: cover;
+}
+b {
+	color: #a8a8a2;
+}
+div.slides > div {
+	display: flex;
+	padding: 20px 0;
+	flex-direction: row;
+}
+div.slides > div > div {
+	display: flex;
+	justify-content: center;
+	align-items: center; 
+	font-family: monospace;
+	border: solid 1px black;
+	padding: 20px;
+	background-color: #3c3f41;
+	background-image: url(bg.svg);
+	background-size: cover;
+	flex-shrink: 0;
+	order: 1;
+}
+div.slides h1, div.slides h2, div.slides h3, div.slides h4 {
+	font-family: initial;
+}
+div.slides > div > ul {
+	display: inline-block;
+	flex-grow: 1;
+	order: 2;
+}
+
+div.slides > div > ul > li {
+	padding: 8px;
+}
+
+div.slides > div:nth-child(even) > ul {
+	order: 1;
+}
+
+div.slides > div:nth-child(even) > div {
+	order: 2;
+}
+
+h1, h2, h3 {
+	color: #a8a8a2;
+}
+
+div.slide.slide-header {
+	display: none;
+}
+
+div.xslides > div > div h1 {
+	font-size: x-large;
+}
+div.slides > div > div > div.headers {
+	padding: 32px;
+	text-align: center;
+}
+
+div.slides > div > div > code .in1 {
+	display: inline-block;
+	width: 4ch;
+}
+
+div.slides > div > div > code .in2 {
+	display: inline-block;
+	width: 8ch;
+}
+
+div.slides > div > div > code .in3 {
+	display: inline-block;
+	width: 12ch;
+}
+
+div.slides > div > div > code .in4 {
+	display: inline-block;
+	width: 16ch;
+}
+
+div.slides > div > div > code .in5 {
+	display: inline-block;
+	width: 20ch;
+}
+
+div.slides > div > div > code .in6 {
+	display: inline-block;
+	width: 24ch;
+}
+
+code .macro {
+	color: #cb7832;
+}
+
+code .macro .name, code .macro .name a, code .macro .name a:visited {
+	color: #eb9842;
+}
+
+code .type {
+	color: #96ba68;
+}
+
+code .var {
+}
+code .fn {
+	color: #e0c46c;
+}
+
+code .str {
+	color: #6a8759;
+}
+
+code .num {
+	color: #6896ba;
+}
+
+code .keyword {
+	color: #cb7832;
+	font-weight: bold;
+}
+span.virt:after {
+	content: " ↵";
+}
+
+div.slide img {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+li h2, li h2, li h3, li h4 {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+}
+div.slide-nr {
+	display: none;
+}
+

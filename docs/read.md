@@ -244,7 +244,6 @@
 ```c++
 @Add(input elements)
 	Input &operator=(const Input &) = delete;
-	Input &operator=(Input &&) = default;
 @End(input elements)
 ```
 * no copy assignment
